@@ -1,0 +1,6 @@
+# Visual Studio Project Files
+*.sln                text eol=crlf
+*.vcxproj            text eol=crlf
+*.vcxproj.filters    text eol=crlf
+*.csproj             text eol=crlf
+*.manifest           text eol=crlf
