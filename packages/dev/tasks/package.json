@@ -1,0 +1,20 @@
+{
+  "name": "@cdp-dev/tasks",
+  "description": "task scripts",
+  "version": "0.9.0",
+  "author": "Shin Ogata",
+  "keywords": [
+    "javascript"
+  ],
+  "license": "UNLICENSED",
+  "main": "index",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
+  },
+  "scripts": {
+    "lint": "eslint ./**/*.js -c ../../settings/eslintrc.json",
+    "test": "npm run lint"
+  }
+}

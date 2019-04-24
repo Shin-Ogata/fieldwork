@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "cdp", "cdp.njsproj", "{3B307C30-2E5C-452A-9F97-1BB4320E7EF9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{EFDDFA06-6BFA-40EC-970C-7BA4D3676321}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "tasks", "packages\dev\tasks\tasks.njsproj", "{FCA5CC55-34A9-4550-84BD-98D8AACAFD1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B307C30-2E5C-452A-9F97-1BB4320E7EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B307C30-2E5C-452A-9F97-1BB4320E7EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B307C30-2E5C-452A-9F97-1BB4320E7EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCA5CC55-34A9-4550-84BD-98D8AACAFD1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCA5CC55-34A9-4550-84BD-98D8AACAFD1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCA5CC55-34A9-4550-84BD-98D8AACAFD1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FCA5CC55-34A9-4550-84BD-98D8AACAFD1E} = {EFDDFA06-6BFA-40EC-970C-7BA4D3676321}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}
+	EndGlobalSection
+EndGlobal
