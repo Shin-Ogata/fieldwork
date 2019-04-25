@@ -1,5 +1,5 @@
 {
-  "name": "@cdp-dev/tasks",
+  "name": "@cdp/tool-tasks",
   "description": "task scripts",
   "version": "0.9.0",
   "author": "Shin Ogata",
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
   },
   "scripts": {
-    "lint": "eslint ./**/*.js -c ../../settings/eslintrc.json",
+    "lint": "eslint ./**/*.js -c ../settings/eslintrc.json",
     "test": "npm run lint"
   }
 }
