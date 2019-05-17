@@ -1,7 +1,7 @@
-/* eslint-env node, es6 */
 'use strict';
-const path  = require('path');
-const spawn = require('child_process').spawn;
+
+const path = require('path');
+const { spawn } = require('child_process');
 
 function exec(command, args, options) {
     if (!(Array.isArray(args))) {
@@ -27,16 +27,7 @@ function exec(command, args, options) {
         }, options);
 
         const ext = path.extname(command);
-        let resolveCmd;
-        if ('npm' === command) {
-            resolveCmd = 'npm' + (process.platform === 'win32' ? '.cmd' : '');
-        } else if (ext) {
-            resolveCmd = command;
-        } else {
-            resolveCmd =
-                path.join(__dirname, '..', 'node_modules/.bin', command) +
-                (process.platform === 'win32' ? '.cmd' : '');
-        }
+        const resolveCmd = (ext || process.platform !== 'win32') ? command : `${command}.cmd`;
 
         const child = spawn(resolveCmd, args, opt)
             .on('error', (msg) => {
@@ -44,7 +35,7 @@ function exec(command, args, options) {
             })
             .on('close', (code) => {
                 if (0 !== code) {
-                    reject('error occered. code: ' + code);
+                    reject(`error occered. code: ${code}`);
                 } else {
                     resolve(code);
                 }
@@ -61,6 +52,4 @@ function exec(command, args, options) {
     });
 }
 
-module.exports = {
-    exec: exec,
-};
+module.exports = exec;

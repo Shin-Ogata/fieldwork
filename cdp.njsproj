@@ -35,15 +35,24 @@
     <Content Include=".npmrc" />
     <Content Include="bin\env" />
     <Content Include="bin\env.cmd" />
+    <Content Include="package-lock.json" />
     <Content Include="package.json" />
-    <Content Include="packages\tool\settings\eslintrc.json" />
     <Content Include="README.md" />
+    <Content Include="config\tsconfig\base.json" />
+    <Content Include="config\tsconfig\core.json" />
+    <Content Include="config\tsconfig\window.json" />
+    <Content Include="config\tsconfig\worker.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="packages\" />
-    <Folder Include="packages\tool\" />
-    <Folder Include="packages\tool\settings\" />
+    <Folder Include="config\" />
+    <Folder Include="config\tsconfig\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="config\dts-bundle.js" />
+    <Compile Include="config\eslint.js" />
+    <Compile Include="config\tslint.js" />
+    <Compile Include="config\typedoc.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

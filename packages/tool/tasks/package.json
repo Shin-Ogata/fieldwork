@@ -1,20 +1,40 @@
 {
-  "name": "@cdp/tool-tasks",
-  "description": "task scripts",
+  "name": "@cdp/tasks",
+  "description": "provide for development task scripts and commands",
   "version": "0.9.0",
   "author": "Shin Ogata",
+  "bin": {
+    "cdp-task": "bin/index.js"
+  },
+  "dependencies": {
+    "jasmine-core": "3.4.0",
+    "requirejs": "2.3.6"
+  },
   "keywords": [
     "javascript"
   ],
   "license": "UNLICENSED",
   "main": "index",
+  "peerDependencies": {
+    "chalk": "*",
+    "commander": "*",
+    "convert-source-map": "*",
+    "del": "*",
+    "fs-extra": "*",
+    "glob": "*",
+    "lodash": "*",
+    "nyc": "*",
+    "semver": "*",
+    "testem": "*"
+  },
   "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
   },
   "scripts": {
-    "lint": "eslint ./**/*.js -c ../settings/eslintrc.json",
+    "clear": "cdp-task clean -t ./node_modules",
+    "lint": "eslint ./**/*.js -c ../../../config/eslint.js",
     "test": "npm run lint"
   }
 }
