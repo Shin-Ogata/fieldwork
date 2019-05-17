@@ -2,12 +2,14 @@
 .cache/
 .vs/
 bin/
+built/
 etc/
 ipch/
 node_modules/
 obj/
 typedoc/
 *.csproj.user
+*.njsproj.user
 *.vcxproj.user
 
 # current directory

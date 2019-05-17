@@ -3,4 +3,5 @@
 *.vcxproj            text eol=crlf
 *.vcxproj.filters    text eol=crlf
 *.csproj             text eol=crlf
+*.njsproj            text eol=crlf
 *.manifest           text eol=crlf

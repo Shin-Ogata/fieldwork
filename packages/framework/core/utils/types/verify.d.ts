@@ -1,0 +1,10 @@
+import { TypeKeys } from './types';
+export declare function throwIfNil(x: any, message?: string | null): void | never;
+export declare function throwIfNotTypeOf(type: TypeKeys, x: any, message?: string | null): void | never;
+export declare function throwIfNotArray(x: any, message?: string | null): void | never;
+export declare function throwIfNotIterable(x: any, message?: string | null): void | never;
+export declare function throwIfNotInstanceOf(C: Function, x: any, message?: string | null): void | never;
+export declare function throwIfOwnInstanceOf(C: Function, x: any, message?: string | null): void | never;
+export declare function throwIfNotOwnInstanceOf(C: Function, x: any, message?: string | null): void | never;
+export declare function throwIfNotHasProperty(x: any, p: PropertyKey, message?: string | null): void | never;
+export declare function throwIfNotHasOwnProperty(x: any, p: PropertyKey, message?: string | null): void | never;

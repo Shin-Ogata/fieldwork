@@ -2,7 +2,7 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <Name>empty</Name>
+    <Name>cdp-tasks</Name>
     <RootNamespace>empty</RootNamespace>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -10,7 +10,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>FCA5CC55-34A9-4550-84BD-98D8AACAFD1E</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>
     </StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
@@ -29,16 +30,37 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".npmrc" />
     <Content Include="package.json" />
+    <Content Include="res\etc\BANNER" />
+    <Content Include="res\test\testem.index.mustache" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="banner.js" />
+    <Compile Include="bin\index.js" />
     <Compile Include="command.js" />
+    <Compile Include="config.js" />
     <Compile Include="index.js" />
-    <Compile Include="tests\unit\command.spec.js" />
+    <Compile Include="lib\cli-plugin-clean.js" />
+    <Compile Include="lib\cli-command-parser.js" />
+    <Compile Include="lib\cli-plugin-delegate.js" />
+    <Compile Include="lib\cli-plugin-metrics.js" />
+    <Compile Include="lib\remap-coverage.js" />
+    <Compile Include="lib\resolve-dependency.js" />
+    <Compile Include="lib\cli-plugin-set-version.js" />
+    <Compile Include="lib\setup-test-runner.js" />
+    <Compile Include="lib\cli-plugin-unit-test.js" />
+    <Compile Include="res\test\testem-amd.js" />
+    <Compile Include="res\test\testem-ci.js" />
+    <Compile Include="res\test\testem-main.js" />
+    <Compile Include="rollup-plugin-sourcemap-root.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="tests\" />
-    <Folder Include="tests\unit\" />
+    <Folder Include="bin\" />
+    <Folder Include="lib\" />
+    <Folder Include="res\" />
+    <Folder Include="res\etc\" />
+    <Folder Include="res\test\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

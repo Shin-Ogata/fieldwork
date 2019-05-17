@@ -21,7 +21,7 @@ trim_trailing_whitespace = false
 [{*.sh,env,makefile}]
 indent_style = tab
 
-[{*.sln,*.vcxproj,*.vcxproj.filters,*.csproj}]
+[{*.sln,*.vcxproj,*.vcxproj.filters,*.csproj,*.njsproj}]
 charset = utf-8-bom
 end_of_line = crlf
 insert_final_newline = false
