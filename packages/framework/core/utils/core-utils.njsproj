@@ -56,21 +56,18 @@
     <Folder Include="docs\reports\metrics\module\" />
     <Folder Include="docs\typedoc\" />
     <Folder Include="src\" />
-    <Folder Include="src\check\" />
     <Folder Include="tests\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
-    <Folder Include="types\check\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="dist\core-utils.d.ts" />
-    <TypeScriptCompile Include="src\check\index.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\verify.ts" />
     <TypeScriptCompile Include="src\types.ts" />
     <TypeScriptCompile Include="tests\unit\types.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\verify.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
-    <TypeScriptCompile Include="types\check\index.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\types.d.ts" />
     <TypeScriptCompile Include="types\verify.d.ts" />
