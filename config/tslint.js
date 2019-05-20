@@ -34,6 +34,13 @@ module.exports = {
             },
         ],
         '@typescript-eslint/unified-signatures': 'error',
+        '@typescript-eslint/explicit-function-return-type': [
+            'error',
+            {
+                allowExpressions: true,
+                allowTypedFunctionExpressions: true,
+            },
+        ],
         '@typescript-eslint/no-for-in-array': 'warn',
         '@typescript-eslint/no-unnecessary-qualifier': 'warn',
         '@typescript-eslint/no-useless-constructor': 'warn',

@@ -125,7 +125,12 @@ module.exports = {
                 maxEOF: 1,
             },
         ],
-        'no-trailing-spaces': 'error',
+        'no-trailing-spaces': [
+            'error',
+            {
+                ignoreComments: true,
+            },
+        ],
         'yoda': [
             'warn',
             'always',
