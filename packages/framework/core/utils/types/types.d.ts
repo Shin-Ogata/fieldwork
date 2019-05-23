@@ -17,7 +17,7 @@ export declare type Primitive = string | number | boolean | symbol | null | unde
  * @es JavaScript type set interface
  * @ja JavaScript の型の集合
  */
-interface TypeSet {
+interface TypeList {
     string: string;
     number: number;
     boolean: boolean;
@@ -27,10 +27,10 @@ interface TypeSet {
     function(...args: any[]): any;
 }
 /**
- * @es The key list of [[TypeSet]]
- * @ja [[TypeSet]] キー一覧
+ * @es The key list of [[TypeList]]
+ * @ja [[TypeList]] キー一覧
  */
-export declare type TypeKeys = keyof TypeSet;
+export declare type TypeKeys = keyof TypeList;
 /**
  * @es Type base definition
  * @ja 型の規定定義
@@ -126,7 +126,7 @@ export declare function isObject(x: any): x is object;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isFunction(x: any): x is TypeSet['function'];
+export declare function isFunction(x: any): x is TypeList['function'];
 /**
  * @es Check the value-type is input
  * @ja 指定した型であるか判定
@@ -138,7 +138,7 @@ export declare function isFunction(x: any): x is TypeSet['function'];
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeSet[K];
+export declare function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeList[K];
 /**
  * @es Check the value has iterator
  * @ja iterator を所有しているか判定

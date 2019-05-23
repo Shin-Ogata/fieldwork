@@ -15,6 +15,13 @@ module.exports = {
         project: resolve(process.cwd(), 'tsconfig.json'),
     },
     rules: {
+        '@typescript-eslint/indent': [
+            'error',
+            4,
+            {
+                ignoreComments: true,
+            },
+        ],
         '@typescript-eslint/await-thenable': 'error',
         '@typescript-eslint/func-call-spacing': 'error',
         '@typescript-eslint/member-naming': [
@@ -39,6 +46,18 @@ module.exports = {
             {
                 allowExpressions: true,
                 allowTypedFunctionExpressions: true,
+            },
+        ],
+        '@typescript-eslint/explicit-member-accessibility': [
+            'error',
+            {
+                accessibility: 'explicit',
+                overrides: {
+                    accessors: 'explicit',
+                    constructors: 'off',
+                    properties: 'off',
+                    parameterProperties: 'explicit',
+                }
             },
         ],
         '@typescript-eslint/no-for-in-array': 'warn',

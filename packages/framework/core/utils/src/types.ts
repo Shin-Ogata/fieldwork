@@ -22,7 +22,7 @@ export type Primitive = string | number | boolean | symbol | null | undefined;
  * @es JavaScript type set interface
  * @ja JavaScript の型の集合
  */
-interface TypeSet {
+interface TypeList {
     string: string;
     number: number;
     boolean: boolean;
@@ -33,10 +33,10 @@ interface TypeSet {
 }
 
 /**
- * @es The key list of [[TypeSet]]
- * @ja [[TypeSet]] キー一覧
+ * @es The key list of [[TypeList]]
+ * @ja [[TypeList]] キー一覧
  */
-export type TypeKeys = keyof TypeSet;
+export type TypeKeys = keyof TypeList;
 
 /**
  * @es Type base definition
@@ -160,7 +160,7 @@ export function isObject(x: any): x is object {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isFunction(x: any): x is TypeSet['function'] {
+export function isFunction(x: any): x is TypeList['function'] {
     return 'function' === typeof x;
 }
 
@@ -175,7 +175,7 @@ export function isFunction(x: any): x is TypeSet['function'] {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeSet[K] {
+export function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeList[K] {
     return typeof x === type;
 }
 
@@ -236,10 +236,13 @@ export function className(x: any): string {
         const toStringTagName = x[Symbol.toStringTag];
         if (isString(toStringTagName)) {
             return toStringTagName;
-        }
-        const ctor = x.constructor;
-        if (isFunction(ctor) && ctor === (Object(ctor.prototype) as Object).constructor) {
-            return ctor.name;
+        } else if (isFunction(x) && x.prototype && null != x.name) {
+            return x.name;
+        } else {
+            const ctor = x.constructor;
+            if (isFunction(ctor) && ctor === (Object(ctor.prototype) as Object).constructor) {
+                return ctor.name;
+            }
         }
     }
     return (Object.prototype.toString.call(x) as string).slice(8, -1);

@@ -63,12 +63,15 @@
   <ItemGroup>
     <TypeScriptCompile Include="dist\core-utils.d.ts" />
     <TypeScriptCompile Include="src\index.ts" />
+    <TypeScriptCompile Include="src\mixins.ts" />
     <TypeScriptCompile Include="src\verify.ts" />
     <TypeScriptCompile Include="src\types.ts" />
+    <TypeScriptCompile Include="tests\unit\mixins.spec.ts" />
     <TypeScriptCompile Include="tests\unit\types.spec.ts" />
     <TypeScriptCompile Include="tests\unit\verify.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
+    <TypeScriptCompile Include="types\mixins.d.ts" />
     <TypeScriptCompile Include="types\types.d.ts" />
     <TypeScriptCompile Include="types\verify.d.ts" />
   </ItemGroup>
