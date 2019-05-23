@@ -318,7 +318,7 @@ describe('utils/types spec', (): void => {
         expect(className([])).toBe('Array');
         expect(className(() => { return 1; })).toBe('Function');
         expect(className(_symbol)).toBe('Symbol');
-        expect(className(TypeClass)).toBe('Function');
+        expect(className(TypeClass)).toBe('TypeClass');
         expect(className(_classInst)).toBe('TypeClass');
         expect(className(Object.create(null))).toBe('Object');
         expect(className(setTimeout)).toBe('Function');
