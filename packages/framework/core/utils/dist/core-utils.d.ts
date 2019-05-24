@@ -399,21 +399,21 @@ declare module '@cdp/core-utils/mixins' {
         * @es Mixin class's base interface
         * @ja Mixin クラスの基底インターフェイス定義
         */
-    export interface MixinClass {
+    export class MixinClass {
             /**
                 * @es call mixin source class's `super()`
                 *     This method should be called from constructor.
                 * @ja Mixin クラスの基底インターフェイス定義
                 *     コンストラクタから呼ぶことを想定
                 *
-                * @param sourceClassName
+                * @param srcClass
                 *  - `en` construction target class name. ex) from S1 available
                 *  - `ja` コンストラクトするクラス名を指定 ex) S1 から指定可能
                 * @param args
                 *  - `en` construction parameters
                 *  - `ja` コンストラクトに使用する引数
                 */
-            construct<T>(sourceClass: Constructor<T>, ...args: any[]): MixinClass;
+            protected super<T>(srcClass: Constructor<T>, ...args: ConstructorParameters<Constructor<T>>): this;
             /**
                 * @es Check the input class is mixined (excluding own class)
                 * @ja 指定クラスが Mixin されているか確認 (自身のクラスは含まれない)
@@ -432,7 +432,7 @@ declare module '@cdp/core-utils/mixins' {
         *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため,
         *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
         *
-        * @example  <br>
+        * @example <br>
         *
         * ```ts
         * class Base {};
@@ -465,7 +465,7 @@ declare module '@cdp/core-utils/mixins' {
     export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
     /**
         * @es Mixin function for multiple inheritance
-        *     Resolving type support for maximum 10 class.
+        *     Resolving type support for maximum 10 classes.
         * @ja 多重継承のための Mixin 関数
         *     最大 10 クラスの型解決をサポート
         *
@@ -482,8 +482,8 @@ declare module '@cdp/core-utils/mixins' {
         *         super(a, b);
         *
         *         // calling Mixin classes' constructor
-        *         this.construct(MixA, a, b);
-        *         this.construct(MixB, c, d);
+        *         this.super(MixA, a, b);
+        *         this.super(MixB, c, d);
         *     }
         * }
         * ```

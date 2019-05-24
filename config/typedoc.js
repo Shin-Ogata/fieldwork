@@ -3,16 +3,14 @@
 const cwd = process.cwd();
 const { existsSync } = require('fs-extra');
 const { resolve } = require('path');
-const { src, test, doc, api } = require('@cdp/tasks/config').dir;
+const { test, doc, api } = require('@cdp/tasks/config').dir;
 const { dependencies, name } = require(resolve(cwd, 'package.json'));
 
 const exclude = [
     '**/node_modules/@types/{node,cordova}/**', // environment
     '**/node_modules/{electron,typescript}/**', // environment
     '**/node_modules/**/node_modules/**',       // 間接依存
-    `**/${src}/**`,
     `**/${test}/**`,
-    '**/!(*.d.ts)',
 ];
 
 const pkgs = [name, ...Object.keys(dependencies || {})].reduce((map, pkgName) => {
