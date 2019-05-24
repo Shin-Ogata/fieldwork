@@ -1,4 +1,4 @@
-import { Constructor } from './types';
+import { Type, Class, Constructor } from './types';
 /**
  * @es Mixin class's base interface
  * @ja Mixin クラスの基底インターフェイス定義
@@ -17,7 +17,7 @@ export declare class MixinClass {
      *  - `en` construction parameters
      *  - `ja` コンストラクトに使用する引数
      */
-    protected super<T>(srcClass: Constructor<T>, ...args: ConstructorParameters<Constructor<T>>): this;
+    protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this;
     /**
      * @es Check the input class is mixined (excluding own class)
      * @ja 指定クラスが Mixin されているか確認 (自身のクラスは含まれない)
@@ -27,6 +27,24 @@ export declare class MixinClass {
      *  - `ja` 対象クラスのコンストラクタを指定
      */
     isMixedWith<T>(mixedClass: Constructor<T>): boolean;
+}
+/**
+ * @es Mixed sub class constructor definition
+ * @ja 合成したサブクラスのコンストラクタ定義
+ */
+export interface MixinConstructor<B extends Class, U> extends Type<U> {
+    /**
+     * @es constructor
+     * @ja コンストラクタ
+     *
+     * @param args
+     *  - `en` base class arguments
+     *  - `ja` 基底クラスに指定した引数
+     * @returns
+     *  - `en` union type of classes when calling [[mixins]]()
+     *  - `ja` [[mixins]]() に渡したクラスの集合
+     */
+    new (...args: ConstructorParameters<B>): U;
 }
 /**
  * @es Setup [Symbol.hasInstance] property
@@ -93,8 +111,8 @@ export declare function setInstanceOf<T>(target: Constructor<T>, method?: ((inst
  * ```
  *
  * @param base
- *  - `en` primary base class
- *  - `ja` 基底クラスコンストラクタ. 同名プロパティ, メソッドは最優先される
+ *  - `en` primary base class. super(args) is this class's one.
+ *  - `ja` 基底クラスコンストラクタ. 同名プロパティ, メソッドは最優先される. super(args) はこのクラスのものが指定可能.
  * @param sources
  *  - `en` multiple extends class
  *  - `ja` 拡張クラスコンストラクタ
@@ -102,4 +120,4 @@ export declare function setInstanceOf<T>(target: Constructor<T>, method?: ((inst
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export declare function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: Constructor<B>, ...sources: [Constructor<S1>, Constructor<S2>?, Constructor<S3>?, Constructor<S4>?, Constructor<S5>?, Constructor<S6>?, Constructor<S7>?, Constructor<S8>?, Constructor<S9>?, ...any[]]): Constructor<MixinClass & B & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9>;
+export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [Constructor<S1>, Constructor<S2>?, Constructor<S3>?, Constructor<S4>?, Constructor<S5>?, Constructor<S6>?, Constructor<S7>?, Constructor<S8>?, Constructor<S9>?, ...any[]]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9>;

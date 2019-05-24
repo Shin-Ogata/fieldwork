@@ -46,6 +46,11 @@ export interface Constructor<T> extends Type<T> {
     new (...args: any[]): T;
 }
 /**
+ * @es Type of class
+ * @ja クラス型
+ */
+export declare type Class<T = any> = Constructor<T>;
+/**
  * @es Check the value exists
  * @ja 値が存在するか判定
  *
