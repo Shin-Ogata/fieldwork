@@ -70,7 +70,7 @@ describe('utils/mixins spec', () => {
     class MixinAB extends mixins(ClassA, ClassB) {
         constructor(aId: number, bId: number, aName: string, bName: string) {
             super(aId, aName);
-            this.construct(ClassB, bId, bName);
+            this.super(ClassB, bId, bName);
         }
         public sum(): number {
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -81,7 +81,7 @@ describe('utils/mixins spec', () => {
     class MixinBA extends mixins(ClassB, ClassA) {
         constructor(aId: number, bId: number, aName: string, bName: string) {
             super(bId, bName);
-            this.construct(ClassA, aId, aName);
+            this.super(ClassA, aId, aName);
         }
         public sum(): number {
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -92,7 +92,7 @@ describe('utils/mixins spec', () => {
     class MixinBD extends mixins(ClassB, ClassD) {
         constructor(bId: number, dId: number, bName: string, dName: string, dAlias: string) {
             super(bId, bName);
-            this.construct(ClassD, dId, dName, dAlias);
+            this.super(ClassD, dId, dName, dAlias);
         }
         public sum(): number {
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -103,8 +103,8 @@ describe('utils/mixins spec', () => {
     class MixinCAB extends mixins(ClassC, ClassB, ClassA) {
         constructor(aId: number, bId: number, cId: number, aName: string, bName: string, cName: string) {
             super(cId, cName, 'ailias:C');
-            this.construct(ClassA, aId, aName);
-            this.construct(ClassB, bId, bName);
+            this.super(ClassA, aId, aName);
+            this.super(ClassB, bId, bName);
         }
         public sum(): number {
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -255,8 +255,8 @@ describe('utils/mixins spec', () => {
         class MixinMiss extends mixins(ClassA, ClassB) {
             constructor(aId: number, bId: number, aName: string, bName: string) {
                 super(aId, aName);
-                this.construct(ClassB, bId, bName);
-                this.construct(ClassE, bId, bName); // 間違った呼び出し (no effect)
+                this.super(ClassB, bId, bName);
+                this.super(ClassE, bId, bName); // 間違った呼び出し (no effect)
             }
             public sum(): number {
                 // eslint-disable-next-line @typescript-eslint/restrict-plus-operands

@@ -6,21 +6,21 @@ import { Constructor } from './types';
  * @es Mixin class's base interface
  * @ja Mixin クラスの基底インターフェイス定義
  */
-export interface MixinClass {
+export declare class MixinClass {
     /**
      * @es call mixin source class's `super()`  
      *     This method should be called from constructor.
      * @ja Mixin クラスの基底インターフェイス定義  
      *     コンストラクタから呼ぶことを想定
      *
-     * @param sourceClassName
+     * @param srcClass
      *  - `en` construction target class name. ex) from S1 available
      *  - `ja` コンストラクトするクラス名を指定 ex) S1 から指定可能
      * @param args
      *  - `en` construction parameters
      *  - `ja` コンストラクトに使用する引数
      */
-    construct<T>(sourceClass: Constructor<T>, ...args: any[]): MixinClass;
+    protected super<T>(srcClass: Constructor<T>, ...args: ConstructorParameters<Constructor<T>>): this;
 
     /**
      * @es Check the input class is mixined (excluding own class)
@@ -30,7 +30,7 @@ export interface MixinClass {
      *  - `en` set target class constructor
      *  - `ja` 対象クラスのコンストラクタを指定
      */
-    isMixedWith<T>(mixedClass: Constructor<T>): boolean;
+    public isMixedWith<T>(mixedClass: Constructor<T>): boolean;
 }
 
 //__________________________________________________________________________________________________//
@@ -62,7 +62,7 @@ function copyProperties(target: object, source?: object): void {
  *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため,  
  *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
  *
- * @example  <br>
+ * @example <br>
  *
  * ```ts
  * class Base {};
@@ -112,7 +112,7 @@ export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object
 
 /**
  * @es Mixin function for multiple inheritance  
- *     Resolving type support for maximum 10 class.
+ *     Resolving type support for maximum 10 classes.
  * @ja 多重継承のための Mixin 関数  
  *     最大 10 クラスの型解決をサポート
  *
@@ -129,8 +129,8 @@ export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object
  *         super(a, b);
  *
  *         // calling Mixin classes' constructor
- *         this.construct(MixA, a, b);
- *         this.construct(MixB, c, d);
+ *         this.super(MixA, a, b);
+ *         this.super(MixB, c, d);
  *     }
  * }
  * ```
@@ -157,7 +157,7 @@ export function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         Constructor<S7>?,
         Constructor<S8>?,
         Constructor<S9>?,
-        ...any[],
+        ...any[]
     ]): Constructor<MixinClass & B & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9> {
 
     // provide custom instanceof
@@ -172,9 +172,9 @@ export function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
     }
 
     // eslint-disable-next-line @typescript-eslint/class-name-casing
-    return class _MixinBase extends (base as any) implements MixinClass {
+    return class _MixinBase extends (base as any as Constructor<MixinClass>) {
 
-        private readonly [_constructors]: Map<Constructor<any>, Function>;
+        private readonly [_constructors]: Map<Constructor<any>, Function | null>;
         private readonly [_classBase]: Constructor<any>;
 
         constructor(...args: any[]) {
@@ -204,10 +204,12 @@ export function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             this[_classBase]    = base;
         }
 
-        public construct<T>(srcClass: Constructor<T>, ...args: any[]): this {
-            const ctor = this[_constructors].get(srcClass);
+        protected super<T>(srcClass: Constructor<T>, ...args: ConstructorParameters<Constructor<T>>): this {
+            const map = this[_constructors];
+            const ctor = map.get(srcClass);
             if (ctor) {
                 ctor(...args);
+                map.set(srcClass, null);    // prevent calling twice
             }
             return this;
         }
