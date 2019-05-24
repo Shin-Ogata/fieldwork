@@ -55,6 +55,12 @@ export interface Constructor<T> extends Type<T> {
 }
 
 /**
+ * @es Type of class
+ * @ja クラス型
+ */
+export type Class<T = any> = Constructor<T>;
+
+/**
  * @es Check the value exists
  * @ja 値が存在するか判定
  *

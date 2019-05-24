@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Constructor } from './types';
+import { Type, Class, Constructor } from './types';
 
 /**
  * @es Mixin class's base interface
@@ -20,7 +20,7 @@ export declare class MixinClass {
      *  - `en` construction parameters
      *  - `ja` コンストラクトに使用する引数
      */
-    protected super<T>(srcClass: Constructor<T>, ...args: ConstructorParameters<Constructor<T>>): this;
+    protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this;
 
     /**
      * @es Check the input class is mixined (excluding own class)
@@ -31,6 +31,25 @@ export declare class MixinClass {
      *  - `ja` 対象クラスのコンストラクタを指定
      */
     public isMixedWith<T>(mixedClass: Constructor<T>): boolean;
+}
+
+/**
+ * @es Mixed sub class constructor definition
+ * @ja 合成したサブクラスのコンストラクタ定義
+ */
+export interface MixinConstructor<B extends Class, U> extends Type<U> {
+    /**
+     * @es constructor
+     * @ja コンストラクタ
+     *
+     * @param args
+     *  - `en` base class arguments
+     *  - `ja` 基底クラスに指定した引数
+     * @returns
+     *  - `en` union type of classes when calling [[mixins]]()
+     *  - `ja` [[mixins]]() に渡したクラスの集合
+     */
+    new(...args: ConstructorParameters<B>): U;
 }
 
 //__________________________________________________________________________________________________//
@@ -136,8 +155,8 @@ export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object
  * ```
  *
  * @param base
- *  - `en` primary base class
- *  - `ja` 基底クラスコンストラクタ. 同名プロパティ, メソッドは最優先される
+ *  - `en` primary base class. super(args) is this class's one.
+ *  - `ja` 基底クラスコンストラクタ. 同名プロパティ, メソッドは最優先される. super(args) はこのクラスのものが指定可能.
  * @param sources
  *  - `en` multiple extends class
  *  - `ja` 拡張クラスコンストラクタ
@@ -145,8 +164,8 @@ export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
-    base: Constructor<B>,
+export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
+    base: B,
     ...sources: [
         Constructor<S1>,
         Constructor<S2>?,
@@ -158,7 +177,7 @@ export function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         Constructor<S8>?,
         Constructor<S9>?,
         ...any[]
-    ]): Constructor<MixinClass & B & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9> {
+    ]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9> {
 
     // provide custom instanceof
     for (const srcClass of sources) {
@@ -204,7 +223,7 @@ export function mixins<B, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             this[_classBase]    = base;
         }
 
-        protected super<T>(srcClass: Constructor<T>, ...args: ConstructorParameters<Constructor<T>>): this {
+        protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this {
             const map = this[_constructors];
             const ctor = map.get(srcClass);
             if (ctor) {
