@@ -406,9 +406,9 @@ declare module '@cdp/core-utils/mixins' {
         */
     export class MixinClass {
             /**
-                * @es call mixin source class's `super()`
+                * @es call mixin source class's `super()` <br>
                 *     This method should be called from constructor.
-                * @ja Mixin クラスの基底インターフェイス定義
+                * @ja Mixin クラスの基底インターフェイス定義 <br>
                 *     コンストラクタから呼ぶことを想定
                 *
                 * @param srcClass
@@ -448,11 +448,11 @@ declare module '@cdp/core-utils/mixins' {
             new (...args: ConstructorParameters<B>): U;
     }
     /**
-        * @es Setup [Symbol.hasInstance] property
-        *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly.
+        * @es Setup [Symbol.hasInstance] property <br>
+        *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
         *     It's used to avoid becoming the behavior `instanceof` doesn't intend when the class is extended from the mixined class the other place.
-        * @ja [Symbol.hasInstance] プロパティ設定関数
-        *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため,
+        * @ja [Symbol.hasInstance] プロパティ設定関数 <br>
+        *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
         *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
         *
         * @example <br>
@@ -478,18 +478,18 @@ declare module '@cdp/core-utils/mixins' {
         *  - `en` set target constructor
         *  - `ja` 設定対象のコンストラクタ
         * @param method
-        *  - `en` function by using [Symbol.hasInstance]
-        *         Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
+        *  - `en` function by using [Symbol.hasInstance] <br>
+        *         Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }` <br>
         *         If set `null`, delete [Symbol.hasInstance] property.
-        *  - `ja` [Symbol.hasInstance] が使用する関数を指定
-        *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
+        *  - `ja` [Symbol.hasInstance] が使用する関数を指定 <br>
+        *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される <br>
         *         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
         */
     export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
     /**
-        * @es Mixin function for multiple inheritance
+        * @es Mixin function for multiple inheritance <br>
         *     Resolving type support for maximum 10 classes.
-        * @ja 多重継承のための Mixin 関数
+        * @ja 多重継承のための Mixin <br>
         *     最大 10 クラスの型解決をサポート
         *
         * @example <br>
