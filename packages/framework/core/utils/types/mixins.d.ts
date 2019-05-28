@@ -1,11 +1,11 @@
 import { Type, Class, Constructor } from './types';
 /**
- * @es Mixin class's base interface
+ * @es Mixin class's base interface.
  * @ja Mixin クラスの基底インターフェイス定義
  */
 export declare class MixinClass {
     /**
-     * @es call mixin source class's `super()` <br>
+     * @es call mixin source class's `super()`. <br>
      *     This method should be called from constructor.
      * @ja Mixin クラスの基底インターフェイス定義 <br>
      *     コンストラクタから呼ぶことを想定
@@ -19,7 +19,7 @@ export declare class MixinClass {
      */
     protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this;
     /**
-     * @es Check the input class is mixined (excluding own class)
+     * @es Check the input class is mixined (excluding own class).
      * @ja 指定クラスが Mixin されているか確認 (自身のクラスは含まれない)
      *
      * @param mixedClass
@@ -29,7 +29,7 @@ export declare class MixinClass {
     isMixedWith<T>(mixedClass: Constructor<T>): boolean;
 }
 /**
- * @es Mixed sub class constructor definition
+ * @es Mixed sub class constructor definitions.
  * @ja 合成したサブクラスのコンストラクタ定義
  */
 export interface MixinConstructor<B extends Class, U> extends Type<U> {
@@ -47,7 +47,7 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
     new (...args: ConstructorParameters<B>): U;
 }
 /**
- * @es Setup [Symbol.hasInstance] property <br>
+ * @es Setup [Symbol.hasInstance] property. <br>
  *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
  *     It's used to avoid becoming the behavior `instanceof` doesn't intend when the class is extended from the mixined class the other place.
  * @ja [Symbol.hasInstance] プロパティ設定関数 <br>
@@ -78,15 +78,15 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
  *  - `ja` 設定対象のコンストラクタ
  * @param method
  *  - `en` function by using [Symbol.hasInstance] <br>
- *         Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }` <br>
+ *         Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
  *         If set `null`, delete [Symbol.hasInstance] property.
  *  - `ja` [Symbol.hasInstance] が使用する関数を指定 <br>
- *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される <br>
+ *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
  *         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
 export declare function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
 /**
- * @es Mixin function for multiple inheritance <br>
+ * @es Mixin function for multiple inheritance. <br>
  *     Resolving type support for maximum 10 classes.
  * @ja 多重継承のための Mixin <br>
  *     最大 10 クラスの型解決をサポート

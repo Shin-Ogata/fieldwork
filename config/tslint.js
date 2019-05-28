@@ -56,6 +56,7 @@ module.exports = {
                     accessors: 'explicit',
                     constructors: 'off',
                     properties: 'off',
+                    methods: 'off',
                     parameterProperties: 'explicit',
                 }
             },

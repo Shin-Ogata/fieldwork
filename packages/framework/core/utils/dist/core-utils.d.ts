@@ -11,22 +11,22 @@ declare module '@cdp/core-utils' {
 
 declare module '@cdp/core-utils/types' {
     /**
-        * @es The general null type
+        * @es The general null type.
         * @ja 空を示す型定義
         */
     export type Nil = void | null | undefined;
     /**
-        * @es The type of object or [[Nil]]
+        * @es The type of object or [[Nil]].
         * @ja [[Nil]] になりえるオブジェクト型定義
         */
     export type Nillable<T extends Object> = T | Nil;
     /**
-        * @es Primitive type of JavaScript
+        * @es Primitive type of JavaScript.
         * @ja JavaScript のプリミティブ型
         */
     export type Primitive = string | number | boolean | symbol | null | undefined;
     /**
-        * @es JavaScript type set interface
+        * @es JavaScript type set interface.
         * @ja JavaScript の型の集合
         */
     interface TypeList {
@@ -39,31 +39,36 @@ declare module '@cdp/core-utils/types' {
             function(...args: any[]): any;
     }
     /**
-        * @es The key list of [[TypeList]]
+        * @es The key list of [[TypeList]].
         * @ja [[TypeList]] キー一覧
         */
     export type TypeKeys = keyof TypeList;
     /**
-        * @es Type base definition
+        * @es Type base definition.
         * @ja 型の規定定義
         */
     export interface Type<T extends Object> extends Function {
             readonly prototype: T;
     }
     /**
-        * @es Type of constructor
+        * @es Type of constructor.
         * @ja コンストラクタ型
         */
     export interface Constructor<T> extends Type<T> {
             new (...args: any[]): T;
     }
     /**
-        * @es Type of class
+        * @es Type of class.
         * @ja クラス型
         */
     export type Class<T = any> = Constructor<T>;
     /**
-        * @es Check the value exists
+        * @es Ensure for function parameters to tuple.
+        * @ja 関数パラメータとして tuple を保証
+        */
+    export type Arguments<T> = T extends any[] ? T : [T];
+    /**
+        * @es Check the value exists.
         * @ja 値が存在するか判定
         *
         * @param x
@@ -73,7 +78,7 @@ declare module '@cdp/core-utils/types' {
     export function exists<O extends Object>(x: Nillable<O>): x is O;
     export function exists(x: any): x is Object;
     /**
-        * @es Check the value-type is [[Nil]]
+        * @es Check the value-type is [[Nil]].
         * @ja [[Nil]] 型であるか判定
         *
         * @param x
@@ -82,7 +87,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isNil(x: any): x is Nil;
     /**
-        * @es Check the value-type is String
+        * @es Check the value-type is String.
         * @ja String 型であるか判定
         *
         * @param x
@@ -91,7 +96,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isString(x: any): x is string;
     /**
-        * @es Check the value-type is Number
+        * @es Check the value-type is Number.
         * @ja Number 型であるか判定
         *
         * @param x
@@ -100,7 +105,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isNumber(x: any): x is number;
     /**
-        * @es Check the value-type is Boolean
+        * @es Check the value-type is Boolean.
         * @ja Boolean 型であるか判定
         *
         * @param x
@@ -109,7 +114,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isBoolean(x: any): x is boolean;
     /**
-        * @es Check the value-type is Symble
+        * @es Check the value-type is Symble.
         * @ja Symbol 型であるか判定
         *
         * @param x
@@ -118,7 +123,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isSymbol(x: any): x is symbol;
     /**
-        * @es Check the value-type is primitive type
+        * @es Check the value-type is primitive type.
         * @ja プリミティブ型であるか判定
         *
         * @param x
@@ -127,7 +132,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isPrimitive(x: any): x is Primitive;
     /**
-        * @es Check the value-type is Object
+        * @es Check the value-type is Object.
         * @ja Object 型であるか判定
         *
         * @param x
@@ -136,7 +141,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isObject(x: any): x is object;
     /**
-        * @es Check the value-type is Function
+        * @es Check the value-type is Function.
         * @ja Function 型であるか判定
         *
         * @param x
@@ -145,7 +150,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function isFunction(x: any): x is TypeList['function'];
     /**
-        * @es Check the value-type is input
+        * @es Check the value-type is input.
         * @ja 指定した型であるか判定
         *
         * @param type
@@ -157,7 +162,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeList[K];
     /**
-        * @es Check the value has iterator
+        * @es Check the value has iterator.
         * @ja iterator を所有しているか判定
         *
         * @param x
@@ -167,7 +172,7 @@ declare module '@cdp/core-utils/types' {
     export function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
     export function isIterable(x: any): x is Iterable<any>;
     /**
-        * @es Check the value instance of input
+        * @es Check the value instance of input.
         * @ja 指定したインスタンスであるか判定
         *
         * @param ctor
@@ -179,7 +184,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function instanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x is T;
     /**
-        * @es Check the value instance of input constructor (except sub class)
+        * @es Check the value instance of input constructor (except sub class).
         * @ja 指定コンストラクタのインスタンスであるか判定 (派生クラスは含めない)
         *
         * @param ctor
@@ -191,7 +196,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function ownInstanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x is T;
     /**
-        * @es Get the value's class name
+        * @es Get the value's class name.
         * @ja クラス名を取得
         *
         * @param x
@@ -200,7 +205,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function className(x: any): string;
     /**
-        * @es Check input values are same value-type
+        * @es Check input values are same value-type.
         * @ja 入力が同一型であるか判定
         *
         * @param lhs
@@ -212,7 +217,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function sameType(lhs: any, rhs: any): boolean;
     /**
-        * @es Check input values are same class
+        * @es Check input values are same class.
         * @ja 入力が同一クラスであるか判定
         *
         * @param lhs
@@ -224,7 +229,7 @@ declare module '@cdp/core-utils/types' {
         */
     export function sameClass(lhs: any, rhs: any): boolean;
     /**
-        * @es Get shallow copy of `target` which has only `pickupKeys`
+        * @es Get shallow copy of `target` which has only `pickupKeys`.
         * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
         *
         * @param target
@@ -243,16 +248,16 @@ declare module '@cdp/core-utils/types' {
 declare module '@cdp/core-utils/verify' {
     import { TypeKeys } from '@cdp/core-utils/types';
     /**
-        * @es Type verifier interface definition<br>
+        * @es Type verifier interface definition. <br>
         *     If invalid value received, the method throws `TypeError`.
-        * @ja 型検証のインターフェイス定義<br>
+        * @ja 型検証のインターフェイス定義 <br>
         *     違反した場合は `TypeError` を発生
         *
         *
         */
     interface Verifier {
             /**
-                * @es Verification for the input value is not [[Nil]]
+                * @es Verification for the input value is not [[Nil]].
                 * @ja [[Nil]] でないことを検証
                 *
                 * @param notNil.x
@@ -264,7 +269,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             notNil: (x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input is [[TypeKeys]]
+                * @es Verification for the input is [[TypeKeys]].
                 * @ja 指定した [[TypeKeys]] であるか検証
                 *
                 * @param typeOf.type
@@ -279,7 +284,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             typeOf: (type: TypeKeys, x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input value is `Array`
+                * @es Verification for the input value is `Array`.
                 * @ja `Array` であるか検証
                 *
                 * @param array.x
@@ -291,7 +296,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             array: (x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input value is `Iterable`
+                * @es Verification for the input value is `Iterable`.
                 * @ja `Iterable` であるか検証
                 *
                 * @param iterable.x
@@ -303,7 +308,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             iterable: (x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input instance is equal comparative target constructor
+                * @es Verification for the input instance is equal comparative target constructor.
                 * @ja 指定コンストラクタのインスタンスであるか検証
                 *
                 * @param instanceOf.ctor
@@ -318,7 +323,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             instanceOf: (ctor: Function, x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input instance has `strictly` comparative target constructor
+                * @es Verification for the input instance has `strictly` comparative target constructor.
                 * @ja 指定コンストラクタの厳密一致したインスタンスであるか検証
                 *
                 * @param ownInstanceOf.ctor
@@ -333,7 +338,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             ownInstanceOf: (ctor: Function, x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input instance has not `strictly` equal comparative target constructor
+                * @es Verification for the input instance has not `strictly` equal comparative target constructor.
                 * @ja 指定コンストラクタを持つインスタンスでないことを検証
                 *
                 * @param notOwnInstanceOf.ctor
@@ -348,7 +353,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             notOwnInstanceOf: (ctor: Function, x: any, message?: string | null) => void | never;
             /**
-                * @es Verification for the input value has specified property
+                * @es Verification for the input value has specified property.
                 * @ja 指定プロパティを持っているか検証
                 *
                 * @param hasProperty.prop
@@ -363,7 +368,7 @@ declare module '@cdp/core-utils/verify' {
                 */
             hasProperty: (x: any, prop: PropertyKey, message?: string | null) => void | never;
             /**
-                * @es Verification for the input value has own specified property
+                * @es Verification for the input value has own specified property.
                 * @ja 指定プロパティを入力値自身持っているか検証
                 *
                 * @param hasOwnProperty.prop
@@ -379,12 +384,12 @@ declare module '@cdp/core-utils/verify' {
             hasOwnProperty: (x: any, prop: PropertyKey, message?: string | null) => void | never;
     }
     /**
-        * @es List of method for type verify
+        * @es List of method for type verify.
         * @ja 型検証が提供するメソッド一覧
         */
     type VerifyMethod = keyof Verifier;
     /**
-        * @es Verify method
+        * @es Verify method.
         * @ja 検証メソッド
         *
         * @param method
@@ -401,12 +406,12 @@ declare module '@cdp/core-utils/verify' {
 declare module '@cdp/core-utils/mixins' {
     import { Type, Class, Constructor } from '@cdp/core-utils/types';
     /**
-        * @es Mixin class's base interface
+        * @es Mixin class's base interface.
         * @ja Mixin クラスの基底インターフェイス定義
         */
     export class MixinClass {
             /**
-                * @es call mixin source class's `super()` <br>
+                * @es call mixin source class's `super()`. <br>
                 *     This method should be called from constructor.
                 * @ja Mixin クラスの基底インターフェイス定義 <br>
                 *     コンストラクタから呼ぶことを想定
@@ -420,7 +425,7 @@ declare module '@cdp/core-utils/mixins' {
                 */
             protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this;
             /**
-                * @es Check the input class is mixined (excluding own class)
+                * @es Check the input class is mixined (excluding own class).
                 * @ja 指定クラスが Mixin されているか確認 (自身のクラスは含まれない)
                 *
                 * @param mixedClass
@@ -430,7 +435,7 @@ declare module '@cdp/core-utils/mixins' {
             isMixedWith<T>(mixedClass: Constructor<T>): boolean;
     }
     /**
-        * @es Mixed sub class constructor definition
+        * @es Mixed sub class constructor definitions.
         * @ja 合成したサブクラスのコンストラクタ定義
         */
     export interface MixinConstructor<B extends Class, U> extends Type<U> {
@@ -448,7 +453,7 @@ declare module '@cdp/core-utils/mixins' {
             new (...args: ConstructorParameters<B>): U;
     }
     /**
-        * @es Setup [Symbol.hasInstance] property <br>
+        * @es Setup [Symbol.hasInstance] property. <br>
         *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
         *     It's used to avoid becoming the behavior `instanceof` doesn't intend when the class is extended from the mixined class the other place.
         * @ja [Symbol.hasInstance] プロパティ設定関数 <br>
@@ -479,15 +484,15 @@ declare module '@cdp/core-utils/mixins' {
         *  - `ja` 設定対象のコンストラクタ
         * @param method
         *  - `en` function by using [Symbol.hasInstance] <br>
-        *         Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }` <br>
+        *         Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
         *         If set `null`, delete [Symbol.hasInstance] property.
         *  - `ja` [Symbol.hasInstance] が使用する関数を指定 <br>
-        *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される <br>
+        *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
         *         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
         */
     export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
     /**
-        * @es Mixin function for multiple inheritance <br>
+        * @es Mixin function for multiple inheritance. <br>
         *     Resolving type support for maximum 10 classes.
         * @ja 多重継承のための Mixin <br>
         *     最大 10 クラスの型解決をサポート
