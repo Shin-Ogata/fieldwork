@@ -73,6 +73,7 @@ exports.testem = {
         paths: {
             [PACKAGE]: `${TEMP}/${OUTNAME}`,
             'specs': `${TEMP}/${OUTNAME}-specs`,
+            '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
         }
     },
     src_files: [

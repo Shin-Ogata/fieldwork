@@ -87,7 +87,6 @@ async function resolve(options) {
     const packages = createPackages(locations);
 
     calcDepth(packages);
-
 /*
     // checker
     for (const pkg of packages) {
@@ -99,7 +98,7 @@ async function resolve(options) {
     }
 */
     return packages
-        .sort((lhs, rhs) => lhs.depth > rhs.depth)
+        .sort((lhs, rhs) => (lhs.depth < rhs.depth) ? -1 : 1)
         .map(p => path.dirname(p.path));
 }
 
