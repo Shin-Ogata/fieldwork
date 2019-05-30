@@ -6,8 +6,8 @@ const http        = require('http');
 const { dir }     = require('@cdp/tasks').config;
 const settings    = require('./testem-amd');
 
-const DOC_DIR       = resolve(__dirname, '../../', dir.doc);
-const REPORTS_DIR   = resolve(DOC_DIR, dir.report);
+const DOC_DIR      = resolve(__dirname, '../../', dir.doc);
+const REPORTS_DIR  = resolve(DOC_DIR, dir.report);
 const COVERAGE_DIR = resolve(REPORTS_DIR, dir.coverage);
 
 // ensure coverage dir

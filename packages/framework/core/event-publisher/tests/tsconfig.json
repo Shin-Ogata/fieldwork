@@ -7,6 +7,6 @@
     "rootDir": "unit"
   },
   "include": [
-    "unit/*"
+    "unit/*", "../../../../../config/rollup/testem.js"
   ]
 }

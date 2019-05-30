@@ -13,6 +13,6 @@
     ]
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "../../../../config/rollup/testem.js"
   ]
 }

@@ -47,7 +47,7 @@
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",
     "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/typedoc.js --excludeExternals",
-    "typedoc:t": "npm run clean:doc:a && typedoc types --options ../../../../config/typedoc.js --excludeExternals",
+    "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/typedoc.js --excludeExternals",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
     "ut": "npm run unit-test",
