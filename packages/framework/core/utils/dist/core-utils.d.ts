@@ -490,7 +490,7 @@ declare module '@cdp/core-utils/mixins' {
         *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
         *         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
         */
-    export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
+    export function setInstanceOf<T extends {}>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
     /**
         * @es Mixin function for multiple inheritance. <br>
         *     Resolving type support for maximum 10 classes.

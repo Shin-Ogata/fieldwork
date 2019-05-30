@@ -24,10 +24,24 @@ import { EventPublisher } from './publisher';
  * ```
  */
 export interface EventBroker<Event> extends Observable<Event> {
+    /**
+     * @es Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
     publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
 
-/** @internal 実体の提供 */
+/**
+ * @es Constructor of EventBroker
+ * @ja EventBroker のコンストラクタ実体
+ */
 export const EventBroker: {
     readonly prototype: EventBroker<any>;
     new <T>(): EventBroker<T>;

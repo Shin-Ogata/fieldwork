@@ -111,7 +111,7 @@ function copyProperties(target: object, source?: object): void {
  *         既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
  *         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
-export function setInstanceOf<T>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void {
+export function setInstanceOf<T extends {}>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void {
     const behaviour = method || (null === method ? undefined : ((i: object) => target.prototype.isPrototypeOf(i)));
     const applied = behaviour && Object.getOwnPropertyDescriptor(target, _override);
     if (!applied) {

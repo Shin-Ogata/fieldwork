@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@cdp/tasks": "file:./packages/tool/tasks",
-    "@types/jasmine": "3.3.12",
+    "@types/jasmine": "3.3.13",
     "@typescript-eslint/eslint-plugin": "1.9.0",
     "chalk": "2.4.2",
     "commander": "2.20.0",
@@ -27,7 +27,7 @@
     "rollup-plugin-multi-entry": "2.1.0",
     "rollup-plugin-node-resolve": "5.0.0",
     "rollup-plugin-sourcemaps": "0.4.2",
-    "semver": "6.1.0",
+    "semver": "6.1.1",
     "testem": "2.16.0",
     "typedoc": "0.14.2",
     "typescript": "3.4.5"

@@ -46,11 +46,14 @@
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="config\" />
+    <Folder Include="config\rollup\" />
     <Folder Include="config\tsconfig\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="config\dts-bundle.js" />
     <Compile Include="config\eslint.js" />
+    <Compile Include="config\rollup\core.js" />
+    <Compile Include="config\rollup\test.testem.js" />
     <Compile Include="config\tslint.js" />
     <Compile Include="config\typedoc.js" />
   </ItemGroup>
