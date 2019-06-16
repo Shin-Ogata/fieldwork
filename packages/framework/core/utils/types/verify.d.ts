@@ -19,7 +19,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    notNil: (x: any, message?: string | null) => void | never;
+    notNil: (x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input is [[TypeKeys]].
      * @ja 指定した [[TypeKeys]] であるか検証
@@ -34,7 +34,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    typeOf: (type: TypeKeys, x: any, message?: string | null) => void | never;
+    typeOf: (type: TypeKeys, x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input value is `Array`.
      * @ja `Array` であるか検証
@@ -46,7 +46,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    array: (x: any, message?: string | null) => void | never;
+    array: (x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input value is `Iterable`.
      * @ja `Iterable` であるか検証
@@ -58,7 +58,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    iterable: (x: any, message?: string | null) => void | never;
+    iterable: (x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input instance is equal comparative target constructor.
      * @ja 指定コンストラクタのインスタンスであるか検証
@@ -73,7 +73,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    instanceOf: (ctor: Function, x: any, message?: string | null) => void | never;
+    instanceOf: (ctor: Function, x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input instance has `strictly` comparative target constructor.
      * @ja 指定コンストラクタの厳密一致したインスタンスであるか検証
@@ -88,7 +88,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    ownInstanceOf: (ctor: Function, x: any, message?: string | null) => void | never;
+    ownInstanceOf: (ctor: Function, x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input instance has not `strictly` equal comparative target constructor.
      * @ja 指定コンストラクタを持つインスタンスでないことを検証
@@ -103,7 +103,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    notOwnInstanceOf: (ctor: Function, x: any, message?: string | null) => void | never;
+    notOwnInstanceOf: (ctor: Function, x: unknown, message?: string | null) => void | never;
     /**
      * @es Verification for the input value has specified property.
      * @ja 指定プロパティを持っているか検証
@@ -118,7 +118,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    hasProperty: (x: any, prop: PropertyKey, message?: string | null) => void | never;
+    hasProperty: (x: unknown, prop: PropertyKey, message?: string | null) => void | never;
     /**
      * @es Verification for the input value has own specified property.
      * @ja 指定プロパティを入力値自身持っているか検証
@@ -133,7 +133,7 @@ interface Verifier {
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    hasOwnProperty: (x: any, prop: PropertyKey, message?: string | null) => void | never;
+    hasOwnProperty: (x: unknown, prop: PropertyKey, message?: string | null) => void | never;
 }
 /**
  * @es List of method for type verify.

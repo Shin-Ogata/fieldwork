@@ -9,10 +9,10 @@ describe('utils/types spec', () => {
     });
 
     class Foo {
-        public foo = {};
+        foo = {};
     }
     class Bar extends Foo {
-        public get bar(): object { return {}; }
+        get bar(): object { return {}; }
     }
     class TypeClass extends Bar {
         public say(): string { return 'hello'; }

@@ -18,7 +18,10 @@ const {
     relativePath,
 } = config.build;
 
-function getDefault(testeeConfig) {
+function getDefault(testeeConfig, options) {
+    const globals = options && options.globals;
+    const external = globals && Object.keys(options.globals) || [];
+
     testeeConfig.output = testeeConfig.output.filter(elem => elem.format === 'umd').map((elem) => {
         elem.file = `${TEMP}/${OUTNAME}.js`;
         return elem;
@@ -46,16 +49,21 @@ function getDefault(testeeConfig) {
                 }),
             ],
             external: [
-                `${PACKAGE}`,
+                ...[
+                    `${PACKAGE}`,
+                ],
+                ...external,
             ],
             output: [
                 {
                     file: `${TEMP}/${OUTNAME}-specs.js`,
                     format: 'umd',
                     name: 'Test',
-                    globals: {
-                        [PACKAGE]: `${GLOBAL}`,
-                    },
+                    globals: Object.assign(
+                        {},
+                        { [PACKAGE]: `${GLOBAL}` },
+                        globals,
+                    ),
                     preferConst: true,
                     sourcemap: 'inline',
                 },

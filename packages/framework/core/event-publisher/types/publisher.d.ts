@@ -71,7 +71,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => any): boolean;
+    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
     /**
      * @es Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
@@ -92,7 +92,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      *  - `ja` `channel` に対応したコールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => any): void;
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
     /**
      * @es Subscrive event(s).
      * @ja イベント購読設定
@@ -104,7 +104,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription;
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
     /**
      * @es Subscrive event(s) but it causes the bound callback to only fire once before being removed.
      * @ja 一度だけハンドリング可能なイベント購読設定
@@ -116,5 +116,5 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription;
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
 }

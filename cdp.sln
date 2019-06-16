@@ -17,6 +17,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "cdp-tasks", "packages\tool\
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "event-publisher", "packages\framework\core\event-publisher\event-publisher.njsproj", "{5A97D53F-006D-40BA-80A9-086FB41B4BEF}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "promise", "packages\framework\core\promise\promise.njsproj", "{7EBA64DC-D58E-4FBD-867F-59052DA761EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{5A97D53F-006D-40BA-80A9-086FB41B4BEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A97D53F-006D-40BA-80A9-086FB41B4BEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A97D53F-006D-40BA-80A9-086FB41B4BEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EBA64DC-D58E-4FBD-867F-59052DA761EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EBA64DC-D58E-4FBD-867F-59052DA761EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EBA64DC-D58E-4FBD-867F-59052DA761EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EBA64DC-D58E-4FBD-867F-59052DA761EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 		{E21C5367-60BD-4C61-86FE-6F5900DCAB09} = {B92760C7-1352-470F-A75A-D37FE1975620}
 		{FCA5CC55-34A9-4550-84BD-98D8AACAFD1E} = {5C04D720-6D78-4E3D-83D8-F9300FFAEBC0}
 		{5A97D53F-006D-40BA-80A9-086FB41B4BEF} = {B92760C7-1352-470F-A75A-D37FE1975620}
+		{7EBA64DC-D58E-4FBD-867F-59052DA761EB} = {B92760C7-1352-470F-A75A-D37FE1975620}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

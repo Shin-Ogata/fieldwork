@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * @es The general null type.
@@ -10,7 +10,7 @@ export type Nil = void | null | undefined;
  * @es The type of object or [[Nil]].
  * @ja [[Nil]] になりえるオブジェクト型定義
  */
-export type Nillable<T extends Object> = T | Nil;
+export type Nillable<T extends {}> = T | Nil;
 
 /**
  * @es Primitive type of JavaScript.
@@ -29,7 +29,7 @@ interface TypeList {
     symbol: symbol;
     undefined: void | undefined;
     object: object | null;
-    function(...args: any[]): any;
+    function(...args: unknown[]): unknown;
 }
 
 /**
@@ -42,7 +42,7 @@ export type TypeKeys = keyof TypeList;
  * @es Type base definition.
  * @ja 型の規定定義
  */
-export interface Type<T extends Object> extends Function {
+export interface Type<T extends {}> extends Function {
     readonly prototype: T;
 }
 
@@ -51,7 +51,7 @@ export interface Type<T extends Object> extends Function {
  * @ja コンストラクタ型
  */
 export interface Constructor<T> extends Type<T> {
-    new(...args: any[]): T;
+    new(...args: unknown[]): T;
 }
 
 /**
@@ -60,13 +60,43 @@ export interface Constructor<T> extends Type<T> {
  */
 export type Class<T = any> = Constructor<T>;
 
-//__________________________________________________________________________________________________//
-
 /**
  * @es Ensure for function parameters to tuple.
  * @ja 関数パラメータとして tuple を保証
  */
 export type Arguments<T> = T extends any[] ? T : [T];
+
+/**
+ * @es Rmove `readonly` attributes from input type.
+ * @ja `readonly` 属性を解除
+ */
+export type Writable<T> = { -readonly [K in keyof T]: T[K] };
+
+/**
+ * @es Extract functional property names.
+ * @ja 関数プロパティ名の抽出
+ */
+export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T];
+
+/**
+ * @es Extract functional properties.
+ * @ja 関数プロパティの抽出
+ */
+export type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
+
+/**
+ * @es Extract non-functional property names.
+ * @ja 非関数プロパティ名の抽出
+ */
+export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
+
+/**
+ * @es Extract non-functional properties.
+ * @ja 非関数プロパティの抽出
+ */
+export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
+
+//__________________________________________________________________________________________________//
 
 /**
  * @es Check the value exists.
@@ -76,8 +106,8 @@ export type Arguments<T> = T extends any[] ? T : [T];
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function exists<O extends Object>(x: Nillable<O>): x is O;
-export function exists(x: any): x is Object;
+export function exists<O extends {}>(x: Nillable<O>): x is O;
+export function exists(x: unknown): x is unknown;
 export function exists(x: any): any {
     return null != x;
 }
@@ -90,7 +120,7 @@ export function exists(x: any): any {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isNil(x: any): x is Nil {
+export function isNil(x: unknown): x is Nil {
     return null == x;
 }
 
@@ -102,7 +132,7 @@ export function isNil(x: any): x is Nil {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isString(x: any): x is string {
+export function isString(x: unknown): x is string {
     return 'string' === typeof x;
 }
 
@@ -114,7 +144,7 @@ export function isString(x: any): x is string {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isNumber(x: any): x is number {
+export function isNumber(x: unknown): x is number {
     return 'number' === typeof x;
 }
 
@@ -126,7 +156,7 @@ export function isNumber(x: any): x is number {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isBoolean(x: any): x is boolean {
+export function isBoolean(x: unknown): x is boolean {
     return 'boolean' === typeof x;
 }
 
@@ -138,7 +168,7 @@ export function isBoolean(x: any): x is boolean {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isSymbol(x: any): x is symbol {
+export function isSymbol(x: unknown): x is symbol {
     return 'symbol' === typeof x;
 }
 
@@ -150,7 +180,7 @@ export function isSymbol(x: any): x is symbol {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isPrimitive(x: any): x is Primitive {
+export function isPrimitive(x: unknown): x is Primitive {
     return !x || ('function' !== typeof x) && ('object' !== typeof x);
 }
 
@@ -162,7 +192,7 @@ export function isPrimitive(x: any): x is Primitive {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isObject(x: any): x is object {
+export function isObject(x: unknown): x is object {
     return Boolean(x) && 'object' === typeof x;
 }
 
@@ -174,7 +204,7 @@ export function isObject(x: any): x is object {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isFunction(x: any): x is TypeList['function'] {
+export function isFunction(x: unknown): x is TypeList['function'] {
     return 'function' === typeof x;
 }
 
@@ -189,7 +219,7 @@ export function isFunction(x: any): x is TypeList['function'] {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeList[K] {
+export function typeOf<K extends TypeKeys>(type: K, x: unknown): x is TypeList[K] {
     return typeof x === type;
 }
 
@@ -202,7 +232,7 @@ export function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeList[K] {
  *  - `ja` 評価する値
  */
 export function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
-export function isIterable(x: any): x is Iterable<any>;
+export function isIterable(x: unknown): x is Iterable<unknown>;
 export function isIterable(x: any): any {
     return Symbol.iterator in Object(x);
 }
@@ -218,7 +248,7 @@ export function isIterable(x: any): any {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function instanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x is T {
+export function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T {
     return ('function' === typeof ctor) && (x instanceof ctor);
 }
 
@@ -233,7 +263,7 @@ export function instanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function ownInstanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x is T {
+export function ownInstanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T {
     return (null != x) && ('function' === typeof ctor) && (Object.getPrototypeOf(x) === Object(ctor.prototype));
 }
 
@@ -254,7 +284,7 @@ export function className(x: any): string {
             return x.name;
         } else {
             const ctor = x.constructor;
-            if (isFunction(ctor) && ctor === (Object(ctor.prototype) as Object).constructor) {
+            if (isFunction(ctor) && ctor === (Object(ctor.prototype) as object).constructor) {
                 return ctor.name;
             }
         }
@@ -273,7 +303,7 @@ export function className(x: any): string {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function sameType(lhs: any, rhs: any): boolean {
+export function sameType(lhs: unknown, rhs: unknown): boolean {
     return typeof lhs === typeof rhs;
 }
 
@@ -288,7 +318,7 @@ export function sameType(lhs: any, rhs: any): boolean {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function sameClass(lhs: any, rhs: any): boolean {
+export function sameClass(lhs: unknown, rhs: unknown): boolean {
     if (null == lhs && null == rhs) {
         return className(lhs) === className(rhs);
     } else {
@@ -307,12 +337,12 @@ export function sameClass(lhs: any, rhs: any): boolean {
  *  - `en` copy target keys
  *  - `ja` コピー対象のキー一覧
  */
-export function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): { -readonly [P in K]: T[P]; } {
+export function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>> {
     if (!target || !isObject(target)) {
         throw new TypeError(`${className(target)} is not an object.`);
     }
     return pickupKeys.reduce((obj, key) => {
         key in target && (obj[key] = target[key]);
         return obj;
-    }, {} as { -readonly [P in K]: T[P]; });    // eslint-disable-line @typescript-eslint/no-object-literal-type-assertion
+    }, {} as Writable<Pick<T, K>>);
 }

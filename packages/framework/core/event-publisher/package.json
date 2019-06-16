@@ -7,6 +7,7 @@
     "@cdp/core-utils": "file:../utils"
   },
   "keywords": [
+    "CDP",
     "TypeScript",
     "javascript"
   ],

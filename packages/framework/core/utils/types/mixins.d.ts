@@ -103,7 +103,7 @@ export declare function setInstanceOf<T extends {}>(target: Constructor<T>, meth
  *         // calling `Base` constructor
  *         super(a, b);
  *
- *         // calling Mixin classes' constructor
+ *         // calling Mixin class's constructor
  *         this.super(MixA, a, b);
  *         this.super(MixB, c, d);
  *     }
