@@ -10,7 +10,7 @@ import {
 import { Subscription, Observable } from './interfaces';
 
 /** @internal Lisner 格納形式 */
-type ListenersMap<T> = Map<keyof T, Set<(...args: T[keyof T][]) => any>>;
+type ListenersMap<T> = Map<keyof T, Set<(...args: T[keyof T][]) => unknown>>;
 
 /** @internal Lisner の弱参照 */
 const _mapListeners = new WeakMap<EventPublisher<any>, ListenersMap<any>>();
@@ -24,7 +24,7 @@ function listeners<T>(instance: EventPublisher<T>): ListenersMap<T> {
 }
 
 /** @internal Channel の型検証 */
-function validChannel(channel: any): void | never {
+function validChannel(channel: unknown): void | never {
     if (isString(channel) || isSymbol(channel)) {
         return;
     }
@@ -32,7 +32,7 @@ function validChannel(channel: any): void | never {
 }
 
 /** @internal Listener の型検証 */
-function validListener(listener?: (...args: any[]) => any): any | never {
+function validListener(listener?: (...args: unknown[]) => unknown): any | never {
     if (null != listener) {
         verify('typeOf', 'function', listener);
     }
@@ -135,7 +135,7 @@ export abstract class EventPublisher<Event> implements Observable<Event> {
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => any): boolean {
+    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean {
         const map = listeners(this);
         if (null == channel) {
             return map.size > 0;
@@ -172,7 +172,7 @@ export abstract class EventPublisher<Event> implements Observable<Event> {
      *  - `ja` `channel` に対応したコールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => any): void {
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void {
         const map = listeners(this);
         if (null == channel) {
             map.clear();
@@ -207,7 +207,7 @@ export abstract class EventPublisher<Event> implements Observable<Event> {
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription {
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
         const map = listeners(this);
         validListener(listener);
 
@@ -251,7 +251,7 @@ export abstract class EventPublisher<Event> implements Observable<Event> {
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription {
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
         const context = this.on(channel, listener);
         const managed = this.on(channel, () => {
             context.unsubscribe();

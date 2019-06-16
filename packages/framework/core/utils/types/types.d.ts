@@ -7,7 +7,7 @@ export declare type Nil = void | null | undefined;
  * @es The type of object or [[Nil]].
  * @ja [[Nil]] になりえるオブジェクト型定義
  */
-export declare type Nillable<T extends Object> = T | Nil;
+export declare type Nillable<T extends {}> = T | Nil;
 /**
  * @es Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
@@ -24,7 +24,7 @@ interface TypeList {
     symbol: symbol;
     undefined: void | undefined;
     object: object | null;
-    function(...args: any[]): any;
+    function(...args: unknown[]): unknown;
 }
 /**
  * @es The key list of [[TypeList]].
@@ -35,7 +35,7 @@ export declare type TypeKeys = keyof TypeList;
  * @es Type base definition.
  * @ja 型の規定定義
  */
-export interface Type<T extends Object> extends Function {
+export interface Type<T extends {}> extends Function {
     readonly prototype: T;
 }
 /**
@@ -43,7 +43,7 @@ export interface Type<T extends Object> extends Function {
  * @ja コンストラクタ型
  */
 export interface Constructor<T> extends Type<T> {
-    new (...args: any[]): T;
+    new (...args: unknown[]): T;
 }
 /**
  * @es Type of class.
@@ -56,6 +56,37 @@ export declare type Class<T = any> = Constructor<T>;
  */
 export declare type Arguments<T> = T extends any[] ? T : [T];
 /**
+ * @es Rmove `readonly` attributes from input type.
+ * @ja `readonly` 属性を解除
+ */
+export declare type Writable<T> = {
+    -readonly [K in keyof T]: T[K];
+};
+/**
+ * @es Extract functional property names.
+ * @ja 関数プロパティ名の抽出
+ */
+export declare type FunctionPropertyNames<T> = {
+    [K in keyof T]: T[K] extends Function ? K : never;
+}[keyof T];
+/**
+ * @es Extract functional properties.
+ * @ja 関数プロパティの抽出
+ */
+export declare type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
+/**
+ * @es Extract non-functional property names.
+ * @ja 非関数プロパティ名の抽出
+ */
+export declare type NonFunctionPropertyNames<T> = {
+    [K in keyof T]: T[K] extends Function ? never : K;
+}[keyof T];
+/**
+ * @es Extract non-functional properties.
+ * @ja 非関数プロパティの抽出
+ */
+export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
+/**
  * @es Check the value exists.
  * @ja 値が存在するか判定
  *
@@ -63,8 +94,8 @@ export declare type Arguments<T> = T extends any[] ? T : [T];
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function exists<O extends Object>(x: Nillable<O>): x is O;
-export declare function exists(x: any): x is Object;
+export declare function exists<O extends {}>(x: Nillable<O>): x is O;
+export declare function exists(x: unknown): x is unknown;
 /**
  * @es Check the value-type is [[Nil]].
  * @ja [[Nil]] 型であるか判定
@@ -73,7 +104,7 @@ export declare function exists(x: any): x is Object;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isNil(x: any): x is Nil;
+export declare function isNil(x: unknown): x is Nil;
 /**
  * @es Check the value-type is String.
  * @ja String 型であるか判定
@@ -82,7 +113,7 @@ export declare function isNil(x: any): x is Nil;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isString(x: any): x is string;
+export declare function isString(x: unknown): x is string;
 /**
  * @es Check the value-type is Number.
  * @ja Number 型であるか判定
@@ -91,7 +122,7 @@ export declare function isString(x: any): x is string;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isNumber(x: any): x is number;
+export declare function isNumber(x: unknown): x is number;
 /**
  * @es Check the value-type is Boolean.
  * @ja Boolean 型であるか判定
@@ -100,7 +131,7 @@ export declare function isNumber(x: any): x is number;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isBoolean(x: any): x is boolean;
+export declare function isBoolean(x: unknown): x is boolean;
 /**
  * @es Check the value-type is Symble.
  * @ja Symbol 型であるか判定
@@ -109,7 +140,7 @@ export declare function isBoolean(x: any): x is boolean;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isSymbol(x: any): x is symbol;
+export declare function isSymbol(x: unknown): x is symbol;
 /**
  * @es Check the value-type is primitive type.
  * @ja プリミティブ型であるか判定
@@ -118,7 +149,7 @@ export declare function isSymbol(x: any): x is symbol;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isPrimitive(x: any): x is Primitive;
+export declare function isPrimitive(x: unknown): x is Primitive;
 /**
  * @es Check the value-type is Object.
  * @ja Object 型であるか判定
@@ -127,7 +158,7 @@ export declare function isPrimitive(x: any): x is Primitive;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isObject(x: any): x is object;
+export declare function isObject(x: unknown): x is object;
 /**
  * @es Check the value-type is Function.
  * @ja Function 型であるか判定
@@ -136,7 +167,7 @@ export declare function isObject(x: any): x is object;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isFunction(x: any): x is TypeList['function'];
+export declare function isFunction(x: unknown): x is TypeList['function'];
 /**
  * @es Check the value-type is input.
  * @ja 指定した型であるか判定
@@ -148,7 +179,7 @@ export declare function isFunction(x: any): x is TypeList['function'];
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeList[K];
+export declare function typeOf<K extends TypeKeys>(type: K, x: unknown): x is TypeList[K];
 /**
  * @es Check the value has iterator.
  * @ja iterator を所有しているか判定
@@ -158,7 +189,7 @@ export declare function typeOf<K extends TypeKeys>(type: K, x: any): x is TypeLi
  *  - `ja` 評価する値
  */
 export declare function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
-export declare function isIterable(x: any): x is Iterable<any>;
+export declare function isIterable(x: unknown): x is Iterable<unknown>;
 /**
  * @es Check the value instance of input.
  * @ja 指定したインスタンスであるか判定
@@ -170,7 +201,7 @@ export declare function isIterable(x: any): x is Iterable<any>;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function instanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x is T;
+export declare function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T;
 /**
  * @es Check the value instance of input constructor (except sub class).
  * @ja 指定コンストラクタのインスタンスであるか判定 (派生クラスは含めない)
@@ -182,7 +213,7 @@ export declare function instanceOf<T extends Object>(ctor: Nillable<Type<T>>, x:
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function ownInstanceOf<T extends Object>(ctor: Nillable<Type<T>>, x: any): x is T;
+export declare function ownInstanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T;
 /**
  * @es Get the value's class name.
  * @ja クラス名を取得
@@ -203,7 +234,7 @@ export declare function className(x: any): string;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function sameType(lhs: any, rhs: any): boolean;
+export declare function sameType(lhs: unknown, rhs: unknown): boolean;
 /**
  * @es Check input values are same class.
  * @ja 入力が同一クラスであるか判定
@@ -215,7 +246,7 @@ export declare function sameType(lhs: any, rhs: any): boolean;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function sameClass(lhs: any, rhs: any): boolean;
+export declare function sameClass(lhs: unknown, rhs: unknown): boolean;
 /**
  * @es Get shallow copy of `target` which has only `pickupKeys`.
  * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
@@ -227,7 +258,5 @@ export declare function sameClass(lhs: any, rhs: any): boolean;
  *  - `en` copy target keys
  *  - `ja` コピー対象のキー一覧
  */
-export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): {
-    -readonly [P in K]: T[P];
-};
+export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 export {};

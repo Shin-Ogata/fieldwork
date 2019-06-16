@@ -46,7 +46,7 @@ declare module '@cdp/event-publisher/interfaces' {
                 *  - `en` callback function of the `channel` corresponding.
                 *  - `ja` `channel` に対応したコールバック関数
                 */
-            has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => any): boolean;
+            has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
             /**
                 * @es Returns registered channel keys.
                 * @ja 登録されているチャネルキーを返却
@@ -67,7 +67,7 @@ declare module '@cdp/event-publisher/interfaces' {
                 *  - `ja` `channel` に対応したコールバック関数
                 *         指定しない場合は同一 `channel` すべてを解除
                 */
-            off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => any): void;
+            off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
             /**
                 * @es Subscrive event(s).
                 * @ja イベント購読設定
@@ -79,7 +79,7 @@ declare module '@cdp/event-publisher/interfaces' {
                 *  - `en` callback function of the `channel` corresponding.
                 *  - `ja` `channel` に対応したコールバック関数
                 */
-            on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription;
+            on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
             /**
                 * @es Subscrive event(s) but it causes the bound callback to only fire once before being removed.
                 * @ja 一度だけハンドリング可能なイベント購読設定
@@ -91,7 +91,7 @@ declare module '@cdp/event-publisher/interfaces' {
                 *  - `en` callback function of the `channel` corresponding.
                 *  - `ja` `channel` に対応したコールバック関数
                 */
-            once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription;
+            once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
     }
 }
 
@@ -169,7 +169,7 @@ declare module '@cdp/event-publisher/publisher' {
                 *  - `en` callback function of the `channel` corresponding.
                 *  - `ja` `channel` に対応したコールバック関数
                 */
-            has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => any): boolean;
+            has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
             /**
                 * @es Returns registered channel keys.
                 * @ja 登録されているチャネルキーを返却
@@ -190,7 +190,7 @@ declare module '@cdp/event-publisher/publisher' {
                 *  - `ja` `channel` に対応したコールバック関数
                 *         指定しない場合は同一 `channel` すべてを解除
                 */
-            off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => any): void;
+            off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
             /**
                 * @es Subscrive event(s).
                 * @ja イベント購読設定
@@ -202,7 +202,7 @@ declare module '@cdp/event-publisher/publisher' {
                 *  - `en` callback function of the `channel` corresponding.
                 *  - `ja` `channel` に対応したコールバック関数
                 */
-            on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription;
+            on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
             /**
                 * @es Subscrive event(s) but it causes the bound callback to only fire once before being removed.
                 * @ja 一度だけハンドリング可能なイベント購読設定
@@ -214,7 +214,7 @@ declare module '@cdp/event-publisher/publisher' {
                 *  - `en` callback function of the `channel` corresponding.
                 *  - `ja` `channel` に対応したコールバック関数
                 */
-            once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => any): Subscription;
+            once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
     }
 }
 
@@ -240,7 +240,7 @@ declare module '@cdp/event-publisher/broker' {
         *                                          //     to parameter of type 'string | undefined'.
         * ```
         */
-    export interface EventBroker<Event> extends Observable<Event> {
+    export interface EventBroker<Event extends {}> extends Observable<Event> {
             /**
                 * @es Notify event to clients.
                 * @ja event 発行

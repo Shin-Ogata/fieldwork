@@ -40,6 +40,12 @@ module.exports = {
                 ],
             },
         ],
+        '@typescript-eslint/no-object-literal-type-assertion': [
+            'error',
+            {
+                allowAsParameter: true,
+            },
+        ],
         '@typescript-eslint/unified-signatures': 'error',
         '@typescript-eslint/explicit-function-return-type': [
             'error',
@@ -48,14 +54,23 @@ module.exports = {
                 allowTypedFunctionExpressions: true,
             },
         ],
-        '@typescript-eslint/explicit-member-accessibility': [
+        '@typescript-eslint/member-delimiter-style': [
             'error',
+            {
+                'singleline': {
+                    delimiter: 'semi',
+                    requireLast: true,
+                },
+            },
+        ],
+        '@typescript-eslint/explicit-member-accessibility': [
+            'warn',
             {
                 accessibility: 'explicit',
                 overrides: {
-                    accessors: 'explicit',
-                    constructors: 'off',
-                    properties: 'off',
+                    accessors: 'no-public',
+                    constructors: 'no-public',
+                    properties: 'no-public',
                     methods: 'off',
                     parameterProperties: 'explicit',
                 }

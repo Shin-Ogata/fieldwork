@@ -18,6 +18,7 @@ module.exports = {
     },
     globals: {
         CDP: true,
+        globalThis: true,
     },
     rules: {
         'max-len': [

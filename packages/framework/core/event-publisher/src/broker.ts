@@ -23,7 +23,7 @@ import { EventPublisher } from './publisher';
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
-export interface EventBroker<Event> extends Observable<Event> {
+export interface EventBroker<Event extends {}> extends Observable<Event> {
     /**
      * @es Notify event to clients.
      * @ja event 発行

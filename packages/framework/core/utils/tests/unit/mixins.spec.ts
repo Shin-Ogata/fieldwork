@@ -15,9 +15,9 @@ describe('utils/mixins spec', () => {
             this._aId = id;
             this._aName = name;
         }
-        public get id(): number { return this._aId; }
-        public get aName(): string { return this._aName; }
-        public get aId(): number { return this._aId; }
+        get id(): number { return this._aId; }
+        get aName(): string { return this._aName; }
+        get aId(): number { return this._aId; }
         public sayHello(): string { return this._aName; }
         public getAID(): string { return `${this._aName}:${this.aId}`; }
     }
@@ -29,9 +29,9 @@ describe('utils/mixins spec', () => {
             this._bId = id;
             this._bName = name;
         }
-        public get id(): number { return this._bId; }
-        public get bName(): string { return this._bName; }
-        public get bId(): number { return this._bId; }
+        get id(): number { return this._bId; }
+        get bName(): string { return this._bName; }
+        get bId(): number { return this._bId; }
         public sayHello(): string { return this._bName; }
         public getBID(): string { return `${this._bName}:${this._bId}`; }
     }
@@ -45,8 +45,8 @@ describe('utils/mixins spec', () => {
             this._cName = name;
             this._cAlias = alias;
         }
-        public get cName(): string { return this._cName; }
-        public get cId(): number { return this._cId; }
+        get cName(): string { return this._cName; }
+        get cId(): number { return this._cId; }
         public sayHello(): string { return this._cName; }
         public getCID(): string { return `${this._cName}:${this._cId}:${this._cAlias}`; }
     }
@@ -57,8 +57,8 @@ describe('utils/mixins spec', () => {
             super(id, name);
             this._dAlias = alias;
         }
-        public get dName(): string { return this.aName; }
-        public get dId(): number { return this.aId; }
+        get dName(): string { return this.aName; }
+        get dId(): number { return this.aId; }
         public sayHello(): string { return this.aName; }
         public getDID(): string { return `${this.aName}:${this.aId}:${this._dAlias}`; }
     }
