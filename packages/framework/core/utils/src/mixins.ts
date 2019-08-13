@@ -112,7 +112,7 @@ function copyProperties(target: object, source?: object): void {
  *         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
 export function setInstanceOf<T extends {}>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void {
-    const behaviour = method || (null === method ? undefined : ((i: object) => target.prototype.isPrototypeOf(i)));
+    const behaviour = method || (null === method ? undefined : ((i: object) => Object.prototype.isPrototypeOf.call(target.prototype, i)));
     const applied = behaviour && Object.getOwnPropertyDescriptor(target, _override);
     if (!applied) {
         Object.defineProperties(target, {
@@ -244,7 +244,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         }
 
         public static [Symbol.hasInstance](instance: any): boolean {
-            return _MixinBase.prototype.isPrototypeOf(instance);
+            return Object.prototype.isPrototypeOf.call(_MixinBase.prototype, instance);
         }
 
         public [_isInherited]<T>(srcClass: Constructor<T>): boolean {
@@ -253,7 +253,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
                 return true;
             }
             for (const ctor of ctors.keys()) {
-                if (srcClass.isPrototypeOf(ctor)) {
+                if (Object.prototype.isPrototypeOf.call(srcClass, ctor)) {
                     return true;
                 }
             }

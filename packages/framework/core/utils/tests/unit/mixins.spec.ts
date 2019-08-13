@@ -269,7 +269,7 @@ describe('utils/mixins spec', () => {
             public who(): string { return 'ClassNoInherit'; }
         }
         Object.defineProperty(ClassNoInherit, Symbol.hasInstance, {
-            value: (inst: object) => ClassNoInherit.prototype.isPrototypeOf(inst),
+            value: (inst: object) => Object.prototype.isPrototypeOf.call(ClassNoInherit.prototype, inst),
             writable: false,    // 変更不可
         });
 
