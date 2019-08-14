@@ -84,7 +84,7 @@ function cleanEmptyDir(target) {
         const filePath = resolve(target, list[i]);
         if (fs.statSync(filePath).isDirectory()) {
             if (0 === fs.readdirSync(filePath).length) {
-                del.sync(filePath);
+                fs.removeSync(filePath);
             }
         }
     }
@@ -117,25 +117,25 @@ async function exec(options) {
 
     if (options.all || options.temp) {
         const tempDir = resolve(cwd, temp);
-        del.sync(tempDir);
+        fs.removeSync(tempDir);
         info(tempDir);
     }
     if (options.all || options.built) {
         const builtDir = resolve(cwd, built);
-        del.sync(builtDir);
+        fs.removeSync(builtDir);
         info(builtDir);
     }
     if (options.all || options.doc) {
         const docDir = resolve(cwd, doc);
         const docApiDir = resolve(docDir, api);
-        del.sync(docApiDir);
+        fs.removeSync(docApiDir);
         info(docApiDir);
         const reportDir = resolve(docDir, report);
         const reportCoverageDir = resolve(reportDir, coverage);
-        del.sync(reportCoverageDir);
+        fs.removeSync(reportCoverageDir);
         info(reportCoverageDir);
         const reportMetricsDir = resolve(reportDir, metrics);
-        del.sync(reportMetricsDir);
+        fs.removeSync(reportMetricsDir);
         info(reportMetricsDir);
         cleanEmptyDir(docDir);
     }
@@ -147,14 +147,14 @@ async function exec(options) {
     }
     if (options.all || options.type) {
         const typeDir = resolve(cwd, type);
-        del.sync(['**/*.d.ts'], { cwd: typeDir });
+        del.sync(['**/*.d.ts', '!**/_*.d.ts'], { cwd: typeDir });
         info(typeDir);
         cleanEmptyDir(typeDir);
     }
     if (options.target) {
         const targets = Array.isArray(options.target) ? options.target : [options.target];
         for (const t of targets) {
-            del.sync(resolve(cwd, t));
+            fs.removeSync(resolve(cwd, t));
             info(t);
         }
     }

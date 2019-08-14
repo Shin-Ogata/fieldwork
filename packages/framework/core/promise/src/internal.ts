@@ -51,5 +51,5 @@ export interface CancelTokenContext<T extends {}> {
  */
 export const invalidSubscription = Object.freeze({
     enable: false,
-    unsubscribe() { }
+    unsubscribe() { /* noop */ }
 }) as Subscription;

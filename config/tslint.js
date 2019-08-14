@@ -5,7 +5,9 @@ const { resolve } = require('path');
 module.exports = {
     extends: [
         './eslint.js',
+        'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
     ],
     plugins: [
         '@typescript-eslint',
@@ -13,6 +15,7 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
         project: resolve(process.cwd(), 'tsconfig.json'),
+        createDefaultProgram: true,
     },
     rules: {
         '@typescript-eslint/indent': [
@@ -40,12 +43,7 @@ module.exports = {
                 ],
             },
         ],
-        '@typescript-eslint/no-object-literal-type-assertion': [
-            'error',
-            {
-                allowAsParameter: true,
-            },
-        ],
+        '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/unified-signatures': 'error',
         '@typescript-eslint/explicit-function-return-type': [
             'error',

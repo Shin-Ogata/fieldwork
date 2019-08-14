@@ -10,7 +10,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>5A97D53F-006D-40BA-80A9-086FB41B4BEF</ProjectGuid>
+    <ProjectGuid>C42C1971-B4B2-485B-B074-B2763E81B566</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>
     </StartupFile>
@@ -35,13 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include=".npmrc" />
-    <Content Include="dist\event-publisher.mjs" />
+    <Content Include="dist\result.mjs" />
     <Content Include="package.json" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dist\event-publisher.js" />
+    <Compile Include="dist\result.js" />
     <Compile Include="rollup.config.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
@@ -53,16 +53,16 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\broker.ts" />
     <TypeScriptCompile Include="src\index.ts" />
-    <TypeScriptCompile Include="src\interfaces.ts" />
-    <TypeScriptCompile Include="src\publisher.ts" />
-    <TypeScriptCompile Include="tests\unit\publisher.spec.ts" />
+    <TypeScriptCompile Include="src\result-code-defs.ts" />
+    <TypeScriptCompile Include="src\result-code.ts" />
+    <TypeScriptCompile Include="src\result.ts" />
+    <TypeScriptCompile Include="tests\unit\result-code.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
-    <TypeScriptCompile Include="types\broker.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
-    <TypeScriptCompile Include="types\interfaces.d.ts" />
-    <TypeScriptCompile Include="types\publisher.d.ts" />
+    <TypeScriptCompile Include="types\result-code-defs.d.ts" />
+    <TypeScriptCompile Include="types\result-code.d.ts" />
+    <TypeScriptCompile Include="types\result.d.ts" />
     <TypeScriptCompile Include="types\_export.d.ts" />
     <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>

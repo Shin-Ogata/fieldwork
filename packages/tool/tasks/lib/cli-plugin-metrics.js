@@ -111,6 +111,7 @@ async function runPlato(options) {
 }
 
 async function runCustom(options) {
+    // eslint-disable-next-line no-useless-catch
     try {
         console.log(chalk.red(`custom engine: ${options.engine} is not available yet.`));
         process.exit(1);
