@@ -27,7 +27,6 @@
     "bundle": "run-p bundle:*",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./rollup.config.js",
-    "bundle:src:types": "dts-bundle --configJson ../../../../config/dts-bundle.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
     "ci": "run-s -l clean:all build:src build:test lint unit-test:ci typedoc",
     "clean": "cdp-task clean",

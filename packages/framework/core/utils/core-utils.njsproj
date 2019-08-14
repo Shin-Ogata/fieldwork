@@ -61,7 +61,6 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="dist\core-utils.d.ts" />
     <TypeScriptCompile Include="src\config.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\misc.ts" />
@@ -80,6 +79,8 @@
     <TypeScriptCompile Include="types\mixins.d.ts" />
     <TypeScriptCompile Include="types\types.d.ts" />
     <TypeScriptCompile Include="types\verify.d.ts" />
+    <TypeScriptCompile Include="types\_export.d.ts" />
+    <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".npmrc" />

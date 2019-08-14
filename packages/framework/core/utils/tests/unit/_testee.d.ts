@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-triple-slash-reference */
+/* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference lib="dom" />
 /// <reference types="jasmine" />
-/// <reference path="../../dist/core-utils.d.ts" />
-//export * from '../../types/index';
+/// <reference path="../../types/_module.d.ts" />

@@ -53,7 +53,6 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="dist\promise.d.ts" />
     <TypeScriptCompile Include="src\cancel-token.ts" />
     <TypeScriptCompile Include="src\cancelable-promise.ts" />
     <TypeScriptCompile Include="src\index.ts" />
@@ -68,6 +67,8 @@
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\internal.d.ts" />
     <TypeScriptCompile Include="types\utils.d.ts" />
+    <TypeScriptCompile Include="types\_export.d.ts" />
+    <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

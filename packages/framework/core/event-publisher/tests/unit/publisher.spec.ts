@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method */
 import { EventPublisher, EventBroker, Arguments } from '@cdp/event-publisher';
 
 const symbolKey = Symbol('SymbolKey');

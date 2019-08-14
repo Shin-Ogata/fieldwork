@@ -87,7 +87,7 @@ describe('promise/utils spec', () => {
         }
     });
 
-    it('check isChancelLikeError', async () => {
+    it('check isChancelLikeError', () => {
         const e1 = new Error('abort');
         const e2 = new Error('Abort');
         const e3 = new Error('cancel');
