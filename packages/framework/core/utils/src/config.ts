@@ -1,5 +1,5 @@
 /**
- * @es Safe `global` accessor.
+ * @en Safe `global` accessor.
  * @ja `global` アクセッサ
  * 
  * @returns
@@ -12,7 +12,7 @@ export function getGlobal(): typeof globalThis {
 }
 
 /**
- * @es Global config accessor.
+ * @en Global config accessor.
  * @ja グローバルコンフィグアクセッサ
  */
 export function getConfig<T extends {} = {}>(): T {

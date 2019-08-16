@@ -4,6 +4,8 @@ const multiEntry = require('rollup-plugin-multi-entry');
 const alias = require('rollup-plugin-alias');
 const sourcemaps = require('rollup-plugin-sourcemaps');
 const sourcemapRoot = require('@cdp/tasks/rollup-plugin-sourcemap-root');
+const replacer = require('rollup-plugin-replace');
+const replaceValues = require('./default-replace-values');
 const { config } = require('@cdp/tasks');
 
 const {
@@ -21,6 +23,7 @@ const {
 function getDefault(testeeConfig, options) {
     const globals = options && options.globals;
     const external = globals && Object.keys(options.globals) || [];
+    const replace = options && options.replace;
 
     testeeConfig.output = testeeConfig.output.filter(elem => elem.format === 'umd').map((elem) => {
         elem.file = `${TEMP}/${OUTNAME}.js`;
@@ -44,6 +47,7 @@ function getDefault(testeeConfig, options) {
                 multiEntry(),
                 sourcemaps(),
                 sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${NAMESPACE}:///specs/` }),
+                replacer(Object.assign(replaceValues, replace)),
                 alias({
                     './_testee': `${PACKAGE}`,
                 }),

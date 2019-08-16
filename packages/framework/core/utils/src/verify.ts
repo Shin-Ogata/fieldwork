@@ -1,7 +1,7 @@
 import { TypeKeys, exists, className } from './types';
 
 /**
- * @es Type verifier interface definition. <br>
+ * @en Type verifier interface definition. <br>
  *     If invalid value received, the method throws `TypeError`.
  * @ja 型検証のインターフェイス定義 <br>
  *     違反した場合は `TypeError` を発生
@@ -10,7 +10,7 @@ import { TypeKeys, exists, className } from './types';
  */
 interface Verifier {
     /**
-     * @es Verification for the input value is not [[Nil]].
+     * @en Verification for the input value is not [[Nil]].
      * @ja [[Nil]] でないことを検証
      *
      * @param notNil.x
@@ -23,7 +23,7 @@ interface Verifier {
     notNil: (x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input is [[TypeKeys]].
+     * @en Verification for the input is [[TypeKeys]].
      * @ja 指定した [[TypeKeys]] であるか検証
      *
      * @param typeOf.type
@@ -39,7 +39,7 @@ interface Verifier {
     typeOf: (type: TypeKeys, x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input value is `Array`.
+     * @en Verification for the input value is `Array`.
      * @ja `Array` であるか検証
      *
      * @param array.x
@@ -52,7 +52,7 @@ interface Verifier {
     array: (x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input value is `Iterable`.
+     * @en Verification for the input value is `Iterable`.
      * @ja `Iterable` であるか検証
      *
      * @param iterable.x
@@ -65,7 +65,7 @@ interface Verifier {
     iterable: (x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input instance is equal comparative target constructor.
+     * @en Verification for the input instance is equal comparative target constructor.
      * @ja 指定コンストラクタのインスタンスであるか検証
      *
      * @param instanceOf.ctor
@@ -81,7 +81,7 @@ interface Verifier {
     instanceOf: (ctor: Function, x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input instance has `strictly` comparative target constructor.
+     * @en Verification for the input instance has `strictly` comparative target constructor.
      * @ja 指定コンストラクタの厳密一致したインスタンスであるか検証
      *
      * @param ownInstanceOf.ctor
@@ -97,7 +97,7 @@ interface Verifier {
     ownInstanceOf: (ctor: Function, x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input instance has not `strictly` equal comparative target constructor.
+     * @en Verification for the input instance has not `strictly` equal comparative target constructor.
      * @ja 指定コンストラクタを持つインスタンスでないことを検証
      *
      * @param notOwnInstanceOf.ctor
@@ -113,7 +113,7 @@ interface Verifier {
     notOwnInstanceOf: (ctor: Function, x: unknown, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input value has specified property.
+     * @en Verification for the input value has specified property.
      * @ja 指定プロパティを持っているか検証
      *
      * @param hasProperty.prop
@@ -129,7 +129,7 @@ interface Verifier {
     hasProperty: (x: unknown, prop: PropertyKey, message?: string | null) => void | never;
 
     /**
-     * @es Verification for the input value has own specified property.
+     * @en Verification for the input value has own specified property.
      * @ja 指定プロパティを入力値自身持っているか検証
      *
      * @param hasOwnProperty.prop
@@ -146,13 +146,13 @@ interface Verifier {
 }
 
 /**
- * @es List of method for type verify.
+ * @en List of method for type verify.
  * @ja 型検証が提供するメソッド一覧
  */
 type VerifyMethod = keyof Verifier;
 
 /**
- * @es Concrete type verifier object.
+ * @en Concrete type verifier object.
  * @ja 型検証実装オブジェクト
  *
  * @internal
@@ -223,7 +223,7 @@ const _verifier: Verifier = {
 };
 
 /**
- * @es Verify method.
+ * @en Verify method.
  * @ja 検証メソッド
  *
  * @param method

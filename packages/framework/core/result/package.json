@@ -4,7 +4,7 @@
   "version": "0.9.0",
   "author": "Shin Ogata",
   "dependencies": {
-    "@cdp/promise": "file:../promise"
+    "@cdp/core-utils": "file:../utils"
   },
   "keywords": [
     "CDP",

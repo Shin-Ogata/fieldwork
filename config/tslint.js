@@ -30,7 +30,7 @@ module.exports = {
         '@typescript-eslint/member-naming': [
             'error',
             {
-                private: '^_',
+                private: '^_|^Symbol',
             },
         ],
         '@typescript-eslint/no-require-imports': 'error',
@@ -72,6 +72,13 @@ module.exports = {
                     methods: 'off',
                     parameterProperties: 'explicit',
                 }
+            },
+        ],
+        '@typescript-eslint/no-use-before-define': [
+            'error',
+            {
+                'functions': false,
+                'classes': false,
             },
         ],
         '@typescript-eslint/no-for-in-array': 'warn',
