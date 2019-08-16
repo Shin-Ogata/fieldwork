@@ -10,7 +10,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>5A97D53F-006D-40BA-80A9-086FB41B4BEF</ProjectGuid>
+    <ProjectGuid>{ce5fc1cf-f29c-4a13-bfe6-1d74fb878904}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>
     </StartupFile>
@@ -35,13 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include=".npmrc" />
-    <Content Include="dist\event-publisher.mjs" />
+    <Content Include="dist\promise.mjs" />
     <Content Include="package.json" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dist\event-publisher.js" />
+    <Compile Include="dist\promise.js" />
     <Compile Include="rollup.config.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
@@ -53,16 +53,20 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\broker.ts" />
+    <TypeScriptCompile Include="src\cancel-token.ts" />
+    <TypeScriptCompile Include="src\cancelable-promise.ts" />
     <TypeScriptCompile Include="src\index.ts" />
-    <TypeScriptCompile Include="src\interfaces.ts" />
-    <TypeScriptCompile Include="src\publisher.ts" />
-    <TypeScriptCompile Include="tests\unit\publisher.spec.ts" />
+    <TypeScriptCompile Include="src\internal.ts" />
+    <TypeScriptCompile Include="src\utils.ts" />
+    <TypeScriptCompile Include="tests\unit\cancel-token.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\cancelable-promise.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\utils.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
-    <TypeScriptCompile Include="types\broker.d.ts" />
+    <TypeScriptCompile Include="types\cancel-token.d.ts" />
+    <TypeScriptCompile Include="types\cancelable-promise.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
-    <TypeScriptCompile Include="types\interfaces.d.ts" />
-    <TypeScriptCompile Include="types\publisher.d.ts" />
+    <TypeScriptCompile Include="types\internal.d.ts" />
+    <TypeScriptCompile Include="types\utils.d.ts" />
     <TypeScriptCompile Include="types\_export.d.ts" />
     <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>
