@@ -1,6 +1,6 @@
 import { Arguments, Observable } from './interfaces';
 /**
- * @es Eventing framework object able to call `publish()` method from outside.
+ * @en Eventing framework object able to call `publish()` method from outside.
  * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
  *
  * @example <br>
@@ -21,7 +21,7 @@ import { Arguments, Observable } from './interfaces';
  */
 export interface EventBroker<Event extends {}> extends Observable<Event> {
     /**
-     * @es Notify event to clients.
+     * @en Notify event to clients.
      * @ja event 発行
      *
      * @param channel
@@ -34,7 +34,7 @@ export interface EventBroker<Event extends {}> extends Observable<Event> {
     publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
 /**
- * @es Constructor of EventBroker
+ * @en Constructor of EventBroker
  * @ja EventBroker のコンストラクタ実体
  */
 export declare const EventBroker: {

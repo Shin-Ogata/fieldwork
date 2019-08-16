@@ -57,6 +57,7 @@
     <TypeScriptCompile Include="src\result-code-defs.ts" />
     <TypeScriptCompile Include="src\result-code.ts" />
     <TypeScriptCompile Include="src\result.ts" />
+    <TypeScriptCompile Include="tests\unit\result-code-defs.ts" />
     <TypeScriptCompile Include="tests\unit\result-code.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />

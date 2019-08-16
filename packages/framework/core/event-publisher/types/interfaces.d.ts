@@ -1,28 +1,28 @@
 import { Arguments } from '@cdp/core-utils';
 export { Arguments };
 /**
- * @es Represents a disposable resource, such as the execution of an [[Observable]].
+ * @en Represents a disposable resource, such as the execution of an [[Observable]].
  * @ja [[Observable]] オブジェクトが返す購読情報コンテキストオブジェクト
  */
 export interface Subscription {
     /**
-     * @es Status for receiving event
+     * @en Status for receiving event
      * @ja 購読可否ステータス
      */
     readonly enable: boolean;
     /**
-     * @es Disposes the resources held by the subscription
+     * @en Disposes the resources held by the subscription
      * @ja 購読停止
      */
     unsubscribe(): void;
 }
 /**
- * @es Event supplyer interface definitions
+ * @en Event supplyer interface definitions
  * @ja イベント供給を行うインターフェイス定義
  */
 export interface Observable<Event> {
     /**
-     * @es Check whether this object has clients.
+     * @en Check whether this object has clients.
      * @ja クライアントが存在するか判定
      *
      * @param channel
@@ -34,12 +34,12 @@ export interface Observable<Event> {
      */
     has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
     /**
-     * @es Returns registered channel keys.
+     * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
      */
     channels(): (keyof Event)[];
     /**
-     * @es Unsubscribe event(s).
+     * @en Unsubscribe event(s).
      * @ja イベント購読解除
      *
      * @param channel
@@ -55,7 +55,7 @@ export interface Observable<Event> {
      */
     off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
     /**
-     * @es Subscrive event(s).
+     * @en Subscrive event(s).
      * @ja イベント購読設定
      *
      * @param channel
@@ -67,7 +67,7 @@ export interface Observable<Event> {
      */
     on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
     /**
-     * @es Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
      * @ja 一度だけハンドリング可能なイベント購読設定
      *
      * @param channel

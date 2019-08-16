@@ -6,12 +6,12 @@ const testee = require('../rollup.config');
 module.exports = {
     default: config.default(testee, {
         globals: {
-            '@cdp/promise': 'CDP',
+            '@cdp/core-utils': 'CDP.Utils',
         },
     }),
     testem: config.testem({
         external: {
-            '@cdp/promise': 'node_modules/@cdp/promise/dist/promise',
+            '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
         },
     }),
 };

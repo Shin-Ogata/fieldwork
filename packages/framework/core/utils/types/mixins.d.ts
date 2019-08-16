@@ -1,11 +1,11 @@
 import { Type, Class, Constructor } from './types';
 /**
- * @es Mixin class's base interface.
+ * @en Mixin class's base interface.
  * @ja Mixin クラスの基底インターフェイス定義
  */
 export declare class MixinClass {
     /**
-     * @es call mixin source class's `super()`. <br>
+     * @en call mixin source class's `super()`. <br>
      *     This method should be called from constructor.
      * @ja Mixin クラスの基底インターフェイス定義 <br>
      *     コンストラクタから呼ぶことを想定
@@ -19,7 +19,7 @@ export declare class MixinClass {
      */
     protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this;
     /**
-     * @es Check the input class is mixined (excluding own class).
+     * @en Check the input class is mixined (excluding own class).
      * @ja 指定クラスが Mixin されているか確認 (自身のクラスは含まれない)
      *
      * @param mixedClass
@@ -29,12 +29,12 @@ export declare class MixinClass {
     isMixedWith<T>(mixedClass: Constructor<T>): boolean;
 }
 /**
- * @es Mixed sub class constructor definitions.
+ * @en Mixed sub class constructor definitions.
  * @ja 合成したサブクラスのコンストラクタ定義
  */
 export interface MixinConstructor<B extends Class, U> extends Type<U> {
     /**
-     * @es constructor
+     * @en constructor
      * @ja コンストラクタ
      *
      * @param args
@@ -47,7 +47,7 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
     new (...args: ConstructorParameters<B>): U;
 }
 /**
- * @es Setup [Symbol.hasInstance] property. <br>
+ * @en Setup [Symbol.hasInstance] property. <br>
  *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
  *     It's used to avoid becoming the behavior `instanceof` doesn't intend when the class is extended from the mixined class the other place.
  * @ja [Symbol.hasInstance] プロパティ設定関数 <br>
@@ -86,7 +86,7 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
  */
 export declare function setInstanceOf<T extends {}>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
 /**
- * @es Mixin function for multiple inheritance. <br>
+ * @en Mixin function for multiple inheritance. <br>
  *     Resolving type support for maximum 10 classes.
  * @ja 多重継承のための Mixin <br>
  *     最大 10 クラスの型解決をサポート

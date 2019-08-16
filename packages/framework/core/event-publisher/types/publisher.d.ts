@@ -1,7 +1,7 @@
 import { Arguments } from '@cdp/core-utils';
 import { Subscription, Observable } from './interfaces';
 /**
- * @es Eventing framework class with ensuring type-safe for TypeScript. <br>
+ * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
  *     The client of this class can implement original Pub-Sub (Observer) design pattern.
  * @ja 型安全を保障するイベント登録・発行クラス <br>
  *     クライアントは本クラスを派生して独自の Pub-Sub (Observer) パターンを実装可能
@@ -49,7 +49,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
     /** constructor */
     constructor();
     /**
-     * @es Notify event to clients.
+     * @en Notify event to clients.
      * @ja event 発行
      *
      * @param channel
@@ -61,7 +61,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      */
     protected publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
     /**
-     * @es Check whether this object has clients.
+     * @en Check whether this object has clients.
      * @ja クライアントが存在するか判定
      *
      * @param channel
@@ -73,12 +73,12 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      */
     has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
     /**
-     * @es Returns registered channel keys.
+     * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
      */
     channels(): (keyof Event)[];
     /**
-     * @es Unsubscribe event(s).
+     * @en Unsubscribe event(s).
      * @ja イベント購読解除
      *
      * @param channel
@@ -94,7 +94,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      */
     off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
     /**
-     * @es Subscrive event(s).
+     * @en Subscrive event(s).
      * @ja イベント購読設定
      *
      * @param channel
@@ -106,7 +106,7 @@ export declare abstract class EventPublisher<Event> implements Observable<Event>
      */
     on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
     /**
-     * @es Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
      * @ja 一度だけハンドリング可能なイベント購読設定
      *
      * @param channel

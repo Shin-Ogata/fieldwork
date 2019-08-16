@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
- * @es The general null type.
+ * @en The general null type.
  * @ja 空を示す型定義
  */
 export type Nil = void | null | undefined;
 
 /**
- * @es The type of object or [[Nil]].
+ * @en The type of object or [[Nil]].
  * @ja [[Nil]] になりえるオブジェクト型定義
  */
 export type Nillable<T extends {}> = T | Nil;
 
 /**
- * @es Primitive type of JavaScript.
+ * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
  */
 export type Primitive = string | number | boolean | symbol | null | undefined;
 
 /**
- * @es JavaScript type set interface.
+ * @en JavaScript type set interface.
  * @ja JavaScript の型の集合
  */
 interface TypeList {
@@ -33,13 +33,13 @@ interface TypeList {
 }
 
 /**
- * @es The key list of [[TypeList]].
+ * @en The key list of [[TypeList]].
  * @ja [[TypeList]] キー一覧
  */
 export type TypeKeys = keyof TypeList;
 
 /**
- * @es Type base definition.
+ * @en Type base definition.
  * @ja 型の規定定義
  */
 export interface Type<T extends {}> extends Function {
@@ -47,7 +47,7 @@ export interface Type<T extends {}> extends Function {
 }
 
 /**
- * @es Type of constructor.
+ * @en Type of constructor.
  * @ja コンストラクタ型
  */
 export interface Constructor<T> extends Type<T> {
@@ -55,43 +55,43 @@ export interface Constructor<T> extends Type<T> {
 }
 
 /**
- * @es Type of class.
+ * @en Type of class.
  * @ja クラス型
  */
 export type Class<T = any> = Constructor<T>;
 
 /**
- * @es Ensure for function parameters to tuple.
+ * @en Ensure for function parameters to tuple.
  * @ja 関数パラメータとして tuple を保証
  */
 export type Arguments<T> = T extends any[] ? T : [T];
 
 /**
- * @es Rmove `readonly` attributes from input type.
+ * @en Rmove `readonly` attributes from input type.
  * @ja `readonly` 属性を解除
  */
 export type Writable<T> = { -readonly [K in keyof T]: T[K] };
 
 /**
- * @es Extract functional property names.
+ * @en Extract functional property names.
  * @ja 関数プロパティ名の抽出
  */
 export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T];
 
 /**
- * @es Extract functional properties.
+ * @en Extract functional properties.
  * @ja 関数プロパティの抽出
  */
 export type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
 
 /**
- * @es Extract non-functional property names.
+ * @en Extract non-functional property names.
  * @ja 非関数プロパティ名の抽出
  */
 export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
 
 /**
- * @es Extract non-functional properties.
+ * @en Extract non-functional properties.
  * @ja 非関数プロパティの抽出
  */
 export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
@@ -99,7 +99,7 @@ export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 //__________________________________________________________________________________________________//
 
 /**
- * @es Check the value exists.
+ * @en Check the value exists.
  * @ja 値が存在するか判定
  *
  * @param x
@@ -113,7 +113,7 @@ export function exists(x: any): any {
 }
 
 /**
- * @es Check the value-type is [[Nil]].
+ * @en Check the value-type is [[Nil]].
  * @ja [[Nil]] 型であるか判定
  *
  * @param x
@@ -125,7 +125,7 @@ export function isNil(x: unknown): x is Nil {
 }
 
 /**
- * @es Check the value-type is String.
+ * @en Check the value-type is String.
  * @ja String 型であるか判定
  *
  * @param x
@@ -137,7 +137,7 @@ export function isString(x: unknown): x is string {
 }
 
 /**
- * @es Check the value-type is Number.
+ * @en Check the value-type is Number.
  * @ja Number 型であるか判定
  *
  * @param x
@@ -149,7 +149,7 @@ export function isNumber(x: unknown): x is number {
 }
 
 /**
- * @es Check the value-type is Boolean.
+ * @en Check the value-type is Boolean.
  * @ja Boolean 型であるか判定
  *
  * @param x
@@ -161,7 +161,7 @@ export function isBoolean(x: unknown): x is boolean {
 }
 
 /**
- * @es Check the value-type is Symble.
+ * @en Check the value-type is Symble.
  * @ja Symbol 型であるか判定
  *
  * @param x
@@ -173,7 +173,7 @@ export function isSymbol(x: unknown): x is symbol {
 }
 
 /**
- * @es Check the value-type is primitive type.
+ * @en Check the value-type is primitive type.
  * @ja プリミティブ型であるか判定
  *
  * @param x
@@ -185,7 +185,7 @@ export function isPrimitive(x: unknown): x is Primitive {
 }
 
 /**
- * @es Check the value-type is Object.
+ * @en Check the value-type is Object.
  * @ja Object 型であるか判定
  *
  * @param x
@@ -197,7 +197,7 @@ export function isObject(x: unknown): x is object {
 }
 
 /**
- * @es Check the value-type is Function.
+ * @en Check the value-type is Function.
  * @ja Function 型であるか判定
  *
  * @param x
@@ -209,7 +209,7 @@ export function isFunction(x: unknown): x is TypeList['function'] {
 }
 
 /**
- * @es Check the value-type is input.
+ * @en Check the value-type is input.
  * @ja 指定した型であるか判定
  *
  * @param type
@@ -224,7 +224,7 @@ export function typeOf<K extends TypeKeys>(type: K, x: unknown): x is TypeList[K
 }
 
 /**
- * @es Check the value has iterator.
+ * @en Check the value has iterator.
  * @ja iterator を所有しているか判定
  *
  * @param x
@@ -238,7 +238,7 @@ export function isIterable(x: any): any {
 }
 
 /**
- * @es Check the value instance of input.
+ * @en Check the value instance of input.
  * @ja 指定したインスタンスであるか判定
  *
  * @param ctor
@@ -253,7 +253,7 @@ export function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x
 }
 
 /**
- * @es Check the value instance of input constructor (except sub class).
+ * @en Check the value instance of input constructor (except sub class).
  * @ja 指定コンストラクタのインスタンスであるか判定 (派生クラスは含めない)
  *
  * @param ctor
@@ -268,7 +268,7 @@ export function ownInstanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown)
 }
 
 /**
- * @es Get the value's class name.
+ * @en Get the value's class name.
  * @ja クラス名を取得
  *
  * @param x
@@ -293,7 +293,7 @@ export function className(x: any): string {
 }
 
 /**
- * @es Check input values are same value-type.
+ * @en Check input values are same value-type.
  * @ja 入力が同一型であるか判定
  *
  * @param lhs
@@ -308,7 +308,7 @@ export function sameType(lhs: unknown, rhs: unknown): boolean {
 }
 
 /**
- * @es Check input values are same class.
+ * @en Check input values are same class.
  * @ja 入力が同一クラスであるか判定
  *
  * @param lhs
@@ -327,7 +327,7 @@ export function sameClass(lhs: unknown, rhs: unknown): boolean {
 }
 
 /**
- * @es Get shallow copy of `target` which has only `pickupKeys`.
+ * @en Get shallow copy of `target` which has only `pickupKeys`.
  * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
  *
  * @param target

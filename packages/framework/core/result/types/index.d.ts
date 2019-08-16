@@ -1,3 +1,3 @@
-export * from './result';
-export * from './result-code';
 import './result-code-defs';
+export * from './result-code';
+export * from './result';
