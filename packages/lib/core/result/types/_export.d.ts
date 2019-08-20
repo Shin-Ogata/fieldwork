@@ -1,2 +1,2 @@
 export * from './index';
-export as namespace CDP;
+export as namespace _Exports;

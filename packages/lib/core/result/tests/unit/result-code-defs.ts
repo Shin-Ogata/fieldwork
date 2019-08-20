@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-plus-operands */
 
-namespace CDP {
+namespace CDP_DECLARE {
 
     export const enum RESULT_CODE_BASE {
         TEST = 2 * LOCAL_CODE_RANGE_GUIDE.MODULE,
@@ -13,9 +13,8 @@ namespace CDP {
     /**
      * 拡張通エラーコード定義
      */
-    export enum ResultCode {
-        ERROR_TEST_DECLARATION = 0, // TS2432 対策
-        ERROR_TEST_01 = DECLARE_ERROR_CODE(RESULT_CODE_BASE.TEST, LOCAL_CODE_BASE.TEST + 1, 'test01 error.'),
-        ERROR_TEST_02 = DECLARE_ERROR_CODE(RESULT_CODE_BASE.TEST, LOCAL_CODE_BASE.TEST + 2, 'test02 error.'),
+    export enum RESULT_CODE {
+        ERROR_TEST_SUCCEEDED = DECLARE_SUCCESS_CODE(RESULT_CODE_BASE.TEST, LOCAL_CODE_BASE.TEST + 1, 'test succeess result.'),
+        ERROR_TEST_FAILED    = DECLARE_ERROR_CODE(RESULT_CODE_BASE.TEST, LOCAL_CODE_BASE.TEST + 2, 'test failed result.'),
     }
 }

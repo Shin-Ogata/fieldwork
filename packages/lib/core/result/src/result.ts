@@ -6,7 +6,7 @@ import {
     isString,
 } from '@cdp/core-utils';
 import {
-    ResultCode,
+    RESULT_CODE,
     SUCCEEDED,
     FAILED,
     toNameString,
@@ -42,8 +42,8 @@ export class Result extends Error {
      *  - `en` low-level error information
      *  - `ja` 下位のエラー情報
      */
-    constructor(code?: ResultCode, message?: string, cause?: any) {
-        code = isNil(code) ? ResultCode.SUCCEEDED : isNumber(code) ? Math.trunc(code) : ResultCode.FAILED;
+    constructor(code?: number, message?: string, cause?: any) {
+        code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
         super(message || toHelpString(code));
         let time = isError(cause) ? (cause as Result).time : undefined;
         isNumber(time as number) || (time = Date.now());
@@ -56,10 +56,10 @@ export class Result extends Error {
     }
 
     /**
-     * @en [[ResultCode]] value.
-     * @ja [[ResultCode]] の値
+     * @en [[RESULT_CODE]] value.
+     * @ja [[RESULT_CODE]] の値
      */
-    readonly code!: ResultCode;
+    readonly code!: number;
 
     /**
      * @en Stock low-level error information.
@@ -94,20 +94,20 @@ export class Result extends Error {
      * @ja キャンセルエラー判定
      */
     get isCanceled(): boolean {
-        return this.code === ResultCode.ABORTED;
+        return this.code === RESULT_CODE.ABORT;
     }
 
     /**
-     * @en Get formatted [[ResultCode]] name string.
-     * @ja フォーマットされた [[ResultCode]] 名文字列を取得
+     * @en Get formatted [[RESULT_CODE]] name string.
+     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
      */
     get codeName(): string {
         return toNameString(this.code, this.name);
     }
 
     /**
-     * @en Get [[ResultCode]] help string.
-     * @ja [[ResultCode]] のヘルプストリングを取得
+     * @en Get [[RESULT_CODE]] help string.
+     * @ja [[RESULT_CODE]] のヘルプストリングを取得
      */
     get help(): string {
         return toHelpString(this.code);
@@ -139,7 +139,7 @@ export function toResult(o: unknown): Result {
     if (o instanceof Result) {
         /* eslint-disable-next-line prefer-const */
         let { code, cause, time } = o;
-        code = isNil(code) ? ResultCode.SUCCEEDED : isNumber(code) ? Math.trunc(code) : ResultCode.FAILED;
+        code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
         isNumber(time) || (time = Date.now());
         // Do nothing if already defined
         Reflect.defineProperty(o, 'code',  { enumerable: true, value: code  });
@@ -169,7 +169,7 @@ export function toResult(o: unknown): Result {
  *  - `en` low-level error information
  *  - `ja` 下位のエラー情報
  */
-export function makeResult(code: ResultCode, message?: string, cause?: any): Result {
+export function makeResult(code: number, message?: string, cause?: any): Result {
     return new Result(code, message, cause);
 }
 
@@ -185,5 +185,5 @@ export function makeResult(code: ResultCode, message?: string, cause?: any): Res
  *  - `ja` 下位のエラー情報
  */
 export function makeCanceledResult(message?: string, cause?: any): Result {
-    return new Result(ResultCode.ABORTED, message, cause);
+    return new Result(RESULT_CODE.ABORT, message, cause);
 }

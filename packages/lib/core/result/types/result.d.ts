@@ -1,4 +1,3 @@
-import { ResultCode } from './result-code';
 /**
  * @en A result holder class. <br>
  *     Derived native `Error` class.
@@ -19,12 +18,12 @@ export declare class Result extends Error {
      *  - `en` low-level error information
      *  - `ja` 下位のエラー情報
      */
-    constructor(code?: ResultCode, message?: string, cause?: any);
+    constructor(code?: number, message?: string, cause?: any);
     /**
-     * @en [[ResultCode]] value.
-     * @ja [[ResultCode]] の値
+     * @en [[RESULT_CODE]] value.
+     * @ja [[RESULT_CODE]] の値
      */
-    readonly code: ResultCode;
+    readonly code: number;
     /**
      * @en Stock low-level error information.
      * @ja 下位のエラー情報を格納
@@ -51,13 +50,13 @@ export declare class Result extends Error {
      */
     readonly isCanceled: boolean;
     /**
-     * @en Get formatted [[ResultCode]] name string.
-     * @ja フォーマットされた [[ResultCode]] 名文字列を取得
+     * @en Get formatted [[RESULT_CODE]] name string.
+     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
      */
     readonly codeName: string;
     /**
-     * @en Get [[ResultCode]] help string.
-     * @ja [[ResultCode]] のヘルプストリングを取得
+     * @en Get [[RESULT_CODE]] help string.
+     * @ja [[RESULT_CODE]] のヘルプストリングを取得
      */
     readonly help: string;
 }
@@ -82,7 +81,7 @@ export declare function toResult(o: unknown): Result;
  *  - `en` low-level error information
  *  - `ja` 下位のエラー情報
  */
-export declare function makeResult(code: ResultCode, message?: string, cause?: any): Result;
+export declare function makeResult(code: number, message?: string, cause?: any): Result;
 /**
  * @en Create canceled [[Result]] helper
  * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー

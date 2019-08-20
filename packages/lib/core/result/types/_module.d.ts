@@ -2,5 +2,5 @@
 /// <reference path="./_export.d.ts" />
 
 declare module '@cdp/result' {
-    export = CDP;
+    export = _Exports;
 }

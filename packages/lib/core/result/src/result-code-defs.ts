@@ -1,6 +1,10 @@
 /* eslint-disable no-inner-declarations, @typescript-eslint/no-namespace, @typescript-eslint/no-unused-vars */
 
-namespace CDP {
+/*
+ * NOTE: 内部モジュールに `CDP` namespace を使用してしまうと, 外部モジュールでは宣言できなくなる.
+ * https://github.com/Microsoft/TypeScript/issues/9611
+ */
+namespace CDP_DECLARE {
 
     /**
      * @en Constant definition about range of the result code.
@@ -37,9 +41,9 @@ namespace CDP {
     }
 
     /**
-     * @en Offset value enumeration for [[ResultCode]]. <br>
+     * @en Offset value enumeration for [[RESULT_CODE]]. <br>
      *     The client can expand a definition in other module.
-     * @ja [[ResultCode]] のオフセット値 <br>
+     * @ja [[RESULT_CODE]] のオフセット値 <br>
      *     エラーコード対応するモジュール内で 定義を拡張する.
      *
      * @example <br>
@@ -51,11 +55,11 @@ namespace CDP {
      *      SOMEMODULE2 = 2 * LOCAL_CODE_RANGE_GUIDE.FUNCTION,
      *  }
      *
-     *  export enum ResultCode {
+     *  export enum RESULT_CODE {
      *      ERROR_SOMEMODULE_UNEXPECTED  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 1, "error unexpected."),
      *      ERROR_SOMEMODULE_INVALID_ARG = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 2, "invalid arguments."),
      *  }
-     *  ASSIGN_RESULT_CODE(ResultCode);
+     *  ASSIGN_RESULT_CODE(RESULT_CODE);
      * ```
      */
     export const enum RESULT_CODE_BASE {
@@ -67,18 +71,20 @@ namespace CDP {
     }
 
     /**
-     * @en Common error code for the application.
+     * @en Common result code for the application.
      * @ja アプリケーション全体で使用する共通エラーコード定義
      */
-    export enum ResultCode {
+    export enum RESULT_CODE {
         /** `en` general success code             <br> `ja` 汎用成功コード                       */
-        SUCCEEDED = 0,
+        SUCCESS = 0,
         /** `en` general cancel code              <br> `ja` 汎用キャンセルコード                 */
-        ABORTED = 1,
-        /** `en` general pending error code       <br> `ja` 汎用オペレーション未実行エラーコード */
+        ABORT = 1,
+        /** `en` general pending code             <br> `ja` 汎用オペレーション未実行エラーコード */
         PENDING = 2,
+        /** `en` general success but noop code    <br> `ja` 汎用実行不要コード                   */
+        NOOP = 3,
         /** `en` general error code               <br> `ja` 汎用エラーコード                     */
-        FAILED = -1,
+        FAIL = -1,
         /** `en` general fatal error code         <br> `ja` 汎用致命的エラーコード               */
         FATAL = -2,
         /** `en` general not supported error code <br> `ja` 汎用オペレーションエラーコード       */
@@ -86,13 +92,13 @@ namespace CDP {
     }
 
     /**
-     * @en Assign declared [[ResultCode]] to root enumeration.
+     * @en Assign declared [[RESULT_CODE]] to root enumeration.
      *     (It's enable to merge enum in the module system environment.)
-     * @ja 拡張した [[ResultCode]] を ルート enum にアサイン
+     * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
-    export function ASSIGN_RESULT_CODE(extend: typeof ResultCode): void {
-        Object.assign(ResultCode, extend);
+    export function ASSIGN_RESULT_CODE(extend: object): void {
+        Object.assign(RESULT_CODE, extend);
     }
 
     /** @internal */
@@ -100,6 +106,7 @@ namespace CDP {
         '0': 'operation succeeded.',
         '1': 'operation aborted.',
         '2': 'operation pending.',
+        '3': 'no operation.',
         '-1': 'operation failed.',
         '-2': 'unexpected error occured.',
         '-3': 'operation not supported.',
@@ -154,9 +161,9 @@ namespace CDP {
 ///////////////////////////////////////////////////////////////////////
 // private section:
 
-    /** @internal register for [[ResultCode]] */
-    function declareResultCode(base: RESULT_CODE_BASE, code: number, message?: string, succeeded = false): number | never {
-        if (code <= 0 || RESULT_CODE_RANGE.MAX < code) {
+    /** @internal register for [[RESULT_CODE]] */
+    function declareResultCode(base: RESULT_CODE_BASE, code: number, message: string | undefined, succeeded: boolean): number | never {
+        if (code < 0 || RESULT_CODE_RANGE.MAX <= code) {
             throw new RangeError(`declareResultCode(), invalid local-code range. [code: ${code}]`);
         }
         const signed = succeeded ? 1 : -1;

@@ -12,7 +12,7 @@ const {
     packageName: PACKAGE,
     outName: OUTNAME,
     global: GLOBAL,
-    namespace: NAMESPACE,
+    domain: DOMAIN,
     built: BUILT,
     test: TEST,
     unit: UNIT,
@@ -46,7 +46,7 @@ function getDefault(testeeConfig, options) {
             plugins: [
                 multiEntry(),
                 sourcemaps(),
-                sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${NAMESPACE}:///specs/` }),
+                sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${DOMAIN}:///specs/` }),
                 replacer(Object.assign(replaceValues, replace)),
                 alias({
                     './_testee': `${PACKAGE}`,
