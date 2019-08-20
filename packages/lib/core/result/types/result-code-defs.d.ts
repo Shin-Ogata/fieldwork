@@ -1,4 +1,4 @@
-declare namespace CDP {
+declare namespace CDP_DECLARE {
     /**
      * @en Constant definition about range of the result code.
      * @ja リザルトコードの範囲に関する定数定義
@@ -32,9 +32,9 @@ declare namespace CDP {
         FUNCTION = 20
     }
     /**
-     * @en Offset value enumeration for [[ResultCode]]. <br>
+     * @en Offset value enumeration for [[RESULT_CODE]]. <br>
      *     The client can expand a definition in other module.
-     * @ja [[ResultCode]] のオフセット値 <br>
+     * @ja [[RESULT_CODE]] のオフセット値 <br>
      *     エラーコード対応するモジュール内で 定義を拡張する.
      *
      * @example <br>
@@ -46,11 +46,11 @@ declare namespace CDP {
      *      SOMEMODULE2 = 2 * LOCAL_CODE_RANGE_GUIDE.FUNCTION,
      *  }
      *
-     *  export enum ResultCode {
+     *  export enum RESULT_CODE {
      *      ERROR_SOMEMODULE_UNEXPECTED  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 1, "error unexpected."),
      *      ERROR_SOMEMODULE_INVALID_ARG = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 2, "invalid arguments."),
      *  }
-     *  ASSIGN_RESULT_CODE(ResultCode);
+     *  ASSIGN_RESULT_CODE(RESULT_CODE);
      * ```
      */
     const enum RESULT_CODE_BASE {
@@ -58,30 +58,32 @@ declare namespace CDP {
         CDP = 100
     }
     /**
-     * @en Common error code for the application.
+     * @en Common result code for the application.
      * @ja アプリケーション全体で使用する共通エラーコード定義
      */
-    enum ResultCode {
+    enum RESULT_CODE {
         /** `en` general success code             <br> `ja` 汎用成功コード                       */
-        SUCCEEDED = 0,
+        SUCCESS = 0,
         /** `en` general cancel code              <br> `ja` 汎用キャンセルコード                 */
-        ABORTED = 1,
-        /** `en` general pending error code       <br> `ja` 汎用オペレーション未実行エラーコード */
+        ABORT = 1,
+        /** `en` general pending code             <br> `ja` 汎用オペレーション未実行エラーコード */
         PENDING = 2,
+        /** `en` general success but noop code    <br> `ja` 汎用実行不要コード                   */
+        NOOP = 3,
         /** `en` general error code               <br> `ja` 汎用エラーコード                     */
-        FAILED = -1,
+        FAIL = -1,
         /** `en` general fatal error code         <br> `ja` 汎用致命的エラーコード               */
         FATAL = -2,
         /** `en` general not supported error code <br> `ja` 汎用オペレーションエラーコード       */
         NOT_SUPPORTED = -3
     }
     /**
-     * @en Assign declared [[ResultCode]] to root enumeration.
+     * @en Assign declared [[RESULT_CODE]] to root enumeration.
      *     (It's enable to merge enum in the module system environment.)
-     * @ja 拡張した [[ResultCode]] を ルート enum にアサイン
+     * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
-    function ASSIGN_RESULT_CODE(extend: typeof ResultCode): void;
+    function ASSIGN_RESULT_CODE(extend: object): void;
     /**
      * @en Generate success code.
      * @ja 成功コードを生成

@@ -227,6 +227,13 @@ describe('utils/mixins spec', () => {
         expect(mixCAB instanceof ClassB).toBeTruthy();
         expect(mixCAB instanceof ClassC).toBeTruthy();
         expect(mixCAB instanceof ClassD).toBeFalsy();
+
+        let mutableBD: any = mixBD; // eslint-disable-line @typescript-eslint/no-explicit-any
+        expect(mutableBD instanceof ClassD).toBeTruthy();
+        mutableBD = null;
+        expect(mutableBD instanceof ClassD).toBeFalsy();
+        mutableBD = undefined;
+        expect(mutableBD instanceof ClassD).toBeFalsy();
     });
 
     it('check setInstanceOf', () => {

@@ -1,2 +1,2 @@
 export * from './index';
-export as namespace Utils;
+export as namespace _Exports;

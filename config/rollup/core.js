@@ -12,7 +12,7 @@ const {
     outName: OUTNAME,
     base: BASE,
     global: GLOBAL,
-    namespace: NAMESPACE,
+    domain: DOMAIN,
     dist: DIST,
     built: BUILT,
     relativePath,
@@ -29,7 +29,7 @@ function getConfig(options) {
         plugins: [
             nodeResolve({ mainFields: ['module', 'main', 'jsnext:main'] }),
             sourcemaps(),
-            sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${NAMESPACE}:///${PACKAGE}/` }),
+            sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${DOMAIN}:///${PACKAGE}/` }),
             replacer(Object.assign(replaceValues, replace)),
         ],
         output: [

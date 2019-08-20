@@ -185,7 +185,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         if (!desc || desc.writable) {
             const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
             setInstanceOf(srcClass, (inst: object) => {
-                return orgInstanceOf.call(srcClass, inst) || (inst[_isInherited] && inst[_isInherited](srcClass));
+                return orgInstanceOf.call(srcClass, inst) || ((null != inst && inst[_isInherited]) ? inst[_isInherited](srcClass) : false);
             });
         }
     }

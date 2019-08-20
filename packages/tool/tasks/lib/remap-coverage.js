@@ -64,12 +64,12 @@ function remapCoverage(cov, options) {
 
 function resolveSourcePath(cov, options) {
     const { cwd, silent } = options;
-    const { namespace, src } = config.build;
+    const { domain, src } = config.build;
     const root = path.resolve(options.cwd, dist);
 
     const rebuild = {};
     for (const file of Object.keys(cov)) {
-        const name = path.relative(root, file).replace(/\\/g, '/').replace(`${namespace}:/`, '');
+        const name = path.relative(root, file).replace(/\\/g, '/').replace(`${domain}:/`, '');
         const absPath = path.resolve(cwd, name.replace(config.pkg.name, src));
         if (!silent) {
             console.log(chalk.gray(`  source : ${name}`));
