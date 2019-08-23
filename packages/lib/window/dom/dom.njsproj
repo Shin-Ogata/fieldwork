@@ -10,7 +10,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{a00672d8-27b9-43e8-8e04-e31b781c8748}</ProjectGuid>
+    <ProjectGuid>{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>
     </StartupFile>
@@ -29,79 +29,49 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".npmrc" />
+    <Content Include="dist\dom.mjs" />
+    <Content Include="package.json" />
+    <Content Include="tests\tsconfig.json" />
+    <Content Include="tsconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="dist\dom.js" />
+    <Compile Include="rollup.config.js" />
+    <Compile Include="tests\test.config.js" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="dist\" />
-    <Folder Include="docs\" />
-    <Folder Include="docs\reports\" />
-    <Folder Include="docs\reports\coverage\" />
-    <Folder Include="docs\reports\metrics\" />
-    <Folder Include="docs\reports\metrics\file\" />
-    <Folder Include="docs\reports\metrics\module\" />
-    <Folder Include="docs\typedoc\" />
     <Folder Include="src\" />
     <Folder Include="tests\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\config.ts" />
+    <TypeScriptCompile Include="src\collection-base.ts" />
+    <TypeScriptCompile Include="src\collection.ts" />
+    <TypeScriptCompile Include="src\exports.ts" />
     <TypeScriptCompile Include="src\index.ts" />
-    <TypeScriptCompile Include="src\misc.ts" />
-    <TypeScriptCompile Include="src\mixins.ts" />
-    <TypeScriptCompile Include="src\safe.ts" />
-    <TypeScriptCompile Include="src\verify.ts" />
-    <TypeScriptCompile Include="src\types.ts" />
-    <TypeScriptCompile Include="tests\unit\config.spec.ts" />
-    <TypeScriptCompile Include="tests\unit\misc.spec.ts" />
-    <TypeScriptCompile Include="tests\unit\mixins.spec.ts" />
-    <TypeScriptCompile Include="tests\unit\safe.spec.ts" />
-    <TypeScriptCompile Include="tests\unit\types.spec.ts" />
-    <TypeScriptCompile Include="tests\unit\verify.spec.ts" />
+    <TypeScriptCompile Include="src\ssr.ts" />
+    <TypeScriptCompile Include="src\static.ts" />
+    <TypeScriptCompile Include="src\utils.ts" />
+    <TypeScriptCompile Include="tests\unit\dom.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\utils.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
-    <TypeScriptCompile Include="types\config.d.ts" />
+    <TypeScriptCompile Include="types\collection-base.d.ts" />
+    <TypeScriptCompile Include="types\collection.d.ts" />
+    <TypeScriptCompile Include="types\exports.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
-    <TypeScriptCompile Include="types\misc.d.ts" />
-    <TypeScriptCompile Include="types\mixins.d.ts" />
-    <TypeScriptCompile Include="types\safe.d.ts" />
-    <TypeScriptCompile Include="types\types.d.ts" />
-    <TypeScriptCompile Include="types\verify.d.ts" />
+    <TypeScriptCompile Include="types\ssr.d.ts" />
+    <TypeScriptCompile Include="types\static.d.ts" />
+    <TypeScriptCompile Include="types\utils.d.ts" />
     <TypeScriptCompile Include="types\_export.d.ts" />
     <TypeScriptCompile Include="types\_module.d.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include=".npmrc" />
-    <Content Include="dist\core-utils.mjs" />
-    <Content Include="docs\reports\coverage\index.html" />
-    <Content Include="docs\reports\metrics\file\display.html" />
-    <Content Include="docs\reports\metrics\file\index.html" />
-    <Content Include="docs\reports\metrics\module\display.html" />
-    <Content Include="docs\reports\metrics\module\index.html" />
-    <Content Include="docs\typedoc\index.html" />
-    <Content Include="package.json" />
-    <Content Include="tests\tsconfig.json" />
-    <Content Include="tsconfig.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="dist\core-utils.js" />
-    <Compile Include="rollup.config.js" />
-    <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
