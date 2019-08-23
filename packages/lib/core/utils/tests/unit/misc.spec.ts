@@ -3,6 +3,7 @@
 import {
     post,
     noop,
+    escapeHTML,
 } from '@cdp/core-utils';
 
 describe('utils/misc spec', () => {
@@ -33,5 +34,26 @@ describe('utils/misc spec', () => {
         spyOn(hook, 'noop').and.callThrough();
         hook.noop();
         expect(hook.noop).toHaveBeenCalled();
+    });
+
+    it('check escapeHTML', () => {
+        const backquote = '`';
+        const src = `& < > ' " ${backquote}`;
+        expect(escapeHTML(src)).toBe('&amp; &lt; &gt; &#39; &quot; &#x60;');
+
+        const src2 = 'hogehoge';
+        expect(escapeHTML(src2)).toBe('hogehoge');
+
+        const src3 = null;
+        expect(escapeHTML(src3)).toBe('');
+
+        const src4 = undefined;
+        expect(escapeHTML(src4)).toBe('');
+
+        const src5 = '';
+        expect(escapeHTML(src5)).toBe('');
+
+        const src6 = Symbol.iterator;
+        expect(escapeHTML(src6)).toBe('');
     });
 });

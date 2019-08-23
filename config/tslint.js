@@ -55,7 +55,7 @@ module.exports = {
         '@typescript-eslint/member-delimiter-style': [
             'error',
             {
-                'singleline': {
+                singleline: {
                     delimiter: 'semi',
                     requireLast: true,
                 },
@@ -77,8 +77,14 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': [
             'error',
             {
-                'functions': false,
-                'classes': false,
+                functions: false,
+                classes: false,
+            },
+        ],
+        '@typescript-eslint/unbound-method': [
+            'error',
+            {
+                ignoreStatic: true,
             },
         ],
         '@typescript-eslint/no-for-in-array': 'warn',

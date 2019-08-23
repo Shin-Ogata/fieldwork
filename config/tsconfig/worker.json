@@ -1,7 +1,7 @@
 {
   "extends": "./base",
   "compilerOptions": {
-    "lib": ["es2018", "webworker"],
+    "lib": ["es2019", "webworker"],
     "types": []
   }
 }

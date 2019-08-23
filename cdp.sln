@@ -21,6 +21,10 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "promise", "packages\lib\cor
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "result", "packages\lib\core\result\result.njsproj", "{DCF68AE7-1DFC-4617-8862-E5F3066FA255}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "window", "window", "{35317128-68DB-44C4-9168-3B083BE12CC4}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "dom", "packages\lib\window\dom\dom.njsproj", "{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,10 @@ Global
 		{DCF68AE7-1DFC-4617-8862-E5F3066FA255}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCF68AE7-1DFC-4617-8862-E5F3066FA255}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCF68AE7-1DFC-4617-8862-E5F3066FA255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +66,8 @@ Global
 		{A00672D8-27B9-43E8-8E04-E31B781C8748} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 		{CE5FC1CF-F29C-4A13-BFE6-1D74FB878904} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 		{DCF68AE7-1DFC-4617-8862-E5F3066FA255} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
+		{35317128-68DB-44C4-9168-3B083BE12CC4} = {59005E11-3018-4FB5-80D1-7A6DEDCF7A0E}
+		{1AB2994E-7609-4B1B-B83C-EB18B5F67CEB} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

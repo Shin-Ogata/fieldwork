@@ -22,6 +22,7 @@ function getConfig(options) {
     const globals = options && options.globals;
     const external = globals && Object.keys(globals);
     const replace = options && options.replace;
+    const exports = options && options.exports;
 
     return {
         input: `${BUILT}/${BASE}.js`,
@@ -49,6 +50,7 @@ function getConfig(options) {
                 preferConst: true,
                 sourcemap: 'inline',
                 globals,
+                exports,
             },
         ],
     };
