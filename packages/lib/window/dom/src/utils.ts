@@ -7,8 +7,8 @@ import { document } from './ssr';
 
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : Element;
-export type ElementifyArgBase = Node | Window | string | Nil;
-export type ElementifyArg<T extends ElementifyArgBase = Element> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
+export type SelectorBase = Node | Window | string | Nil;
+export type ElementifySeed<T extends SelectorBase = Element> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 
 /**
@@ -23,7 +23,7 @@ export type QueryContext = ParentNode & Partial<NonElementParentNode>;
  *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
  * @returns Element[] based Node or Window object.
  */
-export function elementify<T extends ElementifyArgBase>(seed?: ElementifyArg<T>, context: QueryContext = document): ElementResult<T>[] {
+export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context: QueryContext = document): ElementResult<T>[] {
     if (!seed) {
         return [];
     }

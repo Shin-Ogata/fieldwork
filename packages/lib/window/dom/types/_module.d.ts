@@ -14,10 +14,11 @@ declare module '@cdp/dom' {
      *  - `output.exports` の項目参照
      */
     export const dom: typeof _Exports.dom;
-    export type ElementBase         = _Exports.ElementBase;
-    export type ElementResult<T>    = _Exports.ElementResult<T>;
-    export type ElementifyArgBase   = _Exports.ElementifyArgBase;
-    export type ElementifyArg       = _Exports.ElementifyArg;
-    export type QueryContext        = _Exports.QueryContext;
+    export type ElementBase                                         = _Exports.ElementBase;
+    export type ElementResult<T>                                    = _Exports.ElementResult<T>;
+    export type SelectorBase                                        = _Exports.SelectorBase;
+    export type ElementifySeed<T extends SelectorBase = Element>    = _Exports.ElementifySeed<T>;
+    export type QueryContext                                        = _Exports.QueryContext;
+    export type DOM<T extends ElementBase = Element>                = _Exports.DOM<T>;
     export { dom as default };
 }
