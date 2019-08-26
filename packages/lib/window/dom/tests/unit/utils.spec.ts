@@ -1,43 +1,18 @@
-/* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-explicit-any */
+/* eslint-disable block-spacing, @typescript-eslint/unbound-method, @typescript-eslint/no-explicit-any */
 import $ from '@cdp/dom';
+import {
+    createTestElementsFromTemplate as createFromTemplate,
+    prepareTestElements as prepareTestDivs,
+    cleanupTestElements as cleanup,
+} from './tools';
 
 describe('dom/utils spec', () => {
     const body = document.body;
     const { elementify } = $.utils;
     const { isArray } = Array;
 
-    const createFromTemplate = (): Element[] => {
-        const divs = elementify(`
-<div id="d1" class="test-dom">
-    <p class="test-dom-child"></p>
-</div>
-<div id="d2" class="test-dom">
-    <span class="test-dom-child"></span>
-</div>
-<div id="d3" class="test-dom">
-    <hr class="test-dom-child"></hr>
-</div>`);
-        return divs;
-    };
-
-    const prepareTestDivs = (divs?: Element[]): Element[] => {
-        divs = divs || createFromTemplate();
-
-        const flag = document.createDocumentFragment();
-        for (const div of divs) {
-            flag.appendChild(div);
-        }
-        body.appendChild(flag);
-
-        return divs;
-    };
-
     afterEach((): void => {
-        // for cleanup
-        const divs = body.querySelectorAll('.test-dom');
-        for (const div of divs) {
-            body.removeChild(div);
-        }
+        cleanup();
     });
 
     it('check accessible', () => {
@@ -47,7 +22,7 @@ describe('dom/utils spec', () => {
     });
 
     it('check elementify(string)', () => {
-        { // empty
+        {// empty
             const elems1 = elementify();
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -72,7 +47,7 @@ describe('dom/utils spec', () => {
         // from template
         const divs = createFromTemplate();
 
-        { // check instance
+        {// check instance
             expect(divs).toBeDefined();
             expect(isArray(divs)).toBe(true);
             expect(divs.length).toBe(3);
@@ -84,7 +59,7 @@ describe('dom/utils spec', () => {
 
         prepareTestDivs(divs);
 
-        { // pure ID selector
+        {// pure ID selector
             const elems1 = elementify('#d1');
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -109,7 +84,7 @@ describe('dom/utils spec', () => {
             expect(elems4.length).toBe(0);
         }
 
-        { // class selector
+        {// class selector
             const elems1 = elementify('.test-dom-child');
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -125,7 +100,7 @@ describe('dom/utils spec', () => {
             expect(elems2.length).toBe(0);
         }
 
-        { // special case, 'body'
+        {// special case, 'body'
             const elems1 = elementify('body');
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -137,7 +112,7 @@ describe('dom/utils spec', () => {
     it('check elementify(element)', () => {
         const divs = prepareTestDivs();
 
-        { // HTML Element
+        {// HTML Element
             const elems1 = elementify(divs[0]);
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -176,7 +151,7 @@ describe('dom/utils spec', () => {
             expect(elems6[0]).toEqual(children[2]);
         }
 
-        { // document / body
+        {// document / body
             const elems1 = elementify(document);
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -190,7 +165,7 @@ describe('dom/utils spec', () => {
             expect(elems2[0]).toEqual(body);
         }
 
-        { // window
+        {// window
             const elems1 = elementify(window);
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -202,7 +177,7 @@ describe('dom/utils spec', () => {
     it('check elementify(element collection)', () => {
         const divs = prepareTestDivs();
 
-        { // HTMLElement Array
+        {// HTMLElement Array
             const elems1 = elementify(divs);
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -212,7 +187,7 @@ describe('dom/utils spec', () => {
             expect(elems1[2]).toEqual(divs[2]);
         }
 
-        { // HTMLElement Collection
+        {// HTMLElement Collection
             const collection = document.querySelectorAll('.test-dom-child');
             const elems1 = elementify(collection);
             expect(elems1).toBeDefined();
@@ -223,7 +198,7 @@ describe('dom/utils spec', () => {
             expect(elems1[2]).toEqual(collection[2]);
         }
 
-        { // other Array
+        {// other Array
             const elems1 = elementify([window]);
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -253,7 +228,7 @@ describe('dom/utils spec', () => {
     it('check elementify(element, context)', () => {
         const divs = createFromTemplate();
 
-        { // standard
+        {// standard
             const elems1 = elementify('.test-dom-child');
             expect(elems1).toBeDefined();
             expect(isArray(elems1)).toBe(true);
@@ -268,7 +243,7 @@ describe('dom/utils spec', () => {
             expect(elems2[2]).toEqual(divs[2].firstElementChild as Element);
         }
 
-        { // advance
+        {// advance
             const invalidContext = {
                 querySelectorAll: (selector: string): any => {
                     throw new Error(`I am invalid context. [${selector}]`);
