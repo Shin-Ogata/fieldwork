@@ -1,3 +1,4 @@
+import { mixins } from '@cdp/core-utils';
 import {
     ElementBase,
     SelectorBase,
@@ -6,6 +7,7 @@ import {
     elementify,
 } from './utils';
 import { DOMBase } from './base';
+import { DOMMethods } from './methods';
 
 /**
  * @en This interface provides DOM operations like `jQuery` library.
@@ -15,12 +17,13 @@ export interface DOM<T extends ElementBase = Element> extends DOMClass<T> { } //
 
 export type DOMSelector<T extends SelectorBase = Element> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
 export type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<Element>);
+export type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
 
 /**
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
  */
-export class DOMClass<TElement extends ElementBase = Element> extends DOMBase<TElement> {
+export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOMBase, DOMMethods) {
     /**
      * private constructor
      *
@@ -30,6 +33,7 @@ export class DOMClass<TElement extends ElementBase = Element> extends DOMBase<TE
      */
     private constructor(elements: TElement[]) {
         super(elements);
+        this.super(DOMMethods);
     }
 
     /**
