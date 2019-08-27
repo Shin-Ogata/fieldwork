@@ -1,5 +1,6 @@
 import { ElementBase, SelectorBase, ElementifySeed } from './utils';
 import { DOMBase } from './base';
+import { DOMMethods } from './methods';
 /**
  * @en This interface provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供するインターフェイス
@@ -8,11 +9,13 @@ export interface DOM<T extends ElementBase = Element> extends DOMClass<T> {
 }
 export declare type DOMSelector<T extends SelectorBase = Element> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
 export declare type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<Element>);
+export declare type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
+declare const DOMClass_base: import("@cdp/core-utils").MixinConstructor<typeof DOMBase, import("@cdp/core-utils").MixinClass & DOMBase<ElementBase> & DOMMethods<any>>;
 /**
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
  */
-export declare class DOMClass<TElement extends ElementBase = Element> extends DOMBase<TElement> {
+export declare class DOMClass<TElement extends ElementBase = Element> extends DOMClass_base {
     /**
      * private constructor
      *
@@ -22,3 +25,4 @@ export declare class DOMClass<TElement extends ElementBase = Element> extends DO
      */
     private constructor();
 }
+export {};

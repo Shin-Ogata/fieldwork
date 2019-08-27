@@ -1,9 +1,10 @@
-import { ElementBase } from './utils';
+import { Nil } from '@cdp/core-utils';
+import { ElementBase, SelectorBase, DOM, DOMSelector } from './static';
 /**
  * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.
  * @ja [[DOMClass]] の基底抽象クラス. iterator を提供.
  */
-export declare abstract class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
+export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
     /**
      * @en number of `Element`
      * @ja 内包する `Element` 数
@@ -43,3 +44,81 @@ export declare abstract class DOMBase<T extends ElementBase> implements ArrayLik
      */
     values(): IterableIterator<T>;
 }
+/**
+ * @en Base interface for DOM Mixin class.
+ * @ja DOM Mixin クラスの既定インターフェイス
+ */
+export interface IDOM<T extends ElementBase = Element> extends Partial<DOMBase<T>> {
+}
+/**
+ * @en Check the selector type is Nil.
+ * @ja Nil セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isEmptySelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Nil>;
+/**
+ * @en Check the selector type is String.
+ * @ja String セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isStringSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, string>;
+/**
+ * @en Check the selector type is Node.
+ * @ja Node セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isNodeSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Node>;
+/**
+ * @en Check the selector type is Element.
+ * @ja Element セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isElementSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Element>;
+/**
+ * @en Check the selector type is Document.
+ * @ja Document セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isDocumentSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Document>;
+/**
+ * @en Check the selector type is Window.
+ * @ja Window セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isWindowSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Window>;
+/**
+ * @en Check the selector is able to iterate.
+ * @ja 走査可能なセレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isIterableSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, NodeListOf<Node>>;
+/**
+ * @en Check the selector type is [[DOM]].
+ * @ja [[DOM]] セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isDOMSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, DOM>;

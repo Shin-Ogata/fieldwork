@@ -1,5 +1,11 @@
-import { Writable } from '@cdp/core-utils';
-import { ElementBase } from './utils';
+import { Nil, Writable } from '@cdp/core-utils';
+import { window, document } from './ssr';
+import {
+    ElementBase,
+    SelectorBase,
+    DOM,
+    DOMSelector,
+} from './static';
 
 /** @internal */
 const _createIterableIterator = Symbol('createIterableIterator');
@@ -11,7 +17,7 @@ export type ElementAccess<T extends ElementBase = Element> = Writable<DOMBase<T>
  * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.
  * @ja [[DOMClass]] の基底抽象クラス. iterator を提供.
  */
-export abstract class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
+export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
     /**
      * @en number of `Element`
      * @ja 内包する `Element` 数
@@ -121,4 +127,106 @@ export abstract class DOMBase<T extends ElementBase> implements ArrayLike<T>, It
 
         return iterator;
     }
+}
+
+/**
+ * @en Base interface for DOM Mixin class.
+ * @ja DOM Mixin クラスの既定インターフェイス
+ */
+export interface IDOM<T extends ElementBase = Element> extends Partial<DOMBase<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
+
+/**
+ * @en Check the selector type is Nil.
+ * @ja Nil セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isEmptySelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Nil> {
+    return !selector;
+}
+
+/**
+ * @en Check the selector type is String.
+ * @ja String セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isStringSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, string> {
+    return 'string' === typeof selector;
+}
+
+/**
+ * @en Check the selector type is Node.
+ * @ja Node セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isNodeSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Node> {
+    return null != (selector as Node).nodeType;
+}
+
+/**
+ * @en Check the selector type is Element.
+ * @ja Element セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isElementSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Element> {
+    return selector instanceof Element;
+}
+
+/**
+ * @en Check the selector type is Document.
+ * @ja Document セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isDocumentSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Document> {
+    return document === selector as Node as Document;
+}
+
+/**
+ * @en Check the selector type is Window.
+ * @ja Window セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isWindowSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Window> {
+    return window === selector as Window;
+}
+
+/**
+ * @en Check the selector is able to iterate.
+ * @ja 走査可能なセレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isIterableSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, NodeListOf<Node>> {
+    return null != (selector as T[]).length;
+}
+
+/**
+ * @en Check the selector type is [[DOM]].
+ * @ja [[DOM]] セレクタであるか判定
+ *
+ * @param selector
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isDOMSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, DOM> {
+    return selector instanceof DOMBase;
 }
