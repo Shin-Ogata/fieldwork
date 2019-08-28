@@ -6,7 +6,7 @@ import {
     QueryContext,
     elementify,
 } from './utils';
-import { DOMBase } from './base';
+import { DOMBase, DOMIterable } from './base';
 import { DOMMethods } from './methods';
 
 /**
@@ -23,7 +23,7 @@ export type DOMIterateCallback<T extends ElementBase> = (index: number, element:
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
  */
-export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOMBase, DOMMethods) {
+export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOMBase, DOMMethods) implements DOMIterable<TElement> {
     /**
      * private constructor
      *
@@ -58,4 +58,14 @@ export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOM
         }
         return new DOMClass((elementify(selector as ElementifySeed<T>, context) as Element[])) as DOMResult<T>;
     }
+
+///////////////////////////////////////////////////////////////////////
+// imprements: DOMIterable<T>
+
+    readonly [n: number]: TElement;
+    readonly length!: number;
+    [Symbol.iterator]: () => Iterator<TElement>;
+    entries!: () => IterableIterator<[number, TElement]>;
+    keys!: () => IterableIterator<number>;
+    values!: () => IterableIterator<TElement>;
 }

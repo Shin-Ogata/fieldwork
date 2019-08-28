@@ -9,7 +9,7 @@ import {
     dom as $,
 } from './static';
 import {
-    IDOM,
+    DOMIterable,
     isEmptySelector,
     isStringSelector,
     isDocumentSelector,
@@ -18,14 +18,19 @@ import {
     isIterableSelector,
 } from './base';
 
+/** @internal helper for `parent()` and `parents()` */
+function validParentNode(parentNode: Node | null): parentNode is Node {
+    return null != parentNode && Node.DOCUMENT_NODE !== parentNode.nodeType && Node.DOCUMENT_FRAGMENT_NODE !== parentNode.nodeType;
+}
+
 /**
  * @en Mixin base class which concentrated the methods of DOM class.
  * @ja DOM のメソッドを集約した Mixin Base クラス
  */
-export class DOMMethods<TElement extends ElementBase = Element> implements IDOM<TElement> {
+export class DOMMethods<TElement extends ElementBase = Element> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: IDOM<T>
+// imprements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;
@@ -40,8 +45,8 @@ export class DOMMethods<TElement extends ElementBase = Element> implements IDOM<
      * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 現在の要素のセットと一致するか確認
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]], test function.
-     *  - `ja` [[DOMClass]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
      * @returns
      *  - `en` `true` if at least one of these elements matches the given arguments.
      *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
@@ -68,9 +73,9 @@ export class DOMMethods<TElement extends ElementBase = Element> implements IDOM<
                 if (selector === el as Node) {
                     return true;
                 }
-            } else if (isIterableSelector(selector as DOMSelector<TElement>)) {
-                for (const elem of selector as Iterable<TElement>) {
-                    if (elem === el) {
+            } else if (isIterableSelector(selector)) {
+                for (const elem of selector) {
+                    if (elem === el as Node) {
                         return true;
                     }
                 }
@@ -80,5 +85,87 @@ export class DOMMethods<TElement extends ElementBase = Element> implements IDOM<
         }
 
         return false;
+    }
+
+    /**
+     * @en Get the first parent of each element in the current set of matched elements.
+     * @ja 管轄している各要素の最初の親要素を返却
+     *
+     * @param selector
+     *  - `en` filtered by a string selector.
+     *  - `ja` フィルタ用文字列セレクタ
+     * @returns [[DOM]] instance
+     */
+    public parent<T extends Node = Element>(selector?: string): DOM<T> {
+        const parents = new Set<Node>();
+        for (const elem of this) {
+            const parentNode = (elem as Node).parentNode;
+            if (validParentNode(parentNode)) {
+                if (selector) {
+                    if ($(parentNode).is(selector)) {
+                        parents.add(parentNode);
+                    }
+                } else {
+                    parents.add(parentNode);
+                }
+            }
+        }
+        return $([...parents]) as DOM<T>;
+    }
+
+    /**
+     * @en Get the ancestors of each element in the current set of matched elements.
+     * @ja 管轄している各要素の祖先の親要素を返却
+     *
+     * @param selector
+     *  - `en` filtered by a string selector.
+     *  - `ja` フィルタ用文字列セレクタ
+     * @returns [[DOM]] instance
+     */
+    public parents<T extends Node = Element>(selector?: string): DOM<T> {
+        return this.parentsUntil(undefined, selector);
+    }
+
+    /**
+     * @en Get the ancestors of each element in the current set of matched elements, <br>
+     *     up to but not including the element matched by the selector, DOM node, or [[DOM]] object
+     * @ja 管轄している各要素の祖先で, 指定したセレクターや条件に一致する要素が出てくるまで選択して取得
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+     * @param filter
+     *  - `en` filtered by a string selector.
+     *  - `ja` フィルタ用文字列セレクタ
+     * @returns [[DOM]] instance
+     */
+    public parentsUntil<T extends Node = Element, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T> {
+        let parents: Node[] = [];
+
+        for (const elem of this) {
+            let parentNode = (elem as Node).parentNode;
+            while (validParentNode(parentNode)) {
+                if (null != selector) {
+                    if ($(parentNode).is(selector)) {
+                        break;
+                    }
+                }
+                if (filter) {
+                    if ($(parentNode).is(filter)) {
+                        parents.push(parentNode);
+                    }
+                } else {
+                    parents.push(parentNode);
+                }
+                parentNode = parentNode.parentNode;
+            }
+        }
+
+        // 複数要素が対象になるときは反転
+        if (1 < this.length) {
+            parents = [...new Set(parents.reverse())].reverse();
+        }
+
+        return $(parents) as DOM<T>;
     }
 }
