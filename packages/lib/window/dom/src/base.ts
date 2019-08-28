@@ -133,7 +133,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
  * @en Base interface for DOM Mixin class.
  * @ja DOM Mixin クラスの既定インターフェイス
  */
-export interface IDOM<T extends ElementBase = Element> extends Partial<DOMBase<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface DOMIterable<T extends ElementBase = Element> extends Partial<DOMBase<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 /**
  * @en Check the selector type is Nil.
