@@ -1,4 +1,4 @@
-import { Nil, Writable } from '@cdp/core-utils';
+import { Nil } from '@cdp/core-utils';
 import { window, document } from './ssr';
 import {
     ElementBase,
@@ -9,9 +9,6 @@ import {
 
 /** @internal */
 const _createIterableIterator = Symbol('createIterableIterator');
-
-/** @internal */
-export type ElementAccess<T extends ElementBase = Element> = Writable<DOMBase<T>>;
 
 /**
  * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.
@@ -38,7 +35,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
      *  - `ja` 操作対象の `Element` 配列
      */
     constructor(elements: T[]) {
-        const self: ElementAccess<T> = this;
+        const self: DOMAccess<T> = this;
         for (const [index, elem] of elements.entries()) {
             self[index] = elem;
         }
@@ -133,7 +130,23 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
  * @en Base interface for DOM Mixin class.
  * @ja DOM Mixin クラスの既定インターフェイス
  */
-export interface DOMIterable<T extends ElementBase = Element> extends Partial<DOMBase<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partial<DOMBase<T>> {
+    length: number;
+    [n: number]: T;
+}
+
+/**
+ * @internal DOM access
+ *
+ * @example <br>
+ *
+ * ```ts
+ *   const dom: DOMAccess<TElement> = this as DOMIterable<TElement>;
+ * ```
+ */
+export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<DOM<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
+
+//__________________________________________________________________________________________________//
 
 /**
  * @en Check the selector type is Nil.

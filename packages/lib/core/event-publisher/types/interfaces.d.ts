@@ -1,8 +1,8 @@
 import { Arguments } from '@cdp/core-utils';
 export { Arguments };
 /**
- * @en Represents a disposable resource, such as the execution of an [[Observable]].
- * @ja [[Observable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
+ * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
  */
 export interface Subscription {
     /**
@@ -20,7 +20,7 @@ export interface Subscription {
  * @en Event supplyer interface definitions
  * @ja イベント供給を行うインターフェイス定義
  */
-export interface Observable<Event> {
+export interface Subscribable<Event> {
     /**
      * @en Check whether this object has clients.
      * @ja クライアントが存在するか判定

@@ -1,5 +1,5 @@
 import { Arguments } from '@cdp/core-utils';
-import { Subscription, Observable } from './interfaces';
+import { Subscription, Subscribable } from './interfaces';
 /**
  * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
  *     The client of this class can implement original Pub-Sub (Observer) design pattern.
@@ -45,7 +45,7 @@ import { Subscription, Observable } from './interfaces';
  *                                                          //     but got 3.
  * ```
  */
-export declare abstract class EventPublisher<Event> implements Observable<Event> {
+export declare abstract class EventPublisher<Event> implements Subscribable<Event> {
     /** constructor */
     constructor();
     /**

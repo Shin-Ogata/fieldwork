@@ -2,7 +2,7 @@ import { dom } from '@cdp/dom';
 
 const body = document.body;
 
-export function createTestElementsFromTemplate(): Element[] {
+export function createTestElementsFromTemplate(): HTMLElement[] {
     const divs = dom.utils.elementify(`
 <div id="d1" class="test-dom">
     <p class="test-dom-child"></p>
@@ -16,7 +16,7 @@ export function createTestElementsFromTemplate(): Element[] {
     return divs;
 }
 
-export function prepareTestElements(divs?: Element[]): Element[] {
+export function prepareTestElements(divs?: HTMLElement[]): HTMLElement[] {
     divs = divs || createTestElementsFromTemplate();
 
     const flag = document.createDocumentFragment();

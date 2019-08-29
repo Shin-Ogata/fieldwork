@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mixins } from '@cdp/core-utils';
 import {
     ElementBase,
@@ -6,16 +7,19 @@ import {
     QueryContext,
     elementify,
 } from './utils';
-import { DOMBase, DOMIterable } from './base';
+import { DOMBase } from './base';
 import { DOMMethods } from './methods';
+import { DOMEvents } from './events';
 
 /**
  * @en This interface provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供するインターフェイス
  */
-export interface DOM<T extends ElementBase = Element> extends DOMClass<T> { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface DOM<T extends ElementBase = HTMLElement>
+    extends DOMBase<T>, DOMMethods<T>, DOMEvents<T>
+{ } // eslint-disable-line @typescript-eslint/no-empty-interface
 
-export type DOMSelector<T extends SelectorBase = Element> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
+export type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
 export type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<Element>);
 export type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
 
@@ -23,7 +27,7 @@ export type DOMIterateCallback<T extends ElementBase> = (index: number, element:
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
  */
-export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOMBase, DOMMethods) implements DOMIterable<TElement> {
+export class DOMClass extends mixins(DOMBase, DOMMethods, DOMEvents) {
     /**
      * private constructor
      *
@@ -31,9 +35,10 @@ export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOM
      *  - `en` operation targets `Element` array.
      *  - `ja` 操作対象の `Element` 配列
      */
-    private constructor(elements: TElement[]) {
+    private constructor(elements: ElementBase[]) {
         super(elements);
         this.super(DOMMethods);
+        this.super(DOMEvents);
     }
 
     /**
@@ -53,19 +58,9 @@ export class DOMClass<TElement extends ElementBase = Element> extends mixins(DOM
     public static create<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext): DOMResult<T> {
         if (selector && !context) {
             if (selector instanceof DOMClass) {
-                return selector as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                return selector as any;
             }
         }
-        return new DOMClass((elementify(selector as ElementifySeed<T>, context) as Element[])) as DOMResult<T>;
+        return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as any;
     }
-
-///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
-
-    readonly [n: number]: TElement;
-    readonly length!: number;
-    [Symbol.iterator]: () => Iterator<TElement>;
-    entries!: () => IterableIterator<[number, TElement]>;
-    keys!: () => IterableIterator<number>;
-    values!: () => IterableIterator<TElement>;
 }

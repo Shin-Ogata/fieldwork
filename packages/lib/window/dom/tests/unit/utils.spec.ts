@@ -238,9 +238,9 @@ describe('dom/utils spec', () => {
             expect(elems2).toBeDefined();
             expect(isArray(elems2)).toBe(true);
             expect(elems2.length).toBe(3);
-            expect(elems2[0]).toEqual(divs[0].firstElementChild as Element);
-            expect(elems2[1]).toEqual(divs[1].firstElementChild as Element);
-            expect(elems2[2]).toEqual(divs[2].firstElementChild as Element);
+            expect(elems2[0]).toEqual(divs[0].firstElementChild as HTMLElement);
+            expect(elems2[1]).toEqual(divs[1].firstElementChild as HTMLElement);
+            expect(elems2[2]).toEqual(divs[2].firstElementChild as HTMLElement);
         }
 
         {// advance

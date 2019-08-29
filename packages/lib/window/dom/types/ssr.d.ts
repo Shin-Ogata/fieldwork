@@ -1,3 +1,7 @@
 declare const win: Window;
 declare const doc: Document;
-export { win as window, doc as document, };
+declare const evt: {
+    new <T>(typeArg: string, eventInitDict?: CustomEventInit<T> | undefined): CustomEvent<T>;
+    prototype: CustomEvent<any>;
+};
+export { win as window, doc as document, evt as CustomEvent, };

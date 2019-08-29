@@ -1,8 +1,8 @@
 import { Nil } from '@cdp/core-utils';
 export declare type ElementBase = Node | Window;
-export declare type ElementResult<T> = T extends ElementBase ? T : Element;
+export declare type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export declare type SelectorBase = Node | Window | string | Nil;
-export declare type ElementifySeed<T extends SelectorBase = Element> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
+export declare type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export declare type QueryContext = ParentNode & Partial<NonElementParentNode>;
 /**
  * @en Create Element array from seed arg.

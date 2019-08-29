@@ -27,7 +27,7 @@ function validParentNode(parentNode: Node | null): parentNode is Node {
  * @en Mixin base class which concentrated the methods of DOM class.
  * @ja DOM のメソッドを集約した Mixin Base クラス
  */
-export class DOMMethods<TElement extends ElementBase = Element> implements DOMIterable<TElement> {
+export class DOMMethods<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
 // imprements: DOMIterable<T>
@@ -96,7 +96,7 @@ export class DOMMethods<TElement extends ElementBase = Element> implements DOMIt
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    public parent<T extends Node = Element>(selector?: string): DOM<T> {
+    public parent<T extends Node = HTMLElement>(selector?: string): DOM<T> {
         const parents = new Set<Node>();
         for (const elem of this) {
             const parentNode = (elem as Node).parentNode;
@@ -122,7 +122,7 @@ export class DOMMethods<TElement extends ElementBase = Element> implements DOMIt
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    public parents<T extends Node = Element>(selector?: string): DOM<T> {
+    public parents<T extends Node = HTMLElement>(selector?: string): DOM<T> {
         return this.parentsUntil(undefined, selector);
     }
 
@@ -139,7 +139,7 @@ export class DOMMethods<TElement extends ElementBase = Element> implements DOMIt
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    public parentsUntil<T extends Node = Element, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T> {
+    public parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T> {
         let parents: Node[] = [];
 
         for (const elem of this) {

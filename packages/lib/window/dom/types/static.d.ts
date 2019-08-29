@@ -1,7 +1,7 @@
 import { ElementBase, SelectorBase, QueryContext } from './utils';
 import { DOM, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
 declare namespace dom {
-    let fn: DOMClass<any>;
+    let fn: DOMClass;
 }
 /**
  * @en Create [[DOMClass]] instance from `selector` arg.

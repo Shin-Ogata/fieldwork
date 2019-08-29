@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Arguments, Observable } from './interfaces';
+import { Arguments, Subscribable } from './interfaces';
 import { EventPublisher } from './publisher';
 
 /**
@@ -23,7 +23,7 @@ import { EventPublisher } from './publisher';
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
-export interface EventBroker<Event extends {}> extends Observable<Event> {
+export interface EventBroker<Event extends {}> extends Subscribable<Event> {
     /**
      * @en Notify event to clients.
      * @ja event 発行

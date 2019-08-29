@@ -14,7 +14,7 @@ import {
 } from './class';
 
 declare namespace dom {
-    let fn: DOMClass<any>;
+    let fn: DOMClass;
 }
 
 type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext) => DOMResult<T>;
@@ -40,7 +40,7 @@ function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryC
 dom.utils = utils;
 
 /** @internal 循環参照回避のための遅延コンストラクションメソッド */
-export function setup(fn: DOMClass<any>, factory: DOMFactory): void {
+export function setup(fn: DOMClass, factory: DOMFactory): void {
     _factory = factory;
     dom.fn = fn;
 }

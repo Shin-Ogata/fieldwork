@@ -55,6 +55,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\base.ts" />
     <TypeScriptCompile Include="src\class.ts" />
+    <TypeScriptCompile Include="src\events.ts" />
     <TypeScriptCompile Include="src\exports.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\methods.ts" />
@@ -62,12 +63,14 @@
     <TypeScriptCompile Include="src\static.ts" />
     <TypeScriptCompile Include="src\utils.ts" />
     <TypeScriptCompile Include="tests\unit\dom.base.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\dom.events.spec.ts" />
     <TypeScriptCompile Include="tests\unit\dom.methods.spec.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\utils.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\base.d.ts" />
     <TypeScriptCompile Include="types\class.d.ts" />
+    <TypeScriptCompile Include="types\events.d.ts" />
     <TypeScriptCompile Include="types\exports.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\methods.d.ts" />

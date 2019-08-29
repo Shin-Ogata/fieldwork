@@ -48,7 +48,9 @@ export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Ite
  * @en Base interface for DOM Mixin class.
  * @ja DOM Mixin クラスの既定インターフェイス
  */
-export interface DOMIterable<T extends ElementBase = Element> extends Partial<DOMBase<T>> {
+export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partial<DOMBase<T>> {
+    length: number;
+    [n: number]: T;
 }
 /**
  * @en Check the selector type is Nil.
