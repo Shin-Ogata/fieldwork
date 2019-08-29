@@ -4,7 +4,7 @@ import { DOMIterable } from './base';
  * @en Mixin base class which concentrated the methods of DOM class.
  * @ja DOM のメソッドを集約した Mixin Base クラス
  */
-export declare class DOMMethods<TElement extends ElementBase = Element> implements DOMIterable<TElement> {
+export declare class DOMMethods<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
@@ -30,7 +30,7 @@ export declare class DOMMethods<TElement extends ElementBase = Element> implemen
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    parent<T extends Node = Element>(selector?: string): DOM<T>;
+    parent<T extends Node = HTMLElement>(selector?: string): DOM<T>;
     /**
      * @en Get the ancestors of each element in the current set of matched elements.
      * @ja 管轄している各要素の祖先の親要素を返却
@@ -40,7 +40,7 @@ export declare class DOMMethods<TElement extends ElementBase = Element> implemen
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    parents<T extends Node = Element>(selector?: string): DOM<T>;
+    parents<T extends Node = HTMLElement>(selector?: string): DOM<T>;
     /**
      * @en Get the ancestors of each element in the current set of matched elements, <br>
      *     up to but not including the element matched by the selector, DOM node, or [[DOM]] object
@@ -54,5 +54,5 @@ export declare class DOMMethods<TElement extends ElementBase = Element> implemen
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    parentsUntil<T extends Node = Element, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T>;
+    parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T>;
 }

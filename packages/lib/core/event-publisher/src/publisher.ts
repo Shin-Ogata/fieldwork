@@ -7,7 +7,7 @@ import {
     className,
     verify,
 } from '@cdp/core-utils';
-import { Subscription, Observable } from './interfaces';
+import { Subscription, Subscribable } from './interfaces';
 
 /** @internal Lisner 格納形式 */
 type ListenersMap<T> = Map<keyof T, Set<(...args: T[keyof T][]) => unknown>>;
@@ -86,7 +86,7 @@ function validListener(listener?: (...args: unknown[]) => unknown): any | never 
  *                                                          //     but got 3.
  * ```
  */
-export abstract class EventPublisher<Event> implements Observable<Event> {
+export abstract class EventPublisher<Event> implements Subscribable<Event> {
 
     /** constructor */
     constructor() {
@@ -122,7 +122,7 @@ export abstract class EventPublisher<Event> implements Observable<Event> {
     }
 
 ///////////////////////////////////////////////////////////////////////
-// implements: Observable<Event>
+// implements: Subscribable<Event>
 
     /**
      * @en Check whether this object has clients.

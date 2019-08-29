@@ -1,4 +1,4 @@
-import { Arguments, Observable } from './interfaces';
+import { Arguments, Subscribable } from './interfaces';
 /**
  * @en Eventing framework object able to call `publish()` method from outside.
  * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
@@ -19,7 +19,7 @@ import { Arguments, Observable } from './interfaces';
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
-export interface EventBroker<Event extends {}> extends Observable<Event> {
+export interface EventBroker<Event extends {}> extends Subscribable<Event> {
     /**
      * @en Notify event to clients.
      * @ja event 発行
