@@ -591,4 +591,73 @@ describe('dom events spec', () => {
         expect(() => $dom.animationEnd(null as any)).not.toThrow();
         expect(() => $dom.trigger(evAnimationEnd)).not.toThrow();
     });
+
+    it('check event shortcut, two-way', async (done) => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const events = [
+            'click',
+            'dblclick',
+            'focus',    // * test では順番が大事
+            'blur',     // * test では順番が大事
+            'focusin',
+            'focusout',
+            'keyup',
+            'keydown',
+            'keypress',
+            'submit',
+            'change',
+            'mousedown',
+            'mousemove',
+            'mouseup',
+            'mouseenter',
+            'mouseleave',
+            'mouseout',
+            'mouseover',
+            'touchstart',
+            'touchend',
+            'touchmove',
+            'touchcancel',
+        ];
+
+        const $dom = $('#d1');
+
+        for (const event of events) {
+            $dom[event](stub.onCallback);
+            await $dom[event]();
+        }
+
+        expect(count).toBe(events.length);
+
+        done();
+    });
+
+    it('check event shortcut, no-trigger', async (done) => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const events = [
+            'resize',
+            'scroll',
+        ];
+
+        const $dom = $('#d1');
+
+        for (const event of events) {
+            $dom[event](stub.onCallback);
+            await $dom[event]();
+        }
+
+        expect(count).toBe(0);
+
+        $dom.trigger('resize');
+        $dom.trigger('scroll');
+
+        expect(count).toBe(2);
+
+        done();
+    });
 });
