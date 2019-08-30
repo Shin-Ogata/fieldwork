@@ -1,13 +1,11 @@
 /* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any */
-import { isFunction } from '@cdp/core-utils';
+import { isFunction, isString } from '@cdp/core-utils';
 import { CustomEvent } from './ssr';
 import {
     ElementBase,
     dom as $,
 } from './static';
-import {
-    DOMIterable,
-} from './base';
+import { DOMIterable } from './base';
 
 /** @internal */
 interface DOMEventListner extends EventListener {
@@ -36,36 +34,41 @@ const enum Const {
     COOKIE_SEPARATOR = '|',
 }
 
+//__________________________________________________________________________________________________//
+
 /** @internal */
-const _manageContext = {
-    eventDataMap: new WeakMap<Element, any[]>(),
+const _eventContextMap = {
+    eventData: new WeakMap<Element, any[]>(),
     eventListeners: new WeakMap<Element, BindEventContext>(),
     liveEventListeners: new WeakMap<Element, BindEventContext>(),
 };
 
 /** @internal query event-data from element */
-function queryEventData(elem: Element): Event[] {
-    return _manageContext.eventDataMap.get(elem) || [];
+function queryEventData(event: Event): any[] {
+    const data = _eventContextMap.eventData.get(event.target as Element) || [];
+    data.unshift(event);
+    return data;
 }
 
 /** @internal register event-data with element */
 function registerEventData(elem: Element, eventData: any[]): void {
-    _manageContext.eventDataMap.set(elem, eventData);
+    _eventContextMap.eventData.set(elem, eventData);
 }
 
 /** @internal delete event-data by element */
 function deleteEventData(elem: Element): void {
-    _manageContext.eventDataMap.delete(elem);
+    _eventContextMap.eventData.delete(elem);
 }
 
 /** @internal convert event cookie from event name, selector, options */
-function toCookie(event: string, selector: string, options: boolean | AddEventListenerOptions): string {
+function toCookie(event: string, selector: string, options: AddEventListenerOptions): string {
+    delete options.once;
     return `${event}${Const.COOKIE_SEPARATOR}${JSON.stringify(options)}${Const.COOKIE_SEPARATOR}${selector}`;
 }
 
 /** @internal get listener handlers context by element and event */
-function getEventListenersHandlers(elem: Element, event: string, selector: string, options: boolean | AddEventListenerOptions, ensure: boolean): BindInfo {
-    const eventListeners = selector ? _manageContext.liveEventListeners : _manageContext.eventListeners;
+function getEventListenersHandlers(elem: Element, event: string, selector: string, options: AddEventListenerOptions, ensure: boolean): BindInfo {
+    const eventListeners = selector ? _eventContextMap.liveEventListeners : _eventContextMap.eventListeners;
     if (!eventListeners.has(elem)) {
         if (ensure) {
             eventListeners.set(elem, {});
@@ -96,7 +99,7 @@ function registerEventListenerHandlers(
     selector: string,
     listener: EventListener,
     proxy: EventListener,
-    options: boolean | AddEventListenerOptions
+    options: AddEventListenerOptions
 ): void {
     for (const event of events) {
         const { registered, handlers } = getEventListenersHandlers(elem, event, selector, options, true);
@@ -131,11 +134,30 @@ function extractAllHandlers(elem: Element): { event: string; handler: EventListe
         }
     };
 
-    const { eventListeners, liveEventListeners } = _manageContext;
+    const { eventListeners, liveEventListeners } = _eventContextMap;
     query(eventListeners.get(elem)) && eventListeners.delete(elem);
     query(liveEventListeners.get(elem)) && liveEventListeners.delete(elem);
 
     return handlers;
+}
+
+/** @internal parse event args */
+function parseEventArgs(...args: any[]): { type: string[]; selector: string; listener: DOMEventListner; options: AddEventListenerOptions; } {
+    let [type, selector, listener, options] = args;
+    if (isFunction(selector)) {
+        [type, listener, options] = args;
+        selector = undefined;
+    }
+
+    type = !type ? [] : (Array.isArray(type) ? type : [type]);
+    selector = selector || '';
+    if (!options) {
+        options = {};
+    } else if (true === options) {
+        options = { capture: true };
+    }
+
+    return { type, selector, listener, options };
 }
 
 //__________________________________________________________________________________________________//
@@ -176,7 +198,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      * @ja 要素に対して, 1つまたは複数のイベントハンドラを設定 (動的要素にも有効)
      *
      * @param type
-     *  - `en` event name of event name array.
+     *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
      * @param selector
      *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
@@ -198,29 +220,13 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         options?: boolean | AddEventListenerOptions
     ): this;
     public on<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
-        let [type, selector, listener, options] = args;
-        if (isFunction(args[1])) {
-            [type, listener, options] = args;
-            selector = '';
-        }
-        if (!options) {
-            options = false;
-        }
+        const { type: events, selector, listener, options } = parseEventArgs(...args);
 
         function handleLiveEvent(e: Event): void {
-            const target = e.target as Element | null;
-            if (!target) {
-                return;
-            }
-
-            const eventData = queryEventData(target);
-            if (!eventData.includes(e)) {
-                eventData.unshift(e);
-            }
-
-            const $target = $(target);
+            const eventData = queryEventData(e);
+            const $target = $(e.target as Element | null);
             if ($target.is(selector)) {
-                listener.apply(target, eventData);
+                listener.apply($target[0], eventData);
             } else {
                 for (const parent of $target.parents()) {
                     if ($(parent).is(selector)) {
@@ -231,18 +237,13 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         }
 
         function handleEvent(this: DOMEvents<TElement>, e: Event): void {
-            const eventData = e && e.target ? queryEventData(e.target as Element) : [];
-            if (!eventData.includes(e)) {
-                eventData.unshift(e);
-            }
-            listener.apply(this, eventData);
+            listener.apply(this, queryEventData(e));
         }
 
-        const events: string[] = Array.isArray(type) ? type : [type];
-        const handler = selector ? handleLiveEvent : handleEvent;
+        const proxy = selector ? handleLiveEvent : handleEvent;
 
         for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
-            registerEventListenerHandlers(el, events, selector, listener, handler, options);
+            registerEventListenerHandlers(el, events, selector, listener, proxy, options);
         }
 
         return this;
@@ -255,7 +256,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
-     *  - `en` event name of event name array.
+     *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
      * @param selector
      *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
@@ -277,16 +278,9 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         options?: boolean | AddEventListenerOptions
     ): this;
     public off<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
-        let [type, selector, listener, options] = args;
-        if (isFunction(args[1])) {
-            [type, listener, options] = args;
-            selector = '';
-        }
-        if (!options) {
-            options = false;
-        }
+        const { type: events, selector, listener, options } = parseEventArgs(...args);
 
-        if (null == type) {
+        if (events.length <= 0) {
             for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
                 const contexts = extractAllHandlers(el);
                 for (const context of contexts) {
@@ -294,7 +288,6 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
                 }
             }
         } else {
-            const events: string[] = Array.isArray(type) ? type : [type];
             for (const event of events) {
                 for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
                     const { registered, handlers } = getEventListenersHandlers(el, event, selector, options, false);
@@ -324,7 +317,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      * @ja 要素に対して, 一度だけ呼び出されるイベントハンドラを設定 (動的要素に対しても有効)
      *
      * @param type
-     *  - `en` event name of event name array.
+     *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
      * @param selector
      *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
@@ -346,50 +339,51 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         options?: boolean | AddEventListenerOptions
     ): this;
     public once<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
-        let [type, selector, listener, options] = args;
-        if (isFunction(args[1])) {
-            [type, listener, options] = args;
-            selector = '';
-        }
-
-        options = options || {};
-        if (true === options) {
-            options = { capture: true };
-        }
-        Object.assign(options, { once: true });
+        const { type, selector, listener, options } = parseEventArgs(...args);
+        const opts = { ...options, ...{ once: true } };
 
         const self = this;
         function onceHandler(this: DOMEvents<TElement>, ...eventArgs: any[]): void {
             listener.apply(this, eventArgs);
-            self.off(type, selector, onceHandler, options);
-            if (onceHandler.origin) {
-                delete onceHandler.origin;
-            }
+            self.off(type as any, selector, onceHandler, opts);
+            delete onceHandler.origin;
         }
         onceHandler.origin = listener;
-        return this.on(type, selector, onceHandler, options);
+        return this.on(type as any, selector, onceHandler, opts);
     }
 
     /**
      * @en Execute all handlers added to the matched elements for the specified event.
      * @ja 設定されているイベントハンドラに対してイベントを発行
      *
-     * @param type
-     *  - `en` event name of event name array.
-     *  - `ja` イベント名またはイベント名配列
+     * @param seed
+     *  - `en` event name or event name array. / `Event` instance or `Event` instance array.
+     *  - `ja` イベント名またはイベント名配列 / `Event` インスタンスまたは `Event` インスタンス配列
      * @param eventData
      *  - `en` optional sending data.
      *  - `ja` 送信する任意のデータ
      */
-    public trigger<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], ...eventData: any[]): this {
-        const events = Array.isArray(type) ? type : [type];
-        for (const event of events) {
-            for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
-                const e = new CustomEvent(event as string, {
+    public trigger<TEventMap extends DOMEventMap<TElement>>(
+        seed: keyof TEventMap | (keyof TEventMap)[] | Event | Event[] | (keyof TEventMap | Event)[],
+        ...eventData: any[]
+    ): this {
+        const convert = (arg: keyof TEventMap | Event): Event => {
+            if (isString(arg)) {
+                return new CustomEvent(arg, {
                     detail: eventData,
                     bubbles: true,
                     cancelable: true,
                 });
+            } else {
+                return arg as Event;
+            }
+        };
+
+        const events = Array.isArray(seed) ? seed : [seed];
+
+        for (const event of events) {
+            const e = convert(event);
+            for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
                 registerEventData(el, eventData);
                 el.dispatchEvent(e);
                 deleteEventData(el);
@@ -454,18 +448,3 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         return this;
     }
 }
-
-/*
-const handler = (e: UIEvent) => { };
-const p = new DOMEvents<HTMLElement>();
-p.on('abort', handler);
-p.on(['abort', 'animationend'], 'div', handler);
-p.on('fuga', handler);
-
-interface Hoge extends DOMEventMap<HTMLElement> {
-    hoge: number;
-}
-
-p.on<Hoge>('hoge', handler);
-p.on<Hoge>('hoge', '.child', handler);
-*/
