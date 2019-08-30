@@ -20,7 +20,7 @@ export interface DOM<T extends ElementBase = HTMLElement>
 { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 export type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
-export type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<Element>);
+export type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<HTMLElement>);
 export type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
 
 /**

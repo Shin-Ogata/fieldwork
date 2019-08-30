@@ -4,3 +4,4 @@ export {
     dom,
 } from './static';
 export { dom as default } from './static';
+export { DOMEventMap } from './events';

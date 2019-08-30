@@ -15,7 +15,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      * @ja 要素に対して, 1つまたは複数のイベントハンドラを設定 (動的要素にも有効)
      *
      * @param type
-     *  - `en` event name of event name array.
+     *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
      * @param selector
      *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
@@ -34,7 +34,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
-     *  - `en` event name of event name array.
+     *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
      * @param selector
      *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
@@ -51,7 +51,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      * @ja 要素に対して, 一度だけ呼び出されるイベントハンドラを設定 (動的要素に対しても有効)
      *
      * @param type
-     *  - `en` event name of event name array.
+     *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
      * @param selector
      *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
@@ -67,14 +67,14 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      * @en Execute all handlers added to the matched elements for the specified event.
      * @ja 設定されているイベントハンドラに対してイベントを発行
      *
-     * @param type
-     *  - `en` event name of event name array.
-     *  - `ja` イベント名またはイベント名配列
+     * @param seed
+     *  - `en` event name or event name array. / `Event` instance or `Event` instance array.
+     *  - `ja` イベント名またはイベント名配列 / `Event` インスタンスまたは `Event` インスタンス配列
      * @param eventData
      *  - `en` optional sending data.
      *  - `ja` 送信する任意のデータ
      */
-    trigger<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], ...eventData: any[]): this;
+    trigger<TEventMap extends DOMEventMap<TElement>>(seed: keyof TEventMap | (keyof TEventMap)[] | Event | Event[] | (keyof TEventMap | Event)[], ...eventData: any[]): this;
     /**
      * @en Short cut for [[once]]('transitionend').
      * @ja [[once]]('transitionend') のユーティリティ
