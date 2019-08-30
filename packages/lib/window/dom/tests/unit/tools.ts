@@ -4,7 +4,7 @@ const body = document.body;
 
 export function createTestElementsFromTemplate(): HTMLElement[] {
     const divs = dom.utils.elementify(`
-<div id="d1" class="test-dom">
+<div id="d1" class="test-dom" tabindex="-1">
     <p class="test-dom-child"></p>
 </div>
 <div id="d2" class="test-dom">
