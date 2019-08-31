@@ -51,7 +51,35 @@ export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Ite
 export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partial<DOMBase<T>> {
     length: number;
     [n: number]: T;
+    [Symbol.iterator]: () => Iterator<T>;
 }
+/**
+ * @en Check [[DOM]] target is `Element`.
+ * @ja [[DOM]] が `Element` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export declare function isTypeElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<Element>;
+/**
+ * @en Check [[DOM]] target is `Document`.
+ * @ja [[DOM]] が `Document` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export declare function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DOMIterable<Document>;
+/**
+ * @en Check [[DOM]] target is `Window`.
+ * @ja [[DOM]] が `Window` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export declare function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<Window>;
 /**
  * @en Check the selector type is Nil.
  * @ja Nil セレクタであるか判定

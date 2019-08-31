@@ -106,6 +106,20 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     animationEnd(callback: (event: AnimationEvent, ...args: any[]) => void, permanent?: boolean): this;
     /**
+     * @en Bind one or two handlers to the matched elements, to be executed when the `mouseenter` and `mouseleave` the elements.
+     * @ja 1つまたは2つのハンドラを指定し, 一致した要素の `mouseenter`, `mouseleave` を検知
+     *
+     * @param handlerIn(Out)
+     *  - `en` A function to execute when the `mouseenter` the element. <br>
+     *        If handler set only one, a function to execute when the `mouseleave` the element, too.
+     *  - `ja` `mouseenter` イベントハンドラを指定. <br>
+     *          引数が1つである場合, `mouseleave` ハンドラも兼ねる
+     * @param handlerOut
+     *  - `en` A function to execute when the `mouseleave` the element.
+     *  - `ja` `mouseleave` ハンドラを指定
+     */
+    hover(handlerIn: (event: Event, ...args: any[]) => void, handlerOut?: (event: Event, ...args: any[]) => void): this;
+    /**
      * @en Trigger or handle `click` event.
      * @ja `click` イベントの発行または捕捉
      *
@@ -225,6 +239,18 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     submit(handler?: (event: Event, ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
+    /**
+     * @en Trigger or handle `contextmenu` event.
+     * @ja `contextmenu` イベントの発行または捕捉
+     *
+     * @param handler
+     *  - `en` event handler is designated. when omitting, the event is triggered.
+     *  - `ja` イベントハンドラを指定. 省略した場合はイベントを発行
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
+    contextmenu(handler?: (event: Event, ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `change` event.
      * @ja `change` イベントの発行または捕捉
