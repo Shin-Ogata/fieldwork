@@ -133,6 +133,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
 export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partial<DOMBase<T>> {
     length: number;
     [n: number]: T;
+    [Symbol.iterator]: () => Iterator<T>;
 }
 
 /**
@@ -147,6 +148,43 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
 export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<DOM<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 //__________________________________________________________________________________________________//
+
+/**
+ * @en Check [[DOM]] target is `Element`.
+ * @ja [[DOM]] が `Element` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export function isTypeElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<Element> {
+    const node = dom[0] as Node;
+    return !!(node && node.nodeType && (Node.ELEMENT_NODE === node.nodeType));
+}
+
+/**
+ * @en Check [[DOM]] target is `Document`.
+ * @ja [[DOM]] が `Document` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DOMIterable<Document> {
+    return document === dom[0];
+}
+
+/**
+ * @en Check [[DOM]] target is `Window`.
+ * @ja [[DOM]] が `Window` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<Window> {
+    return window === dom[0];
+}
 
 /**
  * @en Check the selector type is Nil.

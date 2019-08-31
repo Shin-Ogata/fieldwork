@@ -592,6 +592,51 @@ describe('dom events spec', () => {
         expect(() => $dom.trigger(evAnimationEnd)).not.toThrow();
     });
 
+    it('check DOM#hover(handlerIn, handlerOut)', async (done) => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const stub2 = { onCallback2 };
+        spyOn(stub2, 'onCallback2').and.callThrough();
+        const evMouseEnter = createEvent('mouseenter');
+        const evMouseOver = createEvent('mouseover');
+        const evMouseLeave = createEvent('mouseleave');
+
+        const $dom = $('#d1');
+        $dom.hover(stub.onCallback, stub2.onCallback2);
+
+        await $dom.trigger(evMouseEnter, 'enter');
+        await $dom.trigger(evMouseOver, 'over');
+        await $dom.trigger(evMouseLeave, 'leave');
+
+        expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 'enter');
+        expect(stub2.onCallback2).toHaveBeenCalledWith(jasmine.any(Event), 'leave');
+        expect(count).toBe(2);
+
+        done();
+    });
+
+    it('check DOM#hover(handlerIOut)', async (done) => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evMouseEnter = createEvent('mouseenter');
+        const evMouseOver = createEvent('mouseover');
+        const evMouseLeave = createEvent('mouseleave');
+
+        const $dom = $('#d1');
+        $dom.hover(stub.onCallback);
+
+        await $dom.trigger(evMouseEnter, 'enter');
+        await $dom.trigger(evMouseOver, 'over');
+        await $dom.trigger(evMouseLeave, 'leave');
+
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(count).toBe(2);
+
+        done();
+    });
+
     it('check event shortcut, two-way', async (done) => {
         prepareTestElements();
         const stub = { onCallback };
@@ -608,6 +653,7 @@ describe('dom events spec', () => {
             'keydown',
             'keypress',
             'submit',
+            'contextmenu',
             'change',
             'mousedown',
             'mousemove',
@@ -629,7 +675,7 @@ describe('dom events spec', () => {
             await $dom[event]();
         }
 
-        expect(count).toBe(events.length);
+        expect(count).toBeGreaterThanOrEqual(events.length - 2 /* focus, blur は Testem UI 上ではタイミング問題で発火しないことがある */);
 
         done();
     });

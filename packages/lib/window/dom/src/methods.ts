@@ -10,6 +10,7 @@ import {
 } from './static';
 import {
     DOMIterable,
+    isTypeElement,
     isEmptySelector,
     isStringSelector,
     isDocumentSelector,
@@ -38,7 +39,107 @@ export class DOMMethods<TElement extends ElementBase> implements DOMIterable<TEl
     entries!: () => IterableIterator<[number, TElement]>;
 
 ///////////////////////////////////////////////////////////////////////
-// public:
+// public: Classes
+
+    /**
+     * @en Add css class to elements.
+     * @ja css class 要素に追加
+     *
+     * @param className
+     *  - `en` class name or class name list (array).
+     *  - `ja` クラス名またはクラス名の配列を指定
+     */
+    public addClass(className: string | string[]): this {
+        if (!isTypeElement(this)) {
+            return this;
+        }
+        const classes = Array.isArray(className) ? className : [className];
+        for (const el of this as DOMIterable<Element>) {
+            el.classList.add(...classes);
+        }
+        return this;
+    }
+
+    /**
+     * @en Remove css class to elements.
+     * @ja css class 要素を削除
+     *
+     * @param className
+     *  - `en` class name or class name list (array).
+     *  - `ja` クラス名またはクラス名の配列を指定
+     */
+    public removeClass(className: string | string[]): this {
+        if (!isTypeElement(this)) {
+            return this;
+        }
+        const classes = Array.isArray(className) ? className : [className];
+        for (const el of this as DOMIterable<Element>) {
+            el.classList.remove(...classes);
+        }
+        return this;
+    }
+
+    /**
+     * @en Determine whether any of the matched elements are assigned the given class.
+     * @ja 指定されたクラス名を少なくとも要素が持っているか判定
+     *
+     * @param className
+     *  - `en` class name
+     *  - `ja` クラス名
+     */
+    public hasClass(className: string): boolean {
+        if (!isTypeElement(this)) {
+            return false;
+        }
+        for (const el of this as DOMIterable<Element>) {
+            if (el.classList.contains(className)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @en Add or remove one or more classes from each element in the set of matched elements, <br>
+     *     depending on either the class's presence or the value of the state argument.
+     * @ja 現在の状態に応じて, 指定されたクラス名を要素に追加/削除を実行
+     *
+     * @param className
+     *  - `en` class name or class name list (array).
+     *  - `ja` クラス名またはクラス名の配列を指定
+     * @param force
+     *  - `en` if this argument exists, true: the classes should be added / false: removed.
+     *  - `ja` 引数が存在する場合, true: クラスを追加 / false: クラスを削除
+     */
+    public toggleClass(className: string | string[], force?: boolean): this {
+        if (!isTypeElement(this)) {
+            return this;
+        }
+
+        const classes = Array.isArray(className) ? className : [className];
+        const operation = (() => {
+            if (null == force) {
+                return (elem: Element): void => {
+                    for (const name of classes) {
+                        elem.classList.toggle(name);
+                    }
+                };
+            } else if (force) {
+                return (elem: Element) => elem.classList.add(...classes);
+            } else {
+                return (elem: Element) => elem.classList.remove(...classes);
+            }
+        })();
+
+        for (const el of this as DOMIterable<Element>) {
+            operation(el);
+        }
+
+        return this;
+    }
+
+///////////////////////////////////////////////////////////////////////
+// public: Manipulation
 
     /**
      * @en Check the current matched set of elements against a selector, element, or [[DOM]] object.
@@ -169,3 +270,79 @@ export class DOMMethods<TElement extends ElementBase> implements DOMIterable<TEl
         return $(parents) as DOM<T>;
     }
 }
+
+// TODO:
+    //attr,
+    //removeAttr,
+    //prop,
+    //data,
+    //removeData,
+    //dataset,
+    //val,
+    //transform,
+    //transition,
+    //width,
+    //outerWidth,
+    //height,
+    //outerHeight,
+    //offset,
+    //hide, <- やらない?
+    //show, <- やらない?
+    //styles,
+    //css,
+    //toArray,
+    //each,
+    //forEach,
+    //filter,
+    //map,
+    //html,
+    //text,
+    //indexOf,
+    //index,
+    //eq,
+    //append,
+    //appendTo,
+    //prepend,
+    //prependTo,
+    //insertBefore,
+    //insertAfter,
+    //next,
+    //nextAll,
+    //prev,
+    //prevAll,
+    //siblings,
+    //closest,
+    //find,
+    //children,
+    //remove,
+    //detach,
+    //add,
+    //empty,
+
+/////
+
+// contents
+// position
+// scrollTop (window) <- scroll (pr2)
+// clone
+// wrap
+// unwrap
+// replaceWith
+// fade, fadeIn, fadeOut, fadeTo, fadeToggle <- animation (pr3)
+// slideUp, slideDown, slideToggle <- やらない
+
+///
+
+// first
+// has
+// last
+// innerHeight
+// innerWidth
+// nextUntil
+// offsetParent
+// outerHeight
+// outerWidth
+// prevUntil
+// replaceAll
+// wrapAll
+// wrapInner
