@@ -6,7 +6,7 @@ import {
     cleanupTestElements,
 } from './tools';
 
-describe('dom base spec', () => {
+describe('dom/base spec', () => {
     const body = document.body;
 
     afterEach((): void => {

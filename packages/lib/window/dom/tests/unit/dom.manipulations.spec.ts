@@ -5,7 +5,7 @@ import {
     cleanupTestElements,
 } from './tools';
 
-describe('dom methods spec', () => {
+describe('dom/manipulations spec', () => {
     const body = document.body;
     const testee = $.utils.elementify.bind($.utils);
 
@@ -13,119 +13,7 @@ describe('dom methods spec', () => {
         cleanupTestElements();
     });
 
-    it('check DOM#addClass', () => {
-        const divs = prepareTestElements();
-
-        const orgDiv0ClassLength = divs[0].classList.length;
-        const orgDiv1ClassLength = divs[1].classList.length;
-        const orgDiv2ClassLength = divs[2].classList.length;
-
-        const $dom = $('.test-dom');
-        $dom.addClass('hoge');
-
-        expect($dom[0].classList.contains('hoge')).toBe(true);
-        expect($dom[0].classList.contains('fuga')).toBe(false);
-        expect($dom[0].classList.length).toBe(orgDiv0ClassLength + 1);
-        expect($dom[1].classList.contains('hoge')).toBe(true);
-        expect($dom[1].classList.contains('fuga')).toBe(false);
-        expect($dom[1].classList.length).toBe(orgDiv1ClassLength + 1);
-        expect($dom[2].classList.contains('hoge')).toBe(true);
-        expect($dom[2].classList.contains('fuga')).toBe(false);
-        expect($dom[2].classList.length).toBe(orgDiv2ClassLength + 1);
-
-        $dom.addClass(['hoge', 'fuga']);
-        expect($dom[0].classList.contains('hoge')).toBe(true);
-        expect($dom[0].classList.contains('fuga')).toBe(true);
-        expect($dom[0].classList.length).toBe(orgDiv0ClassLength + 2);
-        expect($dom[1].classList.contains('hoge')).toBe(true);
-        expect($dom[1].classList.contains('fuga')).toBe(true);
-        expect($dom[1].classList.length).toBe(orgDiv1ClassLength + 2);
-        expect($dom[2].classList.contains('hoge')).toBe(true);
-        expect($dom[2].classList.contains('fuga')).toBe(true);
-        expect($dom[2].classList.length).toBe(orgDiv2ClassLength + 2);
-
-        expect(() => $(document).addClass('hoge')).not.toThrow();
-        expect(() => $(window).addClass('hoge')).not.toThrow();
-    });
-
-    it('check DOM#removeClass', () => {
-        prepareTestElements();
-
-        const $dom = $('.test-dom');
-        $dom.addClass(['hoge', 'fuga']);
-
-        $dom.removeClass('hoge');
-        expect($dom[0].classList.contains('hoge')).toBe(false);
-        expect($dom[0].classList.contains('fuga')).toBe(true);
-        expect($dom[1].classList.contains('hoge')).toBe(false);
-        expect($dom[1].classList.contains('fuga')).toBe(true);
-        expect($dom[2].classList.contains('hoge')).toBe(false);
-        expect($dom[2].classList.contains('fuga')).toBe(true);
-
-        $dom.removeClass(['hoge', 'fuga']);
-        expect($dom[0].classList.contains('hoge')).toBe(false);
-        expect($dom[0].classList.contains('fuga')).toBe(false);
-        expect($dom[1].classList.contains('hoge')).toBe(false);
-        expect($dom[1].classList.contains('fuga')).toBe(false);
-        expect($dom[2].classList.contains('hoge')).toBe(false);
-        expect($dom[2].classList.contains('fuga')).toBe(false);
-
-        expect(() => $(document).removeClass('hoge')).not.toThrow();
-        expect(() => $(window).removeClass('hoge')).not.toThrow();
-    });
-
-    it('check DOM#hasClass', () => {
-        prepareTestElements();
-
-        const $dom = $('.test-dom');
-        $dom.addClass('hoge');
-        $dom[1].classList.add('fuga');
-
-        expect($dom.hasClass('hoge')).toBe(true);
-        expect($dom.hasClass('fuga')).toBe(true);
-
-        $dom.removeClass('hoge');
-        expect($dom.hasClass('hoge')).toBe(false);
-        expect($dom.hasClass('fuga')).toBe(true);
-
-        expect($(document).hasClass('hoge')).toBe(false);
-        expect($(window).hasClass('hoge')).toBe(false);
-    });
-
-    it('check DOM#toggleClass', () => {
-        const divs = prepareTestElements();
-        divs[0].classList.add('aaa');
-        divs[1].classList.add('aaa', 'bbb');
-        divs[2].classList.add('aaa', 'bbb', 'ccc');
-
-        const $dom = $('.test-dom');
-
-        // toggle
-        $dom.toggleClass('bbb');
-        expect(divs[0].classList.contains('bbb')).toBe(true);
-        expect(divs[1].classList.contains('bbb')).toBe(false);
-        expect(divs[2].classList.contains('bbb')).toBe(false);
-
-        // add
-        $dom.toggleClass('ccc', true);
-        expect(divs[0].classList.contains('ccc')).toBe(true);
-        expect(divs[1].classList.contains('ccc')).toBe(true);
-        expect(divs[2].classList.contains('ccc')).toBe(true);
-
-        // remove
-        $dom.toggleClass(['aaa', 'bbb'], false);
-        expect(divs[0].classList.contains('aaa')).toBe(false);
-        expect(divs[0].classList.contains('bbb')).toBe(false);
-        expect(divs[1].classList.contains('aaa')).toBe(false);
-        expect(divs[1].classList.contains('bbb')).toBe(false);
-        expect(divs[2].classList.contains('aaa')).toBe(false);
-        expect(divs[2].classList.contains('bbb')).toBe(false);
-
-        expect(() => $(document).toggleClass('hoge')).not.toThrow();
-        expect(() => $(window).toggleClass('hoge')).not.toThrow();
-    });
-
-    it('check DOM#is', () => {
+    it('check DOM#is()', () => {
         const divs = prepareTestElements();
 
         {// no entry
@@ -207,7 +95,7 @@ describe('dom methods spec', () => {
         }
     });
 
-    it('check DOM#parent', () => {
+    it('check DOM#parent()', () => {
         const divs = prepareTestElements(testee(`
 <div id="d1" class="test-dom father">
     <p class="test-dom-child"></p>
@@ -259,7 +147,7 @@ describe('dom methods spec', () => {
         }
     });
 
-    it('check DOM#parents / parentsUntil', () => {
+    it('check DOM#parents() / parentsUntil()', () => {
         const $dom = $(`
 <ul class="test-dom level-1">
   <li class="item-i">I</li>

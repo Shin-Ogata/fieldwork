@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Type, Class, Constructor } from './types';
+import {
+    Type,
+    Class,
+    Constructor,
+} from './types';
 
 /**
  * @en Mixin class's base interface.

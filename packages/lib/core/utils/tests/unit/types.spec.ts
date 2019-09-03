@@ -7,7 +7,10 @@ import {
     isBoolean,
     isSymbol,
     isPrimitive,
+    isArray,
     isObject,
+    isPlainObject,
+    isEmptyObject,
     isFunction,
     typeOf,
     isIterable,
@@ -183,6 +186,26 @@ describe('utils/types spec', (): void => {
         expect(isPrimitive(_classInst)).toBeFalsy();
     });
 
+    it('check isArray()', (...args: any[]): void => {
+        expect(isArray(undefined)).toBeFalsy();
+        expect(isArray(null)).toBeFalsy();
+        expect(isArray('')).toBeFalsy();
+        expect(isArray('hoge')).toBeFalsy();
+        expect(isArray(true)).toBeFalsy();
+        expect(isArray(false)).toBeFalsy();
+        expect(isArray(0)).toBeFalsy();
+        expect(isArray(1)).toBeFalsy();
+        expect(isArray(Infinity)).toBeFalsy();
+        expect(isArray(NaN)).toBeFalsy();
+        expect(isArray({})).toBeFalsy();
+        expect(isArray([])).toBeTruthy();
+        expect(isArray(args)).toBeTruthy();
+        expect(isArray(() => { return 1; })).toBeFalsy();
+        expect(isArray(_symbol)).toBeFalsy();
+        expect(isArray(TypeClass)).toBeFalsy();
+        expect(isArray(_classInst)).toBeFalsy();
+    });
+
     it('check isObject()', (): void => {
         expect(isObject(undefined)).toBeFalsy();
         expect(isObject(null)).toBeFalsy();
@@ -200,6 +223,49 @@ describe('utils/types spec', (): void => {
         expect(isObject(_symbol)).toBeFalsy();
         expect(isObject(TypeClass)).toBeFalsy();
         expect(isObject(_classInst)).toBeTruthy();
+    });
+
+    it('check isPlainObject()', (): void => {
+        expect(isPlainObject(undefined)).toBeFalsy();
+        expect(isPlainObject(null)).toBeFalsy();
+        expect(isPlainObject('')).toBeFalsy();
+        expect(isPlainObject('hoge')).toBeFalsy();
+        expect(isPlainObject(true)).toBeFalsy();
+        expect(isPlainObject(false)).toBeFalsy();
+        expect(isPlainObject(0)).toBeFalsy();
+        expect(isPlainObject(1)).toBeFalsy();
+        expect(isPlainObject(Infinity)).toBeFalsy();
+        expect(isPlainObject(NaN)).toBeFalsy();
+        expect(isPlainObject({})).toBeTruthy();
+        expect(isPlainObject([])).toBeFalsy();
+        expect(isPlainObject(() => { return 1; })).toBeFalsy();
+        expect(isPlainObject(_symbol)).toBeFalsy();
+        expect(isPlainObject(TypeClass)).toBeFalsy();
+        expect(isPlainObject(_classInst)).toBeFalsy();
+        expect(isPlainObject(document)).toBeFalsy();
+        expect(isPlainObject(Object.create(null))).toBeTruthy();
+    });
+
+    it('check isEmptyObject()', (): void => {
+        expect(isEmptyObject(undefined)).toBeFalsy();
+        expect(isEmptyObject(null)).toBeFalsy();
+        expect(isEmptyObject('')).toBeFalsy();
+        expect(isEmptyObject('hoge')).toBeFalsy();
+        expect(isEmptyObject(true)).toBeFalsy();
+        expect(isEmptyObject(false)).toBeFalsy();
+        expect(isEmptyObject(0)).toBeFalsy();
+        expect(isEmptyObject(1)).toBeFalsy();
+        expect(isEmptyObject(Infinity)).toBeFalsy();
+        expect(isEmptyObject(NaN)).toBeFalsy();
+        expect(isEmptyObject({})).toBeTruthy();
+        expect(isEmptyObject({ name: 'hoge' })).toBeFalsy();
+        expect(isEmptyObject([])).toBeFalsy();
+        expect(isEmptyObject(() => { return 1; })).toBeFalsy();
+        expect(isEmptyObject(_symbol)).toBeFalsy();
+        expect(isEmptyObject(TypeClass)).toBeFalsy();
+        expect(isEmptyObject(_classInst)).toBeFalsy();
+        expect(isEmptyObject(document)).toBeFalsy();
+        expect(isEmptyObject(Object.create(null))).toBeTruthy();
     });
 
     it('check isFunction()', (): void => {

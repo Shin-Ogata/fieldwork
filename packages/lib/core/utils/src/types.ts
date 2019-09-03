@@ -96,6 +96,22 @@ export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Functio
  */
 export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 
+/**
+ * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
+ *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
+ * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>The PlainObject type is a JavaScript object containing zero or more key-value pairs. <br>
+ *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
+ */
+export interface PlainObject<T = any> {
+    [key: string]: T;
+}
+
+/**
+ * @en The data type list by which style compulsion is possible.
+ * @ja 型強制可能なデータ型一覧
+ */
+export type TypedData = string | number | boolean | null | object;
+
 //__________________________________________________________________________________________________//
 
 /**
@@ -185,6 +201,18 @@ export function isPrimitive(x: unknown): x is Primitive {
 }
 
 /**
+ * @en Check the value-type is Array.
+ * @ja Array 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isArray(x: unknown): x is Array<any> {
+    return Array.isArray(x);
+}
+
+/**
  * @en Check the value-type is Object.
  * @ja Object 型であるか判定
  *
@@ -194,6 +222,45 @@ export function isPrimitive(x: unknown): x is Primitive {
  */
 export function isObject(x: unknown): x is object {
     return Boolean(x) && 'object' === typeof x;
+}
+
+/**
+ * @en Check the value-type is [[PlainObject]].
+ * @ja [[PlainObject]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isPlainObject(x: unknown): x is PlainObject {
+    if (!isObject(x)) {
+        return false;
+    }
+
+    // create from `Object.create( null )` is plain
+    if (!Object.getPrototypeOf(x)) {
+        return true;
+    }
+
+    return ownInstanceOf(Object, x);
+}
+
+/**
+ * @en Check the value-type is empty object.
+ * @ja 空オブジェクトであるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isEmptyObject(x: unknown): x is object {
+    if (!isPlainObject(x)) {
+        return false;
+    }
+    for (const name in x) { // eslint-disable-line @typescript-eslint/no-unused-vars
+        return false;
+    }
+    return true;
 }
 
 /**

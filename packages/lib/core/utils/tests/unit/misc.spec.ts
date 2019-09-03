@@ -4,6 +4,7 @@ import {
     post,
     noop,
     escapeHTML,
+    toTypedData,
 } from '@cdp/core-utils';
 
 describe('utils/misc spec', () => {
@@ -55,5 +56,16 @@ describe('utils/misc spec', () => {
 
         const src6 = Symbol.iterator;
         expect(escapeHTML(src6)).toBe('');
+    });
+
+    it('check toTypedData', () => {
+        expect(toTypedData('true')).toBe(true);
+        expect(toTypedData('false')).toBe(false);
+        expect(toTypedData('null')).toBe(null);
+        expect(toTypedData('100')).toBe(100);
+        expect(toTypedData('2.5')).toBe(2.5);
+        expect(toTypedData('hoge')).toBe('hoge');
+        expect(toTypedData('{ "prop": "hoge" }')).toEqual({ prop: 'hoge' });
+        expect(toTypedData('99%')).toBe('99%');
     });
 });
