@@ -1,7 +1,8 @@
-import { PlainObject, NonFunctionPropertyNames } from '@cdp/core-utils';
+import { PlainObject, NonFunctionPropertyNames, TypedData } from '@cdp/core-utils';
 import { ElementBase } from './static';
 import { DOMIterable } from './base';
 export declare type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
+export declare type DOMData = PlainObject<TypedData>;
 /**
  * @en Mixin base class which concentrated the property methods of DOM class.
  * @ja DOM のプロパティ操作メソッドを集約した Mixin Base クラス
@@ -142,4 +143,39 @@ export declare class DOMProperties<TElement extends ElementBase> implements DOMI
      *  - `ja` `string` または `number` または `string[]` (`<select multiple="multiple">`)
      */
     val<T extends ElementBase = TElement>(value: DOMValueType<T>): this;
+    /**
+     * @en Return the values all `DOMStringMap` store set by an HTML5 data-* attribute for the first element in the collection.
+     * @ja 最初の要素の HTML5 data-* 属性で `DOMStringMap` に格納された全データ値を返却
+     */
+    data(): DOMData | undefined;
+    /**
+     * @en Return the value at the named data store for the first element in the collection, as set by data(key, value) or by an HTML5 data-* attribute.
+     * @ja 最初の要素の key で指定した HTML5 data-* 属性値を返却
+     *
+     * @param key
+     *  - `en` string equivalent to data-`key` is given.
+     *  - `ja` data-`key` に相当する文字列を指定
+     */
+    data(key: string): TypedData | undefined;
+    /**
+     * @en Store arbitrary data associated with the matched elements.
+     * @ja 配下の要素に対して任意のデータを格納
+     *
+     * @param key
+     *  - `en` string equivalent to data-`key` is given.
+     *  - `ja` data-`key` に相当する文字列を指定
+     * @param value
+     *  - `en` data value (not only `string`)
+     *  - `ja` 設定する値を指定 (文字列以外も受付可)
+     */
+    data(key: string, value: TypedData): this;
+    /**
+     * @en Remove specified data.
+     * @ja 指定したデータをデータ領域から削除
+     *
+     * @param key
+     *  - `en` string equivalent to data-`key` is given.
+     *  - `ja` data-`key` に相当する文字列を指定
+     */
+    removeData(key: string | string[]): this;
 }

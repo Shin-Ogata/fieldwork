@@ -63,6 +63,15 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
  */
 export declare function isTypeElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<Element>;
 /**
+ * @en Check [[DOM]] target is `HTMLElement` or `SVGElement`.
+ * @ja [[DOM]] が `HTMLElement` または `SVGElement` を対象にしているか判定
+ *
+ * @param dom
+ *  - `en` [[DOMIterable]] instance
+ *  - `ja` [[DOMIterable]] インスタンス
+ */
+export declare function isTypeHTMLOrSVGElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<HTMLElement | SVGElement>;
+/**
  * @en Check [[DOM]] target is `Document`.
  * @ja [[DOM]] が `Document` を対象にしているか判定
  *

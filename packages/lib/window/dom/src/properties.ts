@@ -2,12 +2,22 @@
 import {
     PlainObject,
     NonFunctionPropertyNames,
+    TypedData,
     isString,
+    isArray,
+    toTypedData,
+    fromTypedData,
+    camelize,
 } from '@cdp/core-utils';
 import { ElementBase } from './static';
-import { DOMIterable, isTypeElement } from './base';
+import {
+    DOMIterable,
+    isTypeElement,
+    isTypeHTMLOrSVGElement,
+} from './base';
 
 export type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
+export type DOMData = PlainObject<TypedData>;
 
 /**
  * @en Mixin base class which concentrated the property methods of DOM class.
@@ -38,7 +48,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
         if (!isTypeElement(this)) {
             return this;
         }
-        const classes = Array.isArray(className) ? className : [className];
+        const classes = isArray(className) ? className : [className];
         for (const el of this as DOMIterable<Element>) {
             el.classList.add(...classes);
         }
@@ -57,7 +67,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
         if (!isTypeElement(this)) {
             return this;
         }
-        const classes = Array.isArray(className) ? className : [className];
+        const classes = isArray(className) ? className : [className];
         for (const el of this as DOMIterable<Element>) {
             el.classList.remove(...classes);
         }
@@ -101,7 +111,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
             return this;
         }
 
-        const classes = Array.isArray(className) ? className : [className];
+        const classes = isArray(className) ? className : [className];
         const operation = (() => {
             if (null == force) {
                 return (elem: Element): void => {
@@ -161,7 +171,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
      */
     public prop(properties: PlainObject): this;
 
-    public prop<T extends NonFunctionPropertyNames<TElement>>(key: T | PlainObject, value?: TElement[T]): any {
+    public prop<T extends NonFunctionPropertyNames<TElement>>(key: T | PlainObject, value?: TElement[T]): TElement[T] | this {
         if (null == value && isString(key)) {
             // get first element property
             const first = this[0];
@@ -223,7 +233,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
      */
     public attr(properties: PlainObject): this;
 
-    public attr(key: string | PlainObject, value?: string | number | boolean | null): any {
+    public attr(key: string | PlainObject, value?: string | number | boolean | null): string | undefined | this {
         if (!isTypeElement(this)) {
             // non element
             return undefined === value ? undefined : this;
@@ -268,7 +278,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
         if (!isTypeElement(this)) {
             return this;
         }
-        const attrs = Array.isArray(name) ? name : [name];
+        const attrs = isArray(name) ? name : [name];
         for (const el of this as DOMIterable<Element>) {
             for (const attr of attrs) {
                 el.removeAttribute(attr);
@@ -328,7 +338,7 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
         } else {
             // set value
             for (const el of this as DOMIterable<Element> as DOMIterable<HTMLInputElement>) {
-                if (Array.isArray(value) && isMultiSelect(el)) {
+                if (isArray(value) && isMultiSelect(el)) {
                     for (const option of el.options) {
                         option.selected = (value as string[]).includes(option.value);
                     }
@@ -339,76 +349,95 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
             return this;
         }
     }
+
+///////////////////////////////////////////////////////////////////////
+// public: Data
+
+    /**
+     * @en Return the values all `DOMStringMap` store set by an HTML5 data-* attribute for the first element in the collection.
+     * @ja 最初の要素の HTML5 data-* 属性で `DOMStringMap` に格納された全データ値を返却
+     */
+    public data(): DOMData | undefined;
+
+    /**
+     * @en Return the value at the named data store for the first element in the collection, as set by data(key, value) or by an HTML5 data-* attribute.
+     * @ja 最初の要素の key で指定した HTML5 data-* 属性値を返却
+     *
+     * @param key
+     *  - `en` string equivalent to data-`key` is given.
+     *  - `ja` data-`key` に相当する文字列を指定
+     */
+    public data(key: string): TypedData | undefined;
+
+    /**
+     * @en Store arbitrary data associated with the matched elements.
+     * @ja 配下の要素に対して任意のデータを格納
+     *
+     * @param key
+     *  - `en` string equivalent to data-`key` is given.
+     *  - `ja` data-`key` に相当する文字列を指定
+     * @param value
+     *  - `en` data value (not only `string`)
+     *  - `ja` 設定する値を指定 (文字列以外も受付可)
+     */
+    public data(key: string, value: TypedData): this;
+
+    public data(key?: string, value?: TypedData): DOMData | TypedData | undefined | this {
+        if (!isTypeHTMLOrSVGElement(this)) {
+            // non supported dataset element
+            return null == value ? undefined : this;
+        }
+
+        if (undefined === value) {
+            // get first element dataset
+            const dataset = this[0].dataset;
+            if (null == key) {
+                // get all data
+                const data: DOMData = {};
+                for (const prop of Object.keys(dataset)) {
+                    data[prop] = toTypedData(dataset[prop]) as TypedData;
+                }
+                return data;
+            } else {
+                // typed value
+                return toTypedData(dataset[camelize(key)]);
+            }
+        } else {
+            // set value
+            const prop = camelize(key || '');
+            if (prop) {
+                for (const el of this as DOMIterable<HTMLElement>) {
+                    const dataset = el.dataset;
+                    if (dataset) {
+                        dataset[prop] = fromTypedData(value);
+                    }
+                }
+            }
+            return this;
+        }
+    }
+
+    /**
+     * @en Remove specified data.
+     * @ja 指定したデータをデータ領域から削除
+     *
+     * @param key
+     *  - `en` string equivalent to data-`key` is given.
+     *  - `ja` data-`key` に相当する文字列を指定
+     */
+    public removeData(key: string | string[]): this {
+        if (!isTypeHTMLOrSVGElement(this)) {
+            return this;
+        }
+        const props = isArray(key) ? key.map(k => camelize(k)) : [camelize(key)];
+        for (const el of this as DOMIterable<HTMLElement>) {
+            const dataset = el.dataset;
+            if (dataset) {
+                for (const prop of props) {
+                    delete dataset[prop];
+                }
+            }
+        }
+        return this;
+    }
 }
-
-// TODO:
-    //data,
-    //removeData,
-    //dataset,
-    //transform,
-    //transition,
-    //width,
-    //outerWidth,
-    //height,
-    //outerHeight,
-    //offset,
-    //hide, <- やらない?
-    //show, <- やらない?
-    //styles,
-    //css,
-    //toArray,
-    //each,
-    //forEach,
-    //filter,
-    //map,
-    //html,
-    //text,
-    //indexOf,
-    //index,
-    //eq,
-    //append,
-    //appendTo,
-    //prepend,
-    //prependTo,
-    //insertBefore,
-    //insertAfter,
-    //next,
-    //nextAll,
-    //prev,
-    //prevAll,
-    //siblings,
-    //closest,
-    //find,
-    //children,
-    //remove,
-    //detach,
-    //add,
-    //empty,
-
-/////
-
-// contents
-// position
-// scrollTop (window) <- scroll (pr2)
-// clone
-// wrap
-// unwrap
-// replaceWith
-// fade, fadeIn, fadeOut, fadeTo, fadeToggle <- animation (pr3)
-// slideUp, slideDown, slideToggle <- やらない
-
-///
-
-// first
-// has
-// last
-// innerHeight
-// innerWidth
-// nextUntil
-// offsetParent
-// outerHeight
-// outerWidth
-// prevUntil
-// replaceAll
-// wrapAll
-// wrapInner
