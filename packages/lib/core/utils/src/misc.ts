@@ -1,4 +1,4 @@
-import { Primitive } from './types';
+import { Primitive, TypedData } from './types';
 
 /**
  * @en Ensure asynchronous execution.
@@ -79,3 +79,35 @@ export const escapeHTML = createEscaper({
     "'": '&#39;',
     '`': '&#x60;'
 });
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en Convert to the style compulsion value from input string.
+ * @ja 入力文字列を型強制した値に変換
+ *
+ * @param data
+ *  - `en` input string
+ *  - `ja` 変換対象の文字列
+ */
+export function toTypedData(data: string): TypedData {
+    if ('true' === data) {
+        // boolean: true
+        return true;
+    } else if ('false' === data) {
+        // boolean: false
+        return false;
+    } else if ('null' === data) {
+        // null
+        return null;
+    } else if (data === String(Number(data))) {
+        // number: 数値変換 → 文字列変換で元に戻るとき
+        return Number(data);
+    } else if (/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/.test(data)) {
+        // object
+        return JSON.parse(data);
+    } else {
+        // string
+        return data;
+    }
+}

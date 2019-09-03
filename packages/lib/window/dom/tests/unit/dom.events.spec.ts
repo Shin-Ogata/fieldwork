@@ -6,7 +6,7 @@ import {
     cleanupTestElements,
 } from './tools';
 
-describe('dom events spec', () => {
+describe('dom/events spec', () => {
     const testee = $.utils.elementify.bind($.utils);
 
     const evClick = (() => {

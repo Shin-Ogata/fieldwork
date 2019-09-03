@@ -1,4 +1,4 @@
-import { Primitive } from './types';
+import { Primitive, TypedData } from './types';
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -49,3 +49,12 @@ export declare function createEscaper(map: object): (src: Primitive) => string;
  * ```
  */
 export declare const escapeHTML: (src: Primitive) => string;
+/**
+ * @en Convert to the style compulsion value from input string.
+ * @ja 入力文字列を型強制した値に変換
+ *
+ * @param data
+ *  - `en` input string
+ *  - `ja` 変換対象の文字列
+ */
+export declare function toTypedData(data: string): TypedData;

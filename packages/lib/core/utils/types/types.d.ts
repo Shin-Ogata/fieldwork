@@ -87,6 +87,20 @@ export declare type NonFunctionPropertyNames<T> = {
  */
 export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 /**
+ * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
+ *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
+ * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>The PlainObject type is a JavaScript object containing zero or more key-value pairs. <br>
+ *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
+ */
+export interface PlainObject<T = any> {
+    [key: string]: T;
+}
+/**
+ * @en The data type list by which style compulsion is possible.
+ * @ja 型強制可能なデータ型一覧
+ */
+export declare type TypedData = string | number | boolean | null | object;
+/**
  * @en Check the value exists.
  * @ja 値が存在するか判定
  *
@@ -151,6 +165,15 @@ export declare function isSymbol(x: unknown): x is symbol;
  */
 export declare function isPrimitive(x: unknown): x is Primitive;
 /**
+ * @en Check the value-type is Array.
+ * @ja Array 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isArray(x: unknown): x is Array<any>;
+/**
  * @en Check the value-type is Object.
  * @ja Object 型であるか判定
  *
@@ -159,6 +182,24 @@ export declare function isPrimitive(x: unknown): x is Primitive;
  *  - `ja` 評価する値
  */
 export declare function isObject(x: unknown): x is object;
+/**
+ * @en Check the value-type is [[PlainObject]].
+ * @ja [[PlainObject]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isPlainObject(x: unknown): x is PlainObject;
+/**
+ * @en Check the value-type is empty object.
+ * @ja 空オブジェクトであるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isEmptyObject(x: unknown): x is object;
 /**
  * @en Check the value-type is Function.
  * @ja Function 型であるか判定

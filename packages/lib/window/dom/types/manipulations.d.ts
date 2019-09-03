@@ -1,54 +1,14 @@
 import { ElementBase, SelectorBase, DOM, DOMSelector, DOMIterateCallback } from './static';
 import { DOMIterable } from './base';
 /**
- * @en Mixin base class which concentrated the methods of DOM class.
- * @ja DOM のメソッドを集約した Mixin Base クラス
+ * @en Mixin base class which concentrated the manipulation methods of DOM class.
+ * @ja DOM のマニピュレーションメソッドを集約した Mixin Base クラス
  */
-export declare class DOMMethods<TElement extends ElementBase> implements DOMIterable<TElement> {
+export declare class DOMManipulations<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
     entries: () => IterableIterator<[number, TElement]>;
-    /**
-     * @en Add css class to elements.
-     * @ja css class 要素に追加
-     *
-     * @param className
-     *  - `en` class name or class name list (array).
-     *  - `ja` クラス名またはクラス名の配列を指定
-     */
-    addClass(className: string | string[]): this;
-    /**
-     * @en Remove css class to elements.
-     * @ja css class 要素を削除
-     *
-     * @param className
-     *  - `en` class name or class name list (array).
-     *  - `ja` クラス名またはクラス名の配列を指定
-     */
-    removeClass(className: string | string[]): this;
-    /**
-     * @en Determine whether any of the matched elements are assigned the given class.
-     * @ja 指定されたクラス名を少なくとも要素が持っているか判定
-     *
-     * @param className
-     *  - `en` class name
-     *  - `ja` クラス名
-     */
-    hasClass(className: string): boolean;
-    /**
-     * @en Add or remove one or more classes from each element in the set of matched elements, <br>
-     *     depending on either the class's presence or the value of the state argument.
-     * @ja 現在の状態に応じて, 指定されたクラス名を要素に追加/削除を実行
-     *
-     * @param className
-     *  - `en` class name or class name list (array).
-     *  - `ja` クラス名またはクラス名の配列を指定
-     * @param force
-     *  - `en` if this argument exists, true: the classes should be added / false: removed.
-     *  - `ja` 引数が存在する場合, true: クラスを追加 / false: クラスを削除
-     */
-    toggleClass(className: string | string[], force?: boolean): this;
     /**
      * @en Check the current matched set of elements against a selector, element, or [[DOM]] object.
      * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 現在の要素のセットと一致するか確認

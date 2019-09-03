@@ -58,13 +58,15 @@
     <TypeScriptCompile Include="src\events.ts" />
     <TypeScriptCompile Include="src\exports.ts" />
     <TypeScriptCompile Include="src\index.ts" />
-    <TypeScriptCompile Include="src\methods.ts" />
+    <TypeScriptCompile Include="src\manipulations.ts" />
+    <TypeScriptCompile Include="src\properties.ts" />
     <TypeScriptCompile Include="src\ssr.ts" />
     <TypeScriptCompile Include="src\static.ts" />
     <TypeScriptCompile Include="src\utils.ts" />
     <TypeScriptCompile Include="tests\unit\dom.base.spec.ts" />
     <TypeScriptCompile Include="tests\unit\dom.events.spec.ts" />
-    <TypeScriptCompile Include="tests\unit\dom.methods.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\dom.manipulations.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\dom.properties.spec.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\utils.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
@@ -73,7 +75,8 @@
     <TypeScriptCompile Include="types\events.d.ts" />
     <TypeScriptCompile Include="types\exports.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
-    <TypeScriptCompile Include="types\methods.d.ts" />
+    <TypeScriptCompile Include="types\manipulations.d.ts" />
+    <TypeScriptCompile Include="types\properties.d.ts" />
     <TypeScriptCompile Include="types\ssr.d.ts" />
     <TypeScriptCompile Include="types\static.d.ts" />
     <TypeScriptCompile Include="types\utils.d.ts" />

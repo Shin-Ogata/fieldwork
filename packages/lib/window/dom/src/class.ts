@@ -8,7 +8,8 @@ import {
     elementify,
 } from './utils';
 import { DOMBase } from './base';
-import { DOMMethods } from './methods';
+import { DOMProperties } from './properties';
+import { DOMManipulations } from './manipulations';
 import { DOMEvents } from './events';
 
 /**
@@ -16,7 +17,7 @@ import { DOMEvents } from './events';
  * @ja `jQuery` のようなDOM 操作を提供するインターフェイス
  */
 export interface DOM<T extends ElementBase = HTMLElement>
-    extends DOMBase<T>, DOMMethods<T>, DOMEvents<T>
+    extends DOMBase<T>, DOMProperties<T>, DOMManipulations<T>, DOMEvents<T>
 { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 export type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
@@ -27,7 +28,7 @@ export type DOMIterateCallback<T extends ElementBase> = (index: number, element:
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
  */
-export class DOMClass extends mixins(DOMBase, DOMMethods, DOMEvents) {
+export class DOMClass extends mixins(DOMBase, DOMProperties, DOMManipulations, DOMEvents) {
     /**
      * private constructor
      *
@@ -37,7 +38,8 @@ export class DOMClass extends mixins(DOMBase, DOMMethods, DOMEvents) {
      */
     private constructor(elements: ElementBase[]) {
         super(elements);
-        this.super(DOMMethods);
+        this.super(DOMProperties);
+        this.super(DOMManipulations);
         this.super(DOMEvents);
     }
 
