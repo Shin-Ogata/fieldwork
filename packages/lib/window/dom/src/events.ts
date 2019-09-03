@@ -1,5 +1,9 @@
 /* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any */
-import { isFunction, isString } from '@cdp/core-utils';
+import {
+    isFunction,
+    isString,
+    isArray,
+} from '@cdp/core-utils';
 import { CustomEvent } from './ssr';
 import {
     ElementBase,
@@ -149,7 +153,7 @@ function parseEventArgs(...args: any[]): { type: string[]; selector: string; lis
         selector = undefined;
     }
 
-    type = !type ? [] : (Array.isArray(type) ? type : [type]);
+    type = !type ? [] : (isArray(type) ? type : [type]);
     selector = selector || '';
     if (!options) {
         options = {};
@@ -405,7 +409,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
             }
         };
 
-        const events = Array.isArray(seed) ? seed : [seed];
+        const events = isArray(seed) ? seed : [seed];
 
         for (const event of events) {
             const e = convert(event);

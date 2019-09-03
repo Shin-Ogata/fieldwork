@@ -3,6 +3,7 @@
 import {
     Arguments,
     isString,
+    isArray,
     isSymbol,
     className,
     verify,
@@ -179,7 +180,7 @@ export abstract class EventPublisher<Event> implements Subscribable<Event> {
             return;
         }
 
-        const channels = Array.isArray(channel) ? channel : [channel];
+        const channels = isArray(channel) ? channel : [channel];
         const callback = validListener(listener);
         for (const ch of channels) {
             validChannel(ch);
@@ -211,7 +212,7 @@ export abstract class EventPublisher<Event> implements Subscribable<Event> {
         const map = listeners(this);
         validListener(listener);
 
-        const channels = Array.isArray(channel) ? channel : [channel];
+        const channels = isArray(channel) ? channel : [channel];
         for (const ch of channels) {
             validChannel(ch);
             map.has(ch) ? map.get(ch)!.add(listener) : map.set(ch, new Set([listener])); // eslint-disable-line @typescript-eslint/no-non-null-assertion

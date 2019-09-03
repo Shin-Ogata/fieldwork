@@ -361,4 +361,124 @@ describe('dom/properties spec', () => {
         const $document = $(document);
         expect(() => $document.val('hoge' as any)).not.toThrow();
     });
+
+    it('check DOM#data(), get value', () => {
+        prepareTestElements(testee(`
+<div id="d1" class="test-dom" data-test="hoge" data-test-bool="false" data-test-number="100">
+    <p class="test-dom-child"></p>
+</div>
+<div id="d2" class="test-dom">
+    <span class="test-dom-child"></span>
+</div>
+<div id="d3" class="test-dom">
+    <hr class="test-dom-child"></hr>
+</div>`));
+
+        const $dom = $('.test-dom');
+        const allData = $dom.data() as any;
+        expect(allData).toBeDefined();
+        expect(allData.test).toBeDefined();
+        expect(allData.test).toBe('hoge');
+        expect(allData.testBool).toBeDefined();
+        expect(allData.testBool).toBe(false);
+        expect(allData.testNumber).toBeDefined();
+        expect(allData.testNumber).toBe(100);
+        expect(Object.keys(allData).length).toBe(3);
+
+        expect($dom.data('test')).toBe('hoge');
+        expect($dom.data('test-bool')).toBe(false);
+        expect($dom.data('test-number')).toBe(100);
+        expect($dom.data('fuga')).toBeUndefined();
+
+        const $window = $(window);
+        expect($window.data()).toBeUndefined();
+    });
+
+    it('check DOM#data(), set value', () => {
+        const divs = prepareTestElements(testee(`
+<div id="d1" class="test-dom" data-test="hoge" data-test-bool="false" data-test-number="100">
+    <p class="test-dom-child"></p>
+</div>
+<div id="d2" class="test-dom">
+    <span class="test-dom-child"></span>
+</div>
+<div id="d3" class="test-dom">
+    <hr class="test-dom-child"></hr>
+</div>`));
+
+        expect(Object.keys(divs[0].dataset).length).toBe(3);
+        expect(divs[0].dataset.test).toBe('hoge');
+        expect(Object.keys(divs[1].dataset).length).toBe(0);
+        expect(Object.keys(divs[2].dataset).length).toBe(0);
+
+        const $dom = $('.test-dom');
+        $dom.data('test', 'fuga');
+        expect(Object.keys(divs[0].dataset).length).toBe(3);
+        expect(divs[0].dataset.test).toBe('fuga');
+        expect(Object.keys(divs[1].dataset).length).toBe(1);
+        expect(divs[1].dataset.test).toBe('fuga');
+        expect(Object.keys(divs[2].dataset).length).toBe(1);
+        expect(divs[2].dataset.test).toBe('fuga');
+
+        $dom.data('test-bool2', true);
+        expect(Object.keys(divs[0].dataset).length).toBe(4);
+        expect(divs[0].dataset.testBool2).toBe('true');
+        expect(Object.keys(divs[1].dataset).length).toBe(2);
+        expect(divs[1].dataset.testBool2).toBe('true');
+        expect(Object.keys(divs[2].dataset).length).toBe(2);
+        expect(divs[2].dataset.testBool2).toBe('true');
+        expect($dom.attr('data-test-bool2')).toBe('true');
+
+        const obj = { prop: [100, true, 200] };
+        $dom.data('test-object', obj);
+        expect(Object.keys(divs[0].dataset).length).toBe(5);
+        expect(Object.keys(divs[1].dataset).length).toBe(3);
+        expect(Object.keys(divs[2].dataset).length).toBe(3);
+        expect(divs[2].dataset.testObject).toBe('{"prop":[100,true,200]}');
+        expect($dom.data('test-object')).toEqual(obj);
+
+        const $document = $(document);
+        expect(() => $document.data('hoge', 'fuga')).not.toThrow();
+        expect(() => $dom.data(undefined as any, 333)).not.toThrow();
+        expect(() => $dom.data('--', 999)).not.toThrow();
+
+        divs.push(window as any);
+        const $invalid = $(divs);
+        expect(() => $invalid.data('test', 'hoge')).not.toThrow();
+        expect(divs[0].dataset.test).toBe('hoge');
+    });
+
+    it('check DOM#removeData(), set value', () => {
+        const divs = prepareTestElements(testee(`
+<div id="d1" class="test-dom" data-test="hoge" data-test-bool="false" data-test-number="100">
+    <p class="test-dom-child"></p>
+</div>
+<div id="d3" class="test-dom" data-test="fuga">
+    <hr class="test-dom-child"></hr>
+</div>`));
+
+        expect(Object.keys(divs[0].dataset).length).toBe(3);
+        expect(divs[0].dataset.test).toBe('hoge');
+        expect(Object.keys(divs[1].dataset).length).toBe(1);
+        expect(divs[1].dataset.test).toBe('fuga');
+
+        const $dom = $('.test-dom');
+        $dom.removeData('test-object');
+        expect(Object.keys(divs[0].dataset).length).toBe(3);
+        expect(Object.keys(divs[1].dataset).length).toBe(1);
+
+        $dom.removeData('test-bool');
+        expect(Object.keys(divs[0].dataset).length).toBe(2);
+        expect(Object.keys(divs[1].dataset).length).toBe(1);
+
+        $dom.removeData(['test', 'test-bool', 'test-number']);
+        expect(Object.keys(divs[0].dataset).length).toBe(0);
+        expect(Object.keys(divs[1].dataset).length).toBe(0);
+
+        const $document = $(document);
+        expect(() => $document.removeData('hoge')).not.toThrow();
+        divs.push(window as any);
+        const $invalid = $(divs);
+        expect(() => $invalid.removeData(['test', 'hoge'])).not.toThrow();
+    });
 });

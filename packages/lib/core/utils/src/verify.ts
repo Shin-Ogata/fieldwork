@@ -1,4 +1,9 @@
-import { TypeKeys, exists, className } from './types';
+import {
+    TypeKeys,
+    isArray,
+    exists,
+    className,
+} from './types';
 
 /**
  * @en Type verifier interface definition. <br>
@@ -173,7 +178,7 @@ const _verifier: Verifier = {
     },
 
     array: (x: unknown, message?: string | null): void | never => {
-        if (!Array.isArray(x)) {
+        if (!isArray(x)) {
             exists(message) || (message = `${className(x)} is not an Array.`);
             throw new TypeError(message);
         }

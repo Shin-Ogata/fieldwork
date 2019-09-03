@@ -208,9 +208,7 @@ export function isPrimitive(x: unknown): x is Primitive {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isArray(x: unknown): x is Array<any> {
-    return Array.isArray(x);
-}
+export const isArray = Array.isArray; // eslint-disable-line @typescript-eslint/unbound-method
 
 /**
  * @en Check the value-type is Object.
