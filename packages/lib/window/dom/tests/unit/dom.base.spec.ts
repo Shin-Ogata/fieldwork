@@ -17,6 +17,26 @@ describe('dom/base spec', () => {
         expect($).toBe(dom);
     });
 
+    it('check construction performance', () => {
+        // peformance
+        class Vanilla { }
+        console.time('vanilla');
+        for (let i = 0; i < 1000000; i++) {
+            new Vanilla(); // eslint-disable-line
+        }
+        console.timeEnd('vanilla');
+
+        console.time('DOM');
+        const t0 = performance.now();
+        for (let i = 0; i < 1000000; i++) {
+            $();
+        }
+        const t1 = performance.now() - t0;
+        console.timeEnd('DOM');
+
+        expect(t1).toBeLessThanOrEqual(200);
+    });
+
     it('check index access', () => {
         const test = prepareTestElements();
         const $dom = $('.test-dom');

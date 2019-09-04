@@ -22,6 +22,7 @@ module.exports = {
             'error',
             4,
             {
+                SwitchCase: 1,
                 ignoreComments: true,
             },
         ],

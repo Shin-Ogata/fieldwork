@@ -8,6 +8,7 @@ import {
     toTypedData,
     fromTypedData,
     camelize,
+    setMixClassAttribute,
 } from '@cdp/core-utils';
 import { ElementBase } from './static';
 import {
@@ -441,3 +442,5 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
         return this;
     }
 }
+
+setMixClassAttribute(DOMProperties, 'noConstructor');

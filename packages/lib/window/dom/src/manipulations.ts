@@ -1,4 +1,4 @@
-import { isFunction } from '@cdp/core-utils';
+import { isFunction, setMixClassAttribute } from '@cdp/core-utils';
 import { window, document } from './ssr';
 import {
     ElementBase,
@@ -169,6 +169,8 @@ export class DOMManipulations<TElement extends ElementBase> implements DOMIterab
         return $(parents) as DOM<T>;
     }
 }
+
+setMixClassAttribute(DOMManipulations, 'noConstructor');
 
 // TODO:
     //transform,
