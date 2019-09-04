@@ -1,10 +1,10 @@
 import { ElementBase, SelectorBase, DOM, DOMSelector, DOMIterateCallback } from './static';
 import { DOMIterable } from './base';
 /**
- * @en Mixin base class which concentrated the manipulation methods of DOM class.
- * @ja DOM のマニピュレーションメソッドを集約した Mixin Base クラス
+ * @en Mixin base class which concentrated the traversing methods.
+ * @ja トラバースメソッドを集約した Mixin Base クラス
  */
-export declare class DOMManipulations<TElement extends ElementBase> implements DOMIterable<TElement> {
+export declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;

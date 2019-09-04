@@ -2,8 +2,8 @@ import { ElementBase } from './static';
 import { DOMIterable } from './base';
 export declare type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap : T extends HTMLFrameSetElement ? HTMLFrameSetElementEventMap : T extends HTMLMarqueeElement ? HTMLMarqueeElementEventMap : T extends HTMLVideoElement ? HTMLVideoElementEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap : T extends HTMLElement ? HTMLElementEventMap : T extends Element ? ElementEventMap : GlobalEventHandlersEventMap;
 /**
- * @en Mixin base class which concentrated the event management of DOM class.
- * @ja DOM のイベント管理を集約した Mixin Base クラス
+ * @en Mixin base class which concentrated the event managements.
+ * @ja イベント管理を集約した Mixin Base クラス
  */
 export declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;

@@ -21,10 +21,10 @@ export type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string
 export type DOMData = PlainObject<TypedData>;
 
 /**
- * @en Mixin base class which concentrated the property methods of DOM class.
- * @ja DOM のプロパティ操作メソッドを集約した Mixin Base クラス
+ * @en Mixin base class which concentrated the attributes methods.
+ * @ja 属性操作メソッドを集約した Mixin Base クラス
  */
-export class DOMProperties<TElement extends ElementBase> implements DOMIterable<TElement> {
+export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
 // imprements: DOMIterable<T>
@@ -443,4 +443,4 @@ export class DOMProperties<TElement extends ElementBase> implements DOMIterable<
     }
 }
 
-setMixClassAttribute(DOMProperties, 'noConstructor');
+setMixClassAttribute(DOMAttributes, 'noConstructor');

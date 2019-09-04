@@ -5,7 +5,7 @@ import {
     cleanupTestElements,
 } from './tools';
 
-describe('dom/manipulations spec', () => {
+describe('dom/traversing spec', () => {
     const body = document.body;
     const testee = $.utils.elementify.bind($.utils);
 

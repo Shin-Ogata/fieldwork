@@ -224,6 +224,8 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         ...any[]
     ]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9> {
 
+    let _hasSourceConstructor = false;
+
     // eslint-disable-next-line @typescript-eslint/class-name-casing
     class _MixinBase extends (base as any as Constructor<MixinClass>) {
 
@@ -234,28 +236,29 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             // eslint-disable-next-line constructor-super
             super(...args);
 
-            const constructors = new Map<Constructor<any>, Function>();
-
-            for (const srcClass of sources) {
-                if (!srcClass[_noConstructor]) {
-                    const handler = {
-                        apply: (target: any, thisobj: any, arglist: any[]) => {
-                            const obj = new srcClass(...arglist);
-                            copyProperties(this, obj);
-                        }
-                    };
-                    // proxy for 'construct' and cache constructor
-                    constructors.set(srcClass, new Proxy(srcClass, handler));
+            if (_hasSourceConstructor) {
+                const constructors = new Map<Constructor<any>, Function>();
+                for (const srcClass of sources) {
+                    if (!srcClass[_noConstructor]) {
+                        const handler = {
+                            apply: (target: any, thisobj: any, arglist: any[]) => {
+                                const obj = new srcClass(...arglist);
+                                copyProperties(this, obj);
+                            }
+                        };
+                        // proxy for 'construct' and cache constructor
+                        constructors.set(srcClass, new Proxy(srcClass, handler));
+                    }
                 }
+                this[_constructors] = constructors;
             }
 
-            this[_constructors] = constructors;
             this[_classBase] = base;
         }
 
         protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this {
             const map = this[_constructors];
-            const ctor = map.get(srcClass);
+            const ctor = map && map.get(srcClass);
             if (ctor) {
                 ctor(...args);
                 map.set(srcClass, null);    // prevent calling twice
@@ -310,6 +313,10 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         while (_objPrototype !== parent) {
             copyProperties(_MixinBase.prototype, parent);
             parent = Object.getPrototypeOf(parent);
+        }
+        // check constructor
+        if (!_hasSourceConstructor) {
+            _hasSourceConstructor = !srcClass[_noConstructor];
         }
     }
 
