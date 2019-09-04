@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { mixins, setInstanceOf } from '@cdp/core-utils';
+import { mixins, setMixClassAttribute } from '@cdp/core-utils';
 import {
     Result,
     RESULT_CODE,
@@ -177,7 +177,7 @@ describe('result/result spec', () => {
                 Object.defineProperty(this, 'code', { enumerable: true, value: '0' });
             }
         }
-        setInstanceOf(Result);
+        setMixClassAttribute(Result, 'instanceOf');
 
         const emulate1 = new EmulateFromAnotherGlobalResult();
         expect(isResult(emulate1)).toBe(true);

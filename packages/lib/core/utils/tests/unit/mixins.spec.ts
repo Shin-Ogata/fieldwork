@@ -1,8 +1,4 @@
-import {
-    mixins,
-    setInstanceOf,
-    setMixClassAttribute,
-} from '@cdp/core-utils';
+import { mixins, setMixClassAttribute } from '@cdp/core-utils';
 
 describe('utils/mixins spec', () => {
     beforeEach(() => {
@@ -240,21 +236,21 @@ describe('utils/mixins spec', () => {
         expect(mutableBD instanceof ClassD).toBeFalsy();
     });
 
-    it('check setInstanceOf', () => {
+    it('check setMixClassAttribute(any, `instanceOf`)', () => {
         expect(ClassE[Symbol.hasInstance]).toBeDefined();   // NOTE: 制限事項 mixin により ClassA[Symbol.hasInstance] を呼び出す
         expect(mixAB instanceof ClassE).toBeTruthy();
         expect(mixBA instanceof ClassE).toBeTruthy();
         expect(mixBD instanceof ClassE).toBeTruthy();
         expect(mixCAB instanceof ClassE).toBeTruthy();
 
-        setInstanceOf(ClassE);                              // 上書き抑止
+        setMixClassAttribute(ClassE, 'instanceOf');         // 上書き抑止
         expect(ClassE[Symbol.hasInstance]).toBeDefined();
         expect(mixAB instanceof ClassE).toBeFalsy();
         expect(mixBA instanceof ClassE).toBeFalsy();
         expect(mixBD instanceof ClassE).toBeFalsy();
         expect(mixCAB instanceof ClassE).toBeFalsy();
 
-        setInstanceOf(ClassE, null);                        // 削除抑止
+        setMixClassAttribute(ClassE, 'instanceOf', null);   // 削除抑止
         expect(ClassE[Symbol.hasInstance]).not.toBeDefined();
         expect(mixAB instanceof ClassE).toBeFalsy();
         expect(mixBA instanceof ClassE).toBeFalsy();
