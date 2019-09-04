@@ -86,6 +86,37 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
  */
 export declare function setInstanceOf<T extends {}>(target: Constructor<T>, method?: ((inst: object) => boolean) | null): void;
 /**
+ * @en Set the Mixin class attribute.
+ * @ja Mixin クラスに対して属性を設定
+ *
+ * @example <br>
+ *
+ * ```ts
+ * class Base { constructor(a, b) {} };
+ * class MixA { };
+ * setMixClassAttribute(MixA, 'noConstructor');
+ * class MixB { constructor(c, d) {} };
+ *
+ * class MixinClass extends mixins(Base, MixA, MixB) {
+ *     constructor(a, b, c, d){
+ *         // calling `Base` constructor
+ *         super(a, b);
+ *
+ *         // calling Mixin class's constructor
+ *         this.super(MixA);        // no affect
+ *         this.super(MixB, c, d);
+ *     }
+ * }
+ * ```
+ *
+ * @param attr
+ *  - `en`:
+ *    - `noConstructor`: Suppress providing constructor-trap for the mixin source class. (for improving performance)
+ *  - `ja`:
+ *    - `noConstructor`: Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
+ */
+export declare function setMixClassAttribute<T extends {}>(target: Constructor<T>, attr: 'noConstructor'): void;
+/**
  * @en Mixin function for multiple inheritance. <br>
  *     Resolving type support for maximum 10 classes.
  * @ja 多重継承のための Mixin <br>

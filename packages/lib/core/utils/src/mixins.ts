@@ -58,13 +58,14 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
 
 //__________________________________________________________________________________________________//
 
-const _objPrototype = Object.prototype;
-const _instanceOf   = Function.prototype[Symbol.hasInstance];
-const _override     = Symbol('override');
-const _isInherited  = Symbol('isInherited');
-const _constructors = Symbol('constructors');
-const _classBase    = Symbol('classBase');
-const _classSources = Symbol('classSources');
+const _objPrototype     = Object.prototype;
+const _instanceOf       = Function.prototype[Symbol.hasInstance];
+const _override         = Symbol('override');
+const _isInherited      = Symbol('isInherited');
+const _constructors     = Symbol('constructors');
+const _classBase        = Symbol('classBase');
+const _classSources     = Symbol('classSources');
+const _noConstructor    = Symbol('noConstructor');
 
 // object properties copy method
 function copyProperties(target: object, source?: object): void {
@@ -134,6 +135,46 @@ export function setInstanceOf<T extends {}>(target: Constructor<T>, method?: ((i
 }
 
 /**
+ * @en Set the Mixin class attribute.
+ * @ja Mixin クラスに対して属性を設定
+ *
+ * @example <br>
+ *
+ * ```ts
+ * class Base { constructor(a, b) {} };
+ * class MixA { };
+ * setMixClassAttribute(MixA, 'noConstructor');
+ * class MixB { constructor(c, d) {} };
+ *
+ * class MixinClass extends mixins(Base, MixA, MixB) {
+ *     constructor(a, b, c, d){
+ *         // calling `Base` constructor
+ *         super(a, b);
+ *
+ *         // calling Mixin class's constructor
+ *         this.super(MixA);        // no affect
+ *         this.super(MixB, c, d);
+ *     }
+ * }
+ * ```
+ *
+ * @param attr
+ *  - `en`:
+ *    - `noConstructor`: Suppress providing constructor-trap for the mixin source class. (for improving performance)
+ *  - `ja`:
+ *    - `noConstructor`: Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
+ */
+export function setMixClassAttribute<T extends {}>(target: Constructor<T>, attr: 'noConstructor'): void {
+    switch (attr) {
+        case 'noConstructor':
+            target[_noConstructor] = true;
+            break;
+        default:
+            break;
+    }
+}
+
+/**
  * @en Mixin function for multiple inheritance. <br>
  *     Resolving type support for maximum 10 classes.
  * @ja 多重継承のための Mixin <br>
@@ -183,19 +224,8 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         ...any[]
     ]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9> {
 
-    // provide custom instanceof
-    for (const srcClass of sources) {
-        const desc = Object.getOwnPropertyDescriptor(srcClass, Symbol.hasInstance);
-        if (!desc || desc.writable) {
-            const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
-            setInstanceOf(srcClass, (inst: object) => {
-                return orgInstanceOf.call(srcClass, inst) || ((null != inst && inst[_isInherited]) ? inst[_isInherited](srcClass) : false);
-            });
-        }
-    }
-
     // eslint-disable-next-line @typescript-eslint/class-name-casing
-    return class _MixinBase extends (base as any as Constructor<MixinClass>) {
+    class _MixinBase extends (base as any as Constructor<MixinClass>) {
 
         private readonly [_constructors]: Map<Constructor<any>, Function | null>;
         private readonly [_classBase]: Constructor<any>;
@@ -205,26 +235,22 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             super(...args);
 
             const constructors = new Map<Constructor<any>, Function>();
-            for (const srcClass of sources) {
-                const handler = {
-                    apply: (target: any, thisobj: any, arglist: any[]) => {
-                        copyProperties(_MixinBase.prototype, srcClass.prototype);
-                        let parent = Object.getPrototypeOf(srcClass.prototype);
-                        while (_objPrototype !== parent) {
-                            copyProperties(_MixinBase.prototype, parent);
-                            parent = Object.getPrototypeOf(parent);
-                        }
-                        const obj = new srcClass(...arglist);
-                        copyProperties(this, obj);
-                    }
-                };
 
-                // proxy for 'construct' and cache constructor
-                constructors.set(srcClass, new Proxy(srcClass, handler));
+            for (const srcClass of sources) {
+                if (!srcClass[_noConstructor]) {
+                    const handler = {
+                        apply: (target: any, thisobj: any, arglist: any[]) => {
+                            const obj = new srcClass(...arglist);
+                            copyProperties(this, obj);
+                        }
+                    };
+                    // proxy for 'construct' and cache constructor
+                    constructors.set(srcClass, new Proxy(srcClass, handler));
+                }
             }
 
             this[_constructors] = constructors;
-            this[_classBase]    = base;
+            this[_classBase] = base;
         }
 
         protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this {
@@ -267,6 +293,25 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         private get [_classSources](): Constructor<any>[] {
             return [...this[_constructors].keys()];
         }
+    }
 
-    } as any;
+    for (const srcClass of sources) {
+        // provide custom instanceof
+        const desc = Object.getOwnPropertyDescriptor(srcClass, Symbol.hasInstance);
+        if (!desc || desc.writable) {
+            const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
+            setInstanceOf(srcClass, (inst: object) => {
+                return orgInstanceOf.call(srcClass, inst) || ((null != inst && inst[_isInherited]) ? inst[_isInherited](srcClass) : false);
+            });
+        }
+        // provide prototype
+        copyProperties(_MixinBase.prototype, srcClass.prototype);
+        let parent = Object.getPrototypeOf(srcClass.prototype);
+        while (_objPrototype !== parent) {
+            copyProperties(_MixinBase.prototype, parent);
+            parent = Object.getPrototypeOf(parent);
+        }
+    }
+
+    return _MixinBase as any;
 }

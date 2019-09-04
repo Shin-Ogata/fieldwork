@@ -1,4 +1,8 @@
-import { mixins, setInstanceOf } from '@cdp/core-utils';
+import {
+    mixins,
+    setInstanceOf,
+    setMixClassAttribute,
+} from '@cdp/core-utils';
 
 describe('utils/mixins spec', () => {
     beforeEach(() => {
@@ -275,6 +279,8 @@ describe('utils/mixins spec', () => {
         class ClassNoInherit {
             public who(): string { return 'ClassNoInherit'; }
         }
+        setMixClassAttribute(ClassNoInherit, 'noConstructor');
+
         Object.defineProperty(ClassNoInherit, Symbol.hasInstance, {
             value: (inst: object) => Object.prototype.isPrototypeOf.call(ClassNoInherit.prototype, inst),
             writable: false,    // 変更不可
@@ -291,6 +297,9 @@ describe('utils/mixins spec', () => {
         expect(notWork instanceof MixinNotworking).toBeTruthy();
         expect(notWork instanceof ClassA).toBeTruthy();
         expect(notWork instanceof ClassNoInherit).toBeFalsy();  // instanceof は無効
+
+        // invalid attribute
+        expect(() => setMixClassAttribute(ClassNoInherit, 'hoge' as any)).not.toThrow(); // eslint-disable-line
     });
 
 });

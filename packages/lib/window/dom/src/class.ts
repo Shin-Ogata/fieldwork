@@ -38,9 +38,7 @@ export class DOMClass extends mixins(DOMBase, DOMProperties, DOMManipulations, D
      */
     private constructor(elements: ElementBase[]) {
         super(elements);
-        this.super(DOMProperties);
-        this.super(DOMManipulations);
-        this.super(DOMEvents);
+        // all source classes have no constructor.
     }
 
     /**

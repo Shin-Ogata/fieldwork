@@ -3,6 +3,7 @@ import {
     isFunction,
     isString,
     isArray,
+    setMixClassAttribute,
 } from '@cdp/core-utils';
 import { CustomEvent } from './ssr';
 import {
@@ -877,3 +878,5 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         return eventShortcut.bind(this)('scroll', handler, options);
     }
 }
+
+setMixClassAttribute(DOMEvents, 'noConstructor');
