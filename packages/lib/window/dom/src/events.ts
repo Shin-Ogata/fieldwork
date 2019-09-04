@@ -202,8 +202,8 @@ export type DOMEventMap<T>
 /* eslint-enable @typescript-eslint/indent */
 
 /**
- * @en Mixin base class which concentrated the event management of DOM class.
- * @ja DOM のイベント管理を集約した Mixin Base クラス
+ * @en Mixin base class which concentrated the event managements.
+ * @ja イベント管理を集約した Mixin Base クラス
  */
 export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TElement> {
 

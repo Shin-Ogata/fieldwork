@@ -8,16 +8,20 @@ import {
     elementify,
 } from './utils';
 import { DOMBase } from './base';
-import { DOMProperties } from './properties';
-import { DOMManipulations } from './manipulations';
+import { DOMAttributes } from './attributes';
+import { DOMTraversing } from './traversing';
+import { DOMManipulation } from './manipulation';
+import { DOMStyles } from './styles';
 import { DOMEvents } from './events';
+import { DOMScroll } from './scroll';
+import { DOMEffects } from './effects';
 
 /**
  * @en This interface provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供するインターフェイス
  */
 export interface DOM<T extends ElementBase = HTMLElement>
-    extends DOMBase<T>, DOMProperties<T>, DOMManipulations<T>, DOMEvents<T>
+    extends DOMBase<T>, DOMAttributes<T>, DOMTraversing<T>, DOMManipulation<T>, DOMStyles<T>, DOMEvents<T>, DOMScroll<T>, DOMEffects<T>
 { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 export type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
@@ -28,7 +32,16 @@ export type DOMIterateCallback<T extends ElementBase> = (index: number, element:
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
  */
-export class DOMClass extends mixins(DOMBase, DOMProperties, DOMManipulations, DOMEvents) {
+export class DOMClass extends mixins(
+    DOMBase,
+    DOMAttributes,
+    DOMTraversing,
+    DOMManipulation,
+    DOMStyles,
+    DOMEvents,
+    DOMScroll,
+    DOMEffects,
+) {
     /**
      * private constructor
      *

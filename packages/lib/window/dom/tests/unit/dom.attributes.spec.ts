@@ -5,7 +5,7 @@ import {
     cleanupTestElements,
 } from './tools';
 
-describe('dom/properties spec', () => {
+describe('dom/attributes spec', () => {
     const testee = $.utils.elementify.bind($.utils);
 
     afterEach((): void => {

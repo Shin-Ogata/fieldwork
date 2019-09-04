@@ -4,10 +4,10 @@ import { DOMIterable } from './base';
 export declare type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
 export declare type DOMData = PlainObject<TypedData>;
 /**
- * @en Mixin base class which concentrated the property methods of DOM class.
- * @ja DOM のプロパティ操作メソッドを集約した Mixin Base クラス
+ * @en Mixin base class which concentrated the attributes methods.
+ * @ja 属性操作メソッドを集約した Mixin Base クラス
  */
-export declare class DOMProperties<TElement extends ElementBase> implements DOMIterable<TElement> {
+export declare class DOMAttributes<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;

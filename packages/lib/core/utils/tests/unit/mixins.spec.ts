@@ -300,6 +300,16 @@ describe('utils/mixins spec', () => {
 
         // invalid attribute
         expect(() => setMixClassAttribute(ClassNoInherit, 'hoge' as any)).not.toThrow(); // eslint-disable-line
+
+        class MixinCallConstructor extends mixins(ClassA, ClassB, ClassNoInherit) {
+            constructor() {
+                super(0xA, 'A');
+                this.super(ClassB, 0xB, 'B');
+                this.super(ClassNoInherit);
+            }
+        }
+
+        expect(() => new MixinCallConstructor()).not.toThrow(); // eslint-disable-line
     });
 
 });
