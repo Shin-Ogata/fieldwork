@@ -275,7 +275,7 @@ describe('utils/mixins spec', () => {
         class ClassNoInherit {
             public who(): string { return 'ClassNoInherit'; }
         }
-        setMixClassAttribute(ClassNoInherit, 'noConstructor');
+        setMixClassAttribute(ClassNoInherit, 'protoExtendsOnly');
 
         Object.defineProperty(ClassNoInherit, Symbol.hasInstance, {
             value: (inst: object) => Object.prototype.isPrototypeOf.call(ClassNoInherit.prototype, inst),
@@ -292,7 +292,8 @@ describe('utils/mixins spec', () => {
         expect(notWork.aName).toBe('A');
         expect(notWork instanceof MixinNotworking).toBeTruthy();
         expect(notWork instanceof ClassA).toBeTruthy();
-        expect(notWork instanceof ClassNoInherit).toBeFalsy();  // instanceof は無効
+        expect(notWork instanceof ClassNoInherit).toBeFalsy();      // instanceof は無効
+        expect(notWork.isMixedWith(ClassNoInherit)).toBeFalsy();    // isMixedWith は無効
 
         // invalid attribute
         expect(() => setMixClassAttribute(ClassNoInherit, 'hoge' as any)).not.toThrow(); // eslint-disable-line

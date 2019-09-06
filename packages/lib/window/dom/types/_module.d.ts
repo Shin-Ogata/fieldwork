@@ -21,5 +21,6 @@ declare module '@cdp/dom' {
     export type DOMSelector<T extends SelectorBase>       = _Exports.DOMSelector<T>;
     export type DOMIterateCallback<T extends ElementBase> = _Exports.DOMIterateCallback<T>;
     export type DOMEventMap<T>                            = _Exports.DOMEventMap<T>;
+    export type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = _Exports.DOMModificationCallback<T, U>;
     export { dom as default };
 }

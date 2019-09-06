@@ -77,3 +77,11 @@ export class DOMClass extends mixins(
         return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as any;
     }
 }
+
+/*
+ * UNSUPPORTED METHOD LIST
+ *
+ * [Traversing]
+ *  .addBack()
+ *  .end()
+ */

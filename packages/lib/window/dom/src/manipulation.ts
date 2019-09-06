@@ -15,75 +15,51 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
     readonly length!: number;
     [Symbol.iterator]: () => Iterator<TElement>;
     entries!: () => IterableIterator<[number, TElement]>;
+
+///////////////////////////////////////////////////////////////////////
+// public: Insertion, Inside
+
+///////////////////////////////////////////////////////////////////////
+// public: Insertion, Outside
+
+///////////////////////////////////////////////////////////////////////
+// public: Insertion, Around
+
+///////////////////////////////////////////////////////////////////////
+// public: Removal
+
+///////////////////////////////////////////////////////////////////////
+// public: Replacement
 }
 
-setMixClassAttribute(DOMManipulation, 'noConstructor');
+setMixClassAttribute(DOMManipulation, 'protoExtendsOnly');
 
-// TODO:
-    //transform,
-    //transition,
-    //width,
-    //outerWidth,
-    //height,
-    //outerHeight,
-    //offset,
-    //hide, <- やらない?
-    //show, <- やらない?
-    //styles,
-    //css,
-    //toArray,
-    //each,
-    //forEach,
-    //filter,
-    //map,
-    //html,
-    //text,
-    //indexOf,
-    //index,
-    //eq,
-    //append,
-    //appendTo,
-    //prepend,
-    //prependTo,
-    //insertBefore,
-    //insertAfter,
-    //next,
-    //nextAll,
-    //prev,
-    //prevAll,
-    //siblings,
-    //closest,
-    //find,
-    //children,
-    //remove,
-    //detach,
-    //add,
-    //empty,
+/*
+[dom7]
+// DOM Insertion, Inside
+.append()
+.appendTo()
+.html()
+.prepend()
+.prependTo()
+.text()
+// DOM Insertion, Outside
+.after()
+.before()
+.insertAfter()
+.insertBefore()
+// DOM Removal
+.detach()
+.empty()
+.remove()
 
-/////
-
-// contents
-// position
-// scrollTop (window) <- scroll (pr2)
-// clone
-// wrap
-// unwrap
-// replaceWith
-// fade, fadeIn, fadeOut, fadeTo, fadeToggle <- animation (pr3)
-// slideUp, slideDown, slideToggle <- やらない
-
-///
-
-// first
-// has
-// last
-// innerHeight
-// innerWidth
-// nextUntil
-// offsetParent
-// outerHeight
-// outerWidth
-// prevUntil
-// replaceAll
-// wrapAll
-// wrapInner
+[jquery]
+// DOM Insertion, Around
+.unwrap()
+.wrap()
+.wrapAll()
+.wrapInner()
+// DOM Replacement
+.replaceAll()
+.replaceWith()
+ */

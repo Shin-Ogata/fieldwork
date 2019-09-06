@@ -58,14 +58,15 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
 }
 
 /**
+ * @en Definition of [[setMixClassAttribute]] function's arguments.
  * @ja [[setMixClassAttribute]] の取りうる引数定義
  */
 export interface MixClassAttribute {
     /**
-     * @en Suppress providing constructor-trap for the mixin source class. (for improving performance)
-     * @ja Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
+     * @en Suppress providing constructor-trap for the mixin source class. In this case, `isMixedWith`, `instanceof` also becomes invalid. (for improving performance)
+     * @ja Mixin Source クラスに対して, コンストラクタトラップを抑止. これを指定した場合, `isMixedWith`, `instanceof` も無効になる. (パフォーマンス改善)
      */
-    noConstructor: void;
+    protoExtendsOnly: void;
 
     /**
      * @en Setup [Symbol.hasInstance] property. <br>
@@ -87,7 +88,7 @@ const _isInherited      = Symbol('isInherited');
 const _constructors     = Symbol('constructors');
 const _classBase        = Symbol('classBase');
 const _classSources     = Symbol('classSources');
-const _noConstructor    = Symbol('noConstructor');
+const _protoExtendsOnly = Symbol('protoExtendsOnly');
 
 // object properties copy method
 function copyProperties(target: object, source?: object): void {
@@ -126,10 +127,10 @@ function setInstanceOf<T extends {}>(target: Constructor<T>, method: ((inst: obj
  * @example <br>
  *
  * ```ts
- * // 'noConstructor'
+ * // 'protoExtendOnly'
  * class Base { constructor(a, b) {} };
  * class MixA { };
- * setMixClassAttribute(MixA, 'noConstructor');
+ * setMixClassAttribute(MixA, 'protoExtendsOnly');  // for improving construction performance
  * class MixB { constructor(c, d) {} };
  *
  * class MixinClass extends mixins(Base, MixA, MixB) {
@@ -142,6 +143,10 @@ function setInstanceOf<T extends {}>(target: Constructor<T>, method: ((inst: obj
  *         this.super(MixB, c, d);
  *     }
  * }
+ *
+ * const mixed = new MixinClass();
+ * console.log(mixed instanceof MixA);    // false
+ * console.log(mixed.isMixedWith(MixA));  // false
  *
  * // 'instanceOf'
  * class Base {};
@@ -165,15 +170,15 @@ function setInstanceOf<T extends {}>(target: Constructor<T>, method: ((inst: obj
  *  - `ja` 設定対象のコンストラクタ
  * @param attr
  *  - `en`:
- *    - `noConstructor`: Suppress providing constructor-trap for the mixin source class. (for improving performance)
- *    - `instanceOf`   : function by using [Symbol.hasInstance] <br>
- *                       Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
- *                       If set `null`, delete [Symbol.hasInstance] property.
+ *    - `protoExtendsOnly`: Suppress providing constructor-trap for the mixin source class. (for improving performance)
+ *    - `instanceOf`      : function by using [Symbol.hasInstance] <br>
+ *                          Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
+ *                          If set `null`, delete [Symbol.hasInstance] property.
  *  - `ja`:
- *    - `noConstructor`: Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
- *    - `instanceOf`   : [Symbol.hasInstance] が使用する関数を指定 <br>
- *                       既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
- *                       `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
+ *    - `protoExtendsOnly`: Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
+ *    - `instanceOf`      : [Symbol.hasInstance] が使用する関数を指定 <br>
+ *                          既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
+ *                         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
 export function setMixClassAttribute<T extends {}, U extends keyof MixClassAttribute>(
     target: Constructor<T>,
@@ -181,8 +186,8 @@ export function setMixClassAttribute<T extends {}, U extends keyof MixClassAttri
     method?: MixClassAttribute[U]
 ): void {
     switch (attr) {
-        case 'noConstructor':
-            target[_noConstructor] = true;
+        case 'protoExtendsOnly':
+            target[_protoExtendsOnly] = true;
             break;
         case 'instanceOf':
             setInstanceOf(target, method);
@@ -254,10 +259,13 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             // eslint-disable-next-line constructor-super
             super(...args);
 
+            const constructors = new Map<Constructor<any>, Function>();
+            this[_constructors] = constructors;
+            this[_classBase] = base;
+
             if (_hasSourceConstructor) {
-                const constructors = new Map<Constructor<any>, Function>();
                 for (const srcClass of sources) {
-                    if (!srcClass[_noConstructor]) {
+                    if (!srcClass[_protoExtendsOnly]) {
                         const handler = {
                             apply: (target: any, thisobj: any, arglist: any[]) => {
                                 const obj = new srcClass(...arglist);
@@ -268,15 +276,12 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
                         constructors.set(srcClass, new Proxy(srcClass, handler));
                     }
                 }
-                this[_constructors] = constructors;
             }
-
-            this[_classBase] = base;
         }
 
         protected super<T extends Class>(srcClass: T, ...args: ConstructorParameters<T>): this {
             const map = this[_constructors];
-            const ctor = map && map.get(srcClass);
+            const ctor = map.get(srcClass);
             if (ctor) {
                 ctor(...args);
                 map.set(srcClass, null);    // prevent calling twice
@@ -334,7 +339,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
         }
         // check constructor
         if (!_hasSourceConstructor) {
-            _hasSourceConstructor = !srcClass[_noConstructor];
+            _hasSourceConstructor = !srcClass[_protoExtendsOnly];
         }
     }
 

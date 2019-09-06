@@ -443,4 +443,4 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
     }
 }
 
-setMixClassAttribute(DOMAttributes, 'noConstructor');
+setMixClassAttribute(DOMAttributes, 'protoExtendsOnly');

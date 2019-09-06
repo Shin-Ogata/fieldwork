@@ -216,7 +216,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
     entries!: () => IterableIterator<[number, TElement]>;
 
 ///////////////////////////////////////////////////////////////////////
-// public: basic
+// public: Events basic
 
     /**
      * @en Add event handler function to one or more events to the elements. (live event available)
@@ -424,7 +424,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
     }
 
 ///////////////////////////////////////////////////////////////////////
-// public: utility
+// public: Events utility
 
     /**
      * @en Shortcut for [[once]]('transitionend').
@@ -501,7 +501,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
     }
 
 ///////////////////////////////////////////////////////////////////////
-// public: event-shortcut
+// public: Events shortcut
 
     /**
      * @en Trigger or handle `click` event.
@@ -879,4 +879,4 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
     }
 }
 
-setMixClassAttribute(DOMEvents, 'noConstructor');
+setMixClassAttribute(DOMEvents, 'protoExtendsOnly');
