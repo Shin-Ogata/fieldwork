@@ -47,14 +47,15 @@ export interface MixinConstructor<B extends Class, U> extends Type<U> {
     new (...args: ConstructorParameters<B>): U;
 }
 /**
+ * @en Definition of [[setMixClassAttribute]] function's arguments.
  * @ja [[setMixClassAttribute]] の取りうる引数定義
  */
 export interface MixClassAttribute {
     /**
-     * @en Suppress providing constructor-trap for the mixin source class. (for improving performance)
-     * @ja Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
+     * @en Suppress providing constructor-trap for the mixin source class. In this case, `isMixedWith`, `instanceof` also becomes invalid. (for improving performance)
+     * @ja Mixin Source クラスに対して, コンストラクタトラップを抑止. これを指定した場合, `isMixedWith`, `instanceof` も無効になる. (パフォーマンス改善)
      */
-    noConstructor: void;
+    protoExtendsOnly: void;
     /**
      * @en Setup [Symbol.hasInstance] property. <br>
      *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
@@ -72,10 +73,10 @@ export interface MixClassAttribute {
  * @example <br>
  *
  * ```ts
- * // 'noConstructor'
+ * // 'protoExtendOnly'
  * class Base { constructor(a, b) {} };
  * class MixA { };
- * setMixClassAttribute(MixA, 'noConstructor');
+ * setMixClassAttribute(MixA, 'protoExtendsOnly');  // for improving construction performance
  * class MixB { constructor(c, d) {} };
  *
  * class MixinClass extends mixins(Base, MixA, MixB) {
@@ -88,6 +89,10 @@ export interface MixClassAttribute {
  *         this.super(MixB, c, d);
  *     }
  * }
+ *
+ * const mixed = new MixinClass();
+ * console.log(mixed instanceof MixA);    // false
+ * console.log(mixed.isMixedWith(MixA));  // false
  *
  * // 'instanceOf'
  * class Base {};
@@ -111,15 +116,15 @@ export interface MixClassAttribute {
  *  - `ja` 設定対象のコンストラクタ
  * @param attr
  *  - `en`:
- *    - `noConstructor`: Suppress providing constructor-trap for the mixin source class. (for improving performance)
- *    - `instanceOf`   : function by using [Symbol.hasInstance] <br>
- *                       Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
- *                       If set `null`, delete [Symbol.hasInstance] property.
+ *    - `protoExtendsOnly`: Suppress providing constructor-trap for the mixin source class. (for improving performance)
+ *    - `instanceOf`      : function by using [Symbol.hasInstance] <br>
+ *                          Default behaviour is `{ return target.prototype.isPrototypeOf(instance) }`
+ *                          If set `null`, delete [Symbol.hasInstance] property.
  *  - `ja`:
- *    - `noConstructor`: Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
- *    - `instanceOf`   : [Symbol.hasInstance] が使用する関数を指定 <br>
- *                       既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
- *                       `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
+ *    - `protoExtendsOnly`: Mixin Source クラスに対して, コンストラクタトラップを抑止 (パフォーマンス改善)
+ *    - `instanceOf`      : [Symbol.hasInstance] が使用する関数を指定 <br>
+ *                          既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
+ *                         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
 export declare function setMixClassAttribute<T extends {}, U extends keyof MixClassAttribute>(target: Constructor<T>, attr: U, method?: MixClassAttribute[U]): void;
 /**

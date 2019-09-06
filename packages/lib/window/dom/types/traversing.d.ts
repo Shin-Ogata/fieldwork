@@ -1,5 +1,6 @@
-import { ElementBase, SelectorBase, DOM, DOMSelector, DOMIterateCallback } from './static';
+import { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMIterateCallback } from './static';
 import { DOMIterable } from './base';
+export declare type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = (index: number, element: T) => U;
 /**
  * @en Mixin base class which concentrated the traversing methods.
  * @ja トラバースメソッドを集約した Mixin Base クラス
@@ -9,6 +10,59 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
     entries: () => IterableIterator<[number, TElement]>;
+    /**
+     * @en Retrieve one of the elements matched by the [[DOM]] object.
+     * @ja インデックスを指定して配下の要素にアクセス
+     *
+     * @param index
+     *  - `en` A zero-based integer indicating which element to retrieve. <br>
+     *         If negative index is counted from the end of the matched set.
+     *  - `ja` 0 base のインデックスを指定 <br>
+     *         負値が指定された場合, 末尾からのインデックスとして解釈される
+     */
+    get(index: number): TElement | undefined;
+    /**
+     * @en Retrieve the elements matched by the [[DOM]] object.
+     * @ja 配下の要素すべてを配列で取得
+     */
+    get(): TElement[];
+    /**
+     * @en Retrieve all the elements contained in the [[DOM]] set, as an array.
+     * @ja 配下の要素すべてを配列で取得
+     */
+    toArray(): TElement[];
+    /**
+     * @en Return the position of the first element within the [[DOM]] collection relative to its sibling elements.
+     * @ja [[DOM]] 内の最初の要素が兄弟要素の何番目に所属するかを返却
+     */
+    index(): number | undefined;
+    /**
+     * @en Search for a given a selector, element, or [[DOM]] object from among the matched elements.
+     * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 配下の何番目に所属しているかを返却
+     */
+    index<T extends ElementBase>(selector: string | T | DOM<T>): number | undefined;
+    /**
+     * @en Reduce the set of matched elements to the first in the set as [[DOM]] object.
+     * @ja 管轄している最初の要素を [[DOM]] オブジェクトにして取得
+     */
+    first(): DOM<TElement>;
+    /**
+     * @en Reduce the set of matched elements to the final one in the set as [[DOM]] object.
+     * @ja 管轄している末尾の要素を [[DOM]] オブジェクトにして取得
+     */
+    last(): DOM<TElement>;
+    /**
+     * @en Create a new [[DOM]] object with elements added to the set from selector.
+     * @ja 指定された `selector` で取得した `Element` を追加した新規 [[DOM]] オブジェクトを返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるオブジェクト(群)またはセレクタ文字列
+     * @param context
+     *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+     *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+     */
+    add<T extends SelectorBase>(selector: DOMSelector<T>, context?: QueryContext): DOM<TElement>;
     /**
      * @en Check the current matched set of elements against a selector, element, or [[DOM]] object.
      * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 現在の要素のセットと一致するか確認
@@ -21,6 +75,36 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
      */
     is<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): boolean;
+    /**
+     * @en Reduce the set of matched elements to those that match the selector or pass the function's test.
+     * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 現在の要素のセットと一致したものを返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
+     * @returns
+     *  - `en` `true` if at least one of these elements matches the given arguments.
+     *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
+     */
+    filter<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
+    /**
+     * @en Pass each element in the current matched set through a function, producing a new [[DOM]] object containing the return values.
+     * @ja コールバックで変更された要素を用いて新たに [[DOM]] オブジェクトを構築
+     *
+     * @param callback
+     *  - `en` modification function object that will be invoked for each element in the current set.
+     *  - `ja` 各要素に対して呼び出される変更関数
+     */
+    map<T extends ElementBase>(callback: DOMModificationCallback<TElement, T>): DOM<T>;
+    /**
+     * @en Iterate over a [[DOM]] object, executing a function for each matched element.
+     * @ja 配下の要素に対してコールバック関数を実行
+     *
+     * @param callback
+     *  - `en` callback function object that will be invoked for each element in the current set.
+     *  - `ja` 各要素に対して呼び出されるコールバック関数
+     */
+    each(callback: DOMIterateCallback<TElement>): this;
     /**
      * @en Get the first parent of each element in the current set of matched elements.
      * @ja 管轄している各要素の最初の親要素を返却

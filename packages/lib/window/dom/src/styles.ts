@@ -8,13 +8,33 @@ import { DOMIterable } from './base';
  */
 export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TElement> {
 
-    ///////////////////////////////////////////////////////////////////////
-    // imprements: DOMIterable<T>
+///////////////////////////////////////////////////////////////////////
+// imprements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;
     [Symbol.iterator]: () => Iterator<TElement>;
     entries!: () => IterableIterator<[number, TElement]>;
+
+///////////////////////////////////////////////////////////////////////
+// public: Styles
+
 }
 
-setMixClassAttribute(DOMStyles, 'noConstructor');
+setMixClassAttribute(DOMStyles, 'protoExtendsOnly');
+
+/*
+[dom7]
+.css()
+.height()
+.offset()
+.outerHeight()
+.outerWidth()
+.width()
+
+[jquery]
+.innerHeight()
+.innerWidth()
+.position()
+.offsetParent()
+ */

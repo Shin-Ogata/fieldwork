@@ -1,4 +1,5 @@
-import { dom } from '@cdp/dom';
+import { dom, DOM } from '@cdp/dom';
+export { DOM };
 
 const body = document.body;
 

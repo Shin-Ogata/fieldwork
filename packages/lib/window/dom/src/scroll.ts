@@ -8,13 +8,23 @@ import { DOMIterable } from './base';
  */
 export class DOMScroll<TElement extends ElementBase> implements DOMIterable<TElement> {
 
-    ///////////////////////////////////////////////////////////////////////
-    // imprements: DOMIterable<T>
+///////////////////////////////////////////////////////////////////////
+// imprements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;
     [Symbol.iterator]: () => Iterator<TElement>;
     entries!: () => IterableIterator<[number, TElement]>;
+
+///////////////////////////////////////////////////////////////////////
+// public: Scroll
 }
 
-setMixClassAttribute(DOMScroll, 'noConstructor');
+setMixClassAttribute(DOMScroll, 'protoExtendsOnly');
+
+/*
+[dom7]
+.scrollLeft()
+.scrollTop()
+.scrollTo()
+ */

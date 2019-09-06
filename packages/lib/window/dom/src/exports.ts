@@ -4,4 +4,5 @@ export {
     dom,
 } from './static';
 export { dom as default } from './static';
+export { DOMModificationCallback } from './traversing';
 export { DOMEventMap } from './events';
