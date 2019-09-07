@@ -83,10 +83,40 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
      *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
      * @returns
-     *  - `en` `true` if at least one of these elements matches the given arguments.
-     *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
+     *  - `en` New [[DOM]] object including filtered elements.
+     *  - `ja` フィルタリングされた要素を内包する 新規 [[DOM]] オブジェクト
      */
     filter<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
+    /**
+     * @en Remove elements from the set of match the selector or pass the function's test.
+     * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 現在の要素のセットと一致したものを削除して返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
+     * @returns
+     *  - `en` New [[DOM]] object excluding filtered elements.
+     *  - `ja` フィルタリングされた要素を以外を内包する 新規 [[DOM]] オブジェクト
+     */
+    not<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
+    /**
+     * @en Get the descendants of each element in the current set of matched elements, filtered by a selector.
+     * @ja 配下の要素に対して指定したセレクタに一致する要素を検索
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+     */
+    find<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T>;
+    /**
+     * @en Reduce the set of matched elements to those that have a descendant that matches the selector.
+     * @ja 配下の要素に対して指定したセレクタに一致した子要素持つ要素を返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+     */
+    has<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T>;
     /**
      * @en Pass each element in the current matched set through a function, producing a new [[DOM]] object containing the return values.
      * @ja コールバックで変更された要素を用いて新たに [[DOM]] オブジェクトを構築
@@ -106,6 +136,47 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      */
     each(callback: DOMIterateCallback<TElement>): this;
     /**
+     * @en Reduce the set of matched elements to a subset specified by a range of indices.
+     * @ja インデックス指定された範囲の要素を含む [[DOM]] オブジェクトを返却
+     *
+     * @param begin
+     *  - `en` An integer indicating the 0-based position at which the elements begin to be selected.
+     *  - `ja` 取り出しの開始位置を示す 0 から始まるインデックス
+     * @param end
+     *  - `en` An integer indicating the 0-based position at which the elements stop being selected.
+     *  - `ja` 取り出しを終える直前の位置を示す 0 から始まるインデックス
+     */
+    slice(begin?: number, end?: number): DOM<TElement>;
+    /**
+     * @en Reduce the set of matched elements to the one at the specified index.
+     * @ja インデックス指定した要素を含む [[DOM]] オブジェクトを返却
+     *
+     * @param index
+     *  - `en` A zero-based integer indicating which element to retrieve. <br>
+     *         If negative index is counted from the end of the matched set.
+     *  - `ja` 0 base のインデックスを指定 <br>
+     *         負値が指定された場合, 末尾からのインデックスとして解釈される
+     */
+    eq(index: number): DOM<TElement>;
+    /**
+     * @en For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+     * @ja 開始要素から最も近い親要素を選択. セレクター指定した場合, マッチする最も近い親要素を返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
+     */
+    closest<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T>;
+    /**
+     * @en Get the children of each element in the set of matched elements, optionally filtered by a selector.
+     * @ja 各要素の子要素を取得. セレクタが指定された場合はフィルタリングされた結果を返却
+     *
+     * @param selector
+     *  - `en` filtered by a string selector.
+     *  - `ja` フィルタ用文字列セレクタ
+     */
+    children<T extends Node = HTMLElement>(selector?: string): DOM<T>;
+    /**
      * @en Get the first parent of each element in the current set of matched elements.
      * @ja 管轄している各要素の最初の親要素を返却
      *
@@ -124,7 +195,7 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    parents<T extends Node = HTMLElement>(selector?: string): DOM<T>;
+    parents<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T>;
     /**
      * @en Get the ancestors of each element in the current set of matched elements, <br>
      *     up to but not including the element matched by the selector, DOM node, or [[DOM]] object
@@ -138,5 +209,5 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T>;
+    parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase, V extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: DOMSelector<V>): DOM<T>;
 }

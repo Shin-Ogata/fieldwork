@@ -34,7 +34,7 @@ describe('dom/base spec', () => {
         const t1 = performance.now() - t0;
         console.timeEnd('DOM');
 
-        expect(t1).toBeLessThanOrEqual(200);
+        expect(t1).toBeLessThanOrEqual(300);
     });
 
     it('check index access', () => {

@@ -310,6 +310,186 @@ describe('dom/traversing spec', () => {
         }
     });
 
+    it('check DOM#not()', () => {
+        const divs = prepareTestElements();
+        const $empty = $() as DOM<HTMLElement>; // eslint-disable-line
+
+        {// no entry
+            const $dom = $empty;
+            const $result = $dom.not('.test-dom');
+            expect($result).toBeDefined();
+            expect($result.length).toBe(0);
+        }
+
+        {// empty selector
+            const $dom = $('.test-dom');
+            expect($dom.not('')).toEqual($empty);
+            expect($dom.not(null)).toEqual($empty);
+            expect($dom.not(undefined)).toEqual($empty);
+        }
+
+        {// string selector
+            const $dom = $('.test-dom');
+            let $result = $dom.not('.test-dom');
+            expect($result.length).toBe(0);
+            $result = $dom.not('.test-dom-child');
+            expect($result.length).toBe(3);
+            $result = $dom.not('div');
+            expect($result.length).toBe(0);
+            $result = $dom.not('#d1');
+            expect($result.length).toBe(2);
+            expect($result[0]).toBe(divs[1]);
+            expect($result[1]).toBe(divs[2]);
+            $result = $dom.not('#d2');
+            expect($result.length).toBe(2);
+            expect($result[0]).toBe(divs[0]);
+            expect($result[1]).toBe(divs[2]);
+            $result = $dom.not('#d3');
+            expect($result.length).toBe(2);
+            expect($result[0]).toBe(divs[0]);
+            expect($result[1]).toBe(divs[1]);
+            $result = $dom.not('#d999');
+            expect($result.length).toBe(3);
+            $result = $dom.not('body > #d2');
+            expect($result.length).toBe(2);
+            expect($result[0]).toBe(divs[0]);
+            expect($result[1]).toBe(divs[2]);
+        }
+
+        {// document selector
+            const $document = $(document);
+            let $result = $document.not(document);
+            expect($result.length).toBe(0);
+            $result = $document.not(window);
+            expect($result.length).toBe(1);
+            const $body = $(body);
+            const $result2 = $body.not(document);
+            expect($result2.length).toBe(1);
+        }
+
+        {// window selector
+            const $window = $(window);
+            let $result = $window.not(window);
+            expect($result.length).toBe(0);
+            $result = $window.not(document);
+            expect($result.length).toBe(1);
+            const $body = $(body);
+            const $result2 = $body.not(window);
+            expect($result2.length).toBe(1);
+        }
+
+        {// element selector
+            const $dom = $('.test-dom');
+            let $result = $dom.not(divs[0]);
+            expect($result[0]).toBe(divs[1]);
+            expect($result[1]).toBe(divs[2]);
+            $result = $dom.not(divs[1]);
+            expect($result[0]).toBe(divs[0]);
+            expect($result[1]).toBe(divs[2]);
+            $result = $dom.not(divs[2]);
+            expect($result[0]).toBe(divs[0]);
+            expect($result[1]).toBe(divs[1]);
+
+            const elem = document.querySelector('span.test-dom-child');
+            $result = $dom.not(elem);
+            expect($result.length).toBe(3);
+        }
+
+        {// elements selector
+            const $dom = $('.test-dom');
+            let $result = $dom.not(divs);
+            expect($result.length).toBe(0);
+            const elems = document.querySelectorAll('.test-dom');
+            $result = $dom.not(elems);
+            expect($result.length).toBe(0);
+
+            const children = document.querySelectorAll('.test-dom-child');
+            $result = $dom.not(children);
+            expect($result.length).toBe(3);
+
+            $result = $dom.not([children[0], children[1]]);
+            expect($result.length).toBe(3);
+            $result = $dom.not([divs[0], children[1]]);
+            expect($result.length).toBe(2);
+            $result = $dom.not([children[0], divs[1]]);
+            expect($result.length).toBe(2);
+        }
+
+        {// function selector
+            const $dom = $('.test-dom');
+            let $result = $dom.not((index, elem: Element) => elem.classList.contains('test-dom'));
+            expect($result.length).toBe(0);
+            $result = $dom.not((index) => 2 === index);
+            expect($result.length).toBe(2);
+        }
+
+        {// invalid selector
+            const $dom = $('.test-dom');
+            const $result = $dom.not({} as any);
+            expect($result.length).toBe(3);
+        }
+    });
+
+    it('check DOM#find()', () => {
+        const divs = prepareTestElements();
+
+        {// string selector
+            const $dom = $('.test-dom');
+            let $result = $dom.find('.test-dom-child');
+            expect($result.length).toBe(3);
+            $result = $dom.find('span');
+            expect($result.length).toBe(1);
+        }
+
+        {// window selector
+            const $window = $(window);
+            const $result = $window.find<HTMLDivElement>('.test-dom');
+            expect($result.length).toBe(0);
+        }
+
+        {// elements selector
+            const $dom = $('.test-dom');
+            let $result = $dom.find(divs);
+            expect($result.length).toBe(0);
+
+            const $children = $('.test-dom-child');
+            $result = $dom.find($children);
+            expect($result.length).toBe(3);
+        }
+    });
+
+    it('check DOM#has()', () => {
+        const divs = prepareTestElements();
+
+        {// string selector
+            const $dom = $('.test-dom');
+            let $result = $dom.has('.test-dom-child');
+            expect($result.length).toBe(3);
+            expect($result[0]).toBe(divs[0]);
+            expect($result[1]).toBe(divs[1]);
+            expect($result[2]).toBe(divs[2]);
+            $result = $dom.has('span');
+            expect($result.length).toBe(1);
+            expect($result[0]).toBe(divs[1]);
+        }
+
+        {// window selector
+            const $window = $(window);
+            const $result = $window.has('.test-dom');
+            expect($result.length).toBe(0);
+        }
+
+        {// elements selector
+            const $dom = $('.test-dom');
+            let $result = $dom.has(divs);
+            expect($result.length).toBe(0);
+
+            const $children = $('.test-dom-child');
+            $result = $dom.has($children);
+            expect($result.length).toBe(3);
+        }
+    });
+
     it('check DOM#map()', () => {
         prepareTestElements();
         const $dom = $('.test-dom');
@@ -345,6 +525,83 @@ describe('dom/traversing spec', () => {
         $dom.each(stub2.onCallback);
         expect(stub2.onCallback).toHaveBeenCalled();
         expect(count).toBe(2);
+    });
+
+    it('check DOM#slice()', () => {
+        const divs = prepareTestElements();
+        const $dom = $('.test-dom');
+
+        let $slice = $dom.slice();
+        expect($slice.length).toBe(3);
+        expect($slice[0]).toBe(divs[0]);
+        expect($slice[1]).toBe(divs[1]);
+        expect($slice[2]).toBe(divs[2]);
+
+        $slice = $dom.slice(1, 2);
+        expect($slice.length).toBe(1);
+        expect($slice[0]).toBe(divs[1]);
+
+        $slice = $dom.slice(-3, -1);
+        expect($slice.length).toBe(2);
+        expect($slice[0]).toBe(divs[0]);
+        expect($slice[1]).toBe(divs[1]);
+    });
+
+    it('check DOM#eq()', () => {
+        const divs = prepareTestElements();
+        const $dom = $('.test-dom');
+
+        let $eq = $dom.eq(0);
+        expect($eq.length).toBe(1);
+        expect($eq[0]).toBe(divs[0]);
+        $eq = $dom.eq(1);
+        expect($eq.length).toBe(1);
+        expect($eq[0]).toBe(divs[1]);
+        $eq = $dom.eq(-1);
+        expect($eq.length).toBe(1);
+        expect($eq[0]).toBe(divs[2]);
+        $eq = $dom.eq(null as any);
+        expect($eq.length).toBe(0);
+    });
+
+    it('check DOM#closest()', () => {
+        const divs = prepareTestElements();
+        const $dom = $('span.test-dom-child');
+
+        let $closet = $dom.closest('div');
+        expect($closet.length).toBe(1);
+        expect($closet[0]).toBe(divs[1]);
+
+        $closet = $dom.closest('.test-dom-child');
+        expect($closet.length).toBe(1);
+        expect($closet).toBe($dom); // jQuery は新規インスタンスを返却
+
+        $closet = $dom.closest(null as any);
+        expect($closet.length).toBe(0);
+
+        $closet = $(window).closest('.test-dom-child');
+        expect($closet.length).toBe(0);
+    });
+
+    it('check DOM#children()', () => {
+        prepareTestElements();
+        const children: NodeListOf<HTMLElement> = document.querySelectorAll('.test-dom-child');
+
+        const $dom = $('.test-dom');
+        let $children = $dom.children();
+        expect($children.length).toBe(3);
+        expect($children[0]).toBe(children[0]);
+        expect($children[1]).toBe(children[1]);
+        expect($children[2]).toBe(children[2]);
+
+        $children = $dom.children('hr');
+        expect($children.length).toBe(1);
+        expect($children[0]).toBe(children[2]);
+
+        const $window = $(window);
+        expect($window.children().length).toBe(0);
+        const $document = $(document);
+        expect($document.children().length).toBe(1);
     });
 
     it('check DOM#parent()', () => {
