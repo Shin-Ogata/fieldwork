@@ -19,6 +19,7 @@ import {
     DOMBase,
     DOMIterable,
     isTypeElement,
+    isTypeWindow,
     isEmptySelector,
     isStringSelector,
     isDocumentSelector,
@@ -150,6 +151,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
 
     public get(index?: number): TElement[] | TElement | undefined {
         if (null != index) {
+            index = Math.floor(index);
             return index < 0 ? this[index + this.length] : this[index];
         } else {
             return this.toArray();
@@ -262,8 +264,8 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
      *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
      * @returns
-     *  - `en` `true` if at least one of these elements matches the given arguments.
-     *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
+     *  - `en` New [[DOM]] object including filtered elements.
+     *  - `ja` フィルタリングされた要素を内包する 新規 [[DOM]] オブジェクト
      */
     public filter<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement> {
         if (this.length <= 0 || isEmptySelector(selector as DOMSelector<T>)) {
@@ -272,6 +274,86 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         const elements: TElement[] = [];
         winnow(selector, this, (el: TElement) => { elements.push(el); });
         return $(elements as Node[]) as DOM<TElement>;
+    }
+
+    /**
+     * @en Remove elements from the set of match the selector or pass the function's test.
+     * @ja セレクタ, 要素, または [[DOM]] オブジェクトを指定し, 現在の要素のセットと一致したものを削除して返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
+     * @returns
+     *  - `en` New [[DOM]] object excluding filtered elements.
+     *  - `ja` フィルタリングされた要素を以外を内包する 新規 [[DOM]] オブジェクト
+     */
+    public not<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement> {
+        if (this.length <= 0 || isEmptySelector(selector as DOMSelector<T>)) {
+            return $() as DOM<TElement>;
+        }
+        const elements = new Set<TElement>([...this]);
+        winnow(selector, this, (el: TElement) => { elements.delete(el); });
+        return $([...elements] as Node[]) as DOM<TElement>;
+    }
+
+    /**
+     * @en Get the descendants of each element in the current set of matched elements, filtered by a selector.
+     * @ja 配下の要素に対して指定したセレクタに一致する要素を検索
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+     */
+    public find<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
+        if (!isString(selector)) {
+            const $selector = $(selector) as DOM<Node>;
+            return $selector.filter((index, elem) => {
+                for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
+                    if (Node.DOCUMENT_POSITION_CONTAINED_BY & el.compareDocumentPosition(elem)) {
+                        return true;
+                    }
+                }
+                return false;
+            }) as DOM<T>;
+        } else if (isTypeWindow(this)) {
+            return $() as DOM<T>;
+        } else {
+            const elements: Element[] = [];
+            for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
+                const elems = el.querySelectorAll(selector);
+                elements.push(...elems);
+            }
+            return $(elements as Node[]) as DOM<T>;
+        }
+    }
+
+    /**
+     * @en Reduce the set of matched elements to those that have a descendant that matches the selector.
+     * @ja 配下の要素に対して指定したセレクタに一致した子要素持つ要素を返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+     */
+    public has<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
+        if (isTypeWindow(this)) {
+            return $() as DOM<T>;
+        }
+
+        const targets: Element[] = [];
+        for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
+            const $target = $(selector, el) as DOM<Element>;
+            targets.push(...$target);
+        }
+
+        return this.filter((index, elem) => {
+            for (const el of new Set(targets)) {
+                if (Node.DOCUMENT_POSITION_CONTAINS & el.compareDocumentPosition(elem as Node)) {
+                    return true;
+                }
+            }
+            return false;
+        }) as DOM<Node> as DOM<T>;
     }
 
     /**
@@ -305,6 +387,83 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
             }
         }
         return this;
+    }
+
+    /**
+     * @en Reduce the set of matched elements to a subset specified by a range of indices.
+     * @ja インデックス指定された範囲の要素を含む [[DOM]] オブジェクトを返却
+     *
+     * @param begin
+     *  - `en` An integer indicating the 0-based position at which the elements begin to be selected.
+     *  - `ja` 取り出しの開始位置を示す 0 から始まるインデックス
+     * @param end
+     *  - `en` An integer indicating the 0-based position at which the elements stop being selected.
+     *  - `ja` 取り出しを終える直前の位置を示す 0 から始まるインデックス
+     */
+    public slice(begin?: number, end?: number): DOM<TElement> {
+        return $([...this].slice(begin, end) as Node[]) as DOM<TElement>;
+    }
+
+    /**
+     * @en Reduce the set of matched elements to the one at the specified index.
+     * @ja インデックス指定した要素を含む [[DOM]] オブジェクトを返却
+     *
+     * @param index
+     *  - `en` A zero-based integer indicating which element to retrieve. <br>
+     *         If negative index is counted from the end of the matched set.
+     *  - `ja` 0 base のインデックスを指定 <br>
+     *         負値が指定された場合, 末尾からのインデックスとして解釈される
+     */
+    public eq(index: number): DOM<TElement> {
+        if (null == index) {
+            // for fail safe
+            return $() as DOM<TElement>;
+        } else {
+            return $(this.get(index)) as DOM<TElement>;
+        }
+    }
+
+    /**
+     * @en For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+     * @ja 開始要素から最も近い親要素を選択. セレクター指定した場合, マッチする最も近い親要素を返却
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列, テスト関数
+     */
+    public closest<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
+        if (null == selector || !isTypeElement(this)) {
+            return $() as DOM<T>;
+        }
+        let closest: DOM<Node> = this as any;
+        if (!closest.is(selector)) {
+            closest = closest.parents(selector).eq(0);
+        }
+        return closest as DOM<T>;
+    }
+
+    /**
+     * @en Get the children of each element in the set of matched elements, optionally filtered by a selector.
+     * @ja 各要素の子要素を取得. セレクタが指定された場合はフィルタリングされた結果を返却
+     *
+     * @param selector
+     *  - `en` filtered by a string selector.
+     *  - `ja` フィルタ用文字列セレクタ
+     */
+    public children<T extends Node = HTMLElement>(selector?: string): DOM<T> {
+        if (isTypeWindow(this)) {
+            return $() as DOM<T>;
+        } else {
+            const children = new Set<Node>();
+            for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
+                for (const child of el.children) {
+                    if (null == selector || child.matches(selector)) {
+                        children.add(child);
+                    }
+                }
+            }
+            return $([...children]) as DOM<T>;
+        }
     }
 
     /**
@@ -342,7 +501,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    public parents<T extends Node = HTMLElement>(selector?: string): DOM<T> {
+    public parents<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T> {
         return this.parentsUntil(undefined, selector);
     }
 
@@ -359,7 +518,11 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      *  - `ja` フィルタ用文字列セレクタ
      * @returns [[DOM]] instance
      */
-    public parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: string): DOM<T> {
+    public parentsUntil<
+        T extends Node = HTMLElement,
+        U extends SelectorBase = SelectorBase,
+        V extends SelectorBase = SelectorBase
+    >(selector?: DOMSelector<U>, filter?: DOMSelector<V>): DOM<T> {
         let parents: Node[] = [];
 
         for (const el of this) {
@@ -397,23 +560,16 @@ setMixClassAttribute(DOMTraversing, 'protoExtendsOnly');
 
 /*
 [dom7]
-.children()
-.closest()
-.eq()
-.find() !! filter系 !!
+.siblings()
 .next()
 .nextAll()
 .prev()
 .prevAll()
-.siblings()
 
 [jquery]
 .contents()
-.has()
 .nextUntil()
-.not() !! filter系 !!
 .prevUntil()
-.slice()
 // Copying
 .clone()
  */
