@@ -749,4 +749,244 @@ describe('dom/traversing spec', () => {
             expect($parent3.length).toBe(1); // <html>
         }
     });
+
+    it('check DOM#next()', () => {
+        const divs = prepareTestElements();
+        const $dom = $('.test-dom');
+        let $next = $dom.next();
+        expect($next.length).toBe(2);
+        expect($next[0]).toBe(divs[1]);
+        expect($next[1]).toBe(divs[2]);
+
+        $next = $dom.next('#d3');
+        expect($next.length).toBe(1);
+        expect($next[0]).toBe(divs[2]);
+
+        $next = $(document).next();
+        expect($next.length).toBe(0);
+
+        $next = $(window).next();
+        expect($next.length).toBe(0);
+    });
+
+    it('check DOM#nextAll() / nextUntil()', () => {
+        const $dom = $(`
+<dl class="test-dom">
+  <dt id="term-1">term 1</dt>
+  <dd>definition 1-a</dd>
+  <dd>definition 1-b</dd>
+  <dd>definition 1-c</dd>
+  <dd>definition 1-d</dd>
+  <dt id="term-2">term 2</dt>
+  <dd>definition 2-a</dd>
+  <dd>definition 2-b</dd>
+  <dd>definition 2-c</dd>
+  <dt id="term-3">term 3</dt>
+  <dd>definition 3-a</dd>
+  <dd>definition 3-b</dd>
+</dl>`);
+
+        const $children = $dom.children();
+        const $dt = $dom.find('#term-1');
+        let $next = $dt.nextAll();
+        expect($next.length).toBe(11);
+        expect($next[0]).toBe($children[1]);
+        expect($next[10]).toBe($children[11]);
+
+        $next = $dt.nextAll('dd');
+        expect($next.length).toBe(9);
+
+        $next = $dt.nextAll($dom.find('dt'));
+        expect($next.length).toBe(2);
+        expect($next[0]).toBe($children[5]);
+        expect($next[1]).toBe($children[9]);
+
+        $next = $dt.nextUntil('dt');
+        expect($next.length).toBe(4);
+        expect($next[0]).toBe($children[1]);
+        expect($next[1]).toBe($children[2]);
+        expect($next[2]).toBe($children[3]);
+        expect($next[3]).toBe($children[4]);
+
+        $next = $dom.find('dt').nextUntil($children.last(), 'dd');
+        expect($next.length).toBe(8);
+        expect($next[0]).toBe($children[1]);
+        expect($next[1]).toBe($children[2]);
+        expect($next[2]).toBe($children[3]);
+        expect($next[3]).toBe($children[4]);
+        expect($next[4]).toBe($children[6]);
+        expect($next[5]).toBe($children[7]);
+        expect($next[6]).toBe($children[8]);
+        expect($next[7]).toBe($children[10]);
+    });
+
+    it('check DOM#prev()', () => {
+        const $div = $(`
+<div class="test-dom">
+    <div id="d1" class="test-dom" tabindex="-1">
+        <p class="test-dom-child"></p>
+    </div>
+    <div id="d2" class="test-dom">
+        <span class="test-dom-child"></span>
+    </div>
+    <div id="d3" class="test-dom">
+        <hr class="test-dom-child"></hr>
+    </div>
+</div>`);
+        const $dom = $div.children();
+        let $prev = $dom.prev();
+        expect($prev.length).toBe(2);
+        expect($prev[0]).toBe($dom[0]);
+        expect($prev[1]).toBe($dom[1]);
+
+        $prev = $dom.prev('#d1');
+        expect($prev.length).toBe(1);
+        expect($prev[0]).toBe($dom[0]);
+
+        $prev = $(document).prev();
+        expect($prev.length).toBe(0);
+
+        $prev = $(window).prev();
+        expect($prev.length).toBe(0);
+    });
+
+    it('check DOM#prevAll() / prevUntil()', () => {
+        const $dom = $(`
+<dl class="test-dom">
+  <dt id="term-1">term 1</dt>
+  <dd>definition 1-a</dd>
+  <dd>definition 1-b</dd>
+  <dd>definition 1-c</dd>
+  <dd>definition 1-d</dd>
+  <dt id="term-2">term 2</dt>
+  <dd>definition 2-a</dd>
+  <dd>definition 2-b</dd>
+  <dd>definition 2-c</dd>
+  <dt id="term-3">term 3</dt>
+  <dd>definition 3-a</dd>
+  <dd>definition 3-b</dd>
+</dl>`);
+
+        const $children = $dom.children();
+        const $dt = $dom.find('#term-3');
+        let $prev = $dt.prevAll();
+        expect($prev.length).toBe(9);
+        expect($prev[0]).toBe($children[8]);
+        expect($prev[8]).toBe($children[0]);
+
+        $prev = $dt.prevAll('dd');
+        expect($prev.length).toBe(7);
+
+        $prev = $dt.prevAll($dom.find('dt'));
+        expect($prev.length).toBe(2);
+        expect($prev[0]).toBe($children[5]);
+        expect($prev[1]).toBe($children[0]);
+
+        $prev = $dt.prevUntil('dt');
+        expect($prev.length).toBe(3);
+        expect($prev[0]).toBe($children[8]);
+        expect($prev[1]).toBe($children[7]);
+        expect($prev[2]).toBe($children[6]);
+
+        $prev = $dom.find('dt').prevUntil($children.first(), 'dd');
+        expect($prev.length).toBe(7);
+        expect($prev[0]).toBe($children[4]);
+        expect($prev[1]).toBe($children[3]);
+        expect($prev[2]).toBe($children[2]);
+        expect($prev[3]).toBe($children[1]);
+        expect($prev[4]).toBe($children[8]);
+        expect($prev[5]).toBe($children[7]);
+        expect($prev[6]).toBe($children[6]);
+
+        $prev = $(document).prevUntil();
+        expect($prev.length).toBe(0);
+
+        $prev = $(window).prevAll();
+        expect($prev.length).toBe(0);
+    });
+
+    it('check DOM#siblings()', () => {
+        const $dom = $(`
+<ul class="test-dom">
+  <li class='hoge'>list item 1</li>
+  <li>list item 2</li>
+  <li class="third-item">list item 3</li>
+  <li class='hoge'>list item 4</li>
+  <li>list item 5</li>
+</ul>`);
+
+        const $children = $dom.children();
+        const $third = $dom.find('.third-item');
+        let $siblings = $third.siblings();
+        expect($siblings.length).toBe(4);
+        expect($siblings[0]).toBe($children[0]);
+        expect($siblings[1]).toBe($children[1]);
+        expect($siblings[2]).toBe($children[3]);
+        expect($siblings[3]).toBe($children[4]);
+
+        $siblings = $third.siblings('.hoge');
+        expect($siblings.length).toBe(2);
+        expect($siblings[0]).toBe($children[0]);
+        expect($siblings[1]).toBe($children[3]);
+
+        $siblings = $dom.siblings();
+        expect($siblings.length).toBe(0);
+
+        $siblings = $(document).siblings();
+        expect($siblings.length).toBe(0);
+
+        $siblings = $(window).siblings();
+        expect($siblings.length).toBe(0);
+    });
+
+    it('check DOM#contents()', () => {
+        const $dom = $(`
+<div class="container">
+  <!-- comment -->
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  <br><br>
+  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+  laboris nisi ut aliquip ex ea commodo consequat.
+  <br><br>
+  Duis aute irure dolor in reprehenderit in voluptate velit
+  esse cillum dolore eu fugiat nulla pariatur.
+  <template id="templ-1">
+      <tr>
+        <td class="record"></td>
+        <td></td>
+      </tr>
+  </template>
+</div>`);
+        let $contents = $dom.contents();
+        expect($contents.length).toBe(11);
+        expect($contents[0].nodeType).toBe(Node.TEXT_NODE);
+        expect($contents[1].nodeType).toBe(Node.COMMENT_NODE);
+        expect($contents[2].nodeType).toBe(Node.TEXT_NODE);
+        expect($contents[3].nodeType).toBe(Node.ELEMENT_NODE);
+        expect($contents[4].nodeType).toBe(Node.ELEMENT_NODE);
+        expect($contents[5].nodeType).toBe(Node.TEXT_NODE);
+        expect($contents[6].nodeType).toBe(Node.ELEMENT_NODE);
+        expect($contents[7].nodeType).toBe(Node.ELEMENT_NODE);
+        expect($contents[8].nodeType).toBe(Node.TEXT_NODE);
+        expect($contents[9].nodeType).toBe(Node.ELEMENT_NODE);
+        expect($contents[10].nodeType).toBe(Node.TEXT_NODE);
+
+        const $template = $dom.find('#templ-1');
+        $contents = $template.contents();
+        expect($contents.length).toBe(1);
+        expect($contents[0].nodeType).toBe(Node.DOCUMENT_FRAGMENT_NODE);
+        expect($contents.find('.record').length).toBe(1);
+
+        const $iframe = $(document).find('iframe');
+        $contents = $iframe.contents();
+        expect($contents.length).toBe(1);
+        expect($contents.find('body').length).toBe(1);
+
+        $contents = $(document).contents();
+        expect($contents.length).toBe(2);
+
+        $contents = $(window).contents();
+        expect($contents.length).toBe(0);
+    });
 });

@@ -877,6 +877,15 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
     public scroll(handler?: (event: Event, ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('scroll', handler, options);
     }
+
+///////////////////////////////////////////////////////////////////////
+// public: Copying
 }
 
 setMixClassAttribute(DOMEvents, 'protoExtendsOnly');
+
+/*
+[jquery]
+// Copying
+.clone()
+ */
