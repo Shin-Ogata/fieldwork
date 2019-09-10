@@ -20,6 +20,12 @@ declare const DOMClass_base: import("@cdp/core-utils").MixinConstructor<typeof D
 /**
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
+ *
+ * UNSUPPORTED METHOD LIST
+ *
+ * [Traversing]
+ *  .addBack()
+ *  .end()
  */
 export declare class DOMClass extends DOMClass_base {
     /**

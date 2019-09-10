@@ -31,6 +31,12 @@ export type DOMIterateCallback<T extends ElementBase> = (index: number, element:
 /**
  * @en This class provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供
+ *
+ * UNSUPPORTED METHOD LIST
+ *
+ * [Traversing]
+ *  .addBack()
+ *  .end()
  */
 export class DOMClass extends mixins(
     DOMBase,
@@ -77,11 +83,3 @@ export class DOMClass extends mixins(
         return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as any;
     }
 }
-
-/*
- * UNSUPPORTED METHOD LIST
- *
- * [Traversing]
- *  .addBack()
- *  .end()
- */
