@@ -2,12 +2,8 @@ declare namespace CDP_DECLARE {
     /**
      * @en Constant definition about range of the result code.
      * @ja リザルトコードの範囲に関する定数定義
-     *
-     * NOTE: TypeScript 3.6+ の不具合より const を解除
-     * https://github.com/microsoft/TypeScript/issues/33060
-     * TODO: TypeScript 更新の際にチェック. "3.6+" でコード内を検索
      */
-    enum RESULT_CODE_RANGE {
+    const enum RESULT_CODE_RANGE {
         /**
          * @en The assignable range for the client's local result cord by which expansion is possible.
          * @ja クライアントが拡張可能なローカルリザルトコードのアサイン可能領域
@@ -22,11 +18,8 @@ declare namespace CDP_DECLARE {
     /**
      * @en The assignment range guideline definition used in the module.
      * @ja モジュール内で使用するアサイン領域ガイドライン定数定義
-     *
-     * NOTE: TypeScript 3.6+ の不具合より const を解除
-     * https://github.com/microsoft/TypeScript/issues/33060
      */
-    enum LOCAL_CODE_RANGE_GUIDE {
+    const enum LOCAL_CODE_RANGE_GUIDE {
         /**
          * @en The assignment range guideline per 1 module.
          * @ja 1モジュール当たりに割り当てるアサイン領域ガイドライン
@@ -59,11 +52,8 @@ declare namespace CDP_DECLARE {
      *  }
      *  ASSIGN_RESULT_CODE(RESULT_CODE);
      * ```
-     *
-     * NOTE: TypeScript 3.6+ の不具合より const を解除
-     * https://github.com/microsoft/TypeScript/issues/33060
      */
-    enum RESULT_CODE_BASE {
+    const enum RESULT_CODE_BASE {
         COMMON = 0,
         CDP = 100
     }
