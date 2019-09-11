@@ -2,7 +2,11 @@
 
 namespace CDP_DECLARE {
 
-    export const enum RESULT_CODE_BASE {
+    /*
+     * NOTE: TypeScript 3.6+ の不具合より const を解除
+     * https://github.com/microsoft/TypeScript/issues/33060
+     */
+    export enum RESULT_CODE_BASE {
         TEST = 2 * LOCAL_CODE_RANGE_GUIDE.MODULE,
     }
 
