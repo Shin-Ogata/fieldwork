@@ -53,7 +53,7 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
                     elements.push(...context.querySelectorAll(selector));
                 }
             }
-        } else if ((seed as Node).nodeType || window === seed) {
+        } else if ((seed as Node).nodeType || window === seed as Window) {
             // Node/element, Window
             elements.push(seed as Node as Element);
         } else if (0 < (seed as T[]).length && (seed[0].nodeType || window === seed[0])) {

@@ -8,6 +8,7 @@ import {
 import { CustomEvent } from './ssr';
 import {
     ElementBase,
+    DOM,
     dom as $,
 } from './static';
 import { DOMIterable } from './base';
@@ -251,7 +252,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 
         function handleLiveEvent(e: Event): void {
             const eventData = queryEventData(e);
-            const $target = $(e.target as Element | null);
+            const $target = $(e.target as Element | null) as DOM<Element>;
             if ($target.is(selector)) {
                 listener.apply($target[0], eventData);
             } else {

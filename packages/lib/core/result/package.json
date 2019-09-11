@@ -58,5 +58,5 @@
     "watch:ts:src": "npm run compile:src -- -w",
     "watch:ts:test": "npm run compile:test -- -w"
   },
-  "types": "types/index.d.ts"
+  "types": "types/_types.d.ts"
 }

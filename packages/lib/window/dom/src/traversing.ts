@@ -56,7 +56,7 @@ function winnow<T extends SelectorBase, U extends ElementBase>(
                 }
             }
         } else if (isWindowSelector(selector)) {
-            if (window === el) {
+            if (window === el as Window) {
                 retval = validCallback(el);
                 if (undefined !== retval) {
                     return retval;
@@ -492,12 +492,20 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
     public closest<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
         if (null == selector || !isTypeElement(this)) {
             return $() as DOM<T>;
+        } else if (isString(selector)) {
+            const closests = new Set<Node>();
+            for (const el of this as DOMIterable<Element>) {
+                const c = el.closest(selector);
+                if (c) {
+                    closests.add(c);
+                }
+            }
+            return $([...closests]) as DOM<T>;
+        } else if (this.is(selector)) {
+            return $(this as any);
+        } else {
+            return this.parents(selector).eq(0) as DOM<Node> as DOM<T>;
         }
-        let closest: DOM<Node> = this as any;
-        if (!closest.is(selector)) {
-            closest = closest.parents(selector).eq(0);
-        }
-        return closest as DOM<T>;
     }
 
     /**

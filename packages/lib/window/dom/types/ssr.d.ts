@@ -1,4 +1,4 @@
-declare const win: Window;
+declare const win: Window & typeof globalThis;
 declare const doc: Document;
 declare const evt: {
     new <T>(typeArg: string, eventInitDict?: CustomEventInit<T> | undefined): CustomEvent<T>;

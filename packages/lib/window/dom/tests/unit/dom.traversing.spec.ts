@@ -115,7 +115,7 @@ describe('dom/traversing spec', () => {
         const divs = prepareTestElements();
 
         {// no entry
-            const $dom = $();
+            const $dom = $() as DOM<HTMLElement>; // eslint-disable-line
             expect($dom.is('.test-dom')).toBe(false);
         }
 
@@ -572,13 +572,30 @@ describe('dom/traversing spec', () => {
         expect($closet.length).toBe(1);
         expect($closet[0]).toBe(divs[1]);
 
+        // no hit
+        $closet = $dom.closest('.hoge-hoge');
+        expect($closet.length).toBe(0);
+
+        // own
         $closet = $dom.closest('.test-dom-child');
         expect($closet.length).toBe(1);
-        expect($closet).toBe($dom); // jQuery は新規インスタンスを返却
+        expect($closet[0]).toBe($dom[0]);
 
+        // own from $
+        $closet = $dom.closest($closet);
+        expect($closet.length).toBe(1);
+        expect($closet[0]).toBe($dom[0]);
+
+        // elements
+        $closet = $dom.closest(divs);
+        expect($closet.length).toBe(1);
+        expect($closet[0]).toBe(divs[1]);
+
+        // no supported
         $closet = $dom.closest(null as any);
         expect($closet.length).toBe(0);
 
+        // no supported
         $closet = $(window).closest('.test-dom-child');
         expect($closet.length).toBe(0);
     });
