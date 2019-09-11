@@ -116,5 +116,7 @@ describe('utils/misc spec', () => {
 
     it('check dasherize()', () => {
         expect(dasherize('MozTransform')).toBe('-moz-transform');
+        expect(dasherize('backgroundColor')).toBe('background-color');
+        expect(dasherize('--css-varialble')).toBe('--css-varialble');
     });
 });

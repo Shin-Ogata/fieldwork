@@ -281,5 +281,5 @@ export function underscored(src: string): string {
  *  - `ja` 変換元文字列
  */
 export function dasherize(src: string): string {
-    return src.trim().replace(/([A-Z])/g, '-$1').replace(/[-_\s]+/g, '-').toLowerCase();
+    return src.trim().replace(/([A-Z])/g, '-$1').replace(/[_\s]+/g, '-').toLowerCase();
 }
