@@ -44,9 +44,9 @@ const enum Const {
 
 /** @internal */
 const _eventContextMap = {
-    eventData: new WeakMap<Element, any[]>(),
-    eventListeners: new WeakMap<Element, BindEventContext>(),
-    liveEventListeners: new WeakMap<Element, BindEventContext>(),
+    eventData: new WeakMap<ElementBase, any[]>(),
+    eventListeners: new WeakMap<ElementBase, BindEventContext>(),
+    liveEventListeners: new WeakMap<ElementBase, BindEventContext>(),
 };
 
 /** @internal query event-data from element */
@@ -57,12 +57,12 @@ function queryEventData(event: Event): any[] {
 }
 
 /** @internal register event-data with element */
-function registerEventData(elem: Element, eventData: any[]): void {
+function registerEventData(elem: ElementBase, eventData: any[]): void {
     _eventContextMap.eventData.set(elem, eventData);
 }
 
 /** @internal delete event-data by element */
-function deleteEventData(elem: Element): void {
+function deleteEventData(elem: ElementBase): void {
     _eventContextMap.eventData.delete(elem);
 }
 
@@ -73,7 +73,7 @@ function toCookie(event: string, selector: string, options: AddEventListenerOpti
 }
 
 /** @internal get listener handlers context by element and event */
-function getEventListenersHandlers(elem: Element, event: string, selector: string, options: AddEventListenerOptions, ensure: boolean): BindInfo {
+function getEventListenersHandlers(elem: ElementBase, event: string, selector: string, options: AddEventListenerOptions, ensure: boolean): BindInfo {
     const eventListeners = selector ? _eventContextMap.liveEventListeners : _eventContextMap.eventListeners;
     if (!eventListeners.has(elem)) {
         if (ensure) {
@@ -100,7 +100,7 @@ function getEventListenersHandlers(elem: Element, event: string, selector: strin
 
 /** @internal register listener handlers context from element and event */
 function registerEventListenerHandlers(
-    elem: Element,
+    elem: ElementBase,
     events: string[],
     selector: string,
     listener: EventListener,
@@ -121,7 +121,7 @@ function registerEventListenerHandlers(
 }
 
 /** @internal query all event and handler by element, for all `off()` */
-function extractAllHandlers(elem: Element): { event: string; handler: EventListener; options: any; }[] {
+function extractAllHandlers(elem: ElementBase): { event: string; handler: EventListener; options: any; }[] {
     const handlers: { event: string; handler: EventListener; options: any; }[] = [];
 
     const query = (context: BindEventContext | undefined): boolean => {
@@ -172,12 +172,12 @@ const _noTrigger = ['resize', 'scroll'];
 /** @internal event-shortcut impl */
 function eventShortcut<T extends ElementBase>(this: DOMEvents<T>, name: string, handler?: EventListener, options?: boolean | AddEventListenerOptions): DOMEvents<T> {
     if (null == handler) {
-        for (const el of this as DOMEvents <Node> as DOMEvents<Element>) {
+        for (const el of this) {
             if (!_noTrigger.includes(name)) {
                 if (isFunction(el[name])) {
                     el[name]();
                 } else {
-                    $(el).trigger(name as any);
+                    $(el as any).trigger(name as any);
                 }
             }
         }
@@ -270,7 +270,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 
         const proxy = selector ? handleLiveEvent : handleEvent;
 
-        for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
+        for (const el of this) {
             registerEventListenerHandlers(el, events, selector, listener, proxy, options);
         }
 
@@ -311,7 +311,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         const { type: events, selector, listener, options } = parseEventArgs(...args);
 
         if (events.length <= 0) {
-            for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
+            for (const el of this) {
                 const contexts = extractAllHandlers(el);
                 for (const context of contexts) {
                     el.removeEventListener(context.event, context.handler, context.options);
@@ -319,7 +319,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
             }
         } else {
             for (const event of events) {
-                for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
+                for (const el of this) {
                     const { registered, handlers } = getEventListenersHandlers(el, event, selector, options, false);
                     if (0 < handlers.length) {
                         for (let i = handlers.length - 1; i >= 0; i--) { // backward operation
@@ -415,7 +415,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 
         for (const event of events) {
             const e = convert(event);
-            for (const el of this as DOMEvents<Node> as DOMEvents<Element>) {
+            for (const el of this) {
                 registerEventData(el, eventData);
                 el.dispatchEvent(e);
                 deleteEventData(el);

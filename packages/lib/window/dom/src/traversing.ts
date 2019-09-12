@@ -18,6 +18,9 @@ import {
 import {
     DOMBase,
     DOMIterable,
+    isNode,
+    isNodeElement,
+    isNodeQueriable,
     isTypeElement,
     isTypeWindow,
     isEmptySelector,
@@ -366,8 +369,8 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         if (!isString(selector)) {
             const $selector = $(selector) as DOM<Node>;
             return $selector.filter((index, elem) => {
-                for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
-                    if (el !== elem && el.contains(elem)) {
+                for (const el of this) {
+                    if (isNode(el) && el !== elem && el.contains(elem)) {
                         return true;
                     }
                 }
@@ -377,9 +380,11 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
             return $() as DOM<T>;
         } else {
             const elements: Element[] = [];
-            for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
-                const elems = el.querySelectorAll(selector);
-                elements.push(...elems);
+            for (const el of this) {
+                if (isNodeQueriable(el)) {
+                    const elems = el.querySelectorAll(selector);
+                    elements.push(...elems);
+                }
             }
             return $(elements as Node[]) as DOM<T>;
         }
@@ -398,16 +403,20 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
             return $() as DOM<T>;
         }
 
-        const targets: Element[] = [];
-        for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
-            const $target = $(selector, el) as DOM<Element>;
-            targets.push(...$target);
+        const targets: Node[] = [];
+        for (const el of this) {
+            if (isNodeQueriable(el)) {
+                const $target = $(selector, el as Element) as DOM<Element>;
+                targets.push(...$target);
+            }
         }
 
         return this.filter((index, elem) => {
-            for (const el of new Set(targets)) {
-                if ((elem as Node) !== el && (elem as Node).contains(el)) {
-                    return true;
+            if (isNode(elem)) {
+                for (const el of new Set(targets)) {
+                    if (elem !== el && elem.contains(el)) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -494,10 +503,12 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
             return $() as DOM<T>;
         } else if (isString(selector)) {
             const closests = new Set<Node>();
-            for (const el of this as DOMIterable<Element>) {
-                const c = el.closest(selector);
-                if (c) {
-                    closests.add(c);
+            for (const el of this) {
+                if (isNodeElement(el)) {
+                    const c = el.closest(selector);
+                    if (c) {
+                        closests.add(c);
+                    }
                 }
             }
             return $([...closests]) as DOM<T>;
@@ -522,10 +533,12 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         }
 
         const children = new Set<Node>();
-        for (const el of this as DOMIterable<Node> as DOMIterable<Element>) {
-            for (const child of el.children) {
-                if (validRetrieveNode(child, selector)) {
-                    children.add(child);
+        for (const el of this) {
+            if (isNodeQueriable(el)) {
+                for (const child of el.children) {
+                    if (validRetrieveNode(child, selector)) {
+                        children.add(child);
+                    }
                 }
             }
         }
@@ -543,10 +556,12 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      */
     public parent<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T> {
         const parents = new Set<Node>();
-        for (const el of this as DOMIterable<Node>) {
-            const parentNode = el.parentNode;
-            if (validParentNode(parentNode) && validRetrieveNode(parentNode, selector)) {
-                parents.add(parentNode);
+        for (const el of this) {
+            if (isNode(el)) {
+                const parentNode = el.parentNode;
+                if (validParentNode(parentNode) && validRetrieveNode(parentNode, selector)) {
+                    parents.add(parentNode);
+                }
             }
         }
         return $([...parents]) as DOM<T>;
@@ -628,10 +643,12 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         }
 
         const nextSiblings = new Set<Node>();
-        for (const el of this as DOMIterable<Element>) {
-            const elem = el.nextElementSibling;
-            if (validRetrieveNode(elem, selector)) {
-                nextSiblings.add(elem);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                const elem = el.nextElementSibling;
+                if (validRetrieveNode(elem, selector)) {
+                    nextSiblings.add(elem);
+                }
             }
         }
         return $([...nextSiblings]) as DOM<T>;
@@ -684,10 +701,12 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         }
 
         const prevSiblings = new Set<Node>();
-        for (const el of this as DOMIterable<Element>) {
-            const elem = el.previousElementSibling;
-            if (validRetrieveNode(elem, selector)) {
-                prevSiblings.add(elem);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                const elem = el.previousElementSibling;
+                if (validRetrieveNode(elem, selector)) {
+                    prevSiblings.add(elem);
+                }
             }
         }
         return $([...prevSiblings]) as DOM<T>;
@@ -738,12 +757,14 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         }
 
         const siblings = new Set<Node>();
-        for (const el of this as DOMIterable<Element>) {
-            const parentNode = el.parentNode;
-            if (validParentNode(parentNode)) {
-                for (const sibling of $(parentNode).children(selector)) {
-                    if (sibling !== el) {
-                        siblings.add(sibling);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                const parentNode = el.parentNode;
+                if (validParentNode(parentNode)) {
+                    for (const sibling of $(parentNode).children(selector)) {
+                        if (sibling !== el) {
+                            siblings.add(sibling);
+                        }
                     }
                 }
             }
@@ -761,14 +782,16 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         }
 
         const contents = new Set<Node>();
-        for (const el of this as DOMIterable<Node>) {
-            if (nodeName(el, 'iframe')) {
-                contents.add((el as HTMLIFrameElement).contentDocument as Node);
-            } else if (nodeName(el, 'template')) {
-                contents.add((el as HTMLTemplateElement).content);
-            } else {
-                for (const node of el.childNodes) {
-                    contents.add(node);
+        for (const el of this) {
+            if (isNode(el)) {
+                if (nodeName(el, 'iframe')) {
+                    contents.add((el as Node as HTMLIFrameElement).contentDocument as Node);
+                } else if (nodeName(el, 'template')) {
+                    contents.add((el as Node as HTMLTemplateElement).content);
+                } else {
+                    for (const node of el.childNodes) {
+                        contents.add(node);
+                    }
                 }
             }
         }

@@ -3,6 +3,7 @@ import $ from '@cdp/dom';
 import {
     prepareTestElements,
     cleanupTestElements,
+    mixedCollection,
 } from './tools';
 
 describe('dom/attributes spec', () => {
@@ -360,6 +361,8 @@ describe('dom/attributes spec', () => {
         expect(meter.value).toBe(11);
         const $document = $(document);
         expect(() => $document.val('hoge' as any)).not.toThrow();
+        const $div = $(divs[0]);
+        expect(() => $div.val('hoge' as any)).not.toThrow();
     });
 
     it('check DOM#data(), get value', () => {
@@ -480,5 +483,14 @@ describe('dom/attributes spec', () => {
         divs.push(window as any);
         const $invalid = $(divs);
         expect(() => $invalid.removeData(['test', 'hoge'])).not.toThrow();
+    });
+
+    it('check mixedCollection', () => {
+        const $dom = mixedCollection().add(window).add(document);
+        expect(() => $dom.addClass('hoge')).not.toThrow();
+        expect(() => $dom.removeClass('hoge')).not.toThrow();
+        expect(() => $dom.toggleClass('hoge', true)).not.toThrow();
+        expect(() => $dom.attr('fuga', true)).not.toThrow();
+        expect(() => $dom.removeAttr('fuga')).not.toThrow();
     });
 });

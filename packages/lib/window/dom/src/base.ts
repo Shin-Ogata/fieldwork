@@ -150,6 +150,56 @@ export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<
 //__________________________________________________________________________________________________//
 
 /**
+ * @en Check target is `Node`.
+ * @ja 対象が `Node` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export function isNode(el: ElementBase | Nil): el is Node {
+    return !!(el && (el as Node).nodeType);
+}
+
+/**
+ * @en Check target is `Element`.
+ * @ja 対象が `Element` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export function isNodeElement(el: ElementBase | Nil): el is Element {
+    return isNode(el) && (Node.ELEMENT_NODE === el.nodeType);
+}
+
+/**
+ * @en Check target is `HTMLElement` or `SVGElement`.
+ * @ja 対象が `HTMLElement` または `SVGElement` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTMLElement | SVGElement {
+    return isNodeElement(el) && (null != (el as HTMLElement).dataset);
+}
+
+/**
+ * @en Check target is `Element` or `Document`.
+ * @ja 対象が `Element` または `Document` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export function isNodeQueriable(el: ElementBase | Nil): el is Element | Document {
+    return !!(el && (el as Node as Element).querySelector);
+}
+
+//__________________________________________________________________________________________________//
+
+/**
  * @en Check [[DOM]] target is `Element`.
  * @ja [[DOM]] が `Element` を対象にしているか判定
  *
@@ -158,8 +208,7 @@ export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<
  *  - `ja` [[DOMIterable]] インスタンス
  */
 export function isTypeElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<Element> {
-    const node = dom[0] as Node;
-    return !!(node && node.nodeType && (Node.ELEMENT_NODE === node.nodeType));
+    return isNodeElement(dom[0]);
 }
 
 /**
@@ -171,8 +220,7 @@ export function isTypeElement(dom: DOMIterable<ElementBase>): dom is DOMIterable
  *  - `ja` [[DOMIterable]] インスタンス
  */
 export function isTypeHTMLOrSVGElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<HTMLElement | SVGElement> {
-    const node = dom[0] as Node;
-    return !!(node && node.nodeType && (Node.ELEMENT_NODE === node.nodeType) && (null != (node as HTMLElement).dataset));
+    return isNodeHTMLOrSVGElement(dom[0]);
 }
 
 /**
@@ -198,6 +246,8 @@ export function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DOMIterabl
 export function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<Window> {
     return window === dom[0];
 }
+
+//__________________________________________________________________________________________________//
 
 /**
  * @en Check the selector type is Nil.
