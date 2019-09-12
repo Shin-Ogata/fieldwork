@@ -54,6 +54,42 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
     [Symbol.iterator]: () => Iterator<T>;
 }
 /**
+ * @en Check target is `Node`.
+ * @ja 対象が `Node` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export declare function isNode(el: ElementBase | Nil): el is Node;
+/**
+ * @en Check target is `Element`.
+ * @ja 対象が `Element` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export declare function isNodeElement(el: ElementBase | Nil): el is Element;
+/**
+ * @en Check target is `HTMLElement` or `SVGElement`.
+ * @ja 対象が `HTMLElement` または `SVGElement` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTMLElement | SVGElement;
+/**
+ * @en Check target is `Element` or `Document`.
+ * @ja 対象が `Element` または `Document` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export declare function isNodeQueriable(el: ElementBase | Nil): el is Element | Document;
+/**
  * @en Check [[DOM]] target is `Element`.
  * @ja [[DOM]] が `Element` を対象にしているか判定
  *

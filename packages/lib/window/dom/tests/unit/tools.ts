@@ -35,3 +35,20 @@ export function cleanupTestElements(): void {
         body.removeChild(div);
     }
 }
+
+export function mixedCollection(): DOM {
+    prepareTestElements(dom.utils.elementify(`
+<div class="test-dom container"><div class="test-dom-child"></div>
+  <!-- comment -->
+  <br><br>
+  text
+  <template id="templ-1">
+      <tr>
+        <td class="record"></td>
+        <td></td>
+      </tr>
+  </template>
+</div>`));
+    const $dom = dom('.test-dom').contents();
+    return $dom;
+}

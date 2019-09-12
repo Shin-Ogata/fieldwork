@@ -3,6 +3,7 @@ import $ from '@cdp/dom';
 import {
     prepareTestElements,
     cleanupTestElements,
+    mixedCollection,
 } from './tools';
 
 describe('dom/styles spec', () => {
@@ -76,5 +77,11 @@ describe('dom/styles spec', () => {
                 'border-color': '#00FF00',
             })).toBe($document);
         }
+    });
+
+    it('check mixedCollection', () => {
+        const $dom = mixedCollection().add(window).add(document);
+        expect(() => $dom.css('background-color', '#FFFFFF')).not.toThrow();
+        expect(() => $dom.css({ 'background-color': '#FFFFFF', 'border-color': '#00FF00' })).not.toThrow();
     });
 });

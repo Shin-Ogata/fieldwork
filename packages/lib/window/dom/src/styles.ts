@@ -8,6 +8,7 @@ import {
 import { ElementBase } from './static';
 import {
     DOMIterable,
+    isNodeHTMLOrSVGElement,
     isTypeHTMLOrSVGElement,
 } from './base';
 import { window } from './ssr';
@@ -112,8 +113,10 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
                 return view.getComputedStyle(el).getPropertyValue(dasherize(name));
             } else {
                 // set property single
-                for (const el of this as DOMIterable<Element> as DOMIterable<HTMLElement>) {
-                    el.style.setProperty(dasherize(name), value);
+                for (const el of this) {
+                    if (isNodeHTMLOrSVGElement(el)) {
+                        el.style.setProperty(dasherize(name), value);
+                    }
                 }
                 return this;
             }
@@ -130,10 +133,12 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
         } else {
             // set multiple properties
             const props = ensureChainCaseProperies(name);
-            for (const el of this as DOMIterable<Element> as DOMIterable<HTMLElement>) {
-                const { style } = el;
-                for (const propName in props) {
-                    style.setProperty(propName, props[propName]);
+            for (const el of this) {
+                if (isNodeHTMLOrSVGElement(el)) {
+                    const { style } = el;
+                    for (const propName in props) {
+                        style.setProperty(propName, props[propName]);
+                    }
                 }
             }
             return this;

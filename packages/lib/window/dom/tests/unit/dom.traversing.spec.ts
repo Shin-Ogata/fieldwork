@@ -4,6 +4,7 @@ import {
     DOM,
     prepareTestElements,
     cleanupTestElements,
+    mixedCollection,
 } from './tools';
 
 describe('dom/traversing spec', () => {
@@ -1005,5 +1006,17 @@ describe('dom/traversing spec', () => {
 
         $contents = $(window).contents();
         expect($contents.length).toBe(0);
+    });
+
+    it('check mixedCollection', () => {
+        const $dom = mixedCollection().add(window).add(document);
+        expect(() => $dom.find('br')).not.toThrow();
+        expect(() => $dom.has('template')).not.toThrow();
+        expect(() => $dom.closest('.test-dom')).not.toThrow();
+        expect(() => $dom.children()).not.toThrow();
+        expect(() => $dom.next()).not.toThrow();
+        expect(() => $dom.prev()).not.toThrow();
+        expect(() => $dom.siblings()).not.toThrow();
+        expect(() => $dom.contents()).not.toThrow();
     });
 });

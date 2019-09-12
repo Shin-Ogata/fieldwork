@@ -4,6 +4,7 @@ import { DOMEventMap } from '@cdp/dom';
 import {
     prepareTestElements,
     cleanupTestElements,
+    mixedCollection,
 } from './tools';
 
 describe('dom/events spec', () => {
@@ -460,6 +461,19 @@ describe('dom/events spec', () => {
         await $dom.trigger<Hoge>('hoge');
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(1);
+
+        done();
+    });
+
+    it('check events, mixedCollection', async (done) => {
+        const $dom = mixedCollection();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        $dom.on('click', stub.onCallback);
+        await $dom.trigger('click');
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(count).toBe($dom.length);
 
         done();
     });

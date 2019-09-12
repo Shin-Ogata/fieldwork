@@ -13,12 +13,24 @@ import {
 import { ElementBase } from './static';
 import {
     DOMIterable,
+    isNodeElement,
+    isNodeHTMLOrSVGElement,
     isTypeElement,
     isTypeHTMLOrSVGElement,
 } from './base';
 
 export type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
 export type DOMData = PlainObject<TypedData>;
+
+/** @internal helper for `val()`*/
+function isMultiSelectElement(el: ElementBase): el is HTMLSelectElement {
+    return isNodeElement(el) && 'select' === el.nodeName.toLowerCase() && (el as HTMLSelectElement).multiple;
+}
+
+/** @internal helper for `val()`*/
+function isInputElement(el: ElementBase): el is HTMLInputElement {
+    return isNodeElement(el) && (null != (el as HTMLInputElement).value);
+}
 
 /**
  * @en Mixin base class which concentrated the attributes methods.
@@ -50,8 +62,10 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             return this;
         }
         const classes = isArray(className) ? className : [className];
-        for (const el of this as DOMIterable<Element>) {
-            el.classList.add(...classes);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                el.classList.add(...classes);
+            }
         }
         return this;
     }
@@ -69,8 +83,10 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             return this;
         }
         const classes = isArray(className) ? className : [className];
-        for (const el of this as DOMIterable<Element>) {
-            el.classList.remove(...classes);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                el.classList.remove(...classes);
+            }
         }
         return this;
     }
@@ -87,8 +103,8 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
         if (!isTypeElement(this)) {
             return false;
         }
-        for (const el of this as DOMIterable<Element>) {
-            if (el.classList.contains(className)) {
+        for (const el of this) {
+            if (isNodeElement(el) && el.classList.contains(className)) {
                 return true;
             }
         }
@@ -127,8 +143,10 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             }
         })();
 
-        for (const el of this as DOMIterable<Element>) {
-            operation(el);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                operation(el);
+            }
         }
 
         return this;
@@ -247,18 +265,20 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             return this.removeAttr(key as string);
         } else {
             // set attribute
-            for (const el of this as DOMIterable<Element>) {
-                if (null != value) {
-                    // single
-                    el.setAttribute(key as string, String(value));
-                } else {
-                    // multiple
-                    for (const name of Object.keys(key)) {
-                        const val = key[name];
-                        if (null === val) {
-                            el.removeAttribute(name);
-                        } else {
-                            el.setAttribute(name, String(val));
+            for (const el of this) {
+                if (isNodeElement(el)) {
+                    if (null != value) {
+                        // single
+                        el.setAttribute(key as string, String(value));
+                    } else {
+                        // multiple
+                        for (const name of Object.keys(key)) {
+                            const val = key[name];
+                            if (null === val) {
+                                el.removeAttribute(name);
+                            } else {
+                                el.setAttribute(name, String(val));
+                            }
                         }
                     }
                 }
@@ -280,9 +300,11 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             return this;
         }
         const attrs = isArray(name) ? name : [name];
-        for (const el of this as DOMIterable<Element>) {
-            for (const attr of attrs) {
-                el.removeAttribute(attr);
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                for (const attr of attrs) {
+                    el.removeAttribute(attr);
+                }
             }
         }
         return this;
@@ -317,14 +339,10 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             return null == value ? undefined : this;
         }
 
-        const isMultiSelect = (el: any): el is HTMLSelectElement => {
-            return 'select' === el.nodeName.toLowerCase() && el.multiple;
-        };
-
         if (null == value) {
             // get first element value
             const el = this[0];
-            if (isMultiSelect(el)) {
+            if (isMultiSelectElement(el)) {
                 const values = [];
                 for (const option of el.selectedOptions) {
                     values.push(option.value);
@@ -338,12 +356,12 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             }
         } else {
             // set value
-            for (const el of this as DOMIterable<Element> as DOMIterable<HTMLInputElement>) {
-                if (isArray(value) && isMultiSelect(el)) {
+            for (const el of this) {
+                if (isArray(value) && isMultiSelectElement(el)) {
                     for (const option of el.options) {
                         option.selected = (value as string[]).includes(option.value);
                     }
-                } else {
+                } else if (isInputElement(el)) {
                     el.value = value;
                 }
             }
@@ -407,10 +425,9 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             // set value
             const prop = camelize(key || '');
             if (prop) {
-                for (const el of this as DOMIterable<HTMLElement>) {
-                    const dataset = el.dataset;
-                    if (dataset) {
-                        dataset[prop] = fromTypedData(value);
+                for (const el of this) {
+                    if (isNodeHTMLOrSVGElement(el)) {
+                        el.dataset[prop] = fromTypedData(value);
                     }
                 }
             }
@@ -431,9 +448,9 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             return this;
         }
         const props = isArray(key) ? key.map(k => camelize(k)) : [camelize(key)];
-        for (const el of this as DOMIterable<HTMLElement>) {
-            const dataset = el.dataset;
-            if (dataset) {
+        for (const el of this) {
+            if (isNodeHTMLOrSVGElement(el)) {
+                const { dataset } = el;
                 for (const prop of props) {
                     delete dataset[prop];
                 }
