@@ -55,4 +55,32 @@ export declare class DOMStyles<TElement extends ElementBase> implements DOMItera
      *  - `ja` CSS プロパティを格納したオブジェクト
      */
     css(properties: PlainObject<string>): this;
+    /**
+     * @en Get the current computed width for the first element in the set of matched elements or set the width of every matched element.
+     * @ja 最初の要素の計算済み横幅をピクセル単位で取得
+     */
+    width(): number;
+    /**
+     * @en Set the CSS width of each element in the set of matched elements.
+     * @ja 全ての要素の横幅を指定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     */
+    width(value: number | string): this;
+    /**
+     * @en Get the current computed height for the first element in the set of matched elements or set the width of every matched element.
+     * @ja 最初の要素の計算済み立幅をピクセル単位で取得
+     */
+    height(): number;
+    /**
+     * @en Set the CSS height of each element in the set of matched elements.
+     * @ja 全ての要素の縦幅を指定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     */
+    height(value: number | string): this;
 }

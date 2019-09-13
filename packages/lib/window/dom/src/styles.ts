@@ -2,6 +2,7 @@ import {
     PlainObject,
     isString,
     isArray,
+    classify,
     dasherize,
     setMixClassAttribute,
 } from '@cdp/core-utils';
@@ -10,6 +11,8 @@ import {
     DOMIterable,
     isNodeHTMLOrSVGElement,
     isTypeHTMLOrSVGElement,
+    isTypeDocument,
+    isTypeWindow,
 } from './base';
 import { window } from './ssr';
 
@@ -25,6 +28,46 @@ function ensureChainCaseProperies(props: PlainObject<string>): PlainObject<strin
 /** @internal helper for `css()` get props */
 function getComputedStyleView(el: Element): Window {
     return (el.ownerDocument && el.ownerDocument.defaultView) || window;
+}
+
+const _resolver = {
+    width: ['left', 'right'],
+    height: ['top', 'bottom'],
+};
+
+/** @internal helper for `width()` and `heigth()` */
+function manageSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'width' | 'height', value?: number | string): number | DOMStyles<T> {
+    if (null == value) {
+        // getter
+        if (isTypeWindow(dom)) {
+            // スクロールバーを除いた幅 (clientWidth / clientHeight)
+            return dom[0].document.documentElement[`client${classify(type)}`];
+        } else if (isTypeDocument(dom)) {
+            // (scroll$Width / scroll$Height)
+            return dom[0].documentElement[`scroll${classify(type)}`];
+        } else {
+            const el = dom[0];
+            if (isNodeHTMLOrSVGElement(el)) {
+                const view = getComputedStyleView(el);
+                const style = view.getComputedStyle(el);
+                const size = parseFloat(style.getPropertyValue(type));
+                if ('border-box' === style.getPropertyValue('box-sizing')) {
+                    const border = parseFloat(style.getPropertyValue(`border-${_resolver[type][0]}-width`))
+                        + parseFloat(style.getPropertyValue(`border-${_resolver[type][1]}-width`));
+                    const padding = parseFloat(style.getPropertyValue(`padding-${_resolver[type][0]}`))
+                        + parseFloat(style.getPropertyValue(`padding-${_resolver[type][1]}`));
+                    return size - (border + padding);
+                } else {
+                    return size;
+                }
+            } else {
+                return 0;
+            }
+        }
+    } else {
+        // setter
+        return dom.css(type, isString(value) ? value : `${value}px`);
+    }
 }
 
 /**
@@ -144,15 +187,53 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
             return this;
         }
     }
+
+    /**
+     * @en Get the current computed width for the first element in the set of matched elements or set the width of every matched element.
+     * @ja 最初の要素の計算済み横幅をピクセル単位で取得
+     */
+    public width(): number;
+
+    /**
+     * @en Set the CSS width of each element in the set of matched elements.
+     * @ja 全ての要素の横幅を指定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     */
+    public width(value: number | string): this;
+
+    public width(value?: number | string): number | this {
+        return manageSizeFor(this, 'width', value) as (number | this);
+    }
+
+    /**
+     * @en Get the current computed height for the first element in the set of matched elements or set the width of every matched element.
+     * @ja 最初の要素の計算済み立幅をピクセル単位で取得
+     */
+    public height(): number;
+
+    /**
+     * @en Set the CSS height of each element in the set of matched elements.
+     * @ja 全ての要素の縦幅を指定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     */
+    public height(value: number | string): this;
+
+    public height(value?: number | string): number | this {
+        return manageSizeFor(this, 'height', value) as (number | this);
+    }
 }
 
 setMixClassAttribute(DOMStyles, 'protoExtendsOnly');
 
 /*
 [dom7]
-.width()
-.height()
-.offset()
+.offset() // setOffset: sticky にも注意
 .outerHeight()
 .outerWidth()
 
@@ -160,5 +241,48 @@ setMixClassAttribute(DOMStyles, 'protoExtendsOnly');
 .innerHeight()
 .innerWidth()
 .position()
-.offsetParent()
+
+-----
+* innerWidth()
+
+- get
+  - 常に clientWidth
+
+- set
+  ※指定値が string のときは 一度設定して compute する
+  - border-box
+    width に 指定値 + border
+  - content-box
+    width に 指定値 - padding
+
+
+* outerWidth()
+- get
+  - 基本 offsetWidth
+    - includingMargin で + margin
+
+- set
+  ※指定値が string のときは 一度設定して compute する
+  - border-box
+    - includingMargin
+       width に 指定値 - margin
+
+  - content-box
+    width に 指定値 - (border + padding)
+    - includingMargin
+       width に 指定値 - (border + padding + margin)
+
+https://q-az.net/without-jquery-height-width-offset-scrolltop/
+
+* position
+{ left: el.offsetLeft, top: el.offsetTop } は嘘
+
+{ left: el.offsetLeft - margin , top: el.offsetTop - margin }
+
+
+* offset() コード量からして jQuery が優秀
+  - set
+    - relative
+      - get した offset 値 に -指定値
+    - absolute
  */

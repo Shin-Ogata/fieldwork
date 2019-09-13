@@ -800,3 +800,8 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
 }
 
 setMixClassAttribute(DOMTraversing, 'protoExtendsOnly');
+
+/*
+[jquery]
+.offsetParent() // native にあり
+ */
