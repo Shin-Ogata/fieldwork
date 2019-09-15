@@ -5,6 +5,7 @@ import {
     SelectorBase,
     DOM,
     DOMSelector,
+    dom as $,
 } from './static';
 
 /** @internal */
@@ -343,4 +344,45 @@ export function isIterableSelector<T extends SelectorBase>(selector: DOMSelector
  */
 export function isDOMSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, DOM> {
     return selector instanceof DOMBase;
+}
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en Check node name is argument.
+ * @ja Node 名が引数で与えた名前と一致するか判定
+ */
+export function nodeName(elem: Node | null, name: string): boolean {
+    return !!(elem && elem.nodeName.toLowerCase() === name.toLowerCase());
+}
+
+/**
+ * @en Get node offset parent. This function will work SVGElement, too.
+ * @ja offset parent の取得. SVGElement にも適用可能
+ */
+export function getOffsetParent(node: Node): Element | null {
+    if ((node as HTMLElement).offsetParent) {
+        return (node as HTMLElement).offsetParent;
+    } else if (nodeName(node, 'svg')) {
+        const $svg = $(node);
+        const cssProps = $svg.css(['display', 'position']);
+        if ('none' === cssProps.display || 'fixed' === cssProps.position) {
+            return null;
+        } else {
+            let parent = $svg[0].parentElement;
+            while (parent) {
+                const { display, position } = $(parent).css(['display', 'position']);
+                if ('none' === display) {
+                    return null;
+                } else if (!position || 'static' === position) {
+                    parent = parent.parentElement;
+                } else {
+                    break;
+                }
+            }
+            return parent;
+        }
+    } else {
+        return null;
+    }
 }

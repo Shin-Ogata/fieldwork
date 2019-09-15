@@ -29,6 +29,8 @@ import {
     isWindowSelector,
     isNodeSelector,
     isIterableSelector,
+    nodeName,
+    getOffsetParent,
 } from './base';
 
 export type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = (index: number, element: T) => U;
@@ -168,11 +170,6 @@ function retrieveSiblings<
     }
 
     return $([...siblings]) as DOM<T>;
-}
-
-/** @internal helper for `contents()` */
-function nodeName(elem: Node | null, name: string): boolean {
-    return !!(elem && elem.nodeName.toLowerCase() === name.toLowerCase());
 }
 
 /**
@@ -797,11 +794,26 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         }
         return $([...contents]) as DOM<T>;
     }
+
+    /**
+     * @en Get the closest ancestor element that is positioned.
+     * @ja 要素の先祖要素で, スタイルでポジション指定(positiionがrelative, absolute, fixedのいずれか)されているものを取得
+     */
+    public offsetParent<T extends Node = HTMLElement>(): DOM<T> {
+        const rootElement = document.documentElement;
+        if (this.length <= 0) {
+            return $() as DOM<T>;
+        } else if (!isTypeElement(this)) {
+            return $(rootElement) as DOM<Node> as DOM<T>;
+        } else {
+            const offsets = new Set<Node>();
+            for (const el of this) {
+                const offset = getOffsetParent(el as Node) || rootElement;
+                offsets.add(offset);
+            }
+            return $([...offsets]) as DOM<T>;
+        }
+    }
 }
 
 setMixClassAttribute(DOMTraversing, 'protoExtendsOnly');
-
-/*
-[jquery]
-.offsetParent() // native にあり
- */

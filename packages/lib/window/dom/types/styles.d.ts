@@ -42,10 +42,10 @@ export declare class DOMStyles<TElement extends ElementBase> implements DOMItera
      *  - `en` CSS property name as chain-cace.
      *  - `ja` CSS プロパティ名をチェインケースで指定
      * @param value
-     *  - `en` string value to set for the property.
-     *  - `ja` 設定する値を文字列で指定
+     *  - `en` string value to set for the property. if null passed, remove property.
+     *  - `ja` 設定する値を文字列で指定. null 指定で削除.
      */
-    css(name: string, value: string): this;
+    css(name: string, value: string | null): this;
     /**
      * @en Set one or more CSS properties for the set of matched elements.
      * @ja 要素の CSS 複数のプロパティに値を設定
@@ -54,7 +54,7 @@ export declare class DOMStyles<TElement extends ElementBase> implements DOMItera
      *  - `en` An object of property-value pairs to set.
      *  - `ja` CSS プロパティを格納したオブジェクト
      */
-    css(properties: PlainObject<string>): this;
+    css(properties: PlainObject<string | null>): this;
     /**
      * @en Get the current computed width for the first element in the set of matched elements or set the width of every matched element.
      * @ja 最初の要素の計算済み横幅をピクセル単位で取得
@@ -62,7 +62,7 @@ export declare class DOMStyles<TElement extends ElementBase> implements DOMItera
     width(): number;
     /**
      * @en Set the CSS width of each element in the set of matched elements.
-     * @ja 全ての要素の横幅を指定
+     * @ja 配下の要素の横幅を指定
      *
      * @param value
      *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
@@ -76,11 +76,109 @@ export declare class DOMStyles<TElement extends ElementBase> implements DOMItera
     height(): number;
     /**
      * @en Set the CSS height of each element in the set of matched elements.
-     * @ja 全ての要素の縦幅を指定
+     * @ja 配下の要素の縦幅を指定
      *
      * @param value
      *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
      *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
      */
     height(value: number | string): this;
+    /**
+     * @en Get the current computed inner width for the first element in the set of matched elements, including padding but not border.
+     * @ja 最初の要素の内部横幅(borderは除き、paddingは含む)を取得
+     */
+    innerWidth(): number;
+    /**
+     * @en Set the CSS inner width of each element in the set of matched elements.
+     * @ja 配下の要素の内部横幅(borderは除き、paddingは含む)を設定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     */
+    innerWidth(value: number | string): this;
+    /**
+     * @en Get the current computed inner height for the first element in the set of matched elements, including padding but not border.
+     * @ja 最初の要素の内部縦幅(borderは除き、paddingは含む)を取得
+     */
+    innerHeight(): number;
+    /**
+     * @en Set the CSS inner height of each element in the set of matched elements.
+     * @ja 配下の要素の内部縦幅(borderは除き、paddingは含む)を設定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     */
+    innerHeight(value: number | string): this;
+    /**
+     * @en Get the current computed outer width (including padding, border, and optionally margin) for the first element in the set of matched elements.
+     * @ja 最初の要素の外部横幅(border、paddingを含む)を取得. オプション指定によりマージン領域を含めたものも取得可
+     *
+     * @param includeMargin
+     *  - `en` A Boolean indicating whether to include the element's margin in the calculation.
+     *  - `ja` マージン領域を含める場合は true を指定
+     */
+    outerWidth(includeMargin?: boolean): number;
+    /**
+     * @en Set the CSS outer width of each element in the set of matched elements.
+     * @ja 配下の要素の外部横幅(border、paddingを含む)を設定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     * @param includeMargin
+     *  - `en` A Boolean indicating whether to include the element's margin in the calculation.
+     *  - `ja` マージン領域を含める場合は true を指定
+     */
+    outerWidth(value: number | string, includeMargin?: boolean): this;
+    /**
+     * @en Get the current computed outer height (including padding, border, and optionally margin) for the first element in the set of matched elements.
+     * @ja 最初の要素の外部縦幅(border、paddingを含む)を取得. オプション指定によりマージン領域を含めたものも取得可
+     *
+     * @param includeMargin
+     *  - `en` A Boolean indicating whether to include the element's margin in the calculation.
+     *  - `ja` マージン領域を含める場合は true を指定
+     */
+    outerHeight(includeMargin?: boolean): number;
+    /**
+     * @en Set the CSS outer height of each element in the set of matched elements.
+     * @ja 配下の要素の外部縦幅(border、paddingを含む)を設定
+     *
+     * @param value
+     *  - `en` An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
+     *  - `ja` 引数の値が数値のときは `px` として扱い, 文字列は CSS のルールに従う
+     * @param includeMargin
+     *  - `en` A Boolean indicating whether to include the element's margin in the calculation.
+     *  - `ja` マージン領域を含める場合は true を指定
+     */
+    outerHeight(value: number | string, includeMargin?: boolean): this;
+    /**
+     * @en Get the current coordinates of the first element in the set of matched elements, relative to the offset parent.
+     * @ja 最初の要素の親要素からの相対的な表示位置を返却
+     */
+    position(): {
+        top: number;
+        left: number;
+    };
+    /**
+     * @en Get the current coordinates of the first element in the set of matched elements, relative to the document.
+     * @ja document を基準として, マッチしている要素集合の1つ目の要素の現在の座標を取得
+     */
+    offset(): {
+        top: number;
+        left: number;
+    };
+    /**
+     * @en Set the current coordinates of every element in the set of matched elements, relative to the document.
+     * @ja 配下の要素に document を基準にした現在座標を設定
+     *
+     * @param coordinates
+     *  - `en` An object containing the properties `top` and `left`.
+     *  - `ja` `top`, `left` プロパティを含むオブジェクトを指定
+     */
+    offset(coordinates: {
+        top?: number;
+        left?: number;
+    }): this;
 }
