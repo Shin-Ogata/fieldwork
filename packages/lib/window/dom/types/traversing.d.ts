@@ -288,4 +288,9 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      * @ja テキストやHTMLコメントを含む子要素を取得
      */
     contents<T extends Node = HTMLElement>(): DOM<T>;
+    /**
+     * @en Get the closest ancestor element that is positioned.
+     * @ja 要素の先祖要素で, スタイルでポジション指定(positiionがrelative, absolute, fixedのいずれか)されているものを取得
+     */
+    offsetParent<T extends Node = HTMLElement>(): DOM<T>;
 }

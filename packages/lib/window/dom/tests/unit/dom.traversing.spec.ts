@@ -1008,6 +1008,84 @@ describe('dom/traversing spec', () => {
         expect($contents.length).toBe(0);
     });
 
+    it('check DOM#offsetParent()', () => {
+        prepareTestElements(testee(`
+<ul class="level-1 test-dom">
+  <li class="item-i">I</li>
+  <li class="item-ii" style="position: relative;">II
+    <ul class="level-2">
+      <li class="item-a">A</li>
+      <li class="item-b">B
+        <ul class="level-3">
+          <li class="item-1">1</li>
+          <li class="item-2">2</li>
+          <li class="item-3">3</li>
+        </ul>
+      </li>
+      <li class="item-c">C</li>
+    </ul>
+  </li>
+  <li class="item-iii">III</li>
+</ul>`));
+
+        const rootElement = document.documentElement;
+        const $dom = $('li.item-a');
+        let $offsetParent = $dom.offsetParent();
+        expect($offsetParent.hasClass('item-ii')).toBe(true);
+
+        $offsetParent = $('<div></div>').offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+
+        $offsetParent = $().offsetParent();
+        expect($offsetParent.length).toBe(0);
+
+        $offsetParent = $(window).offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+
+        $offsetParent = $(document).offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+    });
+
+    it('check DOM#offsetParent() svg', () => {
+        prepareTestElements(testee(`
+<div class="level-1 test-dom">
+    <svg id="test-svg1" style="width: 40px; height: 40px;" ><rect/></svg>
+    <div class="div1" style="position: relative;">
+        <svg id="test-svg2"><rect/></svg>
+    </div>
+    <div class="div2" style="position: relative; display: none;">
+        <svg id="test-svg3"><rect/></svg>
+    </div>
+    <div class="div3" style="position: relative;">
+        <svg id="test-svg4" style="position: fixed;"><rect/></svg>
+    </div>
+    <div class="div4" style="display: none;">
+        <svg id="test-svg5"><rect/></svg>
+    </div>
+</div>`));
+
+        const rootElement = document.documentElement;
+        let $svg = $('#test-svg1');
+        let $offsetParent = $svg.offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+
+        $svg = $('#test-svg2');
+        $offsetParent = $svg.offsetParent();
+        expect($offsetParent.hasClass('div1')).toBe(true);
+
+        $svg = $('#test-svg3');
+        $offsetParent = $svg.offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+
+        $svg = $('#test-svg4');
+        $offsetParent = $svg.offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+
+        $svg = $('#test-svg5');
+        $offsetParent = $svg.offsetParent();
+        expect($offsetParent[0]).toBe(rootElement);
+    });
+
     it('check mixedCollection', () => {
         const $dom = mixedCollection().add(window).add(document);
         expect(() => $dom.find('br')).not.toThrow();

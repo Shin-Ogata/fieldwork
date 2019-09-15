@@ -197,3 +197,13 @@ export declare function isIterableSelector<T extends SelectorBase>(selector: DOM
  *  - `ja` 評価する値
  */
 export declare function isDOMSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, DOM>;
+/**
+ * @en Check node name is argument.
+ * @ja Node 名が引数で与えた名前と一致するか判定
+ */
+export declare function nodeName(elem: Node | null, name: string): boolean;
+/**
+ * @en Get node offset parent. This function will work SVGElement, too.
+ * @ja offset parent の取得. SVGElement にも適用可能
+ */
+export declare function getOffsetParent(node: Node): Element | null;
