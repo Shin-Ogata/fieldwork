@@ -504,6 +504,7 @@ describe('dom/traversing spec', () => {
     it('check DOM#each()', () => {
         prepareTestElements();
         let count = 0;
+
         const stub = { onCallback: (index: number, el: HTMLElement) => { count++; } }; // eslint-disable-line
         spyOn(stub, 'onCallback').and.callThrough();
 

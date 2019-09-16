@@ -1,6 +1,41 @@
-import { setMixClassAttribute } from '@cdp/core-utils';
-import { ElementBase } from './static';
-import { DOMIterable } from './base';
+import {
+    isString,
+    setMixClassAttribute,
+} from '@cdp/core-utils';
+import {
+    ElementBase,
+    SelectorBase,
+    DOMSelector,
+    DOM,
+} from './static';
+import {
+    DOMIterable,
+    isNode,
+    isNodeElement,
+} from './base';
+
+/** @internal helper for `detach()` and `remove()` */
+function removeElement<T extends SelectorBase, U extends ElementBase>(
+    selector: DOMSelector<T> | undefined,
+    dom: DOMIterable<U>,
+    keepListener: boolean
+): void {
+    const $dom: DOM<U> = null != selector
+        ? (dom as DOM<U>).filter(selector)
+        : dom as DOM<U>;
+
+    if (!keepListener) {
+        $dom.off();
+    }
+
+    for (const el of $dom) {
+        if (isNodeElement(el)) {
+            el.remove();
+        }
+    }
+}
+
+//__________________________________________________________________________________________________//
 
 /**
  * @en Mixin base class which concentrated the manipulation methods.
@@ -19,6 +54,80 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
 ///////////////////////////////////////////////////////////////////////
 // public: Insertion, Inside
 
+    /**
+     * @en Get the HTML contents of the first element in the set of matched elements.
+     * @ja 先頭要素の HTML を取得
+     */
+    public html(): string;
+
+    /**
+     * @en Set the HTML contents of each element in the set of matched elements.
+     * @ja 配下の要素に指定した HTML を設定
+     *
+     * @param htmlString
+     *  - `en` A string of HTML to set as the content of each matched element.
+     *  - `ja` 要素内に挿入する HTML 文字列を指定
+     */
+    public html(htmlString: string): this;
+
+    public html(htmlString?: string): string | this {
+        if (undefined === htmlString) {
+            // getter
+            const el = this[0];
+            return isNodeElement(el) ? el.innerHTML : '';
+        } else if (isString(htmlString)) {
+            for (const el of this) {
+                if (isNodeElement(el)) {
+                    el.innerHTML = htmlString;
+                }
+            }
+            return this;
+        } else {
+            // invalid arg
+            console.warn(`invalid arg. htmlString type:${typeof htmlString}`);
+            return this;
+        }
+    }
+
+    /**
+     * @en Get the text contents of the first element in the set of matched elements. <br>
+     *     jQuery returns the combined text of each element, but this method makes only first element's text.
+     * @ja 先頭要素のテキストを取得 <br>
+     *     jQuery は各要素の連結テキストを返却するが本メソッドは先頭要素のみを対象とする
+     */
+    public text(): string;
+
+    /**
+     * @en Set the content of each element in the set of matched elements to the specified text.
+     * @ja 配下の要素に指定したテキストを設定
+     *
+     * @param text
+     *  - `en` The text to set as the content of each matched element.
+     *  - `ja` 要素内に挿入するテキストを指定
+     */
+    public text(value: string | number | boolean): this;
+
+    public text(value?: string | number | boolean): string | this {
+        if (undefined === value) {
+            // getter
+            const el = this[0];
+            if (isNode(el)) {
+                const text = el.textContent;
+                return (null != text) ? text.trim() : '';
+            } else {
+                return '';
+            }
+        } else {
+            const text = isString(value) ? value : String(value);
+            for (const el of this) {
+                if (isNode(el)) {
+                    el.textContent = text;
+                }
+            }
+            return this;
+        }
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // public: Insertion, Outside
 
@@ -27,6 +136,47 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
 
 ///////////////////////////////////////////////////////////////////////
 // public: Removal
+
+    /**
+     * @en Remove all child nodes of the set of matched elements from the DOM.
+     * @ja 配下の要素内の子要素(テキストも対象)をすべて削除
+     */
+    public empty(): this {
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                while (el.firstChild) {
+                    el.removeChild(el.firstChild);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * @en Remove the set of matched elements from the DOM. This method keeps event listener information.
+     * @ja 要素を DOM から削除. 削除後もイベントリスナは有効
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public detach<T extends SelectorBase>(selector?: DOMSelector<T>): this {
+        removeElement(selector, this, true);
+        return this;
+    }
+
+    /**
+     * @en Remove the set of matched elements from the DOM.
+     * @ja 要素を DOM から削除
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public remove<T extends SelectorBase>(selector?: DOMSelector<T>): this {
+        removeElement(selector, this, false);
+        return this;
+    }
 
 ///////////////////////////////////////////////////////////////////////
 // public: Replacement
@@ -39,19 +189,13 @@ setMixClassAttribute(DOMManipulation, 'protoExtendsOnly');
 // DOM Insertion, Inside
 .append()
 .appendTo()
-.html()
 .prepend()
 .prependTo()
-.text()
 // DOM Insertion, Outside
 .after()
 .before()
 .insertAfter()
 .insertBefore()
-// DOM Removal
-.detach()
-.empty()
-.remove()
 
 [jquery]
 // DOM Insertion, Around

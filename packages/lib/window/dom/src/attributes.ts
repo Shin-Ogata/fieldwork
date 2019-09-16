@@ -32,6 +32,8 @@ function isInputElement(el: ElementBase): el is HTMLInputElement {
     return isNodeElement(el) && (null != (el as HTMLInputElement).value);
 }
 
+//__________________________________________________________________________________________________//
+
 /**
  * @en Mixin base class which concentrated the attributes methods.
  * @ja 属性操作メソッドを集約した Mixin Base クラス
