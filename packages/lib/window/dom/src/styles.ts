@@ -240,6 +240,8 @@ function getOffsetPosition(el: Element): { top: number; left: number; } {
     };
 }
 
+//__________________________________________________________________________________________________//
+
 /**
  * @en Mixin base class which concentrated the style management methods.
  * @ja スタイル関連メソッドを集約した Mixin Base クラス

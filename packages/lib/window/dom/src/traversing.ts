@@ -172,6 +172,8 @@ function retrieveSiblings<
     return $([...siblings]) as DOM<T>;
 }
 
+//__________________________________________________________________________________________________//
+
 /**
  * @en Mixin base class which concentrated the traversing methods.
  * @ja トラバースメソッドを集約した Mixin Base クラス
