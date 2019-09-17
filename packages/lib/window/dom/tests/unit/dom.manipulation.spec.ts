@@ -43,6 +43,9 @@ describe('dom/manipulation spec', () => {
         $dom.text(false);
         expect($dom.text()).toBe('false');
 
+        $dom.text('<script>悪意のあるスクリプト</script>');
+        expect($dom.text()).toBe('<script>悪意のあるスクリプト</script>');
+
         const $document = $(document);
         $document.text('hoge');
         expect($document.text()).toBe('');
@@ -50,6 +53,115 @@ describe('dom/manipulation spec', () => {
         const $window = $(window);
         expect(() => $window.text()).not.toThrow();
         expect(() => $window.text('hoge')).not.toThrow();
+    });
+
+    it('check DOM#append()', () => {
+        prepareTestElements(testee(`
+<div id="d1" class="test-dom"></div>
+<div id="d2" class="test-dom"></div>
+<div class="test-query"></div>
+<div class="test-query"></div>
+    `));
+        const $dom = $('#d1');
+        $dom.append(' hoge ');
+        expect($dom[0].textContent).toBe(' hoge ');
+        $dom.append('<p class="test-dom-child"></p>');
+        expect($dom.find('.test-dom-child').length).toBe(1);
+        const $dom3 = $('<div id="d3"></div>');
+        $dom.append($dom3);
+        expect($dom.find('#d3').length).toBe(1);
+        const $dom2 = $('#d2');
+        $dom.append($dom2);
+        expect($dom.find('#d2').length).toBe(1);
+        $dom.children().remove();
+
+        const divs = document.querySelectorAll('.test-query');
+        $dom.append(divs);
+        expect($dom.find('.test-query').length).toBe(2);
+
+        const $reuse = $dom.children();
+        $reuse.detach();
+        expect($dom.children().length).toBe(0);
+
+        $dom.append('fuga', $reuse[0], '<div></div>', $reuse[1]);
+        expect($dom.children().length).toBe(3);
+
+        const $window = $(window);
+        expect(() => $window.append('<div></div>')).not.toThrow();
+        const $document = $(document);
+        expect(() => $document.append('<div></div>')).not.toThrow();
+    });
+
+    it('check DOM#appendTo()', () => {
+        const divs = prepareTestElements();
+        prepareTestElements(testee(`<div id="test-parent"></div>`));
+        const $dom = $('.test-dom');
+        $dom.appendTo('#test-parent');
+        const $parent = $dom.parent();
+        const $testee = $parent.children();
+        expect($testee.length).toBe(3);
+        expect($testee[0]).toBe(divs[0]);
+        expect($testee[1]).toBe(divs[1]);
+        expect($testee[2]).toBe(divs[2]);
+        $parent.remove();
+    });
+
+    it('check DOM#prepend()', () => {
+        prepareTestElements(testee(`
+<div id="d1" class="test-dom"></div>
+<div id="d2" class="test-dom"></div>
+<div class="test-query one"></div>
+<div class="test-query twe"></div>
+    `));
+        const $dom = $('#d1');
+        $dom.prepend(' hoge ');
+        expect($dom[0].textContent).toBe(' hoge ');
+        $dom.prepend('<p class="test-dom-child"></p>');
+        expect($dom.find('.test-dom-child').length).toBe(1);
+        const $dom3 = $('<div id="d3"></div>');
+        $dom.prepend($dom3);
+        expect($dom.find('#d3').length).toBe(1);
+        const $dom2 = $('#d2');
+        $dom.prepend($dom2);
+        expect($dom.find('#d2').length).toBe(1);
+        const $children = $dom.children();
+        expect($children[0].getAttribute('id')).toBe('d2');
+        expect($children[1].getAttribute('id')).toBe('d3');
+        expect($children[2].classList.contains('test-dom-child')).toBe(true);
+        $children.remove();
+
+        const divs = document.querySelectorAll('.test-query');
+        $dom.prepend(divs);
+        const $query = $dom.find('.test-query');
+        expect($query.length).toBe(2);
+        expect($query[0].classList.contains('one')).toBe(true);
+        expect($query[1].classList.contains('twe')).toBe(true);
+
+        const $reuse = $dom.children();
+        $reuse.detach();
+        expect($dom.children().length).toBe(0);
+
+        $dom.prepend('fuga', $reuse[0], '<div></div>', $reuse[1]);
+        expect($dom.children().length).toBe(3);
+
+        const $window = $(window);
+        expect(() => $window.prepend('<div></div>')).not.toThrow();
+        const $document = $(document);
+        expect(() => $document.prepend('<div></div>')).not.toThrow();
+    });
+
+    it('check DOM#prependTo()', () => {
+        const divs = prepareTestElements();
+        prepareTestElements(testee(`<div id="test-parent"></div>`));
+        const $dom = $('.test-dom');
+        $dom.prependTo('#test-parent');
+        const $parent = $dom.parent();
+        const $testee = $parent.children();
+        expect($testee.length).toBe(3);
+        expect($testee[0]).toBe(divs[0]);
+        expect($testee[1]).toBe(divs[1]);
+        expect($testee[2]).toBe(divs[2]);
+        $parent.remove();
     });
 
     it('check DOM#empty()', () => {

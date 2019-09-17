@@ -158,7 +158,7 @@ export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export function isNode(el: ElementBase | Nil): el is Node {
+export function isNode(el: unknown): el is Node {
     return !!(el && (el as Node).nodeType);
 }
 

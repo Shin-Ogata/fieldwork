@@ -1,4 +1,4 @@
-import { ElementBase, SelectorBase, DOMSelector } from './static';
+import { ElementBase, SelectorBase, DOMSelector, DOM } from './static';
 import { DOMIterable } from './base';
 /**
  * @en Mixin base class which concentrated the manipulation methods.
@@ -39,6 +39,42 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      *  - `ja` 要素内に挿入するテキストを指定
      */
     text(value: string | number | boolean): this;
+    /**
+     * @en Insert content, specified by the parameter, to the end of each element in the set of matched elements.
+     * @ja 配下の要素に引数で指定したコンテンツを追加
+     *
+     * @param contents
+     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     */
+    append<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
+    /**
+     * @en Insert every element in the set of matched elements to the end of the target.
+     * @ja 配下要素を他の要素に追加
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    appendTo<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    /**
+     * @en Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
+     * @ja 配下の要素の先頭に引数で指定したコンテンツを挿入
+     *
+     * @param contents
+     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     */
+    prepend<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
+    /**
+     * @en Insert every element in the set of matched elements to the beginning of the target.
+     * @ja 配下要素を他の要素の先頭に挿入
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    prependTo<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
      * @en Remove all child nodes of the set of matched elements from the DOM.
      * @ja 配下の要素内の子要素(テキストも対象)をすべて削除
