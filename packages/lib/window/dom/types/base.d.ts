@@ -61,7 +61,7 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export declare function isNode(el: ElementBase | Nil): el is Node;
+export declare function isNode(el: unknown): el is Node;
 /**
  * @en Check target is `Element`.
  * @ja 対象が `Element` であるか判定
