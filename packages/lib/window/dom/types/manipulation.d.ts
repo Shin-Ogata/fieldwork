@@ -76,6 +76,42 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      */
     prependTo<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
+     * @en Insert content, specified by the parameter, before each element in the set of matched elements.
+     * @ja 配下の要素の前に指定した HTML や要素を挿入
+     *
+     * @param contents
+     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     */
+    before<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
+    /**
+     * @en Insert every element in the set of matched elements before the target.
+     * @ja 配下の要素を指定した別要素の前に挿入
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    /**
+     * @en Insert content, specified by the parameter, after each element in the set of matched elements.
+     * @ja 配下の要素の後ろに指定した HTML や要素を挿入
+     *
+     * @param contents
+     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     */
+    after<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
+    /**
+     * @en Insert every element in the set of matched elements after the target.
+     * @ja 配下の要素を指定した別要素の後ろに挿入
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    /**
      * @en Remove all child nodes of the set of matched elements from the DOM.
      * @ja 配下の要素内の子要素(テキストも対象)をすべて削除
      */

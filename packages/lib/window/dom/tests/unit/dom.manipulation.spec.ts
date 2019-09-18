@@ -164,6 +164,81 @@ describe('dom/manipulation spec', () => {
         $parent.remove();
     });
 
+    it('check DOM#before()', () => {
+        const divs = prepareTestElements();
+        const $dom = $(divs[0]);
+
+        $dom.before(divs[1], divs[2]);
+        const $result = $('.test-dom');
+        expect($result[0]).toBe(divs[1]);
+        expect($result[1]).toBe(divs[2]);
+        expect($result[2]).toBe(divs[0]);
+
+        $dom.children().before('hoge', 'fuga');
+        expect($dom.text()).toBe('hogefuga');
+
+        const $window = $(window);
+        expect(() => $window.before('<div></div>')).not.toThrow();
+        const $document = $(document);
+        expect(() => $document.before('<div></div>')).not.toThrow();
+    });
+
+    it('check DOM#insertBefore()', () => {
+        const divs = prepareTestElements();
+        const $dom = $(divs[0]);
+
+        $dom.insertBefore(divs[2]);
+        const $result = $('.test-dom');
+        expect($result[0]).toBe(divs[1]);
+        expect($result[1]).toBe(divs[0]);
+        expect($result[2]).toBe(divs[2]);
+
+        expect(() => $dom.insertBefore($dom)).not.toThrow();
+
+        const $window = $(window);
+        expect(() => $window.insertBefore('<div></div>')).not.toThrow();
+        const $document = $(document);
+        expect(() => $document.insertBefore('<div></div>')).not.toThrow();
+    });
+
+    it('check DOM#after()', () => {
+        const divs = prepareTestElements();
+        const $dom = $(divs[2]);
+
+        $dom.after('<div id="d4" class="test-dom"></div>', divs[0]);
+        const $result = $('.test-dom');
+        expect($result[0]).toBe(divs[1]);
+        expect($result[1]).toBe(divs[2]);
+        expect($result[2].getAttribute('id')).toBe('d4');
+        expect($result[3]).toBe(divs[0]);
+
+        $dom.children().after('hoge', 'fuga');
+        expect($dom.text()).toBe('hogefuga');
+
+        const $window = $(window);
+        expect(() => $window.after('<div></div>')).not.toThrow();
+        const $document = $(document);
+        expect(() => $document.after('<div></div>')).not.toThrow();
+    });
+
+    it('check DOM#insertAfter()', () => {
+        const divs = prepareTestElements();
+        const $dom = $(divs[0]);
+
+        $dom.insertAfter(divs[2]);
+        const $result = $('.test-dom');
+        expect($result[0]).toBe(divs[1]);
+        expect($result[1]).toBe(divs[2]);
+        expect($result[2]).toBe(divs[0]);
+
+        expect(() => $dom.insertAfter($dom)).not.toThrow();
+
+        const $window = $(window);
+        expect(() => $window.insertAfter('<div></div>')).not.toThrow();
+        const $document = $(document);
+        expect(() => $document.insertAfter('<div></div>')).not.toThrow();
+    });
+
     it('check DOM#empty()', () => {
         prepareTestElements();
         const $dom = $('.test-dom');

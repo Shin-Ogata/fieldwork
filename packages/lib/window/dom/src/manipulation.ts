@@ -11,13 +11,14 @@ import {
     isNode,
     isNodeElement,
 } from './base';
+import { document } from './ssr';
 
 /** @internal check HTML string */
 function isHTMLString(src: string): boolean {
     return  ('<' === src.slice(0, 1)) && ('>' === src.slice(-1));
 }
 
-/** @internal helper for `append()` */
+/** @internal helper for `append()`, `prepend()`, `before()` and `after()`  */
 function toNodeSet<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): Set<Node | string> {
     const nodes = new Set<Node | string>();
     for (const content of contents) {
@@ -26,11 +27,22 @@ function toNodeSet<T extends Element>(...contents: (Node | string | DOM<T> | Nod
         } else {
             const $dom = $(content as DOM<Element>);
             for (const node of $dom) {
-                nodes.add(node);
+                if (isString(node) || (isNode(node) && Node.DOCUMENT_NODE !== node.nodeType)) {
+                    nodes.add(node);
+                }
             }
         }
     }
     return nodes;
+}
+
+/** @internal helper for `before()` and `after()`  */
+function toNode(node: Node | string): Node {
+    if (isString(node)) {
+        return document.createTextNode(node);
+    } else {
+        return node;
+    }
 }
 
 /** @internal helper for `detach()` and `remove()` */
@@ -214,6 +226,72 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
 ///////////////////////////////////////////////////////////////////////
 // public: Insertion, Outside
 
+    /**
+     * @en Insert content, specified by the parameter, before each element in the set of matched elements.
+     * @ja 配下の要素の前に指定した HTML や要素を挿入
+     *
+     * @param contents
+     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     */
+    public before<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
+        const nodes = toNodeSet(...contents);
+        for (const el of this) {
+            if (isNodeElement(el) && el.parentNode) {
+                for (const node of nodes) {
+                    el.parentNode.insertBefore(toNode(node), el);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * @en Insert every element in the set of matched elements before the target.
+     * @ja 配下の要素を指定した別要素の前に挿入
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): this {
+        ($(selector) as DOM).before(this as DOMIterable<Node> as DOM<Element>);
+        return this;
+    }
+
+    /**
+     * @en Insert content, specified by the parameter, after each element in the set of matched elements.
+     * @ja 配下の要素の後ろに指定した HTML や要素を挿入
+     *
+     * @param contents
+     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     */
+    public after<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
+        const nodes = toNodeSet(...[...contents].reverse());
+        for (const el of this) {
+            if (isNodeElement(el) && el.parentNode) {
+                for (const node of nodes) {
+                    el.parentNode.insertBefore(toNode(node), el.nextSibling);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * @en Insert every element in the set of matched elements after the target.
+     * @ja 配下の要素を指定した別要素の後ろに挿入
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
+     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): this {
+        ($(selector) as DOM).after(this as DOMIterable<Node> as DOM<Element>);
+        return this;
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // public: Insertion, Around
 
@@ -268,13 +346,6 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
 setMixClassAttribute(DOMManipulation, 'protoExtendsOnly');
 
 /*
-[dom7]
-// DOM Insertion, Outside
-.after()
-.before()
-.insertAfter()
-.insertBefore()
-
 [jquery]
 // DOM Insertion, Around
 .unwrap()
