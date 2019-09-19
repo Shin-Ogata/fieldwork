@@ -1,4 +1,4 @@
-import { ElementBase } from './static';
+import { ElementBase, DOM } from './static';
 import { DOMIterable } from './base';
 export declare type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap : T extends HTMLFrameSetElement ? HTMLFrameSetElementEventMap : T extends HTMLMarqueeElement ? HTMLMarqueeElementEventMap : T extends HTMLVideoElement ? HTMLVideoElementEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap : T extends HTMLElement ? HTMLElementEventMap : T extends Element ? ElementEventMap : GlobalEventHandlersEventMap;
 /**
@@ -28,6 +28,23 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     on<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], selector: string, listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
+    /**
+     * @en Add event handler function to one or more events to the elements. (live event available)
+     * @ja 要素に対して, 1つまたは複数のイベントハンドラを設定 (動的要素にも有効)
+     *
+     * @param type
+     *  - `en` event name or event name array.
+     *  - `ja` イベント名またはイベント名配列
+     * @param selector
+     *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
+     *  - `ja` イベント発行元をフィルタリングするセレクタ文字列
+     * @param listener
+     *  - `en` callback function
+     *  - `ja` コールバック関数
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
     on<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
@@ -49,7 +66,28 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     off<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], selector: string, listener?: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
-    off<TEventMap extends DOMEventMap<TElement>>(type?: keyof TEventMap | (keyof TEventMap)[], listener?: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
+    /**
+     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     *     If the method receives no arguments, all handlers are released.
+     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     *     引数が無い場合はすべてのハンドラが解除される.
+     *
+     * @param type
+     *  - `en` event name or event name array.
+     *  - `ja` イベント名またはイベント名配列
+     * @param listener
+     *  - `en` callback function
+     *  - `ja` コールバック関数
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
+    off<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], listener?: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
+    /**
+     * @en Remove all event handler.
+     * @ja 設定されているすべてのイベントハンドラの解除
+     */
+    off(): this;
     /**
      * @en Add event handler function to one or more events to the elements that will be executed only once. (live event available)
      * @ja 要素に対して, 一度だけ呼び出されるイベントハンドラを設定 (動的要素に対しても有効)
@@ -68,6 +106,20 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     once<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], selector: string, listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
+    /**
+     * @en Add event handler function to one or more events to the elements that will be executed only once. (live event available)
+     * @ja 要素に対して, 一度だけ呼び出されるイベントハンドラを設定 (動的要素に対しても有効)
+     *
+     * @param type
+     *  - `en` event name or event name array.
+     *  - `ja` イベント名またはイベント名配列
+     * @param listener
+     *  - `en` callback function
+     *  - `ja` コールバック関数
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
     once<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Execute all handlers added to the matched elements for the specified event.
@@ -419,4 +471,16 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     scroll(handler?: (event: Event, ...args: any[]) => void, options?: boolean | AddEventListenerOptions): this;
+    /**
+     * @en Create a deep copy of the set of matched elements.
+     * @ja 配下の要素のディープコピーを作成
+     *
+     * @param withEvents
+     *  - `en` A Boolean indicating whether event handlers should be copied along with the elements.
+     *  - `ja` イベントハンドラもコピーするかどうかを決定
+     * @param deep
+     *  - `en` A Boolean indicating whether event handlers for all children of the cloned element should be copied.
+     *  - `ja` boolean値で、配下の要素のすべての子要素に対しても、付随しているイベントハンドラをコピーするかどうかを決定
+     */
+    clone(withEvents?: boolean, deep?: boolean): DOM<TElement>;
 }

@@ -3,6 +3,7 @@ import {
     ElementBase,
     SelectorBase,
     DOMSelector,
+    DOMResult,
     DOM,
     dom as $,
 } from './static';
@@ -10,6 +11,9 @@ import {
     DOMIterable,
     isNode,
     isNodeElement,
+    isTypeElement,
+    isTypeDocument,
+    isTypeWindow,
 } from './base';
 import { document } from './ssr';
 
@@ -184,12 +188,11 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下要素を他の要素に追加
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    public appendTo<T extends SelectorBase>(selector: DOMSelector<T>): this {
-        ($(selector) as DOM).append(this as DOMIterable<Node> as DOM<Element>);
-        return this;
+    public appendTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
+        return ($(selector) as DOM).append(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
     }
 
     /**
@@ -215,12 +218,11 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下要素を他の要素の先頭に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    public prependTo<T extends SelectorBase>(selector: DOMSelector<T>): this {
-        ($(selector) as DOM).prepend(this as DOMIterable<Node> as DOM<Element>);
-        return this;
+    public prependTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
+        return ($(selector) as DOM).prepend(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -237,7 +239,7 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
     public before<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
         const nodes = toNodeSet(...contents);
         for (const el of this) {
-            if (isNodeElement(el) && el.parentNode) {
+            if (isNode(el) && el.parentNode) {
                 for (const node of nodes) {
                     el.parentNode.insertBefore(toNode(node), el);
                 }
@@ -251,12 +253,11 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定した別要素の前に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    public insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): this {
-        ($(selector) as DOM).before(this as DOMIterable<Node> as DOM<Element>);
-        return this;
+    public insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
+        return ($(selector) as DOM).before(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
     }
 
     /**
@@ -270,7 +271,7 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
     public after<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
         const nodes = toNodeSet(...[...contents].reverse());
         for (const el of this) {
-            if (isNodeElement(el) && el.parentNode) {
+            if (isNode(el) && el.parentNode) {
                 for (const node of nodes) {
                     el.parentNode.insertBefore(toNode(node), el.nextSibling);
                 }
@@ -284,16 +285,110 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定した別要素の後ろに挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    public insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): this {
-        ($(selector) as DOM).after(this as DOMIterable<Node> as DOM<Element>);
-        return this;
+    public insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
+        return ($(selector) as DOM).after(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
     }
 
 ///////////////////////////////////////////////////////////////////////
 // public: Insertion, Around
+
+    /**
+     * @en Wrap an HTML structure around all elements in the set of matched elements.
+     * @ja 配下の要素を指定した別要素でそれぞれ囲む
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public wrapAll<T extends SelectorBase>(selector: DOMSelector<T>): this {
+        if (isTypeDocument(this) || isTypeWindow(this)) {
+            return this;
+        }
+
+        const el = this[0] as Node;
+
+        // The elements to wrap the target around
+        const $wrap = $(selector, el.ownerDocument).eq(0).clone(true) as DOM<Element>;
+
+        if (el.parentNode) {
+            $wrap.insertBefore(el);
+        }
+
+        $wrap.map((index: number, elem: Element) => {
+            while (elem.firstElementChild) {
+                elem = elem.firstElementChild;
+            }
+            return elem;
+        }).append(this as DOMIterable<Node> as DOM<Element>);
+
+        return this;
+    }
+
+    /**
+     * @en Wrap an HTML structure around the content of each element in the set of matched elements.
+     * @ja 配下の要素の内側を, 指定した別エレメントでそれぞれ囲む
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public wrapInner<T extends SelectorBase>(selector: DOMSelector<T>): this {
+        if (!isTypeElement(this)) {
+            return this;
+        }
+
+        for (const el of this) {
+            const $el = $(el) as DOM<Element>;
+            const contents = $el.contents();
+            if (0 < contents.length) {
+                contents.wrapAll(selector);
+            } else {
+                $el.append(selector as Node);
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * @en Wrap an HTML structure around each element in the set of matched elements.
+     * @ja 配下の要素を, 指定した別要素でそれぞれ囲む
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public wrap<T extends SelectorBase>(selector: DOMSelector<T>): this {
+        if (!isTypeElement(this)) {
+            return this;
+        }
+
+        for (const el of this) {
+            const $el = $(el) as DOM<Element>;
+            $el.wrapAll(selector);
+        }
+
+        return this;
+    }
+
+    /**
+     * @en Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
+     * @ja 要素の親エレメントを削除
+     *
+     * @param selector
+     *  - `en` filtered by a selector.
+     *  - `ja` フィルタ用セレクタ
+     */
+    public unwrap<T extends SelectorBase>(selector?: DOMSelector<T>): this {
+        const self = this as DOMIterable<Node> as DOM<Element>;
+        self.parent(selector).not('body').each((index, elem) => {
+            $(elem).replaceWith(elem.childNodes);
+        });
+        return this;
+    }
 
 ///////////////////////////////////////////////////////////////////////
 // public: Removal
@@ -318,8 +413,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 要素を DOM から削除. 削除後もイベントリスナは有効
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
     public detach<T extends SelectorBase>(selector?: DOMSelector<T>): this {
         removeElement(selector, this, true);
@@ -331,8 +426,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 要素を DOM から削除
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
     public remove<T extends SelectorBase>(selector?: DOMSelector<T>): this {
         removeElement(selector, this, false);
@@ -341,18 +436,51 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
 
 ///////////////////////////////////////////////////////////////////////
 // public: Replacement
+
+    /**
+     * @en Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+     * @ja 配下の要素を指定された別の要素や HTML と差し替え
+     *
+     * @param newContent
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public replaceWith<T extends SelectorBase>(newContent?: DOMSelector<T>): this {
+        const elem = (() => {
+            const $dom = $(newContent);
+            if (1 === $dom.length && isNodeElement($dom[0])) {
+                return $dom[0];
+            } else {
+                const fragment = document.createDocumentFragment();
+                for (const el of $dom) {
+                    if (isNodeElement(el)) {
+                        fragment.appendChild(el);
+                    }
+                }
+                return fragment;
+            }
+        })();
+
+        for (const el of this) {
+            if (isNodeElement(el)) {
+                el.replaceWith(elem);
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * @en Replace each target element with the set of matched elements.
+     * @ja 配下の要素を指定した別の要素と差し替え
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    public replaceAll<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
+        return ($(selector) as DOM).replaceWith(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
+    }
 }
 
 setMixClassAttribute(DOMManipulation, 'protoExtendsOnly');
-
-/*
-[jquery]
-// DOM Insertion, Around
-.unwrap()
-.wrap()
-.wrapAll()
-.wrapInner()
-// DOM Replacement
-.replaceAll()
-.replaceWith()
- */

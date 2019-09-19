@@ -1,4 +1,4 @@
-import { ElementBase, SelectorBase, DOMSelector, DOM } from './static';
+import { ElementBase, SelectorBase, DOMSelector, DOMResult, DOM } from './static';
 import { DOMIterable } from './base';
 /**
  * @en Mixin base class which concentrated the manipulation methods.
@@ -53,10 +53,10 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      * @ja 配下要素を他の要素に追加
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    appendTo<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    appendTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
      * @en Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
      * @ja 配下の要素の先頭に引数で指定したコンテンツを挿入
@@ -71,10 +71,10 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      * @ja 配下要素を他の要素の先頭に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    prependTo<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    prependTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
      * @en Insert content, specified by the parameter, before each element in the set of matched elements.
      * @ja 配下の要素の前に指定した HTML や要素を挿入
@@ -89,10 +89,10 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      * @ja 配下の要素を指定した別要素の前に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
      * @en Insert content, specified by the parameter, after each element in the set of matched elements.
      * @ja 配下の要素の後ろに指定した HTML や要素を挿入
@@ -107,10 +107,46 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      * @ja 配下の要素を指定した別要素の後ろに挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
+    /**
+     * @en Wrap an HTML structure around all elements in the set of matched elements.
+     * @ja 配下の要素を指定した別要素でそれぞれ囲む
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    wrapAll<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    /**
+     * @en Wrap an HTML structure around the content of each element in the set of matched elements.
+     * @ja 配下の要素の内側を, 指定した別エレメントでそれぞれ囲む
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    wrapInner<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    /**
+     * @en Wrap an HTML structure around each element in the set of matched elements.
+     * @ja 配下の要素を, 指定した別要素でそれぞれ囲む
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    wrap<T extends SelectorBase>(selector: DOMSelector<T>): this;
+    /**
+     * @en Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
+     * @ja 要素の親エレメントを削除
+     *
+     * @param selector
+     *  - `en` filtered by a selector.
+     *  - `ja` フィルタ用セレクタ
+     */
+    unwrap<T extends SelectorBase>(selector?: DOMSelector<T>): this;
     /**
      * @en Remove all child nodes of the set of matched elements from the DOM.
      * @ja 配下の要素内の子要素(テキストも対象)をすべて削除
@@ -121,8 +157,8 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      * @ja 要素を DOM から削除. 削除後もイベントリスナは有効
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
     detach<T extends SelectorBase>(selector?: DOMSelector<T>): this;
     /**
@@ -130,8 +166,26 @@ export declare class DOMManipulation<TElement extends ElementBase> implements DO
      * @ja 要素を DOM から削除
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
     remove<T extends SelectorBase>(selector?: DOMSelector<T>): this;
+    /**
+     * @en Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
+     * @ja 配下の要素を指定された別の要素や HTML と差し替え
+     *
+     * @param newContent
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    replaceWith<T extends SelectorBase>(newContent?: DOMSelector<T>): this;
+    /**
+     * @en Replace each target element with the set of matched elements.
+     * @ja 配下の要素を指定した別の要素と差し替え
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     */
+    replaceAll<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
 }

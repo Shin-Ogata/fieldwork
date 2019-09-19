@@ -424,6 +424,12 @@ describe('dom/traversing spec', () => {
             expect($result.length).toBe(2);
         }
 
+        {// body
+            const $dom = $(body);
+            const $result = $dom.not('body');
+            expect($result.length).toBe(0);
+        }
+
         {// invalid selector
             const $dom = $('.test-dom');
             const $result = $dom.not({} as any);
@@ -444,7 +450,7 @@ describe('dom/traversing spec', () => {
 
         {// window selector
             const $window = $(window);
-            const $result = $window.find<HTMLDivElement>('.test-dom');
+            const $result = $window.find('.test-dom') as DOM<HTMLDivElement>; // eslint-disable-line
             expect($result.length).toBe(0);
         }
 

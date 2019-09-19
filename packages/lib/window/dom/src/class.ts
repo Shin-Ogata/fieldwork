@@ -67,14 +67,14 @@ export class DOMClass extends mixins(
      * @internal
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるオブジェクト(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
      * @param context
      *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
      *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
-     * @returns [[DOMClass]] instance.
+     * @returns [[DOM]] instance.
      */
-    public static create<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext): DOMResult<T> {
+    public static create<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T> {
         if (selector && !context) {
             if (selector instanceof DOMClass) {
                 return selector as any;

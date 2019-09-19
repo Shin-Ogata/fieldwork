@@ -16,4 +16,4 @@ export declare type QueryContext = ParentNode & Partial<NonElementParentNode>;
  *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
  * @returns Element[] based Node or Window object.
  */
-export declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext): ElementResult<T>[];
+export declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
