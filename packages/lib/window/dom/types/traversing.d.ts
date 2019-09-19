@@ -1,4 +1,4 @@
-import { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMIterateCallback } from './static';
+import { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMResult, DOMIterateCallback } from './static';
 import { DOMIterable } from './base';
 export declare type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = (index: number, element: T) => U;
 /**
@@ -56,8 +56,8 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      * @ja 指定された `selector` で取得した `Element` を追加した新規 [[DOM]] インスタンスを返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      * @param context
      *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
      *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
@@ -107,7 +107,7 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
      *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    find<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T>;
+    find<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
      * @en Reduce the set of matched elements to those that have a descendant that matches the selector.
      * @ja 配下の要素に対して指定したセレクタに一致した子要素持つ要素を返却
@@ -116,7 +116,7 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
      *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    has<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T>;
+    has<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
      * @en Pass each element in the current matched set through a function, producing a new [[DOM]] instance containing the return values.
      * @ja コールバックで変更された要素を用いて新たに [[DOM]] インスタンスを構築
@@ -166,7 +166,7 @@ export declare class DOMTraversing<TElement extends ElementBase> implements DOMI
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
      *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      */
-    closest<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T>;
+    closest<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
      * @en Get the children of each element in the set of matched elements, optionally filtered by a selector.
      * @ja 各要素の子要素を取得. セレクタが指定された場合はフィルタリングされた結果を返却

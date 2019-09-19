@@ -11,7 +11,7 @@ import {
     DOM,
     dom as $,
 } from './static';
-import { DOMIterable } from './base';
+import { DOMIterable, isTypeElement } from './base';
 
 /** @internal */
 interface DOMEventListner extends EventListener {
@@ -120,8 +120,8 @@ function registerEventListenerHandlers(
     }
 }
 
-/** @internal query all event and handler by element, for all `off()` */
-function extractAllHandlers(elem: ElementBase): { event: string; handler: EventListener; options: any; }[] {
+/** @internal query all event and handler by element, for all `off()` and `clone(true)` */
+function extractAllHandlers(elem: ElementBase, remove = true): { event: string; handler: EventListener; options: any; }[] {
     const handlers: { event: string; handler: EventListener; options: any; }[] = [];
 
     const query = (context: BindEventContext | undefined): boolean => {
@@ -141,8 +141,8 @@ function extractAllHandlers(elem: ElementBase): { event: string; handler: EventL
     };
 
     const { eventListeners, liveEventListeners } = _eventContextMap;
-    query(eventListeners.get(elem)) && eventListeners.delete(elem);
-    query(liveEventListeners.get(elem)) && liveEventListeners.delete(elem);
+    query(eventListeners.get(elem)) && remove && eventListeners.delete(elem);
+    query(liveEventListeners.get(elem)) && remove && liveEventListeners.delete(elem);
 
     return handlers;
 }
@@ -186,6 +186,34 @@ function eventShortcut<T extends ElementBase>(this: DOMEvents<T>, name: string, 
         return this.on(name as any, handler as any, options);
     }
 }
+
+/** @internal helper for `clone()` */
+function cloneEvent(src: Element, dst: Element): void {
+    const contexts = extractAllHandlers(src, false);
+    for (const context of contexts) {
+        dst.addEventListener(context.event, context.handler, context.options);
+    }
+}
+
+/** @internal helper for `clone()` */
+function cloneElement(elem: Element, withEvents: boolean, deep: boolean): Element {
+    const clone = elem.cloneNode(true) as Element;
+
+    if (withEvents) {
+        if (deep) {
+            const srcElements = elem.querySelectorAll('*');
+            const dstElements = clone.querySelectorAll('*');
+            for (const [index] of srcElements.entries()) {
+                cloneEvent(srcElements[index], dstElements[index]);
+            }
+        } else {
+            cloneEvent(elem, clone);
+        }
+    }
+
+    return clone;
+}
+
 //__________________________________________________________________________________________________//
 
 /* eslint-disable @typescript-eslint/indent */
@@ -242,11 +270,30 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void,
         options?: boolean | AddEventListenerOptions
     ): this;
+
+    /**
+     * @en Add event handler function to one or more events to the elements. (live event available)
+     * @ja 要素に対して, 1つまたは複数のイベントハンドラを設定 (動的要素にも有効)
+     *
+     * @param type
+     *  - `en` event name or event name array.
+     *  - `ja` イベント名またはイベント名配列
+     * @param selector
+     *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
+     *  - `ja` イベント発行元をフィルタリングするセレクタ文字列
+     * @param listener
+     *  - `en` callback function
+     *  - `ja` コールバック関数
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
     public on<TEventMap extends DOMEventMap<TElement>>(
         type: keyof TEventMap | (keyof TEventMap)[],
         listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void,
         options?: boolean | AddEventListenerOptions
     ): this;
+
     public on<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
         const { type: events, selector, listener, options } = parseEventArgs(...args);
 
@@ -302,11 +349,35 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         listener?: (event: TEventMap[keyof TEventMap], ...args: any[]) => void,
         options?: boolean | AddEventListenerOptions
     ): this;
+
+    /**
+     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     *     If the method receives no arguments, all handlers are released.
+     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     *     引数が無い場合はすべてのハンドラが解除される.
+     *
+     * @param type
+     *  - `en` event name or event name array.
+     *  - `ja` イベント名またはイベント名配列
+     * @param listener
+     *  - `en` callback function
+     *  - `ja` コールバック関数
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
     public off<TEventMap extends DOMEventMap<TElement>>(
-        type?: keyof TEventMap | (keyof TEventMap)[],
+        type: keyof TEventMap | (keyof TEventMap)[],
         listener?: (event: TEventMap[keyof TEventMap], ...args: any[]) => void,
         options?: boolean | AddEventListenerOptions
     ): this;
+
+    /**
+     * @en Remove all event handler.
+     * @ja 設定されているすべてのイベントハンドラの解除
+     */
+    public off(): this;
+
     public off<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
         const { type: events, selector, listener, options } = parseEventArgs(...args);
 
@@ -365,11 +436,27 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void,
         options?: boolean | AddEventListenerOptions
     ): this;
+
+    /**
+     * @en Add event handler function to one or more events to the elements that will be executed only once. (live event available)
+     * @ja 要素に対して, 一度だけ呼び出されるイベントハンドラを設定 (動的要素に対しても有効)
+     *
+     * @param type
+     *  - `en` event name or event name array.
+     *  - `ja` イベント名またはイベント名配列
+     * @param listener
+     *  - `en` callback function
+     *  - `ja` コールバック関数
+     * @param options
+     *  - `en` options for `addEventLisntener`
+     *  - `ja` `addEventLisntener` に指定するオプション
+     */
     public once<TEventMap extends DOMEventMap<TElement>>(
         type: keyof TEventMap | (keyof TEventMap)[],
         listener: (event: TEventMap[keyof TEventMap], ...args: any[]) => void,
         options?: boolean | AddEventListenerOptions
     ): this;
+
     public once<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
         const { type, selector, listener, options } = parseEventArgs(...args);
         const opts = { ...options, ...{ once: true } };
@@ -881,12 +968,27 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 
 ///////////////////////////////////////////////////////////////////////
 // public: Copying
+
+    /**
+     * @en Create a deep copy of the set of matched elements.
+     * @ja 配下の要素のディープコピーを作成
+     *
+     * @param withEvents
+     *  - `en` A Boolean indicating whether event handlers should be copied along with the elements.
+     *  - `ja` イベントハンドラもコピーするかどうかを決定
+     * @param deep
+     *  - `en` A Boolean indicating whether event handlers for all children of the cloned element should be copied.
+     *  - `ja` boolean値で、配下の要素のすべての子要素に対しても、付随しているイベントハンドラをコピーするかどうかを決定
+     */
+    public clone(withEvents = false, deep = false): DOM<TElement> {
+        const self = this as DOMIterable<TElement> as DOM<TElement>;
+        if (!isTypeElement(self)) {
+            return self;
+        }
+        return self.map((index: number, el: TElement) => {
+            return cloneElement(el as Node as Element, withEvents, deep) as Node as TElement;
+        });
+    }
 }
 
 setMixClassAttribute(DOMEvents, 'protoExtendsOnly');
-
-/*
-[jquery]
-// Copying
-.clone()
- */

@@ -1,6 +1,7 @@
-/* eslint-disable block-spacing, @typescript-eslint/no-explicit-any */
+/* eslint-disable block-spacing, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
 import $ from '@cdp/dom';
 import {
+    DOM,
     prepareTestElements,
     cleanupTestElements,
     mixedCollection,
@@ -239,6 +240,89 @@ describe('dom/manipulation spec', () => {
         expect(() => $document.insertAfter('<div></div>')).not.toThrow();
     });
 
+    it('check DOM#wrapAll()', () => {
+        let divs = prepareTestElements();
+        let $dom = $('.test-dom');
+        $dom.wrapAll('<div class="test-parent"></div>');
+        let $parent = $('.test-parent');
+        let $result = $parent.children();
+        expect($result.length).toBe(3);
+        expect($result[0]).toBe(divs[0]);
+        expect($result[1]).toBe(divs[1]);
+        expect($result[2]).toBe(divs[2]);
+        $parent.remove();
+
+        divs = prepareTestElements();
+        $dom = $([divs[1], divs[2]]);
+        $dom.removeClass('test-dom');
+        $dom.wrapAll(divs[0]);
+        $result = $('.test-dom');
+        expect($result.length).toBe(2);
+        expect($result[0]).toBe(divs[0]); // original
+        expect($result[1].getAttribute('id')).toBe('d1'); // cloned
+        $result.remove();
+
+        divs = prepareTestElements();
+        $dom = $(document.createElement('div'));
+        $dom.wrapAll(divs[0]);
+        $parent = $dom.parent();
+        expect($parent.length).toBe(1);
+        expect($parent.hasClass('test-dom-child')).toBe(true); // div[0] child
+
+        expect(() => $(window).wrapAll(divs[0])).not.toThrow();
+        expect(() => $(document).wrapAll(divs[0])).not.toThrow();
+    });
+
+    it('check DOM#wrapInner()', () => {
+        prepareTestElements(testee(`
+<div class="test-dom">
+    <div class="inner">Hello</div>
+    <div class="inner">Goodbye</div>
+    <div class="inner"></div>
+</div>
+    `));
+        const $dom = $('.inner');
+        $dom.wrapInner('<div class="new"></div>');
+        const $result = $dom.find('.new');
+        expect($result.length).toBe(3);
+        expect($result[0].textContent).toBe('Hello');
+        expect($result[1].textContent).toBe('Goodbye');
+
+        expect(() => $(window).wrapInner($dom)).not.toThrow();
+        expect(() => $(document).wrapInner($dom)).not.toThrow();
+    });
+
+    it('check DOM#wrap() / unwrap()', () => {
+        prepareTestElements(testee(`
+<div class="test-dom">
+    <div class="inner">Hello</div>
+    <div class="inner">Goodbye</div>
+</div>
+    `));
+        const $dom = $('.inner');
+        $dom.wrap('<div class="test-new"></div>');
+        let $result = $('.test-dom').find('.test-new');
+        expect($result.length).toBe(2);
+        expect($result[0].firstElementChild!.textContent).toBe('Hello');
+        expect($result[1].firstElementChild!.textContent).toBe('Goodbye');
+
+        $result[0].classList.add('one');
+        $dom.unwrap('.one');
+        $result = $('.test-dom').find('.test-new');
+        expect($result.length).toBe(1);
+        expect($result[0].firstElementChild!.textContent).toBe('Goodbye');
+
+        $dom.unwrap();
+        $result = $('.test-dom');
+        expect($result.length).toBe(0);
+        $dom.remove();
+
+        expect(() => $(window).wrap($dom)).not.toThrow();
+        expect(() => $(document).wrap($dom)).not.toThrow();
+        expect(() => $(window).unwrap($dom)).not.toThrow();
+        expect(() => $(document).unwrap($dom)).not.toThrow();
+    });
+
     it('check DOM#empty()', () => {
         prepareTestElements();
         const $dom = $('.test-dom');
@@ -249,6 +333,9 @@ describe('dom/manipulation spec', () => {
         expect($dom.length).toBe(3);
         $children = $dom.children();
         expect($children.length).toBe(0);
+
+        expect(() => $(window).empty()).not.toThrow();
+        expect(() => $(document).empty()).not.toThrow();
     });
 
     it('check DOM#detach()', () => {
@@ -303,6 +390,52 @@ describe('dom/manipulation spec', () => {
         expect(() => $(document).remove()).not.toThrow();
     });
 
+    it('check DOM#replaceWith()', () => {
+        const divs = prepareTestElements();
+        const $dom = $(divs[0]);
+        $dom.replaceWith(divs[1]);
+        expect($dom.attr('id')).toBe('d1'); // $dom 自体が参照している element には変更がない (https://github.com/jquery/jquery/issues/3024)
+        let $replaced = $('.test-dom');
+        expect($replaced.length).toBe(2);
+
+        // eslint-disable-next-line
+        $replaced.replaceWith($() as DOM);  // 長さ 0 の場合は削除
+        expect($('.test-dom').length).toBe(0);
+
+        // multi replace
+        prepareTestElements(testee(`<div id="dd" class="test-dom"></div>
+<div class="test-dom test-query one"></div>
+<div class="test-dom test-query twe"></div>
+    `));
+        expect($('.test-dom').length).toBe(3);
+        $replaced = $('#dd');
+        $replaced.replaceWith('.test-query');
+        expect($('.test-dom').length).toBe(2);
+
+        // text replace
+        $('.test-dom').replaceWith('<p class="test-dom"></p>');
+        $replaced = $('.test-dom');
+        expect($replaced.length).toBe(1); // 同一 DOM の連続 replaceWith のため 1つ
+        expect($replaced[0].nodeName).toBe('P');
+
+        expect(() => $(window).replaceWith('<div></div>')).not.toThrow();
+        expect(() => $(document).replaceWith('<div></div>')).not.toThrow();
+    });
+
+    it('check DOM#replaceAll()', () => {
+        const divs = prepareTestElements();
+        const $dom = $([divs[0], divs[1]]);
+
+        $dom.replaceAll(divs[2]);
+        const $result = $('.test-dom');
+        expect($result.length).toBe(2);
+        expect($result[0]).toBe(divs[0]);
+        expect($result[1]).toBe(divs[1]);
+
+        expect(() => $(window).replaceAll('<div></div>')).not.toThrow();
+        expect(() => $(document).replaceAll('<div></div>')).not.toThrow();
+    });
+
     it('check mixedCollection', () => {
         const $dom = mixedCollection().add(window).add(document);
         const $nonElem = $($dom[1]);
@@ -311,5 +444,6 @@ describe('dom/manipulation spec', () => {
         expect(() => $dom.html('hoge')).not.toThrow();
         expect(() => $nonElem.text()).not.toThrow();
         expect(() => $nonElem.empty()).not.toThrow();
+        expect(() => $('<div></div>').replaceWith($nonElem)).not.toThrow();
     });
 });

@@ -12,6 +12,7 @@ import {
     QueryContext,
     DOM,
     DOMSelector,
+    DOMResult,
     DOMIterateCallback,
     dom as $,
 } from './static';
@@ -286,8 +287,8 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      * @ja 指定された `selector` で取得した `Element` を追加した新規 [[DOM]] インスタンスを返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOMClass]].
-     *  - `ja` [[DOMClass]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      * @param context
      *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
      *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
@@ -364,7 +365,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
      *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    public find<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
+    public find<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         if (!isString(selector)) {
             const $selector = $(selector) as DOM<Node>;
             return $selector.filter((index, elem) => {
@@ -374,9 +375,9 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                     }
                 }
                 return false;
-            }) as DOM<T>;
+            }) as DOMResult<T>;
         } else if (isTypeWindow(this)) {
-            return $() as DOM<T>;
+            return $();
         } else {
             const elements: Element[] = [];
             for (const el of this) {
@@ -385,7 +386,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                     elements.push(...elems);
                 }
             }
-            return $(elements as Node[]) as DOM<T>;
+            return $(elements as Node[]) as DOMResult<T>;
         }
     }
 
@@ -397,9 +398,9 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
      *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
      */
-    public has<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
+    public has<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         if (isTypeWindow(this)) {
-            return $() as DOM<T>;
+            return $();
         }
 
         const targets: Node[] = [];
@@ -419,7 +420,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                 }
             }
             return false;
-        }) as DOM<Node> as DOM<T>;
+        }) as DOM<Node> as DOMResult<T>;
     }
 
     /**
@@ -497,9 +498,9 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
      *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
      *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      */
-    public closest<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector: DOMSelector<U>): DOM<T> {
+    public closest<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         if (null == selector || !isTypeElement(this)) {
-            return $() as DOM<T>;
+            return $();
         } else if (isString(selector)) {
             const closests = new Set<Node>();
             for (const el of this) {
@@ -510,11 +511,11 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                     }
                 }
             }
-            return $([...closests]) as DOM<T>;
+            return $([...closests]) as DOMResult<T>;
         } else if (this.is(selector)) {
             return $(this as any);
         } else {
-            return this.parents(selector).eq(0) as DOM<Node> as DOM<T>;
+            return this.parents(selector).eq(0) as DOM<Node> as DOMResult<T>;
         }
     }
 

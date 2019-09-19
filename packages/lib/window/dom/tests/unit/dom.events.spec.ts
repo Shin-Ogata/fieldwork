@@ -720,4 +720,40 @@ describe('dom/events spec', () => {
 
         done();
     });
+
+    it('check DOM#clone()', async (done) => {
+        prepareTestElements(testee(`
+<div class="test-dom father">
+    <p class="test-dom-child"></p>
+</div>`));
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const stub2 = { onCallback2 };
+        spyOn(stub2, 'onCallback2').and.callThrough();
+
+        const $dom = $('.test-dom');
+        $dom.on('click', stub.onCallback);
+        $dom.find('.test-dom-child').on('click', stub2.onCallback2);
+
+        const $clone1 = $dom.clone();
+        await $clone1.trigger('click');
+        expect(count).toBe(0);
+
+        const $clone2 = $dom.clone(false, true);
+        await $clone2.trigger('click');
+        expect(count).toBe(0);
+
+        const $clone3 = $dom.clone(true);
+        await $clone3.trigger('click');
+        expect(count).toBe(1);
+
+        const $clone4 = $dom.clone(true, true);
+        await $clone4.children().trigger('click');
+        expect(stub2.onCallback2).toHaveBeenCalled();
+
+        expect(() => $(window).clone()).not.toThrow();
+        expect(() => $(document).clone(true, true)).not.toThrow();
+        done();
+    });
 });
