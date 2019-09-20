@@ -90,6 +90,15 @@ export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTM
  */
 export declare function isNodeQueriable(el: ElementBase | Nil): el is Element | Document;
 /**
+ * @en Check target is `Document`.
+ * @ja 対象が `Document` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export declare function isNodeDocument(el: ElementBase | Nil): el is Document;
+/**
  * @en Check [[DOM]] target is `Element`.
  * @ja [[DOM]] が `Element` を対象にしているか判定
  *
