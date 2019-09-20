@@ -52,3 +52,7 @@ export function mixedCollection(): DOM {
     const $dom = dom('.test-dom').contents();
     return $dom;
 }
+
+export function wait(elapse: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, elapse));
+}

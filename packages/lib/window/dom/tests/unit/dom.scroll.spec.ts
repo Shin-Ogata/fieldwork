@@ -4,6 +4,7 @@ import {
     prepareTestElements,
     cleanupTestElements,
     mixedCollection,
+    wait,
 } from './tools';
 
 describe('dom/scroll spec', () => {
@@ -12,10 +13,6 @@ describe('dom/scroll spec', () => {
     let count: number;
     const onCallback = (): void => {
         count++;
-    };
-
-    const wait = (elapse: number): Promise<void> => {
-        return new Promise(resolve => setTimeout(resolve, elapse));
     };
 
     beforeEach(() => {
