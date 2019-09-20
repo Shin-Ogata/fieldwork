@@ -153,27 +153,6 @@ function parseOuterSizeArgs(...args: any[]): { includeMargin: boolean; value: nu
 }
 
 /** @internal helper for `outerWidth()` and `outerHeigth()` */
-function getOffsetSize(el: HTMLOrSVGElement, type: 'width' | 'height'): number {
-    if (null != (el as HTMLElement).offsetWidth) {
-        // (offsetWidth / offsetHeight)
-        return el[`offset${classify(type)}`];
-    } else {
-        /*
-         * [NOTE] SVGElement は offsetWidth がサポートされない
-         *        getBoundingClientRect() は transform に影響を受けるため,
-         *        定義通り border, paddin を含めた値を算出する
-         */
-        const style = getComputedStyleFrom(el as SVGElement);
-        const size = toNumber(style.getPropertyValue(type));
-        if ('content-box' === style.getPropertyValue('box-sizing')) {
-            return size + getBorder(style, type) + getPadding(style, type);
-        } else {
-            return size;
-        }
-    }
-}
-
-/** @internal helper for `outerWidth()` and `outerHeigth()` */
 function manageOuterSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'width' | 'height', includeMargin: boolean, value?: number | string): number | DOMStyles<T> {
     if (null == value) {
         // getter
@@ -238,6 +217,30 @@ function getOffsetPosition(el: Element): { top: number; left: number; } {
         top: rect.top + view.pageYOffset,
         left: rect.left + view.pageXOffset
     };
+}
+
+/**
+ * @en Get offset[Width | Height]. This function will work SVGElement, too.
+ * @ja offse[Width | Height] の取得. SVGElement にも適用可能
+ */
+export function getOffsetSize(el: HTMLOrSVGElement, type: 'width' | 'height'): number {
+    if (null != (el as HTMLElement).offsetWidth) {
+        // (offsetWidth / offsetHeight)
+        return el[`offset${classify(type)}`];
+    } else {
+        /*
+         * [NOTE] SVGElement は offsetWidth がサポートされない
+         *        getBoundingClientRect() は transform に影響を受けるため,
+         *        定義通り border, paddin を含めた値を算出する
+         */
+        const style = getComputedStyleFrom(el as SVGElement);
+        const size = toNumber(style.getPropertyValue(type));
+        if ('content-box' === style.getPropertyValue('box-sizing')) {
+            return size + getBorder(style, type) + getPadding(style, type);
+        } else {
+            return size;
+        }
+    }
 }
 
 //__________________________________________________________________________________________________//

@@ -8,8 +8,12 @@ const win = safe(globalThis.window);
 const doc = safe(globalThis.document);
 const evt = safe(globalThis.CustomEvent);
 
+const { requestAnimationFrame, cancelAnimationFrame } = win;
+
 export {
     win as window,
     doc as document,
     evt as CustomEvent,
+    requestAnimationFrame,
+    cancelAnimationFrame,
 };

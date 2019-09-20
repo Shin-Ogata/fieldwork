@@ -17,3 +17,19 @@ export declare type QueryContext = ParentNode & Partial<NonElementParentNode>;
  * @returns Element[] based Node or Window object.
  */
 export declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+/**
+ * @en Ensure positive number, if not returned `undefined`.
+ * @en 正値の保証. 異なる場合 `undefined` を返却
+ */
+export declare function ensurePositiveNumber(value: number | undefined): number | undefined;
+/**
+ * @en For easing `swing` timing-function.
+ * @ja easing `swing` 用タイミング関数
+ *
+ * @reference
+ *  - https://stackoverflow.com/questions/9245030/looking-for-a-swing-like-easing-expressible-both-with-jquery-and-css3
+ *  - https://stackoverflow.com/questions/5207301/jquery-easing-functions-without-using-a-plugin
+ *
+ * @param progress [0 - 1]
+ */
+export declare function swing(progress: number): number;

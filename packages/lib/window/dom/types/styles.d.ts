@@ -2,6 +2,11 @@ import { PlainObject } from '@cdp/core-utils';
 import { ElementBase } from './static';
 import { DOMIterable } from './base';
 /**
+ * @en Get offset[Width | Height]. This function will work SVGElement, too.
+ * @ja offse[Width | Height] の取得. SVGElement にも適用可能
+ */
+export declare function getOffsetSize(el: HTMLOrSVGElement, type: 'width' | 'height'): number;
+/**
  * @en Mixin base class which concentrated the style management methods.
  * @ja スタイル関連メソッドを集約した Mixin Base クラス
  */

@@ -1,5 +1,6 @@
 import {
     Nil,
+    isNumber,
     isFunction,
     className,
 } from '@cdp/core-utils';
@@ -66,4 +67,26 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
     }
 
     return elements as ElementResult<T>[];
+}
+
+/**
+ * @en Ensure positive number, if not returned `undefined`.
+ * @en 正値の保証. 異なる場合 `undefined` を返却
+ */
+export function ensurePositiveNumber(value: number | undefined): number | undefined {
+    return (isNumber(value) && 0 <= value) ? value : undefined;
+}
+
+/**
+ * @en For easing `swing` timing-function.
+ * @ja easing `swing` 用タイミング関数
+ *
+ * @reference
+ *  - https://stackoverflow.com/questions/9245030/looking-for-a-swing-like-easing-expressible-both-with-jquery-and-css3
+ *  - https://stackoverflow.com/questions/5207301/jquery-easing-functions-without-using-a-plugin
+ *
+ * @param progress [0 - 1]
+ */
+export function swing(progress: number): number {
+    return 0.5 - (Math.cos(progress * Math.PI) / 2);
 }

@@ -198,6 +198,18 @@ export function isNodeQueriable(el: ElementBase | Nil): el is Element | Document
     return !!(el && (el as Node as Element).querySelector);
 }
 
+/**
+ * @en Check target is `Document`.
+ * @ja 対象が `Document` であるか判定
+ *
+ * @param el
+ *  - `en` [[ElementBase]] instance
+ *  - `ja` [[ElementBase]] インスタンス
+ */
+export function isNodeDocument(el: ElementBase | Nil): el is Document {
+    return isNode(el) && (Node.DOCUMENT_NODE === el.nodeType);
+}
+
 //__________________________________________________________________________________________________//
 
 /**
