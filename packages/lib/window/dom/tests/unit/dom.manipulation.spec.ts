@@ -126,8 +126,8 @@ describe('dom/manipulation spec', () => {
         $dom.prepend($dom2);
         expect($dom.find('#d2').length).toBe(1);
         const $children = $dom.children();
-        expect($children[0].getAttribute('id')).toBe('d2');
-        expect($children[1].getAttribute('id')).toBe('d3');
+        expect($children[0].id).toBe('d2');
+        expect($children[1].id).toBe('d3');
         expect($children[2].classList.contains('test-dom-child')).toBe(true);
         $children.remove();
 
@@ -210,7 +210,7 @@ describe('dom/manipulation spec', () => {
         const $result = $('.test-dom');
         expect($result[0]).toBe(divs[1]);
         expect($result[1]).toBe(divs[2]);
-        expect($result[2].getAttribute('id')).toBe('d4');
+        expect($result[2].id).toBe('d4');
         expect($result[3]).toBe(divs[0]);
 
         $dom.children().after('hoge', 'fuga');
@@ -259,7 +259,7 @@ describe('dom/manipulation spec', () => {
         $result = $('.test-dom');
         expect($result.length).toBe(2);
         expect($result[0]).toBe(divs[0]); // original
-        expect($result[1].getAttribute('id')).toBe('d1'); // cloned
+        expect($result[1].id).toBe('d1'); // cloned
         $result.remove();
 
         divs = prepareTestElements();

@@ -37,6 +37,23 @@ export type DOMIterateCallback<T extends ElementBase> = (index: number, element:
  * [Traversing]
  *  .addBack()
  *  .end()
+ *
+ * [Effects]
+ * .show()
+ * .hide()
+ * .toggle()
+ * .stop()
+ * .clearQueue()
+ * .delay()
+ * .dequeue()
+ * .fadeIn()
+ * .fadeOut()
+ * .fadeTo()
+ * .fadeToggle()
+ * .queue()
+ * .slideDown()
+ * .slideToggle()
+ * .slideUp()
  */
 export class DOMClass extends mixins(
     DOMBase,

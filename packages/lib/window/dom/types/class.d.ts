@@ -26,6 +26,23 @@ declare const DOMClass_base: import("@cdp/core-utils").MixinConstructor<typeof D
  * [Traversing]
  *  .addBack()
  *  .end()
+ *
+ * [Effects]
+ * .show()
+ * .hide()
+ * .toggle()
+ * .stop()
+ * .clearQueue()
+ * .delay()
+ * .dequeue()
+ * .fadeIn()
+ * .fadeOut()
+ * .fadeTo()
+ * .fadeToggle()
+ * .queue()
+ * .slideDown()
+ * .slideToggle()
+ * .slideUp()
  */
 export declare class DOMClass extends DOMClass_base {
     /**
