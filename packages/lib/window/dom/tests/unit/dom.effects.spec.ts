@@ -21,14 +21,13 @@ describe('dom/effects spec', () => {
 <div id="d3" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>
 `));
         const $dom = $('.test-dom');
-        // NOTE: 塗りつぶしモードはスコアが高いまま永続化されるので finished で値を入れる代価の方式が推奨されている
-        // https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill#Alternatives_to_fill_modes
-        const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
+        const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], 100);
+        contexts.finished.then(ctx => ctx.dom.css('opacity', '0.5'));
         await wait(150);
-        expect(contexts.length).toBe(3);
-        expect(contexts[0].animation.playState).toBe('finished');
-        expect(contexts[1].animation.playState).toBe('finished');
-        expect(contexts[2].animation.playState).toBe('finished');
+        expect(contexts.animations.size).toBe(3);
+        expect([...contexts.animations.values()][0].playState).toBe('finished');
+        expect([...contexts.animations.values()][1].playState).toBe('finished');
+        expect([...contexts.animations.values()][2].playState).toBe('finished');
         expect($dom.css('opacity')).toBe('0.5');
         done();
     });
@@ -36,10 +35,12 @@ describe('dom/effects spec', () => {
     it('check DOM#cancel()', async (done) => {
         prepareTestElements(testee(`<div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>`));
         const $dom = $('.test-dom');
+        // NOTE: 塗りつぶしモードはスコアが高いまま永続化されるので finished で値を入れる代価の方式が推奨されている
+        // https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill#Alternatives_to_fill_modes
         const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
         $dom.cancel();
         await wait(150);
-        expect(contexts[0].animation.playState).toBe('idle');
+        expect([...contexts.animations.values()][0].playState).toBe('idle');
         expect($dom.css('opacity')).toBe('1');
         done();
     });
@@ -50,12 +51,12 @@ describe('dom/effects spec', () => {
         const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
         $dom.finish();
         await wait(150);
-        expect(contexts[0].animation.playState).toBe('finished');
+        expect([...contexts.animations.values()][0].playState).toBe('finished');
         expect($dom.css('opacity')).toBe('0.5');
 
         // キャンセル
         $dom.cancel();
-        expect(contexts[0].animation.playState).toBe('idle');
+        expect([...contexts.animations.values()][0].playState).toBe('idle');
         expect($dom.css('opacity')).toBe('1');
         done();
     });

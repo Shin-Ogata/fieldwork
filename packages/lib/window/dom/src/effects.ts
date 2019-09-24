@@ -1,5 +1,5 @@
-import { setMixClassAttribute } from '@cdp/core-utils';
-import { ElementBase } from './static';
+import { setMixClassAttribute, Writable } from '@cdp/core-utils';
+import { ElementBase, DOM } from './static';
 import {
     DOMIterable,
     isNodeElement,
@@ -23,14 +23,29 @@ export type DOMEffectOptions = number | KeyframeAnimationOptions;
  * @ja [[DOM]] のエフェクト効果のコンテキストオブジェクト
  */
 export interface DOMEffectContext<TElement extends ElementBase> {
-    element: TElement;
-    animation: Animation;
+    /**
+     * @en [[DOM]] instance that called [[animate]]() method.
+     * @ja [[animate]]() メソッドを実行した [[DOM]] インスタンス
+     */
+    readonly dom: DOM<TElement>;
+
+    /**
+     * @en `Element` and `Animation` instance map by execution [[animate]]() method at this time.
+     * @ja 今回実行した `Element` と `Animation` インスタンスのマップ
+     */
+    readonly animations: Map<TElement, Animation>;
+
+    /**
+     * @en The current finished Promise for this animation.
+     * @ja 対象アニメーションの終了時に発火する `Promise` オブジェクト
+     */
+    readonly finished: Promise<DOMEffectContext<TElement>>;
 }
 
 //__________________________________________________________________________________________________//
 
 /** @internal */
-const _animContextMap = new WeakMap<Element, Animation>();
+const _animContextMap = new WeakMap<Element, Set<Animation>>();
 
 //__________________________________________________________________________________________________//
 
@@ -55,21 +70,30 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
      * @en Start animation by `Web Animation API`.
      * @ja `Web Animation API` を用いてアニメーションを実行
      */
-    public animate(params: DOMEffectParameters, options: DOMEffectOptions): DOMEffectContext<TElement>[] {
+    public animate(params: DOMEffectParameters, options: DOMEffectOptions): DOMEffectContext<TElement> {
+        const result = {
+            dom: this as DOMIterable<TElement> as DOM<TElement>,
+            animations: new Map<TElement, Animation>(),
+        } as Writable<DOMEffectContext<TElement>>;
+
         if (!isTypeElement(this)) {
-            return [];
+            result.finished = Promise.resolve(result);
+            return result;
         }
 
-        const contexts = new Map<Element, DOMEffectContext<TElement>>();
         for (const el of this) {
             if (isNodeElement(el)) {
                 const anim = el.animate(params, options);
-                _animContextMap.set(el, anim);
-                contexts.set(el, { element: el as Node as TElement, animation: anim });
+                const context = _animContextMap.get(el) || new Set();
+                context.add(anim);
+                _animContextMap.set(el, context);
+                result.animations.set(el as Node as TElement, anim);
             }
         }
 
-        return [...contexts.values()];
+        result.finished = Promise.all([...result.animations.values()].map(anim => anim.finished)).then(() => result);
+
+        return result;
     }
 
     /**
@@ -81,7 +105,9 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
             for (const el of this) {
                 const context = _animContextMap.get(el as Element);
                 if (context) {
-                    context.cancel();
+                    for (const animation of context) {
+                        animation.cancel();
+                    }
                     _animContextMap.delete(el as Element);
                 }
             }
@@ -98,8 +124,10 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
             for (const el of this) {
                 const context = _animContextMap.get(el as Element);
                 if (context) {
+                    for (const animation of context) {
+                        animation.finish();
+                    }
                     // finish では破棄しない
-                    context.finish();
                 }
             }
         }
