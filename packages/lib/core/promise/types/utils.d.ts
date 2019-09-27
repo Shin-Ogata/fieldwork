@@ -1,5 +1,12 @@
 import { CancelToken, CancelTokenSource } from './cancel-token';
 /**
+ * @en Cancelable base option definition.
+ * @ja キャンセル可能な基底オプション
+ */
+export interface Cancelable {
+    cancel?: CancelToken;
+}
+/**
  * @en Wait for promises done. <br>
  *     While control will be returned immediately when `Promise.all()` fails, but this mehtod waits for including failure.
  * @ja `Promise` オブジェクトの終了まで待機 <br>
