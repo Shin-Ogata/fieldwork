@@ -24,14 +24,15 @@ describe('dom/events spec', () => {
 
     let count: number;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const onCallback = (...args: any[]): void => {
         count++;
 //      console.log(`received: ${JSON.stringify([...args])} \n`);
     };
 
-    const onCallback2 = (): void => { count++; };
-    const onCallback3 = (): void => { count++; };
+    const onCallback2 = (...args: any[]): void => { count++; };
+    const onCallback3 = (...args: any[]): void => { count++; };
+    /* eslint-enable @typescript-eslint/no-unused-vars */
 
     beforeEach(() => {
         count = 0;
