@@ -9,5 +9,9 @@ describe('binary/base64 spec', () => {
         encoded = Base64.encode('おつかれさまです。');
         decoded = Base64.decode(encoded);
         expect(decoded).toBe('おつかれさまです。');
+
+        encoded = Base64.encode('');
+        decoded = Base64.decode(encoded);
+        expect(decoded).toBe('');
     });
 });

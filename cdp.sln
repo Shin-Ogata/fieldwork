@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "worker", "worker", "{07FBA8
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "ajax", "packages\lib\worker\ajax\ajax.njsproj", "{921EA954-7C93-4895-80FB-09188BA73EC2}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "base64", "packages\lib\worker\binary\base64.njsproj", "{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "binary", "packages\lib\worker\binary\binary.njsproj", "{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

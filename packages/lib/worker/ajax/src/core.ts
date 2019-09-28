@@ -1,35 +1,104 @@
 import { PlainObject, isFunction } from '@cdp/core-utils';
-import { } from '@cdp/promise';
-import { Blob, Base64 } from '@cdp/binary';
+import { CancelToken } from '@cdp/promise';
+import { makeCanceledResult } from '@cdp/result';
+import { Base64 } from '@cdp/binary';
 import {
     AjaxDataTypes,
     AjaxOptions,
     AjaxResult,
 } from './interfaces';
-import { fetch } from './ssr';
+import {
+    Headers,
+    AbortController,
+    URLSearchParams,
+    fetch,
+} from './ssr';
 import { settings } from './settings';
 
-// TODO: data 加工
-// https://github.com/framework7io/framework7/blob/master/packages/core/utils/request.js#L153
-// Accept
-// https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Accept
-// X-Requested-With: XMLHttpRequest
-// https://github.com/github/fetch/issues/17
-// CORS / JSONP (script タグを使うのでやらない)
-// https://qiita.com/att55/items/2154a8aad8bf1409db2b
-// https://stackoverflow.com/questions/41146650/get-json-from-jsonp-fetch-promise
-// Basic 認証
-// https://stackoverflow.com/questions/43842793/basic-authentication-with-fetch
+/** @internal */
+export type AjaxHeaderOptions = Pick<AjaxOptions, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'username' | 'password'>;
 
-/** `PlainObject` to query strings */
-function toQueryStrings(data: PlainObject): string {
+const _acceptHeaderMap = {
+    text: 'text/plain, text/html, application/xml; q=0.8, text/xml; q=0.8, */*; q=0.01',
+    json: 'application/json, text/javascript, */*; q=0.01',
+};
+
+/**
+ * @en Setup `headers` from options parameter.
+ * @ja オプションから `headers` を設定
+ *
+ * @internal
+ */
+export function setupHeaders(options: AjaxHeaderOptions): Headers {
+    const headers = new Headers(options.headers);
+    const { method, contentType, dataType, mode, username, password } = options;
+
+    // Content-Type
+    if (null != contentType && ('POST' === method || 'PUT' === method || 'PATCH' === method)) {
+        /*
+         * fetch() の場合, 'multipart/form-data' の FormData を自動解釈するため, 指定がある場合は削除
+         * https://stackoverflow.com/questions/35192841/fetch-post-with-multipart-form-data
+         * https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+         */
+        if ('multipart/form-data' === contentType) {
+            headers.delete('Content-Type');
+        } else if (!headers.get('Content-Type')) {
+            headers.set('Content-Type', contentType);
+        }
+    }
+
+    // Accept
+    if (!headers.get('Accept')) {
+        headers.set('Accept', _acceptHeaderMap[dataType as AjaxDataTypes] || '*/*');
+    }
+
+    // X-Requested-With
+    if ('cors' !== mode && !headers.get('X-Requested-With')) {
+        headers.set('X-Requested-With', 'XMLHttpRequest');
+    }
+
+    // Basic Authorization
+    if (null != username && !headers.get('Authorization')) {
+        headers.set('Authorization', `Basic ${Base64.encode(`${username}:${password || ''}`)}`);
+    }
+
+    return headers;
+}
+
+/** ensure string value */
+function ensureParamValue(prop: unknown): string {
+    const value = isFunction(prop) ? prop() : prop;
+    return undefined !== value ? String(value) : '';
+}
+
+/**
+ * @en Convert `PlainObject` to query strings.
+ * @ja `PlainObject` をクエリストリングに変換
+ */
+export function toQueryStrings(data: PlainObject): string {
     const params: string[] = [];
     for (const key of Object.keys(data)) {
-        const prop = data[key];
-        const value = isFunction(prop) ? prop() : prop;
-        params.push(`${encodeURIComponent(key)}=${encodeURIComponent(null != value ? value : '')}`);
+        const value = ensureParamValue(data[key]);
+        if (value) {
+            params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+        }
     }
     return params.join('&');
+}
+
+/**
+ * @en Convert `PlainObject` to Ajax parameters object.
+ * @ja `PlainObject` を Ajax パラメータオブジェクトに変換
+ */
+export function toAjaxParams(data: PlainObject): Record<string, string> {
+    const params: Record<string, string> = {};
+    for (const key of Object.keys(data)) {
+        const value = ensureParamValue(data[key]);
+        if (value) {
+            params[key] = value;
+        }
+    }
+    return params;
 }
 
 /**
@@ -44,28 +113,54 @@ function toQueryStrings(data: PlainObject): string {
  *  - `ja` Ajaxリクエスト設定
  */
 export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>> {
+    const controller = new AbortController();
+
     const opts = Object.assign({
+        method: 'GET',
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         dataType: 'response',
         timeout: settings.timeout,
-    }, options);
+    }, options, {
+        signal: controller.signal, // force override
+    });
 
-    // TODO:
-    await Promise.resolve();
-    return null!;
+    const { cancel: originalToken, timeout } = opts;
+
+    // cancellation
+    if (originalToken) {
+        if (originalToken.requested) {
+            throw makeCanceledResult();
+        }
+        originalToken.register(() => controller.abort());
+    }
+
+    // timeout
+    if (timeout) {
+        const source = CancelToken.source(originalToken as CancelToken);
+        setTimeout(() => source.cancel(makeCanceledResult('request timeout')), timeout);
+    }
+
+    // normalize
+    opts.method = opts.method.toUpperCase();
+
+    // header
+    opts.headers = setupHeaders(opts);
+
+    // parse param
+    const { method, data, dataType } = opts;
+    if (null != data) {
+        if (('GET' === method || 'HEAD' === method) && !url.includes('?')) {
+            url += `?${toQueryStrings(data)}`;
+        } else if (null == opts.body) {
+            opts.body = new URLSearchParams(toAjaxParams(data));
+        }
+    }
+
+    // execute
+    const response = await fetch(url, opts);
+    if ('response' === dataType) {
+        return response as AjaxResult<T>;
+    } else {
+        return response[dataType as Exclude<AjaxDataTypes, 'response'>]();
+    }
 }
-
-/*
-(async () => {
-    let hoge0 = await ajax('aaa');
-    let hoge1 = await ajax('aaa', { dataType: 'text' });
-    let hoge2 = await ajax('aaa', { dataType: 'json' });
-    let hoge3 = await ajax<{ prop: number; }>('aaa', { dataType: 'json' });
-    let hoge4 = await ajax('aaa', { dataType: 'arrayBuffer' });
-    let hoge5 = await ajax('aaa', { dataType: 'blob' });
-    let hoge6 = await ajax('aaa', { dataType: 'stream' });
-    let hoge7 = await ajax('aaa', { dataType: 'response' });
-//    let hoge8 = await ajax<{ prop: number; }>('aaa', { dataType: 'text' }); // error
-    let hoge9 = await ajax<{ prop: number; }>('aaa', {}); // no-error 注意.
-})();
-*/

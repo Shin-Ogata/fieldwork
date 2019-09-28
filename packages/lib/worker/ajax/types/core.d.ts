@@ -1,4 +1,15 @@
+import { PlainObject } from '@cdp/core-utils';
 import { AjaxDataTypes, AjaxOptions, AjaxResult } from './interfaces';
+/**
+ * @en Convert `PlainObject` to query strings.
+ * @ja `PlainObject` をクエリストリングに変換
+ */
+export declare function toQueryStrings(data: PlainObject): string;
+/**
+ * @en Convert `PlainObject` to Ajax parameters object.
+ * @ja `PlainObject` を Ajax パラメータオブジェクトに変換
+ */
+export declare function toAjaxParams(data: PlainObject): Record<string, string>;
 /**
  * @en Perform an asynchronous HTTP (Ajax) request.
  * @ja HTTP (Ajax)リクエストの送信

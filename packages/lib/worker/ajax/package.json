@@ -6,7 +6,8 @@
   "dependencies": {
     "@cdp/binary": "file:../binary",
     "@cdp/core-utils": "file:../../core/utils",
-    "@cdp/promise": "file:../../core/promise"
+    "@cdp/promise": "file:../../core/promise",
+    "@cdp/result": "file:../../core/result"
   },
   "keywords": [
     "CDP",
