@@ -37,18 +37,24 @@
     <Content Include=".npmrc" />
     <Content Include="dist\ajax.mjs" />
     <Content Include="package.json" />
+    <Content Include="tests\res\data.json" />
+    <Content Include="tests\res\test.tpl" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dist\ajax.js" />
     <Compile Include="rollup.config.js" />
+    <Compile Include="tests\custom\testem-amd.js" />
+    <Compile Include="tests\custom\testem-ci.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
     <Folder Include="tests\" />
+    <Folder Include="tests\custom\" />
+    <Folder Include="tests\res\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
   </ItemGroup>
@@ -57,14 +63,16 @@
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\request.ts" />
+    <TypeScriptCompile Include="src\result-code-defs.ts" />
     <TypeScriptCompile Include="src\settings.ts" />
     <TypeScriptCompile Include="src\ssr.ts" />
-    <TypeScriptCompile Include="tests\unit\ajax.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\core.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\core.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\request.d.ts" />
+    <TypeScriptCompile Include="types\result-code-defs.d.ts" />
     <TypeScriptCompile Include="types\settings.d.ts" />
     <TypeScriptCompile Include="types\ssr.d.ts" />
     <TypeScriptCompile Include="types\_export.d.ts" />

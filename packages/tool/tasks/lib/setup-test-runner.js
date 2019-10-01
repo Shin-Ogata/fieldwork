@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve } = require('path');
+const { resolve, basename } = require('path');
 const { copySync, writeFileSync } = require('fs-extra');
 const config = require('../config');
 
@@ -37,6 +37,16 @@ function setup(options) {
         }
 
         copySync(resolve(__dirname, '..', DIR_RUNNER, 'testem-main.js'), resolve(dstRoot, 'testem-main.js'));
+
+        // override
+        if (options.runner) {
+            copySync(resolve(options.cwd, options.runner), dstRoot);
+        }
+    }
+
+    // resource
+    if (options.res) {
+        copySync(resolve(options.cwd, options.res), resolve(options.cwd, config.dir.temp, basename(options.res)));
     }
 }
 

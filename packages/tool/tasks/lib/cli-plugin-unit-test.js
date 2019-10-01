@@ -14,8 +14,10 @@ function defineCommands(commander, cmd, isDefault) {
         .alias('ut')
         .description('run unit test')
         .option('-c, --config <path>', 'specified config file')
+        .option('-R, --runner <path>', 'custom launcher script directory')
+        .option('-r, --res <path>',    'resource directory')
         .action((mode, options) => {
-            const { config } = options;
+            const { config, runner, res } = options;
             if ((!mode || 'ci' === mode) && !config) {
                 console.log(chalk.red.underline('for running unit-test, config-file is required.'));
                 console.log('\nExamples:');
@@ -30,6 +32,8 @@ function defineCommands(commander, cmd, isDefault) {
                 silent,
                 mode,
                 config,
+                runner,
+                res,
             };
         })
         .on('--help', () => {
