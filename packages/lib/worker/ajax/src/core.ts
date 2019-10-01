@@ -1,6 +1,10 @@
 import { PlainObject, isFunction } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';
-import { makeCanceledResult } from '@cdp/result';
+import {
+    RESULT_CODE,
+    makeCanceledResult,
+    makeResult,
+} from '@cdp/result';
 import { Base64 } from '@cdp/binary';
 import {
     AjaxDataTypes,
@@ -8,6 +12,7 @@ import {
     AjaxResult,
 } from './interfaces';
 import {
+    FormData,
     Headers,
     AbortController,
     URLSearchParams,
@@ -16,7 +21,7 @@ import {
 import { settings } from './settings';
 
 /** @internal */
-export type AjaxHeaderOptions = Pick<AjaxOptions, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'username' | 'password'>;
+export type AjaxHeaderOptions = Pick<AjaxOptions, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
 
 const _acceptHeaderMap = {
     text: 'text/plain, text/html, application/xml; q=0.8, text/xml; q=0.8, */*; q=0.01',
@@ -31,19 +36,23 @@ const _acceptHeaderMap = {
  */
 export function setupHeaders(options: AjaxHeaderOptions): Headers {
     const headers = new Headers(options.headers);
-    const { method, contentType, dataType, mode, username, password } = options;
+    const { method, contentType, dataType, mode, body, username, password } = options;
 
     // Content-Type
-    if (null != contentType && ('POST' === method || 'PUT' === method || 'PATCH' === method)) {
+    if ('POST' === method || 'PUT' === method || 'PATCH' === method) {
         /*
-         * fetch() の場合, 'multipart/form-data' の FormData を自動解釈するため, 指定がある場合は削除
+         * fetch() の場合, FormData を自動解釈するため, 指定がある場合は削除
          * https://stackoverflow.com/questions/35192841/fetch-post-with-multipart-form-data
          * https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
          */
-        if ('multipart/form-data' === contentType) {
+        if (headers.get('Content-Type') && body instanceof FormData) {
             headers.delete('Content-Type');
         } else if (!headers.get('Content-Type')) {
-            headers.set('Content-Type', contentType);
+            if (null == contentType && 'json' === dataType as AjaxDataTypes) {
+                headers.set('Content-Type', 'application/json; charset=UTF-8');
+            } else if (null != contentType) {
+                headers.set('Content-Type', contentType);
+            }
         }
     }
 
@@ -114,10 +123,10 @@ export function toAjaxParams(data: PlainObject): Record<string, string> {
  */
 export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>> {
     const controller = new AbortController();
+    const abort = (): void => controller.abort();
 
     const opts = Object.assign({
         method: 'GET',
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         dataType: 'response',
         timeout: settings.timeout,
     }, options, {
@@ -131,13 +140,16 @@ export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: strin
         if (originalToken.requested) {
             throw makeCanceledResult();
         }
-        originalToken.register(() => controller.abort());
+        originalToken.register(abort);
     }
+
+    const source = CancelToken.source(originalToken as CancelToken);
+    const { token } = source;
+    token.register(abort);
 
     // timeout
     if (timeout) {
-        const source = CancelToken.source(originalToken as CancelToken);
-        setTimeout(() => source.cancel(makeCanceledResult('request timeout')), timeout);
+        setTimeout(() => source.cancel(makeResult(RESULT_CODE.ERROR_AJAX_TIMEOUT, 'request timeout')), timeout);
     }
 
     // normalize
@@ -157,9 +169,11 @@ export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: strin
     }
 
     // execute
-    const response = await fetch(url, opts);
+    const response = await Promise.resolve(fetch(url, opts), token);
     if ('response' === dataType) {
         return response as AjaxResult<T>;
+    } else if (!response.ok) {
+        throw makeResult(RESULT_CODE.ERROR_AJAX_RESPONSE, response.statusText, response);
     } else {
         return response[dataType as Exclude<AjaxDataTypes, 'response'>]();
     }

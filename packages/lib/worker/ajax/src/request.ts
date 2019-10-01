@@ -5,6 +5,6 @@ export { };
 // json
 // blob
 
-// put
+// post
 
 // resource (xhr を用いた同期)
