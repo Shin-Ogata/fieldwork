@@ -21,7 +21,7 @@ import {
 import { settings } from './settings';
 
 /** @internal */
-export type AjaxHeaderOptions = Pick<AjaxOptions, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
+export type AjaxHeaderOptions = Pick<AjaxOptions<AjaxDataTypes>, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
 
 const _acceptHeaderMap = {
     text: 'text/plain, text/html, application/xml; q=0.8, text/xml; q=0.8, */*; q=0.01',
@@ -114,7 +114,7 @@ export function toAjaxParams(data: PlainObject): Record<string, string> {
  * @en Perform an asynchronous HTTP (Ajax) request.
  * @ja HTTP (Ajax)リクエストの送信
  *
- * @param uri
+ * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
  * @param options
@@ -175,6 +175,6 @@ export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: strin
     } else if (!response.ok) {
         throw makeResult(RESULT_CODE.ERROR_AJAX_RESPONSE, response.statusText, response);
     } else {
-        return response[dataType as Exclude<AjaxDataTypes, 'response'>]();
+        return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response'>](), token);
     }
 }

@@ -32,7 +32,6 @@ function query(cwd = process.cwd()) {
         build: {
             base: 'index',
             global: 'CDP',
-            globalDeclaration: 'CDP_DECLARE',   // for global namespace
             domain: 'cdp',
             get packageName() { return config.pkg.name; },
             get outName() {

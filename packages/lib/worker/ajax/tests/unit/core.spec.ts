@@ -77,6 +77,13 @@ describe('ajax/core spec', () => {
         done();
     });
 
+    it('check ajax() get blob', async (done) => {
+        const blob = await ajax('../../.temp/res/image.jpg', { dataType: 'blob' });
+        expect(blob).toBeDefined();
+        expect(blob.type).toBe('image/jpeg');
+        done();
+    });
+
     it('check ajax() get response', async (done) => {
         const response = await ajax('../../.temp/res/data.json');
         expect(response).toBeDefined();

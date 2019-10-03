@@ -4,7 +4,6 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const sourcemaps = require('rollup-plugin-sourcemaps');
 const sourcemapRoot = require('@cdp/tasks/rollup-plugin-sourcemap-root');
 const replacer = require('rollup-plugin-replace');
-const replaceValues = require('./default-replace-values');
 const { config, banner } = require('@cdp/tasks');
 
 const {
@@ -31,7 +30,7 @@ function getConfig(options) {
             nodeResolve({ mainFields: ['module', 'main', 'jsnext:main'] }),
             sourcemaps(),
             sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${DOMAIN}:///${PACKAGE}/` }),
-            replacer(Object.assign(replaceValues, replace)),
+            replace && replacer(replace),
         ],
         output: [
             {

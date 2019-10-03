@@ -14,7 +14,7 @@ export declare function toAjaxParams(data: PlainObject): Record<string, string>;
  * @en Perform an asynchronous HTTP (Ajax) request.
  * @ja HTTP (Ajax)リクエストの送信
  *
- * @param uri
+ * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
  * @param options

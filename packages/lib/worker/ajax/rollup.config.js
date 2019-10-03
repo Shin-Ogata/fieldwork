@@ -1,6 +1,7 @@
 'use strict';
 
 const config = require('../../../../config/rollup/core');
+const { replace } = require('@cdp/result/rollup.config');
 
 module.exports = config({
     globals: {
@@ -9,4 +10,5 @@ module.exports = config({
         '@cdp/result': 'CDP',
         '@cdp/binary': 'CDP',
     },
+    replace,
 });

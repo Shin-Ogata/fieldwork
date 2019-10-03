@@ -5,7 +5,6 @@ const alias = require('rollup-plugin-alias');
 const sourcemaps = require('rollup-plugin-sourcemaps');
 const sourcemapRoot = require('@cdp/tasks/rollup-plugin-sourcemap-root');
 const replacer = require('rollup-plugin-replace');
-const replaceValues = require('./default-replace-values');
 const { config } = require('@cdp/tasks');
 
 const {
@@ -47,7 +46,7 @@ function getDefault(testeeConfig, options) {
                 multiEntry(),
                 sourcemaps(),
                 sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${DOMAIN}:///specs/` }),
-                replacer(Object.assign(replaceValues, replace)),
+                replace && replacer(replace),
                 alias({
                     './_testee': `${PACKAGE}`,
                 }),

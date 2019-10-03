@@ -29,8 +29,8 @@ export interface AjaxDataTypeList<T extends {} = PlainObject> {
  */
 export declare type AjaxDataTypes = keyof AjaxDataTypeList;
 /**
- * @en `ajax`() method options.
- * @ja `ajax`() に指定可能なオプション
+ * @en [[ajax]]() method options.
+ * @ja [[ajax]]() に指定可能なオプション
  */
 export interface AjaxOptions<T extends AjaxDataTypes | {} = 'response'> extends RequestInit, Cancelable {
     /**
@@ -69,7 +69,12 @@ export interface AjaxOptions<T extends AjaxDataTypes | {} = 'response'> extends 
     password?: string;
 }
 /**
- * @en Result of `ajax`() returns value.
- * @ja `ajax`() が返却する結果
+ * @en `request` shortcut utility method options.
+ * @ja `request` ショートカットに指定可能なオプション
+ */
+export declare type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'method' | 'data' | 'dataType'>>;
+/**
+ * @en Result of [[ajax]]() returns value.
+ * @ja [[ajax]]() が返却する結果
  */
 export declare type AjaxResult<T extends AjaxDataTypes | {}> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];

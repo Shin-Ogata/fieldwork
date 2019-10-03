@@ -53,7 +53,6 @@
     <Compile Include="config\dts-bundle.js" />
     <Compile Include="config\eslint.js" />
     <Compile Include="config\rollup\core.js" />
-    <Compile Include="config\rollup\default-replace-values.js" />
     <Compile Include="config\rollup\test.testem.js" />
     <Compile Include="config\tslint.js" />
     <Compile Include="config\typedoc.js" />

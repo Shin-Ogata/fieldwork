@@ -58,6 +58,29 @@ declare namespace CDP_DECLARE {
         CDP = 100
     }
     /**
+     * @en Known CDP module offest definition.
+     * @ja 管轄している CDP モジュールのオフセット定義
+     *
+     * @example <br>
+     *
+     * ```ts
+     * const enum LOCAL_CODE_BASE {
+     *    AJAX = CDP_KNOWN_MODULE.AJAX * LOCAL_CODE_RANGE_GUIDE.FUNCTION,
+     * }
+     *
+     * export enum RESULT_CODE {
+     *   ERROR_AJAX_RESPONSE = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 1, 'network error.'),
+     *   ERROR_AJAX_TIMEOUT  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 2, 'request timeout.'),
+     * }
+     * ```
+     */
+    const enum CDP_KNOWN_MODULE {
+        /** `@cdp/ajax` */
+        AJAX = 1,
+        /** offset for unknown module */
+        OFFSET = 2
+    }
+    /**
      * @en Common result code for the application.
      * @ja アプリケーション全体で使用する共通エラーコード定義
      */

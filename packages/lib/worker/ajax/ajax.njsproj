@@ -38,6 +38,7 @@
     <Content Include="dist\ajax.mjs" />
     <Content Include="package.json" />
     <Content Include="tests\res\data.json" />
+    <Content Include="tests\res\image.jpg" />
     <Content Include="tests\res\test.tpl" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
@@ -67,6 +68,7 @@
     <TypeScriptCompile Include="src\settings.ts" />
     <TypeScriptCompile Include="src\ssr.ts" />
     <TypeScriptCompile Include="tests\unit\core.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\request.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\core.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />

@@ -3,11 +3,12 @@
 namespace CDP_DECLARE {
 
     const enum LOCAL_CODE_BASE {
-        AJAX = 1 * LOCAL_CODE_RANGE_GUIDE.FUNCTION,
+        AJAX = CDP_KNOWN_MODULE.AJAX * LOCAL_CODE_RANGE_GUIDE.FUNCTION,
     }
 
     /**
-     * 拡張通エラーコード定義
+     * @en Extends error code definitions.
+     * @ja 拡張通エラーコード定義
      */
     export enum RESULT_CODE {
         ERROR_AJAX_RESPONSE = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 1, 'network error.'),

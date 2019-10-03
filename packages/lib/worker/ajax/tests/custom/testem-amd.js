@@ -82,15 +82,17 @@ testem.register_server(port, (req, res) => {
 //      console.log(JSON.stringify(req.trailers, null, 4));
 //      console.log(req.url);
         const { headers } = req;
-        if (headers['content-type'] && headers['content-type'].includes('application/json')) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ API: 'JSON response' }));
-        } else {
+        const params = (() => {
             let data = '';
             while (null !== (chunk = req.setEncoding('utf8').read())) {
                 data += chunk;
             }
-            const params = parse(data);
+            return parse(data);
+        })();
+        if (headers['content-type'] && headers['content-type'].includes('application/json')) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ API: 'JSON response', data: params }));
+        } else {
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end(JSON.stringify({ API: req.method, data: params }));
         }
