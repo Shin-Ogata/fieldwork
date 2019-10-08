@@ -101,6 +101,11 @@ export interface PlainObject<T = any> {
  */
 export declare type TypedData = string | number | boolean | null | object;
 /**
+ * @en The data type list of TypedArray.
+ * @ja TypedArray 一覧
+ */
+export declare type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array;
+/**
  * @en Check the value exists.
  * @ja 値が存在するか判定
  *
@@ -231,6 +236,15 @@ export declare function typeOf<K extends TypeKeys>(type: K, x: unknown): x is Ty
  */
 export declare function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
 export declare function isIterable(x: unknown): x is Iterable<unknown>;
+/**
+ * @en Check the value is one of [[TypedArray]].
+ * @ja 指定したインスタンスが [[TypedArray]] の一種であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isTypedArray(x: unknown): x is TypedArray;
 /**
  * @en Check the value instance of input.
  * @ja 指定したインスタンスであるか判定

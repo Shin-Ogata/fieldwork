@@ -112,6 +112,12 @@ export interface PlainObject<T = any> {
  */
 export type TypedData = string | number | boolean | null | object;
 
+/**
+ * @en The data type list of TypedArray.
+ * @ja TypedArray 一覧
+ */
+export type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array;
+
 //__________________________________________________________________________________________________//
 
 /**
@@ -300,6 +306,30 @@ export function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
 export function isIterable(x: unknown): x is Iterable<unknown>;
 export function isIterable(x: any): any {
     return Symbol.iterator in Object(x);
+}
+
+const _typedArrayNames = {
+    'Int8Array': true,
+    'Uint8Array': true,
+    'Uint8ClampedArray': true,
+    'Int16Array': true,
+    'Uint16Array': true,
+    'Int32Array': true,
+    'Uint32Array': true,
+    'Float32Array': true,
+    'Float64Array': true,
+};
+
+/**
+ * @en Check the value is one of [[TypedArray]].
+ * @ja 指定したインスタンスが [[TypedArray]] の一種であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isTypedArray(x: unknown): x is TypedArray {
+    return !!_typedArrayNames[className(x)];
 }
 
 /**
