@@ -14,6 +14,7 @@ import {
     isFunction,
     typeOf,
     isIterable,
+    isTypedArray,
     instanceOf,
     ownInstanceOf,
     className,
@@ -328,6 +329,34 @@ describe('utils/types spec', (): void => {
         expect(isIterable(_symbol)).toBeFalsy();
         expect(isIterable(TypeClass)).toBeFalsy();
         expect(isIterable(_classInst)).toBeFalsy();
+    });
+
+    it('check isTypedArray()', (): void => {
+        expect(isTypedArray(undefined)).toBeFalsy();
+        expect(isTypedArray(null)).toBeFalsy();
+        expect(isTypedArray('')).toBeFalsy();
+        expect(isTypedArray('hoge')).toBeFalsy();
+        expect(isTypedArray(true)).toBeFalsy();
+        expect(isTypedArray(false)).toBeFalsy();
+        expect(isTypedArray(0)).toBeFalsy();
+        expect(isTypedArray(1)).toBeFalsy();
+        expect(isTypedArray(Infinity)).toBeFalsy();
+        expect(isTypedArray(NaN)).toBeFalsy();
+        expect(isTypedArray({})).toBeFalsy();
+        expect(isTypedArray([])).toBeFalsy();
+        expect(isTypedArray(() => { return 1; })).toBeFalsy();
+        expect(isTypedArray(_symbol)).toBeFalsy();
+        expect(isTypedArray(TypeClass)).toBeFalsy();
+        expect(isTypedArray(_classInst)).toBeFalsy();
+        expect(isTypedArray(new Int8Array(8))).toBeTruthy();
+        expect(isTypedArray(new Uint8Array(8))).toBeTruthy();
+        expect(isTypedArray(new Uint8ClampedArray(8))).toBeTruthy();
+        expect(isTypedArray(new Int16Array(8))).toBeTruthy();
+        expect(isTypedArray(new Uint16Array(8))).toBeTruthy();
+        expect(isTypedArray(new Int32Array(8))).toBeTruthy();
+        expect(isTypedArray(new Uint32Array(8))).toBeTruthy();
+        expect(isTypedArray(new Float32Array(8))).toBeTruthy();
+        expect(isTypedArray(new Float64Array(8))).toBeTruthy();
     });
 
     it('check instanceOf()', (): void => {

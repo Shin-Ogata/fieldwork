@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\config.ts" />
+    <TypeScriptCompile Include="src\deep-circuit.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\misc.ts" />
     <TypeScriptCompile Include="src\mixins.ts" />
@@ -69,6 +70,7 @@
     <TypeScriptCompile Include="src\verify.ts" />
     <TypeScriptCompile Include="src\types.ts" />
     <TypeScriptCompile Include="tests\unit\config.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\deep-circuit.spec.ts" />
     <TypeScriptCompile Include="tests\unit\misc.spec.ts" />
     <TypeScriptCompile Include="tests\unit\mixins.spec.ts" />
     <TypeScriptCompile Include="tests\unit\safe.spec.ts" />
@@ -76,6 +78,7 @@
     <TypeScriptCompile Include="tests\unit\verify.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\config.d.ts" />
+    <TypeScriptCompile Include="types\deep-circuit.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\misc.d.ts" />
     <TypeScriptCompile Include="types\mixins.d.ts" />
