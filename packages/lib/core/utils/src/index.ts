@@ -3,5 +3,6 @@ export * from './types';
 export * from './verify';
 export * from './deep-circuit';
 export * from './mixins';
+export * from './array';
 export * from './safe';
 export * from './misc';
