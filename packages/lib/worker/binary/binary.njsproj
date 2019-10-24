@@ -55,11 +55,20 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\base64.ts" />
+    <TypeScriptCompile Include="src\blob-reader.ts" />
+    <TypeScriptCompile Include="src\blob-url.ts" />
+    <TypeScriptCompile Include="src\converter.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\ssr.ts" />
     <TypeScriptCompile Include="tests\unit\base64.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\blob-reader.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\blob-url.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\converter.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\base64.d.ts" />
+    <TypeScriptCompile Include="types\blob-reader.d.ts" />
+    <TypeScriptCompile Include="types\blob-url.d.ts" />
+    <TypeScriptCompile Include="types\converter.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\ssr.d.ts" />
     <TypeScriptCompile Include="types\_export.d.ts" />
