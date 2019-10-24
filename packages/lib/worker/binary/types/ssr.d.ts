@@ -11,4 +11,10 @@ declare const _FileReader: {
     readonly EMPTY: number;
     readonly LOADING: number;
 };
-export { _btoa as btoa, _atob as atob, _Blob as Blob, _FileReader as FileReader, };
+declare const _URL: {
+    new (url: string, base?: string | URL | undefined): URL;
+    prototype: URL;
+    createObjectURL(object: any): string;
+    revokeObjectURL(url: string): void;
+};
+export { _btoa as btoa, _atob as atob, _Blob as Blob, _FileReader as FileReader, _URL as URL, };
