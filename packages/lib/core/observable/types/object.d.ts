@@ -1,0 +1,136 @@
+import { NonFunctionPropertyNames } from '@cdp/core-utils';
+import { Subscription } from '@cdp/event-publisher';
+import { IObservable } from './common';
+/**
+ * @en Observable key type definition.
+ * @ja 購読可能なキーの型定義
+ */
+export declare type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
+/**
+ * @en The object class which change can be observed.
+ * @ja オブジェクトの変更を監視できるオブジェクトクラス
+ *
+ * @example <br>
+ *
+ * - Basic Usage
+ *
+ * ```ts
+ * class Example extends ObservableObject {
+ *   public a: number = 0;
+ *   public b: number = 0;
+ *   public get sum(): number {
+ *       return this.a + this.b;
+ *   }
+ * }
+ *
+ * const observable = new Example();
+ *
+ * function onNumChange(newValue: number, oldValue: number, key: string) {
+ *   console.log(`${key} changed from ${oldValue} to ${newValue}.`);
+ * }
+ * observable.on(['a', 'b'], onNumChange);
+ *
+ * // update
+ * observable.a = 100;
+ * observable.b = 200;
+ *
+ * // console out from `async` event loop.
+ * // => 'a changed from 0 to 100.'
+ * // => 'b changed from 0 to 200.'
+ *
+ * :
+ *
+ * function onSumChange(newValue: number, oldValue: number) {
+ *   console.log(`sum changed from ${oldValue} to ${newVaue}.`);
+ * }
+ * observable.on('sum', onSumChange);
+ *
+ * // update
+ * observable.a = 100; // nothing reaction because of no change properties.
+ * observable.a = 200;
+ *
+ * // console out from `async` event loop.
+ * // => 'sum changed from 300 to 400.'
+ * ```
+ */
+export declare abstract class ObservableObject implements IObservable {
+    /**
+     * constructor
+     *
+     * @param active
+     *  - `en` initial state. default: active = true
+     *  - `ja` 初期状態 既定: active = true
+     */
+    constructor(active?: boolean);
+    /**
+     * @en Subscriable state
+     * @ja 購読可能状態
+     */
+    readonly isActive: boolean;
+    /**
+     * @en Subscrive property change(s).
+     * @ja プロパティ変更購読設定
+     *
+     * @param property
+     *  - `en` target property.
+     *  - `ja` 対象のプロパティ
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription;
+    /**
+     * @en Unsubscribe property change(s).
+     * @ja プロパティ変更購読解除
+     *
+     * @param property
+     *  - `en` target property.
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のプロパティ
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the property change.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` プロパティ変更通知コールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void;
+    /**
+     * @en Suspension of the event subscription state.
+     * @ja イベント購読状態のサスペンド
+     */
+    suspend(): this;
+    /**
+     * @en Resume of the event subscription state.
+     * @ja イベント購読状態のリジューム
+     */
+    resume(): this;
+    /**
+     * @en Create [[ObservableObject]] from any object.
+     * @ja 任意のオブジェクトから [[ObservableObject]] を生成
+     *
+     * @example <br>
+     *
+     * ```ts
+     * const observable = ObservableObject.from({ a: 1, b: 1 });
+     * function onNumChange(newValue: number, oldValue: number, key: string) {
+     *   console.log(`${key} changed from ${oldValue} to ${newValue}.`);
+     * }
+     * observable.on(['a', 'b'], onNumChange);
+     *
+     * // update
+     * observable.a = 100;
+     * observable.b = 200;
+     *
+     * // console out from `async` event loop.
+     * // => 'a changed from 1 to 100.'
+     * // => 'b changed from 1 to 200.'
+     * ```
+     */
+    static from<T extends {}>(src: T): ObservableObject & T;
+    /**
+     * @en Force notify property change(s) in spite of active state.
+     * @ja アクティブ状態にかかわらず強制的にプロパティ変更通知を発行
+     */
+    protected notify(...properties: string[]): void;
+}

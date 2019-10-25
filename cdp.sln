@@ -31,6 +31,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "ajax", "packages\lib\worker
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "binary", "packages\lib\worker\binary\binary.njsproj", "{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "observable", "packages\lib\core\observable\observable.njsproj", "{437BA941-1649-4208-BEF9-2B6FACDE65A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{437BA941-1649-4208-BEF9-2B6FACDE65A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{437BA941-1649-4208-BEF9-2B6FACDE65A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{437BA941-1649-4208-BEF9-2B6FACDE65A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{437BA941-1649-4208-BEF9-2B6FACDE65A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{07FBA8FB-A230-4C6B-8863-952C8E0A830D} = {59005E11-3018-4FB5-80D1-7A6DEDCF7A0E}
 		{921EA954-7C93-4895-80FB-09188BA73EC2} = {07FBA8FB-A230-4C6B-8863-952C8E0A830D}
 		{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3} = {07FBA8FB-A230-4C6B-8863-952C8E0A830D}
+		{437BA941-1649-4208-BEF9-2B6FACDE65A7} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

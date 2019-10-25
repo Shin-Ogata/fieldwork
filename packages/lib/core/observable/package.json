@@ -1,0 +1,63 @@
+{
+  "name": "@cdp/observable",
+  "description": "observable utility module",
+  "version": "0.9.0",
+  "author": "Shin Ogata",
+  "dependencies": {
+    "@cdp/core-utils": "file:../utils",
+    "@cdp/event-publisher": "file:../event-publisher"
+  },
+  "keywords": [
+    "CDP",
+    "TypeScript",
+    "javascript"
+  ],
+  "license": "UNLICENSED",
+  "main": "dist/observable",
+  "module": "dist/observable.mjs",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
+  },
+  "scripts": {
+    "build": "run-s -l build:*",
+    "build:src": "run-s compile:src bundle:src",
+    "build:test": "run-s compile:test bundle:test",
+    "bundle": "run-p bundle:*",
+    "bundle:src": "run-p bundle:src:*",
+    "bundle:src:built": "rollup -c ./rollup.config.js",
+    "bundle:test": "rollup -c ./tests/test.config.js",
+    "ci": "run-s -l clean:all build:src build:test lint unit-test:ci typedoc",
+    "clean": "cdp-task clean",
+    "clean:all": "cdp-task clean -a",
+    "clean:doc": "cdp-task clean -d",
+    "clean:doc:a": "cdp-task clean -t ./docs/typedoc",
+    "clean:doc:c": "cdp-task clean -t ./docs/reports/coverage",
+    "clean:doc:m": "cdp-task clean -t ./docs/reports/metrics",
+    "clear": "npm run clean && cdp-task clean -t ./node_modules",
+    "compile": "run-s compile:*",
+    "compile:src": "tsc -p ./tsconfig.json",
+    "compile:test": "tsc -p ./tests/tsconfig.json",
+    "debug": "npm run compile && run-p unit-test watch",
+    "lint": "eslint src tests/unit -c ../../../../config/tslint.js --ext .ts",
+    "metrics": "run-s -l metrics:*",
+    "metrics:file": "cdp-task metrics -r file -l ../../../../config/eslint.js",
+    "metrics:module": "cdp-task metrics -r module -l ../../../../config/eslint.js",
+    "set-version": "cdp-task set-version",
+    "start": "npm run debug",
+    "test": "run-s -l lint unit-test:ci",
+    "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/typedoc.js --excludeExternals",
+    "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/typedoc.js --excludeExternals",
+    "unit-test": "cdp-task ut -c ./tests/test.config.js",
+    "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
+    "ut": "npm run unit-test",
+    "ut:ci": "npm run unit-test:ci",
+    "watch": "run-p watch:*",
+    "watch:bundle:": "npm run bundle:test -- -w",
+    "watch:ts": "run-p watch:ts:*",
+    "watch:ts:src": "npm run compile:src -- -w",
+    "watch:ts:test": "npm run compile:test -- -w"
+  },
+  "types": "types/index.d.ts"
+}
