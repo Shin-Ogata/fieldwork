@@ -1,14 +1,21 @@
 import { Subscription } from '@cdp/event-publisher';
 /**
+ * @en Event observation state definition.
+ * @ja イベント購読状態定義
+ */
+export declare const enum ObservableState {
+    /** observable ready */
+    ACTIVE = "active",
+    /** NOT observed, but property changes are recorded. */
+    SUSEPNDED = "suspended",
+    /** NOT observed, and not recording property changes. */
+    DISABLED = "disabled"
+}
+/**
  * @en Observable common interface.
  * @ja Observable 共通インターフェイス
  */
 export interface IObservable {
-    /**
-     * @en Subscriable state
-     * @ja 購読可能状態
-     */
-    readonly isActive: boolean;
     /**
      * @en Subscrive event(s).
      * @ja イベント購読設定
@@ -20,15 +27,24 @@ export interface IObservable {
      */
     off(...args: any[]): void;
     /**
-     * @en Suspension of the event subscription state.
+     * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
+     *
+     * @param noRecord
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
      */
-    suspend(): this;
+    suspend(noRecord?: boolean): this;
     /**
-     * @en Resume of the event subscription state.
+     * @en Resume the event observation state.
      * @ja イベント購読状態のリジューム
      */
     resume(): this;
+    /**
+     * @en observation state
+     * @ja 購読可能状態
+     */
+    getObservableState(): ObservableState;
 }
 /**
  * @en Check the value-type is [[IObservable]].

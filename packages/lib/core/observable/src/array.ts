@@ -7,15 +7,16 @@ import {
     verify,
     post,
 } from '@cdp/core-utils';
-import { EventBroker, Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/event-publisher';
 import {
+    EventBrokerProxy,
     _internal,
     _notify,
     _stockChange,
     _notifyChanges,
     verifyObservable,
 } from './internal';
-import { IObservable } from './common';
+import { ObservableState, IObservable } from './common';
 
 /**
  * @en Array change type information. <br>
@@ -72,18 +73,18 @@ interface IArrayChangeEvent<T> {
 
 /** @internal */
 interface InternalProps<T = any> {
-    active: boolean;
+    state: ObservableState;
     byMethod: boolean;
     records: MutableChangeRecord<T>[];
     readonly indexes: Set<number>;
-    readonly broker: EventBroker<IArrayChangeEvent<T>>;
+    readonly broker: EventBrokerProxy<IArrayChangeEvent<T>>;
 }
 
 /** @internal */
 const _proxyHandler: ProxyHandler<ObservableArray> = {
     defineProperty(target, p, attributes) {
         const internal = target[_internal];
-        if (internal.byMethod || !Object.prototype.hasOwnProperty.call(attributes, 'value')) {
+        if (ObservableState.DISABLED === internal.state || internal.byMethod || !Object.prototype.hasOwnProperty.call(attributes, 'value')) {
             return Reflect.defineProperty(target, p, attributes);
         }
         const oldValue = target[p];
@@ -119,7 +120,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
     },
     deleteProperty(target, p) {
         const internal = target[_internal];
-        if (internal.byMethod || !Object.prototype.hasOwnProperty.call(target, p)) {
+        if (ObservableState.DISABLED === internal.state || internal.byMethod || !Object.prototype.hasOwnProperty.call(target, p)) {
             return Reflect.deleteProperty(target, p);
         }
         const oldValue = target[p];
@@ -192,11 +193,11 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         super(...arguments);
         verify('instanceOf', ObservableArray, this);
         const internal: InternalProps<T> = {
-            active: true,
+            state: ObservableState.ACTIVE,
             byMethod: false,
             records: [],
             indexes: new Set(),
-            broker: new EventBroker<IArrayChangeEvent<T>>(),
+            broker: new EventBrokerProxy<IArrayChangeEvent<T>>(),
         };
         Object.defineProperty(this, _internal, { value: Object.seal(internal) });
         const argLength = arguments.length;
@@ -217,15 +218,6 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
 // implements: IObservable
 
     /**
-     * @en Subscriable state
-     * @ja 購読可能状態
-     */
-    get isActive(): boolean {
-        verifyObservable(this);
-        return this[_internal].active;
-    }
-
-    /**
      * @en Subscrive array change(s).
      * @ja 配列変更購読設定
      *
@@ -235,7 +227,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
      */
     on(listener: (records: ArrayChangeRecord<T>[]) => any): Subscription {
         verifyObservable(this);
-        return this[_internal].broker.on('@', listener);
+        return this[_internal].broker.get().on('@', listener);
     }
 
     /**
@@ -250,16 +242,23 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
      */
     off(listener?: (records: ArrayChangeRecord<T>[]) => any): void {
         verifyObservable(this);
-        this[_internal].broker.off('@', listener);
+        this[_internal].broker.get().off('@', listener);
     }
 
     /**
-     * @en Suspension of the event subscription state.
+     * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
+     *
+     * @param noRecord
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
      */
-    suspend(): this {
+    suspend(noRecord = false): this {
         verifyObservable(this);
-        this[_internal].active = false;
+        this[_internal].state = noRecord ? ObservableState.DISABLED : ObservableState.SUSEPNDED;
+        if (noRecord) {
+            this[_internal].records = [];
+        }
         return this;
     }
 
@@ -270,11 +269,20 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
     resume(): this {
         verifyObservable(this);
         const internal = this[_internal];
-        if (!internal.active) {
-            internal.active = true;
+        if (ObservableState.ACTIVE !== internal.state) {
+            internal.state = ObservableState.ACTIVE;
             post(() => this[_notifyChanges]());
         }
         return this;
+    }
+
+    /**
+     * @en observation state
+     * @ja 購読可能状態
+     */
+    getObservableState(): ObservableState {
+        verifyObservable(this);
+        return this[_internal].state;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -291,12 +299,14 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         internal.byMethod = true;
         const result = super.sort(comparator);
         internal.byMethod = false;
-        const len = old.length;
-        for (let i = 0; i < len; i++) {
-            const oldValue = old[i];
-            const newValue = this[i];
-            if (newValue !== oldValue) {
-                this[_stockChange](ArrayChangeType.UPDATE, i, newValue, oldValue);
+        if (ObservableState.DISABLED !== internal.state) {
+            const len = old.length;
+            for (let i = 0; i < len; i++) {
+                const oldValue = old[i];
+                const newValue = this[i];
+                if (newValue !== oldValue) {
+                    this[_stockChange](ArrayChangeType.UPDATE, i, newValue, oldValue);
+                }
             }
         }
         return result;
@@ -322,14 +332,16 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         internal.byMethod = true;
         const result = (super.splice as any)(...arguments) as ObservableArray<T>;
         internal.byMethod = false;
-        start = Math.trunc(start);
-        const from = start < 0 ? Math.max(oldLen + start, 0) : Math.min(start, oldLen);
-        for (let i = result.length; --i >= 0;) {
-            this[_stockChange](ArrayChangeType.REMOVE, from + i, undefined, result[i]);
-        }
-        const len = items.length;
-        for (let i = 0; i < len; i++) {
-            this[_stockChange](ArrayChangeType.INSERT, from + i, items[i]);
+        if (ObservableState.DISABLED !== internal.state) {
+            start = Math.trunc(start);
+            const from = start < 0 ? Math.max(oldLen + start, 0) : Math.min(start, oldLen);
+            for (let i = result.length; --i >= 0;) {
+                this[_stockChange](ArrayChangeType.REMOVE, from + i, undefined, result[i]);
+            }
+            const len = items.length;
+            for (let i = 0; i < len; i++) {
+                this[_stockChange](ArrayChangeType.INSERT, from + i, items[i]);
+            }
         }
         return result;
     }
@@ -344,7 +356,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         internal.byMethod = true;
         const result = super.shift();
         internal.byMethod = false;
-        if (this.length < oldLen) {
+        if (ObservableState.DISABLED !== internal.state && this.length < oldLen) {
             this[_stockChange](ArrayChangeType.REMOVE, 0, undefined, result);
         }
         return result;
@@ -360,11 +372,28 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         internal.byMethod = true;
         const result = super.unshift(...items);
         internal.byMethod = false;
-        const len = items.length;
-        for (let i = 0; i < len; i++) {
-            this[_stockChange](ArrayChangeType.INSERT, i, items[i]);
+        if (ObservableState.DISABLED !== internal.state) {
+            const len = items.length;
+            for (let i = 0; i < len; i++) {
+                this[_stockChange](ArrayChangeType.INSERT, i, items[i]);
+            }
         }
         return result;
+    }
+
+    /**
+     * Calls a defined callback function on each element of an array, and returns an array that contains the results.
+     * @param callbackfn A function that accepts up to three arguments. The map method calls the callbackfn function one time for each element in the array.
+     * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
+     */
+    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): ObservableArray<U> {
+        /*
+         * [NOTE] original implement is very very high-cost.
+         *        so it's converted native Array once, and restored.
+         *
+         * return (super.map as any)(...arguments);
+         */
+        return ObservableArray.from([...this].map(callbackfn, thisArg));
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -372,7 +401,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
 
     /** @internal */
     private [_stockChange](type: ArrayChangeType, index: number, newValue?: T, oldValue?: T): void {
-        const { active, indexes, records } = this[_internal];
+        const { state, indexes, records } = this[_internal];
         const rci = indexes.has(index) ? findRelatedChangeIndex(records, type, index) : -1;
         const len = records.length;
         if (rci >= 0) {
@@ -398,15 +427,15 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         }
         indexes.add(index);
         records[len] = { type, index, newValue, oldValue };
-        if (active && 0 === len) {
+        if (ObservableState.ACTIVE === state && 0 === len) {
             post(() => this[_notifyChanges]());
         }
     }
 
     /** @internal */
     private [_notifyChanges](): void {
-        const { active, records } = this[_internal];
-        if (!active || 0 === records.length) {
+        const { state, records } = this[_internal];
+        if (ObservableState.ACTIVE !== state || 0 === records.length) {
             return;
         }
         for (const r of records) {
@@ -420,7 +449,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
     private [_notify](records: ArrayChangeRecord<T>[]): void {
         const internal = this[_internal];
         internal.indexes.clear();
-        internal.broker.publish('@', records);
+        internal.broker.get().publish('@', records);
     }
 }
 
@@ -450,12 +479,6 @@ export interface ObservableArray<T> {
      * @param end The end of the specified portion of the array.
      */
     slice(start?: number, end?: number): ObservableArray<T>;
-    /**
-     * Calls a defined callback function on each element of an array, and returns an array that contains the results.
-     * @param callbackfn A function that accepts up to three arguments. The map method calls the callbackfn function one time for each element in the array.
-     * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
-     */
-    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): ObservableArray<U>;
     /**
      * Returns the elements of an array that meet the condition specified in a callback function.
      * @param callbackfn A function that accepts up to three arguments. The filter method calls the callbackfn function one time for each element in the array.

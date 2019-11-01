@@ -1,6 +1,6 @@
 import { NonFunctionPropertyNames } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
-import { IObservable } from './common';
+import { ObservableState, IObservable } from './common';
 /**
  * @en Observable key type definition.
  * @ja 購読可能なキーの型定義
@@ -57,16 +57,11 @@ export declare abstract class ObservableObject implements IObservable {
     /**
      * constructor
      *
-     * @param active
-     *  - `en` initial state. default: active = true
-     *  - `ja` 初期状態 既定: active = true
+     * @param state
+     *  - `en` initial state. default: [[ObservableState.ACTIVE]]
+     *  - `ja` 初期状態 既定: [[ObservableState.ACTIVE]]
      */
-    constructor(active?: boolean);
-    /**
-     * @en Subscriable state
-     * @ja 購読可能状態
-     */
-    readonly isActive: boolean;
+    constructor(state?: ObservableState);
     /**
      * @en Subscrive property change(s).
      * @ja プロパティ変更購読設定
@@ -96,15 +91,24 @@ export declare abstract class ObservableObject implements IObservable {
      */
     off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void;
     /**
-     * @en Suspension of the event subscription state.
+     * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
+     *
+     * @param noRecord
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
      */
-    suspend(): this;
+    suspend(noRecord?: boolean): this;
     /**
-     * @en Resume of the event subscription state.
+     * @en Resume the event observation state.
      * @ja イベント購読状態のリジューム
      */
     resume(): this;
+    /**
+     * @en observation state
+     * @ja 購読可能状態
+     */
+    getObservableState(): ObservableState;
     /**
      * @en Create [[ObservableObject]] from any object.
      * @ja 任意のオブジェクトから [[ObservableObject]] を生成

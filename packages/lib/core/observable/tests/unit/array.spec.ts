@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/require-await, @typescript-eslint/no-explicit-any */
 
 import {
+    ObservableState,
     ArrayChangeRecord,
     ArrayChangeType,
     ObservableArray,
+    isObservable,
 } from '@cdp/observable';
 
 describe('observable/array spec', () => {
@@ -112,7 +114,7 @@ describe('observable/array spec', () => {
             observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
             observable.splice(0, 3, 'x', 'y', 'z');
             setTimeout(() => {
-                expect(observable.isActive).toBe(false);
+                expect(observable.getObservableState()).toBe(ObservableState.SUSEPNDED);
                 expect(observable[0]).toBe('x');
                 expect(observable[1]).toBe('y');
                 expect(observable[2]).toBe('z');
@@ -136,10 +138,36 @@ describe('observable/array spec', () => {
                 done();
             });
             observable.splice(0, 3, 'x', 'y', 'z');
-            expect(observable.isActive).toBe(false);
+            expect(observable.getObservableState()).toBe(ObservableState.SUSEPNDED);
             observable.resume();
-            expect(observable.isActive).toBe(true);
+            expect(observable.getObservableState()).toBe(ObservableState.ACTIVE);
         }, 0);
+    });
+
+    it('ObservableArray#suspend(true)', async (done) => {
+        const observable = ObservableArray.of('a', 'b', 'c');
+        setTimeout(() => {
+            observable.suspend(true);
+            observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
+            observable.splice(0, 3, 'x', 'y', 'z');
+            setTimeout(() => {
+                expect(observable.getObservableState()).toBe(ObservableState.DISABLED);
+                expect(observable[0]).toBe('x');
+                expect(observable[1]).toBe('y');
+                expect(observable[2]).toBe('z');
+                observable.sort((lhs, rhs) => lhs < rhs ? 1 : -1);
+                const item = observable.shift();
+                observable.unshift(item as string);
+                observable.resume();
+                setTimeout(() => {
+                    expect(observable.getObservableState()).toBe(ObservableState.ACTIVE);
+                    expect(observable[0]).toBe('z');
+                    expect(observable[1]).toBe('y');
+                    expect(observable[2]).toBe('x');
+                    done();
+                }, 0);
+            }, 0);
+        });
     });
 
     it('ObservableArray#on(notify merged change records)', async (done) => {
@@ -255,6 +283,82 @@ describe('observable/array spec', () => {
             });
             observable.length = 4;
         }, 0);
+    });
+
+    it('check map performance', async (done) => {
+        const array = new Array(100000);
+        const observable = ObservableArray.from(array);
+        let checkType: ObservableArray<any>;
+        setTimeout(() => {
+            // map
+            let i = 0;
+            console.time('Array.map');
+            let b0 = performance.now();
+            array.map(() => i++);
+            let base = performance.now() - b0;
+            console.timeEnd('Array.map');
+
+            console.time('ObservableArray.map');
+            let t0 = performance.now();
+            i = 0;
+            checkType = observable.map(() => i++);
+            let t1 = performance.now() - t0;
+            console.timeEnd('ObservableArray.map');
+
+            expect(isObservable(checkType)).toBe(true);
+            expect(t1).toBeLessThanOrEqual(base * 500); // map はとても遅い. 大体 250 倍近いコスト
+
+            // slice
+            console.time('Array.slice');
+            b0 = performance.now();
+            array.slice(50000, 50000);
+            base = performance.now() - b0;
+            console.timeEnd('Array.slice');
+
+            console.time('ObservableArray.slice');
+            t0 = performance.now();
+            checkType = observable.slice(50000, 50000);
+            t1 = performance.now() - t0;
+            console.timeEnd('ObservableArray.slice');
+
+            expect(isObservable(checkType)).toBe(true);
+            expect(t1).toBeLessThanOrEqual(0.1);    // slice は速い. 無視できるコスト
+
+            // filter
+            console.time('Array.filter');
+            b0 = performance.now();
+            array.filter(e => 50000 < e);
+            base = performance.now() - b0;
+            console.timeEnd('Array.filter');
+
+            console.time('ObservableArray.filter');
+            t0 = performance.now();
+            checkType = observable.filter(e => 50000 < e);
+            t1 = performance.now() - t0;
+            console.timeEnd('ObservableArray.filter');
+
+            expect(isObservable(checkType)).toBe(true);
+            expect(t1).toBeLessThanOrEqual(base * 150); // filter は遅い. 80倍近いコスト
+
+            // concat
+            const appendee = array.slice();
+            console.time('Array.concat');
+            b0 = performance.now();
+            array.concat(...appendee);
+            base = performance.now() - b0;
+            console.timeEnd('Array.concat');
+
+            console.time('ObservableArray.concat');
+            t0 = performance.now();
+            checkType = observable.concat(...appendee);
+            t1 = performance.now() - t0;
+            console.timeEnd('ObservableArray.concat');
+
+            expect(isObservable(checkType)).toBe(true);
+            expect(t1).toBeLessThanOrEqual(base * 60); // filter はやや遅い. 44倍近いコスト
+
+            done();
+        });
     });
 
     it('check advanced', async (done) => {
