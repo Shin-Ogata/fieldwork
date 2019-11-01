@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/require-await, @typescript-eslint/no-explicit-any */
 
-import { ObservableObject, isObservable } from '@cdp/observable';
+import {
+    ObservableState,
+    ObservableObject,
+    isObservable,
+    IObservable,
+} from '@cdp/observable';
 
 describe('observable/object spec', () => {
 
@@ -91,11 +96,32 @@ describe('observable/object spec', () => {
         });
         model.a = Math.random();
         setTimeout(() => {
-            expect(model.isActive).toBe(false);
+            expect(model.getObservableState()).toBe(ObservableState.SUSEPNDED);
             model.resume().a = 2;
-            expect(model.isActive).toBe(true);
+            expect(model.getObservableState()).toBe(ObservableState.ACTIVE);
             // no effect
             expect(() => model.resume()).not.toThrow();
+        }, 0);
+    });
+
+    it('ObservableObject#suspend(true)', async (done) => {
+        const model = new Model(1, 1).suspend(true);
+        const stub = {
+            onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
+        };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        model.on('sum', stub.onCallback);
+        model.off('sum', stub.onCallback);
+        model.a = 2;
+        setTimeout(() => {
+            expect(model.getObservableState()).toBe(ObservableState.DISABLED);
+            expect(stub.onCallback).not.toHaveBeenCalled();
+            model.resume();
+            setTimeout(() => {
+                expect(model.getObservableState()).toBe(ObservableState.ACTIVE);
+                done();
+            });
         }, 0);
     });
 
@@ -146,7 +172,7 @@ describe('observable/object spec', () => {
     it('check no-prop', async (done) => {
         class NoProp extends ObservableObject { }
         const model = new NoProp();
-        model.on<any>('prop', () => {
+        (model as IObservable).on('prop', () => {
             expect(model['prop']).toBe('enable');
             done();
         });
@@ -157,7 +183,7 @@ describe('observable/object spec', () => {
         const symbol = Symbol('prop');
         class Advanced extends ObservableObject {
             constructor(public prop: string) {
-                super(false);
+                super(ObservableState.SUSEPNDED);
             }
             fire(): void {
                 this.notify();
@@ -168,7 +194,7 @@ describe('observable/object spec', () => {
         const model = new Advanced('test');
         model.on('prop', (newVal) => {
             model[symbol] = newVal;
-            expect(model.isActive).toBe(false);
+            expect(model.getObservableState()).toBe(ObservableState.SUSEPNDED);
         });
         model.prop = 'enable';
         model.fire();
@@ -182,6 +208,32 @@ describe('observable/object spec', () => {
         const model = new Model(1, 1);
         expect(isObservable(model)).toBe(true);
         expect(isObservable({})).toBe(false);
+    });
+
+    it('check construction performance', () => {
+        const _wmap = new WeakMap<any, any>();
+        // peformance
+        class Vanilla { }
+        console.time('vanilla');
+        const b0 = performance.now();
+        for (let i = 0; i < 1000000; i++) {
+//            new Vanilla(); // eslint-disable-line
+            _wmap.set(new Vanilla(), new Map());
+        }
+        const base = performance.now() - b0;
+        console.timeEnd('vanilla');
+
+        class Observable extends ObservableObject { }
+        console.time('ObservableObject');
+        const t0 = performance.now();
+        for (let i = 0; i < 1000000; i++) {
+            new Observable(); // eslint-disable-line
+        }
+        const t1 = performance.now() - t0;
+        console.timeEnd('ObservableObject');
+
+        expect(t1).toBeLessThanOrEqual(base);
+        expect(t1).toBeLessThanOrEqual(600);
     });
 
     it('check advanced', () => {

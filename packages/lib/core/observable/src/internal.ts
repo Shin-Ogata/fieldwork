@@ -5,6 +5,15 @@ import {
     isSymbol,
     className,
 } from '@cdp/core-utils';
+import { EventBroker } from '@cdp/event-publisher';
+
+/** @internal EventBrokerProxy */
+export class EventBrokerProxy<Event extends {}> {
+    private _broker?: EventBroker<Event>;
+    public get(): EventBroker<Event> {
+        return this._broker || (this._broker = new EventBroker());
+    }
+}
 
 /** @internal */
 export const _internal = Symbol('internal');

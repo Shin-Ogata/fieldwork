@@ -1,6 +1,6 @@
 import { SortCallback } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
-import { IObservable } from './common';
+import { ObservableState, IObservable } from './common';
 /**
  * @en Array change type information. <br>
  *     The value is suitable for the number of fluctuation of the element.
@@ -71,11 +71,6 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
     /** @final constructor */
     private constructor();
     /**
-     * @en Subscriable state
-     * @ja 購読可能状態
-     */
-    readonly isActive: boolean;
-    /**
      * @en Subscrive array change(s).
      * @ja 配列変更購読設定
      *
@@ -96,15 +91,24 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      */
     off(listener?: (records: ArrayChangeRecord<T>[]) => any): void;
     /**
-     * @en Suspension of the event subscription state.
+     * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
+     *
+     * @param noRecord
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
      */
-    suspend(): this;
+    suspend(noRecord?: boolean): this;
     /**
      * @en Resume of the event subscription state.
      * @ja イベント購読状態のリジューム
      */
     resume(): this;
+    /**
+     * @en observation state
+     * @ja 購読可能状態
+     */
+    getObservableState(): ObservableState;
     /**
      * Sorts an array.
      * @param compareFn The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order.
@@ -132,6 +136,12 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      * @param items  Elements to insert at the start of the Array.
      */
     unshift(...items: T[]): number;
+    /**
+     * Calls a defined callback function on each element of an array, and returns an array that contains the results.
+     * @param callbackfn A function that accepts up to three arguments. The map method calls the callbackfn function one time for each element in the array.
+     * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
+     */
+    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): ObservableArray<U>;
 }
 /**
  * Override return type of prototype methods
@@ -157,12 +167,6 @@ export interface ObservableArray<T> {
      * @param end The end of the specified portion of the array.
      */
     slice(start?: number, end?: number): ObservableArray<T>;
-    /**
-     * Calls a defined callback function on each element of an array, and returns an array that contains the results.
-     * @param callbackfn A function that accepts up to three arguments. The map method calls the callbackfn function one time for each element in the array.
-     * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
-     */
-    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): ObservableArray<U>;
     /**
      * Returns the elements of an array that meet the condition specified in a callback function.
      * @param callbackfn A function that accepts up to three arguments. The filter method calls the callbackfn function one time for each element in the array.

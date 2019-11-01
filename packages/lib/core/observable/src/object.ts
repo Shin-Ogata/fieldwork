@@ -8,21 +8,22 @@ import {
     post,
     deepMerge,
 } from '@cdp/core-utils';
-import { EventBroker, Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/event-publisher';
 import {
+    EventBrokerProxy,
     _internal,
     _notify,
     _stockChange,
     _notifyChanges,
     verifyObservable,
 } from './internal';
-import { IObservable } from './common';
+import { ObservableState, IObservable } from './common';
 
 /** @internal */
 interface InternalProps {
-    active: boolean;
+    state: ObservableState;
     readonly changeMap: Map<PropertyKey, any>;
-    readonly broker: EventBroker<any>;
+    readonly broker: EventBrokerProxy<any>;
 }
 
 /** @internal */
@@ -32,7 +33,7 @@ const _proxyHandler: ProxyHandler<ObservableObject> = {
             return Reflect.set(target, p, value, receiver);
         }
         const oldValue = target[p];
-        if (value !== oldValue) {
+        if (ObservableState.DISABLED !== target[_internal].state && value !== oldValue) {
             target[_stockChange](p, oldValue);
         }
         return Reflect.set(target, p, value, receiver);
@@ -104,16 +105,16 @@ export abstract class ObservableObject implements IObservable {
     /**
      * constructor
      *
-     * @param active
-     *  - `en` initial state. default: active = true
-     *  - `ja` 初期状態 既定: active = true
+     * @param state
+     *  - `en` initial state. default: [[ObservableState.ACTIVE]]
+     *  - `ja` 初期状態 既定: [[ObservableState.ACTIVE]]
      */
-    constructor(active = true) {
+    constructor(state = ObservableState.ACTIVE) {
         verify('instanceOf', ObservableObject, this);
         const internal: InternalProps = {
-            active,
+            state,
             changeMap: new Map(),
-            broker: new EventBroker<this>(),
+            broker: new EventBrokerProxy<this>(),
         };
         Object.defineProperty(this, _internal, { value: Object.seal(internal) });
         return new Proxy(this, _proxyHandler);
@@ -121,15 +122,6 @@ export abstract class ObservableObject implements IObservable {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IObservable
-
-    /**
-     * @en Subscriable state
-     * @ja 購読可能状態
-     */
-    get isActive(): boolean {
-        verifyObservable(this);
-        return this[_internal].active;
-    }
 
     /**
      * @en Subscrive property change(s).
@@ -145,7 +137,7 @@ export abstract class ObservableObject implements IObservable {
     on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription {
         verifyObservable(this);
         const { changeMap, broker } = this[_internal];
-        const result = broker.on(property, listener);
+        const result = broker.get().on(property, listener);
         if (0 < changeMap.size) {
             const props = isArray(property) ? property : [property];
             for (const prop of props) {
@@ -172,31 +164,47 @@ export abstract class ObservableObject implements IObservable {
      */
     off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void {
         verifyObservable(this);
-        this[_internal].broker.off(property, listener);
+        this[_internal].broker.get().off(property, listener);
     }
 
     /**
-     * @en Suspension of the event subscription state.
+     * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
+     *
+     * @param noRecord
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
      */
-    suspend(): this {
+    suspend(noRecord = false): this {
         verifyObservable(this);
-        this[_internal].active = false;
+        this[_internal].state = noRecord ? ObservableState.DISABLED : ObservableState.SUSEPNDED;
+        if (noRecord) {
+            this[_internal].changeMap.clear();
+        }
         return this;
     }
 
     /**
-     * @en Resume of the event subscription state.
+     * @en Resume the event observation state.
      * @ja イベント購読状態のリジューム
      */
     resume(): this {
         verifyObservable(this);
         const internal = this[_internal];
-        if (!internal.active) {
-            internal.active = true;
+        if (ObservableState.ACTIVE !== internal.state) {
+            internal.state = ObservableState.ACTIVE;
             post(() => this[_notifyChanges]());
         }
         return this;
+    }
+
+    /**
+     * @en observation state
+     * @ja 購読可能状態
+     */
+    getObservableState(): ObservableState {
+        verifyObservable(this);
+        return this[_internal].state;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -225,7 +233,7 @@ export abstract class ObservableObject implements IObservable {
      * ```
      */
     public static from<T extends {}>(src: T): ObservableObject & T {
-        const observable = deepMerge(new class extends ObservableObject { }(false), src);
+        const observable = deepMerge(new class extends ObservableObject { }(ObservableState.DISABLED), src);
         observable.resume();
         return observable;
     }
@@ -257,13 +265,13 @@ export abstract class ObservableObject implements IObservable {
 
     /** @internal */
     private [_stockChange](p: string, oldValue: any): void {
-        const { active, changeMap, broker } = this[_internal];
+        const { state, changeMap, broker } = this[_internal];
         if (0 === changeMap.size) {
             changeMap.set(p, oldValue);
-            for (const k of broker.channels()) {
+            for (const k of broker.get().channels()) {
                 changeMap.has(k) || changeMap.set(k, this[k]);
             }
-            if (active) {
+            if (ObservableState.ACTIVE === state) {
                 post(() => this[_notifyChanges]());
             }
         } else {
@@ -273,8 +281,8 @@ export abstract class ObservableObject implements IObservable {
 
     /** @internal */
     private [_notifyChanges](): void {
-        const { active, changeMap } = this[_internal];
-        if (!active) {
+        const { state, changeMap } = this[_internal];
+        if (ObservableState.ACTIVE !== state) {
             return;
         }
         const keyValuePairs = new Map<PropertyKey, [any, any]>();
@@ -292,7 +300,7 @@ export abstract class ObservableObject implements IObservable {
         const { changeMap, broker } = this[_internal];
         changeMap.clear();
         for (const [key, values] of keyValue) {
-            (broker as any).publish(key, ...values, key);
+            (broker.get() as any).publish(key, ...values, key);
         }
     }
 }
