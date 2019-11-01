@@ -31,6 +31,56 @@ export declare type SortCallback<T> = (lhs: T, rhs: T) => number;
  */
 export declare function sort<T>(array: T[], comparator: SortCallback<T>, destructive?: boolean): T[];
 /**
+ * @en Make index array.
+ * @ja インデックス配列の作成
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param excludes
+ *  - `en` exclude index in return value.
+ *  - `ja` 戻り値配列に含めないインデックスを指定
+ */
+export declare function indices<T>(array: T[], ...excludes: number[]): number[];
+/**
+ * @en [[groupBy]]() options definition.
+ * @ja [[groupBy]]() に指定するオプション定義
+ */
+export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T, TGROUPKEY extends string> {
+    /**
+     * @en `GROUP BY` keys.
+     * @ja `GROUP BY` に指定するキー
+     */
+    keys: Extract<TKEYS, string>[];
+    /**
+     * @en Aggregatable keys.
+     * @ja 集計可能なキー一覧
+     */
+    sumKeys?: Extract<TSUMKEYS, string>[];
+    /**
+     * @en Grouped item access key. default: 'items',
+     * @ja グルーピングされた要素へのアクセスキー. 既定: 'items'
+     */
+    groupKey?: TGROUPKEY;
+}
+/**
+ * @en Return type of [[groupBy]]().
+ * @ja [[groupBy]]() が返却する型
+ */
+export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
+/**
+ * @en Execute `GROUP BY` for array elements.
+ * @ja 配列の要素の `GROUP BY` 集合を抽出
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param options
+ *  - `en` `GROUP BY` options
+ *  - `ja` `GROUP BY` オプション
+ */
+export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'>(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
+/**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.map()` の代替メソッド
  *

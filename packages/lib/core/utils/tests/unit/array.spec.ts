@@ -3,6 +3,8 @@
 import {
     shuffle,
     sort,
+    indices,
+    groupBy,
     map,
     filter,
     find,
@@ -11,6 +13,27 @@ import {
     every,
     reduce,
 } from '@cdp/core-utils';
+
+const tracks = [
+    { title: '001', trackArtist: 'aaa', albumTitle: 'AAA', duration: 6000, size: 512000, },
+    { title: '002', trackArtist: 'aaa', albumTitle: 'BBB', duration: 6000, size: 512000, },
+    { title: '003', trackArtist: 'aaa', albumTitle: 'CCC', duration: 6000, size: 512000, },
+    { title: '004', trackArtist: 'aaa', albumTitle: 'AAA', duration: 4000, size: 128000, },
+    { title: '005', trackArtist: 'aaa', albumTitle: 'BBB', duration: 4000, size: 128000, },
+    { title: '006', trackArtist: 'aaa', albumTitle: 'CCC', duration: 4000, size: 128000, },
+    { title: '007', trackArtist: 'bbb', albumTitle: 'AAA', duration: 6000, size: 512000, },
+    { title: '008', trackArtist: 'bbb', albumTitle: 'BBB', duration: 6000, size: 512000, },
+    { title: '009', trackArtist: 'bbb', albumTitle: 'CCC', duration: 6000, size: 512000, },
+    { title: '010', trackArtist: 'bbb', albumTitle: 'AAA', duration: 4000, size: 128000, },
+    { title: '011', trackArtist: 'bbb', albumTitle: 'BBB', duration: 4000, size: 128000, },
+    { title: '012', trackArtist: 'bbb', albumTitle: 'CCC', duration: 4000, size: 128000, },
+    { title: '013', trackArtist: 'ccc', albumTitle: 'AAA', duration: 6000, size: 512000, },
+    { title: '014', trackArtist: 'ccc', albumTitle: 'BBB', duration: 6000, size: 512000, },
+    { title: '015', trackArtist: 'ccc', albumTitle: 'CCC', duration: 6000, size: 512000, },
+    { title: '016', trackArtist: 'ccc', albumTitle: 'AAA', duration: 4000, size: 128000, },
+    { title: '017', trackArtist: 'ccc', albumTitle: 'BBB', duration: 4000, size: 128000, },
+    { title: '018', trackArtist: 'ccc', albumTitle: 'CCC', duration: 4000, size: 128000, },
+];
 
 describe('utils/array spec', () => {
     it('check shuffle()', () => {
@@ -42,6 +65,102 @@ describe('utils/array spec', () => {
         expect(sorted[2].id).toBe('03');
         expect(sorted[3].id).toBe('00');
         expect(sorted[4].id).toBe('01');
+    });
+
+    it('check indecies()', () => {
+        const array = ['a', 'b', 'c', 'd', 'e'];
+        const indices1 = indices(array);
+        expect(indices1[0]).toBe(0);
+        expect(indices1[1]).toBe(1);
+        expect(indices1[2]).toBe(2);
+        expect(indices1[3]).toBe(3);
+        expect(indices1[4]).toBe(4);
+
+        const indices2 = indices(array, 3, 0, 5, 3);
+        expect(indices2[0]).toBe(1);
+        expect(indices2[1]).toBe(2);
+        expect(indices2[2]).toBe(4);
+        expect(indices2[3]).toBeUndefined();
+        expect(indices2[4]).toBeUndefined();
+    });
+
+    it('check groupBy() return type', () => {
+        const result1 = groupBy(tracks, { keys: ['trackArtist', 'albumTitle'] });
+        expect(result1).toBeDefined();
+        expect(result1[0].trackArtist).toBeDefined();
+        expect(result1[0].albumTitle).toBeDefined();
+        expect(result1[0]['duration']).toBeUndefined(); // compile error: result1[0].duration
+        expect(result1[0]['size']).toBeUndefined();     // compile error: result1[0].size
+        expect(result1[0].items).toBeDefined();
+
+        const result2 = groupBy(tracks, { keys: ['albumTitle'], sumKeys: ['duration', 'size'] });
+        expect(result2).toBeDefined();
+        expect(result2[0]['trackArtist']).toBeUndefined();  // compile error: result2[0].trackArtist
+        expect(result2[0].albumTitle).toBeDefined();
+        expect(result2[0].duration).toBeDefined();
+        expect(result2[0].size).toBeDefined();
+        expect(result2[0].items).toBeDefined();
+
+        const result3 = groupBy(tracks, { keys: ['albumTitle'], sumKeys: ['size'], groupKey: 'hoge' });
+        expect(result3).toBeDefined();
+        expect(result3[0]['trackArtist']).toBeUndefined();  // compile error: result3[0].trackArtist
+        expect(result3[0].albumTitle).toBeDefined();
+        expect(result3[0]['duration']).toBeUndefined();     // compile error: result3[0].duration
+        expect(result3[0].size).toBeDefined();
+        expect(result3[0]['items']).toBeUndefined();        // compile error: result3[0].items
+        expect(result3[0].hoge).toBeDefined();
+    });
+
+    it('check groupBy()', () => {
+        const result = groupBy(tracks, { keys: ['trackArtist', 'albumTitle'], sumKeys: ['duration', 'size'] });
+        expect(result.length).toBe(9);
+
+        // console.log(JSON.stringify(result, null, 4));
+
+        const aaaAlbumSeeds = result.filter((album) => 'aaa' === album.trackArtist);
+        expect(aaaAlbumSeeds.length).toBe(3);
+        expect(aaaAlbumSeeds[0].items.length).toBe(2);
+        expect(aaaAlbumSeeds[0].duration).toBe(10000);
+        expect(aaaAlbumSeeds[0].size).toBe(640000);
+        expect(aaaAlbumSeeds[0].albumTitle).toBe('AAA');
+        expect(aaaAlbumSeeds[1].albumTitle).toBe('BBB');
+        expect(aaaAlbumSeeds[2].albumTitle).toBe('CCC');
+
+        const bbbAlbumSeeds = result.filter((album) => 'bbb' === album.trackArtist);
+        expect(bbbAlbumSeeds.length).toBe(3);
+        expect(bbbAlbumSeeds[0].items.length).toBe(2);
+        expect(bbbAlbumSeeds[0].duration).toBe(10000);
+        expect(bbbAlbumSeeds[0].size).toBe(640000);
+        expect(bbbAlbumSeeds[0].albumTitle).toBe('AAA');
+        expect(bbbAlbumSeeds[1].albumTitle).toBe('BBB');
+        expect(bbbAlbumSeeds[2].albumTitle).toBe('CCC');
+
+        const cccAlbumSeeds = result.filter((album) => 'ccc' === album.trackArtist);
+        expect(cccAlbumSeeds.length).toBe(3);
+        expect(cccAlbumSeeds[0].items.length).toBe(2);
+        expect(cccAlbumSeeds[0].duration).toBe(10000);
+        expect(cccAlbumSeeds[0].size).toBe(640000);
+        expect(cccAlbumSeeds[0].albumTitle).toBe('AAA');
+        expect(cccAlbumSeeds[1].albumTitle).toBe('BBB');
+        expect(cccAlbumSeeds[2].albumTitle).toBe('CCC');
+    });
+
+    it('check groupBy() illegal', () => {
+        const result = groupBy([] as typeof tracks, { keys: ['trackArtist', 'albumTitle'] });
+        expect(result.length).toBe(0);
+    });
+
+    it('check groupBy() requery', () => {
+        const filtered = tracks.filter((track) => ('011' === track.title && 'BBB' === track.albumTitle && 'bbb' === track.trackArtist));
+        const result = groupBy(filtered, { keys: ['trackArtist', 'albumTitle'], sumKeys: ['duration', 'size'] });
+        expect(result.length).toBe(1);
+
+        expect(result[0].items.length).toBe(1);
+        expect(result[0].duration).toBe(4000);
+        expect(result[0].size).toBe(128000);
+        expect(result[0].items[0].title).toBe('011');
+        expect(result[0].albumTitle).toBe('BBB');
+        expect(result[0].trackArtist).toBe('bbb');
     });
 
     it('check async map()', async (done) => {

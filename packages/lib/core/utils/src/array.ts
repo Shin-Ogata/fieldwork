@@ -25,6 +25,8 @@ export function shuffle<T>(array: T[], destructive = false): T[] {
     return source;
 }
 
+//__________________________________________________________________________________________________//
+
 /**
  * @en Sort callback type.
  * @ja ソート関数型
@@ -57,6 +59,134 @@ export function sort<T>(array: T[], comparator: SortCallback<T>, destructive = f
     }
     return source.concat(lhs, rhs);
 }
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en Make index array.
+ * @ja インデックス配列の作成
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param excludes
+ *  - `en` exclude index in return value.
+ *  - `ja` 戻り値配列に含めないインデックスを指定
+ */
+export function indices<T>(array: T[], ...excludes: number[]): number[] {
+    const retval = [...array.keys()];
+
+    const len = array.length;
+    const exList = [...new Set(excludes)].sort((lhs, rhs) => lhs < rhs ? 1 : -1);
+    for (const ex of exList) {
+        if (0 <= ex && ex < len) {
+            retval.splice(ex, 1);
+        }
+    }
+
+    return retval;
+}
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en [[groupBy]]() options definition.
+ * @ja [[groupBy]]() に指定するオプション定義
+ */
+export interface GroupByOptions<
+    T extends object,
+    TKEYS extends keyof T,
+    TSUMKEYS extends keyof T,
+    TGROUPKEY extends string
+> {
+    /**
+     * @en `GROUP BY` keys.
+     * @ja `GROUP BY` に指定するキー
+     */
+    keys: Extract<TKEYS, string>[];
+
+    /**
+     * @en Aggregatable keys.
+     * @ja 集計可能なキー一覧
+     */
+    sumKeys?: Extract<TSUMKEYS, string>[];
+
+    /**
+     * @en Grouped item access key. default: 'items',
+     * @ja グルーピングされた要素へのアクセスキー. 既定: 'items'
+     */
+    groupKey?: TGROUPKEY;
+}
+
+/**
+ * @en Return type of [[groupBy]]().
+ * @ja [[groupBy]]() が返却する型
+ */
+export type GroupByReturnValue<
+    T extends object,
+    TKEYS extends keyof T,
+    TSUMKEYS extends keyof T = never,
+    TGROUPKEY extends string = 'items'
+> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
+
+/**
+ * @en Execute `GROUP BY` for array elements.
+ * @ja 配列の要素の `GROUP BY` 集合を抽出
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param options
+ *  - `en` `GROUP BY` options
+ *  - `ja` `GROUP BY` オプション
+ */
+export function groupBy<
+    T extends object,
+    TKEYS extends keyof T,
+    TSUMKEYS extends keyof T = never,
+    TGROUPKEY extends string = 'items'
+>(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[] {
+    const { keys, sumKeys, groupKey } = options;
+    const _groupKey = groupKey || 'items';
+    const _sumKeys: string[] = sumKeys || [];
+    _sumKeys.push(_groupKey);
+
+    const hash = array.reduce((res: T, data: T) => {
+        // create groupBy internal key
+        const _key = keys.reduce((s, k) => s + String(data[k]), '');
+
+        // init keys
+        if (!(_key in res)) {
+            const keyList = keys.reduce((h, k: string) => {
+                h[k] = data[k];
+                return h;
+            }, {});
+
+            res[_key] = _sumKeys.reduce((h, k: string) => {
+                h[k] = 0;
+                return h;
+            }, keyList);
+        }
+
+        const resKey = res[_key];
+
+        // sum properties
+        for (const k of _sumKeys) {
+            if (_groupKey === k) {
+                resKey[k] = resKey[k] || [];
+                resKey[k].push(data);
+            } else {
+                resKey[k] += data[k];
+            }
+        }
+
+        return res;
+    }, {});
+
+    return Object.values(hash);
+}
+
+//__________________________________________________________________________________________________//
 
 /**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.

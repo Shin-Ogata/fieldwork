@@ -18,7 +18,16 @@ export declare function post<T>(executor: () => T): Promise<T>;
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export declare function noop(...args: any[]): void;
+export declare function noop(...args: any[]): any;
+/**
+ * @en Wait for the designation elapse.
+ * @ja 指定時間処理を待機
+ *
+ * @param elapse
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ */
+export declare function sleep(elapse: number): Promise<void>;
 /**
  * @en Create escape function from map.
  * @ja 文字置換関数を作成

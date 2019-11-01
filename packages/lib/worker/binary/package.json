@@ -35,7 +35,7 @@
     "clean:doc:a": "cdp-task clean -t ./docs/typedoc",
     "clean:doc:c": "cdp-task clean -t ./docs/reports/coverage",
     "clean:doc:m": "cdp-task clean -t ./docs/reports/metrics",
-    "clear": "npm run clean && cdp-task clean -t ./node_modules",
+    "clear": "npm run clean && npm run clean:doc && cdp-task clean -t ./node_modules",
     "compile": "run-s compile:*",
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
