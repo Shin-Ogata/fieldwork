@@ -3,6 +3,7 @@
 import {
     post,
     noop,
+    sleep,
     escapeHTML,
     toTypedData,
     fromTypedData,
@@ -42,6 +43,13 @@ describe('utils/misc spec', () => {
         spyOn(hook, 'noop').and.callThrough();
         hook.noop();
         expect(hook.noop).toHaveBeenCalled();
+    });
+
+    it('check sleep()', async (done) => {
+        const start = Date.now();
+        await sleep(100);
+        expect(Date.now() - start).toBeGreaterThanOrEqual(100);
+        done();
     });
 
     it('check escapeHTML()', () => {

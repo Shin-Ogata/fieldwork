@@ -4,6 +4,7 @@ import {
     isString,
     isObject,
 } from './types';
+import { setTimeout } from './timer';
 
 /**
  * @en Ensure asynchronous execution.
@@ -27,8 +28,20 @@ export function post<T>(executor: () => T): Promise<T> {
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export function noop(...args: any[]): void {    // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+export function noop(...args: any[]): any {    // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     // noop
+}
+
+/**
+ * @en Wait for the designation elapse.
+ * @ja 指定時間処理を待機
+ *
+ * @param elapse
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ */
+export function sleep(elapse: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, elapse));
 }
 
 //__________________________________________________________________________________________________//
