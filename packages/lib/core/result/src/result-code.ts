@@ -1,16 +1,7 @@
 import RESULT_CODE              = CDP_DECLARE.RESULT_CODE;
-/*
- * NOTE: TypeScript 3.6+: の不具合より `const enum export` を `types/_patch.d.ts` に定義
- * https://github.com/microsoft/TypeScript/issues/33060
- *
- * TODO: TypeScript 更新の際にチェック時に `types/_patch.d.ts` を解除可能か検討
- *       - `types/_types.d.ts` を削除
- *       - `package.json` `types` フィールドに `types/index.d.ts` を指定
- *       - `types/export.d.ts` の export source に `types/index` を指定
- */
-// import RESULT_CODE_BASE         = CDP_DECLARE.RESULT_CODE_BASE;
-// import RESULT_CODE_RANGE        = CDP_DECLARE.RESULT_CODE_RANGE;
-// import LOCAL_CODE_RANGE_GUIDE   = CDP_DECLARE.LOCAL_CODE_RANGE_GUIDE;
+import RESULT_CODE_BASE         = CDP_DECLARE.RESULT_CODE_BASE;
+import RESULT_CODE_RANGE        = CDP_DECLARE.RESULT_CODE_RANGE;
+import LOCAL_CODE_RANGE_GUIDE   = CDP_DECLARE.LOCAL_CODE_RANGE_GUIDE;
 import DECLARE_SUCCESS_CODE     = CDP_DECLARE.DECLARE_SUCCESS_CODE;
 import DECLARE_ERROR_CODE       = CDP_DECLARE.DECLARE_ERROR_CODE;
 import ASSIGN_RESULT_CODE       = CDP_DECLARE.ASSIGN_RESULT_CODE;
@@ -22,10 +13,9 @@ const enum Description {
 
 export {
     RESULT_CODE,
-    // NOTE: TypeScript 3.6+: types/_patch.d.ts
-    // RESULT_CODE_BASE,
-    // RESULT_CODE_RANGE,
-    // LOCAL_CODE_RANGE_GUIDE,
+    RESULT_CODE_BASE,
+    RESULT_CODE_RANGE,
+    LOCAL_CODE_RANGE_GUIDE,
     DECLARE_SUCCESS_CODE,
     DECLARE_ERROR_CODE,
     ASSIGN_RESULT_CODE,

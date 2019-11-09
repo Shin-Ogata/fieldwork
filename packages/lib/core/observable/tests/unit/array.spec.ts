@@ -338,7 +338,7 @@ describe('observable/array spec', () => {
             console.timeEnd('ObservableArray.filter');
 
             expect(isObservable(checkType)).toBe(true);
-            expect(t1).toBeLessThanOrEqual(base * 150); // filter は遅い. 80倍近いコスト
+            expect(t1).toBeLessThanOrEqual(base * 200); // filter は遅い. 80倍近いコスト
 
             // concat
             const appendee = array.slice();
@@ -355,7 +355,7 @@ describe('observable/array spec', () => {
             console.timeEnd('ObservableArray.concat');
 
             expect(isObservable(checkType)).toBe(true);
-            expect(t1).toBeLessThanOrEqual(base * 60); // filter はやや遅い. 44倍近いコスト
+            expect(t1).toBeLessThanOrEqual(base * 80); // filter はやや遅い. 44倍近いコスト
 
             done();
         });

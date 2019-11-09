@@ -110,27 +110,27 @@ export declare class CancelToken<T extends {} = {}> {
      * @en Cancellation reason accessor.
      * @ja キャンセルの原因取得
      */
-    readonly reason: T | undefined;
+    get reason(): T | undefined;
     /**
      * @en Enable cancellation state accessor.
      * @ja キャンセル可能か判定
      */
-    readonly cancelable: boolean;
+    get cancelable(): boolean;
     /**
      * @en Cancellation requested state accessor.
      * @ja キャンセルを受け付けているか判定
      */
-    readonly requested: boolean;
+    get requested(): boolean;
     /**
      * @en Cancellation closed state accessor.
      * @ja キャンセル受付を終了しているか判定
      */
-    readonly closed: boolean;
+    get closed(): boolean;
     /**
      * @en `toString` tag override.
      * @ja `toString` タグのオーバーライド
      */
-    protected readonly [Symbol.toStringTag]: 'CancelToken';
+    protected get [Symbol.toStringTag](): 'CancelToken';
     /**
      * @en Register custom cancellation callback.
      * @ja キャンセル時のカスタム処理の登録

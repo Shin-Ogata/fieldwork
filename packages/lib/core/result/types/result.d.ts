@@ -38,27 +38,27 @@ export declare class Result extends Error {
      * @en Judge succeeded or not.
      * @ja 成功判定
      */
-    readonly isSucceeded: boolean;
+    get isSucceeded(): boolean;
     /**
      * @en Judge failed or not.
      * @ja 失敗判定
      */
-    readonly isFailed: boolean;
+    get isFailed(): boolean;
     /**
      * @en Judge canceled or not.
      * @ja キャンセルエラー判定
      */
-    readonly isCanceled: boolean;
+    get isCanceled(): boolean;
     /**
      * @en Get formatted [[RESULT_CODE]] name string.
      * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
      */
-    readonly codeName: string;
+    get codeName(): string;
     /**
      * @en Get [[RESULT_CODE]] help string.
      * @ja [[RESULT_CODE]] のヘルプストリングを取得
      */
-    readonly help: string;
+    get help(): string;
 }
 /** Returns `true` if `x` is `Result`, `false` otherwise. */
 export declare function isResult(x: unknown): x is Result;
