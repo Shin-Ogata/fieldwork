@@ -1,10 +1,12 @@
 {
-  "name": "@cdp/result",
-  "description": "result utility module",
+  "name": "@cdp/core-storage",
+  "description": "core storage utility module",
   "version": "0.9.0",
   "author": "Shin Ogata",
   "dependencies": {
-    "@cdp/core-utils": "file:../utils"
+    "@cdp/core-utils": "file:../utils",
+    "@cdp/event-publisher": "file:../event-publisher",
+    "@cdp/promise": "file:../promise"
   },
   "keywords": [
     "CDP",
@@ -12,8 +14,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/result",
-  "module": "dist/result.mjs",
+  "main": "dist/storage",
+  "module": "dist/storage.mjs",
   "private": true,
   "repository": {
     "type": "git",

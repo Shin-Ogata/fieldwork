@@ -536,9 +536,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
                 self.off('transitionend', fireCallBack);
             }
         }
-        if (callback) {
-            self.on('transitionend', fireCallBack);
-        }
+        isFunction(callback) && self.on('transitionend', fireCallBack);
         return this;
     }
 
@@ -564,9 +562,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
                 self.off('animationend', fireCallBack);
             }
         }
-        if (callback) {
-            self.on('animationend', fireCallBack);
-        }
+        isFunction(callback) && self.on('animationend', fireCallBack);
         return this;
     }
 

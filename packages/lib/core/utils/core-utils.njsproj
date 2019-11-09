@@ -65,6 +65,7 @@
     <TypeScriptCompile Include="src\config.ts" />
     <TypeScriptCompile Include="src\deep-circuit.ts" />
     <TypeScriptCompile Include="src\index.ts" />
+    <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\misc.ts" />
     <TypeScriptCompile Include="src\mixins.ts" />
     <TypeScriptCompile Include="src\safe.ts" />
@@ -84,6 +85,7 @@
     <TypeScriptCompile Include="types\config.d.ts" />
     <TypeScriptCompile Include="types\deep-circuit.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
+    <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\misc.d.ts" />
     <TypeScriptCompile Include="types\mixins.d.ts" />
     <TypeScriptCompile Include="types\safe.d.ts" />

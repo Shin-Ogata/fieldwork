@@ -87,6 +87,26 @@ export declare type NonFunctionPropertyNames<T> = {
  */
 export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 /**
+ * @en Extract object key list. (`keyof` alias)
+ * @ja オブジェクトのキー一覧を抽出 (`keyof` alias)
+ */
+export declare type Keys<T extends {}> = keyof T;
+/**
+ * @en Extract object type list.
+ * @ja オブジェクトの型一覧を抽出
+ */
+export declare type Types<T extends {}> = T[keyof T];
+/**
+ * @en Convert object key to type.
+ * @ja オブジェクトキーから型へ変換
+ */
+export declare type KeyToType<O extends {}, K extends keyof O> = K extends keyof O ? O[K] : never;
+/**
+ * @en Convert object type to key.
+ * @ja オブジェクト型からキーへ変換
+ */
+export declare type TypeToKey<O extends {}, T extends Types<O>, K extends keyof O = keyof O> = O[K] extends T ? Extract<Keys<O>, K> : never;
+/**
  * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
  *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
  * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>The PlainObject type is a JavaScript object containing zero or more key-value pairs. <br>
