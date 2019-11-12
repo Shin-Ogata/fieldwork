@@ -1,13 +1,15 @@
 import { Keys, Types, KeyToType } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
 import { Cancelable } from '@cdp/promise';
-import { StorageDataTypeList, IStorageOptions, IStorageDataOptions, IStorageEventCallback, IStorage } from './interfaces';
+import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageEventCallback, IStorage } from './interfaces';
 /** MemoryStorage I/O options */
 export declare type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
 /** MemoryStorage return value */
 export declare type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
-/** MemoryStorage input data type */
+/** MemoryStorage data type */
 export declare type MemoryStorageDataTypes = Types<StorageDataTypeList>;
+/** MemoryStorage input data type */
+export declare type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
 /** MemoryStorage event callback */
 export declare type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeList>;
 /**
@@ -36,7 +38,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<never>): Promise<Types<StorageDataTypeList> | undefined>;
+    getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<never>): Promise<Types<StorageDataTypeList> | null>;
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
      * @ja キーに対応する値を取得. 存在しない場合は null を返却
@@ -51,7 +53,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<K extends Keys<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<K>): Promise<MemoryStorageResult<K> | undefined>;
+    getItem<K extends Keys<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<K>): Promise<MemoryStorageResult<K> | null>;
     /**
      * @en Sets the value of the pair identified by key to value, creating a new key/value pair if none existed for key previously.
      * @ja キーを指定して値を設定. 存在しない場合は新規に作成
@@ -63,7 +65,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    setItem<V extends MemoryStorageDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void>;
+    setItem<V extends MemoryStorageInputDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void>;
     /**
      * @en Removes the key/value pair with the given key from the list associated with the object, if a key/value pair with the given key exists.
      * @ja 指定されたキーに対応する値が存在すれば削除

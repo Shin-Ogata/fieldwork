@@ -16,24 +16,28 @@ import {
 } from '@cdp/promise';
 import {
     StorageDataTypeList,
+    StorageInputDataTypeList,
     IStorageOptions,
     IStorageDataOptions,
     IStorageEventCallback,
     IStorage,
 } from './interfaces';
+import { dropUndefined, restoreNil } from './utils';
 
 /** MemoryStorage I/O options */
 export type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
 /** MemoryStorage return value */
 export type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
-/** MemoryStorage input data type */
+/** MemoryStorage data type */
 export type MemoryStorageDataTypes = Types<StorageDataTypeList>;
+/** MemoryStorage input data type */
+export type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
 /** MemoryStorage event callback */
 export type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeList>;
 
 /** @internal */
 interface MemoryStorageEvent {
-    '@': [string | undefined, any, any];
+    '@': [string | null, Types<StorageDataTypeList> | null, Types<StorageDataTypeList> | null];
 }
 
 /**
@@ -72,7 +76,7 @@ export class MemoryStorage implements IStorage {
     async getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(
         key: string,
         options?: MemoryStorageOptions<never>
-    ): Promise<Types<StorageDataTypeList> | undefined>;
+    ): Promise<Types<StorageDataTypeList> | null>;
 
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
@@ -91,25 +95,25 @@ export class MemoryStorage implements IStorage {
     async getItem<K extends Keys<StorageDataTypeList>>(
         key: string,
         options?: MemoryStorageOptions<K>
-    ): Promise<MemoryStorageResult<K> | undefined>;
+    ): Promise<MemoryStorageResult<K> | null>;
 
-    async getItem(key: string, options?: MemoryStorageOptions<any>): Promise<Types<StorageDataTypeList> | undefined> {
+    async getItem(key: string, options?: MemoryStorageOptions<any>): Promise<Types<StorageDataTypeList> | null> {
         options = options || {};
         await cc(options.cancel);
 
-        const value = this._storage[key];
+        // `undefined` → `null`
+        const value = dropUndefined(this._storage[key]);
         switch (options.dataType) {
             case 'string':
-                return fromTypedData(value) as any;
+                return fromTypedData(value) as string;
             case 'number':
-                return Number(value) as any;
+                return Number(restoreNil(value));
             case 'boolean':
-                return Boolean(value) as any;
+                return Boolean(restoreNil(value));
             case 'object':
-                return Object(value);
-            case 'null':
+                return Object(restoreNil(value));
             default:
-                return value;
+                return restoreNil(value);
         }
     }
 
@@ -124,13 +128,14 @@ export class MemoryStorage implements IStorage {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    async setItem<V extends MemoryStorageDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void> {
+    async setItem<V extends MemoryStorageInputDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void> {
         options = options || {};
         await cc(options.cancel);
-        const oldVal = this._storage[key];
-        if (!deepEqual(oldVal, value)) {
-            this._storage[key] = value;
-            !options.silent && this._broker.publish('@', key, value, oldVal);
+        const newVal = dropUndefined(value, true);         // `null` or `undefined` → 'null' or 'undefined'
+        const oldVal = dropUndefined(this._storage[key]);  // `undefined` → `null`
+        if (!deepEqual(oldVal, newVal)) {
+            this._storage[key] = newVal;
+            !options.silent && this._broker.publish('@', key, newVal, oldVal);
         }
     }
 
@@ -148,7 +153,7 @@ export class MemoryStorage implements IStorage {
         const oldVal = this._storage[key];
         if (undefined !== oldVal) {
             delete this._storage[key];
-            !options.silent && this._broker.publish('@', key, undefined, oldVal);
+            !options.silent && this._broker.publish('@', key, null, oldVal);
         }
     }
 
@@ -165,7 +170,7 @@ export class MemoryStorage implements IStorage {
         await cc(options.cancel);
         if (!isEmptyObject(this._storage)) {
             this._storage = {};
-            !options.silent && this._broker.publish('@', undefined);
+            !options.silent && this._broker.publish('@', null, null, null);
         }
     }
 

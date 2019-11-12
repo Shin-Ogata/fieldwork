@@ -10,18 +10,30 @@ export interface StorageDataTypeList {
     number: number;
     boolean: boolean;
     object: object;
-    null: null;
 }
+/**
+ * @en The types by which designation is possible in [[setItem]]().
+ * @ja [[setItem]]() に指定可能な型
+ */
+export declare type StorageInputDataTypeList<T> = Types<T> | null | undefined;
 /**
  * @en [[IStorage]] common option interface.
  * @ja [[IStorage]] 操作に使用する共通のオプションインターフェイス
  */
 export declare type IStorageOptions = Silenceable & Cancelable;
 /**
+ * @en [[IStorage]] common format option interface.
+ * @ja [[IStorage]] フォーマットに関するオプションインターフェイス
+ */
+export interface IStorageFormatOptions {
+    /** JSON space number */
+    jsonSpace?: number;
+}
+/**
  * @en [[IStorage]] data I/O operation option interface.
  * @ja [[IStorage]] データ I/O 操作に使用するオプションインターフェイス
  */
-export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Keys<T>> extends IStorageOptions {
+export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Keys<T>> extends IStorageOptions, IStorageFormatOptions {
     /**
      * @en set convert I/O data type.
      * @ja I/O 時に変換するデータ型を指定
@@ -32,7 +44,7 @@ export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Ke
  * @en [[IStorage]] callback function definition.
  * @ja [[IStorage]] コールバック関数
  */
-export declare type IStorageEventCallback<T extends StorageDataTypeList> = (key: string | undefined, newValue: Types<T> | undefined, oldValue: Types<T> | undefined) => void;
+export declare type IStorageEventCallback<T extends StorageDataTypeList> = (key: string | null, newValue: Types<T> | null, oldValue: Types<T> | null) => void;
 /**
  * @en Async Storage interface. This interface provides the similar to Web Storage API but all methods are promisified.
  * @ja 非同期ストレージインターフェイス. Promise 化した Web Storage API の類似メソッドを提供
@@ -57,7 +69,7 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<T> = Types<T>>(key: string, options?: IStorageDataOptions<T, never>): Promise<D | undefined>;
+    getItem<D extends Types<T> = Types<T>>(key: string, options?: IStorageDataOptions<T, never>): Promise<D | null>;
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
      * @ja キーに対応する値を取得. 存在しない場合は null を返却
@@ -72,7 +84,7 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<K extends Keys<T>>(key: string, options?: IStorageDataOptions<T, K>): Promise<KeyToType<T, K> | undefined>;
+    getItem<K extends Keys<T>>(key: string, options?: IStorageDataOptions<T, K>): Promise<KeyToType<T, K> | null>;
     /**
      * @en Sets the value of the pair identified by key to value, creating a new key/value pair if none existed for key previously.
      * @ja キーを指定して値を設定. 存在しない場合は新規に作成
@@ -84,7 +96,7 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    setItem<V extends Types<T>, K extends Keys<T> = 'string'>(key: string, value: V, options?: IStorageDataOptions<T, K>): Promise<void>;
+    setItem<V extends StorageInputDataTypeList<T>, K extends Keys<T> = 'string'>(key: string, value: V, options?: IStorageDataOptions<T, K>): Promise<void>;
     /**
      * @en Removes the key/value pair with the given key from the list associated with the object, if a key/value pair with the given key exists.
      * @ja 指定されたキーに対応する値が存在すれば削除
@@ -133,3 +145,57 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      */
     off(listener?: IStorageEventCallback<T>): void;
 }
+/**
+ * @en Registry schema common base interface definition.
+ * @ja レジストリスキーマの共通ベースインターフェイス
+ */
+export interface RegistrySchemaBase {
+    /**
+     * @en Registry wildcard property.
+     * @ja レジストリワイルドカードプロパティ
+     */
+    '*': void;
+}
+/**
+ * @en Registry event definition
+ * @ja レジストリイベント
+ */
+export interface RegistryEvent<T extends {} = any, K extends keyof T = keyof T> {
+    /**
+     * @en Change event. (key, newValue, oldValue)
+     * @ja 変更通知 (key, newValue, oldValue)
+     */
+    'change': [K | null, T[K] | null | undefined, T[K] | null | undefined];
+    /**
+     * @en Before save event.
+     * @ja 永続化前に発行
+     */
+    'will-save': void;
+}
+/**
+ * @en Registry read options.
+ * @ja レジストリ読み取り用オプション
+ */
+export interface RegistryReadOptions {
+    /**
+     * @en When accessing as a registry key below the unique field value, it's designated. ex) 'private'
+     * @ja 固有のフィールド値以下のレジストリキーとしてアクセスする場合に指定 ex) 'private'
+     */
+    field?: string;
+}
+/**
+ * @en Registry write options.
+ * @ja レジストリ書き込み用オプション
+ */
+export interface RegistryWriteOptions extends RegistryReadOptions, IStorageFormatOptions, Silenceable {
+    /**
+     * @en If `true` set, no call persistence method when a value is updated.
+     * @ja 更新時に保存処理を呼び出したくない場合は `true` を指定
+     */
+    noSave?: boolean;
+}
+/**
+ * @en Registry save options.
+ * @ja レジストリ保存用オプション
+ */
+export declare type RegistrySaveOptions = IStorageOptions & IStorageFormatOptions;

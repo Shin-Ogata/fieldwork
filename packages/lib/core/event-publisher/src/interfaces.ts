@@ -22,8 +22,10 @@ export interface Subscription {
 }
 
 /**
- * @en Event supplyer interface definitions
- * @ja イベント供給を行うインターフェイス定義
+ * @en Event supplyer interface definitions <br>
+ *     If the client listener returns `true`, the class stops delegation event to the next.
+ * @ja イベント供給を行うインターフェイス定義 <br>
+ *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
  */
 export interface Subscribable<Event> {
     /**
