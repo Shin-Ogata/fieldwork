@@ -13,7 +13,7 @@ describe('storage/memory-storage spec', () => {
 //  let _storage!: MemoryStorage;
     let _count: number;
 
-    const onCallback = (key: string | undefined, newVal?: any, oldVal?: any): void => {
+    const onCallback = (key: string | null, newVal?: any, oldVal?: any): void => {
         _count++;
     };
 
@@ -66,7 +66,6 @@ describe('storage/memory-storage spec', () => {
         expect(await _storage.getItem<number>('num')).toBe(100);
         expect(await _storage.getItem<boolean>('bool')).toBe(false);
         expect(await _storage.getItem<object>('obj')).toEqual({ hoge: 'fuga' });
-        expect(await _storage.getItem<null>('nil')).toBe(null);
         done();
     });
 
@@ -75,7 +74,7 @@ describe('storage/memory-storage spec', () => {
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
         expect(await _storage.getItem('obj', { dataType: 'object' })).toEqual({ hoge: 'fuga' });
-        expect(await _storage.getItem('nil', { dataType: 'null' })).toBe(null);
+        expect(await _storage.getItem('nil', { dataType: 'string' })).toBe('null');
 //      expect(await _storage.getItem<number>('str', { dataType: 'string' })).toBe('hoge'); // compile error "cast" と "dataType" は同時使用不可
         done();
     });
@@ -113,15 +112,6 @@ describe('storage/memory-storage spec', () => {
         expect(await _storage.getItem('bool', { dataType: 'object' })).toEqual(new Boolean(false));
         expect(await _storage.getItem('obj', { dataType: 'object' })).toEqual({ hoge: 'fuga' });
         expect(await _storage.getItem('nil', { dataType: 'object' })).toEqual({});
-        done();
-    });
-
-    it('check MemoryStorage#getItem() /w dataType convert null (no effect)', async (done) => {
-        expect(await _storage.getItem('str', { dataType: 'null' })).not.toBeNull();
-        expect(await _storage.getItem('num', { dataType: 'null' })).not.toBeNull();
-        expect(await _storage.getItem('bool', { dataType: 'null' })).not.toBeNull();
-        expect(await _storage.getItem('obj', { dataType: 'null' })).not.toBeNull();
-        expect(await _storage.getItem('nil', { dataType: 'null' })).toBeNull();
         done();
     });
 
@@ -191,8 +181,8 @@ describe('storage/memory-storage spec', () => {
         _storage.on(stub.onCallback);
 
         await _storage.removeItem('num');
-        expect(stub.onCallback).toHaveBeenCalledWith('num', undefined, 100);
-        expect(await _storage.getItem('num')).toBeUndefined();
+        expect(stub.onCallback).toHaveBeenCalledWith('num', null, 100);
+        expect(await _storage.getItem('num')).toBeNull();
 
         // no change
         await _storage.removeItem('num');
@@ -201,13 +191,13 @@ describe('storage/memory-storage spec', () => {
         // with silent
         await _storage.removeItem('str', { silent: true });
         expect(_count).toBe(1);
-        expect(await _storage.getItem('str')).toBeUndefined();
+        expect(await _storage.getItem('str')).toBeNull();
 
         // off
         _storage.off(stub.onCallback);
         await _storage.removeItem('bool');
         expect(_count).toBe(1);
-        expect(await _storage.getItem('bool')).toBeUndefined();
+        expect(await _storage.getItem('bool')).toBeNull();
 
         try {
             await _storage.removeItem('obj', { cancel: token });
@@ -227,7 +217,7 @@ describe('storage/memory-storage spec', () => {
         _storage.on(stub.onCallback);
 
         await _storage.clear();
-        expect(stub.onCallback).toHaveBeenCalledWith(undefined);
+        expect(stub.onCallback).toHaveBeenCalledWith(null, null, null);
         expect((await _storage.keys()).length).toBe(0);
 
         done();

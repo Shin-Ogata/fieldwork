@@ -325,6 +325,45 @@ describe('event-publisher/publisher spec', () => {
         done();
     });
 
+    it('check query event', () => {
+        interface QueryEvent {
+            'query-eldest': { name: string; };
+        }
+        const publisher = new class extends EventPublisher<QueryEvent> {
+            public queryEldest(): string {
+                const event = { name: '' };
+                this.publish('query-eldest', event);
+                return event.name;
+            }
+        };
+
+        const bigbrother = {
+            onQuery: (event: { name: string; }) => {
+                event.name = 'I am big brother.';
+                return true; // handle query event.
+            },
+        };
+
+        const youngbrother = {
+            onQuery: (event: { name: string; }) => {
+                event.name = 'I am youngbrother.';
+                return true; // handle query event.
+            },
+        };
+
+        spyOn(bigbrother, 'onQuery').and.callThrough();
+        spyOn(youngbrother, 'onQuery').and.callThrough();
+
+        publisher.on('query-eldest', bigbrother.onQuery);
+        publisher.on('query-eldest', youngbrother.onQuery);
+
+        const eldest = publisher.queryEldest();
+
+        expect(eldest).toBe('I am big brother.');
+        expect(bigbrother.onQuery).toHaveBeenCalled();
+        expect(youngbrother.onQuery).not.toHaveBeenCalled();
+    });
+
     it('check advanced', async () => {
         const publisher = new TestPublisher();
         const error = new Error('error');

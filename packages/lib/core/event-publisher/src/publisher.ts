@@ -115,7 +115,11 @@ export abstract class EventPublisher<Event> implements Subscribable<Event> {
         }
         for (const listener of list) {
             try {
-                listener(...args);
+                const handled = listener(...args);
+                // if received 'true', stop delegation.
+                if (true === handled) {
+                    break;
+                }
             } catch (e) {
                 Promise.reject(e);
             }

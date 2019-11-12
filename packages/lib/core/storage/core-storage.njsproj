@@ -57,11 +57,17 @@
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\memory-storage.ts" />
+    <TypeScriptCompile Include="src\registry.ts" />
+    <TypeScriptCompile Include="src\utils.ts" />
     <TypeScriptCompile Include="tests\unit\memory-storage.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\registry.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\utils.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\memory-storage.d.ts" />
+    <TypeScriptCompile Include="types\registry.d.ts" />
+    <TypeScriptCompile Include="types\utils.d.ts" />
     <TypeScriptCompile Include="types\_export.d.ts" />
     <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>
