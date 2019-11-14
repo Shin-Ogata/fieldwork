@@ -1,3 +1,15 @@
+import {
+    Keys,
+    Types,
+    TypeToKey,
+    toTypedData,
+    fromTypedData,
+    restoreNil,
+} from '@cdp/core-utils';
+import {
+    Cancelable,
+    checkCanceled as cc,
+} from '@cdp/promise';
 import { Base64 } from './base64';
 import {
     BlobReadOptions,
@@ -13,7 +25,9 @@ const enum MimeType {
     TEXT = 'text/plain',
 }
 
-/** @internal */
+//__________________________________________________________________________________________________//
+
+/** @internal data-URL 属性 */
 interface DataURLContext {
     mimeType: string;
     base64: boolean;
@@ -21,28 +35,28 @@ interface DataURLContext {
 }
 
 /**
+ * @internal
  * data URI 形式の正規表現
  * 参考: https://developer.mozilla.org/ja/docs/data_URIs
  */
 function queryDataURLContext(dataURL: string): DataURLContext {
+    const context = { base64: false } as DataURLContext;
+
     /**
      * [match] 1: mime-type
      *         2: ";base64" を含むオプション
      *         3: data 本体
      */
-    const reDataURL = /^data:(.+?\/.+?)?(;.+?)?,(.*)$/;
-    const result = reDataURL.exec(dataURL);
-
-    const component = { base64: false } as DataURLContext;
+    const result = /^data:(.+?\/.+?)?(;.+?)?,(.*)$/.exec(dataURL);
     if (null == result) {
         throw new Error(`Invalid data-URL: ${dataURL}`);
     }
 
-    component.mimeType = result[1];
-    component.base64 = /;base64/.test(result[2]); // eslint-disable-line @typescript-eslint/prefer-includes
-    component.data = result[3];
+    context.mimeType = result[1];
+    context.base64 = /;base64/.test(result[2]); // eslint-disable-line @typescript-eslint/prefer-includes
+    context.data = result[3];
 
-    return component;
+    return context;
 }
 
 //__________________________________________________________________________________________________//
@@ -510,5 +524,105 @@ export function dataURLToBase64(dataURL: string): string {
         return context.data;
     } else {
         return Base64.encode(decodeURIComponent(context.data));
+    }
+}
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en Serializable data type list.
+ * @ja シリアライズ可能なデータ型一覧
+ */
+export interface Serializable {
+    string: string;
+    number: number;
+    boolean: boolean;
+    object: object;
+    buffer: ArrayBuffer;
+    binary: Uint8Array;
+    blob: Blob;
+}
+
+export type SerializableDataTypes = Types<Serializable>;
+export type SerializableInputDataTypes = SerializableDataTypes | null | undefined;
+export type SerializableKeys = Keys<Serializable>;
+export type SerializableCastable = Omit<Serializable, 'buffer' | 'binary' | 'blob'>;
+export type SerializableCastableTypes = Types<SerializableCastable>;
+export type SerializableReturnType<T extends SerializableCastableTypes> = TypeToKey<SerializableCastable, T> extends never ? never : T | null | undefined;
+
+/**
+ * @en Deserializable options interface.
+ * @ja デシリアライズに使用するオプション
+ */
+export interface DeserializeOptions<T extends Serializable = Serializable, K extends Keys<T> = Keys<T>> extends Cancelable {
+    /** [[SerializableKeys]] */
+    dataType?: K;
+}
+
+/**
+ * @en Serialize data.
+ * @ja データシリアライズ
+ *
+ * @param data input
+ * @param options blob convert options
+ */
+export async function serialize<T extends SerializableInputDataTypes>(data: T, options?: BlobReadOptions): Promise<string> {
+    const { cancel } = options || {};
+    await cc(cancel);
+    if (null == data) {
+        return String(data);
+    } else if (data instanceof ArrayBuffer) {
+        return bufferToDataURL(data);
+    } else if (data instanceof Uint8Array) {
+        return binaryToDataURL(data);
+    } else if (data instanceof Blob) {
+        return blobToDataURL(data, options);
+    } else {
+        return fromTypedData(data) as string;
+    }
+}
+
+/**
+ * @en Deserialize data.
+ * @ja データの復元
+ *
+ * @param value input string or undefined.
+ * @param options deserialize options
+ */
+export function deserialize<T extends SerializableCastableTypes = SerializableCastableTypes>(
+    value: string | undefined, options?: DeserializeOptions<Serializable, never>
+): Promise<SerializableReturnType<T>>;
+
+/**
+ * @en Deserialize data.
+ * @ja データの復元
+ *
+ * @param value input string or undefined.
+ * @param options deserialize options
+ */
+export function deserialize<T extends SerializableKeys>(value: string | undefined, options: DeserializeOptions<Serializable, T>): Promise<Serializable[T] | null | undefined>;
+
+export async function deserialize(value: string | undefined, options?: DeserializeOptions): Promise<SerializableDataTypes | null | undefined> {
+    const { dataType, cancel } = options || {};
+    await cc(cancel);
+
+    const data = restoreNil(toTypedData(value));
+    switch (dataType) {
+        case 'string':
+            return fromTypedData(data);
+        case 'number':
+            return Number(data);
+        case 'boolean':
+            return Boolean(data);
+        case 'object':
+            return Object(data);
+        case 'buffer':
+            return dataURLToBuffer(fromTypedData(data) as string);
+        case 'binary':
+            return dataURLToBinary(fromTypedData(data) as string);
+        case 'blob':
+            return dataURLToBlob(fromTypedData(data) as string);
+        default:
+            return data;
     }
 }

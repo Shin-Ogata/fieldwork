@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { deepEqual, deepCopy } from '@cdp/core-utils';
 import {
     toBinaryString,
@@ -34,6 +36,8 @@ import {
     dataURLToBinary,
     dataURLToText,
     dataURLToBase64,
+    serialize,
+    deserialize,
 } from '@cdp/binary';
 
 describe('binary/converter spec', () => {
@@ -183,6 +187,66 @@ describe('binary/converter spec', () => {
 
         const b64 = dataURLToBase64(dataURL);
         expect(b64).toBe(base64);
+
+        done();
+    });
+
+    it('check serialize()', async (done) => {
+        const dataURL = `data:application/octet-stream;base64,${base64}`;
+
+        expect(await serialize('str')).toBe('str');
+        expect(await serialize(100)).toBe('100');
+        expect(await serialize(true)).toBe('true');
+        expect(await serialize({ hoge: 'fuga' })).toBe('{"hoge":"fuga"}');
+        expect(await serialize(dataURLToBuffer(dataURL))).toBe(dataURL);
+        expect(await serialize(dataURLToBinary(dataURL))).toBe(dataURL);
+        expect(await serialize(dataURLToBlob(dataURL))).toBe(dataURL);
+        expect(await serialize(null)).toBe('null');
+        expect(await serialize(undefined)).toBe('undefined');
+
+        done();
+    });
+
+    it('check deserialize()', async (done) => {
+        const dataURL = `data:application/octet-stream;base64,${base64}`;
+
+        expect(await deserialize('str')).toBe('str' as any);
+        expect(await deserialize('100')).toBe(100 as any);
+        expect(await deserialize('true')).toBe(true as any);
+        expect(await deserialize('{"hoge":"fuga"}')).toEqual({ hoge: 'fuga' } as any);
+        expect(await deserialize(dataURL)).toBe(dataURL as any);
+        expect(await deserialize(dataURL)).toBe(dataURL as any);
+        expect(await deserialize(dataURL)).toBe(dataURL as any);
+        expect(await deserialize('null')).toBe(null);
+        expect(await deserialize('undefined')).toBe(undefined);
+
+        // /w cast
+        expect(await deserialize<string>('str')).toBe('str');
+        expect(await deserialize<number>('100')).toBe(100);
+        expect(await deserialize<boolean>('true')).toBe(true);
+        expect(await deserialize<object>('{"hoge":"fuga"}')).toEqual({ hoge: 'fuga' });
+        expect(await deserialize<ArrayBuffer>(dataURL)).not.toEqual(dataURLToBuffer(dataURL));  // [warning] not working, but compilable
+        expect(await deserialize<Uint8Array>(dataURL)).not.toEqual(dataURLToBinary(dataURL));   // [warning] not working, but compilable
+        expect(await deserialize<Blob>(dataURL)).not.toEqual(dataURLToBlob(dataURL));           // [warning] not working, but compilable
+//      expect(await deserialize<null>('null')).toBe(null);                                     // compile error
+//      expect(await deserialize<undefined>('undefined')).toBe(undefined);                      // compile error
+        done();
+    });
+
+    it('check deserialize() /w convert', async (done) => {
+        const dataURL = `data:application/octet-stream;base64,${base64}`;
+
+        expect(await deserialize('str', { dataType: 'string' })).toBe('str');
+        expect(await deserialize('100', { dataType: 'number' })).toBe(100);
+        expect(await deserialize('true', { dataType: 'boolean' })).toBe(true);
+        expect(await deserialize('{"hoge":"fuga"}', { dataType: 'object' })).toEqual({ hoge: 'fuga' });
+        expect((await deserialize(dataURL, { dataType: 'buffer' })) instanceof ArrayBuffer).toBe(true);
+        expect((await deserialize(dataURL, { dataType: 'binary' })) instanceof Uint8Array).toBe(true);
+        expect((await deserialize(dataURL, { dataType: 'blob' })) instanceof Blob).toBe(true);
+        // convert
+        expect(await deserialize('null', { dataType: 'number' })).toBe(0);
+        // compile error
+//      expect(await deserialize<number>('100', { dataType: 'number' })).toBe(null);
 
         done();
     });

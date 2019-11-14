@@ -118,7 +118,7 @@ export type KeyToType<O extends {}, K extends keyof O> = K extends keyof O ? O[K
  * @en Convert object type to key.
  * @ja オブジェクト型からキーへ変換
  */
-export type TypeToKey<O extends {}, T extends Types<O>, K extends keyof O = keyof O> = O[K] extends T ? Extract<Keys<O>, K> : never;
+export type TypeToKey<O extends {}, T extends Types<O>> = { [K in keyof O]: O[K] extends T ? K : never }[keyof O];
 
 /**
  * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>

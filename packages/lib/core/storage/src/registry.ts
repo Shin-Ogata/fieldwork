@@ -5,6 +5,7 @@ import {
     post,
     deepEqual,
     deepCopy,
+    dropUndefined,
 } from '@cdp/core-utils';
 import { EventPublisher } from '@cdp/event-publisher';
 import {
@@ -17,7 +18,6 @@ import {
     RegistryWriteOptions,
     RegistrySaveOptions,
 } from './interfaces';
-import { dropUndefined } from './utils';
 
 /**
  * @en Registry management class for synchronous Read/Write accessible from any [[IStorage]] object.
@@ -97,8 +97,8 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 // public methods:
 
     /**
-     * @en
-     * @ja 永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
+     * @en Read persistence data from [[IStorage]]. The data loaded already will be cleared.
+     * @ja [[IStorage]] から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
      */
     public async load(options?: IStorageOptions): Promise<void> {
         options = options || {};
@@ -109,8 +109,8 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
     }
 
     /**
-     * @en
-     * @ja 永続化したデータを書き込み
+     * @en Persist data to [[IStorage]].
+     * @ja [[IStorage]] にデータを永続化
      */
     public async save(options?: RegistrySaveOptions): Promise<void> {
         const opts: RegistrySaveOptions = { ...this._defaultOptions, ...options };

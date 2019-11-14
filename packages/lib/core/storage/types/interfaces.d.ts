@@ -1,4 +1,4 @@
-import { Silenceable, Keys, Types, KeyToType } from '@cdp/core-utils';
+import { Silenceable, Keys, Types, KeyToType, TypeToKey } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
 import { Cancelable } from '@cdp/promise';
 /**
@@ -41,6 +41,11 @@ export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Ke
     dataType?: K;
 }
 /**
+ * @en [[IStorage]]`#getItem<cast>()` return types.
+ * @ja [[IStorage]]`#getItem<cast>()` の戻り値
+ */
+export declare type IStorageDataReturnType<T extends StorageDataTypeList, D extends Types<T>> = TypeToKey<T, D> extends never ? never : D | null;
+/**
  * @en [[IStorage]] callback function definition.
  * @ja [[IStorage]] コールバック関数
  */
@@ -69,7 +74,7 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<T> = Types<T>>(key: string, options?: IStorageDataOptions<T, never>): Promise<D | null>;
+    getItem<D extends Types<T> = Types<T>>(key: string, options?: IStorageDataOptions<T, never>): Promise<IStorageDataReturnType<T, D>>;
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
      * @ja キーに対応する値を取得. 存在しない場合は null を返却

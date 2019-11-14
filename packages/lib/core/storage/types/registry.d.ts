@@ -61,13 +61,13 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      */
     get storage(): IStorage<any>;
     /**
-     * @en
-     * @ja 永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
+     * @en Read persistence data from [[IStorage]]. The data loaded already will be cleared.
+     * @ja [[IStorage]] から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
      */
     load(options?: IStorageOptions): Promise<void>;
     /**
-     * @en
-     * @ja 永続化したデータを書き込み
+     * @en Persist data to [[IStorage]].
+     * @ja [[IStorage]] にデータを永続化
      */
     save(options?: RegistrySaveOptions): Promise<void>;
     /**
