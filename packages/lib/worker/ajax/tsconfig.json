@@ -4,9 +4,9 @@
     "declaration": true,
     "declarationDir": "types",
     "inlineSources": true,
+    "inlineSourceMap": true,
     "outDir": "built",
     "rootDir": "src",
-    "sourceMap": true,
     "esModuleInterop": true,
     "typeRoots": [
       "./node_modules/@types"

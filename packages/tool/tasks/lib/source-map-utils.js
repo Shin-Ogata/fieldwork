@@ -1,0 +1,26 @@
+'use strict';
+
+const path      = require('path');
+const fs        = require('fs-extra');
+const chalk     = require('chalk');
+const convert   = require('convert-source-map');
+
+function detectSourceMap(src) {
+    try {
+        const code = fs.readFileSync(src).toString();
+        // try from inline
+        if (convert.commentRegex.test(code)) {
+            return convert.fromComment(code).toObject();
+        }
+        // retry from map file
+        if (convert.mapFileCommentRegex.test(code)) {
+            return convert.fromMapFileComment(code, path.dirname(src)).toObject();
+        }
+    } catch (error) {
+        console.log(chalk.red(`    ERROR: cannot detect source-map for ${src}.`));
+    }
+}
+
+module.exports = {
+    detectSourceMap,
+};

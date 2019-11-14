@@ -1,9 +1,9 @@
 'use strict';
 
-const nodeResolve = require('rollup-plugin-node-resolve');
-const sourcemaps = require('rollup-plugin-sourcemaps');
-const sourcemapRoot = require('@cdp/tasks/rollup-plugin-sourcemap-root');
-const replacer = require('rollup-plugin-replace');
+const nodeResolve        = require('rollup-plugin-node-resolve');
+const sourcemapDetect    = require('@cdp/tasks/rollup-plugin-source-map-detect');
+const sourcemapRoot      = require('@cdp/tasks/rollup-plugin-source-map-root');
+const replacer           = require('rollup-plugin-replace');
 const { config, banner } = require('@cdp/tasks');
 
 const {
@@ -28,7 +28,7 @@ function getConfig(options) {
         external,
         plugins: [
             nodeResolve({ mainFields: ['module', 'main', 'jsnext:main'] }),
-            sourcemaps(),
+            sourcemapDetect(),
             sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${DOMAIN}:///${PACKAGE}/` }),
             replace && replacer(replace),
         ],

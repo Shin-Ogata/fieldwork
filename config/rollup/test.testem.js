@@ -1,11 +1,11 @@
 'use strict';
 
-const multiEntry = require('rollup-plugin-multi-entry');
-const alias = require('rollup-plugin-alias');
-const sourcemaps = require('rollup-plugin-sourcemaps');
-const sourcemapRoot = require('@cdp/tasks/rollup-plugin-sourcemap-root');
-const replacer = require('rollup-plugin-replace');
-const { config } = require('@cdp/tasks');
+const multiEntry        = require('rollup-plugin-multi-entry');
+const alias             = require('rollup-plugin-alias');
+const sourcemapDetect   = require('@cdp/tasks/rollup-plugin-source-map-detect');
+const sourcemapRoot     = require('@cdp/tasks/rollup-plugin-source-map-root');
+const replacer          = require('rollup-plugin-replace');
+const { config }        = require('@cdp/tasks');
 
 const {
     packageName: PACKAGE,
@@ -44,7 +44,7 @@ function getDefault(testeeConfig, options) {
             input: `${BUILT}/${TEST}/${UNIT}/*.js`,
             plugins: [
                 multiEntry(),
-                sourcemaps(),
+                sourcemapDetect(),
                 sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${DOMAIN}:///specs/` }),
                 replace && replacer(replace),
                 alias({

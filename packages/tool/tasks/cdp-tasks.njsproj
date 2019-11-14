@@ -50,10 +50,12 @@
     <Compile Include="lib\cli-plugin-set-version.js" />
     <Compile Include="lib\setup-test-runner.js" />
     <Compile Include="lib\cli-plugin-unit-test.js" />
+    <Compile Include="lib\source-map-utils.js" />
     <Compile Include="res\test\testem-amd.js" />
     <Compile Include="res\test\testem-ci.js" />
     <Compile Include="res\test\testem-main.js" />
-    <Compile Include="rollup-plugin-sourcemap-root.js" />
+    <Compile Include="rollup-plugin-source-map-detect.js" />
+    <Compile Include="rollup-plugin-source-map-root.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
