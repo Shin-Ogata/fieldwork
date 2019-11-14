@@ -3,9 +3,9 @@
 const path      = require('path');
 const fs        = require('fs-extra');
 const chalk     = require('chalk');
-const convert   = require('convert-source-map');
 const nyc       = ((ctor) => new ctor())(require('nyc'));
 const config    = require('../config');
+const srcmap    = require('./source-map-utils');
 const {
     dist,
     doc,
@@ -14,17 +14,10 @@ const {
 } = config.dir;
 
 function detectMap(src) {
-    let map;
-    try {
-        if (fs.existsSync(`${src}.map`)) {
-            map = JSON.parse(fs.readFileSync(`${src}.map`).toString());
-        } else {
-            map = convert.fromComment(fs.readFileSync(src).toString()).toObject();
-        }
-    } catch (error) {
+    const map = srcmap.detectSourceMap(src);
+    if (!map) {
         console.log(chalk.yellow(`    SKIPPED: cannot remap for ${path.basename(src)}.`));
     }
-
     return map;
 }
 

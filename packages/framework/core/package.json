@@ -1,12 +1,15 @@
 {
-  "name": "@cdp/core-storage",
-  "description": "core storage utility module",
+  "name": "@cdp/framework-core",
+  "description": "core framework utilities",
   "version": "0.9.0",
   "author": "Shin Ogata",
-  "dependencies": {
-    "@cdp/core-utils": "file:../utils",
-    "@cdp/event-publisher": "file:../event-publisher",
-    "@cdp/promise": "file:../promise"
+  "devDependencies": {
+    "@cdp/core-storage": "file:../../lib/core/storage",
+    "@cdp/core-utils": "file:../../lib/core/utils",
+    "@cdp/event-publisher": "file:../../lib/core/event-publisher",
+    "@cdp/observable": "file:../../lib/core/observable",
+    "@cdp/promise": "file:../../lib/core/promise",
+    "@cdp/result": "file:../../lib/core/result"
   },
   "keywords": [
     "CDP",
@@ -14,8 +17,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/core-storage",
-  "module": "dist/core-storage.mjs",
+  "main": "dist/core-utils",
+  "module": "dist/core-utils.mjs",
   "private": true,
   "repository": {
     "type": "git",
@@ -24,7 +27,7 @@
   "scripts": {
     "build": "run-s -l build:*",
     "build:src": "run-s compile:src bundle:src",
-    "build:test": "run-s compile:test bundle:test",
+    "__build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./rollup.config.js",
@@ -41,6 +44,7 @@
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
     "debug": "npm run compile && run-p unit-test watch",
+    "experimental:bundle:src:types": "dts-bundle --configJson ../../../../config/dts-bundle.js",
     "lint": "eslint src tests/unit -c ../../../../config/tslint.js --ext .ts",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../../config/eslint.js",

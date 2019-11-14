@@ -2,12 +2,14 @@
 
 const { relative } = require('path');
 
-module.exports = setSourceMapRoot;
-
 function setSourceMapRoot({ relativePath, sourceRoot } = {}) {
-    const replacePath = src => relative(relativePath, src).replace(/\\/g, '/').replace(/^\w+:\/(?!\/)/, '$&/');
+    const replacePath = src => relative(relativePath, src)
+        .replace(/\\/g, '/')
+        .replace(/^\w+:\/(?!\/)/, '$&/')
+        .replace(/^([\s\S]+)(\/@[\w]+\/)([\s\S]+)$/, '$3')
+    ;
     return Object.freeze({
-        name: 'sourcemap-root',
+        name: 'source-map-root',
         generateBundle(outputOptions, bundle = {}) {
             for (const { map } of Object.values(bundle)) {
                 if (!map) {
@@ -23,3 +25,5 @@ function setSourceMapRoot({ relativePath, sourceRoot } = {}) {
         },
     });
 }
+
+module.exports = setSourceMapRoot;
