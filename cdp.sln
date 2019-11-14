@@ -35,6 +35,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "observable", "packages\lib\
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "core-storage", "packages\lib\core\storage\core-storage.njsproj", "{DCD0B282-6857-4871-862C-48CC64A54122}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "web-storage", "packages\lib\window\storage\web-storage.njsproj", "{0B31755F-059A-4698-A82C-75F0E614792A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{DCD0B282-6857-4871-862C-48CC64A54122}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCD0B282-6857-4871-862C-48CC64A54122}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCD0B282-6857-4871-862C-48CC64A54122}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B31755F-059A-4698-A82C-75F0E614792A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B31755F-059A-4698-A82C-75F0E614792A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B31755F-059A-4698-A82C-75F0E614792A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B31755F-059A-4698-A82C-75F0E614792A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{8106B0AC-0BCD-4AAD-ACC9-5FDCAF979AA3} = {07FBA8FB-A230-4C6B-8863-952C8E0A830D}
 		{437BA941-1649-4208-BEF9-2B6FACDE65A7} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 		{DCD0B282-6857-4871-862C-48CC64A54122} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
+		{0B31755F-059A-4698-A82C-75F0E614792A} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

@@ -1,24 +1,36 @@
 import { Keys, Types, KeyToType } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
 import { Cancelable } from '@cdp/promise';
-import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
-/** MemoryStorage I/O options */
-export declare type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
-/** MemoryStorage return value */
-export declare type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
-/** MemoryStorage data type */
-export declare type MemoryStorageDataTypes = Types<StorageDataTypeList>;
-/** MemoryStorage input data type */
-export declare type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
-/** MemoryStorage event callback */
-export declare type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeList>;
+import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from '@cdp/core-storage';
+import { Serializable } from '@cdp/binary';
 /**
- * @en Memory storage class. This class doesn't support permaneciation data.
- * @ja メモリーストレージクラス. 本クラスはデータの永続化をサポートしない
+ * @en Web storage data type set interface.
+ * @ja Web storage に格納可能な型の集合
  */
-export declare class MemoryStorage implements IStorage {
+export declare type WebStorageDataTypeList = StorageDataTypeList & Serializable;
+/** WebStorage I/O options */
+export declare type WebStorageOptions<K extends Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
+/** WebStorage return value */
+export declare type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
+/** WebStorage input data type */
+export declare type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
+/** WebStorage event callback */
+export declare type WebStorageEventCallback = IStorageEventCallback<WebStorageDataTypeList>;
+/**
+ * @en Web storage class. This class implements `IStorage` interface by using `window.localStorage`.
+ * @ja ウェブストレージクラス. 本クラスは `window.localStorage` を用いて `IStorage` を実装
+ */
+export declare class WebStorage implements IStorage<WebStorageDataTypeList> {
     private readonly _broker;
-    private _storage;
+    private readonly _storage;
+    /**
+     * constructor
+     *
+     * @param storage
+     *  - `en` Web [[Storage]] instance
+     *  - `ja` Web [[Storage]] インスタンス
+     */
+    constructor(storage: Storage);
     /**
      * @en [[IStorage]] kind signature.
      * @ja [[IStorage]] の種別を表す識別子
@@ -38,7 +50,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<never>): Promise<IStorageDataReturnType<StorageDataTypeList, D>>;
+    getItem<D extends Types<WebStorageDataTypeList> = Types<WebStorageDataTypeList>>(key: string, options?: WebStorageOptions<never>): Promise<IStorageDataReturnType<StorageDataTypeList, D>>;
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
      * @ja キーに対応する値を取得. 存在しない場合は null を返却
@@ -53,7 +65,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<K extends Keys<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<K>): Promise<MemoryStorageResult<K> | null>;
+    getItem<K extends Keys<WebStorageDataTypeList>>(key: string, options?: WebStorageOptions<K>): Promise<WebStorageResult<K> | null>;
     /**
      * @en Sets the value of the pair identified by key to value, creating a new key/value pair if none existed for key previously.
      * @ja キーを指定して値を設定. 存在しない場合は新規に作成
@@ -65,7 +77,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    setItem<V extends MemoryStorageInputDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void>;
+    setItem<V extends WebStorageInputDataTypes>(key: string, value: V, options?: WebStorageOptions<never>): Promise<void>;
     /**
      * @en Removes the key/value pair with the given key from the list associated with the object, if a key/value pair with the given key exists.
      * @ja 指定されたキーに対応する値が存在すれば削除
@@ -101,7 +113,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` callback function.
      *  - `ja` たコールバック関数
      */
-    on(listener: MemoryStorageEventCallback): Subscription;
+    on(listener: WebStorageEventCallback): Subscription;
     /**
      * @en Unsubscribe event(s).
      * @ja イベント購読解除
@@ -112,6 +124,6 @@ export declare class MemoryStorage implements IStorage {
      *  - `ja` コールバック関数
      *         指定しない場合はすべてを解除
      */
-    off(listener?: MemoryStorageEventCallback): void;
+    off(listener?: WebStorageEventCallback): void;
 }
-export declare const memoryStorage: MemoryStorage;
+export declare const webStorage: WebStorage;

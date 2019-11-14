@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/require-await */
 
 import {
-    PlainObject,
     Keys,
     Types,
     KeyToType,
+    verify,
     deepEqual,
-    isEmptyObject,
-    fromTypedData,
     dropUndefined,
-    restoreNil,
 } from '@cdp/core-utils';
 import { Subscription, EventBroker } from '@cdp/event-publisher';
 import {
@@ -24,34 +21,54 @@ import {
     IStorageDataReturnType,
     IStorageEventCallback,
     IStorage,
-} from './interfaces';
+} from '@cdp/core-storage';
+import {
+    Serializable,
+    serialize,
+    deserialize,
+} from '@cdp/binary';
 
-/** MemoryStorage I/O options */
-export type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
-/** MemoryStorage return value */
-export type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
-/** MemoryStorage data type */
-export type MemoryStorageDataTypes = Types<StorageDataTypeList>;
-/** MemoryStorage input data type */
-export type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
-/** MemoryStorage event callback */
-export type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeList>;
+/**
+ * @en Web storage data type set interface.
+ * @ja Web storage に格納可能な型の集合
+ */
+export type WebStorageDataTypeList = StorageDataTypeList & Serializable;
+/** WebStorage I/O options */
+export type WebStorageOptions<K extends Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
+/** WebStorage return value */
+export type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
+/** WebStorage input data type */
+export type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
+/** WebStorage event callback */
+export type WebStorageEventCallback = IStorageEventCallback<WebStorageDataTypeList>;
 
 /** @internal */
-interface MemoryStorageEvent {
-    '@': [string | null, Types<StorageDataTypeList> | null, Types<StorageDataTypeList> | null];
+interface WebStorageEvent {
+    '@': [string | null, Types<WebStorageDataTypeList> | null, Types<WebStorageDataTypeList> | null];
 }
 
 //__________________________________________________________________________________________________//
 
 /**
- * @en Memory storage class. This class doesn't support permaneciation data.
- * @ja メモリーストレージクラス. 本クラスはデータの永続化をサポートしない
+ * @en Web storage class. This class implements `IStorage` interface by using `window.localStorage`.
+ * @ja ウェブストレージクラス. 本クラスは `window.localStorage` を用いて `IStorage` を実装
  */
-export class MemoryStorage implements IStorage {
+export class WebStorage implements IStorage<WebStorageDataTypeList> {
 
-    private readonly _broker = new EventBroker<MemoryStorageEvent>();
-    private _storage: PlainObject = {};
+    private readonly _broker = new EventBroker<WebStorageEvent>();
+    private readonly _storage: Storage;
+
+    /**
+     * constructor
+     *
+     * @param storage
+     *  - `en` Web [[Storage]] instance
+     *  - `ja` Web [[Storage]] インスタンス
+     */
+    constructor(storage: Storage) {
+        verify('instanceOf', Storage, storage);
+        this._storage = storage;
+    }
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IStorage
@@ -60,7 +77,8 @@ export class MemoryStorage implements IStorage {
      * @ja [[IStorage]] の種別を表す識別子
      */
     get kind(): string {
-        return 'memory';
+        const signature = localStorage === this._storage ? 'local-storage' : 'session-storage';
+        return `web:${signature}`;
     }
 
     /**
@@ -77,9 +95,9 @@ export class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(
+    getItem<D extends Types<WebStorageDataTypeList> = Types<WebStorageDataTypeList>>(
         key: string,
-        options?: MemoryStorageOptions<never>
+        options?: WebStorageOptions<never>
     ): Promise<IStorageDataReturnType<StorageDataTypeList, D>>;
 
     /**
@@ -96,29 +114,13 @@ export class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<K extends Keys<StorageDataTypeList>>(
+    getItem<K extends Keys<WebStorageDataTypeList>>(
         key: string,
-        options?: MemoryStorageOptions<K>
-    ): Promise<MemoryStorageResult<K> | null>;
+        options?: WebStorageOptions<K>
+    ): Promise<WebStorageResult<K> | null>;
 
-    async getItem(key: string, options?: MemoryStorageOptions<any>): Promise<Types<StorageDataTypeList> | null> {
-        options = options || {};
-        await cc(options.cancel);
-
-        // `undefined` → `null`
-        const value = dropUndefined(this._storage[key]);
-        switch (options.dataType) {
-            case 'string':
-                return fromTypedData(value) as string;
-            case 'number':
-                return Number(restoreNil(value));
-            case 'boolean':
-                return Boolean(restoreNil(value));
-            case 'object':
-                return Object(restoreNil(value));
-            default:
-                return restoreNil(value);
-        }
+    async getItem(key: string, options?: WebStorageOptions<any>): Promise<Types<WebStorageDataTypeList> | null> {
+        return dropUndefined(await deserialize(this._storage[key], options));
     }
 
     /**
@@ -132,13 +134,12 @@ export class MemoryStorage implements IStorage {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    async setItem<V extends MemoryStorageInputDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void> {
+    async setItem<V extends WebStorageInputDataTypes>(key: string, value: V, options?: WebStorageOptions<never>): Promise<void> {
         options = options || {};
-        await cc(options.cancel);
-        const newVal = dropUndefined(value, true);         // `null` or `undefined` → 'null' or 'undefined'
-        const oldVal = dropUndefined(this._storage[key]);  // `undefined` → `null`
+        const newVal = dropUndefined(value, true);                                      // `null` or `undefined` → 'null' or 'undefined'
+        const oldVal = dropUndefined(await deserialize(this._storage[key], options));   // `undefined` → `null`
         if (!deepEqual(oldVal, newVal)) {
-            this._storage[key] = newVal;
+            this._storage.setItem(key, await serialize(newVal, options));
             !options.silent && this._broker.publish('@', key, newVal, oldVal);
         }
     }
@@ -154,10 +155,10 @@ export class MemoryStorage implements IStorage {
     async removeItem(key: string, options?: IStorageOptions): Promise<void> {
         options = options || {};
         await cc(options.cancel);
-        const oldVal = this._storage[key];
-        if (undefined !== oldVal) {
-            delete this._storage[key];
-            !options.silent && this._broker.publish('@', key, null, oldVal);
+        const value = this._storage[key];
+        if (undefined !== value) {
+            this._storage.removeItem(key);
+            !options.silent && this._broker.publish('@', key, null, await deserialize(value, options));
         }
     }
 
@@ -172,8 +173,8 @@ export class MemoryStorage implements IStorage {
     async clear(options?: IStorageOptions): Promise<void> {
         options = options || {};
         await cc(options.cancel);
-        if (!isEmptyObject(this._storage)) {
-            this._storage = {};
+        if (0 < this._storage.length) {
+            this._storage.clear();
             !options.silent && this._broker.publish('@', null, null, null);
         }
     }
@@ -199,7 +200,7 @@ export class MemoryStorage implements IStorage {
      *  - `en` callback function.
      *  - `ja` たコールバック関数
      */
-    on(listener: MemoryStorageEventCallback): Subscription {
+    on(listener: WebStorageEventCallback): Subscription {
         return this._broker.on('@', listener);
     }
 
@@ -213,10 +214,10 @@ export class MemoryStorage implements IStorage {
      *  - `ja` コールバック関数
      *         指定しない場合はすべてを解除
      */
-    off(listener?: MemoryStorageEventCallback): void {
+    off(listener?: WebStorageEventCallback): void {
         this._broker.off('@', listener);
     }
 }
 
 // default storage
-export const memoryStorage = new MemoryStorage();
+export const webStorage = new WebStorage(localStorage);

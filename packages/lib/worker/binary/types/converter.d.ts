@@ -1,3 +1,5 @@
+import { Keys, Types, TypeToKey } from '@cdp/core-utils';
+import { Cancelable } from '@cdp/promise';
 import { BlobReadOptions } from './blob-reader';
 /**
  * @en Convert string to binary-string. (not human readable string)
@@ -328,3 +330,54 @@ export declare function dataURLToText(dataURL: string): string;
  *  - `ja` data-URL 文字列
  */
 export declare function dataURLToBase64(dataURL: string): string;
+/**
+ * @en Serializable data type list.
+ * @ja シリアライズ可能なデータ型一覧
+ */
+export interface Serializable {
+    string: string;
+    number: number;
+    boolean: boolean;
+    object: object;
+    buffer: ArrayBuffer;
+    binary: Uint8Array;
+    blob: Blob;
+}
+export declare type SerializableDataTypes = Types<Serializable>;
+export declare type SerializableInputDataTypes = SerializableDataTypes | null | undefined;
+export declare type SerializableKeys = Keys<Serializable>;
+export declare type SerializableCastable = Omit<Serializable, 'buffer' | 'binary' | 'blob'>;
+export declare type SerializableCastableTypes = Types<SerializableCastable>;
+export declare type SerializableReturnType<T extends SerializableCastableTypes> = TypeToKey<SerializableCastable, T> extends never ? never : T | null | undefined;
+/**
+ * @en Deserializable options interface.
+ * @ja デシリアライズに使用するオプション
+ */
+export interface DeserializeOptions<T extends Serializable = Serializable, K extends Keys<T> = Keys<T>> extends Cancelable {
+    /** [[SerializableKeys]] */
+    dataType?: K;
+}
+/**
+ * @en Serialize data.
+ * @ja データシリアライズ
+ *
+ * @param data input
+ * @param options blob convert options
+ */
+export declare function serialize<T extends SerializableInputDataTypes>(data: T, options?: BlobReadOptions): Promise<string>;
+/**
+ * @en Deserialize data.
+ * @ja データの復元
+ *
+ * @param value input string or undefined.
+ * @param options deserialize options
+ */
+export declare function deserialize<T extends SerializableCastableTypes = SerializableCastableTypes>(value: string | undefined, options?: DeserializeOptions<Serializable, never>): Promise<SerializableReturnType<T>>;
+/**
+ * @en Deserialize data.
+ * @ja データの復元
+ *
+ * @param value input string or undefined.
+ * @param options deserialize options
+ */
+export declare function deserialize<T extends SerializableKeys>(value: string | undefined, options: DeserializeOptions<Serializable, T>): Promise<Serializable[T] | null | undefined>;
