@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method */
-import { EventPublisher, EventBroker, Arguments } from '@cdp/event-publisher';
+import { EventPublisher, EventBroker, EventArguments } from '@cdp/event-publisher';
 
 const symbolKey = Symbol('SymbolKey');
 
@@ -25,7 +25,7 @@ class TestPublisher extends EventPublisher<TestEvent> {
         this.publish('simple', 1);
         this.publish(symbolKey, symbolKey.toString());
     }
-    public async trigger<Channel extends keyof TestEvent>(channel: Channel, ...args: Arguments<Partial<TestEvent[Channel]>>): Promise<void> {
+    public async trigger<Channel extends keyof TestEvent>(channel: Channel, ...args: EventArguments<Partial<TestEvent[Channel]>>): Promise<void> {
         this.publish(channel, ...args);
     }
 }

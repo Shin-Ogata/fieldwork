@@ -41,7 +41,6 @@
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
     "debug": "npm run compile && run-p unit-test watch",
-    "experimental:bundle:src:types": "dts-bundle --configJson ../../../../config/dts-bundle.js",
     "lint": "eslint src tests/unit -c ../../../../config/tslint.js --ext .ts",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../../config/eslint.js",

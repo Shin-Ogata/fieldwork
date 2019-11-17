@@ -1,7 +1,8 @@
 {
   "extends": "../../../config/tsconfig/core",
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
+    "declarationDir": "types",
     "inlineSources": true,
     "inlineSourceMap": true,
     "outDir": "built",

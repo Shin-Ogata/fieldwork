@@ -80,6 +80,8 @@
     <TypeScriptCompile Include="tests\unit\safe.spec.ts" />
     <TypeScriptCompile Include="tests\unit\types.spec.ts" />
     <TypeScriptCompile Include="tests\unit\verify.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\_export.d.ts" />
+    <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\array.d.ts" />
     <TypeScriptCompile Include="types\config.d.ts" />
@@ -92,8 +94,6 @@
     <TypeScriptCompile Include="types\timer.d.ts" />
     <TypeScriptCompile Include="types\types.d.ts" />
     <TypeScriptCompile Include="types\verify.d.ts" />
-    <TypeScriptCompile Include="types\_export.d.ts" />
-    <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".npmrc" />

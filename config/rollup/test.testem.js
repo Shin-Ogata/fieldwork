@@ -1,7 +1,7 @@
 'use strict';
 
 const multiEntry        = require('rollup-plugin-multi-entry');
-const alias             = require('rollup-plugin-alias');
+const alias             = require('@rollup/plugin-alias');
 const sourcemapDetect   = require('@cdp/tasks/rollup-plugin-source-map-detect');
 const sourcemapRoot     = require('@cdp/tasks/rollup-plugin-source-map-root');
 const replacer          = require('rollup-plugin-replace');
@@ -41,7 +41,7 @@ function getDefault(testeeConfig, options) {
     return [
         testeeConfig,
         {
-            input: `${BUILT}/${TEST}/${UNIT}/*.js`,
+            input: `${BUILT}/${TEST}/${UNIT}/**/*.js`,
             plugins: [
                 multiEntry(),
                 sourcemapDetect(),
@@ -81,14 +81,18 @@ function getDefault(testeeConfig, options) {
 }
 
 function getTestem(options) {
-    const external = (options && options.external) || {};
+    const { external, requirejs } = options || {};
+    const requirejs_config = Object.assign({}, requirejs, {
+        baseUrl: '../../',
+        paths: Object.assign({
+            'boot': `${TEMP}/testem/framework/boot`,
+            'testem': '../../../testem',
+            [PACKAGE]: `${TEMP}/${OUTNAME}`,
+            'specs': `${TEMP}/${OUTNAME}-specs`,
+        }, external),
+    });
     return {
-        require_config: {
-            paths: Object.assign({
-                [PACKAGE]: `${TEMP}/${OUTNAME}`,
-                'specs': `${TEMP}/${OUTNAME}-specs`,
-            }, external),
-        },
+        requirejs_config,
         src_files: [
             `${TEMP}/${OUTNAME}.js`,
             `${TEMP}/${OUTNAME}-specs.js`,

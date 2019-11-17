@@ -41,10 +41,13 @@
     <Compile Include="command.js" />
     <Compile Include="config.js" />
     <Compile Include="index.js" />
+    <Compile Include="lib\cli-plugin-bundle-depends.js" />
     <Compile Include="lib\cli-plugin-clean.js" />
     <Compile Include="lib\cli-command-parser.js" />
     <Compile Include="lib\cli-plugin-delegate.js" />
     <Compile Include="lib\cli-plugin-metrics.js" />
+    <Compile Include="lib\dts-bundle-config.js" />
+    <Compile Include="lib\misc.js" />
     <Compile Include="lib\remap-coverage.js" />
     <Compile Include="lib\resolve-dependency.js" />
     <Compile Include="lib\cli-plugin-set-version.js" />

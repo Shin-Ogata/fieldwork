@@ -5,13 +5,6 @@ const { parse }  = require('querystring');
 const { config } = require('@cdp/tasks');
 const settings   = require('./testem.json');
 
-const test_root = `${config.dir.temp}/testem`;
-
-const require_paths = [];
-for (const key of Object.keys(settings.require_config.paths)) {
-    require_paths.push({ name: key, path: settings.require_config.paths[key] });
-}
-
 const port = 7358;
 const _serverContext = [];
 
@@ -44,9 +37,8 @@ const testem = {
             ],
         },
     },
-    test_root,
-    test_page: `${test_root}/testem.index.mustache`,
-    require_paths,
+    test_page: `${config.dir.temp}/testem/testem.index.mustache`,
+    require_config: JSON.stringify(settings.requirejs_config),
 
     proxies: {
         '/api': {

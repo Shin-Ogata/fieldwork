@@ -20,6 +20,7 @@
     "commander": "*",
     "convert-source-map": "*",
     "del": "*",
+    "dts-bundle-generator": "*",
     "fs-extra": "*",
     "glob": "*",
     "lodash": "*",

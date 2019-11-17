@@ -18,10 +18,8 @@ const {
 } = config.build;
 
 function getConfig(options) {
-    const globals = options && options.globals;
+    const { globals, replace, exports } = options || {};
     const external = globals && Object.keys(globals);
-    const replace = options && options.replace;
-    const exports = options && options.exports;
 
     return {
         input: `${BUILT}/${BASE}.js`,

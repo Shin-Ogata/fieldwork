@@ -29,7 +29,7 @@ function defineCommands(commander, cmd, isDefault) {
             console.log(
 `
 Examples:
-  $ cdp-task set-version 1.0.1              set version to the package.json (default)
+  $ cdp-task set-version 1.0.1              set version to the package.json
 `
             );
         });

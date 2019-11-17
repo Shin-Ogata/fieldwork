@@ -1,8 +1,5 @@
 import { Arguments } from '@cdp/core-utils';
 
-// re-export
-export { Arguments };
-
 /**
  * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
  * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
