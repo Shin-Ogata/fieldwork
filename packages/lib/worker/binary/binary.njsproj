@@ -64,6 +64,8 @@
     <TypeScriptCompile Include="tests\unit\blob-reader.spec.ts" />
     <TypeScriptCompile Include="tests\unit\blob-url.spec.ts" />
     <TypeScriptCompile Include="tests\unit\converter.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\_export.d.ts" />
+    <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\base64.d.ts" />
     <TypeScriptCompile Include="types\blob-reader.d.ts" />
@@ -71,8 +73,6 @@
     <TypeScriptCompile Include="types\converter.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\ssr.d.ts" />
-    <TypeScriptCompile Include="types\_export.d.ts" />
-    <TypeScriptCompile Include="types\_module.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

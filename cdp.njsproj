@@ -50,7 +50,6 @@
     <Folder Include="config\tsconfig\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="config\dts-bundle.js" />
     <Compile Include="config\eslint.js" />
     <Compile Include="config\rollup\core.js" />
     <Compile Include="config\rollup\test.testem.js" />

@@ -233,7 +233,7 @@ describe('observable/object spec', () => {
         console.timeEnd('ObservableObject');
 
         expect(t1).toBeLessThanOrEqual(base);
-        expect(t1).toBeLessThanOrEqual(600);
+        expect(t1).toBeLessThanOrEqual(800);
     });
 
     it('check advanced', () => {

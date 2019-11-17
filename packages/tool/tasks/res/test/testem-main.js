@@ -1,15 +1,6 @@
 (function (global) {
-    const testRoot = global.testRoot;
-    const requireConfig = {
-        baseUrl: '../../',
-        paths: Object.assign({
-            'boot': `${testRoot}/framework/boot`,
-            'testem': '../../../testem',
-        }, global.requirePathes),
-    };
-
     // static configuration: requirejs
-    require.config(requireConfig);
+    require.config(JSON.parse(global.requireConfig));
 
     function setupTestem() {
         try {

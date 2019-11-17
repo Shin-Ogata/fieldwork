@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const _ = require('lodash');
+const { merge: _merge } = require('./lib/misc');
 
 function query(cwd = process.cwd()) {
     const pkg = require(path.join(cwd, 'package.json'));
@@ -94,7 +94,7 @@ function query(cwd = process.cwd()) {
     function apply() {
         const merge = (src) => {
             if (null != src) {
-                _.merge(config, src);
+                _merge(config, src);
                 override(config, src, 'metrics', 'ignore');
             }
         };

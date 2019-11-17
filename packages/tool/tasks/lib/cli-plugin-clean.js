@@ -3,7 +3,6 @@
 const { resolve, relative } = require('path');
 const fs    = require('fs-extra');
 const del   = require('del');
-const glob  = require('glob');
 const chalk = require('chalk');
 const {
     dist,
@@ -16,6 +15,7 @@ const {
     type,
     temp,
 } = require('../config').dir;
+const { cleanEmptyDir } = require('./misc');
 
 const COMMAND = 'clean';
 
@@ -73,21 +73,6 @@ function defaultOptions() {
         dist: false,
         type: false,
     };
-}
-
-function cleanEmptyDir(target) {
-    const list = glob.sync('**', {
-        cwd: target,
-        nodir: false,
-    });
-    for (let i = list.length - 1; i >= 0; i--) {
-        const filePath = resolve(target, list[i]);
-        if (fs.statSync(filePath).isDirectory()) {
-            if (0 === fs.readdirSync(filePath).length) {
-                fs.removeSync(filePath);
-            }
-        }
-    }
 }
 
 async function exec(options) {

@@ -99,7 +99,7 @@ export declare class MemoryStorage implements IStorage {
      *
      * @param listener
      *  - `en` callback function.
-     *  - `ja` たコールバック関数
+     *  - `ja` コールバック関数
      */
     on(listener: MemoryStorageEventCallback): Subscription;
     /**

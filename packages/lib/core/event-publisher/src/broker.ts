@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Arguments, Subscribable } from './interfaces';
+import { Arguments } from '@cdp/core-utils';
+import { Subscribable } from './interfaces';
 import { EventPublisher } from './publisher';
+
+// re-export
+export { Arguments as EventArguments };
 
 /**
  * @en Eventing framework object able to call `publish()` method from outside.

@@ -11,12 +11,7 @@
     <h1>Test Page</h1>
     <div id="jasmine_content"></div>
     <script type="text/javascript" charset="utf-8">
-        window.testRoot = '{{{test_root}}}';
-        window.requirePathes = {
-            {{#require_paths}}
-            '{{{name}}}': '{{{path}}}',
-            {{/require_paths}}
-        };
+        window.requireConfig = '{{{require_config}}}';
     </script>
     <script data-main="testem-main" src="framework/require.js"></script>
 </body>
