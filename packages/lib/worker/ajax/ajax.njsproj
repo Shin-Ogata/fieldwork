@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dist\ajax.js" />
-    <Compile Include="rollup.config.js" />
+    <Compile Include="build.config.js" />
     <Compile Include="tests\custom\testem-amd.js" />
     <Compile Include="tests\custom\testem-ci.js" />
     <Compile Include="tests\test.config.js" />

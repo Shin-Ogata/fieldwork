@@ -2,7 +2,6 @@
 
 import {
     Writable,
-    SortCallback,
     isNumber,
     verify,
     post,
@@ -292,7 +291,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
      * Sorts an array.
      * @param compareFn The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order.
      */
-    sort(comparator?: SortCallback<T>): this {
+    sort(comparator?: (lhs: T, rhs: T) => number): this {
         verifyObservable(this);
         const internal = this[_internal];
         const old = Array.from(this);

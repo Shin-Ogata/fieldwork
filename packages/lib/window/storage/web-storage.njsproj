@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dist\web-storage.js" />
-    <Compile Include="rollup.config.js" />
+    <Compile Include="build.config.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>

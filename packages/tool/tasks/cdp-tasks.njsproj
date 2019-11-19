@@ -46,7 +46,7 @@
     <Compile Include="lib\cli-command-parser.js" />
     <Compile Include="lib\cli-plugin-delegate.js" />
     <Compile Include="lib\cli-plugin-metrics.js" />
-    <Compile Include="lib\dts-bundle-config.js" />
+    <Compile Include="lib\cli-plugin-minify.js" />
     <Compile Include="lib\misc.js" />
     <Compile Include="lib\remap-coverage.js" />
     <Compile Include="lib\resolve-dependency.js" />

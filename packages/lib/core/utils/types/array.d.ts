@@ -11,11 +11,6 @@
  */
 export declare function shuffle<T>(array: T[], destructive?: boolean): T[];
 /**
- * @en Sort callback type.
- * @ja ソート関数型
- */
-export declare type SortCallback<T> = (lhs: T, rhs: T) => number;
-/**
  * @en Execute stable sort by merge-sort algorithm.
  * @ja `merge-sort` による安定ソート
  *
@@ -29,7 +24,7 @@ export declare type SortCallback<T> = (lhs: T, rhs: T) => number;
  *  - `en` true: destructive / false: non-destructive (default)
  *  - `ja` true: 破壊的 / false: 非破壊的 (既定)
  */
-export declare function sort<T>(array: T[], comparator: SortCallback<T>, destructive?: boolean): T[];
+export declare function sort<T>(array: T[], comparator: (lhs: T, rhs: T) => number, destructive?: boolean): T[];
 /**
  * @en Make index array.
  * @ja インデックス配列の作成

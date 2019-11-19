@@ -9,12 +9,11 @@ const {
     writeFileSync,
     outputJsonSync,
 } = require('fs-extra');
-const { resolve }     = require('path');
-const chalk           = require('chalk');
-const command         = require('../command');
-const { pkg, dir }    = require('../config');
-const banner          = require('../banner');
-const getBundleConfig = require('./dts-bundle-config');
+const { resolve, basename } = require('path');
+const chalk                 = require('chalk');
+const command               = require('../command');
+const { pkg, dir }          = require('../config');
+const banner                = require('../banner');
 
 const COMMAND = 'bundle-depends';
 const TEMP_DTS_BUNDLE_CONFIG_PATH = 'dts-bundle/config.json';
@@ -99,19 +98,44 @@ function linkTestUnit(cwd, target) {
     symlinkSync(src, dst, ('win32' === process.platform ? 'junction' : 'dir'));
 }
 
-function setup(cwd) {
+function setup(cwd, silent) {
     const targets = queryTargets(cwd);
     for (const target of targets) {
         linkTestUnit(cwd, target);
+        if (!silent) {
+            console.log(chalk.gray(`  depends: ${target.module}`));
+        }
     }
 }
 
-async function bundleDTS(cwd, config, validate) {
-    const bundleInfo = getBundleConfig(cwd, queryTargets(cwd), config, validate);
-    const { bundle, indent } = bundleInfo;
+function cleaningDTS(code, indent) {
+    // eslint-disable-next-line
+    return code
+        .replace(/\t/gm, indent)        // tab to space
+        .replace(/^export {};/m, '')    // trim 'export {};'
+        .replace(/[\n\s]*$/, '')        // trim surplus line feed
+        + '\n';                         // add final line feed
+}
+
+async function bundleDTS(cwd, silent, config, validate) {
+    let settings = require(resolve(cwd, config));
+    if (settings.dts) {
+        settings = settings.dts;
+    }
+    let { bundle, indent } = settings;
+    if (!bundle) {
+        bundle = settings;
+        indent = '    ';
+    }
+    if (validate) {
+        for (const entry of bundle.entries) {
+            entry.noCheck = false;
+        }
+    }
+
     // preProcess
-    if ('function' === typeof bundleInfo.preProcess) {
-        await bundleInfo.preProcess();
+    if ('function' === typeof settings.preProcess) {
+        await settings.preProcess();
     }
 
     const tempConfigPath = resolve(cwd, dir.temp, TEMP_DTS_BUNDLE_CONFIG_PATH);
@@ -124,17 +148,10 @@ async function bundleDTS(cwd, config, validate) {
     }
 
     for (const [index, entry] of bundle.entries.entries()) {
-        // eslint-disable-next-line
-        let code = readFileSync(entry.outFile)
-                    .toString()
-                    .replace(/\t/gm, indent)        // tab to space
-                    .replace(/^export {};/m, '')    // trim 'export {};'
-                    .replace(/[\n\s]*$/, '')        // trim surplus line feed
-
-            + '\n'; // add final line feed
+        let code = cleaningDTS(readFileSync(entry.outFile).toString(), indent);
         // postProcess
-        if ('function' === typeof bundleInfo.postProcess) {
-            code = await bundleInfo.postProcess(index, code);
+        if ('function' === typeof settings.postProcess) {
+            code = cleaningDTS(await settings.postProcess(index, code), indent);
         }
         { // banner
             const includes = entry.libraries.inlinedLibraries;
@@ -143,22 +160,25 @@ async function bundleDTS(cwd, config, validate) {
             if (includes.length) {
                 description += `\n *   - includes:${seps}${includes.join(seps)}`;
             }
-            code = banner(Object.assign({ description }, bundleInfo)) + code;
+            code = banner(Object.assign({ description }, settings)) + code;
         }
         writeFileSync(entry.outFile, code);
+        if (!silent) {
+            console.log(chalk.gray(`  generated: ${basename(entry.outFile)}`));
+        }
     }
 }
 
 async function exec(options) {
     options = options || defaultOptions();
-    const { cwd, mode, config, validate } = options;
+    const { cwd, silent, mode, config, validate } = options;
 
     switch (mode) {
         case 'setup':
-            setup(cwd);
+            setup(cwd, silent);
             break;
         case 'dts':
-            await bundleDTS(cwd, config, validate);
+            await bundleDTS(cwd, silent, config, validate);
             break;
         default:
             break;
