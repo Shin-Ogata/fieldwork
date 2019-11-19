@@ -715,11 +715,6 @@ export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, 
  */
 export declare function shuffle<T>(array: T[], destructive?: boolean): T[];
 /**
- * @en Sort callback type.
- * @ja ソート関数型
- */
-export declare type SortCallback<T> = (lhs: T, rhs: T) => number;
-/**
  * @en Execute stable sort by merge-sort algorithm.
  * @ja `merge-sort` による安定ソート
  *
@@ -733,7 +728,7 @@ export declare type SortCallback<T> = (lhs: T, rhs: T) => number;
  *  - `en` true: destructive / false: non-destructive (default)
  *  - `ja` true: 破壊的 / false: 非破壊的 (既定)
  */
-export declare function sort<T>(array: T[], comparator: SortCallback<T>, destructive?: boolean): T[];
+export declare function sort<T>(array: T[], comparator: (lhs: T, rhs: T) => number, destructive?: boolean): T[];
 /**
  * @en Make index array.
  * @ja インデックス配列の作成
@@ -1993,7 +1988,7 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      * Sorts an array.
      * @param compareFn The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order.
      */
-    sort(comparator?: SortCallback<T>): this;
+    sort(comparator?: (lhs: T, rhs: T) => number): this;
     /**
      * Removes elements from an array and, if necessary, inserts new elements in their place, returning the deleted elements.
      * @param start The zero-based location in the array from which to start removing elements.

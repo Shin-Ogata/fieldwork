@@ -1,13 +1,14 @@
 'use strict';
 
-const config = require('../../../../config/rollup/test.testem');
-const testee = require('../rollup.config');
-const { outName, temp } = require('@cdp/tasks').config.build;
+const { join } = require('path');
+const { packageName, src } = require('@cdp/tasks/config').build;
+const config = require('../../../../config/bundle/rollup-test-testem');
+const testee = require('../build.config').default;
 
 module.exports = {
     default: config.default(testee, {
         globals: {
-            '@cdp/core-utils': 'CDP',
+            '@cdp/core-utils': 'CDP.Utils',
             '@cdp/event-publisher': 'CDP',
             '@cdp/promise': 'CDP',
             '@cdp/observable': 'CDP',
@@ -41,4 +42,10 @@ module.exports = {
             },
         },
     }),
+    remap: {
+        resolve(name) {
+            const [lib, ...paths] = name.split(`${packageName}/`)[1].split('/');
+            return join('node_modules/@cdp', lib, src, ...paths);
+        }
+    },
 };

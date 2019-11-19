@@ -1,4 +1,3 @@
-import { SortCallback } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
 import { ObservableState, IObservable } from './common';
 /**
@@ -113,7 +112,7 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      * Sorts an array.
      * @param compareFn The name of the function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order.
      */
-    sort(comparator?: SortCallback<T>): this;
+    sort(comparator?: (lhs: T, rhs: T) => number): this;
     /**
      * Removes elements from an array and, if necessary, inserts new elements in their place, returning the deleted elements.
      * @param start The zero-based location in the array from which to start removing elements.

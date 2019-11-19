@@ -6,6 +6,7 @@ const command       = require('./command');
 const config        = require('./config');
 const banner        = require('./banner');
 const cli           = require('./lib/cli-command-parser');
+const { merge }     = require('./lib/misc');
 
 const plugins = cli.loadPlugins();
 
@@ -29,4 +30,5 @@ module.exports = {
     command,
     config,
     banner,
+    merge,
 };

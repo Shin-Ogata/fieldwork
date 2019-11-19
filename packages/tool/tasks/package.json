@@ -26,6 +26,7 @@
     "lodash": "*",
     "nyc": "*",
     "semver": "*",
+    "terser": "*",
     "testem": "*"
   },
   "private": true,
@@ -35,7 +36,7 @@
   },
   "scripts": {
     "clear": "cdp-task clean -t ./node_modules",
-    "lint": "eslint ./**/*.js -c ../../../config/eslint.js",
+    "lint": "eslint ./**/*.js -c ../../../config/lint/eslint.js",
     "test": "npm run lint"
   }
 }

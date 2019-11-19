@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".npmrc" />
+    <Content Include="dist\framework-core.min.map" />
     <Content Include="dist\framework-core.mjs" />
     <Content Include="docs\typedoc\index.html" />
     <Content Include="package.json" />
@@ -70,9 +71,9 @@
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="build.config.js" />
     <Compile Include="dist\framework-core.js" />
-    <Compile Include="dts.config.js" />
-    <Compile Include="rollup.config.js" />
+    <Compile Include="dist\framework-core.min.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

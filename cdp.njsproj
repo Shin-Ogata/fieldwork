@@ -46,15 +46,20 @@
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="config\" />
-    <Folder Include="config\rollup\" />
+    <Folder Include="config\bundle\" />
+    <Folder Include="config\doc\" />
+    <Folder Include="config\lint\" />
+    <Folder Include="config\minify\" />
     <Folder Include="config\tsconfig\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="config\eslint.js" />
-    <Compile Include="config\rollup\core.js" />
-    <Compile Include="config\rollup\test.testem.js" />
-    <Compile Include="config\tslint.js" />
-    <Compile Include="config\typedoc.js" />
+    <Compile Include="config\bundle\dts-bundle.js" />
+    <Compile Include="config\bundle\rollup-core.js" />
+    <Compile Include="config\bundle\rollup-test-testem.js" />
+    <Compile Include="config\doc\typedoc.js" />
+    <Compile Include="config\lint\eslint.js" />
+    <Compile Include="config\lint\tslint.js" />
+    <Compile Include="config\minify\terser.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

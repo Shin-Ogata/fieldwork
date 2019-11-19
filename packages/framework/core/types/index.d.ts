@@ -4,5 +4,3 @@ export * from '@cdp/promise';
 export * from '@cdp/observable';
 export * from '@cdp/core-storage';
 export * from '@cdp/result';
-import * as Utils from '@cdp/core-utils';
-export { Utils };
