@@ -20,7 +20,6 @@ import {
     className,
     sameType,
     sameClass,
-    partialize,
 } from '@cdp/core-utils';
 //import { isNil } from './_testee';
 
@@ -514,17 +513,4 @@ describe('utils/types spec', (): void => {
         expect(sameClass(_symbol, null)).toBeFalsy();
         expect(sameClass(_symbol, Symbol)).toBeFalsy();
     });
-
-    it('check partialize()', (): void => {
-        expect(() => partialize(null as any, '')).toThrow();
-        expect(() => partialize(false as any, '')).toThrow();
-        const src = {
-            hoge: 1,
-            fuga: 2,
-        };
-        const dst = partialize(src, 'hoge');
-        expect(dst.hoge).toBe(1);
-        expect((dst as any).fuga).toBeUndefined();
-    });
-
 });

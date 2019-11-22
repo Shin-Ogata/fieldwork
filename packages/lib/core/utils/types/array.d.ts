@@ -26,6 +26,15 @@ export declare function shuffle<T>(array: T[], destructive?: boolean): T[];
  */
 export declare function sort<T>(array: T[], comparator: (lhs: T, rhs: T) => number, destructive?: boolean): T[];
 /**
+ * @en Make unique array.
+ * @ja 重複要素のない配列の作成
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export declare function unique<T>(array: T[]): T[];
+/**
  * @en Make index array.
  * @ja インデックス配列の作成
  *

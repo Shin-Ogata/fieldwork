@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "framework", "framework", "{
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "framework-core", "packages\framework\core\framework-core.njsproj", "{C904A032-D1DA-4588-821D-9F49F06CF8CB}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "template", "packages\lib\core\template\template.njsproj", "{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{C904A032-D1DA-4588-821D-9F49F06CF8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C904A032-D1DA-4588-821D-9F49F06CF8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C904A032-D1DA-4588-821D-9F49F06CF8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +121,7 @@ Global
 		{DCD0B282-6857-4871-862C-48CC64A54122} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 		{0B31755F-059A-4698-A82C-75F0E614792A} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{C904A032-D1DA-4588-821D-9F49F06CF8CB} = {7E623325-16E9-4287-8D2B-CB508EBEA3EB}
+		{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}
