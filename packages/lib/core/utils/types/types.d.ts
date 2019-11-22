@@ -324,16 +324,4 @@ export declare function sameType(lhs: unknown, rhs: unknown): boolean;
  *  - `ja` 評価する値
  */
 export declare function sameClass(lhs: unknown, rhs: unknown): boolean;
-/**
- * @en Get shallow copy of `target` which has only `pickupKeys`.
- * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
- *
- * @param target
- *  - `en` copy source object
- *  - `ja` コピー元オブジェクト
- * @param pickupKeys
- *  - `en` copy target keys
- *  - `ja` コピー対象のキー一覧
- */
-export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 export {};

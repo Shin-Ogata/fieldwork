@@ -3,6 +3,7 @@
 import {
     shuffle,
     sort,
+    unique,
     indices,
     groupBy,
     map,
@@ -65,6 +66,19 @@ describe('utils/array spec', () => {
         expect(sorted[2].id).toBe('03');
         expect(sorted[3].id).toBe('00');
         expect(sorted[4].id).toBe('01');
+    });
+
+    it('check unique()', () => {
+        const array = [0, 3, 2, 1, 4, 2, 3, 1, 1, 2, 3, 5, 2, 3, 1, 2, 3, 1, 1, 3, 3, 1, 2];
+        const uniq = unique(array);
+        expect(array === uniq).toBe(false);
+        expect(uniq.length).toBe(6);
+        expect(uniq[0]).toBe(0);
+        expect(uniq[1]).toBe(3);
+        expect(uniq[2]).toBe(2);
+        expect(uniq[3]).toBe(1);
+        expect(uniq[4]).toBe(4);
+        expect(uniq[5]).toBe(5);
     });
 
     it('check indecies()', () => {

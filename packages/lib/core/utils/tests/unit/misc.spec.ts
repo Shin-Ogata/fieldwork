@@ -9,6 +9,8 @@ import {
     fromTypedData,
     dropUndefined,
     restoreNil,
+    hasProperty,
+    partialize,
     capitalize,
     decapitalize,
     camelize,
@@ -125,6 +127,28 @@ describe('utils/misc spec', () => {
         expect(restoreNil(undefined)).toBe(undefined);
         expect(restoreNil('null')).toBe(null);
         expect(restoreNil('undefined')).toBe(undefined);
+    });
+
+    it('check hasProperty()', (): void => {
+        const src = {
+            hoge: 1,
+            fuga: 2,
+        };
+        expect(hasProperty(src, 'hoge')).toBe(true);
+        expect(hasProperty(src, 'fuga')).toBe(true);
+        expect(hasProperty(src, 'foo')).toBe(false);
+    });
+
+    it('check partialize()', (): void => {
+        expect(() => partialize(null as any, '')).toThrow();
+        expect(() => partialize(false as any, '')).toThrow();
+        const src = {
+            hoge: 1,
+            fuga: 2,
+        };
+        const dst = partialize(src, 'hoge');
+        expect(dst.hoge).toBe(1);
+        expect((dst as any).fuga).toBeUndefined();
     });
 
     it('check capitalize()', () => {

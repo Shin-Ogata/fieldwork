@@ -57,6 +57,20 @@ export function sort<T>(array: T[], comparator: (lhs: T, rhs: T) => number, dest
 //__________________________________________________________________________________________________//
 
 /**
+ * @en Make unique array.
+ * @ja 重複要素のない配列の作成
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export function unique<T>(array: T[]): T[] {
+    return [...new Set(array)];
+}
+
+//__________________________________________________________________________________________________//
+
+/**
  * @en Make index array.
  * @ja インデックス配列の作成
  *

@@ -29,7 +29,7 @@ module.exports = {
         '@typescript-eslint/await-thenable': 'error',
         '@typescript-eslint/func-call-spacing': 'error',
         '@typescript-eslint/member-naming': [
-            'error',
+            'off',
             {
                 private: '^_|^Symbol',
             },

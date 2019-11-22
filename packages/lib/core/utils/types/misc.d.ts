@@ -1,4 +1,4 @@
-import { Primitive, TypedData } from './types';
+import { Writable, Primitive, TypedData } from './types';
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -89,6 +89,25 @@ export declare function dropUndefined<T>(value: T | null | undefined, nilSeriali
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
 export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined;
+/**
+ * @en Check whether input source has a property.
+ * @ja 入力元がプロパティを持っているか判定
+ *
+ * @param src
+ */
+export declare function hasProperty(src: unknown, propName: string): boolean;
+/**
+ * @en Get shallow copy of `target` which has only `pickupKeys`.
+ * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
+ *
+ * @param target
+ *  - `en` copy source object
+ *  - `ja` コピー元オブジェクト
+ * @param pickupKeys
+ *  - `en` copy target keys
+ *  - `ja` コピー対象のキー一覧
+ */
+export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 /**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換

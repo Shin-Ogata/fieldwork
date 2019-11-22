@@ -137,7 +137,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
         const lastKey = structure.pop() as string;
 
         let name: string | undefined;
-        let reg = this._targetRoot(field);
+        let reg = this.targetRoot(field);
 
         while (name = structure.shift()) { // eslint-disable-line no-cond-assign
             if (!(name in reg)) {
@@ -171,7 +171,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
         const lastKey = structure.pop() as string;
 
         let name: string | undefined;
-        let reg = this._targetRoot(field);
+        let reg = this.targetRoot(field);
 
         while (name = structure.shift()) { // eslint-disable-line no-cond-assign
             if (name in reg) {
@@ -239,7 +239,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 // private methods:
 
     /** get root object */
-    private _targetRoot(field?: string): PlainObject {
+    private targetRoot(field?: string): PlainObject {
         if (field) {
             // ensure [field] object.
             this._store[field] = this._store[field] || {};
