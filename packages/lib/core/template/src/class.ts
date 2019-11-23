@@ -8,6 +8,7 @@ import {
     TemplateEscaper,
 } from './interfaces';
 import { globalSettings } from './internal';
+import { CacheLocation, clearCache } from './cache';
 import {
     PlainObject,
     isString,
@@ -19,6 +20,16 @@ import { Writer } from './writer';
 
 /** [[Template]] common settings */
 globalSettings.writer = new Writer();
+
+/**
+ * @en [[Template]] global settng options
+ * @ja [[Template]] グローバル設定オプション
+ */
+export interface TemplateGlobalSettings {
+    writer?: TemplateWriter;
+    tags?: TemplateTags;
+    escape?: TemplateEscaper;
+}
 
 /**
  * @en [[Template]] compile options
@@ -40,6 +51,13 @@ export class Template implements ITemplate {
     /**
      * @en Get [[JST]] from template source.
      * @ja テンプレート文字列から [[JST]] を取得
+     *
+     * @package template
+     *  - `en` template source string
+     *  - `ja` テンプレート文字列
+     * @package options
+     *  - `en` compile options
+     *  - `ja` コンパイルオプション
      */
     public static compile(template: string, options?: TemplateCompileOptions): JST {
         if (!isString(template)) {
@@ -52,7 +70,11 @@ export class Template implements ITemplate {
         const jst = (view?: PlainObject, partials?: PlainObject): string => {
             return writer.render(template, view || {}, partials, tags);
         };
-        jst.tokens = writer.parse(template, tags);
+
+        const { tokens, cacheKey } = writer.parse(template, tags);
+        jst.tokens        = tokens;
+        jst.cacheKey      = cacheKey;
+        jst.cacheLocation = [CacheLocation.NAMESPACE, CacheLocation.ROOT];
 
         return jst;
     }
@@ -62,37 +84,27 @@ export class Template implements ITemplate {
      * @ja 既定の [[TemplateWriter]] のすべてのキャッシュを削除
      */
     public static clearCache(): void {
-        globalSettings.writer.clearCache();
+        clearCache();
     }
 
     /**
-     * @en Change default [[TemplateWriter]].
-     * @ja 既定の [[TemplateWriter]] の変更
+     * @en Change [[Template]] global settings.
+     * @ja [[Template]] グローバル設定の更新
+     *
+     * @param settings
+     *  - `en` new settings
+     *  - `ja` 新しい設定値
+     * @returns
+     *  - `en` old settings
+     *  - `ja` 古い設定値
      */
-    public static setDefaultWriter(newWriter: TemplateWriter): TemplateWriter {
-        const oldWriter = globalSettings.writer;
-        globalSettings.writer = newWriter;
-        return oldWriter;
-    }
-
-    /**
-     * @en Change default [[TemplateTags]].
-     * @ja 既定の [[TemplateTags]] の変更
-     */
-    public static setDefaultTags(newTags: TemplateTags): TemplateTags {
-        const oldTags = globalSettings.tags;
-        globalSettings.tags = newTags.slice() as TemplateTags;
-        return oldTags;
-    }
-
-    /**
-     * @en Change default `escape` method.
-     * @ja 既定の `escape` の変更
-     */
-    public static setDefaultEscape(newEscaper: TemplateEscaper): TemplateEscaper {
-        const oldEscaper = globalSettings.escape;
-        globalSettings.escape = newEscaper;
-        return oldEscaper;
+    public static setGlobalSettings(setiings: TemplateGlobalSettings): TemplateGlobalSettings {
+        const oldSettings = { ...globalSettings };
+        const { writer, tags, escape } = setiings;
+        writer && (globalSettings.writer = writer);
+        tags   && (globalSettings.tags   = tags);
+        escape && (globalSettings.escape = escape);
+        return oldSettings;
     }
 
 ///////////////////////////////////////////////////////////////////////

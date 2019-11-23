@@ -466,17 +466,17 @@ No repos :(
     });
 
     it('check change default', () => {
-        const oldWriter  = Template.setDefaultWriter(_writer);
-        const oldTags    = Template.setDefaultTags(['<%', '%>']);
-        const oldEscaper = Template.setDefaultEscape(escapeHTML);
+        const oldSettings = Template.setGlobalSettings({
+            writer: _writer,
+            tags: ['<%', '%>'],
+            escape: escapeHTML,
+        });
 
-        const jst = Template.compile('<%title%> spends <%calc%>', { tags: ['<%', '%>'] });
+        const jst = Template.compile('<%title%> spends <%calc%>');
         const out = jst({ title: 'Joe', calc: () => 2 + 4 });
         expect(out).toBe('Joe spends 6');
 
-        Template.setDefaultWriter(oldWriter);
-        Template.setDefaultTags(oldTags);
-        Template.setDefaultEscape(oldEscaper);
+        Template.setGlobalSettings(oldSettings);
     });
 
     it('check invalid template input', () => {
@@ -512,15 +512,15 @@ No repos :(
     it('check internal: renderTokens error', () => {
         const jst = Template.compile(`{{#names}}{{> user}}{{/names}}`);
         const token = jst.tokens;
-        const context = _access.createContext({
+        const view = {
             names() {
                 return () => {
                     return { name: 'test' };
                 };
             },
-        });
+        };
         expect(() => {
-            _writer.renderTokens(token, context, { user: '{{name}}' });
+            _writer.renderTokens(token, view, { user: '{{name}}' });
         }).toThrow(new Error('Cannot use higher-order sections without the original template'));
     });
 });

@@ -2,6 +2,7 @@
 
 const { join } = require('path');
 const { packageName, src } = require('@cdp/tasks/config').build;
+const { replace } = require('@cdp/result/build.config');
 const config = require('../../../../config/bundle/rollup-test-testem');
 const testee = require('../build.config').default;
 
@@ -12,21 +13,12 @@ module.exports = {
             '@cdp/event-publisher': 'CDP',
             '@cdp/promise': 'CDP',
             '@cdp/observable': 'CDP',
-            '@cdp/core-storage': 'CDP',
             '@cdp/result': 'CDP',
+            '@cdp/core-storage': 'CDP',
+            '@cdp/template': 'CDP',
         },
         // for result tests
-        replace: {
-            delimiters: ['', ''],
-            values: {
-                'var CDP_DECLARE;': 'globalThis.CDP_DECLARE = globalThis.CDP_DECLARE;',
-                '(CDP_DECLARE)': '()',
-                '(CDP_DECLARE || (CDP_DECLARE = {}))': '()',
-                'let RESULT_CODE;': 'let RESULT_CODE = CDP_DECLARE.RESULT_CODE;',
-                '(RESULT_CODE)': '()',
-                '(RESULT_CODE = CDP_DECLARE.RESULT_CODE || (CDP_DECLARE.RESULT_CODE = {}))': '()',
-            },
-        },
+        replace,
     }),
     testem: config.testem({
         requirejs: {
@@ -36,8 +28,9 @@ module.exports = {
                     '@cdp/event-publisher': '@cdp/framework-core',
                     '@cdp/promise': '@cdp/framework-core',
                     '@cdp/observable': '@cdp/framework-core',
-                    '@cdp/core-storage': '@cdp/framework-core',
                     '@cdp/result': '@cdp/framework-core',
+                    '@cdp/core-storage': '@cdp/framework-core',
+                    '@cdp/template': '@cdp/framework-core',
                 },
             },
         },

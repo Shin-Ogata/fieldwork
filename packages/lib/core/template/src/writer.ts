@@ -1,5 +1,10 @@
 import { TemplateTags, TemplateWriter } from './interfaces';
-import { Token, globalSettings } from './internal';
+import {
+    Token,
+    TokenAddress as $,
+    globalSettings,
+} from './internal';
+import { cache, buildCacheKey } from './cache';
 import {
     PlainObject,
     isArray,
@@ -14,34 +19,22 @@ import { Context } from './context';
  * avoid the need to parse the same template twice.
  */
 export class Writer implements TemplateWriter {
-    private _cache: PlainObject = {}
 
 ///////////////////////////////////////////////////////////////////////
 // public methods:
-
-    /**
-     * Clears all cached templates in this writer.
-     */
-    clearCache(): void {
-        this._cache = {};
-    }
 
     /**
      * Parses and caches the given `template` according to the given `tags` or
      * `mustache.tags` if `tags` is omitted,  and returns the array of tokens
      * that is generated from the parse.
      */
-    parse(template: string, tags?: TemplateTags): Token[] {
-        const cache = this._cache;
-        const delimters = (tags || globalSettings.tags);
-        const cacheKey = `${template}:${delimters.join(':')}`;
+    parse(template: string, tags?: TemplateTags): { tokens: Token[]; cacheKey: string; } {
+        const cacheKey = buildCacheKey(template, tags || globalSettings.tags);
         let tokens = cache[cacheKey];
-
         if (null == tokens) {
             tokens = cache[cacheKey] = parseTemplate(template, tags);
         }
-
-        return tokens;
+        return { tokens, cacheKey };
     }
 
     /**
@@ -58,9 +51,8 @@ export class Writer implements TemplateWriter {
      * [ "<%", "%>" ]). The default is to mustache.tags.
      */
     render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateTags): string {
-        const tokens = this.parse(template, tags);
-        const context = (view instanceof Context) ? view : new Context(view);
-        return this.renderTokens(tokens, context, partials, template, tags);
+        const { tokens } = this.parse(template, tags);
+        return this.renderTokens(tokens, view, partials, template, tags);
     }
 
     /**
@@ -72,14 +64,13 @@ export class Writer implements TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: Token[], context: Context, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string {
+    renderTokens(tokens: Token[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string {
+        const context = (view instanceof Context) ? view : new Context(view);
         let buffer = '';
 
         for (const token of tokens) {
-            const symbol = token[0];
             let value: string | void;
-
-            switch (symbol) {
+            switch (token[$.TYPE]) {
                 case '#':
                     value = this.renderSection(token, context, partials, originalTemplate);
                     break;
@@ -117,7 +108,7 @@ export class Writer implements TemplateWriter {
     private renderSection(token: Token, context: Context, partials?: PlainObject, originalTemplate?: string): string | void {
         const self = this;
         let buffer = '';
-        let value = context.lookup(token[1]);
+        let value = context.lookup(token[$.VALUE]);
 
         // This function is used to render an arbitrary template
         // in the current context by higher-order sections.
@@ -131,30 +122,30 @@ export class Writer implements TemplateWriter {
 
         if (isArray(value)) {
             for (const v of value) {
-                buffer += this.renderTokens(token[4] as Token[], context.push(v), partials, originalTemplate);
+                buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(v), partials, originalTemplate);
             }
         } else if ('object' === typeof value || 'string' === typeof value || 'number' === typeof value) {
-            buffer += this.renderTokens(token[4] as Token[], context.push(value), partials, originalTemplate);
+            buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(value), partials, originalTemplate);
         } else if (isFunction(value)) {
             if ('string' !== typeof originalTemplate) {
                 throw new Error('Cannot use higher-order sections without the original template');
             }
             // Extract the portion of the original template that the section contains.
-            value = value.call(context.view, originalTemplate.slice(token[3], token[5]), subRender);
+            value = value.call(context.view, originalTemplate.slice(token[$.END], token[$.TAG_INDEX]), subRender);
             if (null != value) {
                 buffer += value;
             }
         } else {
-            buffer += this.renderTokens(token[4] as Token[], context, partials, originalTemplate);
+            buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context, partials, originalTemplate);
         }
         return buffer;
     }
 
     /** @internal */
     private renderInverted(token: Token, context: Context, partials?: PlainObject, originalTemplate?: string): string | void {
-        const value = context.lookup(token[1]);
+        const value = context.lookup(token[$.VALUE]);
         if (!value || (isArray(value) && 0 === value.length)) {
-            return this.renderTokens(token[4] as Token[], context, partials, originalTemplate);
+            return this.renderTokens(token[$.TOKEN_LIST] as Token[], context, partials, originalTemplate);
         }
     }
 
@@ -176,22 +167,23 @@ export class Writer implements TemplateWriter {
             return;
         }
 
-        const value = isFunction(partials) ? partials(token[1]) : partials[token[1]];
+        const value = isFunction(partials) ? partials(token[$.VALUE]) : partials[token[$.VALUE]];
         if (null != value) {
-            const lineHasNonSpace = token[6];
-            const tagIndex = token[5];
-            const indentation = token[4];
+            const lineHasNonSpace = token[$.HAS_NO_SPACE];
+            const tagIndex        = token[$.TAG_INDEX];
+            const indentation     = token[$.TOKEN_LIST];
             let indentedValue = value;
             if (0 === tagIndex && indentation) {
                 indentedValue = this.indentPartial(value, indentation as string, lineHasNonSpace as boolean);
             }
-            return this.renderTokens(this.parse(indentedValue, tags), context, partials, indentedValue);
+            const { tokens } = this.parse(indentedValue, tags);
+            return this.renderTokens(tokens, context, partials, indentedValue);
         }
     }
 
     /** @internal */
     private unescapedValue(token: Token, context: Context): string | void {
-        const value = context.lookup(token[1]);
+        const value = context.lookup(token[$.VALUE]);
         if (null != value) {
             return value;
         }
@@ -199,7 +191,7 @@ export class Writer implements TemplateWriter {
 
     /** @internal */
     private escapedValue(token: Token, context: Context): string | void {
-        const value = context.lookup(token[1]);
+        const value = context.lookup(token[$.VALUE]);
         if (null != value) {
             return globalSettings.escape(value);
         }
@@ -207,6 +199,6 @@ export class Writer implements TemplateWriter {
 
     /** @internal */
     private rawValue(token: Token): string {
-        return token[1];
+        return token[$.VALUE];
     }
 }

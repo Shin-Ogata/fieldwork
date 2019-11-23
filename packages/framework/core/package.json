@@ -9,7 +9,8 @@
     "@cdp/event-publisher": "file:../../lib/core/event-publisher",
     "@cdp/observable": "file:../../lib/core/observable",
     "@cdp/promise": "file:../../lib/core/promise",
-    "@cdp/result": "file:../../lib/core/result"
+    "@cdp/result": "file:../../lib/core/result",
+    "@cdp/template": "file:../../lib/core/template"
   },
   "keywords": [
     "CDP",

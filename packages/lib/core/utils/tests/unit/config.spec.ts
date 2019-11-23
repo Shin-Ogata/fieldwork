@@ -34,4 +34,19 @@ describe('utils/config spec', () => {
         const config3 = getConfig<Config>();
         expect(config3).toBeDefined();
     });
+
+    it('check config access', () => {
+        const config = getConfig<Config>();
+        expect(config).toBeDefined();
+        expect(config.noAutomaticNativeExtend).toBeFalsy();
+
+        const config2 = getConfig<Config>();
+        expect(config2).toBeDefined();
+        expect(config2).toBe(config);
+
+        const root: any = getGlobal();
+        delete root.CDP.Config;
+        const config3 = getConfig<Config>();
+        expect(config3).toBeDefined();
+    });
 });
