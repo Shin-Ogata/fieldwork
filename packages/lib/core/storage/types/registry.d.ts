@@ -119,5 +119,5 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      */
     clear(options?: RegistryWriteOptions): void;
     /** get root object */
-    private _targetRoot;
+    private targetRoot;
 }

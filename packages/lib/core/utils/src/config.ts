@@ -12,15 +12,39 @@ export function getGlobal(): typeof globalThis {
 }
 
 /**
+ * @en Ensure named object as parent's property.
+ * @ja 親オブジェクトを指定して, 名前に指定したオブジェクトの存在を保証
+ *
+ * @param parent
+ *  - `en` parent object. If null given, `globalThis` is assigned.
+ *  - `ja` 親オブジェクト. null の場合は `globalThis` が使用される
+ * @param names
+ *  - `en` object name chain for ensure instance.
+ *  - `ja` 保証するオブジェクトの名前
+ */
+export function ensureObject<T extends {} = {}>(parent: object | null, ...names: string[]): T {
+    let root = parent || getGlobal();
+    for (const name of names) {
+        root[name] = root[name] || {};
+        root = root[name];
+    }
+    return root as T;
+}
+
+/**
+ * @en Global namespace accessor.
+ * @ja グローバルネームスペースアクセッサ
+ */
+export function getGlobalNamespace<T extends {} = {}>(namespace: string): T {
+    return ensureObject<T>(null, namespace);
+}
+
+/**
  * @en Global config accessor.
  * @ja グローバルコンフィグアクセッサ
+ *
+ * @returns default: `CDP.Config`
  */
-export function getConfig<T extends {} = {}>(): T {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const root: any = getGlobal();
-    if (!root.CDP || !root.CDP.Config) {
-        root.CDP = root.CDP || {};
-        root.CDP.Config = root.Config || {};
-    }
-    return root.CDP.Config;
+export function getConfig<T extends {} = {}>(namespace = 'CDP', configName = 'Config'): T {
+    return ensureObject<T>(getGlobalNamespace(namespace), configName);
 }

@@ -1,5 +1,14 @@
 import { JST, TemplateTags, ITemplate, TemplateWriter, TemplateEscaper } from './interfaces';
 /**
+ * @en [[Template]] global settng options
+ * @ja [[Template]] グローバル設定オプション
+ */
+export interface TemplateGlobalSettings {
+    writer?: TemplateWriter;
+    tags?: TemplateTags;
+    escape?: TemplateEscaper;
+}
+/**
  * @en [[Template]] compile options
  * @ja [[Template]] コンパイルオプション
  */
@@ -14,6 +23,13 @@ export declare class Template implements ITemplate {
     /**
      * @en Get [[JST]] from template source.
      * @ja テンプレート文字列から [[JST]] を取得
+     *
+     * @package template
+     *  - `en` template source string
+     *  - `ja` テンプレート文字列
+     * @package options
+     *  - `en` compile options
+     *  - `ja` コンパイルオプション
      */
     static compile(template: string, options?: TemplateCompileOptions): JST;
     /**
@@ -22,18 +38,15 @@ export declare class Template implements ITemplate {
      */
     static clearCache(): void;
     /**
-     * @en Change default [[TemplateWriter]].
-     * @ja 既定の [[TemplateWriter]] の変更
+     * @en Change [[Template]] global settings.
+     * @ja [[Template]] グローバル設定の更新
+     *
+     * @param settings
+     *  - `en` new settings
+     *  - `ja` 新しい設定値
+     * @returns
+     *  - `en` old settings
+     *  - `ja` 古い設定値
      */
-    static setDefaultWriter(newWriter: TemplateWriter): TemplateWriter;
-    /**
-     * @en Change default [[TemplateTags]].
-     * @ja 既定の [[TemplateTags]] の変更
-     */
-    static setDefaultTags(newTags: TemplateTags): TemplateTags;
-    /**
-     * @en Change default `escape` method.
-     * @ja 既定の `escape` の変更
-     */
-    static setDefaultEscape(newEscaper: TemplateEscaper): TemplateEscaper;
+    static setGlobalSettings(setiings: TemplateGlobalSettings): TemplateGlobalSettings;
 }

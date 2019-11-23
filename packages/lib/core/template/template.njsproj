@@ -53,6 +53,7 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\cache.ts" />
     <TypeScriptCompile Include="src\class.ts" />
     <TypeScriptCompile Include="src\context.ts" />
     <TypeScriptCompile Include="src\index.ts" />
@@ -66,6 +67,7 @@
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
+    <TypeScriptCompile Include="types\cache.d.ts" />
     <TypeScriptCompile Include="types\class.d.ts" />
     <TypeScriptCompile Include="types\context.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />

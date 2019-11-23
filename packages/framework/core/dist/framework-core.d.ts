@@ -8,6 +8,7 @@
  *     - @cdp/observable
  *     - @cdp/promise
  *     - @cdp/result
+ *     - @cdp/template
  */
 /**
  * @en Common interface for notification restraint.
@@ -27,10 +28,29 @@ export interface Silenceable {
  */
 export declare function getGlobal(): typeof globalThis;
 /**
+ * @en Ensure named object as parent's property.
+ * @ja 親オブジェクトを指定して, 名前に指定したオブジェクトの存在を保証
+ *
+ * @param parent
+ *  - `en` parent object. If null given, `globalThis` is assigned.
+ *  - `ja` 親オブジェクト. null の場合は `globalThis` が使用される
+ * @param names
+ *  - `en` object name chain for ensure instance.
+ *  - `ja` 保証するオブジェクトの名前
+ */
+export declare function ensureObject<T extends {} = {}>(parent: object | null, ...names: string[]): T;
+/**
+ * @en Global namespace accessor.
+ * @ja グローバルネームスペースアクセッサ
+ */
+export declare function getGlobalNamespace<T extends {} = {}>(namespace: string): T;
+/**
  * @en Global config accessor.
  * @ja グローバルコンフィグアクセッサ
+ *
+ * @returns default: `CDP.Config`
  */
-export declare function getConfig<T extends {} = {}>(): T;
+export declare function getConfig<T extends {} = {}>(namespace?: string, configName?: string): T;
 /**
  * @en The general null type.
  * @ja 空を示す型定義
@@ -357,18 +377,6 @@ export declare function sameType(lhs: unknown, rhs: unknown): boolean;
  *  - `ja` 評価する値
  */
 export declare function sameClass(lhs: unknown, rhs: unknown): boolean;
-/**
- * @en Get shallow copy of `target` which has only `pickupKeys`.
- * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
- *
- * @param target
- *  - `en` copy source object
- *  - `ja` コピー元オブジェクト
- * @param pickupKeys
- *  - `en` copy target keys
- *  - `ja` コピー対象のキー一覧
- */
-export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 /**
  * @en Type verifier interface definition. <br>
  *     If invalid value received, the method throws `TypeError`.
@@ -730,6 +738,15 @@ export declare function shuffle<T>(array: T[], destructive?: boolean): T[];
  */
 export declare function sort<T>(array: T[], comparator: (lhs: T, rhs: T) => number, destructive?: boolean): T[];
 /**
+ * @en Make unique array.
+ * @ja 重複要素のない配列の作成
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export declare function unique<T>(array: T[]): T[];
+/**
  * @en Make index array.
  * @ja インデックス配列の作成
  *
@@ -1036,6 +1053,25 @@ export declare function dropUndefined<T>(value: T | null | undefined, nilSeriali
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
 export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined;
+/**
+ * @en Check whether input source has a property.
+ * @ja 入力元がプロパティを持っているか判定
+ *
+ * @param src
+ */
+export declare function hasProperty(src: unknown, propName: string): boolean;
+/**
+ * @en Get shallow copy of `target` which has only `pickupKeys`.
+ * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
+ *
+ * @param target
+ *  - `en` copy source object
+ *  - `ja` コピー元オブジェクト
+ * @param pickupKeys
+ *  - `en` copy target keys
+ *  - `ja` コピー対象のキー一覧
+ */
+export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 /**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換
@@ -2079,6 +2115,135 @@ export declare namespace ObservableArray {
     function of<T>(...items: T[]): ObservableArray<T>;
 }
 /**
+ * @en Judge fail or not.
+ * @ja 失敗判定
+ *
+ * @param code [[RESULT_CODE]]
+ * @returns true: fail result / false: success result
+ */
+export declare function FAILED(code: number): boolean;
+/**
+ * @en Judge success or not.
+ * @ja 成功判定
+ *
+ * @param code [[RESULT_CODE]]
+ * @returns true: success result / false: fail result
+ */
+export declare function SUCCEEDED(code: number): boolean;
+/**
+ * @en Convert to [[RESULT_CODE]] `name` string from [[RESULT_CODE]].
+ * @ja [[RESULT_CODE]] を [[RESULT_CODE]] 文字列に変換
+ *
+ * @param code [[RESULT_CODE]]
+ * @param tag  custom tag if needed.
+ * @returns name string ex) "[tag][NOT_SUPPORTED]"
+ */
+export declare function toNameString(code: number, tag?: string): string;
+/**
+ * @en Convert to help string from [[RESULT_CODE]].
+ * @ja [[RESULT_CODE]] をヘルプストリングに変換
+ *
+ * @param code [[RESULT_CODE]]
+ * @returns registered help string
+ */
+export declare function toHelpString(code: number): string;
+/**
+ * @en A result holder class. <br>
+ *     Derived native `Error` class.
+ * @ja 処理結果伝達クラス <br>
+ *     ネイティブ `Error` の派生クラス
+ */
+export declare class Result extends Error {
+    /**
+     * constructor
+     *
+     * @param code
+     *  - `en` result code
+     *  - `ja` 結果コード
+     * @param message
+     *  - `en` result info message
+     *  - `ja` 結果情報メッセージ
+     * @param cause
+     *  - `en` low-level error information
+     *  - `ja` 下位のエラー情報
+     */
+    constructor(code?: number, message?: string, cause?: any);
+    /**
+     * @en [[RESULT_CODE]] value.
+     * @ja [[RESULT_CODE]] の値
+     */
+    readonly code: number;
+    /**
+     * @en Stock low-level error information.
+     * @ja 下位のエラー情報を格納
+     */
+    readonly cause: any;
+    /**
+     * @en Generated time information.
+     * @ja 生成された時刻情報
+     */
+    readonly time: number;
+    /**
+     * @en Judge succeeded or not.
+     * @ja 成功判定
+     */
+    get isSucceeded(): boolean;
+    /**
+     * @en Judge failed or not.
+     * @ja 失敗判定
+     */
+    get isFailed(): boolean;
+    /**
+     * @en Judge canceled or not.
+     * @ja キャンセルエラー判定
+     */
+    get isCanceled(): boolean;
+    /**
+     * @en Get formatted [[RESULT_CODE]] name string.
+     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
+     */
+    get codeName(): string;
+    /**
+     * @en Get [[RESULT_CODE]] help string.
+     * @ja [[RESULT_CODE]] のヘルプストリングを取得
+     */
+    get help(): string;
+}
+/** Returns `true` if `x` is `Result`, `false` otherwise. */
+export declare function isResult(x: unknown): x is Result;
+/**
+ * @en Transfer [[Result]] object
+ * @ja [[Result]] オブジェクトに変換
+ */
+export declare function toResult(o: unknown): Result;
+/**
+ * @en Create [[Result]] helper
+ * @ja [[Result]] オブジェクト構築ヘルパー
+ *
+ * @param code
+ *  - `en` result code
+ *  - `ja` 結果コード
+ * @param message
+ *  - `en` result info message
+ *  - `ja` 結果情報メッセージ
+ * @param cause
+ *  - `en` low-level error information
+ *  - `ja` 下位のエラー情報
+ */
+export declare function makeResult(code: number, message?: string, cause?: any): Result;
+/**
+ * @en Create canceled [[Result]] helper
+ * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
+ *
+ * @param message
+ *  - `en` result info message
+ *  - `ja` 結果情報メッセージ
+ * @param cause
+ *  - `en` low-level error information
+ *  - `ja` 下位のエラー情報
+ */
+export declare function makeCanceledResult(message?: string, cause?: any): Result;
+/**
  * @en Storage data type set interface.
  * @ja Storage に格納可能な型の集合
  */
@@ -2513,137 +2678,215 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      */
     clear(options?: RegistryWriteOptions): void;
     /** get root object */
-    private _targetRoot;
+    private targetRoot;
 }
 /**
- * @en Judge fail or not.
- * @ja 失敗判定
- *
- * @param code [[RESULT_CODE]]
- * @returns true: fail result / false: success result
+ * @en [[Template]] token structure.
+ * @ja [[Template]] token 型
  */
-export declare function FAILED(code: number): boolean;
+export declare type TemplateToken = any;
 /**
- * @en Judge success or not.
- * @ja 成功判定
- *
- * @param code [[RESULT_CODE]]
- * @returns true: success result / false: fail result
+ * @en Delimiters definition for [[Template]]. ex) ['{{','}}']
+ * @ja [[Template]] に使用する区切り文字 ex) ['{{','}}']
  */
-export declare function SUCCEEDED(code: number): boolean;
+export declare type TemplateTags = [string, string];
 /**
- * @en Convert to [[RESULT_CODE]] `name` string from [[RESULT_CODE]].
- * @ja [[RESULT_CODE]] を [[RESULT_CODE]] 文字列に変換
- *
- * @param code [[RESULT_CODE]]
- * @param tag  custom tag if needed.
- * @returns name string ex) "[tag][NOT_SUPPORTED]"
+ * @en Scanner interface.
+ * @ja スキャナーインターフェイス
  */
-export declare function toNameString(code: number, tag?: string): string;
-/**
- * @en Convert to help string from [[RESULT_CODE]].
- * @ja [[RESULT_CODE]] をヘルプストリングに変換
- *
- * @param code [[RESULT_CODE]]
- * @returns registered help string
- */
-export declare function toHelpString(code: number): string;
-/**
- * @en A result holder class. <br>
- *     Derived native `Error` class.
- * @ja 処理結果伝達クラス <br>
- *     ネイティブ `Error` の派生クラス
- */
-export declare class Result extends Error {
+export interface TemplateScanner {
     /**
-     * constructor
+     * Returns current scanning position.
+     */
+    readonly pos: number;
+    /**
+     * Returns string  source.
+     */
+    readonly source: string;
+    /**
+     * Returns `true` if the tail is empty (end of string).
+     */
+    readonly eos: boolean;
+    /**
+     * Tries to match the given regular expression at the current position.
+     * Returns the matched text if it can match, the empty string otherwise.
+     */
+    scan(regexp: RegExp): string;
+    /**
+     * Skips all text until the given regular expression can be matched. Returns
+     * the skipped string, which is the entire tail if no match can be made.
+     */
+    scanUntil(regexp: RegExp): string;
+}
+/**
+ * @en Context interface.
+ * @ja コンテキストインターフェイス
+ */
+export interface TemplateContext {
+    /**
+     * View parameter getter.
+     */
+    readonly view: PlainObject;
+    /**
+     * Creates a new context using the given view with this context
+     * as the parent.
+     */
+    push(view: PlainObject): TemplateContext;
+    /**
+     * Returns the value of the given name in this context, traversing
+     * up the context hierarchy if the value is absent in this context's view.
+     */
+    lookup(name: string): any;
+}
+/**
+ * @en Writer interface.
+ * @ja ライターインターフェイス
+ */
+export interface TemplateWriter {
+    /**
+     * Parses and caches the given `template` according to the given `tags` or
+     * `mustache.tags` if `tags` is omitted,  and returns the array of tokens
+     * that is generated from the parse.
+     */
+    parse(template: string, tags?: TemplateTags): {
+        tokens: TemplateToken[];
+        cacheKey: string;
+    };
+    /**
+     * High-level method that is used to render the given `template` with
+     * the given `view`.
      *
-     * @param code
-     *  - `en` result code
-     *  - `ja` 結果コード
-     * @param message
-     *  - `en` result info message
-     *  - `ja` 結果情報メッセージ
-     * @param cause
-     *  - `en` low-level error information
-     *  - `ja` 下位のエラー情報
+     * The optional `partials` argument may be an object that contains the
+     * names and templates of partials that are used in the template. It may
+     * also be a function that is used to load partial templates on the fly
+     * that takes a single argument: the name of the partial.
+     *
+     * If the optional `tags` argument is given here it must be an array with two
+     * string values: the opening and closing tags used in the template (e.g.
+     * [ "<%", "%>" ]). The default is to mustache.tags.
      */
-    constructor(code?: number, message?: string, cause?: any);
+    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateTags): string;
     /**
-     * @en [[RESULT_CODE]] value.
-     * @ja [[RESULT_CODE]] の値
+     * Low-level method that renders the given array of `tokens` using
+     * the given `context` and `partials`.
+     *
+     * Note: The `originalTemplate` is only ever used to extract the portion
+     * of the original template that was contained in a higher-order section.
+     * If the template doesn't use higher-order sections, this argument may
+     * be omitted.
      */
-    readonly code: number;
-    /**
-     * @en Stock low-level error information.
-     * @ja 下位のエラー情報を格納
-     */
-    readonly cause: any;
-    /**
-     * @en Generated time information.
-     * @ja 生成された時刻情報
-     */
-    readonly time: number;
-    /**
-     * @en Judge succeeded or not.
-     * @ja 成功判定
-     */
-    get isSucceeded(): boolean;
-    /**
-     * @en Judge failed or not.
-     * @ja 失敗判定
-     */
-    get isFailed(): boolean;
-    /**
-     * @en Judge canceled or not.
-     * @ja キャンセルエラー判定
-     */
-    get isCanceled(): boolean;
-    /**
-     * @en Get formatted [[RESULT_CODE]] name string.
-     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
-     */
-    get codeName(): string;
-    /**
-     * @en Get [[RESULT_CODE]] help string.
-     * @ja [[RESULT_CODE]] のヘルプストリングを取得
-     */
-    get help(): string;
+    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string;
 }
-/** Returns `true` if `x` is `Result`, `false` otherwise. */
-export declare function isResult(x: unknown): x is Result;
 /**
- * @en Transfer [[Result]] object
- * @ja [[Result]] オブジェクトに変換
+ * @en Compiled JavaScript template interface
+ * @ja コンパイル済み テンプレート格納インターフェイス
  */
-export declare function toResult(o: unknown): Result;
+export interface JST {
+    /**
+     * @en Get compiled template's tokens.
+     * @ja コンパイルされたテンプレートトークンの取得
+     */
+    readonly tokens: TemplateToken[];
+    /**
+     * @en Cache key
+     * @ja キャッシュキー
+     */
+    readonly cacheKey: string;
+    /**
+     * @en Cache location information
+     * @ja キャッシュロケーション情報
+     */
+    readonly cacheLocation: string[];
+    /**
+     * @en Get result string that applied given parameter(s).
+     * @ja パラメータを適用した結果を文字列として取得
+     *
+     * @param view
+     *  - `en` template parameters for source.
+     *  - `ja` テンプレートパラメータ
+     * @param partials
+     *  - `en` partial template source information.
+     *  - `ja` 部分テンプレート情報
+     * @returns
+     *  - `en` applied parameters string.
+     *  - `ja` パラメータを適用した文字列
+     */
+    (view?: PlainObject, partials?: PlainObject): string;
+}
 /**
- * @en Create [[Result]] helper
- * @ja [[Result]] オブジェクト構築ヘルパー
- *
- * @param code
- *  - `en` result code
- *  - `ja` 結果コード
- * @param message
- *  - `en` result info message
- *  - `ja` 結果情報メッセージ
- * @param cause
- *  - `en` low-level error information
- *  - `ja` 下位のエラー情報
+ * @en Value escaper definition.
+ * @ja エスケーパーの定義
  */
-export declare function makeResult(code: number, message?: string, cause?: any): Result;
+export declare type TemplateEscaper = typeof escapeHTML;
 /**
- * @en Create canceled [[Result]] helper
- * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
- *
- * @param message
- *  - `en` result info message
- *  - `ja` 結果情報メッセージ
- * @param cause
- *  - `en` low-level error information
- *  - `ja` 下位のエラー情報
+ * @en [[Template]] base type definition.
+ * @ja [[Template]] 基底型
  */
-export declare function makeCanceledResult(message?: string, cause?: any): Result;
+export interface ITemplate {
+}
+/**
+ * @en [[Template]] internal I/F accssor.
+ * @ja [[Template]] 内部インターフェイスのアクセッサ
+ */
+export interface TemplateAccessor extends ITemplate {
+    /** Create [[TemplateScanner]] instance */
+    createScanner(src: string): TemplateScanner;
+    /** Create [[TemplateContext]] instance */
+    createContext(view: PlainObject, parentContext?: TemplateContext): TemplateContext;
+    /** Create [[TemplateWriter]] instance */
+    createWriter(): TemplateWriter;
+}
+/**
+ * @en [[Template]] global settng options
+ * @ja [[Template]] グローバル設定オプション
+ */
+export interface TemplateGlobalSettings {
+    writer?: TemplateWriter;
+    tags?: TemplateTags;
+    escape?: TemplateEscaper;
+}
+/**
+ * @en [[Template]] compile options
+ * @ja [[Template]] コンパイルオプション
+ */
+export interface TemplateCompileOptions {
+    tags?: TemplateTags;
+}
+/**
+ * @en Template utility class.
+ * @ja Template ユーティリティクラス
+ */
+export declare class Template implements ITemplate {
+    /**
+     * @en Get [[JST]] from template source.
+     * @ja テンプレート文字列から [[JST]] を取得
+     *
+     * @package template
+     *  - `en` template source string
+     *  - `ja` テンプレート文字列
+     * @package options
+     *  - `en` compile options
+     *  - `ja` コンパイルオプション
+     */
+    static compile(template: string, options?: TemplateCompileOptions): JST;
+    /**
+     * @en Clears all cached templates in the default [[TemplateWriter]].
+     * @ja 既定の [[TemplateWriter]] のすべてのキャッシュを削除
+     */
+    static clearCache(): void;
+    /**
+     * @en Change [[Template]] global settings.
+     * @ja [[Template]] グローバル設定の更新
+     *
+     * @param settings
+     *  - `en` new settings
+     *  - `ja` 新しい設定値
+     * @returns
+     *  - `en` old settings
+     *  - `ja` 古い設定値
+     */
+    static setGlobalSettings(setiings: TemplateGlobalSettings): TemplateGlobalSettings;
+}
 declare namespace CDP_DECLARE {
     /**
      * @en Constant definition about range of the result code.

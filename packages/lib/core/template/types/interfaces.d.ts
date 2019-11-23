@@ -63,15 +63,14 @@ export interface TemplateContext {
  */
 export interface TemplateWriter {
     /**
-     * Clears all cached templates in this writer.
-     */
-    clearCache(): void;
-    /**
      * Parses and caches the given `template` according to the given `tags` or
      * `mustache.tags` if `tags` is omitted,  and returns the array of tokens
      * that is generated from the parse.
      */
-    parse(template: string, tags?: TemplateTags): TemplateToken[];
+    parse(template: string, tags?: TemplateTags): {
+        tokens: TemplateToken[];
+        cacheKey: string;
+    };
     /**
      * High-level method that is used to render the given `template` with
      * the given `view`.
@@ -95,7 +94,7 @@ export interface TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: TemplateToken[], context: TemplateContext, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string;
+    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string;
 }
 /**
  * @en Compiled JavaScript template interface
@@ -108,8 +107,28 @@ export interface JST {
      */
     readonly tokens: TemplateToken[];
     /**
+     * @en Cache key
+     * @ja キャッシュキー
+     */
+    readonly cacheKey: string;
+    /**
+     * @en Cache location information
+     * @ja キャッシュロケーション情報
+     */
+    readonly cacheLocation: string[];
+    /**
      * @en Get result string that applied given parameter(s).
      * @ja パラメータを適用した結果を文字列として取得
+     *
+     * @param view
+     *  - `en` template parameters for source.
+     *  - `ja` テンプレートパラメータ
+     * @param partials
+     *  - `en` partial template source information.
+     *  - `ja` 部分テンプレート情報
+     * @returns
+     *  - `en` applied parameters string.
+     *  - `ja` パラメータを適用した文字列
      */
     (view?: PlainObject, partials?: PlainObject): string;
 }

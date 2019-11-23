@@ -1,5 +1,6 @@
 import {
     Token,
+    TokenAddress as $,
     Delimiters,
     globalSettings,
 } from './internal';
@@ -30,9 +31,9 @@ function squashTokens(tokens: Token[]): Token[] {
     let lastToken!: Token;
     for (const token of tokens) {
         if (token) {
-            if ('text' === token[0] && lastToken && 'text' === lastToken[0]) {
-                lastToken[1] += token[1];
-                lastToken[3] = token[3];
+            if ('text' === token[$.TYPE] && lastToken && 'text' === lastToken[$.TYPE]) {
+                lastToken[$.VALUE] += token[$.VALUE];
+                lastToken[$.END] = token[$.END];
             } else {
                 squashedTokens.push(token);
                 lastToken = token;
@@ -57,17 +58,17 @@ function nestTokens(tokens: Token[]): Token[] {
 
     let section!: Token;
     for (const token of tokens) {
-        switch (token[0]) {
+        switch (token[$.TYPE]) {
             case '#':
             case '^':
                 collector.push(token);
                 sections.push(token);
-                collector = token[4] = [];
+                collector = token[$.TOKEN_LIST] = [];
                 break;
             case '/':
                 section = sections.pop() as Token;
-                section[5] = token[2];
-                collector = sections.length > 0 ? sections[sections.length - 1][4] as Token[] : nestedTokens;
+                section[$.TAG_INDEX] = token[$.START];
+                collector = sections.length > 0 ? sections[sections.length - 1][$.TOKEN_LIST] as Token[] : nestedTokens;
                 break;
             default:
                 collector.push(token);
@@ -135,6 +136,10 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
     };
 
     const compileTags = (tagsToCompile: string | string[]): { openingTag: RegExp; closingTag: RegExp; closingCurly: RegExp; } => {
+        const enum Tag {
+            OPEN = 0,
+            CLOSE,
+        }
         if (isString(tagsToCompile)) {
             tagsToCompile = tagsToCompile.split(_regexp.space, 2);
         }
@@ -143,9 +148,9 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
             throw new Error(`Invalid tags: ${JSON.stringify(tagsToCompile)}`);
         }
         return {
-            openingTag:   new RegExp(`${escapeTemplateExp(tagsToCompile[0])}\\s*`),
-            closingTag:   new RegExp(`\\s*${escapeTemplateExp(tagsToCompile[1])}`),
-            closingCurly: new RegExp(`\\s*${escapeTemplateExp(`}${tagsToCompile[1]}`)}`),
+            openingTag:   new RegExp(`${escapeTemplateExp(tagsToCompile[Tag.OPEN])}\\s*`),
+            closingTag:   new RegExp(`\\s*${escapeTemplateExp(tagsToCompile[Tag.CLOSE])}`),
+            closingCurly: new RegExp(`\\s*${escapeTemplateExp(`}${tagsToCompile[Tag.CLOSE]}`)}`),
         };
     };
 
@@ -234,7 +239,7 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
                 throw new Error(`Unopened section "${value}" at ${start}`);
             }
             if (openSection[1] !== value) {
-                throw new Error(`Unclosed section "${openSection[1]}" at ${start}`);
+                throw new Error(`Unclosed section "${openSection[$.VALUE]}" at ${start}`);
             }
         } else if ('name' === type || '{' === type || '&' === type) {
             nonSpace = true;
@@ -250,7 +255,7 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
     openSection = sections.pop();
 
     if (openSection) {
-        throw new Error(`Unclosed section "${openSection[1]}" at ${scanner.pos}`);
+        throw new Error(`Unclosed section "${openSection[$.VALUE]}" at ${scanner.pos}`);
     }
 
     return nestTokens(squashTokens(tokens));

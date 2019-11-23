@@ -1,24 +1,21 @@
 import { TemplateTags, TemplateWriter } from './interfaces';
 import { Token } from './internal';
 import { PlainObject } from './utils';
-import { Context } from './context';
 /**
  * A Writer knows how to take a stream of tokens and render them to a
  * string, given a context. It also maintains a cache of templates to
  * avoid the need to parse the same template twice.
  */
 export declare class Writer implements TemplateWriter {
-    private _cache;
-    /**
-     * Clears all cached templates in this writer.
-     */
-    clearCache(): void;
     /**
      * Parses and caches the given `template` according to the given `tags` or
      * `mustache.tags` if `tags` is omitted,  and returns the array of tokens
      * that is generated from the parse.
      */
-    parse(template: string, tags?: TemplateTags): Token[];
+    parse(template: string, tags?: TemplateTags): {
+        tokens: Token[];
+        cacheKey: string;
+    };
     /**
      * High-level method that is used to render the given `template` with
      * the given `view`.
@@ -42,5 +39,5 @@ export declare class Writer implements TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: Token[], context: Context, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string;
+    renderTokens(tokens: Token[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string;
 }
