@@ -8,7 +8,7 @@ import {
 
 describe('dom/utils spec', () => {
     const body = document.body;
-    const { elementify } = $.utils;
+    const { elementify, evaluate } = $.utils;
     const { isArray } = Array;
 
     afterEach((): void => {
@@ -251,5 +251,25 @@ describe('dom/utils spec', () => {
             };
             expect(() => elementify('.test-dom-child', invalidContext as ParentNode)).not.toThrow();
         }
+    });
+
+    it('check dom evaluate', () => {
+        (window as any).TEST_EVAL = { count: 0 };
+        const checker = (window as any).TEST_EVAL;
+        evaluate('globalThis.TEST_EVAL.count++;');
+        expect(checker.count).toBe(1);
+
+        const func = evaluate('function () { globalThis.TEST_EVAL.count++; }');
+        expect(checker.count).toBe(1);
+        func();
+        expect(checker.count).toBe(2);
+
+        let count = evaluate('++globalThis.TEST_EVAL.count;', { nonce: 'c20t41c7-73c6-4bf9-fde8-24a7b35t5f71' });
+        expect(count).toBe(3);
+
+        const script = document.createElement('script');
+        script.setAttribute('nonce', 'c20t41c7-73c6-4bf9-fde8-24a7b35t5f71');
+        count = evaluate('++globalThis.TEST_EVAL.count;', script);
+        expect(count).toBe(4);
     });
 });

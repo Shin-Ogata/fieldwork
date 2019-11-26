@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-explicit-any */
+
 import {
     ElementBase,
     SelectorBase,
     QueryContext,
+    EvalOptions,
+    elementify,
+    evaluate,
 } from './utils';
-import * as utils from './utils';
 import {
     DOM,
     DOMClass,
@@ -37,7 +40,10 @@ function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryC
     return _factory(selector, context);
 }
 
-dom.utils = utils;
+dom.utils = {
+    elementify,
+    evaluate,
+};
 
 /** @internal 循環参照回避のための遅延コンストラクションメソッド */
 export function setup(fn: DOMClass, factory: DOMFactory): void {
@@ -49,6 +55,7 @@ export {
     ElementBase,
     SelectorBase,
     QueryContext,
+    EvalOptions,
     DOM,
     DOMSelector,
     DOMResult,
