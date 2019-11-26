@@ -1,4 +1,4 @@
-import { ElementBase, SelectorBase, QueryContext } from './utils';
+import { ElementBase, SelectorBase, QueryContext, EvalOptions, elementify, evaluate } from './utils';
 import { DOM, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
 declare namespace dom {
     let fn: DOMClass;
@@ -17,6 +17,9 @@ declare namespace dom {
  */
 declare function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
 declare namespace dom {
-    var utils: typeof import("./utils");
+    var utils: {
+        elementify: typeof elementify;
+        evaluate: typeof evaluate;
+    };
 }
-export { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMResult, DOMIterateCallback, dom, };
+export { ElementBase, SelectorBase, QueryContext, EvalOptions, DOM, DOMSelector, DOMResult, DOMIterateCallback, dom, };

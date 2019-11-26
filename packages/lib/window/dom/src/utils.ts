@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
     Nil,
     isNumber,
     isFunction,
     className,
+    getGlobalNamespace,
 } from '@cdp/core-utils';
 import { document } from './ssr';
 
@@ -89,4 +92,51 @@ export function ensurePositiveNumber(value: number | undefined): number | undefi
  */
 export function swing(progress: number): number {
     return 0.5 - (Math.cos(progress * Math.PI) / 2);
+}
+
+/**
+ * @en [[evaluate]]() options.
+ * @ja [[evaluate]]() に渡すオプション
+ */
+export interface EvalOptions {
+    type?: string;
+    src?: string;
+    nonce?: string;
+    noModule?: string;
+}
+
+const _scriptsAttrs: (keyof EvalOptions)[] = [
+    'type',
+    'src',
+    'nonce',
+    'noModule',
+];
+
+/**
+ * @en The `eval` function by which script `nonce` attribute considered under the CSP condition.
+ * @ja CSP 環境においてスクリプト `nonce` 属性を考慮した `eval` 実行関数
+ */
+export function evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any {
+    const doc: Document = context || document;
+    const script = doc.createElement('script');
+    script.text = `CDP_DOM_EVAL_RETURN_VALUE_BRIDGE = (() => { return ${code}; })();`;
+
+    if (options) {
+        for (const attr of _scriptsAttrs) {
+            const val = options[attr] || ((options as Element).getAttribute && (options as Element).getAttribute(attr));
+            if (val) {
+                script.setAttribute(attr, val);
+            }
+        }
+    }
+
+    // execute
+    try {
+        getGlobalNamespace('CDP_DOM_EVAL_RETURN_VALUE_BRIDGE');
+        doc.head.appendChild(script).parentNode!.removeChild(script); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        const retval = globalThis['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
+        return retval;
+    } finally {
+        delete globalThis['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
+    }
 }

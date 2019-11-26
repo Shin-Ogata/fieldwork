@@ -33,3 +33,18 @@ export declare function ensurePositiveNumber(value: number | undefined): number 
  * @param progress [0 - 1]
  */
 export declare function swing(progress: number): number;
+/**
+ * @en [[evaluate]]() options.
+ * @ja [[evaluate]]() に渡すオプション
+ */
+export interface EvalOptions {
+    type?: string;
+    src?: string;
+    nonce?: string;
+    noModule?: string;
+}
+/**
+ * @en The `eval` function by which script `nonce` attribute considered under the CSP condition.
+ * @ja CSP 環境においてスクリプト `nonce` 属性を考慮した `eval` 実行関数
+ */
+export declare function evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any;

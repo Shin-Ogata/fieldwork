@@ -1,4 +1,4 @@
-export { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMIterateCallback, dom, } from './static';
+export { ElementBase, SelectorBase, QueryContext, EvalOptions, DOM, DOMSelector, DOMIterateCallback, dom, } from './static';
 export { dom as default } from './static';
 export { DOMModificationCallback } from './traversing';
 export { DOMEventMap } from './events';

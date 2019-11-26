@@ -1,5 +1,5 @@
 export {
-    ElementBase, SelectorBase, QueryContext,
+    ElementBase, SelectorBase, QueryContext, EvalOptions,
     DOM, DOMSelector, DOMIterateCallback,
     dom,
 } from './static';

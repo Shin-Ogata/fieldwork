@@ -73,7 +73,7 @@ const bundle = {
                  * Used types will be inlined into the output file.
                  * Optional. Default value is `[]`.
                  */
-                inlinedLibraries: Object.keys(devDependencies).filter(key => /^file:/.test(devDependencies[key])),
+                inlinedLibraries: devDependencies ? Object.keys(devDependencies).filter(key => /^file:/.test(devDependencies[key])) : [],
             },
 
             output: {
