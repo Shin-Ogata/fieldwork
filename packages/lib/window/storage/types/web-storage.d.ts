@@ -1,5 +1,5 @@
 import { Keys, Types, KeyToType } from '@cdp/core-utils';
-import { Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from '@cdp/core-storage';
 import { Serializable } from '@cdp/binary';

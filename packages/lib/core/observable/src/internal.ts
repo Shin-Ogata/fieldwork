@@ -5,7 +5,7 @@ import {
     isSymbol,
     className,
 } from '@cdp/core-utils';
-import { EventBroker } from '@cdp/event-publisher';
+import { EventBroker } from '@cdp/events';
 
 /** @internal EventBrokerProxy */
 export class EventBrokerProxy<Event extends {}> {

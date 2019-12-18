@@ -12,7 +12,7 @@ module.exports = {
     testem: config.testem({
         external: {
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
-            '@cdp/event-publisher': 'node_modules/@cdp/event-publisher/dist/event-publisher',
+            '@cdp/events': 'node_modules/@cdp/events/dist/events',
         },
     }),
 };

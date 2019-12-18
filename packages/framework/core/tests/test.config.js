@@ -10,7 +10,7 @@ module.exports = {
     default: config.default(testee, {
         globals: {
             '@cdp/core-utils': 'CDP.Utils',
-            '@cdp/event-publisher': 'CDP',
+            '@cdp/events': 'CDP',
             '@cdp/promise': 'CDP',
             '@cdp/observable': 'CDP',
             '@cdp/result': 'CDP',
@@ -25,7 +25,7 @@ module.exports = {
             map: {
                 'specs': {
                     '@cdp/core-utils': '@cdp/framework-core',
-                    '@cdp/event-publisher': '@cdp/framework-core',
+                    '@cdp/events': '@cdp/framework-core',
                     '@cdp/promise': '@cdp/framework-core',
                     '@cdp/observable': '@cdp/framework-core',
                     '@cdp/result': '@cdp/framework-core',

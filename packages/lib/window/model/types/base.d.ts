@@ -1,5 +1,5 @@
 import { Arguments } from '@cdp/core-utils';
-import { Subscription, Silenceable } from '@cdp/event-publisher';
+import { Subscription, Silenceable } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
 import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions } from './interfaces';

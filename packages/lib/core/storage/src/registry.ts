@@ -7,7 +7,7 @@ import {
     deepCopy,
     dropUndefined,
 } from '@cdp/core-utils';
-import { EventPublisher } from '@cdp/event-publisher';
+import { EventPublisher } from '@cdp/events';
 import {
     IStorage,
     IStorageOptions,

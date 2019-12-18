@@ -7,14 +7,14 @@ module.exports = {
     default: config.default(testee, {
         globals: {
             '@cdp/core-utils': 'CDP.Utils',
-            '@cdp/event-publisher': 'CDP',
+            '@cdp/events': 'CDP',
             '@cdp/promise': 'CDP',
         },
     }),
     testem: config.testem({
         external: {
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
-            '@cdp/event-publisher': 'node_modules/@cdp/event-publisher/dist/event-publisher',
+            '@cdp/events': 'node_modules/@cdp/events/dist/events',
             '@cdp/promise': 'node_modules/@cdp/promise/dist/promise',
         },
     }),

@@ -1,5 +1,5 @@
 {
-  "name": "@cdp/event-publisher",
+  "name": "@cdp/events",
   "description": "pub/sub framework",
   "version": "0.9.0",
   "author": "Shin Ogata",
@@ -12,8 +12,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/event-publisher",
-  "module": "dist/event-publisher.mjs",
+  "main": "dist/events",
+  "module": "dist/events.mjs",
   "private": true,
   "repository": {
     "type": "git",

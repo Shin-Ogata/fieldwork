@@ -7,7 +7,7 @@
     "@cdp/binary": "file:../../worker/binary",
     "@cdp/core-storage": "file:../../core/storage",
     "@cdp/core-utils": "file:../../core/utils",
-    "@cdp/event-publisher": "file:../../core/event-publisher",
+    "@cdp/events": "file:../../core/events",
     "@cdp/promise": "file:../../core/promise"
   },
   "keywords": [

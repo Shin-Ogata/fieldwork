@@ -1,5 +1,5 @@
 import { Arguments } from '@cdp/core-utils';
-import { Subscribable, Subscription, EventSchema } from '@cdp/event-publisher';
+import { Subscribable, Subscription, EventSchema } from '@cdp/events';
 declare const _subscriptions: unique symbol;
 /**
  * @en

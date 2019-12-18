@@ -1,5 +1,5 @@
 import { NonFunctionPropertyNames, Arguments } from '@cdp/core-utils';
-import { Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/events';
 import { ObservableState, IObservable } from './common';
 /**
  * @en Observable key type definition.

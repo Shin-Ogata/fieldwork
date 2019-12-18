@@ -1,4 +1,4 @@
-import { Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/events';
 /**
  * @en Event observation state definition.
  * @ja イベント購読状態定義

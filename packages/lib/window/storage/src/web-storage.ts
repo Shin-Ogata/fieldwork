@@ -8,7 +8,7 @@ import {
     deepEqual,
     dropUndefined,
 } from '@cdp/core-utils';
-import { Subscription, EventBroker } from '@cdp/event-publisher';
+import { Subscription, EventBroker } from '@cdp/events';
 import {
     Cancelable,
     checkCanceled as cc,

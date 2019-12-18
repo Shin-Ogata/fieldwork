@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method, @typescript-eslint/no-empty-function */
-import { EventPublisher, EventBroker, EventArguments } from '@cdp/event-publisher';
+import { EventPublisher, EventBroker, EventArguments } from '@cdp/events';
 
 const symbolKey = Symbol('SymbolKey');
 
@@ -41,7 +41,7 @@ checkCompile.on(['error', 'message', 'multi'], () => { });
 checkCompile.on(['error', 'message'], (hoge) => { });
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
-describe('event-publisher/publisher spec', () => {
+describe('events/publisher spec', () => {
 
     let count: number;
 

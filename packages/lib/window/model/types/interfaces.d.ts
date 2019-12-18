@@ -1,5 +1,5 @@
 import { Constructor, PlainObject } from '@cdp/core-utils';
-import { Silenceable } from '@cdp/event-publisher';
+import { Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
 /**
  * @en Validable base interface.

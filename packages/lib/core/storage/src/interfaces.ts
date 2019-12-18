@@ -4,7 +4,7 @@ import {
     KeyToType,
     TypeToKey,
 } from '@cdp/core-utils';
-import { Subscription, Silenceable } from '@cdp/event-publisher';
+import { Subscription, Silenceable } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 
 /**

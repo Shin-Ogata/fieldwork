@@ -4,7 +4,7 @@
  *   - includes:
  *     - @cdp/core-storage
  *     - @cdp/core-utils
- *     - @cdp/event-publisher
+ *     - @cdp/events
  *     - @cdp/observable
  *     - @cdp/promise
  *     - @cdp/result
@@ -1280,6 +1280,11 @@ export interface Subscribable<Event> {
     once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
 }
 /**
+ * @en Extract event schema from [[Subscribable]] type.
+ * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ */
+export declare type EventSchema<T extends Subscribable<any>> = T extends Subscribable<infer P> ? P : never;
+/**
  * @en Common interface for notification restraint.
  * @ja 通知抑止に使用する共通インターフェイス
  */
@@ -1296,7 +1301,7 @@ export interface Silenceable {
  * @example <br>
  *
  * ```ts
- * import { EventPublisher } from '@cdp/event-publisher';
+ * import { EventPublisher } from '@cdp/events';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -1412,7 +1417,7 @@ export declare abstract class EventPublisher<Event> implements Subscribable<Even
  * @example <br>
  *
  * ```ts
- * import { EventBroker } from '@cdp/event-publisher';
+ * import { EventBroker } from '@cdp/events';
  *
  * // declare event interface
  * interface SampleEvent {
