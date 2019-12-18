@@ -109,6 +109,20 @@ export declare function hasProperty(src: unknown, propName: string): boolean;
  */
 export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 /**
+ * @en Get local unique id. <br>
+ *     "local unique" means guarantees unique during in script life cycle only.
+ * @ja ローカルユニーク ID の取得 <br>
+ *     スクリプトライフサイクル中の同一性を保証する.
+ *
+ * @param prefix
+ *  - `en` ID prefix
+ *  - `ja` ID に付与する Prefix
+ * @param zeroPad
+ *  - `en` 0 padding order
+ *  - `ja` 0 詰めする桁数を指定
+ */
+export declare function luid(prefix?: string, zeroPad?: number): string;
+/**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換
  *

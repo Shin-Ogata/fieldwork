@@ -39,7 +39,7 @@ Examples:
             );
         });
 
-    return '  $ cdp-task minify <<js|css|html> [options] minify source "type"';
+    return '  $ cdp-task minify <js|css|html> [options]  minify source "type"';
 }
 
 function defaultOptions() {

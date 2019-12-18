@@ -1,4 +1,4 @@
-import { NonFunctionPropertyNames } from '@cdp/core-utils';
+import { NonFunctionPropertyNames, Arguments } from '@cdp/core-utils';
 import { Subscription } from '@cdp/event-publisher';
 import { ObservableState, IObservable } from './common';
 /**
@@ -6,6 +6,24 @@ import { ObservableState, IObservable } from './common';
  * @ja 購読可能なキーの型定義
  */
 export declare type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
+/**
+ * @en Interface able to trigger any events with [[IObservable]].
+ * @ja [[IObservable]] に対して任意のイベントを発行可能なインターフェイス
+ */
+export interface IObservableEventTrigger<Event = any> extends IObservable {
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+}
 /**
  * @en The object class which change can be observed.
  * @ja オブジェクトの変更を監視できるオブジェクトクラス
@@ -63,6 +81,18 @@ export declare abstract class ObservableObject implements IObservable {
      */
     constructor(state?: ObservableState);
     /**
+     * @en Subscrive property changes.
+     * @ja プロパティ変更購読設定 (全プロパティ監視)
+     *
+     * @param property
+     *  - `en` wild cord signature.
+     *  - `ja` ワイルドカード
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    on(property: '*', listener: (context: ObservableObject) => any): Subscription;
+    /**
      * @en Subscrive property change(s).
      * @ja プロパティ変更購読設定
      *
@@ -74,6 +104,18 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `ja` プロパティ変更通知コールバック関数
      */
     on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription;
+    /**
+     * @en Unsubscribe property changes)
+     * @ja プロパティ変更購読解除 (全プロパティ監視)
+     *
+     * @param property
+     *  - `en` wild cord signature.
+     *  - `ja` ワイルドカード
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    off(property: '*', listener?: (context: ObservableObject) => any): void;
     /**
      * @en Unsubscribe property change(s).
      * @ja プロパティ変更購読解除

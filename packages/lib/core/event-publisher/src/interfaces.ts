@@ -36,7 +36,7 @@ export interface Subscribable<Event> {
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
 
     /**
      * @en Returns registered channel keys.
@@ -86,4 +86,19 @@ export interface Subscribable<Event> {
      *  - `ja` `channel` に対応したコールバック関数
      */
     once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+}
+
+/**
+ * @en Extract event schema from [[Subscribable]] type.
+ * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ */
+export type EventSchema<T extends Subscribable<any>> = T extends Subscribable<infer P> ? P : never;
+
+/**
+ * @en Common interface for notification restraint.
+ * @ja 通知抑止に使用する共通インターフェイス
+ */
+export interface Silenceable {
+    /** true: restraint notification / false: fire notification (default) */
+    silent?: boolean;
 }

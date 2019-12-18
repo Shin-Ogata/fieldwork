@@ -108,6 +108,10 @@ describe('utils/deep-circuit spec', () => {
         expect(deep.date).toEqual(date1);
         expect(deepEqual(deep.array, array3)).toBe(true);
 
+        // undefined ref key
+        const undefRef = deepMerge({}, { ref: undefined });
+        expect('ref' in undefRef).toBe(true);
+
         // set
         const setA = new Set([{ a: 'a1', b: 100 }, { a: 'a2', b: 200 }]);
         const setB = new Set([{ c: 'c1', d: 300 }, { c: 'c2', d: 400 }]);

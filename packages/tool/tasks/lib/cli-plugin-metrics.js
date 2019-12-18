@@ -40,7 +40,7 @@ Examples:
             );
         });
 
-    return '  $ cdp-task metrics -r <file|module>   run metrics analyzer';
+    return '  $ cdp-task metrics -r <file|module>        run metrics analyzer';
 }
 
 function defaultOptions() {

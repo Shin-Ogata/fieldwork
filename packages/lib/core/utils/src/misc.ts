@@ -210,6 +210,28 @@ export function partialize<T extends object, K extends keyof T>(target: T, ...pi
 
 //__________________________________________________________________________________________________//
 
+let _localId = 0;
+
+/**
+ * @en Get local unique id. <br>
+ *     "local unique" means guarantees unique during in script life cycle only.
+ * @ja ローカルユニーク ID の取得 <br>
+ *     スクリプトライフサイクル中の同一性を保証する.
+ *
+ * @param prefix
+ *  - `en` ID prefix
+ *  - `ja` ID に付与する Prefix
+ * @param zeroPad
+ *  - `en` 0 padding order
+ *  - `ja` 0 詰めする桁数を指定
+ */
+export function luid(prefix = '', zeroPad?: number): string {
+    const id = (++_localId).toString(16);
+    return (null != zeroPad) ? `${prefix}${id.padStart(zeroPad, '0')}` : `${prefix}${id}`;
+}
+
+//__________________________________________________________________________________________________//
+
 /**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換
