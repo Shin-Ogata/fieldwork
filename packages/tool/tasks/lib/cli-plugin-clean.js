@@ -58,7 +58,7 @@ Examples:
             );
         });
 
-    return '  $ cdp-task clean [option]             clean projet directory';
+    return '  $ cdp-task clean [option]                  clean projet directory';
 }
 
 function defaultOptions() {

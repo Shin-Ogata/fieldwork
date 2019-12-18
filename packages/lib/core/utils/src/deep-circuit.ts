@@ -191,12 +191,21 @@ function cloneTypedArray<T extends TypedArray>(typedArray: T): T {
     return new (typedArray as any).constructor(buffer, typedArray.byteOffset, typedArray.length);
 }
 
+/** @internal check necessary to update */
+function needUpdate(oldValue: unknown, newValue: unknown, exceptUndefined: boolean): boolean {
+    if (oldValue !== newValue) {
+        return true;
+    } else {
+        return (exceptUndefined && undefined === oldValue);
+    }
+}
+
 /** @internal merge Array */
 function mergeArray(target: any[], source: any[]): any[] {
     for (let i = 0, len = source.length; i < len; i++) {
         const oldValue = target[i];
         const newValue = merge(oldValue, source[i]);
-        oldValue === newValue || (target[i] = newValue);
+        !needUpdate(oldValue, newValue, false) || (target[i] = newValue);
     }
     return target;
 }
@@ -214,7 +223,7 @@ function mergeMap(target: Map<any, any>, source: Map<any, any>): Map<any, any> {
     for (const [k, v] of source) {
         const oldValue = target.get(k);
         const newValue = merge(oldValue, v);
-        oldValue === newValue || target.set(k, newValue);
+        !needUpdate(oldValue, newValue, false) || target.set(k, newValue);
     }
     return target;
 }
@@ -261,13 +270,13 @@ function merge(target: unknown, source: unknown): any {
         for (const key of Object.keys(source)) {
             const oldValue = obj[key];
             const newValue = merge(oldValue, source[key]);
-            oldValue === newValue || (obj[key] = newValue);
+            !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
         }
     } else {
         for (const key in source) {
             const oldValue = obj[key];
             const newValue = merge(oldValue, source[key]);
-            oldValue === newValue || (obj[key] = newValue);
+            !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
         }
     }
     return obj;

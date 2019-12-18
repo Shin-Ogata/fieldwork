@@ -2,6 +2,7 @@
 
 import {
     NonFunctionPropertyNames,
+    Arguments,
     isString,
     isArray,
     verify,
@@ -22,6 +23,7 @@ import { ObservableState, IObservable } from './common';
 /** @internal */
 interface InternalProps {
     state: ObservableState;
+    changed: boolean;
     readonly changeMap: Map<PropertyKey, any>;
     readonly broker: EventBrokerProxy<any>;
 }
@@ -49,6 +51,24 @@ Object.freeze(_proxyHandler);
  */
 export type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
 
+/**
+ * @en Interface able to trigger any events with [[IObservable]].
+ * @ja [[IObservable]] に対して任意のイベントを発行可能なインターフェイス
+ */
+export interface IObservableEventTrigger<Event = any> extends IObservable {
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+}
 //__________________________________________________________________________________________________//
 
 /**
@@ -113,6 +133,7 @@ export abstract class ObservableObject implements IObservable {
         verify('instanceOf', ObservableObject, this);
         const internal: InternalProps = {
             state,
+            changed: false,
             changeMap: new Map(),
             broker: new EventBrokerProxy<this>(),
         };
@@ -122,6 +143,19 @@ export abstract class ObservableObject implements IObservable {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IObservable
+
+    /**
+     * @en Subscrive property changes.
+     * @ja プロパティ変更購読設定 (全プロパティ監視)
+     *
+     * @param property
+     *  - `en` wild cord signature.
+     *  - `ja` ワイルドカード
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    on(property: '*', listener: (context: ObservableObject) => any): Subscription;
 
     /**
      * @en Subscrive property change(s).
@@ -134,6 +168,8 @@ export abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
+    on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription;
+
     on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription {
         verifyObservable(this);
         const { changeMap, broker } = this[_internal];
@@ -146,6 +182,19 @@ export abstract class ObservableObject implements IObservable {
         }
         return result;
     }
+
+    /**
+     * @en Unsubscribe property changes)
+     * @ja プロパティ変更購読解除 (全プロパティ監視)
+     *
+     * @param property
+     *  - `en` wild cord signature.
+     *  - `ja` ワイルドカード
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    off(property: '*', listener?: (context: ObservableObject) => any): void;
 
     /**
      * @en Unsubscribe property change(s).
@@ -162,6 +211,8 @@ export abstract class ObservableObject implements IObservable {
      *  - `ja` プロパティ変更通知コールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
+    off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void;
+
     off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void {
         verifyObservable(this);
         this[_internal].broker.get().off(property, listener);
@@ -205,6 +256,15 @@ export abstract class ObservableObject implements IObservable {
     getObservableState(): ObservableState {
         verifyObservable(this);
         return this[_internal].state;
+    }
+
+///////////////////////////////////////////////////////////////////////
+// implements: IObservableEventTrigger
+
+    /** @internal */
+    trigger(channel: string, ...args: any[]): void {
+        const { broker } = this[_internal];
+        (broker.get() as any).publish(channel, ...args);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -266,6 +326,7 @@ export abstract class ObservableObject implements IObservable {
     /** @internal */
     private [_stockChange](p: string, oldValue: any): void {
         const { state, changeMap, broker } = this[_internal];
+        this[_internal].changed = true;
         if (0 === changeMap.size) {
             changeMap.set(p, oldValue);
             for (const k of broker.get().channels()) {
@@ -297,10 +358,15 @@ export abstract class ObservableObject implements IObservable {
 
     /** @internal */
     private [_notify](keyValue: Map<PropertyKey, [any, any]>): void {
-        const { changeMap, broker } = this[_internal];
+        const { changed, changeMap, broker } = this[_internal];
         changeMap.clear();
+        this[_internal].changed = false;
+        const eventBroker = broker.get();
         for (const [key, values] of keyValue) {
-            (broker.get() as any).publish(key, ...values, key);
+            (eventBroker as any).publish(key, ...values, key);
+        }
+        if (changed) {
+            eventBroker.publish('*', this);
         }
     }
 }

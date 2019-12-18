@@ -48,7 +48,7 @@ Examples:
             );
         });
 
-    return '  $ cdp-task unit-test [mode] [option]  unit-test operations';
+    return '  $ cdp-task unit-test [mode] [option]       unit-test operations';
 }
 
 function defaultOptions() {

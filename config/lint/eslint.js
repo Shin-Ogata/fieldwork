@@ -104,6 +104,12 @@ module.exports = {
                 allowTaggedTemplates: true,
             }
         ],
+        'no-constant-condition': [
+            'error',
+            {
+                checkLoops: false,
+            }
+        ],
         'no-var': 'error',
         'no-alert': 'error',
         'no-caller': 'error',

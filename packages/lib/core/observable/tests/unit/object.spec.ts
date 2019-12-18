@@ -5,6 +5,7 @@ import {
     ObservableObject,
     isObservable,
     IObservable,
+    IObservableEventTrigger,
 } from '@cdp/observable';
 
 describe('observable/object spec', () => {
@@ -208,6 +209,32 @@ describe('observable/object spec', () => {
         const model = new Model(1, 1);
         expect(isObservable(model)).toBe(true);
         expect(isObservable({})).toBe(false);
+    });
+
+    it('ObservableObject#on(*)', async (done) => {
+        const model = ObservableObject.from({ a: 1, b: 1 });
+        const stub = {
+            count: 0,
+            onCallback: () => { stub.count++; },
+        };
+        model.on('*', stub.onCallback);
+        model.a = Math.random();
+        model.b = Math.random();
+        setTimeout(() => {
+            expect(stub.count).toBe(1);
+            done();
+        }, 0);
+    });
+
+    it('IObservableEventTrigger#trigger', async (done) => {
+        const observable = new Model(1, 1) as IObservable as IObservableEventTrigger<{ custom: number; }>; // eslint-disable-line
+        setTimeout(() => {
+            observable.on('custom', (value: number) => {
+                expect(value).toBe(100);
+                done();
+            });
+            observable.trigger('custom', 100);
+        }, 0);
     });
 
     it('check construction performance', () => {

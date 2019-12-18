@@ -39,7 +39,7 @@ Examples:
             );
         });
 
-    return '  $ cdp-task delegate <cmd> -- [option] delegate npm-script-command to sub packages';
+    return '  $ cdp-task delegate <cmd> -- [option]      delegate npm-script-command to sub packages';
 }
 
 function defaultOptions() {

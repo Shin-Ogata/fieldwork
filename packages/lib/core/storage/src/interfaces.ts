@@ -1,11 +1,10 @@
 import {
-    Silenceable,
     Keys,
     Types,
     KeyToType,
     TypeToKey,
 } from '@cdp/core-utils';
-import { Subscription } from '@cdp/event-publisher';
+import { Subscription, Silenceable } from '@cdp/event-publisher';
 import { Cancelable } from '@cdp/promise';
 
 /**

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method, @typescript-eslint/no-empty-function */
 import { EventPublisher, EventBroker, EventArguments } from '@cdp/event-publisher';
 
 const symbolKey = Symbol('SymbolKey');
@@ -55,73 +55,73 @@ describe('event-publisher/publisher spec', () => {
 //      console.log(`received: ${JSON.stringify([...args])} \n`);
     };
 
-    it('check has()', () => {
+    it('check hasListener()', () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
 
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
 
         publisher.on('message', stub.onCallback);
-        expect(publisher.has()).toBeTruthy();
+        expect(publisher.hasListener()).toBeTruthy();
 
         publisher.off();
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
 
         publisher.on(['message', 'error', 'simple'], stub.onCallback);
-        expect(publisher.has()).toBeTruthy();
+        expect(publisher.hasListener()).toBeTruthy();
 
         publisher.off();
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
     });
 
-    it('check has(channel)', () => {
+    it('check hasListener(channel)', () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
 
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
 
         publisher.on('message', stub.onCallback);
-        expect(publisher.has('error')).toBeFalsy();
-        expect(publisher.has('message')).toBeTruthy();
+        expect(publisher.hasListener('error')).toBeFalsy();
+        expect(publisher.hasListener('message')).toBeTruthy();
 
         publisher.off();
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
 
         publisher.on(['message', 'error', 'simple'], stub.onCallback);
-        expect(publisher.has('message')).toBeTruthy();
-        expect(publisher.has('error')).toBeTruthy();
-        expect(publisher.has('simple')).toBeTruthy();
-        expect(publisher.has('void')).toBeFalsy();
+        expect(publisher.hasListener('message')).toBeTruthy();
+        expect(publisher.hasListener('error')).toBeTruthy();
+        expect(publisher.hasListener('simple')).toBeTruthy();
+        expect(publisher.hasListener('void')).toBeFalsy();
 
         publisher.off();
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
     });
 
-    it('check has(channel, function)', () => {
+    it('check hasListener(channel, function)', () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
 
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
 
         publisher.on('message', stub.onCallback);
-        expect(publisher.has('message', stub.onCallback)).toBeTruthy();
-        expect(publisher.has('message', () => { })).toBeFalsy();
+        expect(publisher.hasListener('message', stub.onCallback)).toBeTruthy();
+        expect(publisher.hasListener('message', () => { })).toBeFalsy();
 
         publisher.off();
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
 
         publisher.on(['message', 'error', 'simple'], stub.onCallback);
-        expect(publisher.has('message', stub.onCallback)).toBeTruthy();
-        expect(publisher.has('message', () => { })).toBeFalsy();
-        expect(publisher.has('error', stub.onCallback)).toBeTruthy();
-        expect(publisher.has('error', () => { })).toBeFalsy();
-        expect(publisher.has('simple', stub.onCallback)).toBeTruthy();
-        expect(publisher.has('simple', () => { })).toBeFalsy();
-        expect(publisher.has('void', stub.onCallback)).toBeFalsy();
-        expect(publisher.has('void', () => { })).toBeFalsy();
+        expect(publisher.hasListener('message', stub.onCallback)).toBeTruthy();
+        expect(publisher.hasListener('message', () => { })).toBeFalsy();
+        expect(publisher.hasListener('error', stub.onCallback)).toBeTruthy();
+        expect(publisher.hasListener('error', () => { })).toBeFalsy();
+        expect(publisher.hasListener('simple', stub.onCallback)).toBeTruthy();
+        expect(publisher.hasListener('simple', () => { })).toBeFalsy();
+        expect(publisher.hasListener('void', stub.onCallback)).toBeFalsy();
+        expect(publisher.hasListener('void', () => { })).toBeFalsy();
 
         publisher.off();
-        expect(publisher.has()).toBeFalsy();
+        expect(publisher.hasListener()).toBeFalsy();
     });
 
     it('check channels()', () => {

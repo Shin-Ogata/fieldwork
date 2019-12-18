@@ -19,7 +19,7 @@ describe('promise/cancelable-promise spec', () => {
     }
 
     function never(token: CancelToken): Promise<never> {
-        return new Promise<never>(() => { }, token);
+        return new Promise<never>(() => { /* noop */ }, token);
     }
 
     const error = new Error('cancel');

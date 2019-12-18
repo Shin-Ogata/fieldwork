@@ -11,6 +11,7 @@ import {
     restoreNil,
     hasProperty,
     partialize,
+    luid,
     capitalize,
     decapitalize,
     camelize,
@@ -149,6 +150,17 @@ describe('utils/misc spec', () => {
         const dst = partialize(src, 'hoge');
         expect(dst.hoge).toBe(1);
         expect((dst as any).fuga).toBeUndefined();
+    });
+
+    it('check luid()', (): void => {
+        const id1 = luid();
+        expect(id1).not.toBe(luid());
+
+        const id2 = luid('test:');
+        expect(id2.startsWith('test:')).toBe(true);
+
+        const id3 = luid('test:', 8);
+        expect(id3.startsWith('test:00')).toBe(true);
     });
 
     it('check capitalize()', () => {

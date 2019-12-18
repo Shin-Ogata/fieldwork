@@ -39,7 +39,7 @@ function parseCommand() {
     }
 
     commander
-        .command('*', null, { noHelp: true })
+        .command('*', { noHelp: true })
         .action((c) => {
             console.log(chalk.red.underline(`  unsupported command: "${c}"`));
             commander.help();
@@ -48,7 +48,7 @@ function parseCommand() {
     commander.on('--help', () => {
         console.log('\nExamples:');
         for (const ex of examples) {
-            console.log(ex);
+            console.log(chalk.gray(ex));
         }
     });
 

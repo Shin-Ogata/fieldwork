@@ -71,7 +71,7 @@ export declare abstract class EventPublisher<Event> implements Subscribable<Even
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
     /**
      * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却

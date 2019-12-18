@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "target": "es2019",
+    "target": "es2020",
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": false,
     "esModuleInterop": true,
@@ -21,6 +21,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "useDefineForClassFields": false
   }
 }

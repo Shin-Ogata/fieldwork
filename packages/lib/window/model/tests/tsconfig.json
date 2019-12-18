@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationDir": null,
+    "outDir": "../built/tests/unit",
+    "rootDir": "unit"
+  },
+  "include": [
+    "unit/*"
+  ]
+}

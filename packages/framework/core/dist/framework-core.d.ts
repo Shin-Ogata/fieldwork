@@ -11,14 +11,6 @@
  *     - @cdp/template
  */
 /**
- * @en Common interface for notification restraint.
- * @ja 通知抑止に使用する共通インターフェイス
- */
-export interface Silenceable {
-    /** true: restraint notification / false: fire notification (default) */
-    silent?: boolean;
-}
-/**
  * @en Safe `global` accessor.
  * @ja `global` アクセッサ
  *
@@ -1073,6 +1065,20 @@ export declare function hasProperty(src: unknown, propName: string): boolean;
  */
 export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 /**
+ * @en Get local unique id. <br>
+ *     "local unique" means guarantees unique during in script life cycle only.
+ * @ja ローカルユニーク ID の取得 <br>
+ *     スクリプトライフサイクル中の同一性を保証する.
+ *
+ * @param prefix
+ *  - `en` ID prefix
+ *  - `ja` ID に付与する Prefix
+ * @param zeroPad
+ *  - `en` 0 padding order
+ *  - `ja` 0 詰めする桁数を指定
+ */
+export declare function luid(prefix?: string, zeroPad?: number): string;
+/**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換
  *
@@ -1226,7 +1232,7 @@ export interface Subscribable<Event> {
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
     /**
      * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
@@ -1272,6 +1278,14 @@ export interface Subscribable<Event> {
      *  - `ja` `channel` に対応したコールバック関数
      */
     once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+}
+/**
+ * @en Common interface for notification restraint.
+ * @ja 通知抑止に使用する共通インターフェイス
+ */
+export interface Silenceable {
+    /** true: restraint notification / false: fire notification (default) */
+    silent?: boolean;
 }
 /**
  * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
@@ -1344,7 +1358,7 @@ export declare abstract class EventPublisher<Event> implements Subscribable<Even
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    has<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
     /**
      * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
@@ -1781,6 +1795,24 @@ export declare function isObservable(x: any): x is IObservable;
  */
 export declare type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
 /**
+ * @en Interface able to trigger any events with [[IObservable]].
+ * @ja [[IObservable]] に対して任意のイベントを発行可能なインターフェイス
+ */
+export interface IObservableEventTrigger<Event = any> extends IObservable {
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+}
+/**
  * @en The object class which change can be observed.
  * @ja オブジェクトの変更を監視できるオブジェクトクラス
  *
@@ -1837,6 +1869,18 @@ export declare abstract class ObservableObject implements IObservable {
      */
     constructor(state?: ObservableState);
     /**
+     * @en Subscrive property changes.
+     * @ja プロパティ変更購読設定 (全プロパティ監視)
+     *
+     * @param property
+     *  - `en` wild cord signature.
+     *  - `ja` ワイルドカード
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    on(property: '*', listener: (context: ObservableObject) => any): Subscription;
+    /**
      * @en Subscrive property change(s).
      * @ja プロパティ変更購読設定
      *
@@ -1848,6 +1892,18 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `ja` プロパティ変更通知コールバック関数
      */
     on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription;
+    /**
+     * @en Unsubscribe property changes)
+     * @ja プロパティ変更購読解除 (全プロパティ監視)
+     *
+     * @param property
+     *  - `en` wild cord signature.
+     *  - `ja` ワイルドカード
+     * @param listener
+     *  - `en` callback function of the property change.
+     *  - `ja` プロパティ変更通知コールバック関数
+     */
+    off(property: '*', listener?: (context: ObservableObject) => any): void;
     /**
      * @en Unsubscribe property change(s).
      * @ja プロパティ変更購読解除
@@ -2966,8 +3022,10 @@ declare namespace CDP_DECLARE {
     const enum CDP_KNOWN_MODULE {
         /** `@cdp/ajax` */
         AJAX = 1,
+        /** `@cdp/model` */
+        MVC = 2,
         /** offset for unknown module */
-        OFFSET = 2
+        OFFSET = 3
     }
     /**
      * @en Common result code for the application.
