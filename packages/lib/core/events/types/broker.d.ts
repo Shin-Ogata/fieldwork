@@ -1,12 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Arguments } from '@cdp/core-utils';
 import { Subscribable } from './interfaces';
-import { EventPublisher } from './publisher';
-
-// re-export
 export { Arguments as EventArguments };
-
 /**
  * @en Eventing framework object able to call `publish()` method from outside.
  * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
@@ -14,7 +8,7 @@ export { Arguments as EventArguments };
  * @example <br>
  *
  * ```ts
- * import { EventBroker } from '@cdp/event-publisher';
+ * import { EventBroker } from '@cdp/events';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -41,12 +35,11 @@ export interface EventBroker<Event extends {}> extends Subscribable<Event> {
      */
     publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
-
 /**
  * @en Constructor of EventBroker
  * @ja EventBroker のコンストラクタ実体
  */
-export const EventBroker: {
+export declare const EventBroker: {
     readonly prototype: EventBroker<any>;
     new <T>(): EventBroker<T>;
-} = EventPublisher as any;
+};

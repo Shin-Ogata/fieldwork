@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/events';
 import { _internal } from './internal';
 
 /**

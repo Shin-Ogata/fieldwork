@@ -5,7 +5,7 @@
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../utils",
-    "@cdp/event-publisher": "file:../event-publisher",
+    "@cdp/events": "file:../events",
     "@cdp/promise": "file:../promise"
   },
   "keywords": [

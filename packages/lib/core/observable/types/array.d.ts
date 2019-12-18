@@ -1,4 +1,4 @@
-import { Subscription } from '@cdp/event-publisher';
+import { Subscription } from '@cdp/events';
 import { ObservableState, IObservable } from './common';
 /**
  * @en Array change type information. <br>

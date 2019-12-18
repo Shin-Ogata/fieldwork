@@ -1,7 +1,7 @@
 /* eslint-disable no-redeclare, @typescript-eslint/no-explicit-any */
 
 import { verify } from '@cdp/core-utils';
-import { EventBroker, Subscription } from '@cdp/event-publisher';
+import { EventBroker, Subscription } from '@cdp/events';
 import {
     _cancel,
     _close,

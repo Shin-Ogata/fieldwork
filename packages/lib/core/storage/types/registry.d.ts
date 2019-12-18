@@ -1,4 +1,4 @@
-import { EventPublisher } from '@cdp/event-publisher';
+import { EventPublisher } from '@cdp/events';
 import { IStorage, IStorageOptions, RegistrySchemaBase, RegistryEvent, RegistryReadOptions, RegistryWriteOptions, RegistrySaveOptions } from './interfaces';
 /**
  * @en Registry management class for synchronous Read/Write accessible from any [[IStorage]] object.

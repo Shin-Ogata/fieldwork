@@ -51,7 +51,7 @@ function validListener(listener?: (...args: unknown[]) => unknown): any | never 
  * @example <br>
  *
  * ```ts
- * import { EventPublisher } from '@cdp/event-publisher';
+ * import { EventPublisher } from '@cdp/events';
  *
  * // declare event interface
  * interface SampleEvent {

@@ -5,7 +5,7 @@ import {
     Subscribable,
     Subscription,
     EventSchema,
-} from '@cdp/event-publisher';
+} from '@cdp/events';
 
 const _subscriptions = Symbol('subscriptions');
 
