@@ -5,8 +5,18 @@ import {
     luid,
     escapeHTML,
 } from '@cdp/core-utils';
-import { Subscription, Silenceable } from '@cdp/events';
-import { ObservableObject } from '@cdp/observable';
+import {
+    Subscription,
+    Silenceable,
+    EventBroker,
+    EventRevceiver,
+    EventSource,
+} from '@cdp/events';
+import {
+    IObservable,
+    IObservableEventBrokerAccess,
+    ObservableObject,
+} from '@cdp/observable';
 import {
     RESULT_CODE,
     Result,
@@ -25,6 +35,7 @@ import {
 const _defineAttributes = Symbol('define');
 const _validate         = Symbol('validate');
 const _changeHandler    = Symbol('onchange');
+const _broker           = Symbol('broker');
 const _properties       = Symbol('properties');
 
 /** @internal */
@@ -120,7 +131,7 @@ export const RESULT_VALID_ATTRS = Object.freeze(makeResult(RESULT_CODE.SUCCESS, 
  * content.trigger('fire', true, 100);
  * ```
  */
-abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> {
+abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
     /**
      * @en Attributes pool
      * @ja 属性格納領域
@@ -135,6 +146,7 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
      *  - `ja` 属性の初期値を指定
      */
     constructor(attributes: Required<T>, options?: ModelConstructionOptions<T>) {
+        super();
         const opts = Object.assign({ idAttribute: 'id' }, options);
 
         const props: Property<T> = {
@@ -225,6 +237,34 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
 ///////////////////////////////////////////////////////////////////////
 // operations: events
 
+    /** @internal broker access */
+    private get [_broker](): EventBroker<any> {
+        return (this._attrs as IObservable as IObservableEventBrokerAccess).getBroker();
+    }
+
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean {
+        return this[_broker].hasListener(channel, listener);
+    }
+
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[] {
+        return this[_broker].channels() as (keyof Event)[];
+    }
+
     /**
      * @en Notify event to clients.
      * @ja event 発行
@@ -237,7 +277,7 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
      *  - `ja` `channel` に対応したコールバック関数に渡す引数
      */
     public trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void {
-        (this._attrs as any).trigger(channel, ...args);
+        (this[_broker] as any).trigger(channel, ...args);
     }
 
     /**
@@ -441,9 +481,9 @@ export { Model as ModelBase };
 ☆ off
 ☆ trigger
 ☆ once
-★ listenTo
-★ stopListening
-★ listenToOnce
+☆ listenTo
+☆ stopListening
+☆ listenToOnce
 
 ● Model
 ☆ extend

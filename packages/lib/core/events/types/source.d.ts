@@ -1,4 +1,3 @@
-import { MixinClass } from '@cdp/core-utils';
 import { EventBroker } from './broker';
 import { EventRevceiver } from './receiver';
 /**
@@ -45,7 +44,7 @@ import { EventRevceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-declare type EventSourceBase<T extends {}> = EventBroker<T> & EventRevceiver & MixinClass;
+declare type EventSourceBase<T extends {}> = EventBroker<T> & EventRevceiver;
 /**
  * @en Constructor of [[EventSource]]
  * @ja [[EventSource]] のコンストラクタ実体

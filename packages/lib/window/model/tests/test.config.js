@@ -7,6 +7,7 @@ module.exports = {
     default: config.default(testee, {
         globals: {
             '@cdp/core-utils': 'CDP.Utils',
+            '@cdp/events': 'CDP',
             '@cdp/result': 'CDP',
         },
     }),
