@@ -1607,7 +1607,7 @@ export declare class EventRevceiver {
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-export declare type EventSource<T extends {}> = EventBroker<T> & EventRevceiver & MixinClass;
+export declare type EventSource<T extends {}> = EventBroker<T> & EventRevceiver;
 /**
  * @en Constructor of [[EventSource]]
  * @ja [[EventSource]] のコンストラクタ実体
@@ -1950,6 +1950,17 @@ export interface IObservable {
     getObservableState(): ObservableState;
 }
 /**
+ * @en Interface able to access to [[EventBroker]] with [[IObservable]].
+ * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
+ */
+export interface IObservableEventBrokerAccess<T extends {} = any> extends IObservable {
+    /**
+     * @en Get [[EventBroker]] instance.
+     * @ja [[EventBroker]] インスタンスの取得
+     */
+    getBroker(): EventBroker<T>;
+}
+/**
  * @en Check the value-type is [[IObservable]].
  * @ja [[IObservable]] 型であるか判定
  *
@@ -1963,24 +1974,6 @@ export declare function isObservable(x: any): x is IObservable;
  * @ja 購読可能なキーの型定義
  */
 export declare type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
-/**
- * @en Interface able to trigger any events with [[IObservable]].
- * @ja [[IObservable]] に対して任意のイベントを発行可能なインターフェイス
- */
-export interface IObservableEventTrigger<Event = any> extends IObservable {
-    /**
-     * @en Notify event to clients.
-     * @ja event 発行
-     *
-     * @param channel
-     *  - `en` event channel key. (string | symbol)
-     *  - `ja` イベントチャネルキー (string | symbol)
-     * @param args
-     *  - `en` arguments for callback function of the `channel` corresponding.
-     *  - `ja` `channel` に対応したコールバック関数に渡す引数
-     */
-    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
-}
 /**
  * @en The object class which change can be observed.
  * @ja オブジェクトの変更を監視できるオブジェクトクラス

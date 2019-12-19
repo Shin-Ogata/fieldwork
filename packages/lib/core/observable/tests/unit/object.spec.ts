@@ -5,7 +5,7 @@ import {
     ObservableObject,
     isObservable,
     IObservable,
-    IObservableEventTrigger,
+    IObservableEventBrokerAccess,
 } from '@cdp/observable';
 
 describe('observable/object spec', () => {
@@ -226,14 +226,15 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('IObservableEventTrigger#trigger', async (done) => {
-        const observable = new Model(1, 1) as IObservable as IObservableEventTrigger<{ custom: number; }>; // eslint-disable-line
+    it('IObservableEventBrokerAccess#trigger', async (done) => {
+        const observable = new Model(1, 1) as IObservable as IObservableEventBrokerAccess<{ custom: number; }>; // eslint-disable-line
         setTimeout(() => {
             observable.on('custom', (value: number) => {
                 expect(value).toBe(100);
                 done();
             });
-            observable.trigger('custom', 100);
+            const broker = observable.getBroker();
+            broker.trigger('custom', 100);
         }, 0);
     });
 

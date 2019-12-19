@@ -1,6 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-useless-constructor, @typescript-eslint/require-await */
+/*
+ eslint-disable
+   @typescript-eslint/no-explicit-any
+ , @typescript-eslint/no-empty-function
+ , @typescript-eslint/no-unnecessary-type-assertion
+ , @typescript-eslint/no-useless-constructor
+ , @typescript-eslint/require-await
+ , @typescript-eslint/await-thenable
+ */
 
 import { Writable, post } from '@cdp/core-utils';
+import { EventBroker } from '@cdp/events';
 import {
     RESULT_CODE,
     Result,
@@ -25,6 +34,7 @@ describe('model/model spec', () => {
 
     interface CustomEvent extends ModelEvent<ContentAttribute> {
         fire: [boolean, number];
+        message: string;
     }
 
     const errorInvalidData = makeResult(RESULT_CODE.ERROR_MVC_INVALID_DATA, 'size is readonly.');
@@ -32,7 +42,7 @@ describe('model/model spec', () => {
     const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
 
     class Content extends Model {
-        constructor(attrs: ContentAttribute, options?: ModelConstructionOptions<ContentAttribute>) {
+        constructor(attrs?: ContentAttribute, options?: ModelConstructionOptions<ContentAttribute>) {
             super(Object.assign({}, Content.defaults, attrs), options);
         }
 
@@ -56,6 +66,8 @@ describe('model/model spec', () => {
             };
         }
     }
+
+    const broker = new EventBroker<CustomEvent>();
 
     let count: number;
 
@@ -130,7 +142,210 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#once()', async (done) => {
+    it('check Model#hasListener()', () => {
+        const content = new Content();
+        const stub = { onCallback };
+
+        expect(content.hasListener()).toBeFalsy();
+
+        content.on('uri', stub.onCallback);
+        expect(content.hasListener()).toBeTruthy();
+
+        content.off();
+        expect(content.hasListener()).toBeFalsy();
+
+        content.on(['uri', 'size', 'cookie'], stub.onCallback);
+        expect(content.hasListener()).toBeTruthy();
+
+        content.off();
+        expect(content.hasListener()).toBeFalsy();
+    });
+
+    it('check Model#hasListener(channel)', () => {
+        const content = new Content();
+        const stub = { onCallback };
+
+        expect(content.hasListener()).toBeFalsy();
+
+        content.on('uri', stub.onCallback);
+        expect(content.hasListener('size')).toBeFalsy();
+        expect(content.hasListener('uri')).toBeTruthy();
+
+        content.off();
+        expect(content.hasListener()).toBeFalsy();
+
+        content.on(['uri', 'size'], stub.onCallback);
+        expect(content.hasListener('uri')).toBeTruthy();
+        expect(content.hasListener('size')).toBeTruthy();
+        expect(content.hasListener('cookie')).toBeFalsy();
+
+        content.off();
+        expect(content.hasListener()).toBeFalsy();
+    });
+
+    it('check Model#hasListener(channel, function)', () => {
+        const content = new Content();
+        const stub = { onCallback };
+
+        expect(content.hasListener()).toBeFalsy();
+
+        content.on('uri', stub.onCallback);
+        expect(content.hasListener('uri', stub.onCallback)).toBeTruthy();
+        expect(content.hasListener('uri', () => { })).toBeFalsy();
+
+        content.off();
+        expect(content.hasListener()).toBeFalsy();
+
+        content.on(['uri', 'size'], stub.onCallback);
+        expect(content.hasListener('uri', stub.onCallback)).toBeTruthy();
+        expect(content.hasListener('uri', () => { })).toBeFalsy();
+        expect(content.hasListener('size', stub.onCallback)).toBeTruthy();
+        expect(content.hasListener('size', () => { })).toBeFalsy();
+        expect(content.hasListener('cookie', stub.onCallback)).toBeFalsy();
+        expect(content.hasListener('cookie', () => { })).toBeFalsy();
+
+        content.off();
+        expect(content.hasListener()).toBeFalsy();
+    });
+
+    it('check Model#channels()', () => {
+        const content = new Content();
+        const stub = { onCallback };
+
+        let channels = content.channels();
+        expect(channels).toBeDefined();
+        expect(channels.length).toBe(0);
+        content.on('uri', stub.onCallback);
+
+        channels = content.channels();
+        expect(channels.length).toBe(1);
+        expect(channels[0]).toBe('uri');
+
+        content.off();
+        channels = content.channels();
+        expect(channels.length).toBe(0);
+    });
+
+    it('check Model#on(single)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.on('message', stub.onCallback);
+
+        await content.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+
+        await content.trigger('message', 'good morning');
+        expect(stub.onCallback).toHaveBeenCalledWith('good morning');
+
+        expect(count).toBe(2);
+
+        done();
+    });
+
+    it('check Model#on(multi)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.on(['message', 'fire'], stub.onCallback);
+
+        await content.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+
+        await content.trigger('fire', true, 100);
+        expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
+
+        expect(count).toBe(2);
+
+        done();
+    });
+
+    it('check subscription', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const subscription = content.on(['message', 'fire'], stub.onCallback);
+        expect(subscription.enable).toBeTruthy();
+
+        await content.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+        expect(subscription.enable).toBeTruthy();
+
+        subscription.unsubscribe();
+        expect(subscription.enable).toBeFalsy();
+
+        await content.trigger('fire', true, 100);
+        expect(stub.onCallback).not.toHaveBeenCalledWith(true, 100);
+
+        expect(count).toBe(1);
+
+        done();
+    });
+
+    it('check Model#off(single)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.on('message', stub.onCallback);
+        content.on('fire', stub.onCallback);
+        await content.trigger('message', 'hello');
+        await content.trigger('fire', false);
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+        expect(stub.onCallback).toHaveBeenCalledWith(false);
+        expect(count).toBe(2);
+
+        content.off('message', stub.onCallback);
+        await content.trigger('message', 'good morning');
+        await content.trigger('fire', true);
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
+        expect(stub.onCallback).toHaveBeenCalledWith(true);
+        expect(count).toBe(3);
+
+        content.off('fire');
+        await content.trigger('message', 'good evening');
+        await content.trigger('fire', true, 1);
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good evening');
+        expect(stub.onCallback).not.toHaveBeenCalledWith(true, 1);
+        expect(count).toBe(3);
+
+        done();
+    });
+
+    it('check off(multi)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.on(['message', 'fire', 'uri'], stub.onCallback);
+        await content.trigger('message', 'hello');
+        await content.trigger('fire', true, 100);
+        await content.trigger('uri', 'bbb.html');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+        expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
+        expect(stub.onCallback).toHaveBeenCalledWith('bbb.html');
+
+        content.off(['message', 'uri'], stub.onCallback);
+        await content.trigger('message', 'good morning');
+        await content.trigger('fire', false, 200);
+        await content.trigger('uri', 'ccc.html');
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
+        expect(stub.onCallback).toHaveBeenCalledWith(false, 200);
+        expect(stub.onCallback).not.toHaveBeenCalledWith('ccc.html');
+
+        content.off(['fire'], stub.onCallback);
+        await content.trigger('fire', true, 300);
+        expect(stub.onCallback).not.toHaveBeenCalledWith(true, 300);
+
+        expect(count).toBe(4);
+
+        done();
+    });
+
+    it('check Model#once(single)', async (done) => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -143,6 +358,170 @@ describe('model/model spec', () => {
         await post(async () => content.uri = 'ccc.html');
         expect(count).toBe(1);
 
+        done();
+    });
+
+    it('check Model#once(multi)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const subscription = content.once(['message', 'fire'], stub.onCallback);
+        expect(subscription.enable).toBeTruthy();
+        await content.trigger('fire', true, 100);
+        await content.trigger('message', 'hello');
+        expect(stub.onCallback).not.toHaveBeenCalledWith('hello');
+        expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
+
+        await content.trigger('fire', false, 200);
+        expect(stub.onCallback).not.toHaveBeenCalledWith(false, 200);
+        expect(subscription.enable).toBeFalsy();
+
+        expect(count).toBe(1);
+
+        done();
+    });
+
+    it('check Model#listenTo(single)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.listenTo(broker, 'message', stub.onCallback);
+
+        await broker.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+
+        await broker.trigger('message', 'good morning');
+        expect(stub.onCallback).toHaveBeenCalledWith('good morning');
+
+        expect(count).toBe(2);
+
+        content.stopListening();
+        done();
+    });
+
+    it('check Model#listenTo(multi)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.listenTo(broker, ['message', 'fire'], stub.onCallback);
+
+        await broker.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+
+        await broker.trigger('fire', true, 100);
+        expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
+
+        expect(count).toBe(2);
+
+        content.stopListening();
+        done();
+    });
+
+    it('check Model#stopListening(single)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.listenTo(broker, 'message', stub.onCallback);
+        content.listenTo(broker, 'fire', stub.onCallback);
+        await broker.trigger('message', 'hello');
+        await broker.trigger('fire', true);
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+        expect(stub.onCallback).toHaveBeenCalledWith(true);
+        expect(count).toBe(2);
+
+        content.stopListening(broker, 'message', stub.onCallback);
+        await broker.trigger('message', 'good morning');
+        await broker.trigger('fire', false, 100);
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
+        expect(stub.onCallback).toHaveBeenCalledWith(false, 100);
+        expect(count).toBe(3);
+
+        content.stopListening(broker, 'fire');
+        await broker.trigger('message', 'good evening');
+        await broker.trigger('fire', true, 200);
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good evening');
+        expect(stub.onCallback).not.toHaveBeenCalledWith(true, 200);
+        expect(count).toBe(3);
+
+        content.stopListening();
+        done();
+    });
+
+    it('check Model#stopListening(multi)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.listenTo(broker, ['message', 'fire', 'uri'], stub.onCallback);
+        await broker.trigger('message', 'hello');
+        await broker.trigger('fire', true, 100);
+        await broker.trigger('uri', 'bbb.html');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+        expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
+        expect(stub.onCallback).toHaveBeenCalledWith('bbb.html');
+
+        content.stopListening(broker, ['message', 'uri'], stub.onCallback);
+        await broker.trigger('message', 'good morning');
+        await broker.trigger('fire', false, 200);
+        await broker.trigger('uri', 'ccc.html');
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
+        expect(stub.onCallback).toHaveBeenCalledWith(false, 200);
+        expect(stub.onCallback).not.toHaveBeenCalledWith('ccc.html');
+
+        content.stopListening(broker, ['fire'], stub.onCallback);
+        await broker.trigger('fire', true, 300);
+        expect(stub.onCallback).not.toHaveBeenCalledWith(true, 300);
+
+        expect(count).toBe(4);
+
+        content.stopListening();
+        done();
+    });
+
+    it('check Model#listenToOnce(single)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const subscription = content.listenToOnce(broker, 'message', stub.onCallback);
+        expect(subscription.enable).toBeTruthy();
+        await broker.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalledWith('hello');
+
+        await broker.trigger('message', 'good morning');
+        expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
+        expect(subscription.enable).toBeFalsy();
+
+        expect(count).toBe(1);
+
+        content.stopListening();
+        done();
+    });
+
+    it('check Model#listenToOnce(multi)', async (done) => {
+        const content = new Content();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const subscription = content.listenToOnce(broker, ['message', 'fire'], stub.onCallback);
+        expect(subscription.enable).toBeTruthy();
+        await broker.trigger('fire', true, 100);
+        await broker.trigger('message', 'hello');
+        expect(stub.onCallback).not.toHaveBeenCalledWith('hello');
+        expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
+
+        await broker.trigger('fire', false, 200);
+        expect(stub.onCallback).not.toHaveBeenCalledWith(false, 200);
+        expect(subscription.enable).toBeFalsy();
+
+        expect(count).toBe(1);
+
+        content.stopListening();
         done();
     });
 

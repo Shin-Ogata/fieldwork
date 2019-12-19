@@ -6,6 +6,8 @@ import {
     ArrayChangeType,
     ObservableArray,
     isObservable,
+    IObservable,
+    IObservableEventBrokerAccess,
 } from '@cdp/observable';
 
 describe('observable/array spec', () => {
@@ -359,6 +361,25 @@ describe('observable/array spec', () => {
 
             done();
         });
+    });
+
+    it('IObservableEventBrokerAccess#trigger', async (done) => {
+        const observable = ObservableArray.from(['a', 'b', 'c']);
+        const expected: ArrayChangeRecord<string> = {
+            type: ArrayChangeType.INSERT,
+            index: 0,
+            newValue: 'x',
+            oldValue: undefined,
+        };
+        setTimeout(() => {
+            observable.on(records => {
+                expect(records.length).toBe(1);
+                expect(records[0]).toEqual(expected);
+                done();
+            });
+            const broker = (observable as IObservable as IObservableEventBrokerAccess).getBroker(); // eslint-disable-line
+            broker.trigger('@', [expected]);
+        }, 0);
     });
 
     it('check advanced', async (done) => {

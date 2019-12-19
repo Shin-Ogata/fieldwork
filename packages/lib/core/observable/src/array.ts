@@ -6,7 +6,7 @@ import {
     verify,
     post,
 } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
+import { Subscription, EventBroker } from '@cdp/events';
 import {
     EventBrokerProxy,
     _internal,
@@ -393,6 +393,15 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
          * return (super.map as any)(...arguments);
          */
         return ObservableArray.from([...this].map(callbackfn, thisArg));
+    }
+
+///////////////////////////////////////////////////////////////////////
+// implements: IObservableEventBrokerAccess
+
+    /** @internal */
+    getBroker(): EventBroker<IArrayChangeEvent<T>> {
+        const { broker } = this[_internal];
+        return broker.get();
     }
 
 ///////////////////////////////////////////////////////////////////////

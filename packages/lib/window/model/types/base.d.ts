@@ -1,5 +1,5 @@
 import { Arguments } from '@cdp/core-utils';
-import { Subscription, Silenceable } from '@cdp/events';
+import { Subscription, Silenceable, EventRevceiver, EventSource } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
 import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions } from './interfaces';
@@ -87,7 +87,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * content.trigger('fire', true, 100);
  * ```
  */
-declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> {
+declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
     /**
      * @en Attributes pool
      * @ja 属性格納領域
@@ -126,6 +126,23 @@ declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = Mo
      * @ja 内部のコンテンツ ID を取得
      */
     protected get _cid(): string;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
     /**
      * @en Notify event to clients.
      * @ja event 発行

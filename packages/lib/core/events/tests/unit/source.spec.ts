@@ -182,29 +182,6 @@ describe('events/source spec', () => {
         done();
     });
 
-    it('check subscription', async (done) => {
-        const source = new EventSource<TestEvent>();
-        const stub = { onCallback };
-        spyOn(stub, 'onCallback').and.callThrough();
-
-        const subscription = source.on(['message', 'multi'], stub.onCallback);
-        expect(subscription.enable).toBeTruthy();
-
-        await source.trigger('message', 'hello');
-        expect(stub.onCallback).toHaveBeenCalledWith('hello');
-        expect(subscription.enable).toBeTruthy();
-
-        subscription.unsubscribe();
-        expect(subscription.enable).toBeFalsy();
-
-        await source.trigger('multi', 10, 'good morning', true);
-        expect(stub.onCallback).not.toHaveBeenCalledWith(10, 'good morning', true);
-
-        expect(count).toBe(1);
-
-        done();
-    });
-
     it('check off(single)', async (done) => {
         const source = new EventSource<TestEvent>();
         const stub = { onCallback };

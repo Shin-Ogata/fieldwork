@@ -1,4 +1,4 @@
-import { Subscription } from '@cdp/events';
+import { Subscription, EventBroker } from '@cdp/events';
 /**
  * @en Event observation state definition.
  * @ja イベント購読状態定義
@@ -45,6 +45,17 @@ export interface IObservable {
      * @ja 購読可能状態
      */
     getObservableState(): ObservableState;
+}
+/**
+ * @en Interface able to access to [[EventBroker]] with [[IObservable]].
+ * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
+ */
+export interface IObservableEventBrokerAccess<T extends {} = any> extends IObservable {
+    /**
+     * @en Get [[EventBroker]] instance.
+     * @ja [[EventBroker]] インスタンスの取得
+     */
+    getBroker(): EventBroker<T>;
 }
 /**
  * @en Check the value-type is [[IObservable]].

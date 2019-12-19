@@ -2,14 +2,13 @@
 
 import {
     NonFunctionPropertyNames,
-    Arguments,
     isString,
     isArray,
     verify,
     post,
     deepMerge,
 } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
+import { Subscription, EventBroker } from '@cdp/events';
 import {
     EventBrokerProxy,
     _internal,
@@ -51,24 +50,6 @@ Object.freeze(_proxyHandler);
  */
 export type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
 
-/**
- * @en Interface able to trigger any events with [[IObservable]].
- * @ja [[IObservable]] に対して任意のイベントを発行可能なインターフェイス
- */
-export interface IObservableEventTrigger<Event = any> extends IObservable {
-    /**
-     * @en Notify event to clients.
-     * @ja event 発行
-     *
-     * @param channel
-     *  - `en` event channel key. (string | symbol)
-     *  - `ja` イベントチャネルキー (string | symbol)
-     * @param args
-     *  - `en` arguments for callback function of the `channel` corresponding.
-     *  - `ja` `channel` に対応したコールバック関数に渡す引数
-     */
-    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
-}
 //__________________________________________________________________________________________________//
 
 /**
@@ -259,12 +240,12 @@ export abstract class ObservableObject implements IObservable {
     }
 
 ///////////////////////////////////////////////////////////////////////
-// implements: IObservableEventTrigger
+// implements: IObservableEventBrokerAccess
 
     /** @internal */
-    trigger(channel: string, ...args: any[]): void {
+    getBroker(): EventBroker<ObservableKeys<this>> {
         const { broker } = this[_internal];
-        (broker.get() as any).trigger(channel, ...args);
+        return broker.get();
     }
 
 ///////////////////////////////////////////////////////////////////////

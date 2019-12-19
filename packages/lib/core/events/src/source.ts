@@ -48,7 +48,7 @@ import { EventRevceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-type EventSourceBase<T extends {}> = EventBroker<T> & EventRevceiver & MixinClass;
+type EventSourceBase<T extends {}> = EventBroker<T> & EventRevceiver;
 
 /** @internal [[EventSource]] class */
 class EventSource extends mixins(EventBroker, EventRevceiver) {
