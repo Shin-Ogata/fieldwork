@@ -12,6 +12,9 @@ function patch(index, code) {
         return code;
     }
 
+    // rename `EventSourceBase` → `EventSource`
+    code = code.replace(/EventSourceBase/gm, 'EventSource');
+
     // global namespace: `@cdp/result result-code-defs.d.ts`
     code += readFileSync(resolve(__dirname, 'node_modules/@cdp/result/types/result-code-defs.d.ts')).toString();
 

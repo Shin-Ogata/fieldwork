@@ -78,22 +78,6 @@ export declare abstract class EventPublisher<Event> implements Subscribable<Even
      */
     channels(): (keyof Event)[];
     /**
-     * @en Unsubscribe event(s).
-     * @ja イベント購読解除
-     *
-     * @param channel
-     *  - `en` target event channel key. (string | symbol)
-     *         When not set this parameter, everything is released.
-     *  - `ja` 対象のイベントチャネルキー (string | symbol)
-     *         指定しない場合はすべて解除
-     * @param listener
-     *  - `en` callback function of the `channel` corresponding.
-     *         When not set this parameter, all same `channel` listeners are released.
-     *  - `ja` `channel` に対応したコールバック関数
-     *         指定しない場合は同一 `channel` すべてを解除
-     */
-    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
-    /**
      * @en Subscrive event(s).
      * @ja イベント購読設定
      *
@@ -117,4 +101,20 @@ export declare abstract class EventPublisher<Event> implements Subscribable<Even
      *  - `ja` `channel` に対応したコールバック関数
      */
     once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }

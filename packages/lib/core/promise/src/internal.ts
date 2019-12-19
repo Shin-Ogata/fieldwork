@@ -37,7 +37,7 @@ export interface CancelEvent<T> {
  * @internal
  */
 export interface CancelTokenContext<T extends {}> {
-    readonly publisher: EventBroker<CancelEvent<T>>;
+    readonly broker: EventBroker<CancelEvent<T>>;
     readonly subscriptions: Set<Subscription>;
     reason: T | undefined;
     status: CancelTokenState;

@@ -1,4 +1,4 @@
-import { Arguments } from '@cdp/core-utils';
+import { Arguments, $cdp } from '@cdp/core-utils';
 /**
  * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
  * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
@@ -21,7 +21,9 @@ export interface Subscription {
  * @ja イベント供給を行うインターフェイス定義 <br>
  *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
  */
-export interface Subscribable<Event> {
+export interface Subscribable<Event = any> {
+    /** type resolver */
+    readonly [$cdp]?: Event;
     /**
      * @en Check whether this object has clients.
      * @ja クライアントが存在するか判定
@@ -84,7 +86,7 @@ export interface Subscribable<Event> {
  * @en Extract event schema from [[Subscribable]] type.
  * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
  */
-export declare type EventSchema<T extends Subscribable<any>> = T extends Subscribable<infer P> ? P : never;
+export declare type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
 /**
  * @en Common interface for notification restraint.
  * @ja 通知抑止に使用する共通インターフェイス

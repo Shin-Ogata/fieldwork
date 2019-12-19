@@ -448,7 +448,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
     private [_notify](records: ArrayChangeRecord<T>[]): void {
         const internal = this[_internal];
         internal.indexes.clear();
-        internal.broker.get().publish('@', records);
+        internal.broker.get().trigger('@', records);
     }
 }
 

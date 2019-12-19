@@ -53,7 +53,6 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\events-listener.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\base.ts" />
@@ -62,7 +61,6 @@
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
-    <TypeScriptCompile Include="types\events-listener.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\base.d.ts" />
