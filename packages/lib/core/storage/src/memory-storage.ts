@@ -139,7 +139,7 @@ export class MemoryStorage implements IStorage {
         const oldVal = dropUndefined(this._storage[key]);  // `undefined` → `null`
         if (!deepEqual(oldVal, newVal)) {
             this._storage[key] = newVal;
-            !options.silent && this._broker.publish('@', key, newVal, oldVal);
+            !options.silent && this._broker.trigger('@', key, newVal, oldVal);
         }
     }
 
@@ -157,7 +157,7 @@ export class MemoryStorage implements IStorage {
         const oldVal = this._storage[key];
         if (undefined !== oldVal) {
             delete this._storage[key];
-            !options.silent && this._broker.publish('@', key, null, oldVal);
+            !options.silent && this._broker.trigger('@', key, null, oldVal);
         }
     }
 
@@ -174,7 +174,7 @@ export class MemoryStorage implements IStorage {
         await cc(options.cancel);
         if (!isEmptyObject(this._storage)) {
             this._storage = {};
-            !options.silent && this._broker.publish('@', null, null, null);
+            !options.silent && this._broker.trigger('@', null, null, null);
         }
     }
 

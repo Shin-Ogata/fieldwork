@@ -140,7 +140,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
         const oldVal = dropUndefined(await deserialize(this._storage[key], options));   // `undefined` → `null`
         if (!deepEqual(oldVal, newVal)) {
             this._storage.setItem(key, await serialize(newVal, options));
-            !options.silent && this._broker.publish('@', key, newVal, oldVal);
+            !options.silent && this._broker.trigger('@', key, newVal, oldVal);
         }
     }
 
@@ -158,7 +158,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
         const value = this._storage[key];
         if (undefined !== value) {
             this._storage.removeItem(key);
-            !options.silent && this._broker.publish('@', key, null, await deserialize(value, options));
+            !options.silent && this._broker.trigger('@', key, null, await deserialize(value, options));
         }
     }
 
@@ -175,7 +175,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
         await cc(options.cancel);
         if (0 < this._storage.length) {
             this._storage.clear();
-            !options.silent && this._broker.publish('@', null, null, null);
+            !options.silent && this._broker.trigger('@', null, null, null);
         }
     }
 

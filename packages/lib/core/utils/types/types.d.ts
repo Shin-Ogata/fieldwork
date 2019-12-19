@@ -324,4 +324,9 @@ export declare function sameType(lhs: unknown, rhs: unknown): boolean;
  *  - `ja` 評価する値
  */
 export declare function sameClass(lhs: unknown, rhs: unknown): boolean;
+/**
+ * @en Common Symble for framework.
+ * @ja フレームワークが共通で使用する Symble
+ */
+export declare const $cdp: unique symbol;
 export {};

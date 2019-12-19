@@ -264,7 +264,7 @@ export abstract class ObservableObject implements IObservable {
     /** @internal */
     trigger(channel: string, ...args: any[]): void {
         const { broker } = this[_internal];
-        (broker.get() as any).publish(channel, ...args);
+        (broker.get() as any).trigger(channel, ...args);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -363,10 +363,10 @@ export abstract class ObservableObject implements IObservable {
         this[_internal].changed = false;
         const eventBroker = broker.get();
         for (const [key, values] of keyValue) {
-            (eventBroker as any).publish(key, ...values, key);
+            (eventBroker as any).trigger(key, ...values, key);
         }
         if (changed) {
-            eventBroker.publish('*', this);
+            eventBroker.trigger('*', this);
         }
     }
 }

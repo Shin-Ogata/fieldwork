@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method, @typescript-eslint/no-empty-function */
+
 import { EventPublisher, EventBroker, EventArguments } from '@cdp/events';
 
 const symbolKey = Symbol('SymbolKey');
@@ -34,9 +35,9 @@ class TestPublisher extends EventPublisher<TestEvent> {
 const checkCompile = new TestPublisher();
 checkCompile.off();
 checkCompile.off('error', () => { });
-checkCompile.off('error', (str) => { });
+checkCompile.off('error', (e: Error) => { });
 checkCompile.on('error', () => { });
-checkCompile.on('error', (str) => { });
+checkCompile.on('error', (e: Error) => { });
 checkCompile.on(['error', 'message', 'multi'], () => { });
 checkCompile.on(['error', 'message'], (hoge) => { });
 /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -364,6 +365,19 @@ describe('events/publisher spec', () => {
         expect(youngbrother.onQuery).not.toHaveBeenCalled();
     });
 
+    it('check broker', async () => {
+        const broker = new EventBroker<TestEvent>();
+        const stub2 = { onCallback };
+        spyOn(stub2, 'onCallback').and.callThrough();
+        broker.on('message', stub2.onCallback);
+
+        await (async () => broker.trigger('message', 'hello'))();
+        expect(stub2.onCallback).toHaveBeenCalledWith('hello');
+
+        const { trigger } = broker;
+        expect(() => trigger('message', 'good morning')).toThrow(new TypeError('This is not a valid EventPublisher.'));
+    });
+
     it('check advanced', async () => {
         const publisher = new TestPublisher();
         const error = new Error('error');
@@ -383,16 +397,5 @@ describe('events/publisher spec', () => {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect(() => publisher.on(null as any, stub.onCallback)).toThrow(new TypeError('Type of Null is not a valid channel.'));
-
-        const broker = new EventBroker<TestEvent>();
-        const stub2 = { onCallback };
-        spyOn(stub2, 'onCallback').and.callThrough();
-        broker.on('message', stub2.onCallback);
-
-        await (async () => broker.publish('message', 'hello'))();
-        expect(stub2.onCallback).toHaveBeenCalledWith('hello');
-
-        const { publish } = broker;
-        expect(() => publish('message', 'good morning')).toThrow(new TypeError('This is not a valid EventPublisher.'));
     });
 });

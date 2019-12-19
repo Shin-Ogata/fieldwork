@@ -154,7 +154,7 @@ export class CancelToken<T extends {} = {}> {
         }
 
         const context: CancelTokenContext<T> = {
-            publisher: new EventBroker(),
+            broker: new EventBroker(),
             subscriptions: new Set(),
             reason: undefined,
             status,
@@ -229,7 +229,7 @@ export class CancelToken<T extends {} = {}> {
         if (!this.cancelable) {
             return invalidSubscription;
         }
-        return context.publisher.on('cancel', onCancel);
+        return context.broker.on('cancel', onCancel);
     }
 
     /** @internal */
@@ -244,7 +244,7 @@ export class CancelToken<T extends {} = {}> {
         for (const s of context.subscriptions) {
             s.unsubscribe();
         }
-        context.publisher.publish('cancel', reason);
+        context.broker.trigger('cancel', reason);
         Promise.resolve().then(() => this[_close]());
     }
 
@@ -259,6 +259,6 @@ export class CancelToken<T extends {} = {}> {
             s.unsubscribe();
         }
         context.subscriptions.clear();
-        context.publisher.off();
+        context.broker.off();
     }
 }

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method */
 
 import { Arguments } from '@cdp/core-utils';
 import { Subscribable } from './interfaces';
@@ -22,8 +22,8 @@ export { Arguments as EventArguments };
  * }
  *
  * const broker = new EventBroker<SampleEvent>();
- * broker.publish('hoge', 100, 'test');     // OK. standard usage.
- * broker.publish('hoge', 100, true);       // NG. argument of type 'true' is not assignable
+ * broker.trigger('hoge', 100, 'test');     // OK. standard usage.
+ * broker.trigger('hoge', 100, true);       // NG. argument of type 'true' is not assignable
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
@@ -39,14 +39,16 @@ export interface EventBroker<Event extends {}> extends Subscribable<Event> {
      *  - `en` arguments for callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数に渡す引数
      */
-    publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
 
 /**
- * @en Constructor of EventBroker
- * @ja EventBroker のコンストラクタ実体
+ * @en Constructor of [[EventBroker]]
+ * @ja [[EventBroker]] のコンストラクタ実体
  */
 export const EventBroker: {
     readonly prototype: EventBroker<any>;
     new <T>(): EventBroker<T>;
 } = EventPublisher as any;
+
+EventBroker.prototype.trigger = (EventPublisher.prototype as any).publish;

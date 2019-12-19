@@ -444,3 +444,9 @@ export function sameClass(lhs: unknown, rhs: unknown): boolean {
         return (null != lhs) && (null != rhs) && (Object.getPrototypeOf(lhs) === Object.getPrototypeOf(rhs));
     }
 }
+
+/**
+ * @en Common Symble for framework.
+ * @ja フレームワークが共通で使用する Symble
+ */
+export const $cdp = Symbol('@cdp');

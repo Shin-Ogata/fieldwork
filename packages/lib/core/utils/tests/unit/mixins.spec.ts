@@ -307,6 +307,28 @@ describe('utils/mixins spec', () => {
         }
 
         expect(() => new MixinCallConstructor()).not.toThrow(); // eslint-disable-line
+
+        const symbol = Symbol('prop');
+
+        class ClassSymbol {
+            private [symbol]: number;
+            constructor() {
+                this[symbol] = 100;
+            }
+            getSymbolValue(): number {
+                return this[symbol];
+            }
+        }
+
+        class MixinHasSymbolProp extends mixins(ClassA, ClassSymbol) {
+            constructor() {
+                super(0xA, 'A');
+                this.super(ClassSymbol);
+            }
+        }
+
+        const mix = new MixinHasSymbolProp();
+        expect(mix.getSymbolValue()).toBe(100);
     });
 
 });

@@ -90,14 +90,23 @@ const _classBase        = Symbol('classBase');
 const _classSources     = Symbol('classSources');
 const _protoExtendsOnly = Symbol('protoExtendsOnly');
 
+// copy properties core
+function reflectProperties(target: object, source: object, key: string | symbol): void {
+    if (null == target[key]) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
+    }
+}
+
 // object properties copy method
-function copyProperties(target: object, source?: object): void {
+function copyProperties(target: object, source: object): void {
     source && Object.getOwnPropertyNames(source)
         .filter(key => !/(prototype|name|constructor)/.test(key))
         .forEach(key => {
-            if (null == target[key]) {
-                Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
-            }
+            reflectProperties(target, source, key);
+        });
+    source && Object.getOwnPropertySymbols(source)
+        .forEach(key => {
+            reflectProperties(target, source, key);
         });
 }
 
@@ -283,7 +292,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             const map = this[_constructors];
             const ctor = map.get(srcClass);
             if (ctor) {
-                ctor(...args);
+                ctor.call(this, ...args);
                 map.set(srcClass, null);    // prevent calling twice
             }
             return this;

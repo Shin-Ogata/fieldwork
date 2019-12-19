@@ -163,45 +163,6 @@ export abstract class EventPublisher<Event> implements Subscribable<Event> {
     }
 
     /**
-     * @en Unsubscribe event(s).
-     * @ja イベント購読解除
-     *
-     * @param channel
-     *  - `en` target event channel key. (string | symbol)
-     *         When not set this parameter, everything is released.
-     *  - `ja` 対象のイベントチャネルキー (string | symbol)
-     *         指定しない場合はすべて解除
-     * @param listener
-     *  - `en` callback function of the `channel` corresponding.
-     *         When not set this parameter, all same `channel` listeners are released.
-     *  - `ja` `channel` に対応したコールバック関数
-     *         指定しない場合は同一 `channel` すべてを解除
-     */
-    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void {
-        const map = listeners(this);
-        if (null == channel) {
-            map.clear();
-            return;
-        }
-
-        const channels = isArray(channel) ? channel : [channel];
-        const callback = validListener(listener);
-        for (const ch of channels) {
-            validChannel(ch);
-            if (null == callback) {
-                map.delete(ch);
-                continue;
-            } else {
-                const list = map.get(ch);
-                if (list) {
-                    list.delete(callback);
-                    list.size > 0 || map.delete(ch);
-                }
-            }
-        }
-    }
-
-    /**
      * @en Subscrive event(s).
      * @ja イベント購読設定
      *
@@ -263,5 +224,46 @@ export abstract class EventPublisher<Event> implements Subscribable<Event> {
             managed.unsubscribe();
         });
         return context;
+    }
+
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this {
+        const map = listeners(this);
+        if (null == channel) {
+            map.clear();
+            return this;
+        }
+
+        const channels = isArray(channel) ? channel : [channel];
+        const callback = validListener(listener);
+        for (const ch of channels) {
+            validChannel(ch);
+            if (null == callback) {
+                map.delete(ch);
+                continue;
+            } else {
+                const list = map.get(ch);
+                if (list) {
+                    list.delete(callback);
+                    list.size > 0 || map.delete(ch);
+                }
+            }
+        }
+
+        return this;
     }
 }
