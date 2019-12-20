@@ -1,6 +1,7 @@
 import { Constructor, PlainObject } from '@cdp/core-utils';
 import { Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
+import { ModelBase } from './base';
 
 /**
  * @en Validable base interface.
@@ -26,12 +27,13 @@ export type ModelEvent<T extends {}> = ModelAttributeChangeEvent<T> & {
      * @en notified when some attribute changed.
      * @ja 属性が変更されたときに発行
      */
-    'change': T;
+    '@change': ModelBase<T>;
+
     /**
-     * @en notified when some attribute changed.
-     * @ja 属性が変更されたときに発行
+     * @en notified when some attribute failed.
+     * @ja 属性が変更に失敗したときに発行
      */
-    'invalid': [T, Result];
+    '@invalid': [ModelBase<T>, T, Result];
 };
 
 /**

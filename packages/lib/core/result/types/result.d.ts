@@ -63,12 +63,12 @@ export declare class Result extends Error {
 /** Returns `true` if `x` is `Result`, `false` otherwise. */
 export declare function isResult(x: unknown): x is Result;
 /**
- * @en Transfer [[Result]] object
+ * @en Convert to [[Result]] object.
  * @ja [[Result]] オブジェクトに変換
  */
 export declare function toResult(o: unknown): Result;
 /**
- * @en Create [[Result]] helper
+ * @en Create [[Result]] helper.
  * @ja [[Result]] オブジェクト構築ヘルパー
  *
  * @param code
@@ -83,7 +83,7 @@ export declare function toResult(o: unknown): Result;
  */
 export declare function makeResult(code: number, message?: string, cause?: any): Result;
 /**
- * @en Create canceled [[Result]] helper
+ * @en Create canceled [[Result]] helper.
  * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
  *
  * @param message

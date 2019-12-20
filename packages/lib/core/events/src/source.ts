@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { MixinClass, mixins } from '@cdp/core-utils';
+import { mixins } from '@cdp/core-utils';
 import { EventBroker } from './broker';
 import { EventRevceiver } from './receiver';
 

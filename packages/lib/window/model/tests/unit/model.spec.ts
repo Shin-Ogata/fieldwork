@@ -111,17 +111,17 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check "change" notify', async (done) => {
+    it('check "@change" notify', async (done) => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('change', stub.onCallback);
+        content.on('@change', stub.onCallback);
         await post(async () => {
             content.uri    = 'bbb.html';
             content.cookie = 'test';
         });
-        expect(stub.onCallback).toHaveBeenCalledWith({ uri: 'bbb.html', size: 10, cookie: 'test' });
+        expect(stub.onCallback).toHaveBeenCalledWith(content);
         expect(count).toBe(1);
 
         content.off();
@@ -131,12 +131,12 @@ describe('model/model spec', () => {
         });
         expect(count).toBe(1);
 
-        content.on('change', stub.onCallback);
+        content.on('@change', stub.onCallback);
         await post(async () => {
             content.uri    = 'ddd.html';
             content.cookie = 'cookie';
         });
-        expect(stub.onCallback).toHaveBeenCalledWith({ uri: 'ddd.html', size: 10, cookie: 'cookie' });
+        expect(stub.onCallback).toHaveBeenCalledWith(content);
         expect(count).toBe(2);
 
         done();
@@ -550,7 +550,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('change', stub.onCallback);
+        content.on('@change', stub.onCallback);
         await post(async () => {
             content.setAttributes({
                 uri: 'bbb.html',
@@ -558,7 +558,7 @@ describe('model/model spec', () => {
                 hoge: true,
             });
         });
-        expect(stub.onCallback).toHaveBeenCalledWith({ uri: 'bbb.html', size: 10, cookie: 'test' });
+        expect(stub.onCallback).toHaveBeenCalledWith(content);
         expect(count).toBe(1);
         expect(content.uri).toBe('bbb.html');
         expect(content.cookie).toBe('test');
@@ -572,7 +572,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('change', stub.onCallback);
+        content.on('@change', stub.onCallback);
         await post(async () => {
             content.setAttributes({
                 uri: 'bbb.html',
@@ -594,7 +594,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('change', stub.onCallback);
+        content.on('@change', stub.onCallback);
         await post(async () => {
             content.setAttributes({
                 uri: 'bbb.html',
@@ -602,7 +602,7 @@ describe('model/model spec', () => {
                 hoge: true,
             }, { extend: true });
         });
-        expect(stub.onCallback).toHaveBeenCalledWith({ uri: 'bbb.html', size: 10, cookie: 'test', hoge: true });
+        expect(stub.onCallback).toHaveBeenCalledWith(content);
         expect(count).toBe(1);
         expect(content.uri).toBe('bbb.html');
         expect(content.cookie).toBe('test');
@@ -616,7 +616,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('invalid', stub.onCallback);
+        content.on('@invalid', stub.onCallback);
 
         try {
             await post(async () => {
@@ -628,7 +628,7 @@ describe('model/model spec', () => {
             expect(e).toEqual(errorInvalidData);
         }
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ uri: 'aaa.html', size: 11, cookie: undefined }, errorInvalidData);
+        expect(stub.onCallback).toHaveBeenCalledWith(content, { uri: 'aaa.html', size: 11, cookie: undefined }, errorInvalidData);
 
         done();
     });
@@ -638,7 +638,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('invalid', stub.onCallback);
+        content.on('@invalid', stub.onCallback);
 
         try {
             await post(async () => {
@@ -666,11 +666,11 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('change', stub.onCallback);
+        content.on('@change', stub.onCallback);
         await post(async () => {
             content.clear();
         });
-        expect(stub.onCallback).toHaveBeenCalledWith({ uri: undefined, size: undefined, cookie: undefined });
+        expect(stub.onCallback).toHaveBeenCalledWith(content);
         expect(count).toBe(1);
         expect(content.uri).toBeUndefined();
         expect(content.size).toBeUndefined();

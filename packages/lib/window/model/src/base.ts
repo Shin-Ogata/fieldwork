@@ -163,7 +163,7 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
         }
 
         this[_changeHandler] = () => {
-            (this as any).trigger('change', { ...this._attrs });
+            (this as any).trigger('@change', this);
         };
 
         this[_validate]({}, opts);
@@ -311,7 +311,7 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
      *  - `ja` `channel` に対応したコールバック関数
      */
     public on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
-        if ('change' === channel) {
+        if ('@change' === channel) {
             this._attrs.on('*', this[_changeHandler]);
         }
         return this._attrs.on(channel as any, listener as any);
@@ -386,7 +386,7 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
             const result = this.validateAttributes(attrs, options);
             if (FAILED(result.code)) {
                 if (!silent) {
-                    (this as any).trigger('invalid', attrs, result);
+                    (this as any).trigger('@invalid', this, attrs, result);
                 }
                 if (!noThrow) {
                     throw result;
