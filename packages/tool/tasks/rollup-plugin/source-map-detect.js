@@ -1,7 +1,7 @@
 'use strict';
 
 const { readFile } = require('fs');
-const { detectSourceMap: detect } = require('./lib/source-map-utils');
+const { detectSourceMap: detect } = require('../lib/source-map-utils');
 
 function detectSourceMap() {
     return {

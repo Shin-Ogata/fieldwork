@@ -45,6 +45,10 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "model", "packages\lib\windo
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "events", "packages\lib\core\events\events.njsproj", "{2BDED78B-89A7-4D6E-9942-4467090C3A71}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "node", "node", "{26D3ED7E-DA25-4798-94BB-1C9DDFDB19CE}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "fs-storage", "packages\lib\node\fs-storage\fs-storage.njsproj", "{F0A2862A-764A-4812-8D49-89B18D7655DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +111,10 @@ Global
 		{2BDED78B-89A7-4D6E-9942-4467090C3A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BDED78B-89A7-4D6E-9942-4467090C3A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BDED78B-89A7-4D6E-9942-4467090C3A71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +137,8 @@ Global
 		{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
 		{A3F1D535-79B5-4112-823D-6FD71267CE3E} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{2BDED78B-89A7-4D6E-9942-4467090C3A71} = {2D8A02D3-B279-48A2-97C3-3BC34CE4BE5D}
+		{26D3ED7E-DA25-4798-94BB-1C9DDFDB19CE} = {59005E11-3018-4FB5-80D1-7A6DEDCF7A0E}
+		{F0A2862A-764A-4812-8D49-89B18D7655DE} = {26D3ED7E-DA25-4798-94BB-1C9DDFDB19CE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

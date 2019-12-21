@@ -5,6 +5,7 @@ const chalk         = require('chalk');
 const command       = require('./command');
 const config        = require('./config');
 const banner        = require('./banner');
+const utils         = require('./utils');
 const cli           = require('./lib/cli-command-parser');
 const { merge }     = require('./lib/misc');
 
@@ -30,5 +31,6 @@ module.exports = {
     command,
     config,
     banner,
+    utils,
     merge,
 };

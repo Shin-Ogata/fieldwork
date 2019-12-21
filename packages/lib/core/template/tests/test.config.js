@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('../../../../../config/bundle/rollup-test-testem');
+const config = require('../../../../../config/bundle/rollup-test');
 const testee = require('../build.config').default;
 
 module.exports = {
