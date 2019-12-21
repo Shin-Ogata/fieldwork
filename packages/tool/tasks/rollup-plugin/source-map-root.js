@@ -13,7 +13,7 @@ function setSourceMapRoot({ relativePath, sourceRoot } = {}) {
         generateBundle(outputOptions, bundle = {}) {
             for (const { map } of Object.values(bundle)) {
                 if (!map) {
-                    return;
+                    continue;
                 }
                 if (relativePath && Array.isArray(map.sources)) {
                     map.sources = map.sources.map(replacePath);

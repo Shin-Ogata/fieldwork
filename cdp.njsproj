@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="config\bundle\dts-bundle.js" />
     <Compile Include="config\bundle\rollup-core.js" />
-    <Compile Include="config\bundle\rollup-test-testem.js" />
+    <Compile Include="config\bundle\rollup-test.js" />
     <Compile Include="config\doc\typedoc.js" />
     <Compile Include="config\lint\eslint.js" />
     <Compile Include="config\lint\tslint.js" />

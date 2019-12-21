@@ -3,7 +3,7 @@
 const { join } = require('path');
 const { packageName, src } = require('@cdp/tasks/config').build;
 const { replace } = require('@cdp/result/build.config');
-const config = require('../../../../config/bundle/rollup-test-testem');
+const config = require('../../../../config/bundle/rollup-test');
 const testee = require('../build.config').default;
 
 module.exports = {

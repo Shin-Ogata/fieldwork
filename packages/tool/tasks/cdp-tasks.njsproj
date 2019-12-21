@@ -57,8 +57,10 @@
     <Compile Include="res\test\testem-amd.js" />
     <Compile Include="res\test\testem-ci.js" />
     <Compile Include="res\test\testem-main.js" />
-    <Compile Include="rollup-plugin-source-map-detect.js" />
-    <Compile Include="rollup-plugin-source-map-root.js" />
+    <Compile Include="rollup-plugin\post-process.js" />
+    <Compile Include="rollup-plugin\source-map-detect.js" />
+    <Compile Include="rollup-plugin\source-map-root.js" />
+    <Compile Include="utils.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
@@ -66,6 +68,7 @@
     <Folder Include="res\" />
     <Folder Include="res\etc\" />
     <Folder Include="res\test\" />
+    <Folder Include="rollup-plugin\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
