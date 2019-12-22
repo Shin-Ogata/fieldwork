@@ -252,4 +252,13 @@ describe('storage/memory-storage spec', () => {
 
         done();
     });
+
+    it('check MemoryStorage#context', () => {
+        const obj = (_storage as MemoryStorage).context; // eslint-disable-line
+        expect(obj.str).toBe('hoge');
+        expect(obj.num).toBe(100);
+        expect(obj.bool).toBe(false);
+        expect(obj.obj).toEqual({ hoge: 'fuga' });
+        expect(obj.nil).toBe('null');
+    });
 });

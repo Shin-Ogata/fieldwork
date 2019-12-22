@@ -32,6 +32,8 @@ export type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = IStorage
 export type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
 /** MemoryStorage data type */
 export type MemoryStorageDataTypes = Types<StorageDataTypeList>;
+/** MemoryStorage return type */
+export type MemoryStorageReturnType<D extends MemoryStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** MemoryStorage input data type */
 export type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
 /** MemoryStorage event callback */
@@ -39,7 +41,7 @@ export type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeLi
 
 /** @internal */
 interface MemoryStorageEvent {
-    '@': [string | null, Types<StorageDataTypeList> | null, Types<StorageDataTypeList> | null];
+    '@': [string | null, MemoryStorageDataTypes | null, MemoryStorageDataTypes | null];
 }
 
 //__________________________________________________________________________________________________//
@@ -55,6 +57,7 @@ export class MemoryStorage implements IStorage {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IStorage
+
     /**
      * @en [[IStorage]] kind signature.
      * @ja [[IStorage]] の種別を表す識別子
@@ -77,10 +80,10 @@ export class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(
+    getItem<D extends MemoryStorageDataTypes = MemoryStorageDataTypes>(
         key: string,
         options?: MemoryStorageOptions<never>
-    ): Promise<IStorageDataReturnType<StorageDataTypeList, D>>;
+    ): Promise<MemoryStorageReturnType<D>>;
 
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
@@ -101,7 +104,7 @@ export class MemoryStorage implements IStorage {
         options?: MemoryStorageOptions<K>
     ): Promise<MemoryStorageResult<K> | null>;
 
-    async getItem(key: string, options?: MemoryStorageOptions<any>): Promise<Types<StorageDataTypeList> | null> {
+    async getItem(key: string, options?: MemoryStorageOptions<any>): Promise<MemoryStorageDataTypes | null> {
         options = options || {};
         await cc(options.cancel);
 
@@ -215,6 +218,17 @@ export class MemoryStorage implements IStorage {
      */
     off(listener?: MemoryStorageEventCallback): void {
         this._broker.off('@', listener);
+    }
+
+///////////////////////////////////////////////////////////////////////
+// operations:
+
+    /**
+     * @en Return a shallow copy of the storage's attributes for JSON stringification.
+     * @ja JSON stringify のためにストレージプロパティのシャローコピー返却
+     */
+    get context(): PlainObject {
+        return this._storage;
     }
 }
 

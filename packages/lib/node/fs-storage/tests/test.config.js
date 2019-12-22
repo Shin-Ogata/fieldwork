@@ -7,6 +7,8 @@ const testee = require('../build.config').default;
 module.exports = {
     default: config.default(testee, {
         globals: {
+            'path': null,
+            'fs-extra': null,
             '@cdp/core-utils': null,
             '@cdp/events': null,
             '@cdp/promise': null,
@@ -14,11 +16,5 @@ module.exports = {
         postproc: {
             replacees: [resolveNodeTesteeValue()],
         },
-        //replace: {
-        //    delimiters: ['', ''],
-        //    values: {
-        //        '@cdp/fs-storage': 'fs-storage',
-        //    },
-        //},
     }),
 };

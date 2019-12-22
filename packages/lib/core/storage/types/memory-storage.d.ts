@@ -1,4 +1,4 @@
-import { Keys, Types, KeyToType } from '@cdp/core-utils';
+import { PlainObject, Keys, Types, KeyToType } from '@cdp/core-utils';
 import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
@@ -8,6 +8,8 @@ export declare type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = 
 export declare type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
 /** MemoryStorage data type */
 export declare type MemoryStorageDataTypes = Types<StorageDataTypeList>;
+/** MemoryStorage return type */
+export declare type MemoryStorageReturnType<D extends MemoryStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** MemoryStorage input data type */
 export declare type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
 /** MemoryStorage event callback */
@@ -38,7 +40,7 @@ export declare class MemoryStorage implements IStorage {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<StorageDataTypeList> = Types<StorageDataTypeList>>(key: string, options?: MemoryStorageOptions<never>): Promise<IStorageDataReturnType<StorageDataTypeList, D>>;
+    getItem<D extends MemoryStorageDataTypes = MemoryStorageDataTypes>(key: string, options?: MemoryStorageOptions<never>): Promise<MemoryStorageReturnType<D>>;
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
      * @ja キーに対応する値を取得. 存在しない場合は null を返却
@@ -113,5 +115,10 @@ export declare class MemoryStorage implements IStorage {
      *         指定しない場合はすべてを解除
      */
     off(listener?: MemoryStorageEventCallback): void;
+    /**
+     * @en Return a shallow copy of the storage's attributes for JSON stringification.
+     * @ja JSON stringify のためにストレージプロパティのシャローコピー返却
+     */
+    get context(): PlainObject;
 }
 export declare const memoryStorage: MemoryStorage;

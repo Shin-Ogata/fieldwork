@@ -37,6 +37,10 @@ export type WebStorageDataTypeList = StorageDataTypeList & Serializable;
 export type WebStorageOptions<K extends Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
 /** WebStorage return value */
 export type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
+/** WebStorage data type */
+export type WebStorageDataTypes = Types<WebStorageDataTypeList>;
+/** MemoryStorage return type */
+export type MemoryStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** WebStorage input data type */
 export type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
 /** WebStorage event callback */
@@ -44,7 +48,7 @@ export type WebStorageEventCallback = IStorageEventCallback<WebStorageDataTypeLi
 
 /** @internal */
 interface WebStorageEvent {
-    '@': [string | null, Types<WebStorageDataTypeList> | null, Types<WebStorageDataTypeList> | null];
+    '@': [string | null, WebStorageDataTypes | null, WebStorageDataTypes | null];
 }
 
 //__________________________________________________________________________________________________//
@@ -95,10 +99,10 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends Types<WebStorageDataTypeList> = Types<WebStorageDataTypeList>>(
+    getItem<D extends WebStorageDataTypes = WebStorageDataTypes>(
         key: string,
         options?: WebStorageOptions<never>
-    ): Promise<IStorageDataReturnType<StorageDataTypeList, D>>;
+    ): Promise<MemoryStorageReturnType<D>>;
 
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
@@ -119,7 +123,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
         options?: WebStorageOptions<K>
     ): Promise<WebStorageResult<K> | null>;
 
-    async getItem(key: string, options?: WebStorageOptions<any>): Promise<Types<WebStorageDataTypeList> | null> {
+    async getItem(key: string, options?: WebStorageOptions<any>): Promise<WebStorageDataTypes | null> {
         return dropUndefined(await deserialize(this._storage[key], options));
     }
 
