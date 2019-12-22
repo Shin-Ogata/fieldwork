@@ -6,7 +6,7 @@ const testee = require('../build.config').default;
 
 module.exports = {
     default: config.default(testee, {
-        globals: {
+        external: {
             'path': null,
             'fs-extra': null,
             '@cdp/core-utils': null,

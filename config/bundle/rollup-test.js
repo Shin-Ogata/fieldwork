@@ -28,7 +28,7 @@ function getDefault(testeeConfig, options) {
             include: 'node_modules/**',
         },
     }, options);
-    const { globals, commonjs: cjsOptions, alias: aliasOptions, replace, postproc } = opts;
+    const { external: globals, commonjs: cjsOptions, alias: aliasOptions, replace, postproc } = opts;
     const external = (globals && Object.keys(globals)) || [];
 
     testeeConfig.output = testeeConfig.output.filter(elem => elem.format !== 'es').map((elem) => {
