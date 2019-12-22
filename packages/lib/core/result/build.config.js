@@ -4,7 +4,7 @@ const config = require('../../../../config/bundle/rollup-core');
 
 module.exports = {
     default: config({
-        globals: {
+        external: {
             '@cdp/core-utils': 'CDP.Utils',
         },
         replace: {

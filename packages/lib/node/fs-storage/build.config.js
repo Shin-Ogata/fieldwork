@@ -3,7 +3,7 @@
 const config = require('../../../../config/bundle/rollup-core');
 
 module.exports.default = config({
-    globals: {
+    external: {
         'path': null,
         'fs-extra': null,
         '@cdp/core-utils': null,

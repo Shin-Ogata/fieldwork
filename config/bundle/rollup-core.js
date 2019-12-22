@@ -31,7 +31,7 @@ function getConfig(options) {
             include: 'node_modules/**',
         },
     }, options);
-    const { format, globals, commonjs: cjsOptions, replace, alias: aliasOptions, exports, postproc } = opts;
+    const { format, external: globals, commonjs: cjsOptions, replace, alias: aliasOptions, exports, postproc } = opts;
     const external = globals && Object.keys(globals);
 
     const umd = 'umd' === format;

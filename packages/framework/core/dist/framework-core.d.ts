@@ -2781,7 +2781,7 @@ export declare class MemoryStorage implements IStorage {
      * @en Return a shallow copy of the storage's attributes for JSON stringification.
      * @ja JSON stringify のためにストレージプロパティのシャローコピー返却
      */
-    toJSON(): PlainObject;
+    get context(): PlainObject;
 }
 export declare const memoryStorage: MemoryStorage;
 /**
