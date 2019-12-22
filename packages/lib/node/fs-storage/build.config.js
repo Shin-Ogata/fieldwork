@@ -6,6 +6,10 @@ module.exports.default = config({
     globals: {
         'path': null,
         'fs-extra': null,
+        '@cdp/core-utils': null,
+        '@cdp/events': null,
+        '@cdp/promise': null,
+        '@cdp/core-storage': null,
     },
     format: 'cjs',
     // default export と同名の named export を許可
