@@ -89,7 +89,9 @@ function cleanCoverageDirectory(all, options) {
 }
 
 function instrument() {
-    return command('nyc', `instrument ./${dist} ./${temp} --source-map=false`);
+    // nyc 15.x 以降 [.cjs, .mjs, .ts, .tsx, .jsx] も default に含まれるため, `.js` のみを対象にする
+    const extension = '--extension=.js';
+    return command('nyc', `instrument ./${dist} ./${temp} --source-map=false ${extension}`);
 }
 
 function testem(ciMode) {
@@ -125,10 +127,8 @@ function resolveCoverageFile(options) {
 }
 
 function result() {
-    // nyc 14.x は 拡張子指定が必須
-    const extension = '--extension=ts';
     // eslint-disable-next-line max-len
-    return command('nyc', `report ${extension} --reporter=lcov --reporter=html --reporter=text --report-dir=${doc}/${report}/${coverage} --temp-dir=${doc}/${report}/${coverage}`);
+    return command('nyc', `report --reporter=lcov --reporter=html --reporter=text --report-dir=${doc}/${report}/${coverage} --temp-dir=${doc}/${report}/${coverage} --exclude-node-modules=false`);
 }
 
 async function exec(options) {
@@ -143,14 +143,14 @@ async function exec(options) {
             setup(options);
             await instrument();
             await testem(true);
-            remap(options);
+            await remap(options);
             await result();
             break;
         case 'instrument':
             await instrument();
             break;
         case 'remap': // for check
-            remap(options);
+            await remap(options);
             break;
         case 'report':
             cleanCoverageDirectory(false, options);
@@ -160,7 +160,7 @@ async function exec(options) {
             cleanCoverageDirectory(true, options);
             await nycHook(options.mode);
             resolveCoverageFile(options);
-            remap(Object.assign({}, options, { origin: temp }));
+            await remap(Object.assign({}, options, { origin: temp }));
             await result();
             break;
     }
