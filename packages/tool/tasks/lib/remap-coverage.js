@@ -3,7 +3,7 @@
 const path      = require('path');
 const fs        = require('fs-extra');
 const chalk     = require('chalk');
-const nyc       = ((ctor) => new ctor())(require('nyc'));
+const nyc       = ((ctor) => new ctor({}))(require('nyc'));
 const config    = require('../config');
 const srcmap    = require('./source-map-utils');
 const {
@@ -34,7 +34,7 @@ function deepCopy(src) {
     return parse(stringify(src));
 }
 
-function remapCoverage(cov, options) {
+async function remapCoverage(cov, options) {
     const { silent } = options;
 
     const rebuild = {};
@@ -52,7 +52,7 @@ function remapCoverage(cov, options) {
     }
 
     // path を再設定するため, getter 情報を落とす
-    return deepCopy(nyc.sourceMaps.remapCoverage(rebuild));
+    return deepCopy(await nyc.sourceMaps.remapCoverage(rebuild));
 }
 
 function resolveSourcePath(cov, options) {
@@ -85,10 +85,10 @@ function resolveSourcePath(cov, options) {
     return rebuild;
 }
 
-function remap(options) {
+async function remap(options) {
     const coveragePath = `./${doc}/${report}/${coverage}/coverage.json`;
     const cov = require(path.resolve(options.cwd, coveragePath));
-    const rebuild = resolveSourcePath(remapCoverage(cov, options), options);
+    const rebuild = resolveSourcePath(await remapCoverage(cov, options), options);
     fs.writeFileSync(coveragePath, JSON.stringify(rebuild, null, 4));
 }
 
