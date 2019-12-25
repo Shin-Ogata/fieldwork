@@ -35,6 +35,15 @@ export declare function sort<T>(array: T[], comparator: (lhs: T, rhs: T) => numb
  */
 export declare function unique<T>(array: T[]): T[];
 /**
+ * @en Make union array.
+ * @ja 配列の和集合を返却
+ *
+ * @param arrays
+ *  - `en` source arrays
+ *  - `ja` 入力配列群
+ */
+export declare function union<T>(...arrays: T[][]): T[];
+/**
  * @en Make index array.
  * @ja インデックス配列の作成
  *

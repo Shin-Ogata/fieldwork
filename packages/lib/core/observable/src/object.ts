@@ -7,6 +7,7 @@ import {
     verify,
     post,
     deepMerge,
+    deepEqual,
 } from '@cdp/core-utils';
 import { Subscription, EventBroker } from '@cdp/events';
 import {
@@ -330,7 +331,7 @@ export abstract class ObservableObject implements IObservable {
         const keyValuePairs = new Map<PropertyKey, [any, any]>();
         for (const [key, oldValue] of changeMap) {
             const curValue = this[key];
-            if (oldValue !== curValue) {
+            if (!deepEqual(oldValue, curValue)) {
                 keyValuePairs.set(key, [curValue, oldValue]);
             }
         }

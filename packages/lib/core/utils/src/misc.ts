@@ -1,11 +1,10 @@
 import {
-    Writable,
     Primitive,
     TypedData,
     isString,
     isObject,
-    className,
 } from './types';
+import { invert } from './object';
 import { setTimeout } from './timer';
 
 /**
@@ -74,8 +73,17 @@ export function createEscaper(map: object): (src: Primitive) => string {
     };
 }
 
+const mapHtmlEscape = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '`': '&#x60;'
+};
+
 /**
- * @en Escape HTML string
+ * @en Escape HTML string.
  * @ja HTML で使用する文字を制御文字に置換
  *
  * @brief <br>
@@ -91,14 +99,13 @@ export function createEscaper(map: object): (src: Primitive) => string {
  * };
  * ```
  */
-export const escapeHTML = createEscaper({
-    '<': '&lt;',
-    '>': '&gt;',
-    '&': '&amp;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '`': '&#x60;'
-});
+export const escapeHTML = createEscaper(mapHtmlEscape);
+
+/**
+ * @en Unescape HTML string.
+ * @ja HTML で使用する制御文字を復元
+ */
+export const unescapeHTML = createEscaper(invert(mapHtmlEscape));
 
 //__________________________________________________________________________________________________//
 
@@ -173,39 +180,6 @@ export function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undef
     } else {
         return value;
     }
-}
-
-//__________________________________________________________________________________________________//
-
-/**
- * @en Check whether input source has a property.
- * @ja 入力元がプロパティを持っているか判定
- *
- * @param src
- */
-export function hasProperty(src: unknown, propName: string): boolean {
-    return null != src && isObject(src) && (propName in src);
-}
-
-/**
- * @en Get shallow copy of `target` which has only `pickupKeys`.
- * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
- *
- * @param target
- *  - `en` copy source object
- *  - `ja` コピー元オブジェクト
- * @param pickupKeys
- *  - `en` copy target keys
- *  - `ja` コピー対象のキー一覧
- */
-export function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>> {
-    if (!target || !isObject(target)) {
-        throw new TypeError(`${className(target)} is not an object.`);
-    }
-    return pickupKeys.reduce((obj, key) => {
-        key in target && (obj[key] = target[key]);
-        return obj;
-    }, {} as Writable<Pick<T, K>>);
 }
 
 //__________________________________________________________________________________________________//

@@ -2,8 +2,12 @@
 
 import {
     Arguments,
+    isEmptyObject,
     luid,
     escapeHTML,
+    deepCopy,
+    deepEqual,
+    diff,
 } from '@cdp/core-utils';
 import {
     Subscription,
@@ -43,6 +47,7 @@ interface Property<T> {
     attrs: ObservableObject;
     baseAttrs: T;
     prevAttrs: T;
+    changedAttrs?: Partial<T>;
     readonly idAttribute: string;
     readonly cid: string;
 }
@@ -156,7 +161,7 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
             idAttribute: opts.idAttribute,
             cid: luid('model:', 8),
         };
-        Object.defineProperty(this, _properties, { value: Object.seal(props) });
+        Object.defineProperty(this, _properties, { value: props });
 
         for (const key of Object.keys(attributes)) {
             this[_defineAttributes](this, key);
@@ -178,8 +183,11 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
                     return this._attrs[name];
                 },
                 set(val: unknown): void {
-                    this._prevAttrs[name] = this._attrs[name];
-                    this._attrs[name]     = val;
+                    if (!deepEqual(this._attrs[name], val)) {
+                        delete this[_properties].changedAttrs;
+                        this._prevAttrs[name] = this._attrs[name];
+                        this._attrs[name]     = val;
+                    }
                 },
                 enumerable: true,
                 configurable: true,
@@ -224,6 +232,17 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
      */
     protected get _prevAttrs(): T {
         return this[_properties].prevAttrs;
+    }
+
+    /**
+     * @en Changed attributes instance
+     * @ja 変更のあった属性を格納するインスタンス
+     */
+    protected get _changedAttrs(): Partial<T> {
+        if (null == this[_properties].changedAttrs) {
+            this[_properties].changedAttrs = diff(this._baseAttrs, this._attrs as any);
+        }
+        return this[_properties].changedAttrs as Partial<T>;
     }
 
     /**
@@ -469,6 +488,55 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
         }
         return this.setAttributes(clearAttrs, options);
     }
+
+    /**
+     * @en Return a copy of the model's `attributes` object.
+     * @ja モデル属性値のコピーを返却
+     */
+    public toJSON(): T {
+        return deepCopy({ ...this._attrs } as T);
+    }
+
+    /**
+     * @en Check changed attributes.
+     * @ja 変更された属性値を持つか判定
+     *
+     * @param attribute
+     *  - `en` checked attribute
+     *  - `ja` 検証する属性
+     */
+    public hasChanged(attribute?: keyof T): boolean {
+        if (null == attribute) {
+            return !isEmptyObject(this._changedAttrs);
+        } else {
+            return attribute in this._changedAttrs;
+        }
+    }
+
+    /**
+     * @en Return an object containing all the attributes that have changed, or `undefined` if there are no changed attributes.
+     * @ja 入力した attributes 値の差分に対して変更がある属性値を返却. 差分がない場合は `undefiend` を返却
+     *
+     * @param attributes
+     *  - `en` checked attributes
+     *  - `ja` 検証する属性
+     */
+    public changed(attributes?: Partial<T>): Partial<T> | undefined {
+        if (!attributes) {
+            return this.hasChanged() ? { ...this._changedAttrs } : undefined;
+        } else {
+            const changed = diff(this._attrs as any, attributes);
+            return !isEmptyObject(changed) ? changed : undefined;
+        }
+    }
+
+    /**
+     * @en Get the previous value of an attribute, recorded at the time the last `@change` event was fired.
+     * @ja `@change` が発火された前の属性値を取得
+     */
+    public previous<K extends keyof T>(attribute: K): T[K] {
+        return this._prevAttrs[attribute];
+    }
 }
 
 export { Model as ModelBase };
@@ -499,9 +567,9 @@ export { Model as ModelBase };
 ☆ idAttribute
 ☆ cid
 △ attributes
-★ changed
+△ changed
 △ defaults
-★ toJSON
+☆ toJSON
 ★ sync
 ★ fetch
 ★ save
@@ -516,8 +584,8 @@ export { Model as ModelBase };
 ★ parse
 ★ clone
 ★ isNew
-★ hasChanged
-★ changedAttributes
-△ previous
-★ previousAttributes
+☆ hasChanged
+☆ changedAttributes
+☆ previous
+△ previousAttributes
  */

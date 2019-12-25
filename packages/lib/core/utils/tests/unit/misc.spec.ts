@@ -5,12 +5,11 @@ import {
     noop,
     sleep,
     escapeHTML,
+    unescapeHTML,
     toTypedData,
     fromTypedData,
     dropUndefined,
     restoreNil,
-    hasProperty,
-    partialize,
     luid,
     capitalize,
     decapitalize,
@@ -78,6 +77,27 @@ describe('utils/misc spec', () => {
         expect(escapeHTML(src6)).toBe('');
     });
 
+    it('check unescapeHTML()', () => {
+        const backquote = '`';
+        const conv = `& < > ' " ${backquote}`;
+        expect(unescapeHTML('&amp; &lt; &gt; &#39; &quot; &#x60;')).toBe(conv);
+
+        const src2 = 'hogehoge';
+        expect(unescapeHTML(src2)).toBe('hogehoge');
+
+        const src3 = null;
+        expect(unescapeHTML(src3)).toBe('');
+
+        const src4 = undefined;
+        expect(unescapeHTML(src4)).toBe('');
+
+        const src5 = '';
+        expect(unescapeHTML(src5)).toBe('');
+
+        const src6 = Symbol.iterator;
+        expect(unescapeHTML(src6)).toBe('');
+    });
+
     it('check toTypedData()', () => {
         expect(toTypedData('true')).toBe(true);
         expect(toTypedData('false')).toBe(false);
@@ -128,28 +148,6 @@ describe('utils/misc spec', () => {
         expect(restoreNil(undefined)).toBe(undefined);
         expect(restoreNil('null')).toBe(null);
         expect(restoreNil('undefined')).toBe(undefined);
-    });
-
-    it('check hasProperty()', (): void => {
-        const src = {
-            hoge: 1,
-            fuga: 2,
-        };
-        expect(hasProperty(src, 'hoge')).toBe(true);
-        expect(hasProperty(src, 'fuga')).toBe(true);
-        expect(hasProperty(src, 'foo')).toBe(false);
-    });
-
-    it('check partialize()', (): void => {
-        expect(() => partialize(null as any, '')).toThrow();
-        expect(() => partialize(false as any, '')).toThrow();
-        const src = {
-            hoge: 1,
-            fuga: 2,
-        };
-        const dst = partialize(src, 'hoge');
-        expect(dst.hoge).toBe(1);
-        expect((dst as any).fuga).toBeUndefined();
     });
 
     it('check luid()', (): void => {

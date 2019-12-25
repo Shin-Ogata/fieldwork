@@ -678,4 +678,42 @@ describe('model/model spec', () => {
 
         done();
     });
+
+    it('check Model#toJSON()', () => {
+        const content = new Content();
+        expect(content.toJSON()).toEqual({
+            uri: 'aaa.html',
+            size: 10,
+            cookie: undefined,
+        });
+    });
+
+    it('check Model#hasChanged()', () => {
+        const content = new Content();
+        expect(content.hasChanged()).toBe(false);
+        content.cookie = 'test';
+        expect(content.hasChanged()).toBe(true);
+        expect(content.hasChanged('uri')).toBe(false);
+        expect(content.hasChanged('cookie')).toBe(true);
+    });
+
+    it('check Model#changed()', () => {
+        const content = new Content();
+        expect(content.changed()).toBeUndefined();
+        content.cookie = 'test';
+        expect(content.changed()).toEqual({ cookie: 'test' });
+        expect(content.changed({ uri: 'bbb.html' })).toEqual({ uri: 'bbb.html' });
+        expect(content.changed({ size: 10 })).toBeUndefined();
+    });
+
+    it('check Model#previous()', () => {
+        const content = new Content();
+        expect(content.previous('cookie')).toBeUndefined();
+        content.cookie = 'test';
+        expect(content.previous('cookie')).toBeUndefined();
+        content.cookie = 'test';
+        expect(content.previous('cookie')).toBeUndefined();
+        content.cookie = 'check';
+        expect(content.previous('cookie')).toBe('test');
+    });
 });
