@@ -1,4 +1,4 @@
-import { Writable, Primitive, TypedData } from './types';
+import { Primitive, TypedData } from './types';
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -41,7 +41,7 @@ export declare function sleep(elapse: number): Promise<void>;
  */
 export declare function createEscaper(map: object): (src: Primitive) => string;
 /**
- * @en Escape HTML string
+ * @en Escape HTML string.
  * @ja HTML で使用する文字を制御文字に置換
  *
  * @brief <br>
@@ -58,6 +58,11 @@ export declare function createEscaper(map: object): (src: Primitive) => string;
  * ```
  */
 export declare const escapeHTML: (src: Primitive) => string;
+/**
+ * @en Unescape HTML string.
+ * @ja HTML で使用する制御文字を復元
+ */
+export declare const unescapeHTML: (src: Primitive) => string;
 /**
  * @en Convert to the style compulsion value from input string.
  * @ja 入力文字列を型強制した値に変換
@@ -89,25 +94,6 @@ export declare function dropUndefined<T>(value: T | null | undefined, nilSeriali
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
 export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined;
-/**
- * @en Check whether input source has a property.
- * @ja 入力元がプロパティを持っているか判定
- *
- * @param src
- */
-export declare function hasProperty(src: unknown, propName: string): boolean;
-/**
- * @en Get shallow copy of `target` which has only `pickupKeys`.
- * @ja `pickupKeys` で指定されたプロパティのみを持つ `target` の Shallow Copy を取得
- *
- * @param target
- *  - `en` copy source object
- *  - `ja` コピー元オブジェクト
- * @param pickupKeys
- *  - `en` copy target keys
- *  - `ja` コピー対象のキー一覧
- */
-export declare function partialize<T extends object, K extends keyof T>(target: T, ...pickupKeys: K[]): Writable<Pick<T, K>>;
 /**
  * @en Get local unique id. <br>
  *     "local unique" means guarantees unique during in script life cycle only.

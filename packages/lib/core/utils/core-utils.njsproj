@@ -67,6 +67,7 @@
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\misc.ts" />
     <TypeScriptCompile Include="src\mixins.ts" />
+    <TypeScriptCompile Include="src\object.ts" />
     <TypeScriptCompile Include="src\safe.ts" />
     <TypeScriptCompile Include="src\timer.ts" />
     <TypeScriptCompile Include="src\verify.ts" />
@@ -76,6 +77,7 @@
     <TypeScriptCompile Include="tests\unit\deep-circuit.spec.ts" />
     <TypeScriptCompile Include="tests\unit\misc.spec.ts" />
     <TypeScriptCompile Include="tests\unit\mixins.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\object.spec.ts" />
     <TypeScriptCompile Include="tests\unit\safe.spec.ts" />
     <TypeScriptCompile Include="tests\unit\types.spec.ts" />
     <TypeScriptCompile Include="tests\unit\verify.spec.ts" />
@@ -88,6 +90,7 @@
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\misc.d.ts" />
     <TypeScriptCompile Include="types\mixins.d.ts" />
+    <TypeScriptCompile Include="types\object.d.ts" />
     <TypeScriptCompile Include="types\safe.d.ts" />
     <TypeScriptCompile Include="types\timer.d.ts" />
     <TypeScriptCompile Include="types\types.d.ts" />

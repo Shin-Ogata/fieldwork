@@ -7,7 +7,7 @@ export {
     isString,
     isArray,
     isFunction,
-    hasProperty,
+    has,
     escapeHTML,
 } from '@cdp/core-utils';
 

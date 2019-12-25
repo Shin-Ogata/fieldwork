@@ -68,6 +68,18 @@ export function unique<T>(array: T[]): T[] {
     return [...new Set(array)];
 }
 
+/**
+ * @en Make union array.
+ * @ja 配列の和集合を返却
+ *
+ * @param arrays
+ *  - `en` source arrays
+ *  - `ja` 入力配列群
+ */
+export function union<T>(...arrays: T[][]): T[] {
+    return unique(arrays.flat());
+}
+
 //__________________________________________________________________________________________________//
 
 /**

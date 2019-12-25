@@ -4,7 +4,7 @@ import { TemplateContext } from './interfaces';
 import {
     PlainObject,
     isFunction,
-    hasProperty,
+    has,
     primitiveHasOwnProperty,
 } from './utils';
 
@@ -85,7 +85,7 @@ export class Context implements TemplateContext {
                     while (null != intermediateValue && index < names.length) {
                         if (index === names.length - 1) {
                             lookupHit = (
-                                hasProperty(intermediateValue, names[index]) ||
+                                has(intermediateValue, names[index]) ||
                                 primitiveHasOwnProperty(intermediateValue, names[index])
                             );
                         }
@@ -113,7 +113,7 @@ export class Context implements TemplateContext {
                      *
                      * "The length of a football field is 100 yards."
                      **/
-                    lookupHit = hasProperty(context._view, name);
+                    lookupHit = has(context._view, name);
                 }
 
                 if (lookupHit) {

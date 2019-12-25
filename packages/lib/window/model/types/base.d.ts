@@ -122,6 +122,11 @@ declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = Mo
      */
     protected get _prevAttrs(): T;
     /**
+     * @en Changed attributes instance
+     * @ja 変更のあった属性を格納するインスタンス
+     */
+    protected get _changedAttrs(): Partial<T>;
+    /**
      * @en Get internal content ID.
      * @ja 内部のコンテンツ ID を取得
      */
@@ -246,5 +251,33 @@ declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = Mo
      * @ja [[Model]] からすべての属性を削除 (`undefined` を設定)
      */
     clear(options?: ModelSetOptions): this;
+    /**
+     * @en Return a copy of the model's `attributes` object.
+     * @ja モデル属性値のコピーを返却
+     */
+    toJSON(): T;
+    /**
+     * @en Check changed attributes.
+     * @ja 変更された属性値を持つか判定
+     *
+     * @param attribute
+     *  - `en` checked attribute
+     *  - `ja` 検証する属性
+     */
+    hasChanged(attribute?: keyof T): boolean;
+    /**
+     * @en Return an object containing all the attributes that have changed, or `undefined` if there are no changed attributes.
+     * @ja 入力した attributes 値の差分に対して変更がある属性値を返却. 差分がない場合は `undefiend` を返却
+     *
+     * @param attributes
+     *  - `en` checked attributes
+     *  - `ja` 検証する属性
+     */
+    changed(attributes?: Partial<T>): Partial<T> | undefined;
+    /**
+     * @en Get the previous value of an attribute, recorded at the time the last `@change` event was fired.
+     * @ja `@change` が発火された前の属性値を取得
+     */
+    previous<K extends keyof T>(attribute: K): T[K];
 }
 export { Model as ModelBase };

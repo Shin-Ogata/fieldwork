@@ -4,6 +4,7 @@ import {
     shuffle,
     sort,
     unique,
+    union,
     indices,
     groupBy,
     map,
@@ -79,6 +80,16 @@ describe('utils/array spec', () => {
         expect(uniq[3]).toBe(1);
         expect(uniq[4]).toBe(4);
         expect(uniq[5]).toBe(5);
+    });
+
+    it('check union()', () => {
+        const result = union([1, 2, 3], [101, 2, 1, 10], [2, 1]);
+        expect(result.length).toBe(5);
+        expect(result[0]).toBe(1);
+        expect(result[1]).toBe(2);
+        expect(result[2]).toBe(3);
+        expect(result[3]).toBe(101);
+        expect(result[4]).toBe(10);
     });
 
     it('check indecies()', () => {
