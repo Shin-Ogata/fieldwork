@@ -57,7 +57,7 @@ class RestDataSync implements IDataSync {
      *  - `en` rest option object
      *  - `ja` REST オプション
      */
-    async sync<K extends SyncMethods>(method: K, context: SyncContext, options?: RestDataSyncOptions): Promise<SyncResult<K>> {
+    sync<K extends SyncMethods>(method: K, context: SyncContext, options?: RestDataSyncOptions): Promise<SyncResult<K>> {
         const params = Object.assign({ dataType: 'json' }, options);
 
         const url = params.url || resolveURL(context);

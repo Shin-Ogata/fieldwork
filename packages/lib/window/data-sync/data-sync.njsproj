@@ -43,12 +43,15 @@
   <ItemGroup>
     <Compile Include="build.config.js" />
     <Compile Include="dist\data-sync.js" />
+    <Compile Include="tests\custom\testem-amd.js" />
+    <Compile Include="tests\custom\testem-ci.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
     <Folder Include="tests\" />
+    <Folder Include="tests\custom\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
   </ItemGroup>
