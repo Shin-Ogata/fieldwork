@@ -7,7 +7,7 @@ import { Cancelable } from '@cdp/promise';
  * @ja [[IDataSync]] 内から発行されるイベント定義
  */
 export interface SyncEvent<T extends {}> {
-    '@request': [EventBroker<SyncEvent<T>>, Promise<T | void>];
+    '@request': [EventBroker<SyncEvent<T>>, Promise<T | PlainObject>];
 }
 
 /**
@@ -15,10 +15,10 @@ export interface SyncEvent<T extends {}> {
  * @ja [[IDataSync]] がサポートするメソッドと戻り値のリスト
  */
 export interface SyncMethodList<T extends {} = PlainObject> {
-    create: void;
-    update: void;
-    patch: void;
-    delete: void;
+    create: PlainObject;
+    update: PlainObject;
+    patch: PlainObject;
+    delete: PlainObject;
     read: T;
 }
 
