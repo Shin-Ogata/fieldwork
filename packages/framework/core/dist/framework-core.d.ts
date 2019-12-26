@@ -3208,6 +3208,7 @@ declare namespace CDP_DECLARE {
      *  }
      *
      *  export enum RESULT_CODE {
+     *      SOMEMODULE_DECLARE           = RESULT_CODE_BASE.DECLARE, // for avoid TS2432.
      *      ERROR_SOMEMODULE_UNEXPECTED  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 1, "error unexpected."),
      *      ERROR_SOMEMODULE_INVALID_ARG = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 2, "invalid arguments."),
      *  }
@@ -3215,6 +3216,7 @@ declare namespace CDP_DECLARE {
      * ```
      */
     const enum RESULT_CODE_BASE {
+        DECLARE = 9007199254740991,
         COMMON = 0,
         CDP = 100
     }
@@ -3230,6 +3232,7 @@ declare namespace CDP_DECLARE {
      * }
      *
      * export enum RESULT_CODE {
+     *   AJAX_DECLARE        = RESULT_CODE_BASE.DECLARE,
      *   ERROR_AJAX_RESPONSE = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 1, 'network error.'),
      *   ERROR_AJAX_TIMEOUT  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 2, 'request timeout.'),
      * }
@@ -3238,7 +3241,7 @@ declare namespace CDP_DECLARE {
     const enum CDP_KNOWN_MODULE {
         /** `@cdp/ajax` */
         AJAX = 1,
-        /** `@cdp/model` */
+        /** `@cdp/data-sync`, `@cdp/model` */
         MVC = 2,
         /** offset for unknown module */
         OFFSET = 3

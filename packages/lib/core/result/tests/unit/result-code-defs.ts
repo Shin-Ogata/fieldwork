@@ -14,6 +14,7 @@ namespace CDP_DECLARE {
      * 拡張通エラーコード定義
      */
     export enum RESULT_CODE {
+        TEST_DECLARE         = RESULT_CODE_BASE.DECLARE,
         ERROR_TEST_SUCCEEDED = DECLARE_SUCCESS_CODE(RESULT_CODE_BASE.TEST, LOCAL_CODE_BASE.TEST + 1, 'test succeess result.'),
         ERROR_TEST_FAILED    = DECLARE_ERROR_CODE(RESULT_CODE_BASE.TEST, LOCAL_CODE_BASE.TEST + 2, 'test failed result.'),
     }
