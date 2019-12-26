@@ -56,6 +56,7 @@ namespace CDP_DECLARE {
      *  }
      *
      *  export enum RESULT_CODE {
+     *      SOMEMODULE_DECLARE           = RESULT_CODE_BASE.DECLARE, // for avoid TS2432.
      *      ERROR_SOMEMODULE_UNEXPECTED  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 1, "error unexpected."),
      *      ERROR_SOMEMODULE_INVALID_ARG = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 2, "invalid arguments."),
      *  }
@@ -63,8 +64,9 @@ namespace CDP_DECLARE {
      * ```
      */
     export const enum RESULT_CODE_BASE {
-        COMMON = 0,
-        CDP = 1 * LOCAL_CODE_RANGE_GUIDE.MODULE, // cdp reserved. abs(0 ～ 1000)
+        DECLARE = 9007199254740991, // Number.MAX_SAFE_INTEGER
+        COMMON  = 0,
+        CDP     = 1 * LOCAL_CODE_RANGE_GUIDE.MODULE, // cdp reserved. abs(0 ～ 1000)
 //      MODULE_A = 1 * RESULT_CODE_RANGE.MAX,    // ex) moduleA: abs(1001 ～ 1999)
 //      MODULE_B = 2 * RESULT_CODE_RANGE.MAX,    // ex) moduleB: abs(2001 ～ 2999)
 //      MODULE_C = 3 * RESULT_CODE_RANGE.MAX,    // ex) moduleC: abs(3001 ～ 3999)
@@ -82,6 +84,7 @@ namespace CDP_DECLARE {
      * }
      *
      * export enum RESULT_CODE {
+     *   AJAX_DECLARE        = RESULT_CODE_BASE.DECLARE,
      *   ERROR_AJAX_RESPONSE = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 1, 'network error.'),
      *   ERROR_AJAX_TIMEOUT  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 2, 'request timeout.'),
      * }
@@ -90,7 +93,7 @@ namespace CDP_DECLARE {
     export const enum CDP_KNOWN_MODULE {
         /** `@cdp/ajax` */
         AJAX = 1,
-        /** `@cdp/model` */
+        /** `@cdp/data-sync`, `@cdp/model` */
         MVC  = 2,
         /** offset for unknown module */
         OFFSET,

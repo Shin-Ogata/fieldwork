@@ -11,6 +11,7 @@ namespace CDP_DECLARE {
      * @ja 拡張通エラーコード定義
      */
     export enum RESULT_CODE {
+        AJAX_DECLARE        = RESULT_CODE_BASE.DECLARE,
         ERROR_AJAX_RESPONSE = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 1, 'network error.'),
         ERROR_AJAX_TIMEOUT  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.AJAX + 2, 'request timeout.'),
     }
