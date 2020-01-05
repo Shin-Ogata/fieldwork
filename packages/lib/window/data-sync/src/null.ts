@@ -19,6 +19,14 @@ class NullDataSync implements IDataSync<{}> {
 // implements: IDataSync
 
     /**
+     * @en [[IDataSync]] kind signature.
+     * @ja [[IDataSync]] の種別を表す識別子
+     */
+    get kind(): string {
+        return 'null';
+    }
+
+    /**
      * @en Do data synchronization.
      * @ja データ同期
      *
@@ -39,7 +47,6 @@ class NullDataSync implements IDataSync<{}> {
         context.trigger('@request', context, responce);
         return responce as Promise<SyncResult<K, {}>>;
     }
-
 }
 
 export const dataSyncNULL = new NullDataSync() as IDataSync<{}>;

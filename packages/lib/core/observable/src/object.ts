@@ -137,7 +137,7 @@ export abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    on(property: '*', listener: (context: ObservableObject) => any): Subscription;
+    on(property: '@', listener: (context: ObservableObject) => any): Subscription;
 
     /**
      * @en Subscrive property change(s).
@@ -176,7 +176,7 @@ export abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    off(property: '*', listener?: (context: ObservableObject) => any): void;
+    off(property: '@', listener?: (context: ObservableObject) => any): void;
 
     /**
      * @en Unsubscribe property change(s).
@@ -348,7 +348,7 @@ export abstract class ObservableObject implements IObservable {
             (eventBroker as any).trigger(key, ...values, key);
         }
         if (changed) {
-            eventBroker.trigger('*', this);
+            eventBroker.trigger('@', this);
         }
     }
 }

@@ -1,5 +1,5 @@
 import { Constructor, PlainObject } from '@cdp/core-utils';
-import { Silenceable } from '@cdp/events';
+import { EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
 import { ModelBase } from './base';
 
@@ -22,7 +22,7 @@ export type ModelAttributeChangeEvent<T extends {}> = { [K in keyof T]: [T[K], T
  * @en Default [[Model]] event definition.
  * @ja 既定の [[Model]] イベント定義
  */
-export type ModelEvent<T extends {}> = ModelAttributeChangeEvent<T> & {
+export type ModelEvent<T extends {}> = EventAll & ModelAttributeChangeEvent<T> & {
     /**
      * @en notified when some attribute changed.
      * @ja 属性が変更されたときに発行

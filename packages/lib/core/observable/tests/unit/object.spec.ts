@@ -211,13 +211,13 @@ describe('observable/object spec', () => {
         expect(isObservable({})).toBe(false);
     });
 
-    it('ObservableObject#on(*)', async (done) => {
+    it('ObservableObject#on(@)', async (done) => {
         const model = ObservableObject.from({ a: 1, b: 1 });
         const stub = {
             count: 0,
             onCallback: () => { stub.count++; },
         };
-        model.on('*', stub.onCallback);
+        model.on('@', stub.onCallback);
         model.a = Math.random();
         model.b = Math.random();
         setTimeout(() => {

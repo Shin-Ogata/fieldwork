@@ -4,6 +4,9 @@ import {
     post,
     noop,
     sleep,
+    throttle,
+    debounce,
+    once,
     escapeHTML,
     unescapeHTML,
     toTypedData,
@@ -54,6 +57,157 @@ describe('utils/misc spec', () => {
         await sleep(100);
         expect(Date.now() - start).toBeGreaterThanOrEqual(100);
         done();
+    });
+
+    it('check throttle()', async (done) => {
+        let count = 0;
+        const exec = (): number => {
+            count++;
+            return count;
+        };
+        const throttled = throttle(exec, 50);
+        for (let i = 0; i < 5; i++) {
+            throttled();
+            await sleep(10);
+        }
+        expect(count).toBe(2);
+        done();
+    });
+
+    it('check throttle({ leading: false })', async (done) => {
+        let count = 0;
+        const exec = (): number => {
+            count++;
+            return count;
+        };
+        const throttled = throttle(exec, 50, { leading: false });
+        for (let i = 0; i < 5; i++) {
+            throttled();
+            await sleep(10);
+        }
+        expect(count).toBe(1);
+        done();
+    });
+
+    it('check throttle() /w cancel', async (done) => {
+        let count = 0;
+        const exec = (): number => {
+            count++;
+            return count;
+        };
+        const throttled = throttle(exec, 10);
+        for (let i = 0; i < 5; i++) {
+            throttled.cancel();
+            throttled();
+            await sleep(50);
+        }
+        expect(count).toBe(5);
+        done();
+    });
+
+    it('check throttle() /w nest call', async (done) => {
+        let count = 0;
+        const exec = (): void => {
+            count++;
+            throttled(); // eslint-disable-line
+        };
+        const throttled = throttle(exec, 20);
+        for (let i = 0; i < 5; i++) {
+            throttled();
+            await sleep(10);
+        }
+        expect(count).toBe(3);
+        done();
+    });
+
+    it('check throttle() for coverage', async (done) => {
+        let count = 0;
+        const exec = (): number => {
+            count++;
+            return count;
+        };
+        const throttled = throttle(exec, 100);
+
+        const orgDateNow = Date.now;
+
+        throttled();
+        await sleep(10);
+        throttled();
+        Date.now = () => { return 0; };
+        throttled();
+        await sleep(10);
+
+        expect(count).toBe(2);
+
+        Date.now = orgDateNow;
+
+        done();
+    });
+
+    it('check debounce()', async (done) => {
+        let value = 0;
+        const exec = (lhs: number, rhs: number): number => {
+            value += (lhs + rhs);
+            return value;
+        };
+        const debounced = debounce(exec, 50);
+        for (let i = 0; i < 5; i++) {
+            debounced(i, i + 1);
+        }
+
+        await sleep(50);
+
+        expect(value).toBe(9);
+        done();
+    });
+
+    it('check debounce(immediate)', async (done) => {
+        let value = 0;
+        const exec = (lhs: number, rhs: number): number => {
+            value += (lhs + rhs);
+            return value;
+        };
+        const debounced = debounce(exec, 50, true);
+        for (let i = 0; i < 5; i++) {
+            debounced(i, i + 1);
+        }
+
+        await sleep(50);
+
+        expect(value).toBe(1);
+        done();
+    });
+
+    it('check debounce() /w cancel', async (done) => {
+        let value = 0;
+        const exec = (lhs: number, rhs: number): number => {
+            value += (lhs + rhs);
+            return value;
+        };
+        const debounced = debounce(exec, 50);
+        for (let i = 0; i < 5; i++) {
+            debounced(i, i + 1);
+            debounced.cancel();
+        }
+
+        await sleep(50);
+
+        expect(value).toBe(0);
+        done();
+    });
+
+    it('check once()', () => {
+        let value = 0;
+        const exec = (lhs: number, rhs: number): number => {
+            value += (lhs + rhs);
+            return value;
+        };
+        const oncefy = once(exec);
+        for (let i = 0; i < 5; i++) {
+            oncefy(i, i + 1);
+        }
+
+        expect(value).toBe(1);
     });
 
     it('check escapeHTML()', () => {

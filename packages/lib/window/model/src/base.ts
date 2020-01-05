@@ -2,6 +2,7 @@
 
 import {
     Arguments,
+    isArray,
     isEmptyObject,
     luid,
     escapeHTML,
@@ -330,8 +331,8 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
      *  - `ja` `channel` に対応したコールバック関数
      */
     public on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
-        if ('@change' === channel) {
-            this._attrs.on('*', this[_changeHandler]);
+        if ('@change' === channel || (isArray(channel) && channel.includes('@change' as Channel))) {
+            this._attrs.on('@', this[_changeHandler]);
         }
         return this._attrs.on(channel as any, listener as any);
     }

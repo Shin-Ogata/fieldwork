@@ -73,7 +73,7 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    on(property: '*', listener: (context: ObservableObject) => any): Subscription;
+    on(property: '@', listener: (context: ObservableObject) => any): Subscription;
     /**
      * @en Subscrive property change(s).
      * @ja プロパティ変更購読設定
@@ -97,7 +97,7 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    off(property: '*', listener?: (context: ObservableObject) => any): void;
+    off(property: '@', listener?: (context: ObservableObject) => any): void;
     /**
      * @en Unsubscribe property change(s).
      * @ja プロパティ変更購読解除

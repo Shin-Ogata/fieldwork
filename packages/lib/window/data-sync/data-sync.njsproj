@@ -61,16 +61,23 @@
     <TypeScriptCompile Include="src\null.ts" />
     <TypeScriptCompile Include="src\rest.ts" />
     <TypeScriptCompile Include="src\result-code-defs.ts" />
+    <TypeScriptCompile Include="src\settings.ts" />
     <TypeScriptCompile Include="src\storage.ts" />
+    <TypeScriptCompile Include="src\internal.ts" />
     <TypeScriptCompile Include="tests\unit\null-spec.ts" />
     <TypeScriptCompile Include="tests\unit\rest-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\settings-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\storage-spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
+    <TypeScriptCompile Include="types\internal.d.ts" />
     <TypeScriptCompile Include="types\null.d.ts" />
     <TypeScriptCompile Include="types\rest.d.ts" />
+    <TypeScriptCompile Include="types\result-code-defs.d.ts" />
+    <TypeScriptCompile Include="types\settings.d.ts" />
     <TypeScriptCompile Include="types\storage.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

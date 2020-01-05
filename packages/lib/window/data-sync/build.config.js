@@ -11,6 +11,7 @@ module.exports.default = config({
         '@cdp/core-storage': 'CDP',
         '@cdp/result': 'CDP',
         '@cdp/ajax': 'CDP',
+        '@cdp/web-storage': 'CDP',
     },
     replace,
 });

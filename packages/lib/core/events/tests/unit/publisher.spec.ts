@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/require-await, @typescript-eslint/unbound-method, @typescript-eslint/no-empty-function */
 
-import { EventPublisher, EventBroker, EventArguments } from '@cdp/events';
+import {
+    EventAll,
+    EventPublisher,
+    EventBroker,
+    EventArguments,
+} from '@cdp/events';
 
 const symbolKey = Symbol('SymbolKey');
 
-interface TestEvent {
+interface TestEvent extends EventAll {
     error: [Error];
     message: [string];
     multi: [number, string, boolean];
@@ -24,6 +29,7 @@ class TestPublisher extends EventPublisher<TestEvent> {
         this.publish('multi', 100);
         this.publish('multi', 10, 'str', true);
         this.publish('simple', 1);
+        this.publish('*', 'any', 'any');
         this.publish(symbolKey, symbolKey.toString());
     }
     public async trigger<Channel extends keyof TestEvent>(channel: Channel, ...args: EventArguments<Partial<TestEvent[Channel]>>): Promise<void> {
@@ -187,6 +193,28 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(10, 'good morning', true);
 
         expect(count).toBe(2);
+
+        done();
+    });
+
+    it('check on(*)', async (done) => {
+        const publisher = new TestPublisher();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        publisher.on('*', stub.onCallback);
+
+        await publisher.trigger('message', 'hello');
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(stub.onCallback).toHaveBeenCalledWith('message', 'hello');
+
+        await publisher.trigger('multi', 10, 'good morning', true);
+        expect(stub.onCallback).toHaveBeenCalledWith('multi', 10, 'good morning', true);
+
+        await publisher.trigger('*', 'any', 'any', 'any');
+        expect(stub.onCallback).toHaveBeenCalledWith('any', 'any', 'any');
+
+        expect(count).toBe(3);
 
         done();
     });

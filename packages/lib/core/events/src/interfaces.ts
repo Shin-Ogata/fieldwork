@@ -1,4 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Arguments, $cdp } from '@cdp/core-utils';
+
+/**
+ * @en All event handle base interface definition.
+ * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
+ */
+export interface EventAll {
+    '*': any[];
+}
 
 /**
  * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
@@ -24,7 +34,7 @@ export interface Subscription {
  * @ja イベント供給を行うインターフェイス定義 <br>
  *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
  */
-export interface Subscribable<Event = any> {    // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface Subscribable<Event extends {} = any> {
     /** type resolver */
     readonly [$cdp]?: Event;
 
