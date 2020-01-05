@@ -9,7 +9,8 @@
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/events": "file:../../core/events",
     "@cdp/promise": "file:../../core/promise",
-    "@cdp/result": "file:../../core/result"
+    "@cdp/result": "file:../../core/result",
+    "@cdp/web-storage": "file:../../window/storage"
   },
   "keywords": [
     "CDP",

@@ -142,6 +142,22 @@ describe('model/model spec', () => {
         done();
     });
 
+    it('check "@change" notify from array', async (done) => {
+        const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        content.on(['@change'], stub.onCallback);
+        await post(async () => {
+            content.uri = 'bbb.html';
+            content.cookie = 'test';
+        });
+        expect(stub.onCallback).toHaveBeenCalledWith(content);
+        expect(count).toBe(1);
+
+        done();
+    });
+
     it('check Model#hasListener()', () => {
         const content = new Content();
         const stub = { onCallback };

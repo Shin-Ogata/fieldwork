@@ -5,7 +5,11 @@ import {
     isObject,
 } from './types';
 import { invert } from './object';
-import { setTimeout } from './timer';
+import {
+    TimerHandle,
+    setTimeout,
+    clearTimeout,
+} from './timer';
 
 /**
  * @en Ensure asynchronous execution.
@@ -43,6 +47,149 @@ export function noop(...args: any[]): any {    // eslint-disable-line @typescrip
  */
 export function sleep(elapse: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, elapse));
+}
+
+/**
+ * @en Returns a function, that, when invoked, will only be triggered at most once during a given time.
+ * @ja 関数の実行を wait [msec] に1回に制限
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const throttled = throttle(upatePosition, 100);
+ * $(window).scroll(throttled);
+ * ```
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param elapse
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param options
+ */
+export function throttle<T extends Function>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const opts = options || {};
+    let handle: TimerHandle | undefined;
+    let args: any[] | undefined;
+    let context: any, result: any;
+    let previous = 0;
+
+    const later = function (): void {
+        previous = false === opts.leading ? 0 : Date.now();
+        handle = undefined;
+        result = executor.apply(context, args);
+        if (!handle) {
+            context = args = undefined;
+        }
+    };
+
+    const throttled = function (this: any, ...arg: any[]): any {
+        const now = Date.now();
+        if (!previous && false === opts.leading) {
+            previous = now;
+        }
+        const remaining = elapse - (now - previous);
+        // eslint-disable-next-line no-invalid-this
+        context = this;
+        args = [...arg];
+        if (remaining <= 0 || remaining > elapse) {
+            if (handle) {
+                clearTimeout(handle);
+                handle = undefined;
+            }
+            previous = now;
+            result = executor.apply(context, args);
+            if (!handle) {
+                context = args = undefined;
+            }
+        } else if (!handle && false !== opts.trailing) {
+            handle = setTimeout(later, remaining);
+        }
+        return result;
+    };
+
+    throttled.cancel = function (): void {
+        clearTimeout(handle as TimerHandle);
+        previous = 0;
+        handle = context = args = undefined;
+    };
+
+    return throttled as any;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+}
+
+/**
+ * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
+ * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param wait
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param immediate
+ *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
+ *  - `ja` `true` の場合, 初回のコールは即時実行
+ */
+export function debounce<T extends Function>(executor: T, wait: number, immediate?: boolean): T & { cancel(): void; } {
+    /* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any */
+    let handle: TimerHandle | undefined;
+    let result: any;
+
+    const later = function (context: any, args: any[]): void {
+        handle = undefined;
+        if (args) {
+            result = executor.apply(context, args);
+        }
+    };
+
+    const debounced = function (this: any, ...args: any[]): any {
+        if (handle) {
+            clearTimeout(handle);
+        }
+        if (immediate) {
+            const callNow = !handle;
+            handle = setTimeout(later, wait);
+            if (callNow) {
+                result = executor.apply(this, args);
+            }
+        } else {
+            handle = setTimeout(later, wait, this, [...args]);
+        }
+        return result;
+    };
+
+    debounced.cancel = function (): void {
+        clearTimeout(handle as TimerHandle);
+        handle = undefined;
+    };
+
+    return debounced as any;
+    /* eslint-enable no-invalid-this, @typescript-eslint/no-explicit-any */
+}
+
+/**
+ * @en Returns a function that will be executed at most one time, no matter how often you call it.
+ * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ */
+export function once<T extends Function>(executor: T): T {
+    /* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
+    let memo: any;
+    return function (this: any, ...args: any[]): any {
+        if (executor) {
+            memo = executor.call(this, ...args);
+            executor = null!;
+        }
+        return memo;
+    } as any;
+    /* eslint-enable no-invalid-this, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
 }
 
 //__________________________________________________________________________________________________//

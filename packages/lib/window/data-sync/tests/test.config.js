@@ -12,6 +12,7 @@ module.exports = {
             '@cdp/core-storage': 'CDP',
             '@cdp/result': 'CDP',
             '@cdp/ajax': 'CDP',
+            '@cdp/web-storage': 'CDP',
         },
     }),
     testem: config.testem({
@@ -23,6 +24,7 @@ module.exports = {
             '@cdp/result': 'node_modules/@cdp/result/dist/result',
             '@cdp/ajax': 'node_modules/@cdp/ajax/dist/ajax',
             '@cdp/binary': 'node_modules/@cdp/ajax/node_modules/@cdp/binary/dist/binary',
+            '@cdp/web-storage': 'node_modules/@cdp/web-storage/dist/web-storage',
         },
     }),
 };

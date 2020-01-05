@@ -29,6 +29,57 @@ export declare function noop(...args: any[]): any;
  */
 export declare function sleep(elapse: number): Promise<void>;
 /**
+ * @en Returns a function, that, when invoked, will only be triggered at most once during a given time.
+ * @ja 関数の実行を wait [msec] に1回に制限
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const throttled = throttle(upatePosition, 100);
+ * $(window).scroll(throttled);
+ * ```
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param elapse
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param options
+ */
+export declare function throttle<T extends Function>(executor: T, elapse: number, options?: {
+    leading?: boolean;
+    trailing?: boolean;
+}): T & {
+    cancel(): void;
+};
+/**
+ * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
+ * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param wait
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param immediate
+ *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
+ *  - `ja` `true` の場合, 初回のコールは即時実行
+ */
+export declare function debounce<T extends Function>(executor: T, wait: number, immediate?: boolean): T & {
+    cancel(): void;
+};
+/**
+ * @en Returns a function that will be executed at most one time, no matter how often you call it.
+ * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ */
+export declare function once<T extends Function>(executor: T): T;
+/**
  * @en Create escape function from map.
  * @ja 文字置換関数を作成
  *

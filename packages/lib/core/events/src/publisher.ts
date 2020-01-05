@@ -8,7 +8,11 @@ import {
     className,
     verify,
 } from '@cdp/core-utils';
-import { Subscription, Subscribable } from './interfaces';
+import {
+    EventAll,
+    Subscription,
+    Subscribable,
+} from './interfaces';
 
 /** @internal Lisner 格納形式 */
 type ListenersMap<T> = Map<keyof T, Set<(...args: T[keyof T][]) => unknown>>;
@@ -38,6 +42,31 @@ function validListener(listener?: (...args: unknown[]) => unknown): any | never 
         verify('typeOf', 'function', listener);
     }
     return listener;
+}
+
+/** @internal event 発行 */
+function triggerEvent<Event, Channel extends keyof Event>(
+    map: ListenersMap<Event>,
+    channel: Channel,
+    original: string | undefined,
+    ...args: Arguments<Partial<Event[Channel]>>
+): void {
+    const list = map.get(channel);
+    if (!list) {
+        return;
+    }
+    for (const listener of list) {
+        try {
+            const eventArgs = original ? [original, ...args] : args;
+            const handled = listener(...eventArgs);
+            // if received 'true', stop delegation.
+            if (true === handled) {
+                break;
+            }
+        } catch (e) {
+            Promise.reject(e);
+        }
+    }
 }
 
 //__________________________________________________________________________________________________//
@@ -87,7 +116,7 @@ function validListener(listener?: (...args: unknown[]) => unknown): any | never 
  *                                                          //     but got 3.
  * ```
  */
-export abstract class EventPublisher<Event> implements Subscribable<Event> {
+export abstract class EventPublisher<Event extends {}> implements Subscribable<Event> {
 
     /** constructor */
     constructor() {
@@ -109,20 +138,10 @@ export abstract class EventPublisher<Event> implements Subscribable<Event> {
     protected publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void {
         const map = listeners(this);
         validChannel(channel);
-        const list = map.get(channel);
-        if (!list) {
-            return;
-        }
-        for (const listener of list) {
-            try {
-                const handled = listener(...args);
-                // if received 'true', stop delegation.
-                if (true === handled) {
-                    break;
-                }
-            } catch (e) {
-                Promise.reject(e);
-            }
+        triggerEvent(map, channel, undefined, ...args);
+        // trigger for all handler
+        if ('*' !== channel) {
+            triggerEvent(map as any as ListenersMap<EventAll>, '*', channel as string, ...args);
         }
     }
 

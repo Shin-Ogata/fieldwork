@@ -1,4 +1,3 @@
-import { isFunction } from '@cdp/core-utils';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import { AjaxOptions, ajax } from '@cdp/ajax';
 import {
@@ -7,6 +6,7 @@ import {
     SyncContext,
     SyncResult,
 } from './interfaces';
+import { resolveURL } from './internal';
 
 /**
  * @en Options interface for [[RestDataSync]].
@@ -24,16 +24,6 @@ const _methodMap = {
     read: 'GET'
 };
 
-/** @internal resolve lack property */
-function resolveURL(context: SyncContext): string {
-    if (isFunction(context['url'])) {
-        return context['url']() as string;
-    } else {
-        return context['url'];
-    }
-}
-
-
 /**
  * @en The [[IDataSync]] implemant class which compliant RESTful.
  * @ja REST に準拠した [[IDataSync]] 実装クラス
@@ -42,6 +32,14 @@ class RestDataSync implements IDataSync {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IDataSync
+
+    /**
+     * @en [[IDataSync]] kind signature.
+     * @ja [[IDataSync]] の種別を表す識別子
+     */
+    get kind(): string {
+        return 'rest';
+    }
 
     /**
      * @en Do data synchronization.
@@ -77,7 +75,6 @@ class RestDataSync implements IDataSync {
         context.trigger('@request', context, responce);
         return responce as Promise<SyncResult<K>>;
     }
-
 }
 
 export const dataSyncREST = new RestDataSync() as IDataSync;
