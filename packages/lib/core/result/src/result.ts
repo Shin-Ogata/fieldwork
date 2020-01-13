@@ -4,6 +4,7 @@ import {
     className,
     isNil,
     isString,
+    isChancelLikeError,
 } from '@cdp/core-utils';
 import {
     RESULT_CODE,
@@ -148,8 +149,8 @@ export function toResult(o: unknown): Result {
         return o;
     } else {
         const e = Object(o) as Result;
-        const code = isNumber(e.code) ? e.code : o as any;
         const message = isString(e.message) ? e.message : isString(o) ? o : undefined;
+        const code = isChancelLikeError(message) ? RESULT_CODE.ABORT : isNumber(e.code) ? e.code : o as any;
         const cause = isError(e.cause) ? e.cause : isError(o) ? o : isString(o) ? new Error(o) : o;
         return new Result(code, message, cause);
     }

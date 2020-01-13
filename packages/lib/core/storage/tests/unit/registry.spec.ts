@@ -24,7 +24,7 @@ describe('storage/registry spec', () => {
         _count++;
     };
 
-    beforeEach(async (done) => {
+    beforeEach(async done => {
         const storage = new MemoryStorage();
         await storage.setItem('@test', {
             common: {
@@ -46,7 +46,7 @@ describe('storage/registry spec', () => {
         expect(_reg.storage.kind).toBe('memory');
     });
 
-    it('check Registry#load() /w callback ', async (done) => {
+    it('check Registry#load() /w callback ', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -76,7 +76,7 @@ describe('storage/registry spec', () => {
         done();
     });
 
-    it('check Registry#save() /w callback ', async (done) => {
+    it('check Registry#save() /w callback ', async done => {
         const stub = {
             onWillSave: () => {
                 // final update
@@ -103,7 +103,7 @@ describe('storage/registry spec', () => {
         done();
     });
 
-    it('check Registry#read()', async (done) => {
+    it('check Registry#read()', async done => {
         expect(_reg.read('common/mode')).toBeNull();
         expect(_reg.read('common/value')).toBeNull();
         expect(_reg.read('trade/local')).toBeNull();
@@ -125,7 +125,7 @@ describe('storage/registry spec', () => {
         done();
     });
 
-    it('check Registry#write()', async (done) => {
+    it('check Registry#write()', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -170,7 +170,7 @@ describe('storage/registry spec', () => {
         done();
     });
 
-    it('check Registry#delete() ', async (done) => {
+    it('check Registry#delete() ', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -198,7 +198,7 @@ describe('storage/registry spec', () => {
         done();
     });
 
-    it('check Registry#clear() ', async (done) => {
+    it('check Registry#clear() ', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 

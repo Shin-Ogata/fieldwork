@@ -14,7 +14,7 @@ describe('dom/effects spec', () => {
         cleanupTestElements();
     });
 
-    it('check DOM#animate()', async (done) => {
+    it('check DOM#animate()', async done => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>
 <div id="d2" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>
@@ -32,7 +32,7 @@ describe('dom/effects spec', () => {
         done();
     });
 
-    it('check DOM#cancel()', async (done) => {
+    it('check DOM#cancel()', async done => {
         prepareTestElements(testee(`<div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>`));
         const $dom = $('.test-dom');
         // NOTE: 塗りつぶしモードはスコアが高いまま永続化されるので finished で値を入れる代価の方式が推奨されている
@@ -45,7 +45,7 @@ describe('dom/effects spec', () => {
         done();
     });
 
-    it('check DOM#finish()', async (done) => {
+    it('check DOM#finish()', async done => {
         prepareTestElements(testee(`<div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>`));
         const $dom = $('.test-dom');
         const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
@@ -61,7 +61,7 @@ describe('dom/effects spec', () => {
         done();
     });
 
-    it('check mixedCollection', async (done) => {
+    it('check mixedCollection', async done => {
         const $dom = mixedCollection().add(window).add(document);
         expect(() => $(window).animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100 })).not.toThrow();
         expect(() => $(document).animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100 })).not.toThrow();

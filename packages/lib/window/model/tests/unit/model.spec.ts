@@ -8,13 +8,23 @@
  , @typescript-eslint/await-thenable
  */
 
-import { Writable, post } from '@cdp/core-utils';
+import {
+    Writable,
+    PlainObject,
+    post,
+} from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 import {
     RESULT_CODE,
     Result,
     makeResult,
 } from '@cdp/result';
+import { CancelToken } from '@cdp/promise';
+import {
+    defaultSync,
+    dataSyncSTORAGE,
+    dataSyncNULL,
+} from '@cdp/data-sync';
 import {
     ModelBase,
     ModelEvent,
@@ -22,6 +32,7 @@ import {
     ModelValidateAttributeOptions,
     ModelAttributeInput,
     ModelConstructionOptions,
+    ModelSetOptions,
 } from '@cdp/model';
 
 describe('model/model spec', () => {
@@ -32,18 +43,28 @@ describe('model/model spec', () => {
         cookie?: string;
     }
 
+    interface ContentParseOptions {
+        size?: number;
+    }
+
     interface CustomEvent extends ModelEvent<ContentAttribute> {
         fire: [boolean, number];
         message: string;
     }
+
+    type ContentConstructionOptions = ContentParseOptions & ModelConstructionOptions<ContentAttribute>;
 
     const errorInvalidData = makeResult(RESULT_CODE.ERROR_MVC_INVALID_DATA, 'size is readonly.');
 
     const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
 
     class Content extends Model {
-        constructor(attrs?: ContentAttribute, options?: ModelConstructionOptions<ContentAttribute>) {
+        constructor(attrs?: Partial<ContentAttribute>, options?: ContentConstructionOptions) {
             super(Object.assign({}, Content.defaults, attrs), options);
+        }
+
+        get url(): string {
+            return 'test';
         }
 
         public getCID(): string {
@@ -57,7 +78,20 @@ describe('model/model spec', () => {
             return super.validateAttributes(attrs, options);
         }
 
-        // example for  Backbone.defaults
+        // example: parse()
+        protected parse(response: PlainObject, options?: ModelSetOptions & ContentParseOptions): ContentAttribute {
+            let resp = super.parse(response, options) as PlainObject;
+            const { size } = options || resp;
+            if (null != size) {
+                resp.size = size * 2;
+            }
+            if (null == resp) {
+                resp = { cookie: 'from:save' };
+            }
+            return resp as ContentAttribute;
+        }
+
+        // example: Backbone.defaults semantics.
         private static get defaults(): ContentAttribute {
             return {
                 uri: 'aaa.html',
@@ -98,7 +132,7 @@ describe('model/model spec', () => {
         expect(content.cookie).toBeUndefined();
     });
 
-    it('check change property notify', async (done) => {
+    it('check change property notify', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -111,7 +145,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check "@change" notify', async (done) => {
+    it('check "@change" notify', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -142,7 +176,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check "@change" notify from array', async (done) => {
+    it('check "@change" notify from array', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -242,7 +276,7 @@ describe('model/model spec', () => {
         expect(channels.length).toBe(0);
     });
 
-    it('check Model#on(single)', async (done) => {
+    it('check Model#on(single)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -260,7 +294,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#on(multi)', async (done) => {
+    it('check Model#on(multi)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -278,7 +312,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check subscription', async (done) => {
+    it('check subscription', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -301,7 +335,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#off(single)', async (done) => {
+    it('check Model#off(single)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -331,7 +365,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check off(multi)', async (done) => {
+    it('check off(multi)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -361,7 +395,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#once(single)', async (done) => {
+    it('check Model#once(single)', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -377,7 +411,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#once(multi)', async (done) => {
+    it('check Model#once(multi)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -398,7 +432,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#listenTo(single)', async (done) => {
+    it('check Model#listenTo(single)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -417,7 +451,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#listenTo(multi)', async (done) => {
+    it('check Model#listenTo(multi)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -437,7 +471,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#stopListening(single)', async (done) => {
+    it('check Model#stopListening(single)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -468,7 +502,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#stopListening(multi)', async (done) => {
+    it('check Model#stopListening(multi)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -499,7 +533,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#listenToOnce(single)', async (done) => {
+    it('check Model#listenToOnce(single)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -519,7 +553,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#listenToOnce(multi)', async (done) => {
+    it('check Model#listenToOnce(multi)', async done => {
         const content = new Content();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -541,12 +575,18 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check validate', async (done) => {
+    it('check validate', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         expect(content.isValid).toBe(true);
         const validResult = content.validate();
         expect(validResult.code).toBe(RESULT_CODE.SUCCESS);
         done();
+    });
+
+    it('check parse', (): void => {
+        const content = new Content(undefined, { parse: true, size: 20 });
+        expect(content.uri).toBe('aaa.html');
+        expect(content.size).toBe(40);
     });
 
     it('check Model#has()', () => {
@@ -561,7 +601,7 @@ describe('model/model spec', () => {
         expect(content.escape('cookie')).toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
     });
 
-    it('check Model#setAttribute()', async (done) => {
+    it('check Model#setAttribute()', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -583,7 +623,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#setAttribute({ silent: true })', async (done) => {
+    it('check Model#setAttribute({ silent: true })', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -605,7 +645,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#setAttribute({ extend: true })', async (done) => {
+    it('check Model#setAttribute({ extend: true })', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -627,7 +667,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#setAttribute({ validate: true })', async (done) => {
+    it('check Model#setAttribute({ validate: true })', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -649,7 +689,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#setAttribute({ validate: true, noThrow: true, silent })', async (done) => {
+    it('check Model#setAttribute({ validate: true, noThrow: true, silent })', async done => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -671,7 +711,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#clear()', async (done) => {
+    it('check Model#clear()', async done => {
         type WritableAttr = Writable<ContentAttribute>;
         class WritableContent extends Model {
             constructor(attrs: WritableAttr, options?: ModelConstructionOptions<WritableAttr>) {
@@ -731,5 +771,317 @@ describe('model/model spec', () => {
         expect(content.previous('cookie')).toBeUndefined();
         content.cookie = 'check';
         expect(content.previous('cookie')).toBe('test');
+    });
+
+    it('check Model#fetch()', async done => {
+        localStorage.setItem('test', JSON.stringify({
+            uri: 'sss.html',
+            size: 30,
+            cookie: 'localStorage',
+        }));
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.fetch();
+        expect(resp as PlainObject).toEqual({ uri: 'sss.html', size: 60, cookie: 'localStorage' });
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+        expect(content.uri).toBe('sss.html');
+        expect(content.size).toBe(60);
+        expect(content.cookie).toBe('localStorage');
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#fetch({ parse: false })', async done => {
+        localStorage.setItem('test', JSON.stringify({
+            uri: 'sss.html',
+            size: 30,
+            cookie: 'localStorage',
+        }));
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.fetch({ parse: false });
+        expect(resp as PlainObject).toEqual({ uri: 'sss.html', size: 30, cookie: 'localStorage' });
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+        expect(content.uri).toBe('sss.html');
+        expect(content.size).toBe(30);
+        expect(content.cookie).toBe('localStorage');
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#fetch() error', async done => {
+        localStorage.setItem('test', JSON.stringify({
+            uri: 'sss.html',
+            size: 30,
+            cookie: 'localStorage',
+        }));
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@error', stub.onCallback);
+
+        try {
+            await content.fetch({ parse: false, validate: true });
+        } catch (e) {
+            expect(e).toEqual(errorInvalidData);
+        }
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, jasmine.anything(), { parse: false, validate: true });
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#save() /w create', async done => {
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.save();
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+
+        const data = JSON.parse(localStorage.getItem('test') as string);
+        expect(data.uri).toBe('aaa.html');
+        expect(data.size).toBe(10);
+        expect(content.cookie).toBe('from:save');
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#save(undefined, { parse: false }) /w create', async done => {
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.save(undefined, { parse: false });
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+
+        const data = JSON.parse(localStorage.getItem('test') as string);
+        expect(data.uri).toBe('aaa.html');
+        expect(data.size).toBe(10);
+        expect(content.cookie).toBeUndefined();
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#save(key, value, { wait: false }) /w create', async done => {
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.save('uri', 'bbb.html', { wait: false });
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+
+        const data = JSON.parse(localStorage.getItem('test') as string);
+        expect(data.uri).toBe('bbb.html');
+        expect(data.size).toBe(10);
+        expect(content.cookie).toBe('from:save');
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#save({ uri }) /w update', async done => {
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content({ cookie: 'from:constructor' }, { idAttribute: 'cookie' });
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.save({ uri: 'bbb.html' });
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+
+        const data = JSON.parse(localStorage.getItem('test') as string);
+        expect(data.uri).toBe('bbb.html');
+        expect(data.size).toBe(10);
+        expect(content.cookie).toBe('from:save'); // override
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#save(undefined, { patch, data }) /w patch', async done => {
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content({ cookie: 'from:constructor' }, { idAttribute: 'cookie' });
+        content.on('@sync', stub.onCallback);
+
+        const resp = await content.save(undefined, { patch: true, data: { uri: 'bbb.html' } });
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
+
+        const data = JSON.parse(localStorage.getItem('test') as string);
+        expect(data.uri).toBe('bbb.html');
+        expect(data.size).toBe(10);
+        expect(content.cookie).toBe('from:save'); // override
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#save() error', async done => {
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@error', stub.onCallback);
+
+        try {
+            await content.save({ size: 20 });
+        } catch (e) {
+            expect(e).toEqual(errorInvalidData);
+        }
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, jasmine.anything(), { validate: true, parse: true, wait: true });
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#destroy()', async done => {
+        localStorage.setItem('test', JSON.stringify({
+            uri: 'sss.html',
+            size: 30,
+            cookie: 'localStorage',
+        }));
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content(undefined, { idAttribute: 'cookie' });
+        content.on('@sync', stub.onCallback);
+        content.on('@destroy', stub.onCallback);
+
+        await content.fetch();
+        expect(content.cookie).toBe('localStorage');
+
+        await content.destroy();
+        expect(localStorage.getItem('test')).toBeNull();
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, undefined, { wait: true });
+        expect(stub.onCallback).toHaveBeenCalledWith(content, { wait: true });
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#destroy({ wait: false })', async done => {
+        localStorage.setItem('test', JSON.stringify({
+            uri: 'sss.html',
+            size: 30,
+            cookie: 'localStorage',
+        }));
+        defaultSync(dataSyncSTORAGE);
+
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content(undefined, { idAttribute: 'cookie' });
+        content.on('@sync', stub.onCallback);
+        content.on('@destroy', stub.onCallback);
+
+        await content.fetch();
+        expect(content.cookie).toBe('localStorage');
+
+        await content.destroy({ wait: false });
+        expect(localStorage.getItem('test')).toBeNull();
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, undefined, { wait: false });
+        expect(stub.onCallback).toHaveBeenCalledWith(content, { wait: false });
+
+        localStorage.clear();
+        defaultSync(dataSyncNULL);
+        done();
+    });
+
+    it('check Model#destroy() /w no server', async done => {
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@destroy', stub.onCallback);
+
+        await content.destroy();
+        expect(localStorage.getItem('test')).toBeNull();
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, { wait: true });
+
+        done();
+    });
+
+    it('check Model#destroy() error', async done => {
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        const content = new Content();
+        content.on('@error', stub.onCallback);
+
+        const cancelSource = CancelToken.source();
+        const { token } = cancelSource;
+        const error = new Error('aborted');
+        cancelSource.cancel(error);
+
+        try {
+            await content.destroy({ cancel: token });
+        } catch (e) {
+            expect(e).toEqual(error);
+        }
+
+        expect(stub.onCallback).toHaveBeenCalledWith(content, error, { wait: true, cancel: token });
+
+        done();
     });
 });

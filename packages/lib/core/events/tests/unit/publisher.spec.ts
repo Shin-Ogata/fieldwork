@@ -159,7 +159,7 @@ describe('events/publisher spec', () => {
         expect(channels.length).toBe(0);
     });
 
-    it('check on(single)', async (done) => {
+    it('check on(single)', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -178,7 +178,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check on(multi)', async (done) => {
+    it('check on(multi)', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -197,7 +197,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check on(*)', async (done) => {
+    it('check on(*)', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -219,7 +219,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check subscription', async (done) => {
+    it('check subscription', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -242,7 +242,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check off(single)', async (done) => {
+    it('check off(single)', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -272,7 +272,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check off(multi)', async (done) => {
+    it('check off(multi)', async done => {
         const publisher = new TestPublisher();
         const error1 = new Error('error1');
         const error2 = new Error('error2');
@@ -314,7 +314,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check once(single)', async (done) => {
+    it('check once(single)', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -333,7 +333,7 @@ describe('events/publisher spec', () => {
         done();
     });
 
-    it('check once(multi)', async (done) => {
+    it('check once(multi)', async done => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();

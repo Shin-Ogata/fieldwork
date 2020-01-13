@@ -1,9 +1,8 @@
-import { Arguments } from '@cdp/core-utils';
+import { Nil, PlainObject, Arguments } from '@cdp/core-utils';
 import { Subscription, Silenceable, EventRevceiver, EventSource } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
-import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions } from './interfaces';
-declare const _properties: unique symbol;
+import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions, ModelSyncMethods, ModelSyncResult, ModelDataSyncOptions, ModelFetchOptions, ModelSaveOptions, ModelDestroyOptions } from './interfaces';
 /**
  * @en Valid attributes result.
  * @ja 属性検証の有効値
@@ -88,11 +87,6 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * ```
  */
 declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
-    /**
-     * @en Attributes pool
-     * @ja 属性格納領域
-     */
-    private readonly [_properties];
     /**
      * constructor
      *
@@ -279,5 +273,75 @@ declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = Mo
      * @ja `@change` が発火された前の属性値を取得
      */
     previous<K extends keyof T>(attribute: K): T[K];
+    /**
+     * @en Check a [[Model]] is new if it has never been saved to the server, and lacks an id.
+     * @ja [[Model]] がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
+     */
+    protected isNew(): boolean;
+    /**
+     * @en Converts a response into the hash of attributes to be `set` on the model. The default implementation is just to pass the response along.
+     * @ja レスポンスの変換メソッド. 既定では何もしない
+     */
+    protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void;
+    /**
+     * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
+     * @ja データ同期. 必要に応じてオーバーライド可能.
+     *
+     * @param method
+     *  - `en` operation string
+     *  - `ja` オペレーションを指定
+     * @param context
+     *  - `en` synchronized context object
+     *  - `ja` 同期するコンテキストオブジェクト
+     * @param options
+     *  - `en` option object
+     *  - `ja` オプション
+     */
+    protected sync<K extends ModelSyncMethods>(method: K, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<K, T>>;
+    /**
+     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
+     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     */
+    fetch(options?: ModelFetchOptions): Promise<T>;
+    /**
+     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     *     If the server returns an attributes hash that differs, the model's state will be `set` again.
+     * @ja [[Model]] 属性をサーバーに保存. <br>
+     *     異なる属性が返却される場合は再設定
+     *
+     * @param key
+     *  - `en` update attribute key
+     *  - `ja` 更新属性キー
+     * @param value
+     *  - `en` update attribute value
+     *  - `ja` 更新属性値
+     * @param options
+     *  - `en` save options
+     *  - `ja` 保存オプション
+     */
+    save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<PlainObject | void>;
+    /**
+     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     *     If the server returns an attributes hash that differs, the model's state will be `set` again.
+     * @ja [[Model]] 属性をサーバーに保存. <br>
+     *     異なる属性が返却される場合は再設定
+     *
+     * @param attributes
+     *  - `en` update attributes
+     *  - `ja` 更新属性
+     * @param options
+     *  - `en` save options
+     *  - `ja` 保存オプション
+     */
+    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<PlainObject | void>;
+    /**
+     * @en Destroy this [[Model]] on the server if it was already persisted.
+     * @ja [[Model]] をサーバーから削除
+     *
+     * @param options
+     *  - `en` destroy options
+     *  - `ja` 破棄オプション
+     */
+    destroy(options?: ModelDestroyOptions): Promise<PlainObject | void>;
 }
 export { Model as ModelBase };

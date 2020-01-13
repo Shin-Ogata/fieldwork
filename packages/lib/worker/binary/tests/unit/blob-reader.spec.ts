@@ -12,7 +12,7 @@ describe('binary/blob-reader spec', () => {
     const blob = new Blob([source]);
     const binStr = unescape(encodeURIComponent(source));
 
-    it('check readAsArrayBuffer()', async (done) => {
+    it('check readAsArrayBuffer()', async done => {
         const arrBuf = await readAsArrayBuffer(blob);
         const result = new Uint8Array(arrBuf);
         const expected = new Uint8Array([...binStr].map(s => s.charCodeAt(0)));
@@ -20,19 +20,19 @@ describe('binary/blob-reader spec', () => {
         done();
     });
 
-    it('check readAsDataURL()', async (done) => {
+    it('check readAsDataURL()', async done => {
         const result = await readAsDataURL(blob);
         expect(result.endsWith(btoa(binStr))).toBe(true);
         done();
     });
 
-    it('check readAsText()', async (done) => {
+    it('check readAsText()', async done => {
         const result = await readAsText(blob);
         expect(result).toBe(source);
         done();
     });
 
-    it('check readAsArrayBuffer() w/ cancel', async (done) => {
+    it('check readAsArrayBuffer() w/ cancel', async done => {
         const cancelSource = CancelToken.source();
         const promise = readAsArrayBuffer(blob, { cancel: cancelSource.token, onprogress: noop });
         cancelSource.cancel('cancel');

@@ -3,6 +3,7 @@ import { RESULT_CODE, makeResult } from '@cdp/result';
 import { IStorage, IStorageOptions } from '@cdp/core-storage';
 import { webStorage } from '@cdp/web-storage';
 import {
+    IDataSyncOptions,
     IDataSync,
     SyncMethods,
     SyncContext,
@@ -27,6 +28,12 @@ export interface IStorageDataSync<T extends {} = PlainObject> extends IDataSync<
      */
     setStorage(newStorage: IStorage): this;
 }
+
+/**
+ * @en Options interface for [[StorageDataSync]].
+ * @ja [[StorageDataSync]] に指定するオプション
+ */
+export type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
 
 //__________________________________________________________________________________________________//
 
@@ -89,7 +96,7 @@ class StorageDataSync implements IStorageDataSync {
      *  - `en` storage option object
      *  - `ja` ストレージオプション
      */
-    sync<K extends SyncMethods>(method: K, context: SyncContext, options?: IStorageOptions): Promise<SyncResult<K>> {
+    sync<K extends SyncMethods>(method: K, context: SyncContext, options?: StorageDataSyncOptions): Promise<SyncResult<K>> {
         const id = resolveURL(context);
         if (!id) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, 'A "url" property or function must be specified.');
@@ -99,9 +106,12 @@ class StorageDataSync implements IStorageDataSync {
         switch (method) {
             case 'create':
             case 'update':
-            case 'patch':
-                responce = this._storage.setItem(id, context.toJSON(), options);
+            case 'patch': {
+                const { data } = options || {};
+                const attrs = Object.assign(context.toJSON(), data);
+                responce = this._storage.setItem(id, attrs, options);
                 break;
+            }
             case 'delete':
                 responce = this._storage.removeItem(id, options);
                 break;

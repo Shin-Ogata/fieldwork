@@ -38,15 +38,6 @@ export declare function wait(promises: Promise<unknown>[]): Promise<unknown[]>;
  */
 export declare function checkCanceled(token: CancelToken | undefined): Promise<void>;
 /**
- * @en Presume whether it's a canceled error.
- * @ja キャンセルされたエラーであるか推定
- *
- * @param error
- *  - `en` an error object handled in `catch` block.
- *  - `ja` `catch` 節などで補足したエラーを指定
- */
-export declare function isChancelLikeError(error: unknown): boolean;
-/**
  * @en The class manages lumping multiple `Promise` objects. <br>
  *     It's possible to make them cancel more than one `Promise` which handles different [[CancelToken]] by lumping.
  * @ja 複数 `Promise` オブジェクトを一括管理するクラス <br>

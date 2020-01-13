@@ -1,4 +1,4 @@
-import { Writable } from './types';
+import { Nil, Writable } from './types';
 /**
  * @en Check whether input source has a property.
  * @ja 入力元がプロパティを持っているか判定
@@ -51,3 +51,18 @@ export declare function invert<T extends object = any>(target: object): T;
  *  - `ja` コピー元オブジェクト
  */
 export declare function diff<T extends object>(base: T, src: Partial<T>): Partial<T>;
+/**
+ * @en If the value of the named property is a function then invoke it; otherwise, return it.
+ * @ja object の property がメソッドならその実行結果を, プロパティならその値を返却
+ *
+ * @param target
+ * - `en` Object to maybe invoke function `property` on.
+ * - `ja` 評価するオブジェクト
+ * @param property
+ * - `en` The function by name to invoke on `object`.
+ * - `ja` 評価するプロパティ名
+ * @param fallback
+ * - `en` The value to be returned in case `property` doesn't exist or is undefined.
+ * - `ja` 存在しなかった場合の fallback 値
+ */
+export declare function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T;

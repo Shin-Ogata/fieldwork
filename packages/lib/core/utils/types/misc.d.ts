@@ -160,6 +160,15 @@ export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null
  */
 export declare function luid(prefix?: string, zeroPad?: number): string;
 /**
+ * @en Presume whether it's a canceled error.
+ * @ja キャンセルされたエラーであるか推定
+ *
+ * @param error
+ *  - `en` an error object handled in `catch` block.
+ *  - `ja` `catch` 節などで補足したエラーを指定
+ */
+export declare function isChancelLikeError(error: unknown): boolean;
+/**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換
  *

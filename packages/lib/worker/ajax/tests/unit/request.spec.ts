@@ -3,7 +3,7 @@ import { Result, RESULT_CODE } from '@cdp/result';
 import { request } from '@cdp/ajax';
 
 describe('ajax/reauest spec', () => {
-    it('check request#get()', async (done) => {
+    it('check request#get()', async done => {
         const data = await request.get('../../.temp/res/data.json');
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
@@ -13,7 +13,7 @@ describe('ajax/reauest spec', () => {
         done();
     });
 
-    it('check request#text()', async (done) => {
+    it('check request#text()', async done => {
         const template = await request.text('../../.temp/res/test.tpl');
         expect(template).toBeDefined();
         const normlize = template.replace(/\s/gm, '');
@@ -21,7 +21,7 @@ describe('ajax/reauest spec', () => {
         done();
     });
 
-    it('check request#json()', async (done) => {
+    it('check request#json()', async done => {
         const data = await request.json('../../.temp/res/data.json');
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
@@ -31,14 +31,14 @@ describe('ajax/reauest spec', () => {
         done();
     });
 
-    it('check request#blob()', async (done) => {
+    it('check request#blob()', async done => {
         const blob = await request.blob('../../.temp/res/image.jpg');
         expect(blob).toBeDefined();
         expect(blob.type).toBe('image/jpeg');
         done();
     });
 
-    it('check request#post()', async (done) => {
+    it('check request#post()', async done => {
         const json = await request.post('/api', {
             aaa: 'aaa',
             bbb: true,

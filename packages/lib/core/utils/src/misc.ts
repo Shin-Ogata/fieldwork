@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
     Primitive,
     TypedData,
@@ -33,7 +35,7 @@ export function post<T>(executor: () => T): Promise<T> {
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export function noop(...args: any[]): any {    // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+export function noop(...args: any[]): any {    // eslint-disable-line @typescript-eslint/no-unused-vars
     // noop
 }
 
@@ -69,7 +71,6 @@ export function sleep(elapse: number): Promise<void> {
  * @param options
  */
 export function throttle<T extends Function>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     const opts = options || {};
     let handle: TimerHandle | undefined;
     let args: any[] | undefined;
@@ -117,7 +118,6 @@ export function throttle<T extends Function>(executor: T, elapse: number, option
     };
 
     return throttled as any;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
 /**
@@ -135,7 +135,7 @@ export function throttle<T extends Function>(executor: T, elapse: number, option
  *  - `ja` `true` の場合, 初回のコールは即時実行
  */
 export function debounce<T extends Function>(executor: T, wait: number, immediate?: boolean): T & { cancel(): void; } {
-    /* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any */
+    /* eslint-disable no-invalid-this */
     let handle: TimerHandle | undefined;
     let result: any;
 
@@ -168,7 +168,7 @@ export function debounce<T extends Function>(executor: T, wait: number, immediat
     };
 
     return debounced as any;
-    /* eslint-enable no-invalid-this, @typescript-eslint/no-explicit-any */
+    /* eslint-enable no-invalid-this */
 }
 
 /**
@@ -180,7 +180,7 @@ export function debounce<T extends Function>(executor: T, wait: number, immediat
  *  - `ja` 対象の関数
  */
 export function once<T extends Function>(executor: T): T {
-    /* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
+    /* eslint-disable no-invalid-this, @typescript-eslint/no-non-null-assertion */
     let memo: any;
     return function (this: any, ...args: any[]): any {
         if (executor) {
@@ -189,7 +189,7 @@ export function once<T extends Function>(executor: T): T {
         }
         return memo;
     } as any;
-    /* eslint-enable no-invalid-this, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
+    /* eslint-enable no-invalid-this, @typescript-eslint/no-non-null-assertion */
 }
 
 //__________________________________________________________________________________________________//
@@ -349,6 +349,31 @@ let _localId = 0;
 export function luid(prefix = '', zeroPad?: number): string {
     const id = (++_localId).toString(16);
     return (null != zeroPad) ? `${prefix}${id.padStart(zeroPad, '0')}` : `${prefix}${id}`;
+}
+
+//__________________________________________________________________________________________________//
+
+/** @internal */
+const _regexCancelLikeString = /(abort|cancel)/im;
+
+/**
+ * @en Presume whether it's a canceled error.
+ * @ja キャンセルされたエラーであるか推定
+ *
+ * @param error
+ *  - `en` an error object handled in `catch` block.
+ *  - `ja` `catch` 節などで補足したエラーを指定
+ */
+export function isChancelLikeError(error: unknown): boolean {
+    if (null == error) {
+        return false;
+    } else if (isString(error)) {
+        return _regexCancelLikeString.test(error);
+    } else if (isObject(error)) {
+        return _regexCancelLikeString.test((error as Error).message);
+    } else {
+        return false;
+    }
 }
 
 //__________________________________________________________________________________________________//
