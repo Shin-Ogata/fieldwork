@@ -24,6 +24,8 @@ const _methodMap = {
     read: 'GET'
 };
 
+//__________________________________________________________________________________________________//
+
 /**
  * @en The [[IDataSync]] implemant class which compliant RESTful.
  * @ja REST に準拠した [[IDataSync]] 実装クラス

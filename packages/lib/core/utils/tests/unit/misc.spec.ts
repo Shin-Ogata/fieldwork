@@ -14,6 +14,7 @@ import {
     dropUndefined,
     restoreNil,
     luid,
+    isChancelLikeError,
     capitalize,
     decapitalize,
     camelize,
@@ -52,14 +53,14 @@ describe('utils/misc spec', () => {
         expect(hook.noop).toHaveBeenCalled();
     });
 
-    it('check sleep()', async (done) => {
+    it('check sleep()', async done => {
         const start = Date.now();
         await sleep(100);
         expect(Date.now() - start).toBeGreaterThanOrEqual(100);
         done();
     });
 
-    it('check throttle()', async (done) => {
+    it('check throttle()', async done => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -74,7 +75,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check throttle({ leading: false })', async (done) => {
+    it('check throttle({ leading: false })', async done => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -89,7 +90,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check throttle() /w cancel', async (done) => {
+    it('check throttle() /w cancel', async done => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -105,7 +106,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check throttle() /w nest call', async (done) => {
+    it('check throttle() /w nest call', async done => {
         let count = 0;
         const exec = (): void => {
             count++;
@@ -120,7 +121,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check throttle() for coverage', async (done) => {
+    it('check throttle() for coverage', async done => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -144,7 +145,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check debounce()', async (done) => {
+    it('check debounce()', async done => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -161,7 +162,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check debounce(immediate)', async (done) => {
+    it('check debounce(immediate)', async done => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -178,7 +179,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check debounce() /w cancel', async (done) => {
+    it('check debounce() /w cancel', async done => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -313,6 +314,35 @@ describe('utils/misc spec', () => {
 
         const id3 = luid('test:', 8);
         expect(id3.startsWith('test:00')).toBe(true);
+    });
+
+    it('check isChancelLikeError', () => {
+        const e1 = new Error('abort');
+        const e2 = new Error('Abort');
+        const e3 = new Error('cancel');
+        const e4 = new Error('Cancel');
+        const e5 = new Error('ABORT operation');
+        const e6 = new Error('Cancel operation');
+        const e7 = new Error('operation aborted.');
+        expect(isChancelLikeError(e1)).toBeTruthy();
+        expect(isChancelLikeError(e2)).toBeTruthy();
+        expect(isChancelLikeError(e3)).toBeTruthy();
+        expect(isChancelLikeError(e4)).toBeTruthy();
+        expect(isChancelLikeError(e5)).toBeTruthy();
+        expect(isChancelLikeError(e6)).toBeTruthy();
+        expect(isChancelLikeError(e7)).toBeTruthy();
+
+        expect(isChancelLikeError(undefined)).toBeFalsy();
+        expect(isChancelLikeError(null)).toBeFalsy();
+        expect(isChancelLikeError(-1)).toBeFalsy();
+        expect(isChancelLikeError(Symbol('hoge'))).toBeFalsy();
+        expect(isChancelLikeError([])).toBeFalsy();
+        expect(isChancelLikeError({})).toBeFalsy();
+        expect(isChancelLikeError({ message: 'abort' })).toBeTruthy();
+
+        expect(isChancelLikeError('abort')).toBeTruthy();
+        expect(isChancelLikeError('Cancel')).toBeTruthy();
+        expect(isChancelLikeError('error')).toBeFalsy();
     });
 
     it('check capitalize()', () => {

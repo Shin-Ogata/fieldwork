@@ -13,10 +13,10 @@ export interface SyncEvent<T extends {}> {
  * @ja [[IDataSync]] がサポートするメソッドと戻り値のリスト
  */
 export interface SyncMethodList<T extends {} = PlainObject> {
-    create: PlainObject;
-    update: PlainObject;
-    patch: PlainObject;
-    delete: PlainObject;
+    create: PlainObject | void;
+    update: PlainObject | void;
+    patch: PlainObject | void;
+    delete: PlainObject | void;
     read: T;
 }
 /**
@@ -36,6 +36,20 @@ export declare type SyncResult<K extends SyncMethods, T extends {} = PlainObject
 export declare type SyncContext<T extends {} = PlainObject> = EventBroker<SyncEvent<T>> & {
     toJSON(): T;
 };
+/**
+ * @en [[IDataSync]] sync() options.
+ * @ja [[IDataSync]] sync() に指定するオプション
+ */
+export interface IDataSyncOptions extends Cancelable {
+    /**
+     * @en Data to be sent to the server. [[AjaxOptions]] compatible. <br>
+     *     If this property passed, the value is reflected as primary.
+     *
+     * @ja サーバーに送信されるデータ. [[AjaxOptions]] 互換 <br>
+     *     指定された場合, このオプションが優先される.
+     */
+    data?: PlainObject;
+}
 /**
  * @en The interface for during a data source to synchronize with a context. <br>
  *     The function is equivalent to `Backbone.sync()`.
@@ -62,5 +76,5 @@ export interface IDataSync<T extends {} = PlainObject> {
      *  - `en` option object
      *  - `ja` オプション
      */
-    sync<K extends SyncMethods>(method: K, context: SyncContext<T>, options?: Cancelable): Promise<SyncResult<K, T>>;
+    sync<K extends SyncMethods>(method: K, context: SyncContext<T>, options?: IDataSyncOptions): Promise<SyncResult<K, T>>;
 }

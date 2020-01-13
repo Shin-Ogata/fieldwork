@@ -162,6 +162,38 @@ describe('result/result spec', () => {
         expect(isResult(target4)).toBe(true);
     });
 
+    it('check toResult() from cancel like', () => {
+        const e1 = new Error('abort');
+        const e2 = new Error('Abort');
+        const e3 = new Error('cancel');
+        const e4 = new Error('Cancel');
+        const e5 = new Error('ABORT operation');
+        const e6 = new Error('Cancel operation');
+        const e7 = new Error('operation aborted.');
+
+        let target = toResult(e1);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e1);
+        target = toResult(e2);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e2);
+        target = toResult(e3);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e3);
+        target = toResult(e4);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e4);
+        target = toResult(e5);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e5);
+        target = toResult(e6);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e6);
+        target = toResult(e7);
+        expect(target.code).toBe(RESULT_CODE.ABORT);
+        expect(target.cause).toBe(e7);
+    });
+
     it('check toResult() do nothing if input Result', () => {
         const result = new Result();
         const target = toResult(result);

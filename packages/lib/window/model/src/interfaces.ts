@@ -1,6 +1,11 @@
 import { Constructor, PlainObject } from '@cdp/core-utils';
 import { EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
+import {
+    SyncMethods,
+    SyncResult,
+    RestDataSyncOptions,
+} from '@cdp/data-sync';
 import { ModelBase } from './base';
 
 /**
@@ -10,6 +15,22 @@ import { ModelBase } from './base';
 export interface Validable {
     validate?: boolean;
     noThrow?: boolean;
+}
+
+/**
+ * @en Parseable base interface.
+ * @ja パース可否の定義
+ */
+export interface Parseable {
+    parse?: boolean;
+}
+
+/**
+ * @en Waitable base interface.
+ * @ja 遅延更新可否の定義
+ */
+export interface Waitable {
+    wait?: boolean;
 }
 
 /**
@@ -30,10 +51,28 @@ export type ModelEvent<T extends {}> = EventAll & ModelAttributeChangeEvent<T> &
     '@change': ModelBase<T>;
 
     /**
+     * @en notified when a model has been successfully synced with the server.
+     * @ja サーバー同期に成功したときに発行
+     */
+    '@sync': [ModelBase<T>, PlainObject, ModelDataSyncOptions];
+
+    /**
+     * @en notified when a model is destroyed.
+     * @ja モデルが破棄されたときに発行
+     */
+    '@destroy': [ModelBase<T>, ModelDestroyOptions];
+
+    /**
      * @en notified when some attribute failed.
      * @ja 属性が変更に失敗したときに発行
      */
     '@invalid': [ModelBase<T>, T, Result];
+
+    /**
+     * @en notified when a model's request to the server has failed.
+     * @ja サーバーリクエストに失敗したときに発行
+     */
+    '@error': [ModelBase<T>, Error, ModelDataSyncOptions];
 };
 
 /**
@@ -66,15 +105,37 @@ export type ModelAttributeInput<T> = Partial<T> & PlainObject;
  * @en [[Model]] attributes setup options.
  * @ja [[Model]] 属性設定時に指定するオプション
  */
-export interface ModelSetOptions extends ModelValidateAttributeOptions {
-    validate?: boolean;
-    noThrow?: boolean;
-}
+export type ModelSetOptions = Validable & ModelValidateAttributeOptions;
 
 /**
  * @en [[Model]] construction options.
  * @ja [[Model]] 構築に指定するオプション
  */
-export interface ModelConstructionOptions<T extends {}> extends ModelSetOptions {
+export interface ModelConstructionOptions<T extends {}> extends ModelSetOptions, Parseable {
     idAttribute?: keyof T;
 }
+
+/** re-exports */
+export type ModelSyncMethods = SyncMethods;
+export type ModelSyncResult<K extends SyncMethods, T extends {} = PlainObject> = SyncResult<K, T>;
+export type ModelDataSyncOptions = RestDataSyncOptions;
+
+/**
+ * @en [[Model]] fetch options.
+ * @ja [[Model]] fetch に指定するオプション
+ */
+export type ModelFetchOptions = ModelDataSyncOptions & Omit<ModelSetOptions, 'noThrow'> & Parseable;
+
+/**
+ * @en [[Model]] save options.
+ * @ja [[Model]] save に指定するオプション
+ */
+export interface ModelSaveOptions extends ModelFetchOptions, Waitable {
+    patch?: boolean;
+}
+
+/**
+ * @en [[Model]] destroy options.
+ * @ja [[Model]] destroy に指定するオプション
+ */
+export type ModelDestroyOptions = ModelDataSyncOptions & Waitable;

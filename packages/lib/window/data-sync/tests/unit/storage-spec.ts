@@ -70,7 +70,7 @@ describe('data-sync/rest spec', () => {
         storageSync.setStorage(defaultStorage);
     });
 
-    it('check create', async (done) => {
+    it('check create', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -95,7 +95,32 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read', async (done) => {
+    it('check create /w data', async done => {
+        const context = new TestA();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        await dataSyncSTORAGE.sync('create', context, { data: { str: 'fugafuga' } });
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const json = await storage.getItem<object>('aaa');
+        expect(json).toEqual({
+            id: '000A',
+            num: 1000,
+            str: 'fugafuga',
+            bool: true,
+        });
+
+        await storage.clear();
+
+        done();
+    });
+
+    it('check read', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -124,7 +149,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check delete', async (done) => {
+    it('check delete', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -149,7 +174,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read /w cancel', async (done) => {
+    it('check read /w cancel', async done => {
         const context = new TestA();
         try {
             localStorage.setItem('aaa', JSON.stringify({
@@ -168,7 +193,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read invalid url', async (done) => {
+    it('check read invalid url', async done => {
         const context = new TestC();
         try {
             await dataSyncSTORAGE.sync('read', context);
@@ -178,7 +203,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check invalid operation', async (done) => {
+    it('check invalid operation', async done => {
         const context = new TestA();
         try {
             await dataSyncSTORAGE.sync('invalid' as any, context);

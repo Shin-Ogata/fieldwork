@@ -17,7 +17,7 @@ describe('storage/memory-storage spec', () => {
         _count++;
     };
 
-    beforeEach(async (done) => {
+    beforeEach(async done => {
         _storage = new MemoryStorage();
         await _storage.setItem('str', 'hoge');
         await _storage.setItem('num', 100);
@@ -32,7 +32,7 @@ describe('storage/memory-storage spec', () => {
         expect(_storage.kind).toBe('memory');
     });
 
-    it('check MemoryStorage#keys()', async (done) => {
+    it('check MemoryStorage#keys()', async done => {
         const keys = await _storage.keys();
         expect(keys.length).toBe(5);
         expect(keys.includes('str')).toBe(true);
@@ -43,7 +43,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#keys() /w cancel', async (done) => {
+    it('check MemoryStorage#keys() /w cancel', async done => {
         try {
             await _storage.keys({ cancel: token });
         } catch (e) {
@@ -52,7 +52,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem()', async (done) => {
+    it('check MemoryStorage#getItem()', async done => {
         expect(await _storage.getItem('str')).toBe('hoge' as any);
         expect(await _storage.getItem('num')).toBe(100 as any);
         expect(await _storage.getItem('bool')).toBe(false as any);
@@ -61,7 +61,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem<cast>()', async (done) => {
+    it('check MemoryStorage#getItem<cast>()', async done => {
         // check
         expect(await _storage.getItem<string>('str')).toBe('hoge');
         expect(await _storage.getItem<number>('num')).toBe(100);
@@ -70,7 +70,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem() /w dataType', async (done) => {
+    it('check MemoryStorage#getItem() /w dataType', async done => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
@@ -80,7 +80,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem() /w dataType convert string', async (done) => {
+    it('check MemoryStorage#getItem() /w dataType convert string', async done => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'string' })).toBe('100');
         expect(await _storage.getItem('bool', { dataType: 'string' })).toBe('false');
@@ -89,7 +89,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem() /w dataType convert number', async (done) => {
+    it('check MemoryStorage#getItem() /w dataType convert number', async done => {
         expect(await _storage.getItem('str', { dataType: 'number' })).toBeNaN();
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'number' })).toBe(0);
@@ -98,7 +98,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem() /w dataType convert boolean', async (done) => {
+    it('check MemoryStorage#getItem() /w dataType convert boolean', async done => {
         expect(await _storage.getItem('str', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('num', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
@@ -107,7 +107,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem() /w dataType convert object', async (done) => {
+    it('check MemoryStorage#getItem() /w dataType convert object', async done => {
         expect(await _storage.getItem('str', { dataType: 'object' })).toEqual(new String('hoge'));
         expect(await _storage.getItem('num', { dataType: 'object' })).toEqual(new Number(100));
         expect(await _storage.getItem('bool', { dataType: 'object' })).toEqual(new Boolean(false));
@@ -116,7 +116,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#getItem() /w cancel', async (done) => {
+    it('check MemoryStorage#getItem() /w cancel', async done => {
         try {
             await _storage.getItem('num', { cancel: token });
         } catch (e) {
@@ -125,7 +125,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#setItem() /w callback', async (done) => {
+    it('check MemoryStorage#setItem() /w callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -149,7 +149,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#setItem(silent) /w callback', async (done) => {
+    it('check MemoryStorage#setItem(silent) /w callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -164,7 +164,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#setItem() /w cancel', async (done) => {
+    it('check MemoryStorage#setItem() /w cancel', async done => {
         try {
             await _storage.setItem('bool', true, { cancel: token });
         } catch (e) {
@@ -174,7 +174,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#removeItem() /w options', async (done) => {
+    it('check MemoryStorage#removeItem() /w options', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -210,7 +210,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#clear() /w callback', async (done) => {
+    it('check MemoryStorage#clear() /w callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -224,7 +224,7 @@ describe('storage/memory-storage spec', () => {
         done();
     });
 
-    it('check MemoryStorage#clear() /w options', async (done) => {
+    it('check MemoryStorage#clear() /w options', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 

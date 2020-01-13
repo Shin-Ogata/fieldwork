@@ -5,8 +5,10 @@
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../../core/utils",
+    "@cdp/data-sync": "file:../data-sync",
     "@cdp/events": "file:../../core/events",
     "@cdp/observable": "file:../../core/observable",
+    "@cdp/promise": "file:../../core/promise",
     "@cdp/result": "file:../../core/result"
   },
   "keywords": [
@@ -27,6 +29,7 @@
     "build:src": "run-s compile:src bundle:src",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
+    "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",

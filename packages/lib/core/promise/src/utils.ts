@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { isObject, isString } from '@cdp/core-utils';
 import { CancelToken, CancelTokenSource } from './cancel-token';
 
 /**
@@ -49,29 +48,6 @@ export function wait(promises: Promise<unknown>[]): Promise<unknown[]> {
  */
 export function checkCanceled(token: CancelToken | undefined): Promise<void> {
     return Promise.resolve(undefined, token);
-}
-
-/** @internal */
-const _regexCancelLikeString = /(abort|cancel)/im;
-
-/**
- * @en Presume whether it's a canceled error.
- * @ja キャンセルされたエラーであるか推定
- *
- * @param error
- *  - `en` an error object handled in `catch` block.
- *  - `ja` `catch` 節などで補足したエラーを指定
- */
-export function isChancelLikeError(error: unknown): boolean {
-    if (null == error) {
-        return false;
-    } else if (isString(error)) {
-        return _regexCancelLikeString.test(error);
-    } else if (isObject(error)) {
-        return _regexCancelLikeString.test((error as Error).message);
-    } else {
-        return false;
-    }
 }
 
 //__________________________________________________________________________________________________//

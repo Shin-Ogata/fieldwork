@@ -42,7 +42,7 @@ describe('dom/events spec', () => {
         cleanupTestElements();
     });
 
-    it('check DOM#on(type, listener), single element', async (done) => {
+    it('check DOM#on(type, listener), single element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -60,7 +60,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#on(type, listener), multi element', async (done) => {
+    it('check DOM#on(type, listener), multi element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -83,7 +83,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#on(type, listener, options=true), multi element', async (done) => {
+    it('check DOM#on(type, listener, options=true), multi element', async done => {
         prepareTestElements();
         const stub = {
             onEvent: (e: Event): void => {
@@ -108,7 +108,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#on(type, selector, listener), multi element', async (done) => {
+    it('check DOM#on(type, selector, listener), multi element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -126,7 +126,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#on(type, selector, listener), multi element child click', async (done) => {
+    it('check DOM#on(type, selector, listener), multi element child click', async done => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom father">
     <p class="test-dom-child"></p>
@@ -158,7 +158,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#on(type, listener), single element, multi register ensure one call (mistake)', async (done) => {
+    it('check DOM#on(type, listener), single element, multi register ensure one call (mistake)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -178,7 +178,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#off(type, listener), single element', async (done) => {
+    it('check DOM#off(type, listener), single element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -201,7 +201,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#off(type), single element', async (done) => {
+    it('check DOM#off(type), single element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -224,7 +224,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#off(), multi element', async (done) => {
+    it('check DOM#off(), multi element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -269,7 +269,7 @@ describe('dom/events spec', () => {
         expect(() => $dom.off('click', stub2.onCallback2)).not.toThrow();
     });
 
-    it('check DOM#on([type], selector, listener, options) -> DOM#off([type], selector, listener, options)', async (done) => {
+    it('check DOM#on([type], selector, listener, options) -> DOM#off([type], selector, listener, options)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -305,7 +305,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#once(type, listener), multi element', async (done) => {
+    it('check DOM#once(type, listener), multi element', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -322,7 +322,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#once(type, selector, listener) -> DOM#off(type, selector, listener)', async (done) => {
+    it('check DOM#once(type, selector, listener) -> DOM#off(type, selector, listener)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -338,7 +338,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#once([type], listener) -> DOM#off([type])', async (done) => {
+    it('check DOM#once([type], listener) -> DOM#off([type])', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -356,7 +356,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger(string)', async (done) => {
+    it('check DOM#trigger(string)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -370,7 +370,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger(string, ...args)', async (done) => {
+    it('check DOM#trigger(string, ...args)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -385,7 +385,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger([string], ...args)', async (done) => {
+    it('check DOM#trigger([string], ...args)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -400,7 +400,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger(Event, ...args)', async (done) => {
+    it('check DOM#trigger(Event, ...args)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -415,7 +415,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger([Event], ...args)', async (done) => {
+    it('check DOM#trigger([Event], ...args)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -431,7 +431,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger([string, Event], ...args)', async (done) => {
+    it('check DOM#trigger([string, Event], ...args)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -447,7 +447,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#trigger("custom")', async (done) => {
+    it('check DOM#trigger("custom")', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -466,7 +466,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check events, mixedCollection', async (done) => {
+    it('check events, mixedCollection', async done => {
         const $dom = mixedCollection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -479,7 +479,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#transitionEnd(callback)', async (done) => {
+    it('check DOM#transitionEnd(callback)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -498,7 +498,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#transitionEnd(callback, true)', async (done) => {
+    it('check DOM#transitionEnd(callback, true)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -517,7 +517,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#transitionEnd(callback), child', async (done) => {
+    it('check DOM#transitionEnd(callback), child', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -543,7 +543,7 @@ describe('dom/events spec', () => {
         expect(() => $dom.trigger(evTransitionEnd)).not.toThrow();
     });
 
-    it('check DOM#animationEnd(callback)', async (done) => {
+    it('check DOM#animationEnd(callback)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -562,7 +562,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#animationEnd(callback, true)', async (done) => {
+    it('check DOM#animationEnd(callback, true)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -581,7 +581,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#animationEnd(callback), child', async (done) => {
+    it('check DOM#animationEnd(callback), child', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -607,7 +607,7 @@ describe('dom/events spec', () => {
         expect(() => $dom.trigger(evAnimationEnd)).not.toThrow();
     });
 
-    it('check DOM#hover(handlerIn, handlerOut)', async (done) => {
+    it('check DOM#hover(handlerIn, handlerOut)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -631,7 +631,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#hover(handlerIOut)', async (done) => {
+    it('check DOM#hover(handlerIOut)', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -652,7 +652,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check event shortcut, two-way', async (done) => {
+    it('check event shortcut, two-way', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -695,7 +695,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check event shortcut, no-trigger', async (done) => {
+    it('check event shortcut, no-trigger', async done => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -722,7 +722,7 @@ describe('dom/events spec', () => {
         done();
     });
 
-    it('check DOM#clone()', async (done) => {
+    it('check DOM#clone()', async done => {
         prepareTestElements(testee(`
 <div class="test-dom father">
     <p class="test-dom-child"></p>

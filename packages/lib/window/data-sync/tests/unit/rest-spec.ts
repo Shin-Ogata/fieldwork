@@ -72,7 +72,7 @@ describe('data-sync/rest spec', () => {
         expect(dataSyncREST).toBeDefined();
     });
 
-    it('check read /w url property', async (done) => {
+    it('check read /w url property', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -87,7 +87,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read /w url function', async (done) => {
+    it('check read /w url function', async done => {
         const context = new TestB();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -102,7 +102,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check create', async (done) => {
+    it('check create', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -125,7 +125,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check update', async (done) => {
+    it('check update', async done => {
         const context = new TestB();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -148,7 +148,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check patch', async (done) => {
+    it('check patch', async done => {
         const context = new TestC();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -180,7 +180,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check delete', async (done) => {
+    it('check delete', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -198,7 +198,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read /w cancel', async (done) => {
+    it('check read /w cancel', async done => {
         const context = new TestA();
         try {
             await dataSyncREST.sync('read', context, { cancel: token });
@@ -208,7 +208,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read invalid url', async (done) => {
+    it('check read invalid url', async done => {
         const context = new TestC();
         try {
             await dataSyncREST.sync('read', context);

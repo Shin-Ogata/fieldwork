@@ -188,7 +188,7 @@ describe('utils/array spec', () => {
         expect(result[0].trackArtist).toBe('bbb');
     });
 
-    it('check async map()', async (done) => {
+    it('check async map()', async done => {
         const array = [1, 2, 3, 4, 5];
         let results = await map(array, async (value) => value * 2);
         expect(results[0]).toBe(2);
@@ -208,7 +208,7 @@ describe('utils/array spec', () => {
         done();
     });
 
-    it('check async filter()', async (done) => {
+    it('check async filter()', async done => {
         const array = [
             { count: 0, id: '00', },
             { count: 0, id: '01', },
@@ -230,7 +230,7 @@ describe('utils/array spec', () => {
         done();
     });
 
-    it('check async find()', async (done) => {
+    it('check async find()', async done => {
         const array = [
             { count: 0, id: '00', },
             { count: 0, id: '01', },
@@ -253,7 +253,7 @@ describe('utils/array spec', () => {
         done();
     });
 
-    it('check async findIndex()', async (done) => {
+    it('check async findIndex()', async done => {
         const array = [
             { count: 0, id: '00', },
             { count: 0, id: '01', },
@@ -276,7 +276,7 @@ describe('utils/array spec', () => {
         done();
     });
 
-    it('check async some()', async (done) => {
+    it('check async some()', async done => {
         const array = [1, 2, 3, 4, 5];
         let result = await some(array, async (value) => value % 2);
         expect(result).toBe(true);
@@ -290,7 +290,7 @@ describe('utils/array spec', () => {
         done();
     });
 
-    it('check async every()', async (done) => {
+    it('check async every()', async done => {
         const array = [1, 2, 3, 4, 5];
         let result = await every(array, async (value) => value % 2);
         expect(result).toBe(false);
@@ -304,7 +304,7 @@ describe('utils/array spec', () => {
         done();
     });
 
-    it('check async reduce()', async (done) => {
+    it('check async reduce()', async done => {
         const array = [1, 2, 3, 4, 5];
         let result = await reduce(array, async (a: number, v: number) => a + v);
         expect(result).toBe(15);

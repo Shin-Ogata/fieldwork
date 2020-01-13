@@ -31,7 +31,7 @@ describe('data-sync/null spec', () => {
         expect(dataSyncNULL).toBeDefined();
     });
 
-    it('check read', async (done) => {
+    it('check read', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -45,7 +45,7 @@ describe('data-sync/null spec', () => {
         done();
     });
 
-    it('check create', async (done) => {
+    it('check create', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -59,7 +59,7 @@ describe('data-sync/null spec', () => {
         done();
     });
 
-    it('check update', async (done) => {
+    it('check update', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -73,7 +73,7 @@ describe('data-sync/null spec', () => {
         done();
     });
 
-    it('check patch', async (done) => {
+    it('check patch', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -87,7 +87,7 @@ describe('data-sync/null spec', () => {
         done();
     });
 
-    it('check delete', async (done) => {
+    it('check delete', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -101,7 +101,7 @@ describe('data-sync/null spec', () => {
         done();
     });
 
-    it('check read /w cancel', async (done) => {
+    it('check read /w cancel', async done => {
         try {
             await dataSyncNULL.sync('read', _context, { cancel: token });
         } catch (e) {

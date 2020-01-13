@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
+    Nil,
+    PlainObject,
     Arguments,
     isArray,
+    isObject,
     isEmptyObject,
     luid,
     escapeHTML,
@@ -17,6 +20,7 @@ import {
     EventRevceiver,
     EventSource,
 } from '@cdp/events';
+import { checkCanceled as cc } from '@cdp/promise';
 import {
     IObservable,
     IObservableEventBrokerAccess,
@@ -29,12 +33,19 @@ import {
     SUCCEEDED,
     FAILED,
 } from '@cdp/result';
+import { SyncContext, defaultSync } from '@cdp/data-sync';
 import {
     ModelEvent,
     ModelValidateAttributeOptions,
     ModelAttributeInput,
     ModelSetOptions,
     ModelConstructionOptions,
+    ModelSyncMethods,
+    ModelSyncResult,
+    ModelDataSyncOptions,
+    ModelFetchOptions,
+    ModelSaveOptions,
+    ModelDestroyOptions,
 } from './interfaces';
 
 const _defineAttributes = Symbol('define');
@@ -58,6 +69,27 @@ interface Property<T> {
  * @ja 属性検証の有効値
  */
 export const RESULT_VALID_ATTRS = Object.freeze(makeResult(RESULT_CODE.SUCCESS, 'valid attribute.'));
+
+/** @internal helper for save() */
+function parseSaveArgs<A extends {}>(...args: any[]): { attrs?: ModelAttributeInput<A>; options?: ModelSaveOptions; } {
+    let [key, value, options] = args; // eslint-disable-line prefer-const
+    let attrs: any;
+
+    if (null == key || isObject(key)) {
+        attrs = key;
+        options = value;
+    } else {
+        (attrs = {})[key] = value;
+    }
+
+    if (options && options.data) {
+        attrs = Object.assign(attrs || {}, options.data);
+    }
+
+    return { attrs, options };
+}
+
+//__________________________________________________________________________________________________//
 
 /**
  * @en [[Model]] base class definition.
@@ -141,6 +173,8 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
     /**
      * @en Attributes pool
      * @ja 属性格納領域
+     *
+     * @internal
      */
     private readonly [_properties]: Property<T>;
 
@@ -154,17 +188,17 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
     constructor(attributes: Required<T>, options?: ModelConstructionOptions<T>) {
         super();
         const opts = Object.assign({ idAttribute: 'id' }, options);
-
+        const attrs = opts.parse ? this.parse(attributes, opts) as T : attributes;
         const props: Property<T> = {
-            attrs: ObservableObject.from(attributes),
-            baseAttrs: { ...attributes },
-            prevAttrs: { ...attributes },
+            attrs: ObservableObject.from(attrs),
+            baseAttrs: { ...attrs },
+            prevAttrs: { ...attrs },
             idAttribute: opts.idAttribute,
             cid: luid('model:', 8),
         };
         Object.defineProperty(this, _properties, { value: props });
 
-        for (const key of Object.keys(attributes)) {
+        for (const key of Object.keys(attrs)) {
             this[_defineAttributes](this, key);
         }
 
@@ -538,55 +572,175 @@ abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent
     public previous<K extends keyof T>(attribute: K): T[K] {
         return this._prevAttrs[attribute];
     }
+
+///////////////////////////////////////////////////////////////////////
+// operations: sync
+
+    /**
+     * @en Check a [[Model]] is new if it has never been saved to the server, and lacks an id.
+     * @ja [[Model]] がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
+     */
+    protected isNew(): boolean {
+        const { idAttribute } = this[_properties];
+        return !this.has(idAttribute as keyof T);
+    }
+
+    /**
+     * @en Converts a response into the hash of attributes to be `set` on the model. The default implementation is just to pass the response along.
+     * @ja レスポンスの変換メソッド. 既定では何もしない
+     */
+    protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void { // eslint-disable-line @typescript-eslint/no-unused-vars
+        return response as T;
+    }
+
+    /**
+     * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
+     * @ja データ同期. 必要に応じてオーバーライド可能.
+     *
+     * @param method
+     *  - `en` operation string
+     *  - `ja` オペレーションを指定
+     * @param context
+     *  - `en` synchronized context object
+     *  - `ja` 同期するコンテキストオブジェクト
+     * @param options
+     *  - `en` option object
+     *  - `ja` オプション
+     */
+    protected sync<K extends ModelSyncMethods>(method: K, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<K, T>> {
+        return defaultSync().sync(method, context as SyncContext<T>, options) as Promise<any>;
+    }
+
+    /**
+     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
+     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     */
+    public async fetch(options?: ModelFetchOptions): Promise<T> {
+        const opts = Object.assign({ parse: true }, options);
+
+        try {
+            const resp = await this.sync('read', this as Model<T>, opts);
+            this.setAttributes(opts.parse ? this.parse(resp, options) as T : resp, opts);
+            (this as any).trigger('@sync', this, resp, opts);
+            return resp;
+        } catch (e) {
+            (this as any).trigger('@error', this, e, opts);
+            throw e;
+        }
+    }
+
+    /**
+     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     *     If the server returns an attributes hash that differs, the model's state will be `set` again.
+     * @ja [[Model]] 属性をサーバーに保存. <br>
+     *     異なる属性が返却される場合は再設定
+     *
+     * @param key
+     *  - `en` update attribute key
+     *  - `ja` 更新属性キー
+     * @param value
+     *  - `en` update attribute value
+     *  - `ja` 更新属性値
+     * @param options
+     *  - `en` save options
+     *  - `ja` 保存オプション
+     */
+    public async save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<PlainObject | void>;
+
+    /**
+     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     *     If the server returns an attributes hash that differs, the model's state will be `set` again.
+     * @ja [[Model]] 属性をサーバーに保存. <br>
+     *     異なる属性が返却される場合は再設定
+     *
+     * @param attributes
+     *  - `en` update attributes
+     *  - `ja` 更新属性
+     * @param options
+     *  - `en` save options
+     *  - `ja` 保存オプション
+     */
+    public async save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<PlainObject | void>;
+
+    public async save(...args: any[]): Promise<PlainObject | void> {
+        const { attrs, options } = parseSaveArgs(...args);
+        const opts = Object.assign({ validate: true, parse: true, wait: true }, options);
+
+        try {
+            const { wait } = opts;
+
+            const method = this.isNew() ? 'create' : opts.patch ? 'patch' : 'update';
+
+            if (attrs) {
+                if (!wait) {
+                    this.setAttributes(attrs, opts);
+                    this[_properties].baseAttrs = { ...this._attrs } as T;
+                } else {
+                    this[_validate](attrs, opts);
+                }
+                if ('patch' === method) {
+                    opts.data = attrs;
+                } else {
+                    opts.data = Object.assign(this.toJSON(), attrs);
+                }
+            }
+
+            const resp = await this.sync(method, this as Model<T>, opts);
+
+            let serverAttrs = opts.parse ? this.parse(resp, opts) : resp;
+            if (attrs && wait) {
+                serverAttrs = Object.assign({}, attrs, serverAttrs);
+            }
+            if (isObject(serverAttrs) && !isEmptyObject(serverAttrs)) {
+                this.setAttributes(serverAttrs as T, opts);
+                this[_properties].baseAttrs = { ...this._attrs } as T;
+            }
+
+            (this as any).trigger('@sync', this, resp, opts);
+            return resp;
+        } catch (e) {
+            (this as any).trigger('@error', this, e, opts);
+            throw e;
+        }
+    }
+
+    /**
+     * @en Destroy this [[Model]] on the server if it was already persisted.
+     * @ja [[Model]] をサーバーから削除
+     *
+     * @param options
+     *  - `en` destroy options
+     *  - `ja` 破棄オプション
+     */
+    public async destroy(options?: ModelDestroyOptions): Promise<PlainObject | void> {
+        const opts = Object.assign({ wait: true }, options);
+
+        try {
+            const { wait, cancel } = opts;
+            const exists = !this.isNew();
+            const destruct = (): void => {
+                this.stopListening();
+                (this as any).trigger('@destroy', this, opts);
+            };
+
+            !wait && destruct();
+
+            let resp: PlainObject | void;
+            if (!exists) {
+                await cc(cancel);
+            } else {
+                resp = await this.sync('delete', this as Model<T>, opts);
+            }
+
+            wait && destruct();
+            exists && (this as any).trigger('@sync', this, resp, opts);
+
+            return resp;
+        } catch (e) {
+            (this as any).trigger('@error', this, e, opts);
+            throw e;
+        }
+    }
 }
 
 export { Model as ModelBase };
-
-/*
- PROGRESS:
-
-● Events
-☆ on
-☆ off
-☆ trigger
-☆ once
-☆ listenTo
-☆ stopListening
-☆ listenToOnce
-
-● Model
-☆ extend
-☆ preinitialize
-☆ constructor / initialize
-☆ get
-☆ set
-☆ escape
-☆ has
-△ unset
-☆ clear
-☆ id
-☆ idAttribute
-☆ cid
-△ attributes
-△ changed
-△ defaults
-☆ toJSON
-★ sync
-★ fetch
-★ save
-★ destroy
-
-● Underscore
-☆ validate
-△ validationError
-☆ isValid
-★ url
-★ urlRoot
-★ parse
-★ clone
-★ isNew
-☆ hasChanged
-☆ changedAttributes
-☆ previous
-△ previousAttributes
- */

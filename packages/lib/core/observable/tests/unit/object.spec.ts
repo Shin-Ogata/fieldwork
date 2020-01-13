@@ -15,7 +15,7 @@ describe('observable/object spec', () => {
         get sum(): number { return this.a + this.b; }
     }
 
-    it('ObservableObject#on(notify if target is changed)', async (done) => {
+    it('ObservableObject#on(notify if target is changed)', async done => {
         const model = new Model(1, 1);
         model.on('sum', (newValue, oldValue, key): void => {
             expect(key).toBe('sum');
@@ -26,7 +26,7 @@ describe('observable/object spec', () => {
         model.a = 2;
     });
 
-    it('ObservableObject#on(NOT notify unless target is changed)', async (done) => {
+    it('ObservableObject#on(NOT notify unless target is changed)', async done => {
         const model = new Model(1, 1);
         model.on('sum', () => expect('UNEXPECTED FLOW').toBeNull());
         model.a = 2;
@@ -38,7 +38,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#off', async (done) => {
+    it('ObservableObject#off', async done => {
         const model = new Model(1, 1);
         const stub = {
             onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
@@ -55,7 +55,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject w/ EventSubscription#unsubscribe', async (done) => {
+    it('ObservableObject w/ EventSubscription#unsubscribe', async done => {
         const model = new Model(1, 1);
         const stub = {
             onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
@@ -72,7 +72,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#suspend(NOT notify during suspend)', async (done) => {
+    it('ObservableObject#suspend(NOT notify during suspend)', async done => {
         const model = new Model(1, 1).suspend();
         const stub = {
             onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
@@ -88,7 +88,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#resume(notify after called #resume) /w ObservableObject#isActive', async (done) => {
+    it('ObservableObject#resume(notify after called #resume) /w ObservableObject#isActive', async done => {
         const model = new Model(1, 1).suspend();
         model.on('sum', (newValue, oldValue) => {
             expect(newValue).toBe(3);
@@ -105,7 +105,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#suspend(true)', async (done) => {
+    it('ObservableObject#suspend(true)', async done => {
         const model = new Model(1, 1).suspend(true);
         const stub = {
             onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
@@ -126,7 +126,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#on(notify merged change)', async (done) => {
+    it('ObservableObject#on(notify merged change)', async done => {
         const model = new Model(1, 1);
         model.on('sum', (newValue, oldValue) => {
             expect(newValue).toBe(3);
@@ -140,7 +140,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#on(multi properties)', async (done) => {
+    it('ObservableObject#on(multi properties)', async done => {
         const model = new Model(1, 1);
         const stub = {
             count: 0,
@@ -155,7 +155,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject.from()', async (done) => {
+    it('ObservableObject.from()', async done => {
         const model = ObservableObject.from({ a: 1, b: 1 });
         const stub = {
             count: 0,
@@ -170,7 +170,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('check no-prop', async (done) => {
+    it('check no-prop', async done => {
         class NoProp extends ObservableObject { }
         const model = new NoProp();
         (model as IObservable).on('prop', () => {
@@ -180,7 +180,7 @@ describe('observable/object spec', () => {
         model['prop'] = 'enable';
     });
 
-    it('advanced model', async (done) => {
+    it('advanced model', async done => {
         const symbol = Symbol('prop');
         class Advanced extends ObservableObject {
             constructor(public prop: string) {
@@ -211,7 +211,7 @@ describe('observable/object spec', () => {
         expect(isObservable({})).toBe(false);
     });
 
-    it('ObservableObject#on(@)', async (done) => {
+    it('ObservableObject#on(@)', async done => {
         const model = ObservableObject.from({ a: 1, b: 1 });
         const stub = {
             count: 0,
@@ -226,7 +226,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('IObservableEventBrokerAccess#trigger', async (done) => {
+    it('IObservableEventBrokerAccess#trigger', async done => {
         const observable = new Model(1, 1) as IObservable as IObservableEventBrokerAccess<{ custom: number; }>; // eslint-disable-line
         setTimeout(() => {
             observable.on('custom', (value: number) => {

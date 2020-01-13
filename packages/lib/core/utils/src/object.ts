@@ -2,8 +2,11 @@
 
 import { deepEqual } from './deep-circuit';
 import {
+    Nil,
     Writable,
+    isArray,
     isObject,
+    isFunction,
     className,
 } from './types';
 
@@ -104,4 +107,39 @@ export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
     }
 
     return retval;
+}
+
+/**
+ * @en If the value of the named property is a function then invoke it; otherwise, return it.
+ * @ja object の property がメソッドならその実行結果を, プロパティならその値を返却
+ *
+ * @param target
+ * - `en` Object to maybe invoke function `property` on.
+ * - `ja` 評価するオブジェクト
+ * @param property
+ * - `en` The function by name to invoke on `object`.
+ * - `ja` 評価するプロパティ名
+ * @param fallback
+ * - `en` The value to be returned in case `property` doesn't exist or is undefined.
+ * - `ja` 存在しなかった場合の fallback 値
+ */
+export function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T {
+    const props = isArray(property) ? property : [property];
+    if (!props.length) {
+        return isFunction(fallback) ? fallback.call(target) : fallback;
+    }
+
+    const resolve = (o: unknown, p: unknown): any => {
+        return isFunction(p) ? p.call(o) : p;
+    };
+
+    let obj: any = target;
+    for (const name of props) {
+        const prop = null == obj ? undefined : obj[name];
+        if (undefined === prop) {
+            return resolve(obj, fallback);
+        }
+        obj = resolve(obj, prop);
+    }
+    return obj;
 }

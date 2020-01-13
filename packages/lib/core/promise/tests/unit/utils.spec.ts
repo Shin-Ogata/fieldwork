@@ -1,7 +1,6 @@
 import {
     wait,
     checkCanceled,
-    isChancelLikeError,
     CancelToken,
     PromiseManager,
     Promise,
@@ -85,35 +84,6 @@ describe('promise/utils spec', () => {
         } catch (e) {
             expect(e).toBe(error);
         }
-    });
-
-    it('check isChancelLikeError', () => {
-        const e1 = new Error('abort');
-        const e2 = new Error('Abort');
-        const e3 = new Error('cancel');
-        const e4 = new Error('Cancel');
-        const e5 = new Error('ABORT operation');
-        const e6 = new Error('Cancel operation');
-        const e7 = new Error('operation aborted.');
-        expect(isChancelLikeError(e1)).toBeTruthy();
-        expect(isChancelLikeError(e2)).toBeTruthy();
-        expect(isChancelLikeError(e3)).toBeTruthy();
-        expect(isChancelLikeError(e4)).toBeTruthy();
-        expect(isChancelLikeError(e5)).toBeTruthy();
-        expect(isChancelLikeError(e6)).toBeTruthy();
-        expect(isChancelLikeError(e7)).toBeTruthy();
-
-        expect(isChancelLikeError(undefined)).toBeFalsy();
-        expect(isChancelLikeError(null)).toBeFalsy();
-        expect(isChancelLikeError(-1)).toBeFalsy();
-        expect(isChancelLikeError(Symbol('hoge'))).toBeFalsy();
-        expect(isChancelLikeError([])).toBeFalsy();
-        expect(isChancelLikeError({})).toBeFalsy();
-        expect(isChancelLikeError({ message: 'abort' })).toBeTruthy();
-
-        expect(isChancelLikeError('abort')).toBeTruthy();
-        expect(isChancelLikeError('Cancel')).toBeTruthy();
-        expect(isChancelLikeError('error')).toBeFalsy();
     });
 
     it('check PromiseManager#promises', () => {
