@@ -3,14 +3,14 @@
 import { PlainObject, escapeHTML } from '@cdp/core-utils';
 
 /**
- * @en [[Template]] token structure.
- * @ja [[Template]] token 型
+ * @en [[TemplateEngine]] token structure.
+ * @ja [[TemplateEngine]] token 型
  */
 export type TemplateToken = any;
 
 /**
- * @en Delimiters definition for [[Template]]. ex) ['{{','}}']
- * @ja [[Template]] に使用する区切り文字 ex) ['{{','}}']
+ * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
+ * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
  */
 export type TemplateTags = [string, string];
 
@@ -156,16 +156,16 @@ export interface JST {
 export type TemplateEscaper = typeof escapeHTML;
 
 /**
- * @en [[Template]] base type definition.
- * @ja [[Template]] 基底型
+ * @en [[ITemplateEngine]] base type definition.
+ * @ja [[ITemplateEngine]] 基底型
  */
-export interface ITemplate { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface ITemplateEngine { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 /**
- * @en [[Template]] internal I/F accssor.
- * @ja [[Template]] 内部インターフェイスのアクセッサ
+ * @en [[TemplateEngine]] internal I/F accssor.
+ * @ja [[TemplateEngine]] 内部インターフェイスのアクセッサ
  */
-export interface TemplateAccessor extends ITemplate {
+export interface TemplateAccessor extends ITemplateEngine {
     /** Create [[TemplateScanner]] instance */
     createScanner(src: string): TemplateScanner;
     /** Create [[TemplateContext]] instance */

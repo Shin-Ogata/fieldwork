@@ -2,8 +2,8 @@ import { TemplateTags, TemplateWriter } from './interfaces';
 /** (string | Token[]) */
 declare type TokenList = unknown;
 /**
- * @en [[Template]] token structure.
- * @ja [[Template]] token 型
+ * @en [[TemplateEngine]] token structure.
+ * @ja [[TemplateEngine]] token 型
  */
 export declare type Token = [string, string, number, number, TokenList?, number?, boolean?];
 /**
@@ -20,8 +20,8 @@ export declare const enum TokenAddress {
     HAS_NO_SPACE = 6
 }
 /**
- * @en Internal delimiters definition for [[Template]]. ex) ['{{','}}'] or '{{ }}'
- * @ja [[Template]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
+ * @en Internal delimiters definition for [[TemplateEngine]]. ex) ['{{','}}'] or '{{ }}'
+ * @ja [[TemplateEngine]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
  */
 export declare type Delimiters = string | TemplateTags;
 export declare const globalSettings: {

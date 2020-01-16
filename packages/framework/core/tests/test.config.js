@@ -15,7 +15,7 @@ module.exports = {
             '@cdp/observable': 'CDP',
             '@cdp/result': 'CDP',
             '@cdp/core-storage': 'CDP',
-            '@cdp/template': 'CDP',
+            '@cdp/core-template': 'CDP',
         },
         // for result tests
         replace,
@@ -30,7 +30,7 @@ module.exports = {
                     '@cdp/observable': '@cdp/framework-core',
                     '@cdp/result': '@cdp/framework-core',
                     '@cdp/core-storage': '@cdp/framework-core',
-                    '@cdp/template': '@cdp/framework-core',
+                    '@cdp/core-template': '@cdp/framework-core',
                 },
             },
         },

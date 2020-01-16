@@ -1,7 +1,7 @@
-import { JST, TemplateTags, ITemplate, TemplateWriter, TemplateEscaper } from './interfaces';
+import { JST, TemplateTags, ITemplateEngine, TemplateWriter, TemplateEscaper } from './interfaces';
 /**
- * @en [[Template]] global settng options
- * @ja [[Template]] グローバル設定オプション
+ * @en [[TemplateEngine]] global settng options
+ * @ja [[TemplateEngine]] グローバル設定オプション
  */
 export interface TemplateGlobalSettings {
     writer?: TemplateWriter;
@@ -9,17 +9,17 @@ export interface TemplateGlobalSettings {
     escape?: TemplateEscaper;
 }
 /**
- * @en [[Template]] compile options
- * @ja [[Template]] コンパイルオプション
+ * @en [[TemplateEngine]] compile options
+ * @ja [[TemplateEngine]] コンパイルオプション
  */
 export interface TemplateCompileOptions {
     tags?: TemplateTags;
 }
 /**
- * @en Template utility class.
- * @ja Template ユーティリティクラス
+ * @en TemplateEngine utility class.
+ * @ja TemplateEngine ユーティリティクラス
  */
-export declare class Template implements ITemplate {
+export declare class TemplateEngine implements ITemplateEngine {
     /**
      * @en Get [[JST]] from template source.
      * @ja テンプレート文字列から [[JST]] を取得
@@ -38,8 +38,8 @@ export declare class Template implements ITemplate {
      */
     static clearCache(): void;
     /**
-     * @en Change [[Template]] global settings.
-     * @ja [[Template]] グローバル設定の更新
+     * @en Change [[TemplateEngine]] global settings.
+     * @ja [[TemplateEngine]] グローバル設定の更新
      *
      * @param settings
      *  - `en` new settings

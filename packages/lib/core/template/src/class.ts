@@ -1,7 +1,7 @@
 import {
     JST,
     TemplateTags,
-    ITemplate,
+    ITemplateEngine,
     TemplateScanner,
     TemplateContext,
     TemplateWriter,
@@ -18,12 +18,12 @@ import { Scanner } from './scanner';
 import { Context } from './context';
 import { Writer } from './writer';
 
-/** [[Template]] common settings */
+/** [[TemplateEngine]] common settings */
 globalSettings.writer = new Writer();
 
 /**
- * @en [[Template]] global settng options
- * @ja [[Template]] グローバル設定オプション
+ * @en [[TemplateEngine]] global settng options
+ * @ja [[TemplateEngine]] グローバル設定オプション
  */
 export interface TemplateGlobalSettings {
     writer?: TemplateWriter;
@@ -32,18 +32,18 @@ export interface TemplateGlobalSettings {
 }
 
 /**
- * @en [[Template]] compile options
- * @ja [[Template]] コンパイルオプション
+ * @en [[TemplateEngine]] compile options
+ * @ja [[TemplateEngine]] コンパイルオプション
  */
 export interface TemplateCompileOptions {
     tags?: TemplateTags;
 }
 
 /**
- * @en Template utility class.
- * @ja Template ユーティリティクラス
+ * @en TemplateEngine utility class.
+ * @ja TemplateEngine ユーティリティクラス
  */
-export class Template implements ITemplate {
+export class TemplateEngine implements ITemplateEngine {
 
 ///////////////////////////////////////////////////////////////////////
 // public static methods:
@@ -61,7 +61,7 @@ export class Template implements ITemplate {
      */
     public static compile(template: string, options?: TemplateCompileOptions): JST {
         if (!isString(template)) {
-            throw new TypeError(`Invalid template! the first argument should be a "string" but "${typeString(template)}" was given for Template.compile(template, options)`);
+            throw new TypeError(`Invalid template! the first argument should be a "string" but "${typeString(template)}" was given for TemplateEngine.compile(template, options)`);
         }
 
         const { tags } = options || globalSettings;
@@ -88,8 +88,8 @@ export class Template implements ITemplate {
     }
 
     /**
-     * @en Change [[Template]] global settings.
-     * @ja [[Template]] グローバル設定の更新
+     * @en Change [[TemplateEngine]] global settings.
+     * @ja [[TemplateEngine]] グローバル設定の更新
      *
      * @param settings
      *  - `en` new settings

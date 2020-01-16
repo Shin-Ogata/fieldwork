@@ -2,20 +2,20 @@
 
 import { escapeHTML } from '@cdp/core-utils';
 import {
-    Template,
-    ITemplate,
+    TemplateEngine,
+    ITemplateEngine,
     TemplateAccessor,
-} from '@cdp/template';
+} from '@cdp/core-template';
 
 describe('template/template spec', () => {
 
-    const _access = Template as ITemplate as TemplateAccessor;
+    const _access = TemplateEngine as ITemplateEngine as TemplateAccessor;
     const _scanner = _access.createScanner('test');
     const _context = _access.createContext({});
     const _writer  = _access.createWriter();
 
     it('check basic', () => {
-        const jst = Template.compile('{{title}} spends {{calc}}');
+        const jst = TemplateEngine.compile('{{title}} spends {{calc}}');
         expect(jst).toBeDefined();
 
         const out = jst({ title: 'Joe', calc: () => 2 + 4 });
@@ -23,7 +23,7 @@ describe('template/template spec', () => {
     });
 
     it('check escape', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 * {{name}}
 * {{age}}
 * {{company}}
@@ -50,7 +50,7 @@ describe('template/template spec', () => {
     });
 
     it('check unescape', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#company}}
 {{{name}}}
 {{/company}}
@@ -72,7 +72,7 @@ describe('template/template spec', () => {
     });
 
     it('check dot notation', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 * {{name.first}} {{name.last}}
 * {{age}}
 `);
@@ -92,7 +92,7 @@ describe('template/template spec', () => {
     });
 
     it('check dot notation with primitive', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 * {{name.first}} {{name.last}}
 * {{age}}
 * {{alive}}
@@ -115,7 +115,7 @@ describe('template/template spec', () => {
     });
 
     it('check section', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 Shown.
 {{#person}}
 Never shown!
@@ -132,7 +132,7 @@ Shown.
     });
 
     it('check section boolean=true', () => {
-        const jst = Template.compile(`{{#bool}}Show{{/bool}}`);
+        const jst = TemplateEngine.compile(`{{#bool}}Show{{/bool}}`);
         const validater = `Show`;
         const out = jst({
             bool: true
@@ -141,7 +141,7 @@ Shown.
     });
 
     it('check section function', () => {
-        const jst = Template.compile(`{{#func}}from func{{/func}}`);
+        const jst = TemplateEngine.compile(`{{#func}}from func{{/func}}`);
         const validater = `from func`;
         const out = jst({
             func() { return true; }
@@ -150,7 +150,7 @@ Shown.
     });
 
     it('check section object', () => {
-        const jst = Template.compile(`{{#person}}{{name}}:{{age}}{{/person}}`);
+        const jst = TemplateEngine.compile(`{{#person}}{{name}}:{{age}}{{/person}}`);
         const validater = `Max:22`;
         const out = jst({
             person: { name: 'Max', age: 22 }
@@ -159,7 +159,7 @@ Shown.
     });
 
     it('check section nest', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 <ul>
     {{#families}}
     <li>{{surname}}
@@ -212,7 +212,7 @@ Shown.
     });
 
     it('check non-empty lists', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#stooges}}
 <b>{{name}}</b>
 {{/stooges}}
@@ -234,7 +234,7 @@ Shown.
     });
 
     it('check "." for string array', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#musketeers}}
 * {{{.}}}
 {{/musketeers}}
@@ -258,7 +258,7 @@ Shown.
     });
 
     it('check function property', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#beatles}}
 * {{name}}
 {{/beatles}}
@@ -285,7 +285,7 @@ Shown.
     });
 
     it('check functions', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#bold}}Hi {{name}}.{{/bold}}
 `);
         const validater = `
@@ -304,7 +304,7 @@ Shown.
     });
 
     it('check functions return nil (for coverage)', () => {
-        const jst = Template.compile(`{{#bold}}Hi {{name}}.{{/bold}}`);
+        const jst = TemplateEngine.compile(`{{#bold}}Hi {{name}}.{{/bold}}`);
         const validater = ``;
         const out = jst({
             name: 'Tater',
@@ -319,7 +319,7 @@ Shown.
     });
 
     it('check inverted sections', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#repos}}<b>{{name}}</b>{{/repos}}
 {{^repos}}No repos :({{/repos}}
 `);
@@ -336,7 +336,7 @@ Shown.
 
 
     it('check inverted sections (none)', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 {{#repos}}<b>{{name}}</b>{{/repos}}
 {{^repos}}No repos :({{/repos}}
 `);
@@ -352,7 +352,7 @@ No repos :(
     });
 
     it('check comment', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 <h1>Today{{! ignore me }}.</h1>
 `);
         const validater = `
@@ -364,7 +364,7 @@ No repos :(
     });
 
     it('check partilas', () => {
-        const jst = Template.compile(`
+        const jst = TemplateEngine.compile(`
 <h2>Names</h2>
 {{#names}}
   {{> user}}
@@ -392,7 +392,7 @@ No repos :(
     });
 
     it('check section partilas from function', () => {
-        const jst = Template.compile(`{{> user}}`);
+        const jst = TemplateEngine.compile(`{{> user}}`);
         const validater = `Michel`;
         const out = jst({
             names: [
@@ -403,7 +403,7 @@ No repos :(
     });
 
     it('check section partilas param lack case', () => {
-        const jst = Template.compile(`{{> user}}`);
+        const jst = TemplateEngine.compile(`{{> user}}`);
         const validater = ``;
         const out = jst({
             names: [
@@ -414,7 +414,7 @@ No repos :(
     });
 
     it('check section partilas param nil', () => {
-        const jst = Template.compile(`{{> user}}`);
+        const jst = TemplateEngine.compile(`{{> user}}`);
         const validater = ``;
         const out = jst({
             names: [
@@ -425,13 +425,13 @@ No repos :(
     });
 
     it('check custom tags', () => {
-        const jst = Template.compile('<%title%> spends <%calc%>', { tags: ['<%', '%>'] });
+        const jst = TemplateEngine.compile('<%title%> spends <%calc%>', { tags: ['<%', '%>'] });
         const out = jst({ title: 'Joe', calc: () => 2 + 4 });
         expect(out).toBe('Joe spends 6');
     });
 
     it('check primitive prop', () => {
-        const jst = Template.compile(`string length is {{name.length}}`);
+        const jst = TemplateEngine.compile(`string length is {{name.length}}`);
         const validater = `string length is 5`;
         const out = jst({ name: 'hello' });
         expect(out).toBe(validater);
@@ -439,7 +439,7 @@ No repos :(
 
     // ++++
     it('check empty', () => {
-        const jst = Template.compile(``);
+        const jst = TemplateEngine.compile(``);
         const validater = ``;
         const out = jst();
         expect(out).toBe(validater);
@@ -447,13 +447,13 @@ No repos :(
     // ++++
 
     it('check tokens', () => {
-        const jst = Template.compile('{{title}} spends {{calc}}');
+        const jst = TemplateEngine.compile('{{title}} spends {{calc}}');
         expect(JSON.stringify(jst.tokens)).toBe('[["name","title",0,9],["text"," spends ",9,17],["name","calc",17,25]]');
     });
 
     it('check clearCache', () => {
-        const jst = Template.compile('{{title}} spends {{calc}}');
-        Template.clearCache();
+        const jst = TemplateEngine.compile('{{title}} spends {{calc}}');
+        TemplateEngine.clearCache();
         const out = jst({ title: 'Joe', calc: () => 2 + 4 });
         expect(out).toBe('Joe spends 6');
     });
@@ -466,39 +466,39 @@ No repos :(
     });
 
     it('check change default', () => {
-        const oldSettings = Template.setGlobalSettings({
+        const oldSettings = TemplateEngine.setGlobalSettings({
             writer: _writer,
             tags: ['<%', '%>'],
             escape: escapeHTML,
         });
 
-        const jst = Template.compile('<%title%> spends <%calc%>');
+        const jst = TemplateEngine.compile('<%title%> spends <%calc%>');
         const out = jst({ title: 'Joe', calc: () => 2 + 4 });
         expect(out).toBe('Joe spends 6');
 
-        Template.setGlobalSettings(oldSettings);
+        TemplateEngine.setGlobalSettings(oldSettings);
     });
 
     it('check invalid template input', () => {
-        expect(() => Template.compile('{{title}} spends {{calc}'))
+        expect(() => TemplateEngine.compile('{{title}} spends {{calc}'))
             .toThrow(new Error(`Unclosed tag at 24`));
 
-        expect(() => Template.compile('{{title}} spends {{/title}}'))
+        expect(() => TemplateEngine.compile('{{title}} spends {{/title}}'))
             .toThrow(new Error(`Unopened section "title" at 17`));
 
-        expect(() => Template.compile('{{#title}} spends {{/titl}}'))
+        expect(() => TemplateEngine.compile('{{#title}} spends {{/titl}}'))
             .toThrow(new Error(`Unclosed section "title" at 18`));
 
-        expect(() => Template.compile('{{#title}} spends {{titl}}'))
+        expect(() => TemplateEngine.compile('{{#title}} spends {{titl}}'))
             .toThrow(new Error(`Unclosed section "title" at 26`));
 
-        expect(() => Template.compile({ name: 'test' } as any))
-            .toThrow(new TypeError(`Invalid template! the first argument should be a "string" but "object" was given for Template.compile(template, options)`));
+        expect(() => TemplateEngine.compile({ name: 'test' } as any))
+            .toThrow(new TypeError(`Invalid template! the first argument should be a "string" but "object" was given for TemplateEngine.compile(template, options)`));
 
-        expect(() => Template.compile(['array check'] as any))
-            .toThrow(new TypeError(`Invalid template! the first argument should be a "string" but "array" was given for Template.compile(template, options)`));
+        expect(() => TemplateEngine.compile(['array check'] as any))
+            .toThrow(new TypeError(`Invalid template! the first argument should be a "string" but "array" was given for TemplateEngine.compile(template, options)`));
 
-        expect(() => Template.compile('{{=<%%>=}}'))
+        expect(() => TemplateEngine.compile('{{=<%%>=}}'))
             .toThrow(new Error(`Invalid tags: ["<%%>"]`));
     });
 
@@ -510,7 +510,7 @@ No repos :(
     });
 
     it('check internal: renderTokens error', () => {
-        const jst = Template.compile(`{{#names}}{{> user}}{{/names}}`);
+        const jst = TemplateEngine.compile(`{{#names}}{{> user}}{{/names}}`);
         const token = jst.tokens;
         const view = {
             names() {
