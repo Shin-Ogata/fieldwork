@@ -4,4 +4,4 @@ export * from '@cdp/promise';
 export * from '@cdp/observable';
 export * from '@cdp/result';
 export * from '@cdp/core-storage';
-export * from '@cdp/template';
+export * from '@cdp/core-template';

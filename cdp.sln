@@ -39,7 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "framework", "framework", "{
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "framework-core", "packages\framework\core\framework-core.njsproj", "{C904A032-D1DA-4588-821D-9F49F06CF8CB}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "template", "packages\lib\core\template\template.njsproj", "{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "core-template", "packages\lib\core\template\core-template.njsproj", "{1C1DCDC2-C45F-40D8-BA6B-3D44FBE1C8C2}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "model", "packages\lib\window\model\model.njsproj", "{A3F1D535-79B5-4112-823D-6FD71267CE3E}"
 EndProject

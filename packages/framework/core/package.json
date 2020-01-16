@@ -5,12 +5,12 @@
   "author": "Shin Ogata",
   "devDependencies": {
     "@cdp/core-storage": "file:../../lib/core/storage",
+    "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",
     "@cdp/events": "file:../../lib/core/events",
     "@cdp/observable": "file:../../lib/core/observable",
     "@cdp/promise": "file:../../lib/core/promise",
-    "@cdp/result": "file:../../lib/core/result",
-    "@cdp/template": "file:../../lib/core/template"
+    "@cdp/result": "file:../../lib/core/result"
   },
   "keywords": [
     "CDP",
@@ -34,6 +34,7 @@
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
+    "check-update": "exit 0",
     "ci": "run-s -l clean:all build:src build:test lint unit-test:ci typedoc",
     "clean": "cdp-task clean",
     "clean:all": "cdp-task clean -a",

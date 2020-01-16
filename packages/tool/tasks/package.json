@@ -35,6 +35,7 @@
     "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
   },
   "scripts": {
+    "check-update": "npm outdated || exit 0",
     "clear": "cdp-task clean -t ./node_modules",
     "lint": "eslint ./**/*.js -c ../../../config/lint/eslint.js",
     "test": "npm run lint"

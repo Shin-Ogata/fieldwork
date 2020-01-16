@@ -1,5 +1,5 @@
 {
-  "name": "@cdp/template",
+  "name": "@cdp/core-template",
   "description": "template engine",
   "version": "0.9.0",
   "author": "Shin Ogata",
@@ -12,8 +12,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/template",
-  "module": "dist/template.mjs",
+  "main": "dist/core-template",
+  "module": "dist/core-template.mjs",
   "private": true,
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
+    "check-update": "exit 0",
     "ci": "run-s -l clean:all build:src build:test lint unit-test:ci typedoc",
     "clean": "cdp-task clean",
     "clean:all": "cdp-task clean -a",
