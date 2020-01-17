@@ -35,7 +35,7 @@
     "terser": "4.6.3",
     "testem": "3.0.2",
     "typedoc": "0.16.6",
-    "typescript": "3.7.4"
+    "typescript": "3.7.5"
   },
   "homepage": "https://github.com/Shin-Ogata/fieldwork#readme",
   "keywords": [
@@ -62,10 +62,10 @@
     "metrics": "run-p metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ./config/lint/eslint.js -p lib",
     "metrics:module": "cdp-task metrics -r module -l ./config/lint/eslint.js -p lib",
-    "packages:ci": "cdp-task delegate ci -l lib,framework",
-    "packages:clean": "cdp-task delegate clean -l lib,framework",
+    "packages:ci": "cdp-task delegate ci -l lib,framework,extension",
+    "packages:clean": "cdp-task delegate clean -l lib,framework,extension",
     "packages:clear": "cdp-task delegate clear",
-    "set-version": "cdp-task delegate set-version -l lib,framework -- ",
+    "set-version": "cdp-task delegate set-version -l lib,framework,extension -- ",
     "test": "npm run ci"
   }
 }
