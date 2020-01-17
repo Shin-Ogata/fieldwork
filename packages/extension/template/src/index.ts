@@ -31,3 +31,28 @@ export const directives = {
     styleMap,
     unsafeHTML,
 };
+
+/**
+ * @en Convert from `string` to `TemplateStringsArray`. <br>
+ *     This method is helper brigdge for the [[html]] or the [[svg]] are able to received plain string.
+ * @ja `string` を `TemplateStringsArray`に変換. <br>
+ *     [[html]] や [[svg]] が文字列を受け付けるためのブリッジメソッド
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { toTemplateStringsArray as bridge } from '@cdp/extension-template';
+ *
+ * const raw = '<p>Hello Raw String</p>';
+ * render(html(bridge(raw)), document.body);
+ * ```
+ *
+ * @param src
+ *  - `en` plain string. ex) [[JST]] returned value.
+ *  - `ja` プレーン文字列. ex) [[JST]] の戻り値などを想定
+ */
+export const toTemplateStringsArray = (src: string): TemplateStringsArray => {
+    const ta: any = [src]; // eslint-disable-line @typescript-eslint/no-explicit-any
+    ta.raw = [src];
+    return ta;
+};

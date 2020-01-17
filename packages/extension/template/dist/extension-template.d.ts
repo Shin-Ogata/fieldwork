@@ -277,3 +277,23 @@ export declare const directives: {
     styleMap: (styleInfo: StyleInfo) => (part: Part) => void;
     unsafeHTML: (value: unknown) => (part: Part) => void;
 };
+/**
+ * @en Convert from `string` to `TemplateStringsArray`. <br>
+ *     This method is helper brigdge for the [[html]] or the [[svg]] are able to received plain string.
+ * @ja `string` を `TemplateStringsArray`に変換. <br>
+ *     [[html]] や [[svg]] が文字列を受け付けるためのブリッジメソッド
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { toTemplateStringsArray as bridge } from '@cdp/extension-template';
+ *
+ * const raw = '<p>Hello Raw String</p>';
+ * render(html(bridge(raw)), document.body);
+ * ```
+ *
+ * @param src
+ *  - `en` plain string. ex) [[JST]] returned value.
+ *  - `ja` プレーン文字列. ex) [[JST]] の戻り値などを想定
+ */
+export declare const toTemplateStringsArray: (src: string) => TemplateStringsArray;

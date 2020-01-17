@@ -20,7 +20,17 @@ function cleanEmptyDir(target) {
     }
 }
 
+function includes(path, evaluations) {
+    for (const target of evaluations) {
+        if (path.includes(target)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 module.exports = {
     cleanEmptyDir,
     merge,
+    includes,
 };

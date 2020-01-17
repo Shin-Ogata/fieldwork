@@ -7,6 +7,7 @@ function setSourceMapRoot({ relativePath, sourceRoot } = {}) {
         .replace(/\\/g, '/')
         .replace(/^\w+:\/(?!\/)/, '$&/')
         .replace(/^([\s\S]+)(\/@[\w]+\/)([\s\S]+)$/, '$3')
+        .replace(/^\.\.\/node_modules\//, '')
     ;
     return Object.freeze({
         name: 'source-map-root',
