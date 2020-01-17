@@ -1,10 +1,13 @@
 'use strict';
 
 const { resolve, join } = require('path');
+const { includes } = require('@cdp/tasks');
 const { packageName, src } = require('@cdp/tasks/config').build;
 const config = require('../../../../config/bundle/rollup-test');
 const testee = require('../build.config').default;
 const cwd = process.cwd();
+
+const externals = ['lit-html'];
 
 module.exports = {
     default: config.default(testee, {
@@ -24,11 +27,13 @@ module.exports = {
     remap: {
         resolve(name, options) {
             const { info: includeExternal } = options;
-            if (name.startsWith(packageName)) {
+            if (includes(name, externals)) {
+                if (includeExternal) {
+                    const [lib, ...paths] = name.split(`${packageName}/`)[1].split('/');
+                    return join('node_modules', lib, ...paths);
+                }
+            } else {
                 return resolve(cwd, name.replace(packageName, src));
-            } else if (includeExternal) {
-                const [lib, ...paths] = name.split('@cdp/node_modules/')[1].split('/');
-                return join('node_modules', lib, ...paths);
             }
         }
     },

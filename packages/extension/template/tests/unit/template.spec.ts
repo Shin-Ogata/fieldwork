@@ -11,6 +11,7 @@ import {
     directive,
     isDirective,
     directives,
+    toTemplateStringsArray as bridge,
 } from '@cdp/extension-template';
 import $ from '@cdp/dom';
 import {
@@ -64,5 +65,13 @@ describe('extention-template spec', () => {
 
         render(template('Template'), $dom[0]);
         expect($dom.find('p').text()).toBe('Hello Template');
+    });
+
+    it('check html /w toTemplateStringsArray()', () => {
+        prepareTestElements();
+        const $dom = $('#d1');
+        const raw = '<p>Hello Raw String</p>';
+        render(html(bridge(raw)), $dom[0]);
+        expect($dom.find('p').text()).toBe('Hello Raw String');
     });
 });
