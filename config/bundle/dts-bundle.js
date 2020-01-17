@@ -123,6 +123,9 @@ const bundleOptions = {
     // tab indent default: '    ' (4)
     //  indent: '    '
 
+    // 明示的に含めるライブラリ: ['module']
+    inlinedLibraries: [],
+
     // devDependencies 内の含めないライブラリ
     excludeLibraries: [],
 
@@ -131,11 +134,12 @@ const bundleOptions = {
 
 function getConfig(options = bundleOptions) {
     const settings = merge({ bundle, indent: '    ' }, options);
-    const { src, out, validate, excludeLibraries } = settings;
+    const { src, out, validate, inlinedLibraries, excludeLibraries } = settings;
     const main = settings.bundle.entries[0];
     src && (main.filePath = resolve(cwd, src));
     out && (main.outFile = resolve(cwd, out));
     validate && (main.noCheck = false);
+    inlinedLibraries && (main.libraries.inlinedLibraries.push(...inlinedLibraries));
     excludeLibraries && (main.libraries.inlinedLibraries = main.libraries.inlinedLibraries.filter(l => !excludeLibraries.includes(l)));
     return settings;
 }

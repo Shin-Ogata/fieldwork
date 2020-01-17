@@ -23,8 +23,9 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-O, --origin <dir>',   'specified instrument origin directory (for remap check)')
         .option('-R, --runner <path>',  'custom launcher script directory')
         .option('-r, --res <path>',     'resource directory')
+        .option('-i, --info <any>',     'user definition option')
         .action((mode, options) => {
-            const { config, origin, runner, res } = options;
+            const { config, origin, runner, res, info } = options;
             if ((!mode || 'ci' === mode) && !config) {
                 console.log(chalk.red.underline('for running unit-test, config-file is required.'));
                 console.log('\nExamples:');
@@ -42,6 +43,7 @@ function defineCommands(commander, cmd, isDefault) {
                 origin,
                 runner,
                 res,
+                info,
             };
         })
         .on('--help', () => {
@@ -53,7 +55,7 @@ Examples:
   $ cdp-task unit-test instrument           generate instrumented code by package configration
   $ cdp-task unit-test report               report coverage result by running unit-test
   $ cdp-task unit-test <npm-run-script>     run unit-test and coverage with nyc command
-  $ cdp-task unit-test remap -i=<temp>      check remap result
+  $ cdp-task unit-test remap -O <temp>      check remap result
 `
             );
         });

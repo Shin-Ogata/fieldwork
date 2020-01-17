@@ -56,13 +56,14 @@ async function remapCoverage(cov, options) {
 }
 
 function resolveSourcePath(cov, options) {
-    const { cwd, silent, config: configFile, origin } = options;
-    const opts = configFile && require(path.resolve(cwd, configFile)).remap;
+    const { cwd, silent, config: configFile, origin, info } = options;
+    const opts = configFile && Object.assign({ info }, require(path.resolve(cwd, configFile)).remap);
     const { domain, src } = config.build;
 
     const resolvePath = (name) => {
         if (opts && 'function' === typeof opts.resolve) {
-            return path.resolve(cwd, opts.resolve(name));
+            const renamed = opts.resolve(name, opts);
+            return renamed ? path.resolve(cwd, renamed) : renamed;
         } else {
             return path.resolve(cwd, name.replace(config.pkg.name, src));
         }
@@ -78,8 +79,12 @@ function resolveSourcePath(cov, options) {
             console.log(chalk.gray(`  source : ${name}`));
             console.log(chalk.gray(`  ... resolved : ${absPath}`));
         }
-        rebuild[name] = cov[file];
-        rebuild[name].path = absPath;
+        if (null != absPath) {
+            rebuild[name] = cov[file];
+            rebuild[name].path = absPath;
+        } else {
+            delete rebuild[name];
+        }
     }
 
     return rebuild;

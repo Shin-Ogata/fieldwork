@@ -1,0 +1,19 @@
+@cdp/extension-template
+Copyright 2020 Sony Corporation.
+
+This product includes software developed at Sony Corporation.
+
+This product also includes the following third-party components
+
+﻿--------------------------------------------------------------------------------
+lit-html
+--------------------------------------------------------------------------------
+
+ - lit-html stuff including ./dist/extension-html.{js/mjs}
+    https://lit-html.polymer-project.org/
+    https://github.com/Polymer/lit-html
+
+
+    Released under the BSD 3-Clause License.
+    https://github.com/Polymer/lit-html/blob/master/LICENSE
+
