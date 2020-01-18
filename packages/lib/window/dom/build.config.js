@@ -24,7 +24,7 @@ function patch(index, code) {
 module.exports = {
     default: config({
         external: {
-            '@cdp/core-utils': 'CDP.Utils',
+            '@cdp/core-utils': 'CDP',
         },
         // default export と同名の named export を許可
         exports: 'named',

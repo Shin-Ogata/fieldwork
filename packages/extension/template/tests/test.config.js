@@ -12,7 +12,7 @@ const externals = ['lit-html'];
 module.exports = {
     default: config.default(testee, {
         external: {
-            '@cdp/core-utils': 'CDP.Utils',
+            '@cdp/core-utils': 'CDP',
             '@cdp/core-template': 'CDP',
             '@cdp/dom': 'CDP',
         },

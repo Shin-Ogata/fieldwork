@@ -5,7 +5,7 @@ const { replace } = require('@cdp/result/build.config');
 
 module.exports.default = config({
     external: {
-        '@cdp/core-utils': 'CDP.Utils',
+        '@cdp/core-utils': 'CDP',
         '@cdp/events': 'CDP',
         '@cdp/promise': 'CDP',
         '@cdp/core-storage': 'CDP',

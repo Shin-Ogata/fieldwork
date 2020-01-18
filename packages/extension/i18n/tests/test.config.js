@@ -12,7 +12,7 @@ const externals = ['i18next'];
 module.exports = {
     default: config.default(testee, {
         external: {
-            '@cdp/core-utils': 'CDP.Utils',
+            '@cdp/core-utils': 'CDP',
         },
     }),
     testem: config.testem({

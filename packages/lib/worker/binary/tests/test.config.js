@@ -6,7 +6,7 @@ const testee = require('../build.config').default;
 module.exports = {
     default: config.default(testee, {
         external: {
-            '@cdp/core-utils': 'CDP.Utils',
+            '@cdp/core-utils': 'CDP',
             '@cdp/promise': 'CDP',
         },
     }),

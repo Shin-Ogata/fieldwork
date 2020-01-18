@@ -6,7 +6,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@cdp/core-utils'), require('@cdp/promise'), require('@cdp/result'), require('@cdp/binary')) :
     typeof define === 'function' && define.amd ? define(['exports', '@cdp/core-utils', '@cdp/promise', '@cdp/result', '@cdp/binary'], factory) :
-    (global = global || self, factory(global.CDP = global.CDP || {}, global.CDP.Utils, global.CDP, global.CDP, global.CDP));
+    (global = global || self, factory(global.CDP = global.CDP || {}, global.CDP, global.CDP, global.CDP, global.CDP));
 }(this, (function (exports, coreUtils, promise, result, binary) { 'use strict';
 
     /* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-plus-operands */
