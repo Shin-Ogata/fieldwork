@@ -8,8 +8,13 @@ function patch(index, code) {
         return code;
     }
 
-    // 'export declare namespace dom' → 'declare namespace dom'
-    code = code.replace(/^export declare namespace dom/gm, 'declare namespace dom');
+    code = code
+        // 'export declare namespace dom' → 'declare namespace dom'
+        .replace(/^export declare namespace dom/gm, 'declare namespace dom')
+        // trim `import("xxx").`
+        .replace(/import\("[\S]+"\)\./g, '')
+    ;
+
     // 'export { dom };'
     code += 'export { dom };';
 

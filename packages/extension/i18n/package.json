@@ -1,6 +1,6 @@
 {
-  "name": "@cdp/extension-template",
-  "description": "extension for template engine",
+  "name": "@cdp/extension-i18n",
+  "description": "extension for internationalization",
   "version": "0.9.0",
   "author": "Shin Ogata",
   "cdp-config": {
@@ -9,10 +9,8 @@
     }
   },
   "devDependencies": {
-    "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",
-    "@cdp/dom": "file:../../lib/window/dom",
-    "lit-html": "1.1.2"
+    "i18next": "19.0.3"
   },
   "keywords": [
     "CDP",
@@ -20,8 +18,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/extension-template",
-  "module": "dist/extension-template.mjs",
+  "main": "dist/extension-i18n",
+  "module": "dist/extension-i18n.mjs",
   "private": true,
   "repository": {
     "type": "git",
@@ -67,5 +65,5 @@
     "watch:ts:src": "npm run compile:src -- -w",
     "watch:ts:test": "npm run compile:test -- -w"
   },
-  "types": "dist/extension-template.d.ts"
+  "types": "dist/extension-i18n.d.ts"
 }

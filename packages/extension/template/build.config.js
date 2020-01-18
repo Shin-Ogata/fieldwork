@@ -27,6 +27,7 @@ module.exports = {
     }),
     dts: bundle_dts({
         inlinedLibraries: ['lit-html'],
+        excludeLibraries: [/^@cdp/],
         postProcess: patch,
     }),
 };
