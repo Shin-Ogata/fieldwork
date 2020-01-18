@@ -17,9 +17,6 @@
   "license": "UNLICENSED",
   "main": "dist/fs-storage",
   "module": "dist/fs-storage.mjs",
-  "peerDependencies": {
-    "fs-extra": "*"
-  },
   "private": true,
   "repository": {
     "type": "git",
