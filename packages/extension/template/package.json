@@ -3,6 +3,11 @@
   "description": "extension for template engine",
   "version": "0.9.0",
   "author": "Shin Ogata",
+  "cdp-config": {
+    "build": {
+      "global": "CDP.Exension"
+    }
+  },
   "devDependencies": {
     "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",

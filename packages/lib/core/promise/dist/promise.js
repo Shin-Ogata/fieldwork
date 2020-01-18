@@ -6,7 +6,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@cdp/core-utils'), require('@cdp/events')) :
     typeof define === 'function' && define.amd ? define(['exports', '@cdp/core-utils', '@cdp/events'], factory) :
-    (global = global || self, factory(global.CDP = global.CDP || {}, global.CDP.Utils, global.CDP));
+    (global = global || self, factory(global.CDP = global.CDP || {}, global.CDP, global.CDP));
 }(this, (function (exports, coreUtils, events) { 'use strict';
 
     /** @internal */

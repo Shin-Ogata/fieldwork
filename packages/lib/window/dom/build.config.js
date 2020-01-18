@@ -8,8 +8,13 @@ function patch(index, code) {
         return code;
     }
 
-    // 'export declare namespace dom' → 'declare namespace dom'
-    code = code.replace(/^export declare namespace dom/gm, 'declare namespace dom');
+    code = code
+        // 'export declare namespace dom' → 'declare namespace dom'
+        .replace(/^export declare namespace dom/gm, 'declare namespace dom')
+        // trim `import("xxx").`
+        .replace(/import\("[\S]+"\)\./g, '')
+    ;
+
     // 'export { dom };'
     code += 'export { dom };';
 
@@ -19,7 +24,7 @@ function patch(index, code) {
 module.exports = {
     default: config({
         external: {
-            '@cdp/core-utils': 'CDP.Utils',
+            '@cdp/core-utils': 'CDP',
         },
         // default export と同名の named export を許可
         exports: 'named',

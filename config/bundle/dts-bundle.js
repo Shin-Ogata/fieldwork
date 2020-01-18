@@ -140,7 +140,16 @@ function getConfig(options = bundleOptions) {
     out && (main.outFile = resolve(cwd, out));
     validate && (main.noCheck = false);
     inlinedLibraries && (main.libraries.inlinedLibraries.push(...inlinedLibraries));
-    excludeLibraries && (main.libraries.inlinedLibraries = main.libraries.inlinedLibraries.filter(l => !excludeLibraries.includes(l)));
+    excludeLibraries && (main.libraries.inlinedLibraries = main.libraries.inlinedLibraries.filter(l => {
+        for (const e of excludeLibraries) {
+            if (e === l) {
+                return false;
+            } else if (e instanceof RegExp && e.test(l)) {
+                return false;
+            }
+        }
+        return true;
+    }));
     return settings;
 }
 
