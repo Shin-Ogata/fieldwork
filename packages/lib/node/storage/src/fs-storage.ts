@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { promisify } from 'util';
 import {
     existsSync,
-    readJsonSync,
-    outputJson,
-    removeSync,
-} from 'fs-extra';
+    readFileSync,
+    writeFile,
+    unlinkSync,
+} from 'fs';
 import { Keys, dropUndefined } from '@cdp/core-utils';
 import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
@@ -36,6 +37,8 @@ export type FsStorageInputDataTypes = MemoryStorageInputDataTypes;
 /** FsStorage event callback */
 export type FsStorageEventCallback = MemoryStorageEventCallback;
 
+const writeFileAsync = promisify(writeFile);
+
 //__________________________________________________________________________________________________//
 
 /**
@@ -59,7 +62,7 @@ export class FsStorage implements IStorage {
         this._storage = new MemoryStorage();
 
         if (existsSync(this._location)) {
-            const data = readJsonSync(this._location);
+            const data = JSON.parse(readFileSync(this._location).toString());
             const ref = this._storage.context;
             for (const key of Object.keys(data)) {
                 ref[key] = dropUndefined(data[key], true);
@@ -208,7 +211,9 @@ export class FsStorage implements IStorage {
      * @ja 保存ファイルの完全削除
      */
     public destroy(): void {
-        removeSync(this._location);
+        if (existsSync(this._location)) {
+            unlinkSync(this._location);
+        }
         this._storage.clear();
     }
 
@@ -218,6 +223,7 @@ export class FsStorage implements IStorage {
     /** @internal */
     private updateJSON(options?: IStorageOptions): Promise<void> {
         const { jsonSpace } = (options as IStorageFormatOptions) || {};
-        return outputJson(this._location, this._storage.context, { spaces: jsonSpace });
+        const json = `${JSON.stringify(this._storage.context, null, jsonSpace)}\n`;
+        return writeFileAsync(this._location, json);
     }
 }

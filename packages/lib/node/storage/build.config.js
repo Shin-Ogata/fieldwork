@@ -4,8 +4,9 @@ const config = require('../../../../config/bundle/rollup-core');
 
 module.exports.default = config({
     external: {
+        'util': null,
         'path': null,
-        'fs-extra': null,
+        'fs': null,
         '@cdp/core-utils': null,
         '@cdp/events': null,
         '@cdp/promise': null,
