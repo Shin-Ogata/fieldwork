@@ -227,7 +227,6 @@ export declare type DirectiveFn = (part: Part) => void;
  * });
  */
 export declare const directive: <F extends DirectiveFactory>(f: F) => F;
-export declare const isDirective: (o: unknown) => o is DirectiveFn;
 export declare const parts: WeakMap<Node, NodePart>;
 /**
  * Renders a template result or other value to a container.
@@ -273,6 +272,7 @@ export declare const directives: {
     repeat: <T>(items: Iterable<T>, keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>, template?: ItemTemplate<T> | undefined) => DirectiveFn;
     styleMap: (styleInfo: StyleInfo) => (part: Part) => void;
     unsafeHTML: (value: unknown) => (part: Part) => void;
+    until: (...args: unknown[]) => (part: Part) => void;
 };
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>

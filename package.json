@@ -51,7 +51,7 @@
     "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
   },
   "scripts": {
-    "check-update": "npm outdated || cdp-task delegate check-update",
+    "check-update": "cdp-task delegate check-update && npm outdated || exit 0",
     "ci": "run-s packages:ci metrics",
     "clean:doc": "cdp-task clean -d",
     "clean:doc:a": "cdp-task clean -t ./docs/typedoc",
