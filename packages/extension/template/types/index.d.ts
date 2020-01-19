@@ -1,4 +1,4 @@
-export { TemplateResult, SVGTemplateResult, RenderOptions, html, svg, render, parts, directive, isDirective, } from 'lit-html';
+export { TemplateResult, SVGTemplateResult, RenderOptions, Part, html, svg, render, parts, directive, } from 'lit-html';
 export declare const directives: {
     asyncAppend: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: import("lit-html").Part) => Promise<void>;
     asyncReplace: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: import("lit-html").Part) => Promise<void>;
@@ -9,6 +9,7 @@ export declare const directives: {
     repeat: <T>(items: Iterable<T>, keyFnOrTemplate: import("lit-html/directives/repeat").KeyFn<T> | import("lit-html/directives/repeat").ItemTemplate<T>, template?: import("lit-html/directives/repeat").ItemTemplate<T> | undefined) => import("lit-html").DirectiveFn;
     styleMap: (styleInfo: import("lit-html/directives/style-map").StyleInfo) => (part: import("lit-html").Part) => void;
     unsafeHTML: (value: unknown) => (part: import("lit-html").Part) => void;
+    until: (...args: unknown[]) => (part: import("lit-html").Part) => void;
 };
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>

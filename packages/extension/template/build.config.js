@@ -8,8 +8,10 @@ function patch(index, code) {
         return code;
     }
 
-    // trim `import("xxx").`
-    code = code.replace(/import\("[\S]+"\)\./g, '');
+    code = code
+        // trim `import("xxx").`
+        .replace(/import\("[\S]+"\)\./g, '')
+    ;
 
     return code;
 }

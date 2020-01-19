@@ -2,12 +2,12 @@ export {
     TemplateResult,
     SVGTemplateResult,
     RenderOptions,
+    Part,
     html,
     svg,
     render,
     parts,
     directive,
-    isDirective,
 } from 'lit-html';
 
 import { asyncAppend } from 'lit-html/directives/async-append';
@@ -19,6 +19,7 @@ import { ifDefined } from 'lit-html/directives/if-defined';
 import { repeat } from 'lit-html/directives/repeat';
 import { styleMap } from 'lit-html/directives/style-map';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
+import { until } from 'lit-html/directives/until';
 
 export const directives = {
     asyncAppend,
@@ -30,6 +31,7 @@ export const directives = {
     repeat,
     styleMap,
     unsafeHTML,
+    until,
 };
 
 /**
