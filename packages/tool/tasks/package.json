@@ -23,6 +23,7 @@
     "dts-bundle-generator": "*",
     "fs-extra": "*",
     "glob": "*",
+    "https-proxy-agent": "*",
     "lodash": "*",
     "nyc": "*",
     "semver": "*",

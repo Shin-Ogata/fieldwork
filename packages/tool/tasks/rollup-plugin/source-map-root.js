@@ -3,10 +3,12 @@
 const { relative } = require('path');
 
 function setSourceMapRoot({ relativePath, sourceRoot } = {}) {
+    const [domain] = sourceRoot ? sourceRoot.split(':') : [''];
+    const regexNS = new RegExp(`^([\\s\\S]+)(/@${domain}/)([\\s\\S]+)$`);
     const replacePath = src => relative(relativePath, src)
         .replace(/\\/g, '/')
         .replace(/^\w+:\/(?!\/)/, '$&/')
-        .replace(/^([\s\S]+)(\/@[\w]+\/)([\s\S]+)$/, '$3')
+        .replace(regexNS, '$3')
         .replace(/^\.\.\/node_modules\//, '')
     ;
     return Object.freeze({

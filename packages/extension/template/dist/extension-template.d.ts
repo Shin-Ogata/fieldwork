@@ -262,7 +262,7 @@ export declare type ItemTemplate<T> = (item: T, index: number) => unknown;
 export interface StyleInfo {
     readonly [name: string]: string;
 }
-export declare const directives: {
+export interface TemplateDirectives {
     asyncAppend: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
     asyncReplace: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
     cache: (value: unknown) => (part: Part) => void;
@@ -273,7 +273,8 @@ export declare const directives: {
     styleMap: (styleInfo: StyleInfo) => (part: Part) => void;
     unsafeHTML: (value: unknown) => (part: Part) => void;
     until: (...args: unknown[]) => (part: Part) => void;
-};
+}
+export declare const directives: TemplateDirectives;
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>
  *     This method is helper brigdge for the [[html]] or the [[svg]] are able to received plain string.

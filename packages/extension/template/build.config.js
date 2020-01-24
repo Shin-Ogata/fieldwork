@@ -2,6 +2,7 @@
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
+const minify_js  = require('../../../config/minify/terser');
 
 function patch(index, code) {
     if (0 !== index) {
@@ -32,4 +33,7 @@ module.exports = {
         excludeLibraries: [/^@cdp/],
         postProcess: patch,
     }),
+    minify: {
+        js: minify_js(),
+    },
 };

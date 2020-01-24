@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import {
     default as i18next,
+    i18n as i18nextInstance,
     FallbackLngObjList as i18nextFallbackLngObjList,
     FallbackLng as i18nextFallbackLng,
     FormatFunction as i18nextFormatFunction,
@@ -37,11 +38,10 @@ import {
     Newable as i18nextNewable,
 } from 'i18next';
 
-const i18n = {
-    context: i18next,
-};
+const i18n: i18n.i18n = i18next;
 
 declare namespace i18n {
+    export type i18n = i18nextInstance;
     export type FallbackLngObjList = i18nextFallbackLngObjList;
     export type FallbackLng = i18nextFallbackLng;
     export type FormatFunction = i18nextFormatFunction;
