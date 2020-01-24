@@ -3,8 +3,9 @@
  , @typescript-eslint/no-explicit-any
  , @typescript-eslint/await-thenable
  , @typescript-eslint/unbound-method
+ , @typescript-eslint/no-unused-vars
  , @typescript-eslint/indent
-*/
+ */
 
 import {
     post,
@@ -64,7 +65,6 @@ describe('extention-template spec', () => {
 
     let count: number;
 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     const onCallback = (...args: any[]): void => {
         count++;
     };

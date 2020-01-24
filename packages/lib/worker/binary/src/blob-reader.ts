@@ -1,4 +1,8 @@
-/* eslint-disable prefer-spread, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
+/* eslint-disable
+   prefer-spread
+ , @typescript-eslint/no-explicit-any
+ , @typescript-eslint/no-non-null-assertion
+ */
 
 import { verify } from '@cdp/core-utils';
 import { CancelToken, Cancelable } from '@cdp/promise';

@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   @typescript-eslint/no-explicit-any
+ */
 
 import { noop, post } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';

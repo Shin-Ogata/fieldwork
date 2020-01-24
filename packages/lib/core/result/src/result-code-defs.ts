@@ -1,4 +1,8 @@
-/* eslint-disable no-inner-declarations, @typescript-eslint/no-namespace, @typescript-eslint/no-unused-vars */
+/* eslint-disable
+   no-inner-declarations
+ , @typescript-eslint/no-namespace
+ , @typescript-eslint/no-unused-vars
+ */
 
 /*
  * NOTE: 内部モジュールに `CDP` namespace を使用してしまうと, 外部モジュールでは宣言できなくなる.

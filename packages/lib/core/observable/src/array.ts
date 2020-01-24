@@ -1,4 +1,7 @@
-/* eslint-disable prefer-rest-params, @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   prefer-rest-params
+ , @typescript-eslint/no-explicit-any
+ */
 
 import {
     Writable,

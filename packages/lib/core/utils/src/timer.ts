@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-empty-interface, @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   @typescript-eslint/no-empty-interface
+ , @typescript-eslint/no-explicit-any
+ */
 
 import { getGlobal } from './config';
 import { safe } from './safe';

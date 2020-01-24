@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable
+   @typescript-eslint/no-explicit-any
+ , @typescript-eslint/no-unnecessary-type-assertion
+ */
 
 import { escapeHTML } from '@cdp/core-utils';
 import {

@@ -1,4 +1,8 @@
-/* eslint-disable no-new-wrappers, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable
+   no-new-wrappers
+ , @typescript-eslint/no-explicit-any
+ , @typescript-eslint/no-unused-vars
+ */
 
 import { resolve } from 'path';
 import { existsSync, readFileSync } from 'fs-extra';

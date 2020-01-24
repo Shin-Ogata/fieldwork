@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable
+   @typescript-eslint/no-namespace
+ */
+
 import {
     default as i18next,
     i18n as i18nextInstance,
