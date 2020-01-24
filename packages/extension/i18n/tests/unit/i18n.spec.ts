@@ -1,7 +1,7 @@
 /* eslint-disable
    @typescript-eslint/no-explicit-any
  , @typescript-eslint/camelcase
-*/
+ */
 
 import { post, escapeHTML } from '@cdp/core-utils';
 import { i18n } from '@cdp/extension-i18n';

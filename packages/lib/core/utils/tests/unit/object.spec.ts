@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/unbound-method */
+/* eslint-disable
+   @typescript-eslint/no-explicit-any
+ , @typescript-eslint/unbound-method
+ */
 
 import {
     has,

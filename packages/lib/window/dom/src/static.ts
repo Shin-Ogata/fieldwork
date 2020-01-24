@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   @typescript-eslint/no-namespace
+ , @typescript-eslint/no-explicit-any
+ */
 
 import {
     ElementBase,

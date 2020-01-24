@@ -1,4 +1,7 @@
-/* eslint-disable no-invalid-this, @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   no-invalid-this
+ , @typescript-eslint/no-explicit-any
+ */
 
 const random = Math.random.bind(Math);
 

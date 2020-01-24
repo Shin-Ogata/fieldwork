@@ -1,5 +1,10 @@
-/* eslint-disable block-spacing, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion */
-import $ from '@cdp/dom';
+/* eslint-disable
+   block-spacing
+ , @typescript-eslint/no-explicit-any
+ , @typescript-eslint/no-non-null-assertion
+ */
+
+import { dom as $ } from '@cdp/dom';
 import {
     DOM,
     prepareTestElements,

@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   @typescript-eslint/no-explicit-any
+ */
 
 import { sleep } from '@cdp/core-utils';
 import {

@@ -1,4 +1,8 @@
-/* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-plus-operands */
+/* eslint-disable
+   @typescript-eslint/no-namespace
+ , @typescript-eslint/no-unused-vars
+ , @typescript-eslint/restrict-plus-operands
+ */
 
 namespace CDP_DECLARE {
 

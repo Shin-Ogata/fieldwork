@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/require-await, @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   @typescript-eslint/require-await
+ , @typescript-eslint/no-explicit-any
+ */
 
 import {
     ObservableState,

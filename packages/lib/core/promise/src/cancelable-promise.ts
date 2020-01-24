@@ -1,4 +1,7 @@
-/* eslint-disable no-global-assign, @typescript-eslint/no-explicit-any */
+/* eslint-disable
+   no-global-assign
+ , @typescript-eslint/no-explicit-any
+ */
 
 import {
     isFunction,

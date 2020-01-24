@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/require-await */
+/* eslint-disable
+   @typescript-eslint/no-explicit-any
+ , @typescript-eslint/require-await
+ */
 
 import {
     shuffle,
