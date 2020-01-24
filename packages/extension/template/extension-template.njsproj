@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include=".npmrc" />
+    <Content Include="dist\extension-template.min.map" />
     <Content Include="dist\extension-template.mjs" />
     <Content Include="NOTICE" />
     <Content Include="package.json" />
@@ -45,6 +46,7 @@
   <ItemGroup>
     <Compile Include="build.config.js" />
     <Compile Include="dist\extension-template.js" />
+    <Compile Include="dist\extension-template.min.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>

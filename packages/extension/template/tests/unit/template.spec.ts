@@ -1,9 +1,9 @@
 /* eslint-disable
-     block-spacing
-   , @typescript-eslint/no-explicit-any
-   , @typescript-eslint/await-thenable
-   , @typescript-eslint/unbound-method
-   , @typescript-eslint/indent
+   block-spacing
+ , @typescript-eslint/no-explicit-any
+ , @typescript-eslint/await-thenable
+ , @typescript-eslint/unbound-method
+ , @typescript-eslint/indent
 */
 
 import {

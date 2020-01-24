@@ -195,7 +195,7 @@ export function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTMLElement
  *  - `ja` [[ElementBase]] インスタンス
  */
 export function isNodeQueriable(el: ElementBase | Nil): el is Element | Document {
-    return !!(el && (el as Node as Element).querySelector);
+    return !!(el && (el as Node as Element).querySelector); // eslint-disable-line @typescript-eslint/unbound-method
 }
 
 /**

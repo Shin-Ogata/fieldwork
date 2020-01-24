@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@cdp/core-utils": "file:../../lib/core/utils",
-    "i18next": "19.0.3"
+    "i18next": "file:./node_modules/i18next.tar.gz"
   },
   "keywords": [
     "CDP",
@@ -20,6 +20,9 @@
   "license": "UNLICENSED",
   "main": "dist/extension-i18n",
   "module": "dist/extension-i18n.mjs",
+  "peerDependencies": {
+    "i18next": "19.0.3"
+  },
   "private": true,
   "repository": {
     "type": "git",
@@ -27,14 +30,14 @@
   },
   "scripts": {
     "build": "run-s -l build:*",
-    "build:src": "run-s compile:src bundle:src bundle:dts",
+    "build:src": "run-s compile:src bundle:src bundle:dts minify:src",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
     "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
-    "check-update": "npm outdated || exit 0",
+    "check-update": "node ./tasks/check-update.js",
     "ci": "run-s -l clean:all build:src build:test lint unit-test:ci typedoc",
     "clean": "cdp-task clean",
     "clean:all": "cdp-task clean -a",
@@ -51,6 +54,9 @@
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../config/lint/eslint.js",
     "metrics:module": "cdp-task metrics -r module -l ../../../config/lint/eslint.js",
+    "minify": "run-p minify:*",
+    "minify:src": "cdp-task minify js --config ./build.config.js",
+    "preinstall": "node ./tasks/prepare-package.js",
     "set-version": "cdp-task set-version",
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",

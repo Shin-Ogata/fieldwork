@@ -7,7 +7,7 @@ const config = require('../../../../config/bundle/rollup-test');
 const testee = require('../build.config').default;
 const cwd = process.cwd();
 
-const externals = ['i18next'];
+const externals = ['i18next', '@babel'];
 
 module.exports = {
     default: config.default(testee, {

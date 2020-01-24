@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include=".npmrc" />
+    <Content Include="dist\extension-i18n.min.map" />
     <Content Include="dist\extension-i18n.mjs" />
     <Content Include="NOTICE" />
     <Content Include="package.json" />
@@ -45,11 +46,16 @@
   <ItemGroup>
     <Compile Include="build.config.js" />
     <Compile Include="dist\extension-i18n.js" />
+    <Compile Include="dist\extension-i18n.min.js" />
+    <Compile Include="tasks\check-update.js" />
+    <Compile Include="tasks\prepare-package.js" />
+    <Compile Include="tasks\query-version.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
+    <Folder Include="tasks\" />
     <Folder Include="tests\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />

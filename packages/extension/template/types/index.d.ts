@@ -1,16 +1,21 @@
 export { TemplateResult, SVGTemplateResult, RenderOptions, Part, html, svg, render, parts, directive, } from 'lit-html';
-export declare const directives: {
-    asyncAppend: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: import("lit-html").Part) => Promise<void>;
-    asyncReplace: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: import("lit-html").Part) => Promise<void>;
-    cache: (value: unknown) => (part: import("lit-html").Part) => void;
-    classMap: (classInfo: import("lit-html/directives/class-map").ClassInfo) => (part: import("lit-html").Part) => void;
-    guard: (value: unknown, f: () => unknown) => (part: import("lit-html").Part) => void;
-    ifDefined: (value: unknown) => (part: import("lit-html").Part) => void;
-    repeat: <T>(items: Iterable<T>, keyFnOrTemplate: import("lit-html/directives/repeat").KeyFn<T> | import("lit-html/directives/repeat").ItemTemplate<T>, template?: import("lit-html/directives/repeat").ItemTemplate<T> | undefined) => import("lit-html").DirectiveFn;
-    styleMap: (styleInfo: import("lit-html/directives/style-map").StyleInfo) => (part: import("lit-html").Part) => void;
-    unsafeHTML: (value: unknown) => (part: import("lit-html").Part) => void;
-    until: (...args: unknown[]) => (part: import("lit-html").Part) => void;
-};
+import { Part, DirectiveFn } from 'lit-html';
+import { ClassInfo } from 'lit-html/directives/class-map';
+import { KeyFn, ItemTemplate } from 'lit-html/directives/repeat';
+import { StyleInfo } from 'lit-html/directives/style-map';
+export interface TemplateDirectives {
+    asyncAppend: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
+    asyncReplace: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
+    cache: (value: unknown) => (part: Part) => void;
+    classMap: (classInfo: ClassInfo) => (part: Part) => void;
+    guard: (value: unknown, f: () => unknown) => (part: Part) => void;
+    ifDefined: (value: unknown) => (part: Part) => void;
+    repeat: <T>(items: Iterable<T>, keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>, template?: ItemTemplate<T> | undefined) => DirectiveFn;
+    styleMap: (styleInfo: StyleInfo) => (part: Part) => void;
+    unsafeHTML: (value: unknown) => (part: Part) => void;
+    until: (...args: unknown[]) => (part: Part) => void;
+}
+export declare const directives: TemplateDirectives;
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>
  *     This method is helper brigdge for the [[html]] or the [[svg]] are able to received plain string.

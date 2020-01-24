@@ -4,8 +4,10 @@
  *   - includes:
  *     - i18next
  */
+
+declare const i18n: i18n.i18n;
+
 declare namespace i18n {
-    export const context: i18n;
     export interface FallbackLngObjList {
       [language: string]: string[];
     }
@@ -606,10 +608,9 @@ declare namespace i18n {
       interpolate(str: string, data: object, lng: string, options: InterpolationOptions): string;
       nest(str: string, fc: (...args: any[]) => any, options: InterpolationOptions): string;
     }
-    export class ResourceStore {
-      constructor(data: Resource, options: InitOptions);
-      public data: Resource;
-      public options: InitOptions;
+    export interface ResourceStore {
+       data: Resource;
+       options: InitOptions;
     }
     export interface Services {
       backendConnector: any;
@@ -721,7 +722,7 @@ declare namespace i18n {
        * The use function is there to load additional plugins to i18next.
        * For available module see the plugins page and don't forget to read the documentation of the plugin.
        *
-       * Accepts a class or object
+       * Accepts a interface or object
        */
       use<T extends Module>(
         module: T | Newable<T> | ThirdPartyModule[] | Newable<ThirdPartyModule>[],

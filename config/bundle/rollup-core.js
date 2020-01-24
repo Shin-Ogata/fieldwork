@@ -41,15 +41,15 @@ function getConfig(options) {
         input: `${BUILT}/${BASE}.js`,
         external,
         plugins: [
+            aliasOptions && alias(aliasOptions),
+            replace && replacer(replace),
             nodeResolve({
                 mainFields: ['module', 'main', 'jsnext:main'],
                 preferBuiltins: true,
             }),
             cjs && commonjs(cjsOptions),
-            aliasOptions && alias(aliasOptions),
             sourcemapDetect(),
             sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${DOMAIN}:///${PACKAGE}/` }),
-            replace && replacer(replace),
             postproc && postProcesser(postproc),
         ],
         output: [

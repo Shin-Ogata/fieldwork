@@ -29,7 +29,7 @@
   },
   "scripts": {
     "build": "run-s -l build:*",
-    "build:src": "run-s compile:src bundle:src bundle:dts",
+    "build:src": "run-s compile:src bundle:src bundle:dts minify:src",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
     "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
@@ -53,6 +53,8 @@
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../config/lint/eslint.js",
     "metrics:module": "cdp-task metrics -r module -l ../../../config/lint/eslint.js",
+    "minify": "run-p minify:*",
+    "minify:src": "cdp-task minify js --config ./build.config.js",
     "set-version": "cdp-task set-version",
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",

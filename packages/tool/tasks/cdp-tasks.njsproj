@@ -40,6 +40,7 @@
     <Compile Include="bin\index.js" />
     <Compile Include="command.js" />
     <Compile Include="config.js" />
+    <Compile Include="downloader.js" />
     <Compile Include="index.js" />
     <Compile Include="lib\cli-plugin-bundle-depends.js" />
     <Compile Include="lib\cli-plugin-clean.js" />
