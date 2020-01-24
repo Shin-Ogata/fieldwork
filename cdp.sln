@@ -57,6 +57,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "extension-i18n", "packages\
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "fs-storage", "packages\lib\node\storage\fs-storage.njsproj", "{F0A2862A-764A-4812-8D49-89B18D7655DE}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "collection", "packages\lib\window\collection\collection.njsproj", "{73BC9CF8-B1E3-48F4-89AE-B75C9F346874}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0A2862A-764A-4812-8D49-89B18D7655DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BC9CF8-B1E3-48F4-89AE-B75C9F346874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BC9CF8-B1E3-48F4-89AE-B75C9F346874}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BC9CF8-B1E3-48F4-89AE-B75C9F346874}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BC9CF8-B1E3-48F4-89AE-B75C9F346874}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,6 +168,7 @@ Global
 		{2EF27CE3-38A7-4BC8-93C7-593DD67956C3} = {2AF3B313-39C9-47EE-93E1-2A870DE51D4A}
 		{5F449356-1B8C-4B02-890C-1882E58E8253} = {2AF3B313-39C9-47EE-93E1-2A870DE51D4A}
 		{F0A2862A-764A-4812-8D49-89B18D7655DE} = {26D3ED7E-DA25-4798-94BB-1C9DDFDB19CE}
+		{73BC9CF8-B1E3-48F4-89AE-B75C9F346874} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}
