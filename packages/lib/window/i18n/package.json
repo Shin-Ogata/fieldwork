@@ -1,16 +1,13 @@
 {
-  "name": "@cdp/collection",
-  "description": "generic collection scheme",
+  "name": "@cdp/i18n",
+  "description": "internationalization module",
   "version": "0.9.0",
   "author": "Shin Ogata",
   "dependencies": {
+    "@cdp/ajax": "file:../../worker/ajax",
     "@cdp/core-utils": "file:../../core/utils",
-    "@cdp/data-sync": "file:../data-sync",
-    "@cdp/events": "file:../../core/events",
-    "@cdp/model": "file:../model",
-    "@cdp/observable": "file:../../core/observable",
-    "@cdp/promise": "file:../../core/promise",
-    "@cdp/result": "file:../../core/result"
+    "@cdp/dom": "file:../dom",
+    "@cdp/extension-i18n": "file:../../../extension/i18n"
   },
   "keywords": [
     "CDP",
@@ -18,8 +15,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/collection",
-  "module": "dist/collection.mjs",
+  "main": "dist/i18n",
+  "module": "dist/i18n.mjs",
   "private": true,
   "repository": {
     "type": "git",
@@ -30,7 +27,6 @@
     "build:src": "run-s compile:src bundle:src",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
-    "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
