@@ -21,6 +21,16 @@ function detectSourceMap(src) {
     }
 }
 
+function dropSourceMap(src) {
+    try {
+        const code = src.includes('\n') ? src : fs.readFileSync(src).toString();
+        return convert.removeMapFileComments(convert.removeComments(code));
+    } catch (error) {
+        console.log(chalk.red(`    ERROR: cannot drop source-map for ${src}.`));
+    }
+}
+
 module.exports = {
     detectSourceMap,
+    dropSourceMap,
 };

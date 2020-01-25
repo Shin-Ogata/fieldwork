@@ -1,6 +1,6 @@
 'use strict';
 
-const { createWriteStream } = require('fs');
+const { createWriteStream, unlinkSync } = require('fs');
 const { parse: parseURL } = require('url');
 const http   = require('http');
 const https  = require('https');
@@ -45,7 +45,7 @@ function queryProxy(protocol, options) {
         comand('npm', `config get ${configName}`, {
             stdio: 'pipe',
             stdout: (data) => {
-                setting = data && data.trim();
+                setting = data && !data.includes('null') && data.trim();
             },
         })
             .then(() => {
@@ -77,6 +77,9 @@ function request(stream, connection, options) {
             response.on('close', () => {
                 resolve(redirect);
             });
+            response.on('error', (e) => {
+                reject(e);
+            });
         });
 
         handle.on('error', (e) => {
@@ -91,11 +94,16 @@ async function download(url, dst, protocol, proxy) {
     const connection = ('https' === protocol) ? https : http;
     const stream = createWriteStream(dst);
 
-    do {
-        url = await request(stream, connection, { ...parseURL(url), ...proxy });
-    } while (url);
-
-    stream.end();
+    try {
+        do {
+            url = await request(stream, connection, { ...parseURL(url), ...proxy });
+        } while (url);
+        stream.end();
+    } catch (e) {
+        stream.end();
+        unlinkSync(dst);
+        throw e;
+    }
 }
 
 async function exec(url, dst, options) {

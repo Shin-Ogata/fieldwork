@@ -1,10 +1,16 @@
 'use strict';
 
-const { resolve } = require('path');
+const { resolve }   = require('path');
 const { promisify } = require('util');
-const glob = promisify(require('glob'));
+const {
+    existsSync,
+    writeFileSync,
+    moveSync,
+} = require('fs-extra');
+const glob  = promisify(require('glob'));
 const chalk = require('chalk');
 const plato = require('es6-plato');
+const { dropSourceMap } = require('./source-map-utils');
 const config = require('../config');
 
 const COMMAND = 'metrics';
@@ -98,6 +104,23 @@ async function queryTargets(options) {
 
 async function runPlato(options) {
     const targets = await queryTargets(options);
+
+    const backup = targets.map((tgt) => {
+        const bak = `${tgt}.bak`;
+        const src = (() => {
+            const mjs = tgt.replace(/.js$/, '.mjs');
+            return existsSync(mjs) ? mjs : bak;
+        })();
+        moveSync(tgt, bak, { overwrite: true });
+        writeFileSync(tgt, dropSourceMap(src));
+        return { org: tgt, bak };
+    });
+    const restore = () => {
+        for (const bk of backup) {
+            moveSync(bk.bak, bk.org, { overwrite: true });
+        }
+    };
+
     const { metrics } = config;
     const { cwd, resolution, lint } = options;
 
@@ -106,7 +129,10 @@ async function runPlato(options) {
     const title = metrics.title || `Source Analysis ${config.pkg.name}:${resolution}`;
 
     return new Promise((resolve) => {
-        plato.inspect(targets, outDir, { title, eslint: eslint || false }, () => { resolve(); });
+        plato.inspect(targets, outDir, { title, eslint: eslint || false }, () => {
+            restore();
+            resolve();
+        });
     });
 }
 
