@@ -138,6 +138,12 @@ module.exports = {
                 ignoreComments: true,
             },
         ],
+        'no-duplicate-imports': [
+            'error',
+            {
+                includeExports: false,
+            }
+        ],
         'yoda': [
             'warn',
             'always',

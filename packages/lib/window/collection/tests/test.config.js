@@ -8,7 +8,9 @@ module.exports = {
         external: {
             '@cdp/core-utils': 'CDP',
             '@cdp/events': 'CDP',
+            '@cdp/observable': 'CDP',
             '@cdp/result': 'CDP',
+            '@cdp/promise': 'CDP',
             '@cdp/data-sync': 'CDP',
             '@cdp/model': 'CDP',
         },

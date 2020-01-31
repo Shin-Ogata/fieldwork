@@ -1,7 +1,4 @@
-import {
-    isArray,
-    isPrimitive,
-} from '@cdp/core-utils';
+import { isArray, isPrimitive } from '@cdp/core-utils';
 export {
     PlainObject,
     isString,

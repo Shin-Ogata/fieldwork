@@ -7,7 +7,10 @@
     "@cdp/ajax": "file:../../worker/ajax",
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/dom": "file:../dom",
-    "@cdp/extension-i18n": "file:../../../extension/i18n"
+    "@cdp/environment": "file:../environment",
+    "@cdp/extension-i18n": "file:../../../extension/i18n",
+    "@cdp/promise": "file:../../core/promise",
+    "@cdp/result": "file:../../core/result"
   },
   "keywords": [
     "CDP",
@@ -52,8 +55,8 @@
     "test": "run-s -l lint unit-test:ci",
     "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
     "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/doc/typedoc.js --excludeExternals",
-    "unit-test": "cdp-task ut -c ./tests/test.config.js",
-    "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
+    "unit-test": "cdp-task ut -c ./tests/test.config.js -r ./tests/res",
+    "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -r ./tests/res -s",
     "ut": "npm run unit-test",
     "ut:ci": "npm run unit-test:ci",
     "watch": "run-p watch:*",

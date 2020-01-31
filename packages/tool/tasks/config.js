@@ -60,6 +60,7 @@ function query(cwd = process.cwd()) {
             ignore: [
                 '*/**/index.js',
                 '**/tests/**',
+                '**/*.min.js',
             ],
         },
     };

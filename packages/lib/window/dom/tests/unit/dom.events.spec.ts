@@ -3,8 +3,10 @@
  , @typescript-eslint/no-explicit-any
  */
 
-import { dom as $ } from '@cdp/dom';
-import { DOMEventMap } from '@cdp/dom';
+import {
+    dom as $,
+    DOMEventMap,
+} from '@cdp/dom';
 import {
     prepareTestElements,
     cleanupTestElements,
