@@ -203,7 +203,7 @@ describe('data-sync/rest spec', () => {
         try {
             await dataSyncREST.sync('read', context, { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('operation aborted.');
+            expect(e.message).toBe('aborted');
         }
         done();
     });

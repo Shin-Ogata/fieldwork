@@ -1,10 +1,6 @@
 import { PlainObject, isFunction } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';
-import {
-    RESULT_CODE,
-    makeCanceledResult,
-    makeResult,
-} from '@cdp/result';
+import { RESULT_CODE, makeResult } from '@cdp/result';
 import { Base64 } from '@cdp/binary';
 import {
     AjaxDataTypes,
@@ -138,7 +134,7 @@ export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: strin
     // cancellation
     if (originalToken) {
         if (originalToken.requested) {
-            throw makeCanceledResult();
+            throw originalToken.reason;
         }
         originalToken.register(abort);
     }

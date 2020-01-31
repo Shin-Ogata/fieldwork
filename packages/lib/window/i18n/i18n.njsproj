@@ -37,6 +37,8 @@
     <Content Include=".npmrc" />
     <Content Include="dist\i18n.mjs" />
     <Content Include="package.json" />
+    <Content Include="tests\res\locales\messages.en-US.json" />
+    <Content Include="tests\res\locales\messages.ja-JP.json" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
@@ -48,19 +50,35 @@
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
+    <Folder Include="src\plugin\" />
     <Folder Include="tests\" />
+    <Folder Include="tests\res\" />
+    <Folder Include="tests\res\locales\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
+    <Folder Include="types\plugin\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\core.ts" />
     <TypeScriptCompile Include="src\index.ts" />
+    <TypeScriptCompile Include="src\interfaces.ts" />
+    <TypeScriptCompile Include="src\plugin\ajax-backend.ts" />
+    <TypeScriptCompile Include="src\plugin\module-extends.ts" />
+    <TypeScriptCompile Include="src\plugin\index.ts" />
+    <TypeScriptCompile Include="src\ssr.ts" />
     <TypeScriptCompile Include="tests\unit\core-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\plugin-ajax-backend-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\core.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
+    <TypeScriptCompile Include="types\interfaces.d.ts" />
+    <TypeScriptCompile Include="types\plugin\ajax-backend.d.ts" />
+    <TypeScriptCompile Include="types\plugin\module-extends.d.ts" />
+    <TypeScriptCompile Include="types\plugin\index.d.ts" />
+    <TypeScriptCompile Include="types\ssr.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

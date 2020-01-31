@@ -70,7 +70,7 @@ async function queryTargets(options) {
                 case 'file':
                     return { dir: pkgConfig.dir.built, ignore: pkgConfig.metrics.ignore };
                 case 'module':
-                    return { dir: pkgConfig.dir.dist };
+                    return { dir: pkgConfig.dir.dist, ignore: pkgConfig.metrics.ignore };
                 default:
                     throw `unknown resolution: ${resolution}`;
             }

@@ -41,8 +41,8 @@ function getConfig(options) {
         input: `${BUILT}/${BASE}.js`,
         external,
         plugins: [
-            aliasOptions && alias(aliasOptions),
             replace && replacer(replace),
+            aliasOptions && alias(aliasOptions),
             nodeResolve({
                 mainFields: ['module', 'main', 'jsnext:main'],
                 preferBuiltins: true,

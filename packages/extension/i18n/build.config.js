@@ -17,6 +17,8 @@ function patch(index, code) {
         .replace(/class/gm, 'interface')
         .replace(/^([ ]+)constructor([^\n]+)/gm, '')
         .replace(/public/gm, '')
+        // i18next `BackendModule#create` patch
+        .replace(/^([ ]+)(create)(\([^\n]+\): void;)/gm, '$1create?$3');
     ;
     // set indent
     code = code.split('\n').map(line => `    ${line}`).join('\n');

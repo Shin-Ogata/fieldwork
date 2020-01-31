@@ -1,0 +1,38 @@
+{
+  "app": {
+    "name": "Test i18n",
+    "common": {
+      "backAllCaps": "BACK",
+      "nextAllCaps": "NEXT",
+      "doneAllCaps": "DONE",
+      "startAllCaps": "START",
+      "skipAllCaps": "SKIP",
+      "cancelAllCaps": "CANCEL",
+      "ok": "OK",
+      "back": "戻る",
+      "next": "次へ",
+      "done": "完了",
+      "skip": "スキップ",
+      "cancel": "キャンセル",
+      "close": "閉じる",
+      "transfer": "送信",
+      "save": "保存",
+      "delete": "削除",
+      "remove": "削除",
+      "unregister": "解除",
+      "refresh": "更新",
+      "select": "選択",
+      "reset": "初期化",
+      "retry": "再試行",
+      "restore": "復元",
+      "settings": "設定",
+      "support": "サポート"
+    },
+    "utility": {
+      "fraction": "{{count}}/{{total}}",
+      "bracket": "({{content}})",
+      "yyyymmdd": "{{yyyy}}/{{mm}}/{{dd}}"
+    }
+  },
+    "EOF": "EOF"
+}
