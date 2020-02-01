@@ -94,11 +94,16 @@ async function download(url, dst, protocol, proxy) {
     const connection = ('https' === protocol) ? https : http;
     const stream = createWriteStream(dst);
 
+    const finished = new Promise(resolve => {
+        stream.on('finish', resolve);
+    });
+
     try {
         do {
             url = await request(stream, connection, { ...parseURL(url), ...proxy });
         } while (url);
         stream.end();
+        await finished;
     } catch (e) {
         stream.end();
         unlinkSync(dst);

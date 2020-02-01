@@ -16,4 +16,6 @@ export interface I18NOptions extends i18n.InitOptions, Cancelable {
     resourcePath?: string;
     /** fallback resource name mapping */
     fallbackResources?: { [lng: string]: string; };
+    /** dom-localizer options */
+    dom?: i18n.DomLocalizerOptions;
 }

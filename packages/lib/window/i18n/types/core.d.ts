@@ -1,6 +1,7 @@
 export * from '@cdp/extension-i18n';
 import { i18n } from '@cdp/extension-i18n';
 import { I18NOptions } from './interfaces';
+export { localize } from './plugin/dom-localizer';
 /**
  * @en Translate funcion.
  * @ja 翻訳関数

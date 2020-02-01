@@ -13,6 +13,7 @@ import {
 } from './utils';
 import {
     DOM,
+    DOMPlugin,
     DOMClass,
     DOMSelector,
     DOMResult,
@@ -60,6 +61,7 @@ export {
     QueryContext,
     EvalOptions,
     DOM,
+    DOMPlugin,
     DOMSelector,
     DOMResult,
     DOMIterateCallback,

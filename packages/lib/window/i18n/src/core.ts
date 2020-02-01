@@ -2,7 +2,8 @@ export * from '@cdp/extension-i18n';
 import { i18n } from '@cdp/extension-i18n';
 import { I18NOptions } from './interfaces';
 import { navigator } from './ssr';
-import { AjaxBackend } from './plugin';
+import { AjaxBackend, DomLocalizer } from './plugin';
+export { localize } from './plugin/dom-localizer';
 
 /**
  * @en Translate funcion.
@@ -21,7 +22,7 @@ export const t: i18n.TFunction = i18n.t.bind(i18n);
 export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> => {
     const opts = Object.assign({}, options);
 
-    const { namespace, resourcePath: loadPath } = opts;
+    const { namespace, resourcePath: loadPath, dom } = opts;
 
     if (!opts.lng) {
         opts.lng = navigator.language;
@@ -39,6 +40,8 @@ export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> =
     if (opts.backend) {
         i18n.use(AjaxBackend);
     }
+
+    i18n.use(DomLocalizer(dom));
 
     return i18n.init(opts);
 };

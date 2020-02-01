@@ -63,11 +63,13 @@
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\plugin\ajax-backend.ts" />
+    <TypeScriptCompile Include="src\plugin\dom-localizer.ts" />
     <TypeScriptCompile Include="src\plugin\module-extends.ts" />
     <TypeScriptCompile Include="src\plugin\index.ts" />
     <TypeScriptCompile Include="src\ssr.ts" />
     <TypeScriptCompile Include="tests\unit\core-spec.ts" />
     <TypeScriptCompile Include="tests\unit\plugin-ajax-backend-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\plugin-dom-localizer.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
@@ -76,6 +78,7 @@
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\plugin\ajax-backend.d.ts" />
+    <TypeScriptCompile Include="types\plugin\dom-localizer.d.ts" />
     <TypeScriptCompile Include="types\plugin\module-extends.d.ts" />
     <TypeScriptCompile Include="types\plugin\index.d.ts" />
     <TypeScriptCompile Include="types\ssr.d.ts" />

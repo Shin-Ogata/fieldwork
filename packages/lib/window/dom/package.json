@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "run-s -l build:*",
-    "build:src": "run-s compile:src bundle:src",
+    "build:src": "run-s compile:src bundle:src bundle:dts",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
     "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
@@ -60,5 +60,5 @@
     "watch:ts:src": "npm run compile:src -- -w",
     "watch:ts:test": "npm run compile:test -- -w"
   },
-  "types": "types/index.d.ts"
+  "types": "dist/dom.d.ts"
 }

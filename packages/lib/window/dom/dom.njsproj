@@ -53,6 +53,7 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="dist\dom.d.ts" />
     <TypeScriptCompile Include="src\attributes.ts" />
     <TypeScriptCompile Include="src\base.ts" />
     <TypeScriptCompile Include="src\class.ts" />
