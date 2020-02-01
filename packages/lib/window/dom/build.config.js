@@ -17,6 +17,8 @@ function patch(index, code) {
 
     // 'export { dom };'
     code += 'export { dom };';
+    // 'export { dom as default };'
+    code += 'export { dom as default };';
 
     return code;
 }

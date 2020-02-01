@@ -7,11 +7,27 @@ import { DOMStyles } from './styles';
 import { DOMEvents } from './events';
 import { DOMScroll } from './scroll';
 import { DOMEffects } from './effects';
+declare type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
+/**
+ * @en [[DOM]] plugin method definition.
+ * @ja [[DOM]] プラグインメソッド定義
+ *
+ * @note
+ *  - プラグイン拡張定義はこのインターフェイスマージする.
+ *  - TypeScript 3.7 時点で, module interface のマージは module の完全なパスを必要とするため,
+ *    本レポジトリでは bundle した `dist/dom.d.ts` を提供する.
+ *
+ * @see
+ *  - https://github.com/microsoft/TypeScript/issues/33326
+ *  - https://stackoverflow.com/questions/57848134/trouble-updating-an-interface-using-declaration-merging
+ */
+export interface DOMPlugin {
+}
 /**
  * @en This interface provides DOM operations like `jQuery` library.
  * @ja `jQuery` のようなDOM 操作を提供するインターフェイス
  */
-export interface DOM<T extends ElementBase = HTMLElement> extends DOMBase<T>, DOMAttributes<T>, DOMTraversing<T>, DOMManipulation<T>, DOMStyles<T>, DOMEvents<T>, DOMScroll<T>, DOMEffects<T> {
+export interface DOM<T extends ElementBase = HTMLElement> extends DOMFeatures<T>, DOMPlugin {
 }
 export declare type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
 export declare type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<HTMLElement>);

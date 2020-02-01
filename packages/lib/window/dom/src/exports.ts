@@ -1,6 +1,6 @@
 export {
     ElementBase, SelectorBase, QueryContext, EvalOptions,
-    DOM, DOMSelector, DOMIterateCallback,
+    DOM, DOMPlugin, DOMSelector, DOMIterateCallback,
     dom,
 } from './static';
 export { dom as default } from './static';

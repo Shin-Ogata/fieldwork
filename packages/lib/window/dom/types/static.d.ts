@@ -1,5 +1,5 @@
 import { ElementBase, SelectorBase, QueryContext, EvalOptions, elementify, evaluate } from './utils';
-import { DOM, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
+import { DOM, DOMPlugin, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
 declare namespace dom {
     let fn: DOMClass;
 }
@@ -22,4 +22,4 @@ declare namespace dom {
         evaluate: typeof evaluate;
     };
 }
-export { ElementBase, SelectorBase, QueryContext, EvalOptions, DOM, DOMSelector, DOMResult, DOMIterateCallback, dom, };
+export { ElementBase, SelectorBase, QueryContext, EvalOptions, DOM, DOMPlugin, DOMSelector, DOMResult, DOMIterateCallback, dom, };
