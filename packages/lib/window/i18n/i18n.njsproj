@@ -69,7 +69,7 @@
     <TypeScriptCompile Include="src\ssr.ts" />
     <TypeScriptCompile Include="tests\unit\core-spec.ts" />
     <TypeScriptCompile Include="tests\unit\plugin-ajax-backend-spec.ts" />
-    <TypeScriptCompile Include="tests\unit\plugin-dom-localizer.ts" />
+    <TypeScriptCompile Include="tests\unit\plugin-dom-localizer-spec.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />

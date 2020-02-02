@@ -1,9 +1,13 @@
 export * from '@cdp/extension-i18n';
 import { i18n } from '@cdp/extension-i18n';
+import {
+    dom as $,
+    DOMSelector,
+    DOMResult,
+} from '@cdp/dom';
 import { I18NOptions } from './interfaces';
 import { navigator } from './ssr';
 import { AjaxBackend, DomLocalizer } from './plugin';
-export { localize } from './plugin/dom-localizer';
 
 /**
  * @en Translate funcion.
@@ -44,4 +48,19 @@ export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> =
     i18n.use(DomLocalizer(dom));
 
     return i18n.init(opts);
+};
+
+/**
+ * @en DOM localizer method.
+ * @ja DOM ローカライズ
+ *
+ * @param selector
+ *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+ *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+ * @param options
+ *  - `en` translation options.
+ *  - `ja` 翻訳オプション
+ */
+export const localize = <T extends string | Node>(selector: DOMSelector<T>, options?: i18n.TOptions): DOMResult<T> => {
+    return $(selector).localize(options) as DOMResult<T>;
 };
