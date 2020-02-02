@@ -3,8 +3,6 @@ import { PlainObject } from '@cdp/core-utils';
 import {
     dom as $,
     DOM,
-    DOMSelector,
-    DOMResult,
 } from '@cdp/dom';
 import './module-extends';
 
@@ -20,20 +18,12 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
     } = domOptions;
 
     const parse = ($el: DOM, key: string, opts: i18n.TOptions): void => {
-        if (0 === key.length) {
-            return;
-        }
-
         let attr = 'text';
 
         if (key.startsWith('[')) {
             const parts = key.split(']');
-            key  = parts[1];
-            attr = parts[0].substr(1, parts[0].length - 1);
-        }
-
-        if (key.indexOf(';') === key.length - 1) {
-            key = key.substr(0, key.length - 2);
+            key  = parts[1].trim();
+            attr = parts[0].substr(1, parts[0].length - 1).trim();
         }
 
         const extendDefault = (o: PlainObject, val: string): PlainObject => {
@@ -70,9 +60,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
         } else if (attr.startsWith('data-')) {
             const dataAttr = attr.substr(('data-').length);
             const translated = i18next.t(key, extendDefault(opts, $el.data(dataAttr) as string));
-            // we change into the data cache
             $el.data(dataAttr, translated);
-            // we change into the dom
             $el.attr(attr, translated);
         } else {
             $el.attr(attr, i18next.t(key, extendDefault(opts, $el.attr(attr) as string)) as string); // eslint-disable-line
@@ -80,19 +68,16 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
     };
 
     const localize = ($el: DOM, opts: i18n.TOptions): void => {
-        let key = $el.attr(selectorAttr);
-        if (!key && 'undefined' !== typeof key) {
-            key = $el.text() || $el.val();
-        }
+        const key = $el.attr(selectorAttr);
         if (!key) {
             return;
         }
 
-        let target = $el;
+        let $target = $el;
         const targetSelector = $el.data(targetAttr) as string;
 
         if (targetSelector) {
-            target = $el.find(targetSelector) || $el;
+            $target = $el.find(targetSelector);
         }
 
         if (!opts && true === useOptionsAttr) {
@@ -101,15 +86,11 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
 
         opts = opts || {};
 
-        if (key.includes(';')) {
-            for (const k of key.split(';')) {
-                // .trim(): Trim the comma-separated parameters on the data-i18n attribute.
-                if ('' !== k) {
-                    parse(target, k.trim(), opts);
-                }
+        for (const part of key.split(';')) {
+            const k = part.trim();
+            if ('' !== k) {
+                parse($target, k, opts);
             }
-        } else {
-            parse(target, key, opts);
         }
 
         if (true === useOptionsAttr) {
@@ -158,19 +139,4 @@ export function DomLocalizer(domOptions?: i18n.DomLocalizerOptions): i18n.ThirdP
             }, domOptions)
         ),
     };
-}
-
-/**
- * @en DOM localizer method.
- * @ja DOM ローカライズ
- *
- * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
- * @param options
- *  - `en` translation options.
- *  - `ja` 翻訳オプション
- */
-export function localize<T extends string | Node>(selector: DOMSelector<T>, options?: i18n.TOptions): DOMResult<T> {
-    return $(selector).localize(options) as DOMResult<T>;
 }

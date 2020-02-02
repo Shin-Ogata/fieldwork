@@ -19,7 +19,8 @@ import { document } from './ssr';
 
 /** @internal check HTML string */
 function isHTMLString(src: string): boolean {
-    return  ('<' === src.slice(0, 1)) && ('>' === src.slice(-1));
+    const subject = src.trim();
+    return ('<' === subject.slice(0, 1)) && ('>' === subject.slice(-1));
 }
 
 /** @internal helper for `append()`, `prepend()`, `before()` and `after()`  */
