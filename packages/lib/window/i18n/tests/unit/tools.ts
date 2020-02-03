@@ -9,6 +9,9 @@ const body = document.body;
 
 export function ensureCleanI18N(): void {
     delete i18n['options'];
+    delete i18n['language'];
+    delete i18n['languages'];
+    delete i18n['isInitialized'];
 }
 
 export function createTestElementsFromTemplate(): HTMLElement[] {

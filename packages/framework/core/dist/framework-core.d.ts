@@ -3314,10 +3314,12 @@ declare namespace CDP_DECLARE {
     const enum CDP_KNOWN_MODULE {
         /** `@cdp/ajax` */
         AJAX = 1,
+        /** `@cdp/i18n` */
+        I18N = 2,
         /** `@cdp/data-sync`, `@cdp/model` */
-        MVC = 2,
+        MVC = 3,
         /** offset for unknown module */
-        OFFSET = 3
+        OFFSET = 4
     }
     /**
      * @en Common result code for the application.
