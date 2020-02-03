@@ -17,6 +17,29 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
         customTagName,
     } = domOptions;
 
+    const extendDefault = (o: PlainObject, val: string): PlainObject => {
+        if (!parseDefaultValueFromContent) {
+            return o;
+        }
+        return { ...o, ...{ defaultValue: val } };
+    };
+
+    // [prepend]/[append] helper
+    const insert = (method: 'prepend' | 'append', $el: DOM, key: string, opts: i18n.TOptions): void => {
+        const translated = i18next.t(key, extendDefault(opts, $el.html()));
+        if (false === customTagName) {
+            $el[method](translated);
+        } else {
+            const translatedWithWrap = `<${customTagName}>${translated}</${customTagName}>`;
+            const $firstChild = $($el[0].firstElementChild) as DOM;
+            if ($firstChild.is(customTagName)) {
+                $firstChild.replaceWith(translatedWithWrap);
+            } else {
+                $el[method](translatedWithWrap);
+            }
+        }
+    };
+
     const parse = ($el: DOM, key: string, opts: i18n.TOptions): void => {
         let attr = 'text';
 
@@ -26,37 +49,14 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
             attr = parts[0].substr(1, parts[0].length - 1).trim();
         }
 
-        const extendDefault = (o: PlainObject, val: string): PlainObject => {
-            if (!parseDefaultValueFromContent) {
-                return o;
-            }
-            return { ...o, ...{ defaultValue: val } };
-        };
-
-        // [prepend]/[append] helper
-        const insert = (method: 'prepend' | 'append'): void => {
-            const translated = i18next.t(key, extendDefault(opts, $el.html()));
-            if (false === customTagName) {
-                $el[method](translated);
-            } else {
-                const translatedWithWrap = `<${customTagName}>${translated}</${customTagName}>`;
-                const $firstChild = $($el[0].firstElementChild) as DOM;
-                if ($firstChild.is(customTagName)) {
-                    $firstChild.replaceWith(translatedWithWrap);
-                } else {
-                    $el[method](translatedWithWrap);
-                }
-            }
-        };
-
         if ('html' === attr) {
             $el.html(i18next.t(key, extendDefault(opts, $el.html())));
         } else if ('text' === attr) {
             $el.text(i18next.t(key, extendDefault(opts, $el.text())) as string); // eslint-disable-line
         } else if ('prepend' === attr) {
-            insert('prepend');
+            insert('prepend', $el, key, opts);
         } else if ('append' === attr) {
-            insert('append');
+            insert('append', $el, key, opts);
         } else if (attr.startsWith('data-')) {
             const dataAttr = attr.substr(('data-').length);
             const translated = i18next.t(key, extendDefault(opts, $el.data(dataAttr) as string));

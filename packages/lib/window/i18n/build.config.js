@@ -1,6 +1,7 @@
 'use strict';
 
 const config = require('../../../../config/bundle/rollup-core');
+const { replace } = require('@cdp/result/build.config');
 
 module.exports.default = config({
     external: {
@@ -12,4 +13,5 @@ module.exports.default = config({
         '@cdp/environment': 'CDP',
         '@cdp/dom': 'CDP',
     },
+    replace,
 });
