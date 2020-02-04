@@ -63,6 +63,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\array.ts" />
     <TypeScriptCompile Include="src\config.ts" />
+    <TypeScriptCompile Include="src\date.ts" />
     <TypeScriptCompile Include="src\deep-circuit.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\misc.ts" />
@@ -74,6 +75,7 @@
     <TypeScriptCompile Include="src\types.ts" />
     <TypeScriptCompile Include="tests\unit\array.spec.ts" />
     <TypeScriptCompile Include="tests\unit\config.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\date.spec.ts" />
     <TypeScriptCompile Include="tests\unit\deep-circuit.spec.ts" />
     <TypeScriptCompile Include="tests\unit\misc.spec.ts" />
     <TypeScriptCompile Include="tests\unit\mixins.spec.ts" />
@@ -86,6 +88,7 @@
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\array.d.ts" />
     <TypeScriptCompile Include="types\config.d.ts" />
+    <TypeScriptCompile Include="types\date.d.ts" />
     <TypeScriptCompile Include="types\deep-circuit.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\misc.d.ts" />

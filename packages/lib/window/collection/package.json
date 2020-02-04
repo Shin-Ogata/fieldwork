@@ -7,6 +7,7 @@
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/data-sync": "file:../data-sync",
     "@cdp/events": "file:../../core/events",
+    "@cdp/i18n": "file:../i18n",
     "@cdp/model": "file:../model",
     "@cdp/observable": "file:../../core/observable",
     "@cdp/promise": "file:../../core/promise",
