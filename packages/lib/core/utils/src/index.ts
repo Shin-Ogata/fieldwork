@@ -5,6 +5,7 @@ export * from './deep-circuit';
 export * from './mixins';
 export * from './array';
 export * from './object';
+export * from './date';
 export * from './safe';
 export * from './timer';
 export * from './misc';

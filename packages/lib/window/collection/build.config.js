@@ -11,6 +11,7 @@ module.exports = {
             '@cdp/observable': 'CDP',
             '@cdp/result': 'CDP',
             '@cdp/promise': 'CDP',
+            '@cdp/i18n': 'CDP',
             '@cdp/data-sync': 'CDP',
             '@cdp/model': 'CDP',
         },

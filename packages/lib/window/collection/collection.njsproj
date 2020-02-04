@@ -48,19 +48,25 @@
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
+    <Folder Include="src\utils\" />
     <Folder Include="tests\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
+    <Folder Include="types\utils\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
-    <TypeScriptCompile Include="tests\unit\collection.spec.ts" />
+    <TypeScriptCompile Include="src\utils\comparator.ts" />
+    <TypeScriptCompile Include="src\utils\index.ts" />
+    <TypeScriptCompile Include="tests\unit\comparator.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
+    <TypeScriptCompile Include="types\utils\comparator.d.ts" />
+    <TypeScriptCompile Include="types\utils\index.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
