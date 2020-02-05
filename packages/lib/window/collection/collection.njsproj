@@ -57,14 +57,20 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
+    <TypeScriptCompile Include="src\utils\array-cursor.ts" />
+    <TypeScriptCompile Include="src\utils\array-editor.ts" />
     <TypeScriptCompile Include="src\utils\comparator.ts" />
     <TypeScriptCompile Include="src\utils\index.ts" />
+    <TypeScriptCompile Include="tests\unit\array-cursor.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\array-editor.spec.ts" />
     <TypeScriptCompile Include="tests\unit\comparator.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
+    <TypeScriptCompile Include="types\utils\array-cursor.d.ts" />
+    <TypeScriptCompile Include="types\utils\array-editor.d.ts" />
     <TypeScriptCompile Include="types\utils\comparator.d.ts" />
     <TypeScriptCompile Include="types\utils\index.d.ts" />
   </ItemGroup>
