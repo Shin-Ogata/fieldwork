@@ -1,7 +1,3 @@
-/* eslint-disable
-   @typescript-eslint/no-explicit-any
- */
-
 import { isFunction, sort } from '@cdp/core-utils';
 import {
     SortOrder,
