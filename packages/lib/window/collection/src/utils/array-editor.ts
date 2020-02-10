@@ -121,7 +121,7 @@ export async function appendArray<T>(target: ObservableArray<T> | T[], src: T[],
  */
 export async function insertArray<T>(target: ObservableArray<T> | T[], index: number, src: T[], token?: CancelToken): Promise<ArrayChangeRecord<T>[]> {
     // 最後の要素に追加するため index == target.length を許容
-    if (index < 0 || target.length < index || Math.floor(index) !== index) {
+    if (index < 0 || target.length < index || Math.trunc(index) !== index) {
         throw makeResult(RESULT_CODE.NOT_SUPPORTED, `insertArray(), index is invalid. index: ${index}`);
     } else if (null == src || src.length <= 0) {
         return [];
@@ -156,7 +156,7 @@ export async function insertArray<T>(target: ObservableArray<T> | T[], index: nu
  */
 export async function reorderArray<T>(target: ObservableArray<T> | T[], index: number, orders: number[], token?: CancelToken): Promise<ArrayChangeRecord<T>[]> {
     // 最後の要素に追加するため index == target.length を許容
-    if (index < 0 || target.length < index || Math.floor(index) !== index) {
+    if (index < 0 || target.length < index || Math.trunc(index) !== index) {
         throw makeResult(RESULT_CODE.NOT_SUPPORTED, `insertArray(), index is invalid. index: ${index}`);
     } else if (null == orders || orders.length <= 0) {
         return [];

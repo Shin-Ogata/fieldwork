@@ -1,7 +1,7 @@
-import { SortOrder, SortCallback } from '../interfaces';
+import { SortOrder, SortCallback, SortKey } from '../interfaces';
 /**
- * @en [[Intl.Collator]] factory function type definition.
- * @ja [[Intl.Collator]] を返却する関数型定義
+ * @en `Intl.Collator` factory function type definition.
+ * @ja `Intl.Collator` を返却する関数型定義
  */
 export declare type CollatorProvider = () => Intl.Collator;
 /**
@@ -61,3 +61,8 @@ export declare const getBooleanComparator: typeof getGenericComparator;
  * @ja 数値比較用関数を取得
  */
 export declare const getNumberComparator: typeof getGenericComparator;
+/**
+ * @en Convert to comparator from [[SortKey]].
+ * @ja [[SortKey]] を comparator に変換
+ */
+export declare function toComparator<T, K extends string = string>(sortKey: SortKey<K>): SortCallback<T>;
