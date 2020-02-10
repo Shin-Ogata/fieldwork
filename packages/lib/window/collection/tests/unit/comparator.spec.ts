@@ -1,5 +1,6 @@
 import { isFunction, sort } from '@cdp/core-utils';
 import {
+    SortKey,
     SortOrder,
     CollatorProvider,
     defaultCollatorProvider,
@@ -7,6 +8,7 @@ import {
     getDateComparator,
     getBooleanComparator,
     getNumberComparator,
+    toComparator,
 } from '@cdp/collection';
 
 describe('utils/comparator spec', () => {
@@ -201,6 +203,147 @@ describe('utils/comparator spec', () => {
         expect(results[2].id).toBe('02');
         expect(results[3].id).toBe('03');
         expect(results[4].id).toBe('04');
+        expect(results[5].id).toBe('05');
+    });
+
+    it('check toComparator() from type: string', (): void => {
+        defaultCollatorProvider(jaCollatorProvider);
+
+        const sortKey: SortKey<'prop'> = {
+            name: 'prop',
+            order: SortOrder.ASC,
+            type: 'string',
+        };
+
+        const items = [
+            { id: '00', prop: '1.txt' },
+            { id: '01', prop: '8.txt' },
+            { id: '02', prop: '20.txt' },
+            { id: '03', prop: '2.txt' },
+            { id: '04', prop: '10.txt' },
+            { id: '05', prop: undefined },
+            { id: '06', prop: '80.txt' },
+            { id: '07', prop: '40.txt' },
+        ];
+
+        const comparator = toComparator<{ id: string; prop: string; }>(sortKey);
+        const results = items.slice().sort(comparator);
+
+        expect(results[0].prop).toBeUndefined();
+        expect(results[1].prop).toBe('1.txt');
+        expect(results[2].prop).toBe('2.txt');
+        expect(results[3].prop).toBe('8.txt');
+        expect(results[4].prop).toBe('10.txt');
+        expect(results[5].prop).toBe('20.txt');
+        expect(results[6].prop).toBe('40.txt');
+        expect(results[7].prop).toBe('80.txt');
+    });
+
+    it('check toComparator() from type: boolean', (): void => {
+        const sortKey: SortKey<'prop'> = {
+            name: 'prop',
+            order: SortOrder.ASC,
+            type: 'boolean',
+        };
+
+        const items = [
+            { id: '00', prop: false },
+            { id: '01', prop: true },
+            { id: '02', prop: undefined },
+            { id: '03', prop: true },
+            { id: '04', prop: false },
+            { id: '05', prop: undefined },
+        ];
+
+        const comparator = toComparator<{ id: string; prop: boolean; }>(sortKey);
+        const results = sort(items, comparator);
+
+        expect(results[0].id).toBe('02');
+        expect(results[1].id).toBe('05');
+        expect(results[2].id).toBe('00');
+        expect(results[3].id).toBe('04');
+        expect(results[4].id).toBe('01');
+        expect(results[5].id).toBe('03');
+    });
+
+    it('check toComparator() from type: number', (): void => {
+        const sortKey: SortKey<'prop'> = {
+            name: 'prop',
+            order: SortOrder.ASC,
+            type: 'number',
+        };
+
+        const items = [
+            { id: '00', prop: 1 },
+            { id: '01', prop: 0 },
+            { id: '02', prop: undefined },
+            { id: '03', prop: 300 },
+            { id: '04', prop: -10 },
+            { id: '05', prop: Infinity },
+        ];
+
+        const comparator = toComparator<{ id: string; prop: number; }>(sortKey);
+        const results = sort(items, comparator);
+
+        expect(results[0].id).toBe('02');
+        expect(results[1].id).toBe('04');
+        expect(results[2].id).toBe('01');
+        expect(results[3].id).toBe('00');
+        expect(results[4].id).toBe('03');
+        expect(results[5].id).toBe('05');
+    });
+
+    it('check toComparator() from type: date', (): void => {
+        const sortKey: SortKey<'prop'> = {
+            name: 'prop',
+            order: SortOrder.ASC,
+            type: 'date',
+        };
+
+        const sameInstance = new Date('1977-02-16');
+        const items = [
+            { id: '00', prop: new Date('2002-04-01') },
+            { id: '01', prop: sameInstance },
+            { id: '02', prop: new Date('2020-02-04') },
+            { id: '03', prop: undefined },
+            { id: '04', prop: sameInstance },
+            { id: '05', prop: new Date('2002-04-01') },
+        ];
+
+        const comparator = toComparator<{ id: string; prop: Date; }>(sortKey);
+        const results = sort(items, comparator);
+
+        expect(results[0].id).toBe('03');
+        expect(results[1].id).toBe('01');
+        expect(results[2].id).toBe('04');
+        expect(results[3].id).toBe('00');
+        expect(results[4].id).toBe('05');
+        expect(results[5].id).toBe('02');
+    });
+
+    it('check toComparator() from type: none (general)', (): void => {
+        const sortKey = {
+            name: 'prop',
+            order: SortOrder.ASC,
+        } as SortKey<'prop'>;
+
+        const items = [
+            { id: '00', prop: 1 },
+            { id: '01', prop: Number(0) },
+            { id: '02', prop: undefined },
+            { id: '03', prop: 300 },
+            { id: '04', prop: Number(-10) },
+            { id: '05', prop: Infinity },
+        ];
+
+        const comparator = toComparator<{ id: string; prop: number; }>(sortKey);
+        const results = sort(items, comparator);
+
+        expect(results[0].id).toBe('02');
+        expect(results[1].id).toBe('04');
+        expect(results[2].id).toBe('01');
+        expect(results[3].id).toBe('00');
+        expect(results[4].id).toBe('03');
         expect(results[5].id).toBe('05');
     });
 });

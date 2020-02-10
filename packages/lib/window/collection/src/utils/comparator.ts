@@ -1,9 +1,13 @@
 import { getLanguage } from '@cdp/i18n';
-import { SortOrder, SortCallback } from '../interfaces';
+import {
+    SortOrder,
+    SortCallback,
+    SortKey,
+} from '../interfaces';
 
 /**
- * @en [[Intl.Collator]] factory function type definition.
- * @ja [[Intl.Collator]] を返却する関数型定義
+ * @en `Intl.Collator` factory function type definition.
+ * @ja `Intl.Collator` を返却する関数型定義
  */
 export type CollatorProvider = () => Intl.Collator;
 
@@ -126,3 +130,23 @@ export const getBooleanComparator = getGenericComparator;
  * @ja 数値比較用関数を取得
  */
 export const getNumberComparator = getGenericComparator;
+
+/**
+ * @en Convert to comparator from [[SortKey]].
+ * @ja [[SortKey]] を comparator に変換
+ */
+export function toComparator<T, K extends string = string>(sortKey: SortKey<K>): SortCallback<T> {
+    const propName = sortKey.name;
+    switch (sortKey.type) {
+        case 'string':
+            return getStringComparator<T, K>(propName, sortKey.order);
+        case 'boolean':
+            return getBooleanComparator<T, K>(propName, sortKey.order);
+        case 'number':
+            return getNumberComparator<T, K>(propName, sortKey.order);
+        case 'date':
+            return getDateComparator<T, K>(propName, sortKey.order);
+        default:
+            return getGenericComparator<T, K>(propName, sortKey.order);
+    }
+}
