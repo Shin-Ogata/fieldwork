@@ -132,10 +132,10 @@ export declare type NonFunctionPropertyNames<T> = {
  */
 export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 /**
- * @en Extract object key list. (`keyof` alias)
- * @ja オブジェクトのキー一覧を抽出 (`keyof` alias)
+ * @en Extract object key list. (ensure only 'string')
+ * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
-export declare type Keys<T extends {}> = keyof T;
+export declare type Keys<T extends {}> = keyof Omit<T, number | symbol>;
 /**
  * @en Extract object type list.
  * @ja オブジェクトの型一覧を抽出
@@ -2699,7 +2699,7 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    setItem<V extends StorageInputDataTypeList<T>, K extends Keys<T> = 'string'>(key: string, value: V, options?: IStorageDataOptions<T, K>): Promise<void>;
+    setItem<V extends StorageInputDataTypeList<T>, K extends Keys<T> = Keys<T>>(key: string, value: V, options?: IStorageDataOptions<T, K>): Promise<void>;
     /**
      * @en Removes the key/value pair with the given key from the list associated with the object, if a key/value pair with the given key exists.
      * @ja 指定されたキーに対応する値が存在すれば削除

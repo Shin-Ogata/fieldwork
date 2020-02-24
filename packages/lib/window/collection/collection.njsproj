@@ -48,16 +48,21 @@
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
+    <Folder Include="src\query\" />
     <Folder Include="src\utils\" />
     <Folder Include="tests\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
+    <Folder Include="types\query\" />
     <Folder Include="types\utils\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
-    <TypeScriptCompile Include="src\query.ts" />
+    <TypeScriptCompile Include="src\query\dynamic-condition.ts" />
+    <TypeScriptCompile Include="src\query\dynamic-filters.ts" />
+    <TypeScriptCompile Include="src\query\index.ts" />
+    <TypeScriptCompile Include="src\query\query.ts" />
     <TypeScriptCompile Include="src\result-code-defs.ts" />
     <TypeScriptCompile Include="src\utils\array-cursor.ts" />
     <TypeScriptCompile Include="src\utils\array-editor.ts" />
@@ -66,13 +71,17 @@
     <TypeScriptCompile Include="tests\unit\array-cursor.spec.ts" />
     <TypeScriptCompile Include="tests\unit\array-editor.spec.ts" />
     <TypeScriptCompile Include="tests\unit\comparator.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\dynamic-condition.spec.ts" />
     <TypeScriptCompile Include="tests\unit\query.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
-    <TypeScriptCompile Include="types\query.d.ts" />
+    <TypeScriptCompile Include="types\query\dynamic-condition.d.ts" />
+    <TypeScriptCompile Include="types\query\dynamic-filters.d.ts" />
+    <TypeScriptCompile Include="types\query\index.d.ts" />
+    <TypeScriptCompile Include="types\query\query.d.ts" />
     <TypeScriptCompile Include="types\result-code-defs.d.ts" />
     <TypeScriptCompile Include="types\utils\array-cursor.d.ts" />
     <TypeScriptCompile Include="types\utils\array-editor.d.ts" />

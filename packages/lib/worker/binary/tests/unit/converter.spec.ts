@@ -222,7 +222,7 @@ describe('binary/converter spec', () => {
         expect(await deserialize('null')).toBe(null);
         expect(await deserialize('undefined')).toBe(undefined);
 
-        // /w cast
+        // w/ cast
         expect(await deserialize<string>('str')).toBe('str');
         expect(await deserialize<number>('100')).toBe(100);
         expect(await deserialize<boolean>('true')).toBe(true);
@@ -235,7 +235,7 @@ describe('binary/converter spec', () => {
         done();
     });
 
-    it('check deserialize() /w convert', async done => {
+    it('check deserialize() w/ convert', async done => {
         const dataURL = `data:application/octet-stream;base64,${base64}`;
 
         expect(await deserialize('str', { dataType: 'string' })).toBe('str');

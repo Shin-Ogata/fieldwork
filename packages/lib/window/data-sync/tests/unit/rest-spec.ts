@@ -72,7 +72,7 @@ describe('data-sync/rest spec', () => {
         expect(dataSyncREST).toBeDefined();
     });
 
-    it('check read /w url property', async done => {
+    it('check read w/ url property', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -87,7 +87,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read /w url function', async done => {
+    it('check read w/ url function', async done => {
         const context = new TestB();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -198,7 +198,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read /w cancel', async done => {
+    it('check read w/ cancel', async done => {
         const context = new TestA();
         try {
             await dataSyncREST.sync('read', context, { cancel: token });

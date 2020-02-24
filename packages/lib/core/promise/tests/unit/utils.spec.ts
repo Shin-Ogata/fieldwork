@@ -129,7 +129,7 @@ describe('promise/utils spec', () => {
         }
     });
 
-    it('check PromiseManager#add /w cancelSource', async () => {
+    it('check PromiseManager#add w/ cancelSource', async () => {
         const manager = new PromiseManager();
         const source = CancelToken.source();
         const { token } = source;

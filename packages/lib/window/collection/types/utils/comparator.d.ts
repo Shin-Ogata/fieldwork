@@ -66,3 +66,8 @@ export declare const getNumberComparator: typeof getGenericComparator;
  * @ja [[SortKey]] を comparator に変換
  */
 export declare function toComparator<T, K extends string = string>(sortKey: SortKey<K>): SortCallback<T>;
+/**
+ * @en Convert to comparator array from [[SortKey]] array.
+ * @ja [[SortKey]] 配列を comparator 配列に変換
+ */
+export declare function convertSortKeys<T, K extends string = string>(sortKeys: SortKey<K>[]): SortCallback<T>[];

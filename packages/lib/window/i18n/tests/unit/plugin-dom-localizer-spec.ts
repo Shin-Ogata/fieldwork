@@ -156,7 +156,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         done();
     });
 
-    it('check prepend content /w no use custom-tag', async done => {
+    it('check prepend content w/ no use custom-tag', async done => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -223,7 +223,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         done();
     });
 
-    it('check append content /w no use custom-tag', async done => {
+    it('check append content w/ no use custom-tag', async done => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -277,7 +277,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         expect($test.text()).toBe('20/100');
     });
 
-    it('check options /w attribute', async done => {
+    it('check options w/ attribute', async done => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -369,7 +369,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         expect($test.text()).toBe('送信');
     });
 
-    it('check localize() /w options', () => {
+    it('check localize() w/ options', () => {
         $(prepareTestElements())
             .append(`
                 <a id="testee" href="#" data-i18n="app.utility.fraction"></a>
@@ -380,7 +380,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         expect(el.textContent).toBe('20/100');
     });
 
-    it('check localize() /w before activate', () => {
+    it('check localize() w/ before activate', () => {
         const text = localize(`
             <a id="testee" href="#" data-i18n="app.common.transfer"></a>
         `)[0].outerHTML;

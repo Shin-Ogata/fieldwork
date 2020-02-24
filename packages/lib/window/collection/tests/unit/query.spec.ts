@@ -2,7 +2,11 @@
    @typescript-eslint/no-explicit-any
  */
 
-import { isFunction } from '@cdp/core-utils';
+import {
+    isFunction,
+    isEmptyObject,
+    computeDate,
+} from '@cdp/core-utils';
 import { checkCanceled as cc } from '@cdp/promise';
 import { RESULT_CODE } from '@cdp/result';
 import {
@@ -12,9 +16,11 @@ import {
     CollectionQueryOptions,
     CollectionQueryInfo,
     CollectionFetchResult,
+    DynamicCondition,
     getStringComparator,
     queryItems,
     searchItems,
+    conditionalFix,
 } from '@cdp/collection';
 
 interface Item {
@@ -43,6 +49,7 @@ const provider = async (options?: ItemQueryOptions): Promise<CollectionFetchResu
         index,
         limit,
         cancel: token,
+        condition,
     } = opts;
 
     await cc(token);
@@ -55,10 +62,18 @@ const provider = async (options?: ItemQueryOptions): Promise<CollectionFetchResu
         return result;
     })(filter, ...comparators);
 
+    const nextOptions = (() => {
+        const no = { noSearch: !!filter, condition };
+        !no.noSearch && delete no.noSearch;
+        !no.condition && delete no.condition;
+        return isEmptyObject(no) ? undefined : no;
+    })();
+
     if (null == index && null == limit) {
         return {
             total: targets.length,
             items: targets,
+            options: nextOptions,
         };
     } else {
         const idx = (null == index) ? 0 : index;
@@ -66,11 +81,12 @@ const provider = async (options?: ItemQueryOptions): Promise<CollectionFetchResu
         return {
             total: targets.length,
             items: result,
+            options: nextOptions,
         };
     }
 };
 
-describe('query spec', () => {
+describe('query/query spec', () => {
     let count: number;
 
     beforeEach(() => {
@@ -83,7 +99,7 @@ describe('query spec', () => {
     };
 
     describe('searchItems()', () => {
-        it('check searchItems() /w no filter, no comparators', (): void => {
+        it('check searchItems() w/ no filter, no comparators', (): void => {
             const searched = searchItems(items);
             expect(searched).not.toBe(items);
             expect(searched.length).toBe(7);
@@ -96,14 +112,14 @@ describe('query spec', () => {
             expect(searched[6].name).toBe('j');
         });
 
-        it('check searchItems() /w filter', (): void => {
+        it('check searchItems() w/ filter', (): void => {
             const searched = searchItems(items, item => 'd' === item.name || 'f' === item.name);
             expect(searched.length).toBe(2);
             expect(searched[0].name).toBe('d');
             expect(searched[1].name).toBe('f');
         });
 
-        it('check searchItems() /w comparators', (): void => {
+        it('check searchItems() w/ comparators', (): void => {
             const searched = searchItems(items, undefined, getStringComparator<Item>('name', SortOrder.DESC), true as any);
             expect(searched.length).toBe(7);
             expect(searched[0].name).toBe('s');
@@ -116,7 +132,7 @@ describe('query spec', () => {
         });
     });
 
-    describe('queryItem() /w provider', () => {
+    describe('queryItem() w/ provider', () => {
         let info!: ItemQueryInfo;
 
         beforeEach(() => {
@@ -126,7 +142,7 @@ describe('query spec', () => {
             };
         });
 
-        it('check /w filter', async done => {
+        it('check w/ filter', async done => {
             const options: ItemQueryOptions = {
                 comparators: [],
                 filter: (item) => {
@@ -148,12 +164,12 @@ describe('query spec', () => {
 
             expect(info.cache).toBeFalsy();
             expect(info.filter).toBe(options.filter);
-            expect(info.comparators).toBe(options.comparators as any);
+            expect(info.comparators).toEqual([]);
 
             done();
         });
 
-        it('check /w sort', async done => {
+        it('check w/ sort', async done => {
             const options: ItemQueryOptions = {
                 comparators: [
                     getStringComparator<Item>('name', SortOrder.DESC),
@@ -174,7 +190,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w sortKeys', async done => {
+        it('check w/ sortKeys', async done => {
             const options: ItemQueryOptions = {
                 sortKeys: [{ name: 'name', order: SortOrder.DESC, type: 'string' }],
             };
@@ -193,7 +209,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w limit & index', async done => {
+        it('check w/ limit & index', async done => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -227,7 +243,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w limit & auto', async done => {
+        it('check w/ limit & auto', async done => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -300,7 +316,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w invalid input', async done => {
+        it('check w/ invalid input', async done => {
             try {
                 const options: ItemQueryOptions = {
                     index: 3.1,
@@ -327,7 +343,7 @@ describe('query spec', () => {
         });
     });
 
-    describe('queryItem() /w cache', () => {
+    describe('queryItem() w/ cache', () => {
         let info!: ItemQueryInfo;
 
         beforeEach(() => {
@@ -344,7 +360,7 @@ describe('query spec', () => {
             };
         });
 
-        it('check /w filter', async done => {
+        it('check w/ filter', async done => {
             const options: ItemQueryOptions = {
                 comparators: [],
                 filter: (item) => {
@@ -366,7 +382,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w sort', async done => {
+        it('check w/ sort', async done => {
             const options: ItemQueryOptions = {
                 comparators: [
                     getStringComparator<Item>('name', SortOrder.DESC),
@@ -387,7 +403,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w sortKeys', async done => {
+        it('check w/ sortKeys', async done => {
             const options: ItemQueryOptions = {
                 sortKeys: [{ name: 'name', order: SortOrder.DESC, type: 'string' }],
             };
@@ -406,7 +422,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w limit & index', async done => {
+        it('check w/ limit & index', async done => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -439,7 +455,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w limit & auto', async done => {
+        it('check w/ limit & auto', async done => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -511,7 +527,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w noSearch', async done => {
+        it('check w/ noSearch', async done => {
             info.sortKeys = [{ name: 'name', order: SortOrder.DESC, type: 'string' }];
             info.filter = (item) => {
                 if ('d' === item.name || 'g' === item.name || 'f' === item.name) {
@@ -539,7 +555,7 @@ describe('query spec', () => {
             done();
         });
 
-        it('check /w invalid input', async done => {
+        it('check w/ invalid input', async done => {
             try {
                 const options: ItemQueryOptions = {
                     index: 3.1,
@@ -563,6 +579,39 @@ describe('query spec', () => {
             }
 
             done();
+        });
+    });
+
+    describe('conditionalFix()', () => {
+        interface Track {
+            title: string;
+            trackArtist: string;
+            albumTitle: string;
+            size: number;
+            duration: number;
+            releaseDate: Date;
+            compilation: boolean;
+        }
+
+        const tracks: Track[] = [
+            { title: '001', trackArtist: 'aaa', albumTitle: 'AAA', duration: 6000, size: 512000, releaseDate: new Date('2009/01/01'), compilation: false, },
+            { title: '002', trackArtist: 'aaa', albumTitle: 'BBB', duration: 6000, size: 512000, releaseDate: computeDate(new Date(), -2, 'month'), compilation: true, },
+            { title: '003', trackArtist: 'aaa', albumTitle: 'CCC', duration: 7000, size: 512000, releaseDate: new Date(), compilation: false, },
+            { title: '004', trackArtist: 'aaa', albumTitle: 'AAA', duration: 4000, size: 128000, releaseDate: computeDate(new Date(), -2, 'month'), compilation: false, },
+            { title: '005', trackArtist: 'aaa', albumTitle: 'BBB', duration: 4000, size: 128000, releaseDate: new Date('2010/01/01'), compilation: true, },
+            { title: '006', trackArtist: 'aaa', albumTitle: 'CCC', duration: 4000, size: 128000, releaseDate: new Date(), compilation: false, },
+        ];
+
+        it('check random', (): void => {
+            const cond = new DynamicCondition<Track>({
+                operators: [],
+                random: true,
+            });
+
+            const result = conditionalFix(tracks.slice(), cond);
+
+            expect(result.total).toBe(6);
+            expect(result.items).not.toEqual(tracks);
         });
     });
 });

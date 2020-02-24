@@ -27,7 +27,7 @@ describe('utils/date spec', () => {
         expect(computed.toISOString()).toBe('2020-02-04T08:15:40.012Z');
     });
 
-    it('check computeDate() /w invalid unit', () => {
+    it('check computeDate() w/ invalid unit', () => {
         const base = new Date('2020-02-04T17:15:40+09:00');
         expect(() => computeDate(base, 12, 'hoge' as any)).toThrow(new TypeError('invalid unit: hoge'));
     });

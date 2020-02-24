@@ -210,7 +210,7 @@ describe('extention-template spec', () => {
     });
 
     describe('nest and compose templates', () => {
-        it('check nest and compose templates /w template literal', () => {
+        it('check nest and compose templates w/ template literal', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -225,7 +225,7 @@ describe('extention-template spec', () => {
             expect($dom.find('.page').text()).toBe(`Here's my main page.`);
         });
 
-        it('check conditionals /w ternary operators', () => {
+        it('check conditionals w/ ternary operators', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -249,7 +249,7 @@ describe('extention-template spec', () => {
             expect($dom.text()).toBe('Please log in');
         });
 
-        it('check conditionals /w if statements', () => {
+        it('check conditionals w/ if statements', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -300,7 +300,7 @@ describe('extention-template spec', () => {
             expect($listItems[1].textContent).toBe('item2');
         });
 
-        it('check repeating templates /w looping statements', () => {
+        it('check repeating templates w/ looping statements', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -324,7 +324,7 @@ describe('extention-template spec', () => {
             expect($listItems[1].textContent).toBe('item2');
         });
 
-        it('check repeating templates /w the repeat directive', () => {
+        it('check repeating templates w/ the repeat directive', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -445,7 +445,7 @@ describe('extention-template spec', () => {
             expect($shadowRoot.find('.shadow-el').css('background-color')).toBe('rgb(255, 215, 0)');
         });
 
-        it('check inline styles /w styleMap', () => {
+        it('check inline styles w/ styleMap', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -476,7 +476,7 @@ describe('extention-template spec', () => {
             expect($shadowRoot.find('.shadow-el').css('background-color')).toBe('rgb(255, 215, 0)');
         });
 
-        it('check Setting classes /w classMap', () => {
+        it('check Setting classes w/ classMap', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -489,7 +489,7 @@ describe('extention-template spec', () => {
             };
 
             const template = (custom?: boolean): TemplateResult => {
-                const mergedClasses = Object.assign({ 'custom-style': custom }, baseClasses);
+                const mergedClasses = Object.assign({ 'custom-style': !!custom }, baseClasses);
                 return html`
                     <style>
                         .custom-style {
@@ -516,7 +516,7 @@ describe('extention-template spec', () => {
     });
 
     describe('rendering templates', () => {
-        it('check render options /w eventContext', async done => {
+        it('check render options w/ eventContext', async done => {
             prepareTestElements();
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
@@ -671,7 +671,7 @@ describe('extention-template spec', () => {
             expect($dom.find('.test-svg')[0] instanceof SVGElement).toBe(true);
         });
 
-        it('check html /w toTemplateStringsArray()', () => {
+        it('check html w/ toTemplateStringsArray()', () => {
             prepareTestElements();
             const $dom = $('#d1');
             const raw = '<p>Hello Raw String</p>';

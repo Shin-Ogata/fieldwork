@@ -93,7 +93,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check throttle() /w cancel', async done => {
+    it('check throttle() w/ cancel', async done => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -109,7 +109,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check throttle() /w nest call', async done => {
+    it('check throttle() w/ nest call', async done => {
         let count = 0;
         const exec = (): void => {
             count++;
@@ -182,7 +182,7 @@ describe('utils/misc spec', () => {
         done();
     });
 
-    it('check debounce() /w cancel', async done => {
+    it('check debounce() w/ cancel', async done => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -288,7 +288,7 @@ describe('utils/misc spec', () => {
         expect(dropUndefined(undefined)).toBe(null);
     });
 
-    it('check dropUndefined() /w nilSelialize', () => {
+    it('check dropUndefined() w/ nilSelialize', () => {
         expect(dropUndefined('str', true)).toBe('str');
         expect(dropUndefined(100, true)).toBe(100);
         expect(dropUndefined(true, true)).toBe(true);

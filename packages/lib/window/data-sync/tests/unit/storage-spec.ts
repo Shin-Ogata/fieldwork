@@ -97,7 +97,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check create /w data', async done => {
+    it('check create w/ data', async done => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -176,7 +176,7 @@ describe('data-sync/rest spec', () => {
         done();
     });
 
-    it('check read /w cancel', async done => {
+    it('check read w/ cancel', async done => {
         const context = new TestA();
         try {
             localStorage.setItem('aaa', JSON.stringify({

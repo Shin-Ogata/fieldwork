@@ -150,3 +150,15 @@ export function toComparator<T, K extends string = string>(sortKey: SortKey<K>):
             return getGenericComparator<T, K>(propName, sortKey.order);
     }
 }
+
+/**
+ * @en Convert to comparator array from [[SortKey]] array.
+ * @ja [[SortKey]] 配列を comparator 配列に変換
+ */
+export function convertSortKeys<T, K extends string = string>(sortKeys: SortKey<K>[]): SortCallback<T>[] {
+    const comparators: SortCallback<T>[] = [];
+    for (const sortKey of sortKeys) {
+        comparators.push(toComparator(sortKey));
+    }
+    return comparators;
+}

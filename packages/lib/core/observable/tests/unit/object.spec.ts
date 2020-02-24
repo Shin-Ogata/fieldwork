@@ -91,7 +91,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('ObservableObject#resume(notify after called #resume) /w ObservableObject#isActive', async done => {
+    it('ObservableObject#resume(notify after called #resume) w/ ObservableObject#isActive', async done => {
         const model = new Model(1, 1).suspend();
         model.on('sum', (newValue, oldValue) => {
             expect(newValue).toBe(3);

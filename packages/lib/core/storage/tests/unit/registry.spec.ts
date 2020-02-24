@@ -48,7 +48,7 @@ describe('storage/registry spec', () => {
         expect(_reg.storage.kind).toBe('memory');
     });
 
-    it('check Registry#load() /w callback ', async done => {
+    it('check Registry#load() w/ callback ', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -78,7 +78,7 @@ describe('storage/registry spec', () => {
         done();
     });
 
-    it('check Registry#save() /w callback ', async done => {
+    it('check Registry#save() w/ callback ', async done => {
         const stub = {
             onWillSave: () => {
                 // final update
@@ -121,7 +121,7 @@ describe('storage/registry spec', () => {
         expect(_reg.read('trade/check')).toBeNull();
         expect(_reg.read('extra/user')).toBeNull();
 
-        // /w field
+        // w/ field
         expect(_reg.read('trade/local', { field: 'private' })).toEqual({ unit: '円', rate: 100 });
 
         done();
@@ -143,9 +143,9 @@ describe('storage/registry spec', () => {
         _reg.write('common/mode', 'normal');
         // no save
         _reg.write('trade/check', true, { noSave: true });
-        // /w field
+        // w/ field
         _reg.write('trade/local', { unit: '$', rate: 109 }, { field: 'private' });
-        // /w silent & new field
+        // w/ silent & new field
         _reg.write('extra/user', 'test-user', { silent: true, field: 'pim' });
 
         expect(_reg.read('common/mode')).toBe('normal');

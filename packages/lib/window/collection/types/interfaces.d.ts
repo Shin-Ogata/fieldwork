@@ -1,3 +1,4 @@
+import { Keys } from '@cdp/core-utils';
 import { Cancelable } from '@cdp/promise';
 /**
  * @en Sort order const definitions.
@@ -48,10 +49,165 @@ export interface SortKey<TKey extends string> {
     type: SortKeyType;
 }
 /**
+ * @en Dynamic query operator definitions.
+ * @ja ダイナミッククエリの演算子定義
+ */
+export declare const enum DynamicOperator {
+    /**
+     * @en is equal
+     * @ja である
+     */
+    EQUAL = 0,
+    /**
+     * @en is not equal
+     * @ja でない
+     */
+    NOT_EQUAL = 1,
+    /**
+     * @en is greater than
+     * @ja より大きい/より長い
+     */
+    GREATER = 2,
+    /**
+     * @en is less than
+     * @ja より小さい/より短い
+     */
+    LESS = 3,
+    /**
+     * @en is greater equal
+     * @ja 以上
+     */
+    GREATER_EQUAL = 4,
+    /**
+     * @en is less equal
+     * @ja 以下
+     */
+    LESS_EQUAL = 5,
+    /**
+     * @en is like (included)
+     * @ja 含む
+     */
+    LIKE = 6,
+    /**
+     * @en is not like (not included)
+     * @ja 含まない
+     */
+    NOT_LIKE = 7,
+    /**
+     * @en the past within ***. If the day is after the past basis date that calculated from `Date.now()`, it's hit condition.
+     * @ja 過去 *** 以内. `Date.now()` を起点として n年過去の年月日を求め, それ以降の日付ならヒット対象
+     */
+    DATE_LESS_EQUAL = 8,
+    /**
+     * @en not the past within ***. If the day is before the past basis date that calculated from `Date.now()`, it's hit condition.
+     * @ja 過去 *** 以内でない: `Date.now()` を起点として n年過去の年月日を求め, それより前の日付ならヒット対象
+     */
+    DATE_LESS_NOT_EQUAL = 9,
+    /**
+     * @en between more than *** to within ***
+     * @ja *** 以上 ～ *** 以内
+     */
+    RANGE = 10
+}
+/**
+ * @en Combination condtion definitions for dynamic query.
+ * @ja ダイナミッククエリの複合条件
+ */
+export declare const enum DynamicCombination {
+    /** `en` logical AND <br> `ja` かつ */
+    AND = 0,
+    /** `en` logical OR <br> `ja` または */
+    OR = 1
+}
+/**
+ * @en Dynamic query limit definitions.
+ * @ja ダイナミッククエリの上限
+ */
+export declare const enum DynamicLimit {
+    /** `en` item count <br> `ja` アイテム数 */
+    COUNT = 0,
+    /** `en` minute <br> `ja` 分 */
+    MINUTE = 1,
+    /** `en` hour <br> `ja` 時間 */
+    HOUR = 2,
+    /** `en` day <br> `ja` 日 */
+    DAY = 3,
+    /** flle size MB */
+    MB = 4,
+    /** flle size GB */
+    GB = 5,
+    /** flle size TB */
+    TB = 6
+}
+/**
+ * @en Property definitions of dynamic query context.
+ * @ja ダイナミッククエリの条件コンテキスト
+ */
+export interface DynamicOperatorContext<T extends {}> {
+    operator: DynamicOperator;
+    prop: Keys<T>;
+    value: T[Keys<T>] | number;
+    range?: T[Keys<T>];
+    unit?: 'year' | 'month' | 'day';
+}
+/**
+ * @en Limit condition definitions for dynamic query.
+ * @ja ダイナミッククエリの上限設定
+ */
+export interface DynamicLimitCondition<T extends {}> {
+    unit: DynamicLimit;
+    prop: Keys<T> | '@count';
+    value: number;
+}
+/**
+ * @en Dynamic query condition seed interface.
+ * @ja ダイナミッククエリの条件
+ */
+export interface DynamicConditionSeed<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> {
+    /**
+     * @en filter condition
+     * @ja フィルタ条件
+     */
+    operators: DynamicOperatorContext<TItem>[];
+    /**
+     * @en combination condition
+     * @ja 複合条件
+     */
+    combination?: DynamicCombination;
+    /**
+     * @en keys of using SUM
+     * @ja SUM に使用する Key
+     */
+    sumKeys?: Keys<TItem>[];
+    /**
+     * @en limitation
+     * @ja 上限
+     */
+    limit?: DynamicLimitCondition<TItem>;
+    /**
+     * @en random or not
+     * @ja ランダム検索
+     */
+    random?: boolean;
+    /**
+     * @en Sort key properties. <br>
+     *     An end of element is given priority to.
+     * @ja ソートキー指定 <br>
+     *     配列の末尾ほど優先される
+     *
+     * @example <br>
+     *  valid value: keys[0], keys[1], keys[2]
+     *      first sort key : keys[2]
+     *      second sort key: keys[1]
+     *      third sort key : keys[0]
+     */
+    sortKeys?: SortKey<TKey>[];
+}
+/**
  * @en [[Collection]] sort options.
  * @ja [[Collection]] の sort に使用するオプション
  */
-export interface CollectionSortOptions<TItem extends {}, TKey extends string> {
+export interface CollectionSortOptions<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> {
     /**
      * @en Sort key properties. <br>
      *     An end of element is given priority to.
@@ -90,9 +246,9 @@ export interface CollectionFilterOptions<TItem extends {}> {
  * @en Base option interface for [[Collection]]`#fetch()`.
  * @ja [[Collection]]`#fetch()` に使用する基底オプション
  */
-export interface CollectionFetchLimitOptions extends Cancelable {
+export interface CollectionFetchOptions<TItem extends {}> extends Cancelable {
     /**
-     * @en query start index. default: 0
+     * @en Query start index. default: 0
      * @ja 取得開始 Index を指定 default: 0
      */
     index?: number;
@@ -101,31 +257,26 @@ export interface CollectionFetchLimitOptions extends Cancelable {
      * @ja 1回の query で制限する 取得コンテンツ数
      */
     limit?: number;
-}
-/**
- * @en Progress option interface for [[Collection]]`#fetch()`.
- * @ja [[Collection]]`#fetch()` に指定可能な進捗オプション
- */
-export interface CollectionFetchProgressOptions<TItem extends {}> {
-    /** 自動全取得する場合は true default: true */
+    /**
+     * @en If given `true`, the system calls `fetch()` continuously until all items. default: false
+     * @ja 自動全取得する場合は true default: false
+     */
     auto?: boolean;
-    /** 進捗コールバック */
+    /**
+     * @en Progress callback function.
+     * @ja 進捗コールバック
+     */
     progress?: CollectionFetchProgress<TItem>;
 }
-/**
- * @en [[Collection]]`#fetch()` options.
- * @ja [[Collection]]`#fetch()` に使用するオプション
- */
-export declare type CollectionFetchOptions<TItem extends {}> = CollectionFetchProgressOptions<TItem> & CollectionFetchLimitOptions;
 /**
  * @en Return value type for [[Collection]]`#fetch()`.
  * @ja [[Collection]]`#fetch()` の戻り値
  */
-export interface CollectionFetchResult<TItem extends {}> {
+export declare type CollectionFetchResult<TItem extends {}, TSumKey extends Keys<TItem> = never> = {
     total: number;
     items: TItem[];
-    options?: CollectionFetchOptions<TItem>;
-}
+    options?: CollectionQueryOptions<TItem>;
+} & Pick<TItem, TSumKey>;
 /**
  * @en Progress callback function type by using [[CollectionFetchOptions]]`.auto`. <br>
  *     最終進捗 の items は Promise.resolve() に渡るものと同等
@@ -137,7 +288,12 @@ export declare type CollectionFetchProgress<TItem extends {}> = (progress: Colle
  * @en [[Collection]] standard query options.
  * @ja [[Collection]] 標準のクエリオプション
  */
-export interface CollectionQueryOptions<TItem extends {}, TKey extends string> extends CollectionSortOptions<TItem, TKey>, CollectionFilterOptions<TItem>, CollectionFetchOptions<TItem> {
+export interface CollectionQueryOptions<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> extends CollectionSortOptions<TItem, TKey>, CollectionFilterOptions<TItem>, CollectionFetchOptions<TItem> {
+    /**
+     * @en Dynamic query condition.
+     * @ja ダイナミッククエリの条件
+     */
+    condition?: DynamicConditionSeed<TItem, TKey>;
     /**
      * @en If given `true`, [[Collection]]`#fetch()` doesn't use sorting and filtering from [[CollectionQueryInfo]] cached.
      * @ja [[CollectionQueryInfo]] にキャッシュされたソート/フィルターが不要な時に指定
@@ -153,7 +309,7 @@ export interface CollectionQueryOptions<TItem extends {}, TKey extends string> e
  * @en Query information interface.
  * @ja クエリ情報を格納するインターフェイス
  */
-export interface CollectionQueryInfo<TItem extends {}, TKey extends string = string> {
+export interface CollectionQueryInfo<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> {
     sortKeys: SortKey<TKey>[];
     comparators: SortCallback<TItem>[];
     filter?: FilterCallback<TItem>;
@@ -163,4 +319,4 @@ export interface CollectionQueryInfo<TItem extends {}, TKey extends string = str
  * @en [[Collection]] items provider function type.
  * @ja [[Collection]] の Item を供給する関数の型
  */
-export declare type CollectionItemProvider<TItem extends {}, TKey extends string> = (options?: CollectionQueryOptions<TItem, TKey>) => Promise<CollectionFetchResult<TItem>>;
+export declare type CollectionItemProvider<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionQueryOptions<TItem, TKey>) => Promise<CollectionFetchResult<TItem>>;

@@ -99,10 +99,10 @@ export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Functio
 export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 
 /**
- * @en Extract object key list. (`keyof` alias)
- * @ja オブジェクトのキー一覧を抽出 (`keyof` alias)
+ * @en Extract object key list. (ensure only 'string')
+ * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
-export type Keys<T extends {}> = keyof T;
+export type Keys<T extends {}> = keyof Omit<T, number | symbol>;
 
 /**
  * @en Extract object type list.

@@ -58,7 +58,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#keys() /w cancel', async done => {
+    it('check WebStorage#keys() w/ cancel', async done => {
         try {
             await _storage.keys({ cancel: token });
         } catch (e) {
@@ -84,7 +84,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#getItem() /w dataType', async done => {
+    it('check WebStorage#getItem() w/ dataType', async done => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
@@ -94,7 +94,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#getItem() /w dataType convert string', async done => {
+    it('check WebStorage#getItem() w/ dataType convert string', async done => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'string' })).toBe('100');
         expect(await _storage.getItem('bool', { dataType: 'string' })).toBe('false');
@@ -103,7 +103,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#getItem() /w dataType convert number', async done => {
+    it('check WebStorage#getItem() w/ dataType convert number', async done => {
         expect(await _storage.getItem('str', { dataType: 'number' })).toBeNaN();
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'number' })).toBe(0);
@@ -112,7 +112,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#getItem() /w dataType convert boolean', async done => {
+    it('check WebStorage#getItem() w/ dataType convert boolean', async done => {
         expect(await _storage.getItem('str', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('num', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
@@ -121,7 +121,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#getItem() /w dataType convert object', async done => {
+    it('check WebStorage#getItem() w/ dataType convert object', async done => {
         expect(await _storage.getItem('str', { dataType: 'object' })).toEqual(new String('hoge'));
         expect(await _storage.getItem('num', { dataType: 'object' })).toEqual(new Number(100));
         expect(await _storage.getItem('bool', { dataType: 'object' })).toEqual(new Boolean(false));
@@ -130,7 +130,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#getItem() /w cancel', async done => {
+    it('check WebStorage#getItem() w/ cancel', async done => {
         try {
             await _storage.getItem('num', { cancel: token });
         } catch (e) {
@@ -139,7 +139,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#setItem() /w callback', async done => {
+    it('check WebStorage#setItem() w/ callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -163,7 +163,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#setItem(silent) /w callback', async done => {
+    it('check WebStorage#setItem(silent) w/ callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -178,7 +178,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#setItem() /w cancel', async done => {
+    it('check WebStorage#setItem() w/ cancel', async done => {
         try {
             await _storage.setItem('bool', true, { cancel: token });
         } catch (e) {
@@ -188,7 +188,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#removeItem() /w options', async done => {
+    it('check WebStorage#removeItem() w/ options', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -224,7 +224,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#clear() /w callback', async done => {
+    it('check WebStorage#clear() w/ callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -238,7 +238,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#clear() /w options', async done => {
+    it('check WebStorage#clear() w/ options', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -267,7 +267,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check WebStorage#kind() /w sessionStorage', () => {
+    it('check WebStorage#kind() w/ sessionStorage', () => {
         const storage = new WebStorage(sessionStorage);
         expect(storage.kind).toBe('web:session-storage');
     });

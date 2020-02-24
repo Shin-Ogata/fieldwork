@@ -101,7 +101,7 @@ describe('data-sync/null spec', () => {
         done();
     });
 
-    it('check read /w cancel', async done => {
+    it('check read w/ cancel', async done => {
         try {
             await dataSyncNULL.sync('read', _context, { cancel: token });
         } catch (e) {

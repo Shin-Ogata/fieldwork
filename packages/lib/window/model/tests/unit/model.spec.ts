@@ -852,7 +852,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#save() /w create', async done => {
+    it('check Model#save() w/ create', async done => {
         defaultSync(dataSyncSTORAGE);
 
         const stub = { onCallback };
@@ -875,7 +875,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#save(undefined, { parse: false }) /w create', async done => {
+    it('check Model#save(undefined, { parse: false }) w/ create', async done => {
         defaultSync(dataSyncSTORAGE);
 
         const stub = { onCallback };
@@ -898,7 +898,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#save(key, value, { wait: false }) /w create', async done => {
+    it('check Model#save(key, value, { wait: false }) w/ create', async done => {
         defaultSync(dataSyncSTORAGE);
 
         const stub = { onCallback };
@@ -921,7 +921,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#save({ uri }) /w update', async done => {
+    it('check Model#save({ uri }) w/ update', async done => {
         defaultSync(dataSyncSTORAGE);
 
         const stub = { onCallback };
@@ -944,7 +944,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#save(undefined, { patch, data }) /w patch', async done => {
+    it('check Model#save(undefined, { patch, data }) w/ patch', async done => {
         defaultSync(dataSyncSTORAGE);
 
         const stub = { onCallback };
@@ -1047,7 +1047,7 @@ describe('model/model spec', () => {
         done();
     });
 
-    it('check Model#destroy() /w no server', async done => {
+    it('check Model#destroy() w/ no server', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 

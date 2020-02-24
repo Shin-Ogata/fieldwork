@@ -62,7 +62,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#keys() /w cancel', async done => {
+    it('check FsStorage#keys() w/ cancel', async done => {
         try {
             await _storage.keys({ cancel: token });
         } catch (e) {
@@ -89,7 +89,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#getItem() /w dataType', async done => {
+    it('check FsStorage#getItem() w/ dataType', async done => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
@@ -99,7 +99,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#getItem() /w dataType convert string', async done => {
+    it('check FsStorage#getItem() w/ dataType convert string', async done => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'string' })).toBe('100');
         expect(await _storage.getItem('bool', { dataType: 'string' })).toBe('false');
@@ -108,7 +108,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#getItem() /w dataType convert number', async done => {
+    it('check FsStorage#getItem() w/ dataType convert number', async done => {
         expect(await _storage.getItem('str', { dataType: 'number' })).toBeNaN();
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'number' })).toBe(0);
@@ -117,7 +117,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#getItem() /w dataType convert boolean', async done => {
+    it('check FsStorage#getItem() w/ dataType convert boolean', async done => {
         expect(await _storage.getItem('str', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('num', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
@@ -126,7 +126,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#getItem() /w dataType convert object', async done => {
+    it('check FsStorage#getItem() w/ dataType convert object', async done => {
         expect(deepEqual(await _storage.getItem('str', { dataType: 'object' }), new String('hoge'))).toBe(true);
         expect(deepEqual(await _storage.getItem('num', { dataType: 'object' }), new Number(100))).toBe(true);
         expect(deepEqual(await _storage.getItem('bool', { dataType: 'object' }), new Boolean(false))).toBe(true);
@@ -135,7 +135,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#getItem() /w cancel', async done => {
+    it('check FsStorage#getItem() w/ cancel', async done => {
         try {
             await _storage.getItem('num', { cancel: token });
         } catch (e) {
@@ -144,7 +144,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#setItem() /w callback', async done => {
+    it('check FsStorage#setItem() w/ callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').andCallThrough();
 
@@ -168,7 +168,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#setItem(silent) /w callback', async done => {
+    it('check FsStorage#setItem(silent) w/ callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').andCallThrough();
 
@@ -183,7 +183,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#setItem() /w cancel', async done => {
+    it('check FsStorage#setItem() w/ cancel', async done => {
         try {
             await _storage.setItem('bool', true, { cancel: token });
         } catch (e) {
@@ -193,7 +193,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#removeItem() /w options', async done => {
+    it('check FsStorage#removeItem() w/ options', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').andCallThrough();
 
@@ -229,7 +229,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#clear() /w callback', async done => {
+    it('check FsStorage#clear() w/ callback', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').andCallThrough();
 
@@ -243,7 +243,7 @@ describe('storage/attributes spec', () => {
         done();
     });
 
-    it('check FsStorage#clear() /w options', async done => {
+    it('check FsStorage#clear() w/ options', async done => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').andCallThrough();
 

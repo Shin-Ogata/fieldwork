@@ -101,7 +101,7 @@ export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
      *  - `en` I/O options
      *  - `ja` I/O オプション
      */
-    setItem<V extends StorageInputDataTypeList<T>, K extends Keys<T> = 'string'>(key: string, value: V, options?: IStorageDataOptions<T, K>): Promise<void>;
+    setItem<V extends StorageInputDataTypeList<T>, K extends Keys<T> = Keys<T>>(key: string, value: V, options?: IStorageDataOptions<T, K>): Promise<void>;
     /**
      * @en Removes the key/value pair with the given key from the list associated with the object, if a key/value pair with the given key exists.
      * @ja 指定されたキーに対応する値が存在すれば削除

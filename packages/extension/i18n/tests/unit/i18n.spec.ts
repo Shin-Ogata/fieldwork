@@ -22,7 +22,7 @@ describe('extention-i18n spec', () => {
             expect(i18n).toBeDefined();
         });
 
-        it('check i18next.init() /w changeLanguage()', async done => {
+        it('check i18next.init() w/ changeLanguage()', async done => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 fallbackLng: 'en',
@@ -358,7 +358,7 @@ describe('extention-i18n spec', () => {
             done();
         });
 
-        it('check working /w data models', async done => {
+        it('check working w/ data models', async done => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
