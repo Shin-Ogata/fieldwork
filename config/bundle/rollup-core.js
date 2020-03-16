@@ -57,7 +57,7 @@ function getConfig(options) {
                 banner: banner(),
                 file: `${DIST}/${OUTNAME}.mjs`,
                 format: 'es',
-                preferconst: true,
+                preferConst: true,
                 sourcemap: 'inline',
             },
             {

@@ -90,6 +90,11 @@ declare namespace i18n {
        */
       nestingSuffixEscaped?: string;
       /**
+       * Separates options from key
+       * @default ','
+       */
+      nestingOptionsSeparator?: string;
+      /**
        * Global variables to use in interpolation replacements
        * @default undefined
        */
