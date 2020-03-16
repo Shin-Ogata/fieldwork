@@ -74,15 +74,15 @@ function queryDelegateArgv() {
 async function exec(options) {
     const {
         cwd: cwdBackup,
-        target: tgtPackages,
+        target: targetPackages,
         command: delegateCommand,
         preset,
         silent,
     } = options || defaultOptions();
     const { packages } = require('../config').dir;
 
-    const targets = tgtPackages || await resolver(options);
     const root = resolve(cwdBackup, `${packages}`);
+    const targets = (targetPackages && targetPackages.map(t => resolve(root, t))) || await resolver(options);
 
     try {
         for (const target of targets) {
