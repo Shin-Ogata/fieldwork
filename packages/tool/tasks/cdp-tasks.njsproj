@@ -45,7 +45,9 @@
     <Compile Include="lib\cli-plugin-bundle-depends.js" />
     <Compile Include="lib\cli-plugin-clean.js" />
     <Compile Include="lib\cli-command-parser.js" />
+    <Compile Include="lib\cli-plugin-copy.js" />
     <Compile Include="lib\cli-plugin-delegate.js" />
+    <Compile Include="lib\cli-plugin-gzip.js" />
     <Compile Include="lib\cli-plugin-metrics.js" />
     <Compile Include="lib\cli-plugin-minify.js" />
     <Compile Include="lib\misc.js" />

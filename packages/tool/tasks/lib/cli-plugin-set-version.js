@@ -34,7 +34,7 @@ Examples:
             );
         });
 
-    return '  $ cdp-task set-version [version]           set version to the package.json';
+    return '  $ cdp-task set-version <version>           set version to the package.json';
 }
 
 function defaultOptions() {

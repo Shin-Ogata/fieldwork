@@ -4,6 +4,7 @@ const { resolve }   = require('path');
 const fs            = require('fs-extra');
 const glob          = require('glob');
 const { merge }     = require('lodash');
+const tar           = require('tar');
 
 function cleanEmptyDir(target) {
     const list = glob.sync('**', {
@@ -29,8 +30,17 @@ function includes(path, evaluations) {
     return false;
 }
 
+function gzip(file, dir, cwd) {
+    return tar.c({
+        gzip: true,
+        cwd,
+        file,
+    }, [dir]);
+}
+
 module.exports = {
     cleanEmptyDir,
     merge,
     includes,
+    gzip,
 };
