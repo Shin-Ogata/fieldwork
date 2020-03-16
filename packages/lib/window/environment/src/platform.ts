@@ -128,7 +128,7 @@ export const queryPlatform = (
     const { width: screenWidth, height: screenHeight } = context.screen || screen;
     const pixelRatio = context.devicePixelRatio;
 
-    const android  = /(Android);?[\s\/]+([\d.]+)?/.exec(ua); // eslint-disable-line
+    const android  = /(Android);?[\s/]+([\d.]+)?/.exec(ua);
     let   ipad     = /(iPad).*OS\s([\d_]+)/.exec(ua);
     const ipod     = /(iPod)(.*OS\s([\d_]+))?/.exec(ua);
     let   iphone   = !ipad && /(iPhone\sOS|iOS)\s([\d_]+)/.exec(ua);

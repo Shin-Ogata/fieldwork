@@ -65,7 +65,7 @@ describe('query/dynamic-condition spec', () => {
         }];
         condition.sumKeys = ['size', 'duration'];
         condition.combination = DynamicCombination.OR;
-        condition.limit = { unit: DynamicLimit.COUNT, value: 10, prop: '@count' };
+        condition.limit = { unit: DynamicLimit.COUNT, value: 10, prop: undefined };
         condition.random = true;
         condition.sortKeys = [{ name: 'title', order: SortOrder.ASC, type: 'string' }];
 
@@ -76,7 +76,7 @@ describe('query/dynamic-condition spec', () => {
         }]);
         expect(condition.sumKeys).toEqual(['size', 'duration']);
         expect(condition.combination).toBe(DynamicCombination.OR);
-        expect(condition.limit).toEqual({ unit: DynamicLimit.COUNT, value: 10, prop: '@count' });
+        expect(condition.limit).toEqual({ unit: DynamicLimit.COUNT, value: 10, prop: undefined });
         expect(condition.random).toBe(true);
         expect(condition.sortKeys).toEqual([{ name: 'title', order: SortOrder.ASC, type: 'string' }]);
     });

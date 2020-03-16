@@ -148,12 +148,18 @@ export const enum DynamicCombination {
 export const enum DynamicLimit {
     /** `en` item count <br> `ja` アイテム数 */
     COUNT = 0,
+    /** `en` prop value sum <br> `ja` プロパティ値の合計値 */
+    SUM,
+    /** `en` second <br> `ja` 秒 */
+    SECOND,
     /** `en` minute <br> `ja` 分 */
     MINUTE,
     /** `en` hour <br> `ja` 時間 */
     HOUR,
     /** `en` day <br> `ja` 日 */
     DAY,
+    /** flle size kB */
+    KB,
     /** flle size MB */
     MB,
     /** flle size GB */
@@ -180,8 +186,11 @@ export interface DynamicOperatorContext<T extends {}> {
  */
 export interface DynamicLimitCondition<T extends {}> {
     unit: DynamicLimit;
-    prop: Keys<T> | '@count';
+    /** when DynamicLimit.COUNT, set `undefined`. */
+    prop: Keys<T> | undefined;
     value: number;
+    /** loose limit */
+    excess?: boolean;
 }
 
 /**

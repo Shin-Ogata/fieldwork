@@ -161,10 +161,13 @@ async function queryFromProvider<TItem extends {}, TKey extends Keys<TItem>>(
 
 /** @internal conditinalFix に使用する Criteria Map */
 const _limitCriteria = {
-    [DynamicLimit.COUNT]:   null,
-    [DynamicLimit.MINUTE]:  { coeff: 60 * 1000, plus1: true }, // 時間[minute]制限のときは、指定時間より1コンテンツ分多くする.
+    [DynamicLimit.COUNT]: null,
+    [DynamicLimit.SUM]:     { coeff: 1 },
+    [DynamicLimit.SECOND]:  { coeff: 1000 },
+    [DynamicLimit.MINUTE]:  { coeff: 60 * 1000 },
     [DynamicLimit.HOUR]:    { coeff: 60 * 60 * 1000 },
     [DynamicLimit.DAY]:     { coeff: 24 * 60 * 60 * 1000 },
+    [DynamicLimit.KB]:      { coeff: 1024 },
     [DynamicLimit.MB]:      { coeff: 1024 * 1024 },
     [DynamicLimit.GB]:      { coeff: 1024 * 1024 * 1024 },
     [DynamicLimit.TB]:      { coeff: 1024 * 1024 * 1024 * 1024 },
@@ -194,28 +197,27 @@ export function conditionalFix<TItem extends {}, TKey extends Keys<TItem> = Keys
     if (limit) {
         const { unit, value, prop } = limit;
         const reset: TItem[] = [];
-        const criteria = _limitCriteria[unit] as { coeff: number; plus1?: boolean; };
+        const criteria = _limitCriteria[unit];
         const limitCount = value;
+        const excess = !!limit.excess;
         let count = 0;
-        let plus1 = criteria ? criteria.plus1 : false;
         for (const item of items) {
             if (!criteria) {
                 count++;
             } else if (null != item[prop as Keys<TItem>]) {
-                count += (Number(item[prop as Keys<TItem>]) * criteria.coeff);
+                count += (Number(item[prop as Keys<TItem>]) / criteria.coeff);
             } else {
                 console.warn(`cannot access property: ${prop}`);
                 continue;
             }
 
-            reset.push(item);
-
-            if (limitCount <= count) {
-                if (plus1) {
-                    plus1 = false;
-                } else {
-                    break;
+            if (limitCount < count) {
+                if (excess) {
+                    reset.push(item);
                 }
+                break;
+            } else {
+                reset.push(item);
             }
         }
         items = reset;
@@ -292,7 +294,7 @@ export async function queryItems<TItem extends {}, TKey extends Keys<TItem>>(
     if (queryInfo.cache) {
         return (await queryFromCache(queryInfo.cache.items, opts)).items;
     } else {
-        const result = await queryFromProvider(provider, opts);
+        let result = await queryFromProvider(provider, opts);
         const nextOpts = result.options as CollectionQueryOptions<TItem>;
         if (canCache(result, nextOpts)) {
             queryInfo.cache = { ...result };
@@ -302,14 +304,14 @@ export async function queryItems<TItem extends {}, TKey extends Keys<TItem>>(
         const { noSearch, condition: seed } = nextOpts;
         if (seed) {
             const condition = new DynamicCondition(seed);
-            const condResult = conditionalFix(searchItems(
+            result = conditionalFix(searchItems(
                 result.items,
                 condition.filter,
                 ...condition.comparators
             ), condition);
 
             if (queryInfo.cache) {
-                Object.assign(queryInfo.cache, condResult, queryInfo.cache);
+                Object.assign(queryInfo.cache, result);
                 delete queryInfo.cache.options;
             }
         }

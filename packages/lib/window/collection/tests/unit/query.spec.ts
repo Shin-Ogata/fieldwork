@@ -17,6 +17,8 @@ import {
     CollectionQueryInfo,
     CollectionFetchResult,
     DynamicCondition,
+    DynamicOperator,
+    DynamicLimit,
     getStringComparator,
     queryItems,
     searchItems,
@@ -97,6 +99,28 @@ describe('query/query spec', () => {
     const onProgress = (progress: CollectionFetchResult<any>): void => {
         count++;
     };
+
+    interface Track {
+        title: string;
+        trackArtist: string;
+        albumTitle: string;
+        size: number;
+        duration: number;
+        releaseDate: Date;
+        compilation: boolean;
+    }
+
+    const tracks: Track[] = [
+        { title: '001', trackArtist: 'aaa', albumTitle: 'AAA', duration: 6000, size: 512000, releaseDate: new Date('2009/01/01'), compilation: false, },
+        { title: '002', trackArtist: 'aaa', albumTitle: 'BBB', duration: 6000, size: 512000, releaseDate: computeDate(new Date(), -2, 'month'), compilation: true, },
+        { title: '003', trackArtist: 'aaa', albumTitle: 'CCC', duration: 7000, size: 512000, releaseDate: new Date(), compilation: false, },
+        { title: '004', trackArtist: 'aaa', albumTitle: 'AAA', duration: 4000, size: 128000, releaseDate: computeDate(new Date(), -2, 'month'), compilation: false, },
+        { title: '005', trackArtist: 'aaa', albumTitle: 'BBB', duration: 4000, size: 128000, releaseDate: new Date('2010/01/01'), compilation: true, },
+        { title: '006', trackArtist: 'aaa', albumTitle: 'CCC', duration: 4000, size: 128000, releaseDate: new Date(), compilation: false, },
+    ];
+
+    type TrackQueryOptions = CollectionQueryOptions<Track, keyof Track>;
+    type TrackQueryInfo = CollectionQueryInfo<Track, keyof Track>;
 
     describe('searchItems()', () => {
         it('check searchItems() w/ no filter, no comparators', (): void => {
@@ -583,25 +607,6 @@ describe('query/query spec', () => {
     });
 
     describe('conditionalFix()', () => {
-        interface Track {
-            title: string;
-            trackArtist: string;
-            albumTitle: string;
-            size: number;
-            duration: number;
-            releaseDate: Date;
-            compilation: boolean;
-        }
-
-        const tracks: Track[] = [
-            { title: '001', trackArtist: 'aaa', albumTitle: 'AAA', duration: 6000, size: 512000, releaseDate: new Date('2009/01/01'), compilation: false, },
-            { title: '002', trackArtist: 'aaa', albumTitle: 'BBB', duration: 6000, size: 512000, releaseDate: computeDate(new Date(), -2, 'month'), compilation: true, },
-            { title: '003', trackArtist: 'aaa', albumTitle: 'CCC', duration: 7000, size: 512000, releaseDate: new Date(), compilation: false, },
-            { title: '004', trackArtist: 'aaa', albumTitle: 'AAA', duration: 4000, size: 128000, releaseDate: computeDate(new Date(), -2, 'month'), compilation: false, },
-            { title: '005', trackArtist: 'aaa', albumTitle: 'BBB', duration: 4000, size: 128000, releaseDate: new Date('2010/01/01'), compilation: true, },
-            { title: '006', trackArtist: 'aaa', albumTitle: 'CCC', duration: 4000, size: 128000, releaseDate: new Date(), compilation: false, },
-        ];
-
         it('check random', (): void => {
             const cond = new DynamicCondition<Track>({
                 operators: [],
@@ -612,6 +617,179 @@ describe('query/query spec', () => {
 
             expect(result.total).toBe(6);
             expect(result.items).not.toEqual(tracks);
+        });
+
+        it('check limit', (): void => {
+            // count
+            let cond = new DynamicCondition<Track>({
+                operators: [],
+                limit: {
+                    unit: DynamicLimit.COUNT,
+                    prop: undefined,
+                    value: 3,
+                },
+            });
+
+            let result = conditionalFix(tracks.slice(), cond);
+
+            expect(result.total).toBe(3);
+            expect(result.items[0].title).toBe('001');
+            expect(result.items[1].title).toBe('002');
+            expect(result.items[2].title).toBe('003');
+
+            // KB criteria
+            cond = new DynamicCondition<Track>({
+                operators: [],
+                limit: {
+                    unit: DynamicLimit.KB,
+                    prop: 'size',
+                    value: 1000,
+                },
+            });
+
+            result = conditionalFix(tracks.slice(), cond);
+            expect(result.total).toBe(2);
+
+            // excess
+            cond = new DynamicCondition<Track>({
+                operators: [],
+                limit: {
+                    unit: DynamicLimit.SECOND,
+                    prop: 'duration',
+                    value: 14,
+                    excess: true,
+                },
+            });
+
+            result = conditionalFix(tracks.slice(), cond);
+            expect(result.total).toBe(3);
+
+            // missing prop
+            cond = new DynamicCondition<Track>({
+                operators: [],
+                limit: {
+                    unit: DynamicLimit.SECOND,
+                    prop: 'n/a' as any,
+                    value: 10,
+                },
+            });
+
+            result = conditionalFix(tracks.slice(), cond);
+            expect(result.total).toBe(0);
+        });
+
+        it('check sumKey', (): void => {
+            const cond = new DynamicCondition<Track>({
+                operators: [],
+                sumKeys: [
+                    'duration',
+                ],
+            });
+
+            const result = conditionalFix(tracks.slice(), cond) as CollectionFetchResult<Track, 'duration'>; // eslint-disable-line
+
+            expect(result.total).toBe(6);
+            expect(result.duration).toBe(31000);
+        });
+
+        describe('queryItems() w/ condition', () => {
+            let info!: TrackQueryInfo;
+
+            beforeEach(() => {
+                info = {
+                    sortKeys: [],
+                    comparators: [],
+                };
+            });
+
+            const provider2 = async (options?: TrackQueryOptions): Promise<CollectionFetchResult<Track>> => {
+                const opts = Object.assign({ comparators: [] }, options);
+                const {
+                    index,
+                    limit,
+                    cancel: token,
+                    condition,
+                } = opts;
+
+                await cc(token);
+
+                const targets = tracks.slice();
+
+                const nextOptions = (() => {
+                    const no = { condition };
+                    return isEmptyObject(no) ? undefined : no;
+                })();
+
+                if (null == index && null == limit) {
+                    return {
+                        total: targets.length,
+                        items: targets,
+                        options: nextOptions,
+                    };
+                } else {
+                    const idx = (null == index) ? 0 : index;
+                    const result = targets.slice(idx, (null != limit) ? idx + limit : undefined); // eslint-disable-line
+                    return {
+                        total: targets.length,
+                        items: result,
+                        options: nextOptions,
+                    };
+                }
+            };
+
+            it('check w/ condition', async done => {
+                const options: TrackQueryOptions = {
+                    sortKeys: [
+                        { name: 'duration', order: SortOrder.ASC, type: 'number' }
+                    ],
+                    condition: {
+                        operators: [{
+                            operator: DynamicOperator.EQUAL,
+                            prop: 'compilation',
+                            value: true,
+                        }],
+                    },
+                };
+
+                let ret = await queryItems(info, provider2, options);
+
+                expect(ret.length).toBe(2);
+                expect(ret[0].title).toBe('005');
+                expect(ret[1].title).toBe('002');
+
+                // cache
+                ret = await queryItems(info, provider2, options);
+                expect(ret.length).toBe(2);
+                expect(ret[0].title).toBe('005');
+                expect(ret[1].title).toBe('002');
+
+                done();
+            });
+
+            it('check w/ noCache', async done => {
+                const options: TrackQueryOptions = {
+                    sortKeys: [
+                        { name: 'duration', order: SortOrder.ASC, type: 'number' }
+                    ],
+                    condition: {
+                        operators: [{
+                            operator: DynamicOperator.EQUAL,
+                            prop: 'compilation',
+                            value: true,
+                        }],
+                    },
+                    noCache: true,
+                };
+
+                const ret = await queryItems(info, provider2, options);
+
+                expect(ret.length).toBe(2);
+                expect(ret[0].title).toBe('005');
+                expect(ret[1].title).toBe('002');
+                expect(info.cache).toBeUndefined();
+
+                done();
+            });
         });
     });
 });
