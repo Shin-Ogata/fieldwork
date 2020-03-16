@@ -28,9 +28,7 @@ function createPackages(locations) {
             return;
         }
         for (const module of Object.keys(prop)) {
-            if (/^@cdp/.test(module)) {
-                depends.add(module);
-            }
+            depends.add(module);
         }
     };
 
@@ -57,7 +55,9 @@ function createPackages(locations) {
         const depends = new Set();
         for (const name of pkg.depends) {
             const info = map.get(name);
-            depends.add(info);
+            if (info) {
+                depends.add(info);
+            }
         }
         pkg.depends = depends;
     }
