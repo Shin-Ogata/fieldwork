@@ -1,10 +1,10 @@
 'use strict';
 
-const { resolve }   = require('path');
-const fs            = require('fs-extra');
-const glob          = require('glob');
-const { merge }     = require('lodash');
-const tar           = require('tar');
+const { resolve, dirname } = require('path');
+const fs                   = require('fs-extra');
+const glob                 = require('glob');
+const { merge }            = require('lodash');
+const tar                  = require('tar');
 
 function cleanEmptyDir(target) {
     const list = glob.sync('**', {
@@ -30,6 +30,46 @@ function includes(path, evaluations) {
     return false;
 }
 
+function parseGlobs(globs) {
+    const source = [];
+    const ignore = [];
+
+    for (const g of globs) {
+        if ('!' === g[0]) {
+            ignore.push(g.substring(1));
+        } else {
+            source.push(g);
+        }
+    }
+
+    return { source, ignore };
+}
+
+function copy(globs, dest, options) {
+    const opts = options || {};
+    const cwd  = opts.cwd || process.cwd();
+
+    const { source, ignore } = parseGlobs(globs);
+    const dstRoot = resolve(cwd, dest);
+
+    for (const s of source) {
+        const files = glob.sync(s, {
+            cwd,
+            nodir: true,
+            ignore,
+        });
+        for (const f of files) {
+            const src = resolve(cwd, f);
+            const dst = resolve(dstRoot, f);
+            fs.ensureDirSync(dirname(dst));
+            fs.copyFileSync(src, dst);
+            if ('function' === typeof opts.callback) {
+                opts.callback(dst);
+            }
+        }
+    }
+}
+
 function gzip(file, dir, cwd) {
     return tar.c({
         gzip: true,
@@ -42,5 +82,6 @@ module.exports = {
     cleanEmptyDir,
     merge,
     includes,
+    copy,
     gzip,
 };
