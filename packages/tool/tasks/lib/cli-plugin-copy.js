@@ -1,9 +1,7 @@
 'use strict';
 
-const { resolve, dirname }            = require('path');
-const { ensureDirSync, copyFileSync } = require('fs-extra');
-const glob                            = require('glob');
-const chalk                           = require('chalk');
+const chalk    = require('chalk');
+const { copy } = require('./misc');
 
 const COMMAND = 'copy';
 
@@ -42,44 +40,13 @@ function defaultOptions() {
     };
 }
 
-function parseGlobs(globs) {
-    const source = [];
-    const ignore = [];
-
-    for (const g of globs) {
-        if ('!' === g[0]) {
-            ignore.push(g.substring(1));
-        } else {
-            source.push(g);
-        }
-    }
-
-    return { source, ignore };
-}
-
 async function exec(options) {
     options = options || defaultOptions();
 
     const { cwd, silent, globs, dest } = options;
-    const { source, ignore } = parseGlobs(globs);
-    const dstRoot = resolve(cwd, dest);
-
-    for (const s of source) {
-        const files = glob.sync(s, {
-            cwd,
-            nodir: true,
-            ignore,
-        });
-        for (const f of files) {
-            const src = resolve(cwd, f);
-            const dst = resolve(dstRoot, f);
-            ensureDirSync(dirname(dst));
-            copyFileSync(src, dst);
-            if (!silent) {
-                console.log(chalk.gray(`copied: ${dst}`));
-            }
-        }
-    }
+    const callback = silent ? null : (dst) => { console.log(chalk.gray(`  ${dst}`)); };
+    !silent && console.log('copied:');
+    copy(globs, dest, { cwd, callback });
 }
 
 module.exports = {
