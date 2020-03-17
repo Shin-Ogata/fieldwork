@@ -26,12 +26,23 @@ const {
 
 function getConfig(options) {
     const opts = merge({
+        sourcemap: 'inline',
         format: 'umd',
         commonjs: {
             include: 'node_modules/**',
         },
     }, options);
-    const { format, external: globals, commonjs: cjsOptions, replace, alias: aliasOptions, exports, postproc, onwarn } = opts;
+    const {
+        sourcemap,
+        format,
+        external: globals,
+        commonjs: cjsOptions,
+        replace,
+        alias: aliasOptions,
+        exports,
+        postproc,
+        onwarn,
+    } = opts;
     const external = globals && Object.keys(globals);
 
     const umd = 'umd' === format;
@@ -58,7 +69,7 @@ function getConfig(options) {
                 file: `${DIST}/${OUTNAME}.mjs`,
                 format: 'es',
                 preferConst: true,
-                sourcemap: 'inline',
+                sourcemap,
             },
             {
                 banner: banner(),
@@ -67,7 +78,7 @@ function getConfig(options) {
                 name: umd ? `${GLOBAL}` : undefined,
                 extend: true,
                 preferConst: true,
-                sourcemap: 'inline',
+                sourcemap,
                 globals: umd ? globals : undefined,
                 exports,
             },
