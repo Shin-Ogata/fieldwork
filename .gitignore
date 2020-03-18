@@ -1,8 +1,10 @@
 # common settings
 .cache/
+.temp/
 .vs/
 bin/
 built/
+reports/
 etc/
 ipch/
 node_modules/
