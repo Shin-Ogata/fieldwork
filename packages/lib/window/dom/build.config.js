@@ -11,14 +11,10 @@ function patch(index, code) {
     code = code
         // 'export declare namespace dom' → 'declare namespace dom'
         .replace(/^export declare namespace dom/gm, 'declare namespace dom')
-        // trim `import("xxx").`
-        .replace(/import\("[\S]+"\)\./g, '')
     ;
 
-    // 'export { dom };'
-    code += 'export { dom };';
-    // 'export { dom as default };'
-    code += 'export { dom as default };';
+    // 'export { dom };', 'export { dom as default };'
+    code += 'export { dom };\nexport { dom as default };';
 
     return code;
 }

@@ -12,7 +12,7 @@
     "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",
     "@cdp/dom": "file:../../lib/window/dom",
-    "lit-html": "1.2.0"
+    "lit-html": "1.2.1"
   },
   "keywords": [
     "CDP",
