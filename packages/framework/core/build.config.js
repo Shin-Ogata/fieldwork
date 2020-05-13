@@ -27,6 +27,7 @@ function patch(index, code) {
 }
 
 module.exports = {
+    __esModule: true,
     default: bundle_src(),
     dts: bundle_dts({ postProcess: patch }),
     minify: {

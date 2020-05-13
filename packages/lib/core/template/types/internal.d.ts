@@ -1,4 +1,4 @@
-import { TemplateTags, TemplateWriter } from './interfaces';
+import { TemplateTags, TemplateWriter, TemplateEscaper } from './interfaces';
 /** (string | Token[]) */
 declare type TokenList = unknown;
 /**
@@ -26,7 +26,7 @@ export declare const enum TokenAddress {
 export declare type Delimiters = string | TemplateTags;
 export declare const globalSettings: {
     tags: TemplateTags;
-    escape: (src: import("@cdp/core-utils").Primitive) => string;
+    escape: TemplateEscaper;
     writer: TemplateWriter;
 };
 export {};

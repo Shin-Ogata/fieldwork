@@ -10,6 +10,7 @@ const cwd = process.cwd();
 const externals = ['i18next', '@babel'];
 
 module.exports = {
+    __esModule: true,
     default: config.default(testee, {
         external: {
             '@cdp/core-utils': 'CDP',

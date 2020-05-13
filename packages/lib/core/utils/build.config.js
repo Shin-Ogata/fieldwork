@@ -1,4 +1,7 @@
 'use strict';
 
 const config = require('../../../../config/bundle/rollup-core');
-module.exports.default = config();
+module.exports = {
+    __esModule: true,
+    default: config(),
+};

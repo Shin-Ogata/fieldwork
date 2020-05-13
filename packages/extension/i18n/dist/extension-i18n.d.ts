@@ -631,7 +631,7 @@ declare namespace i18n {
       type: 'backend' | 'logger' | 'languageDetector' | 'postProcessor' | 'i18nFormat' | '3rdParty';
     }
     export type CallbackError = Error | null | undefined;
-    export type ReadCallback = (err: CallbackError, data: ResourceKey) => void;
+    export type ReadCallback = (err: CallbackError, data: ResourceKey | boolean) => void;
     export type MultiReadCallback = (err: CallbackError, data: Resource) => void;
     /**
      * Used to load data for i18next.

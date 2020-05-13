@@ -18,6 +18,7 @@ function patch(index, code) {
 }
 
 module.exports = {
+    __esModule: true,
     default: bundle_src({
         // ES モジュールの top-level の `this` は常に `undefined`.
         // https://github.com/rollup/rollup/issues/1518
