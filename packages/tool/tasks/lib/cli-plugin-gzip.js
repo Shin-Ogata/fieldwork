@@ -10,7 +10,7 @@ const COMMAND = 'gzip';
 function defineCommands(commander, cmd, isDefault) {
     commander
         .command(`${COMMAND} <file> <directory>`)
-        .description('create tar.gz file')
+        .description('create tar-gz file')
         .action((file, directory, options) => {
             cmd.action = COMMAND;
             const { cwd, silent } = commander;
@@ -25,12 +25,12 @@ function defineCommands(commander, cmd, isDefault) {
             console.log(
 `
 Examples:
-  $ cdp-task gzip file.tar.gz ./package     create tar.gz from directory
+  $ cdp-task gzip file.tgz ./package        create tar-gz from directory
 `
             );
         });
 
-    return '  $ cdp-task gzip <file> <directory>         create tar.gz from directory';
+    return '  $ cdp-task gzip <file> <directory>         create tar-gz from directory';
 }
 
 function defaultOptions() {

@@ -42,7 +42,7 @@
     "clear": "cdp-task clean -t ./node_modules",
     "lint": "eslint ./**/*.js -c ../../../config/lint/eslint.js",
     "package": "run-s clean package:prepare package:gzip",
-    "package:gzip": "cdp-task gzip ./.temp/tasks.tar.gz tasks -w .temp",
+    "package:gzip": "cdp-task gzip ./.temp/tasks.tgz tasks -w .temp",
     "package:prepare": "cdp-task copy **/*,!node_modules/**/*,!.*,!*njsproj* ./.temp/tasks",
     "test": "npm run lint"
   }

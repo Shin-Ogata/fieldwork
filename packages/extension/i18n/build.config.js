@@ -41,6 +41,7 @@ export { i18n };
 }
 
 module.exports = {
+    __esModule: true,
     default: bundle_src({
         alias: {
             entries: [

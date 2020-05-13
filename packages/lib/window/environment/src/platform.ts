@@ -70,12 +70,6 @@ export interface Platform {
 
 //__________________________________________________________________________________________________//
 
-const deviceContext = {
-    navigator,
-    screen,
-    devicePixelRatio,
-};
-
 const maybeTablet = (width: number, height: number): boolean => {
     return (Threshold.TABLET_MIN_WIDTH <= Math.min(width, height));
 };
@@ -97,12 +91,13 @@ const supportOrientation = (ua: string): boolean => {
  *  - `ja` 環境の `Navigator`, `Screen`, `devicePixelRatio` を指定
  */
 export const queryPlatform = (
-    context: {
+    context?: {
         navigator?: { userAgent: string; platform: string; standalone?: boolean; };
         screen?: { width: number; height: number; };
         devicePixelRatio?: number;
-    } = deviceContext
+    }
 ): Platform => {
+    context = context || { navigator, screen, devicePixelRatio };
     const info = {
         ios: false,
         android: false,

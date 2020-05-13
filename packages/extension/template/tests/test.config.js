@@ -10,6 +10,7 @@ const cwd = process.cwd();
 const externals = ['lit-html'];
 
 module.exports = {
+    __esModule: true,
     default: config.default(testee, {
         external: {
             '@cdp/core-utils': 'CDP',

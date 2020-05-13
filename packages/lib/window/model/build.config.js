@@ -23,6 +23,7 @@ function patch(index, code) {
 }
 
 module.exports = {
+    __esModule: true,
     default: config({
         external: {
             '@cdp/core-utils': 'CDP',

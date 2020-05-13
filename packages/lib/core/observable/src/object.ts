@@ -279,7 +279,7 @@ export abstract class ObservableObject implements IObservable {
     public static from<T extends {}>(src: T): ObservableObject & T {
         const observable = deepMerge(new class extends ObservableObject { }(ObservableState.DISABLED), src);
         observable.resume();
-        return observable;
+        return observable as any;
     }
 
 ///////////////////////////////////////////////////////////////////////

@@ -2,9 +2,12 @@
 
 const config = require('../../../../config/bundle/rollup-core');
 
-module.exports.default = config({
-    external: {
-        '@cdp/core-utils': 'CDP',
-        '@cdp/events': 'CDP',
-    },
-});
+module.exports = {
+    __esModule: true,
+    default: config({
+        external: {
+            '@cdp/core-utils': 'CDP',
+            '@cdp/events': 'CDP',
+        },
+    }),
+};

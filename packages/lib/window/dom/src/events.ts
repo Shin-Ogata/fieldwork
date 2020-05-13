@@ -227,7 +227,6 @@ export type DOMEventMap<T>
     : T extends HTMLBodyElement ? HTMLBodyElementEventMap
     : T extends HTMLFrameSetElement ? HTMLFrameSetElementEventMap
     : T extends HTMLMarqueeElement ? HTMLMarqueeElementEventMap
-    : T extends HTMLVideoElement ? HTMLVideoElementEventMap
     : T extends HTMLMediaElement ? HTMLMediaElementEventMap
     : T extends HTMLElement ? HTMLElementEventMap
     : T extends Element ? ElementEventMap

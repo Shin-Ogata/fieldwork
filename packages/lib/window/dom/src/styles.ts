@@ -537,7 +537,7 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
 
             // Account for the *real* offset parent, which can be the document or its root element
             // when a statically positioned element is identified
-            const doc = el.ownerDocument as Document;
+            const doc = el.ownerDocument;
             let offsetParent = getOffsetParent(el) || doc.documentElement;
             let $offsetParent = $(offsetParent);
             while (offsetParent &&

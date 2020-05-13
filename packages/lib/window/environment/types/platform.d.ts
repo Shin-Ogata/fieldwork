@@ -70,7 +70,7 @@ export declare const queryPlatform: (context?: {
         height: number;
     } | undefined;
     devicePixelRatio?: number | undefined;
-}) => Platform;
+} | undefined) => Platform;
 /**
  * @en Platform information on runtime.
  * @ja ランタイムのプラットフォーム情報
