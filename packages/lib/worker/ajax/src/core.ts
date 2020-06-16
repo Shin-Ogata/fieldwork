@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { PlainObject, isFunction } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';

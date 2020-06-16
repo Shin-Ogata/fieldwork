@@ -1,7 +1,7 @@
 /* eslint-disable
-   block-spacing
- , @typescript-eslint/unbound-method
- , @typescript-eslint/no-explicit-any
+    block-spacing
+ ,  @typescript-eslint/unbound-method
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import { dom as $ } from '@cdp/dom';

@@ -1,7 +1,8 @@
 /* eslint-disable
-   no-new-wrappers
- , @typescript-eslint/no-explicit-any
- , @typescript-eslint/no-unused-vars
+    no-new-wrappers
+ ,  @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
+ ,  @typescript-eslint/no-unused-vars
  */
 
 import { deepEqual } from '@cdp/core-utils';

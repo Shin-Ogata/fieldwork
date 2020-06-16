@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/restrict-template-expressions
  */
 
 import { noop, post } from '@cdp/core-utils';
@@ -29,7 +30,7 @@ describe('promise/cancel-token spec', () => {
     it('check CancelToken#close', async () => {
         const df = defereed();
         const token = new CancelToken((cancel, close) => {
-            post(() => {
+            void post(() => {
                 close();
                 df.resolve();
             });
@@ -50,7 +51,7 @@ describe('promise/cancel-token spec', () => {
     it('check CancelToken#cancel', async () => {
         const df = defereed();
         const token = new CancelToken((cancel) => {
-            post(() => {
+            void post(() => {
                 cancel(error);
                 df.resolve();
             });
@@ -152,7 +153,7 @@ describe('promise/cancel-token spec', () => {
             expect(reason).toBe(error);
             done();
         });
-        post(() => cancel(error));
+        void post(() => cancel(error));
     });
 
     it('check Subscription#unsbuscribe', async () => {

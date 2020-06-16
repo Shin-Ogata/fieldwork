@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import {
@@ -66,7 +67,7 @@ function triggerEvent<Event, Channel extends keyof Event>(
                 break;
             }
         } catch (e) {
-            Promise.reject(e);
+            void Promise.reject(e);
         }
     }
 }

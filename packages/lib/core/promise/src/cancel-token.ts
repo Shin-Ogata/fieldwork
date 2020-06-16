@@ -1,6 +1,7 @@
 /* eslint-disable
-   no-redeclare
- , @typescript-eslint/no-explicit-any
+    no-redeclare
+ ,  @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import { verify } from '@cdp/core-utils';
@@ -248,7 +249,7 @@ export class CancelToken<T extends {} = {}> {
             s.unsubscribe();
         }
         context.broker.trigger('cancel', reason);
-        Promise.resolve().then(() => this[_close]());
+        void Promise.resolve().then(() => this[_close]());
     }
 
     /** @internal */

@@ -98,5 +98,10 @@ module.exports = {
         '@typescript-eslint/require-array-sort-compare': 'warn',
         '@typescript-eslint/restrict-plus-operands': 'warn',
         '@typescript-eslint/interface-name-prefix': 'off',
+        // TODO: reconsider to validate the following props.
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
     },
 };

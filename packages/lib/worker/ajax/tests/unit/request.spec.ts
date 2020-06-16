@@ -1,5 +1,5 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
  */
 
 import { Result, RESULT_CODE } from '@cdp/result';

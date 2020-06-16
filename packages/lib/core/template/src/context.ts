@@ -1,6 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
- , @typescript-eslint/no-this-alias
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/no-this-alias
  */
 
 import { TemplateContext } from './interfaces';

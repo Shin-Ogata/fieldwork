@@ -1,6 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
- , @typescript-eslint/camelcase
+    camelcase
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import { post, escapeHTML } from '@cdp/core-utils';
@@ -311,7 +311,7 @@ describe('extention-i18n spec', () => {
             const t: i18n.TFunction = i18next.t.bind(i18next);
 
             const promise = new Promise(resolve => {
-                post(() => {
+                void post(() => {
                     i18next.init({
                         lng: 'ja-JP',
                         initImmediate: false,

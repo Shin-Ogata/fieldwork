@@ -1,6 +1,7 @@
 /* eslint-disable
-   prefer-rest-params
- , @typescript-eslint/no-explicit-any
+    prefer-rest-params
+ ,  @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 import {
@@ -273,7 +274,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         const internal = this[_internal];
         if (ObservableState.ACTIVE !== internal.state) {
             internal.state = ObservableState.ACTIVE;
-            post(() => this[_notifyChanges]());
+            void post(() => this[_notifyChanges]());
         }
         return this;
     }
@@ -439,7 +440,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         indexes.add(index);
         records[len] = { type, index, newValue, oldValue };
         if (ObservableState.ACTIVE === state && 0 === len) {
-            post(() => this[_notifyChanges]());
+            void post(() => this[_notifyChanges]());
         }
     }
 

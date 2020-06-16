@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import { deepEqual, deepCopy } from '@cdp/core-utils';
@@ -270,7 +271,7 @@ describe('binary/converter spec', () => {
         const buff = fromHexString('');
         expect(buff.byteLength).toBe(0);
 
-        expect(() => dataURLToBase64(txt)).toThrow(new Error(`Invalid data-URL: ${txt}`));
+        expect(() => dataURLToBase64(txt)).toThrow(new Error(`Invalid data-URL: ${txt}`)); // eslint-disable-line
         done();
     });
 });

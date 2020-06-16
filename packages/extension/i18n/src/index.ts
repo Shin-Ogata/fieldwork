@@ -1,5 +1,5 @@
 /* eslint-disable
-   @typescript-eslint/no-namespace
+    @typescript-eslint/no-namespace
  */
 
 import {
@@ -53,9 +53,9 @@ declare namespace i18n {
     export type InitOptions = i18nextInitOptions;
     export type TOptionsBase = i18nextTOptionsBase;
     export type StringMap = i18nextStringMap;
-    export type TOptions<T extends object = StringMap> = i18nextTOptions<T>;
+    export type TOptions<T extends Record<string, unknown> = StringMap> = i18nextTOptions<T>;
     export type Callback = i18nextCallback;
-    export type ExistsFunction<K extends string = string, T extends object = StringMap> = i18nextExistsFunction<K, T>;
+    export type ExistsFunction<K extends string = string, T extends Record<string, unknown> = StringMap> = i18nextExistsFunction<K, T>;
     export type WithT = i18nextWithT;
     export type TFunctionResult = i18nextTFunctionResult;
     export type TFunctionKeys = i18nextTFunctionKeys;
@@ -70,7 +70,7 @@ declare namespace i18n {
     export type CallbackError = i18nextCallbackError;
     export type ReadCallback = i18nextReadCallback;
     export type MultiReadCallback = i18nextMultiReadCallback;
-    export type BackendModule<T = object> = i18nextBackendModule<T>;
+    export type BackendModule<T = Record<string, unknown>> = i18nextBackendModule<T>;
     export type LanguageDetectorModule = i18nextLanguageDetectorModule;
     export type LanguageDetectorAsyncModule = i18nextLanguageDetectorAsyncModule;
     export type PostProcessorModule = i18nextPostProcessorModule;

@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { SyncEvent, dataSyncNULL } from '@cdp/data-sync';
 import { EventBroker } from '@cdp/events';
 import { CancelToken } from '@cdp/promise';

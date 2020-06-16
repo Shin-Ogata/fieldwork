@@ -1,6 +1,6 @@
 /* eslint-disable
-   space-in-parens
- , @typescript-eslint/no-explicit-any
+    space-in-parens
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import { Writable, getGlobal } from '@cdp/core-utils';

@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/explicit-function-return-type
+    @typescript-eslint/explicit-function-return-type
+ ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 import { CancelToken, CancelTokenSource } from './cancel-token';

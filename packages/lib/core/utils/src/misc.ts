@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import {
@@ -22,7 +23,7 @@ import {
  * @example <br>
  *
  * ```ts
- * post(() => exec(arg));
+ * void post(() => exec(arg));
  * ```
  *
  * @param executor

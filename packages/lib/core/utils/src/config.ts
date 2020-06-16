@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 /**
  * @en Safe `global` accessor.
  * @ja `global` アクセッサ
@@ -7,7 +11,7 @@
  *  - `ja` 環境に応じた `global` オブジェクト
  */
 export function getGlobal(): typeof globalThis {
-    // eslint-disable-next-line no-new-func
+    // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
     return ('object' === typeof globalThis) ? globalThis : Function('return this')();
 }
 

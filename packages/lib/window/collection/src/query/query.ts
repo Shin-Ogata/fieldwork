@@ -1,3 +1,8 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ ,  @typescript-eslint/restrict-template-expressions
+ */
+
 import {
     Keys,
     isFunction,

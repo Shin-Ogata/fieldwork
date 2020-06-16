@@ -1061,7 +1061,7 @@ export declare const _clearInterval: TimerStopFunction;
  * @example <br>
  *
  * ```ts
- * post(() => exec(arg));
+ * void post(() => exec(arg));
  * ```
  *
  * @param executor
@@ -3365,7 +3365,7 @@ declare namespace CDP_DECLARE {
      * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
-    function ASSIGN_RESULT_CODE(extend: object): void;
+    function ASSIGN_RESULT_CODE(extend: Record<string, unknown>): void;
     /**
      * @en Generate success code.
      * @ja 成功コードを生成

@@ -49,7 +49,7 @@ export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> =
     i18n.use(DomLocalizer(dom));
 
     return new Promise((resolve, reject) => {
-        i18n.init(opts, (error, translator) => {
+        void i18n.init(opts, (error, translator) => {
             if (error) {
                 const result = makeResult(RESULT_CODE.ERROR_I18N_CORE_LAYER, 'i18n#init() failed.', error);
                 if (noThrow) {
@@ -91,7 +91,7 @@ export const getLanguageList = (): string[] => {
 export const changeLanguage = (lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction> => {
     const opts = Object.assign({ noThrow: true }, options);
     return new Promise((resolve, reject) => {
-        i18n.changeLanguage(lng, (error, translator) => {
+        void i18n.changeLanguage(lng, (error, translator) => {
             if (error) {
                 const result = makeResult(RESULT_CODE.ERROR_I18N_CORE_LAYER, 'i18n#changeLanguate() failed.', error);
                 if (opts.noThrow) {

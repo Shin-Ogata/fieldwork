@@ -1,6 +1,7 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
- , @typescript-eslint/unbound-method
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/unbound-method
+ ,  @typescript-eslint/ban-types
  */
 
 import { Arguments } from '@cdp/core-utils';

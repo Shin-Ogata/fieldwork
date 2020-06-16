@@ -1,6 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-namespace
- , @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-namespace
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import {

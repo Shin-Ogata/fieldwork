@@ -1,3 +1,9 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ ,  @typescript-eslint/restrict-template-expressions
+ ,  @typescript-eslint/explicit-module-boundary-types
+ */
+
 import { Keys } from '@cdp/core-utils';
 import { convertSortKeys } from '../utils';
 import {

@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import { Arguments, isArray } from '@cdp/core-utils';

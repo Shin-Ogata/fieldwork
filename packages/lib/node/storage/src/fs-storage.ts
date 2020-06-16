@@ -1,5 +1,5 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
  */
 
 import { promisify } from 'util';
@@ -216,7 +216,7 @@ export class FsStorage implements IStorage {
         if (existsSync(this._location)) {
             unlinkSync(this._location);
         }
-        this._storage.clear();
+        void this._storage.clear();
     }
 
 ///////////////////////////////////////////////////////////////////////

@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { Constructor, PlainObject } from '@cdp/core-utils';
 import { EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';

@@ -1,6 +1,6 @@
 /* eslint-disable
-   no-global-assign
- , @typescript-eslint/no-explicit-any
+    no-global-assign
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import {

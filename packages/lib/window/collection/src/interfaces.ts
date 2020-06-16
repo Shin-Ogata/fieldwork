@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { Keys } from '@cdp/core-utils';
 import { Cancelable } from '@cdp/promise';
 

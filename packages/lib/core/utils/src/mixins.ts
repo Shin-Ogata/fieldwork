@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import {
@@ -260,7 +261,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
 
     let _hasSourceConstructor = false;
 
-    // eslint-disable-next-line @typescript-eslint/class-name-casing
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     class _MixinBase extends (base as any as Constructor<MixinClass>) {
 
         private readonly [_constructors]: Map<Constructor<any>, Function | null>;
