@@ -1,6 +1,8 @@
 /* eslint-disable
-   no-invalid-this
- , @typescript-eslint/no-explicit-any
+    no-invalid-this
+ ,  @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
+ ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 const random = Math.random.bind(Math);

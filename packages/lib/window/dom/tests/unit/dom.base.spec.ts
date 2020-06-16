@@ -1,7 +1,7 @@
 /* eslint-disable
-   block-spacing
- , no-duplicate-imports
- , @typescript-eslint/no-explicit-any
+    block-spacing
+ ,  no-duplicate-imports
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import { dom } from '@cdp/dom';

@@ -1,6 +1,6 @@
 /* eslint-disable
-   no-invalid-this
- , @typescript-eslint/no-explicit-any
+    no-invalid-this
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import {

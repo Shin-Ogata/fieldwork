@@ -1,5 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import {
@@ -228,7 +229,7 @@ export abstract class ObservableObject implements IObservable {
         const internal = this[_internal];
         if (ObservableState.ACTIVE !== internal.state) {
             internal.state = ObservableState.ACTIVE;
-            post(() => this[_notifyChanges]());
+            void post(() => this[_notifyChanges]());
         }
         return this;
     }
@@ -317,7 +318,7 @@ export abstract class ObservableObject implements IObservable {
                 changeMap.has(k) || changeMap.set(k, this[k]);
             }
             if (ObservableState.ACTIVE === state) {
-                post(() => this[_notifyChanges]());
+                void post(() => this[_notifyChanges]());
             }
         } else {
             changeMap.has(p) || changeMap.set(p, oldValue);

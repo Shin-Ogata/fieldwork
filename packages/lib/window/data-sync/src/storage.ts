@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { PlainObject } from '@cdp/core-utils';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import { IStorage, IStorageOptions } from '@cdp/core-storage';

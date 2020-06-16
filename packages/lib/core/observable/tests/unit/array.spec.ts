@@ -1,6 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/require-await
- , @typescript-eslint/no-explicit-any
+    @typescript-eslint/require-await
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import {
@@ -311,7 +311,7 @@ describe('observable/array spec', () => {
             console.timeEnd('ObservableArray.map');
 
             expect(isObservable(checkType)).toBe(true);
-            expect(t1).toBeLessThanOrEqual(base * 550); // map はとても遅い. 大体 250 倍近いコスト
+            expect(t1).toBeLessThanOrEqual(base * 560); // map はとても遅い. 大体 250 ～ 560 倍近いコスト
 
             // slice
             console.time('Array.slice');
@@ -327,7 +327,7 @@ describe('observable/array spec', () => {
             console.timeEnd('ObservableArray.slice');
 
             expect(isObservable(checkType)).toBe(true);
-            expect(t1).toBeLessThanOrEqual(0.1);    // slice は速い. 無視できるコスト
+            expect(t1).toBeLessThanOrEqual(0.15);    // slice は速い. 無視できるコスト
 
             // filter
             console.time('Array.filter');

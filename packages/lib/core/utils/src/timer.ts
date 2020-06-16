@@ -1,6 +1,7 @@
 /* eslint-disable
-   @typescript-eslint/no-empty-interface
- , @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-empty-interface
+ ,  @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
  */
 
 import { getGlobal } from './config';

@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { EventBroker, Subscription } from '@cdp/events';
 
 /** @internal */

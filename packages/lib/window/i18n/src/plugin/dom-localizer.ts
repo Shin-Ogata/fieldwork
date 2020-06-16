@@ -81,7 +81,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
         }
 
         if (!opts && true === useOptionsAttr) {
-            opts = $el.data(optionsAttr) as object;
+            opts = $el.data(optionsAttr) as i18n.TOptions;
         }
 
         opts = opts || {};

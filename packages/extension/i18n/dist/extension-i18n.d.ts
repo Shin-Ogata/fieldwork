@@ -527,11 +527,11 @@ declare namespace i18n {
       /**
        * Override char to separate keys
        */
-      keySeparator?: string;
+      keySeparator?: false | string;
       /**
        * Override char to split namespace from key
        */
-      nsSeparator?: string;
+      nsSeparator?: false | string;
       /**
        * Accessing an object not a translation string (can be set globally too)
        */
@@ -616,6 +616,10 @@ declare namespace i18n {
     export interface ResourceStore {
        data: Resource;
        options: InitOptions;
+      /**
+       * Gets fired when resources got added or removed
+       */
+      on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
     }
     export interface Services {
       backendConnector: any;
@@ -741,6 +745,10 @@ declare namespace i18n {
        */
       services: Services;
       /**
+       * Internal container for translation resources
+       */
+      store: ResourceStore;
+      /**
        * Uses similar args as the t function and returns true if a key exists.
        */
       exists: ExistsFunction;
@@ -762,7 +770,7 @@ declare namespace i18n {
       changeLanguage(lng: string, callback?: Callback): Promise<TFunction>;
       /**
        * Is set to the current detected or set language.
-       * If you need the primary used language depending on your configuration (whilelist, load) you will prefer using i18next.languages[0].
+       * If you need the primary used language depending on your configuration (whitelist, load) you will prefer using i18next.languages[0].
        */
       language: string;
       /**

@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { PlainObject, KeyToType } from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';

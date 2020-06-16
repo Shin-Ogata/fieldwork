@@ -6,7 +6,7 @@ import { Primitive, TypedData } from './types';
  * @example <br>
  *
  * ```ts
- * post(() => exec(arg));
+ * void post(() => exec(arg));
  * ```
  *
  * @param executor

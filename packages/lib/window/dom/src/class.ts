@@ -1,6 +1,6 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
- , @typescript-eslint/no-empty-interface
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/no-empty-interface
  */
 
 import { mixins } from '@cdp/core-utils';

@@ -1,6 +1,6 @@
 'use strict';
 
-const nodeResolve       = require('@rollup/plugin-node-resolve');
+const { nodeResolve }   = require('@rollup/plugin-node-resolve');
 const commonjs          = require('@rollup/plugin-commonjs');
 const alias             = require('@rollup/plugin-alias');
 const replacer          = require('@rollup/plugin-replace');

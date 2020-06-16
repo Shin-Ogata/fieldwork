@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import {
     Cancelable,
     checkCanceled as cc,

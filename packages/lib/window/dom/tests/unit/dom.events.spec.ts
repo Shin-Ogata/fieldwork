@@ -1,6 +1,6 @@
 /* eslint-disable
-   block-spacing
- , @typescript-eslint/no-explicit-any
+    block-spacing
+ ,  @typescript-eslint/no-explicit-any
  */
 
 import {

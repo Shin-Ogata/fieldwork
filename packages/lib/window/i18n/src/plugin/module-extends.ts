@@ -1,5 +1,5 @@
 /* eslint-disable
-   @typescript-eslint/no-namespace
+    @typescript-eslint/no-namespace
  */
 
 import { i18n } from '@cdp/extension-i18n';

@@ -1,5 +1,5 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
  */
 
 import {
@@ -106,7 +106,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
         options = options || {};
         this._store = (await this._storage.getItem(this._rootKey, options)) || {};
         if (!options.silent) {
-            post(() => this.publish('change', '*'));
+            void post(() => this.publish('change', '*'));
         }
     }
 
@@ -197,11 +197,11 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 
         if (!noSave) {
             // no fire notification
-            this._storage.setItem(this._rootKey, this._store, { ...this._defaultOptions, ...options });
+            void this._storage.setItem(this._rootKey, this._store, { ...this._defaultOptions, ...options });
         }
 
         if (!silent) {
-            post(() => this.publish('change', key, newVal, oldVal));
+            void post(() => this.publish('change', key, newVal, oldVal));
         }
     }
 
@@ -231,7 +231,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
     public clear(options?: RegistryWriteOptions): void {
         options = options || {};
         this._store = {};
-        this._storage.removeItem(this._rootKey, options);
+        void this._storage.removeItem(this._rootKey, options);
         if (!options.silent) {
             this.publish('change', null, null, null);
         }

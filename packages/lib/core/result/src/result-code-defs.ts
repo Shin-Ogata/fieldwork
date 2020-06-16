@@ -1,7 +1,7 @@
 /* eslint-disable
-   no-inner-declarations
- , @typescript-eslint/no-namespace
- , @typescript-eslint/no-unused-vars
+    no-inner-declarations
+ ,  @typescript-eslint/no-namespace
+ ,  @typescript-eslint/no-unused-vars
  */
 
 /*
@@ -132,7 +132,7 @@ namespace CDP_DECLARE {
      * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
-    export function ASSIGN_RESULT_CODE(extend: object): void {
+    export function ASSIGN_RESULT_CODE(extend: Record<string, unknown>): void {
         Object.assign(RESULT_CODE, extend);
     }
 

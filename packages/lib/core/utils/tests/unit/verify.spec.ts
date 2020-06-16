@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/ban-types
+ */
+
 import { verify } from '@cdp/core-utils';
 
 describe('utils/types spec', () => {

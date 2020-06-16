@@ -1,5 +1,5 @@
 /* eslint-disable
-   @typescript-eslint/no-non-null-assertion
+    @typescript-eslint/no-non-null-assertion
  */
 
 import { i18n } from '@cdp/extension-i18n';
@@ -56,7 +56,7 @@ export class AjaxBackend implements i18n.BackendModule<i18n.AjaxBackendOptions> 
     }
 
     private loadUrl(url: string, callback: (err: i18n.CallbackError | string, data: i18n.ResourceKey | boolean) => void): void {
-        (async () => {
+        void (async () => {
             try {
                 const json = await request.json(url, undefined, this._options);
                 callback(null, json);

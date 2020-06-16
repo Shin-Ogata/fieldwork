@@ -1,5 +1,8 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
+ ,  @typescript-eslint/restrict-template-expressions
+ ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 import { Keys, computeDate } from '@cdp/core-utils';

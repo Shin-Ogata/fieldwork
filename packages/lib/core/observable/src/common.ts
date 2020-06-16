@@ -1,5 +1,7 @@
 /* eslint-disable
-   @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/ban-types
+ ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 import { Subscription, EventBroker } from '@cdp/events';

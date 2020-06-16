@@ -10,9 +10,9 @@ declare namespace i18n {
     type InitOptions = i18nextInitOptions;
     type TOptionsBase = i18nextTOptionsBase;
     type StringMap = i18nextStringMap;
-    type TOptions<T extends object = StringMap> = i18nextTOptions<T>;
+    type TOptions<T extends Record<string, unknown> = StringMap> = i18nextTOptions<T>;
     type Callback = i18nextCallback;
-    type ExistsFunction<K extends string = string, T extends object = StringMap> = i18nextExistsFunction<K, T>;
+    type ExistsFunction<K extends string = string, T extends Record<string, unknown> = StringMap> = i18nextExistsFunction<K, T>;
     type WithT = i18nextWithT;
     type TFunctionResult = i18nextTFunctionResult;
     type TFunctionKeys = i18nextTFunctionKeys;
@@ -27,7 +27,7 @@ declare namespace i18n {
     type CallbackError = i18nextCallbackError;
     type ReadCallback = i18nextReadCallback;
     type MultiReadCallback = i18nextMultiReadCallback;
-    type BackendModule<T = object> = i18nextBackendModule<T>;
+    type BackendModule<T = Record<string, unknown>> = i18nextBackendModule<T>;
     type LanguageDetectorModule = i18nextLanguageDetectorModule;
     type LanguageDetectorAsyncModule = i18nextLanguageDetectorAsyncModule;
     type PostProcessorModule = i18nextPostProcessorModule;
