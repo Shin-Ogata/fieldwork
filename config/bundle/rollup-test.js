@@ -28,7 +28,7 @@ function getDefault(testeeConfig, options) {
             include: 'node_modules/**',
         },
     }, options);
-    const { external: globals, commonjs: cjsOptions, alias: aliasOptions, replace, postproc } = opts;
+    const { external: globals, commonjs: cjsOptions, alias: aliasOptions, replace, postproc, domain } = opts;
     const external = (globals && Object.keys(globals)) || [];
 
     testeeConfig.output = testeeConfig.output.filter(elem => elem.format !== 'es').map((elem) => {
@@ -62,7 +62,7 @@ function getDefault(testeeConfig, options) {
                 cjs && commonjs(cjsOptions),
                 aliasOptions && alias(aliasOptions),
                 sourcemapDetect(),
-                sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${DOMAIN}:///specs/` }),
+                sourcemapRoot({ relativePath: relativePath(`${TEST}/${UNIT}`), sourceRoot: `${domain || DOMAIN}:///specs/` }),
                 replace && replacer(replace),
                 postproc && postProcesser(postproc),
             ],
