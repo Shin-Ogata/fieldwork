@@ -41,6 +41,7 @@ function getConfig(options) {
         alias: aliasOptions,
         exports,
         postproc,
+        domain,
         onwarn,
     } = opts;
     const external = globals && Object.keys(globals);
@@ -60,7 +61,7 @@ function getConfig(options) {
             }),
             cjs && commonjs(cjsOptions),
             sourcemapDetect(),
-            sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${DOMAIN}:///${PACKAGE}/` }),
+            sourcemapRoot({ relativePath: relativePath(), sourceRoot: `${domain || DOMAIN}:///${PACKAGE}/` }),
             postproc && postProcesser(postproc),
         ],
         output: [

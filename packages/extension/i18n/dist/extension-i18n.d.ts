@@ -188,15 +188,25 @@ declare namespace i18n {
        */
       fallbackLng?: false | FallbackLng;
       /**
-       * Array of allowed languages
+       * DEPRECATED use supportedLngs
        * @default false
        */
       whitelist?: false | string[];
       /**
-       * If true will pass eg. en-US if finding en in whitelist
+       * DEPRECTADED use nonExplicitSupportedLngs
        * @default false
        */
-      nonExplicitWhitelist?: boolean;
+      nonExplicitWhiteliest?: boolean;
+      /**
+       * Array of allowed languages
+       * @default false
+       */
+      supportedLngs?: false | string[];
+      /**
+       * If true will pass eg. en-US if finding en in supportedLngs
+       * @default false
+       */
+      nonExplicitSupportedLngs?: boolean;
       /**
        * Language codes to lookup, given set language is
        * 'en-US': 'all' --> ['en-US', 'en', 'dev'],
@@ -770,7 +780,7 @@ declare namespace i18n {
       changeLanguage(lng: string, callback?: Callback): Promise<TFunction>;
       /**
        * Is set to the current detected or set language.
-       * If you need the primary used language depending on your configuration (whitelist, load) you will prefer using i18next.languages[0].
+       * If you need the primary used language depending on your configuration (supportedLngs, load) you will prefer using i18next.languages[0].
        */
       language: string;
       /**
