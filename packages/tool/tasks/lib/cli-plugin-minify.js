@@ -49,7 +49,7 @@ function defaultOptions() {
     };
 }
 
-function minifyJavaScript(options) {
+async function minifyJavaScript(options) {
     const { minify } = require('terser');
     const { cwd, silent, config } = options;
     let settings = require(resolve(cwd, config));
@@ -58,7 +58,7 @@ function minifyJavaScript(options) {
     }
 
     const { src, out, map, terser } = settings;
-    const result = minify(readFileSync(src).toString(), terser);
+    const result = await minify(readFileSync(src).toString(), terser);
     if (result.error) {
         console.log(chalk.red.underline(`terser error: ${result.error}`));
         throw new Error(result.error);
@@ -84,7 +84,7 @@ async function exec(options) {
     options = options || defaultOptions();
     switch (options.type) {
         case 'js':
-            minifyJavaScript(options);
+            await minifyJavaScript(options);
             break;
         case 'css':
             console.log('under construction');

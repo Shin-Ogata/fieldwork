@@ -8,10 +8,11 @@ import { i18n } from '@cdp/i18n';
 const body = document.body;
 
 export function ensureCleanI18N(): void {
-    delete i18n['options'];
-    delete i18n['language'];
-    delete i18n['languages'];
-    delete i18n['isInitialized'];
+    const context: Partial<typeof i18n> = i18n;
+    delete context['options'];
+    delete context['language'];
+    delete context['languages'];
+    delete context['isInitialized'];
 }
 
 export function createTestElementsFromTemplate(): HTMLElement[] {

@@ -33,7 +33,14 @@ describe('platform spec', () => {
 
     afterEach(() => {
         if (rollback.orientation) {
-            delete globalThis['orientation'];
+            /*
+             * @deprecated
+             *  globalThis.orientation は window.screen.orientation に変わる予定. ただし2020/08 時点でモバイルサポートはなし
+             *    https://developer.mozilla.org/en-US/docs/Web/API/Window/orientation
+             *    https://developer.mozilla.org/ja/docs/Web/API/Screen/orientation
+             *    https://caniuse.com/#search=screen
+             */
+            delete (globalThis as { orientation?: string | number; })['orientation'];
             rollback.orientation = false;
         }
         if (rollback.ontouchstart) {
