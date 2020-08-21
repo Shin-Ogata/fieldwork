@@ -148,4 +148,24 @@ describe('utils/deep-circuit spec', () => {
         expect(copied === obj).toBe(false);
         expect(deepEqual(copied, obj)).toBe(true);
     });
+
+    it('check without polluting the prototype', () => {
+        /*
+         * Prototype Pollution 攻撃
+         *
+         * 参考
+         * - NPM lodash
+         *   https://www.npmjs.com/advisories/1523
+         * - i18next の対応
+         *   https://github.com/i18next/i18next/pull/1482/files
+         * - 日本語解説
+         *   https://jovi0608.hatenablog.com/entry/2018/10/19/083725
+         */
+        const maliciousPayload = '{"__proto__":{"vulnerable":"Polluted"}}';
+        deepMerge({}, JSON.parse(maliciousPayload));
+        expect(({} as any).vulnerable).toBeUndefined();
+
+        deepMerge(Number, JSON.parse(maliciousPayload));
+        expect((Number as any).vulnerable).toBeUndefined();
+    });
 });

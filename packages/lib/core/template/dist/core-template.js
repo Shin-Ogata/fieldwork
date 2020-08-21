@@ -6,7 +6,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@cdp/core-utils')) :
     typeof define === 'function' && define.amd ? define(['exports', '@cdp/core-utils'], factory) :
-    (global = global || self, factory(global.CDP = global.CDP || {}, global.CDP));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CDP = global.CDP || {}, global.CDP));
 }(this, (function (exports, coreUtils) { 'use strict';
 
     const globalSettings = {

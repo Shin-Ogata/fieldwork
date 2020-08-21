@@ -271,15 +271,19 @@ function merge(target: unknown, source: unknown): any {
     const obj = isObject(target) ? target : {};
     if (sameClass(target, source)) {
         for (const key of Object.keys(source)) {
-            const oldValue = obj[key];
-            const newValue = merge(oldValue, source[key]);
-            !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
+            if ('__proto__' !== key) {
+                const oldValue = obj[key];
+                const newValue = merge(oldValue, source[key]);
+                !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
+            }
         }
     } else {
         for (const key in source) {
-            const oldValue = obj[key];
-            const newValue = merge(oldValue, source[key]);
-            !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
+            if ('__proto__' !== key) {
+                const oldValue = obj[key];
+                const newValue = merge(oldValue, source[key]);
+                !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
+            }
         }
     }
     return obj;

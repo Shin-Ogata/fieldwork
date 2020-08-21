@@ -66,7 +66,7 @@ const provider = async (options?: ItemQueryOptions): Promise<CollectionFetchResu
 
     const nextOptions = (() => {
         const no = { noSearch: !!filter, condition };
-        !no.noSearch && delete no.noSearch;
+        !no.noSearch && delete (no as { noSearch?: boolean; }).noSearch;
         !no.condition && delete no.condition;
         return isEmptyObject(no) ? undefined : no;
     })();

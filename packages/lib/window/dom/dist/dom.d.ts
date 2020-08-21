@@ -49,7 +49,10 @@ declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T
      * @en Returns an iterable of key(index), value([[ElementBase]]) pairs for every entry in the array.
      * @ja key(index), value([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
      */
-    entries(): IterableIterator<[number, T]>;
+    entries(): IterableIterator<[
+        number,
+        T
+    ]>;
     /**
      * @en Returns an iterable of keys(index) in the array.
      * @ja key(index) 配列にアクセス可能なイテレータオブジェクトを返却
@@ -70,13 +73,16 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
     [n: number]: T;
     [Symbol.iterator]: () => Iterator<T>;
 }
-export declare type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
+export declare type DOMValueType<T, K = "value"> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
 export declare type DOMData = PlainObject<TypedData>;
 declare class DOMAttributes<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Add css class to elements.
      * @ja css class 要素に追加
@@ -249,7 +255,10 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Retrieve one of the elements matched by the [[DOM]] instance.
      * @ja インデックスを指定して配下の要素にアクセス
@@ -538,7 +547,10 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Get the HTML contents of the first element in the set of matched elements.
      * @ja 先頭要素の HTML を取得
@@ -723,7 +735,10 @@ declare class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEl
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Get the computed style properties for the first element in the set of matched elements.
      * @ja 先頭要素の CSS に設定されているプロパティ値を取得
@@ -901,7 +916,10 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Add event handler function to one or more events to the elements. (live event available)
      * @ja 要素に対して, 1つまたは複数のイベントハンドラを設定 (動的要素にも有効)
@@ -1400,7 +1418,7 @@ export interface DOMScrollOptions {
      * @en timing function default: 'swing'
      * @ja タイミング関数 既定値: 'swing'
      */
-    easing?: 'linear' | 'swing' | ((progress: number) => number);
+    easing?: "linear" | "swing" | ((progress: number) => number);
     /**
      * @en scroll completion callback.
      * @ja スクロール完了コールバック
@@ -1411,7 +1429,10 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Get the number of pixels vertical scrolled.
      * @ja 縦方向スクロールされたピクセル数を取得
@@ -1434,7 +1455,7 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` scroll completion callback.
      *  - `ja` スクロール完了コールバック
      */
-    scrollTop(position: number, duration?: number, easing?: 'linear' | 'swing' | ((progress: number) => number), callback?: () => void): this;
+    scrollTop(position: number, duration?: number, easing?: "linear" | "swing" | ((progress: number) => number), callback?: () => void): this;
     /**
      * @en Get the number of pixels horizontal scrolled.
      * @ja 横方向スクロールされたピクセル数を取得
@@ -1457,7 +1478,7 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` scroll completion callback.
      *  - `ja` スクロール完了コールバック
      */
-    scrollLeft(position: number, duration?: number, easing?: 'linear' | 'swing' | ((progress: number) => number), callback?: () => void): this;
+    scrollLeft(position: number, duration?: number, easing?: "linear" | "swing" | ((progress: number) => number), callback?: () => void): this;
     /**
      * @en Set the number of pixels vertical and horizontal scrolled.
      * @ja 縦横方向スクロールするピクセル数を指定
@@ -1478,7 +1499,7 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` scroll completion callback.
      *  - `ja` スクロール完了コールバック
      */
-    scrollTo(x: number, y: number, duration?: number, easing?: 'linear' | 'swing' | ((progress: number) => number), callback?: () => void): this;
+    scrollTo(x: number, y: number, duration?: number, easing?: "linear" | "swing" | ((progress: number) => number), callback?: () => void): this;
     /**
      * @en Set the scroll values by optoins.
      * @ja オプションを用いてスクロール指定
@@ -1520,7 +1541,10 @@ declare class DOMEffects<TElement extends ElementBase> implements DOMIterable<TE
     readonly [n: number]: TElement;
     readonly length: number;
     [Symbol.iterator]: () => Iterator<TElement>;
-    entries: () => IterableIterator<[number, TElement]>;
+    entries: () => IterableIterator<[
+        number,
+        TElement
+    ]>;
     /**
      * @en Start animation by `Web Animation API`.
      * @ja `Web Animation API` を用いてアニメーションを実行
@@ -1576,6 +1600,18 @@ declare class DOMClass extends DOMClass_base {
 declare namespace dom {
     let fn: DOMClass;
 }
+/**
+ * @en Create [[DOM]] instance from `selector` arg.
+ * @ja 指定された `selector` [[DOM]] インスタンスを作成
+ *
+ * @param selector
+ *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+ *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+ * @param context
+ *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+ *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+ * @returns [[DOM]] instance.
+ */
 declare function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
 declare namespace dom {
     var utils: {
@@ -1583,5 +1619,8 @@ declare namespace dom {
         evaluate: typeof evaluate;
     };
 }
+
+export {
+    dom as default,
+};
 export { dom };
-export { dom as default };

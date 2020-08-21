@@ -311,7 +311,7 @@ describe('observable/array spec', () => {
             console.timeEnd('ObservableArray.map');
 
             expect(isObservable(checkType)).toBe(true);
-            expect(t1).toBeLessThanOrEqual(base * 560); // map はとても遅い. 大体 250 ～ 560 倍近いコスト
+            expect(t1).toBeLessThanOrEqual(base * 700); // map はとても遅い. 大体 250 ～ 700 倍近いコスト
 
             // slice
             console.time('Array.slice');

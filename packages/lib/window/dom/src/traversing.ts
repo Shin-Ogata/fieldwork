@@ -261,7 +261,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
             } else {
                 elem = selector instanceof DOMBase ? selector[0] : selector;
             }
-            const i = [...this].indexOf(elem as Element);
+            const i = [...this].indexOf(elem as TElement & Element);
             return 0 <= i ? i : undefined;
         }
     }
@@ -765,7 +765,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                 const parentNode = el.parentNode;
                 if (validParentNode(parentNode)) {
                     for (const sibling of $(parentNode).children(selector)) {
-                        if (sibling !== el) {
+                        if (sibling !== el as Element) {
                             siblings.add(sibling);
                         }
                     }

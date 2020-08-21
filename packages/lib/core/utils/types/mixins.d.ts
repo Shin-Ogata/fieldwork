@@ -162,4 +162,15 @@ export declare function setMixClassAttribute<T extends {}, U extends keyof MixCl
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [Constructor<S1>, Constructor<S2>?, Constructor<S3>?, Constructor<S4>?, Constructor<S5>?, Constructor<S6>?, Constructor<S7>?, Constructor<S8>?, Constructor<S9>?, ...any[]]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9>;
+export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [
+    Constructor<S1>,
+    Constructor<S2>?,
+    Constructor<S3>?,
+    Constructor<S4>?,
+    Constructor<S5>?,
+    Constructor<S6>?,
+    Constructor<S7>?,
+    Constructor<S8>?,
+    Constructor<S9>?,
+    ...any[]
+]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9>;

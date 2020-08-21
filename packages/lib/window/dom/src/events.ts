@@ -470,7 +470,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
             self.off(type as any, selector, onceHandler, opts);
             delete onceHandler.origin;
         }
-        onceHandler.origin = listener;
+        onceHandler.origin = listener as DOMEventListner | undefined;
         return this.on(type as any, selector, onceHandler, opts);
     }
 

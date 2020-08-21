@@ -9,12 +9,14 @@ function patch(index, code) {
     }
 
     code = code
+        // 'export declare function dom' → 'declare function dom'
+        .replace(/^export declare function dom/gm, 'declare function dom')
         // 'export declare namespace dom' → 'declare namespace dom'
         .replace(/^export declare namespace dom/gm, 'declare namespace dom')
     ;
 
-    // 'export { dom };', 'export { dom as default };'
-    code += 'export { dom };\nexport { dom as default };';
+    // 'export { dom };'
+    code += 'export { dom };';
 
     return code;
 }

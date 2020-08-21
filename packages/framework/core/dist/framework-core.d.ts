@@ -99,7 +99,9 @@ export declare type Class<T = any> = Constructor<T>;
  * @en Ensure for function parameters to tuple.
  * @ja 関数パラメータとして tuple を保証
  */
-export declare type Arguments<T> = T extends any[] ? T : [T];
+export declare type Arguments<T> = T extends any[] ? T : [
+    T
+];
 /**
  * @en Rmove `readonly` attributes from input type.
  * @ja `readonly` 属性を解除
@@ -280,7 +282,7 @@ export declare function isEmptyObject(x: unknown): x is object;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isFunction(x: unknown): x is TypeList['function'];
+export declare function isFunction(x: unknown): x is TypeList["function"];
 /**
  * @en Check the value-type is input.
  * @ja 指定した型であるか判定
@@ -536,7 +538,18 @@ export declare function deepEqual(lhs: unknown, rhs: unknown): boolean;
  * @en Recursively merges own and inherited enumerable string keyed properties of source objects into the destination object.
  * @ja オブジェクトの再帰的マージを実行
  */
-export declare function deepMerge<T, S1, S2, S3, S4, S5, S6, S7, S8, S9>(target: T, ...sources: [S1, S2?, S3?, S4?, S5?, S6?, S7?, S8?, S9?, ...any[]]): T & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9;
+export declare function deepMerge<T, S1, S2, S3, S4, S5, S6, S7, S8, S9>(target: T, ...sources: [
+    S1,
+    S2?,
+    S3?,
+    S4?,
+    S5?,
+    S6?,
+    S7?,
+    S8?,
+    S9?,
+    ...any[]
+]): T & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9;
 export declare function deepMerge<X>(target: any, ...sources: any[]): X;
 /**
  * @en Create deep copy instance of source object.
@@ -706,7 +719,18 @@ export declare function setMixClassAttribute<T extends {}, U extends keyof MixCl
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [Constructor<S1>, Constructor<S2>?, Constructor<S3>?, Constructor<S4>?, Constructor<S5>?, Constructor<S6>?, Constructor<S7>?, Constructor<S8>?, Constructor<S9>?, ...any[]]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9>;
+export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [
+    Constructor<S1>,
+    Constructor<S2>?,
+    Constructor<S3>?,
+    Constructor<S4>?,
+    Constructor<S5>?,
+    Constructor<S6>?,
+    Constructor<S7>?,
+    Constructor<S8>?,
+    Constructor<S9>?,
+    ...any[]
+]): MixinConstructor<B, MixinClass & InstanceType<B> & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9>;
 /**
  * @en Execute shuffle of an array elements.
  * @ja 配列要素のシャッフル
@@ -789,7 +813,7 @@ export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEY
  * @en Return type of [[groupBy]]().
  * @ja [[groupBy]]() が返却する型
  */
-export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
+export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items"> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
 /**
  * @en Execute `GROUP BY` for array elements.
  * @ja 配列の要素の `GROUP BY` 集合を抽出
@@ -801,7 +825,7 @@ export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, 
  *  - `en` `GROUP BY` options
  *  - `ja` `GROUP BY` オプション
  */
-export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'>(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
+export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items">(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
 /**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.map()` の代替メソッド
@@ -999,7 +1023,7 @@ export declare function result<T = any>(target: object | Nil, property: string |
  * @en Date unit definitions.
  * @ja 日時オブジェクトの単位定義
  */
-export declare type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec';
+export declare type DateUnit = "year" | "month" | "day" | "hour" | "min" | "sec" | "msec";
 /**
  * @en Calculate from the date which becomes a cardinal point before a N date time or after a N date time (by [[DateUnit]]).
  * @ja 基点となる日付から、N日後、N日前を算出
@@ -1050,10 +1074,10 @@ export declare type TimerStartFunction = (handler: Function, timeout?: number, .
  * @ja タイマー停止関数の型
  */
 export declare type TimerStopFunction = (handle: TimerHandle) => void;
-export declare const _setTimeout: TimerStartFunction;
-export declare const _clearTimeout: TimerStopFunction;
-export declare const _setInterval: TimerStartFunction;
-export declare const _clearInterval: TimerStopFunction;
+declare const _setTimeout: TimerStartFunction;
+declare const _clearTimeout: TimerStopFunction;
+declare const _setInterval: TimerStartFunction;
+declare const _clearInterval: TimerStopFunction;
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -1193,13 +1217,13 @@ export declare function fromTypedData(data: TypedData | undefined): string | und
  * @ja `Web API` 格納形式に変換 <br>
  *     `undefined` を返却しないことを保証
  */
-export declare function dropUndefined<T>(value: T | null | undefined, nilSerialize?: boolean): T | 'null' | 'undefined' | null;
+export declare function dropUndefined<T>(value: T | null | undefined, nilSerialize?: boolean): T | "null" | "undefined" | null;
 /**
  * @en Deserialize from `Web API` stocked type. <br>
  *     Convert from 'null' or 'undefined' string to original type.
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
-export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined;
+export declare function restoreNil<T>(value: T | "null" | "undefined"): T | null | undefined;
 /**
  * @en Get local unique id. <br>
  *     "local unique" means guarantees unique during in script life cycle only.
@@ -1348,7 +1372,7 @@ export declare function dasherize(src: string): string;
  * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
  */
 export interface EventAll {
-    '*': any[];
+    "*": any[];
 }
 /**
  * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
@@ -1710,55 +1734,7 @@ export declare class EventRevceiver {
      */
     stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }
-/**
- * @en The class which have I/F of [[EventBroker]] and [[EventRevceiver]]. <br>
- *     `Events` class of `Backbone.js` equivalence.
- * @ja [[EventBroker]] と [[EventRevceiver]] の I/F をあわせ持つクラス <br>
- *     `Backbone.js` の `Events` クラス相当
- *
- * @example <br>
- *
- * ```ts
- * import { EventSource } from '@cdp/events';
- *
- * // declare event interface
- * interface TargetEvent {
- *   hoge: [number, string];        // callback function's args type tuple
- *   foo: [void];                   // no args
- *   hoo: void;                     // no args (same the upon)
- *   bar: [Error];                  // any class is available.
- *   baz: Error | Number;           // if only one argument, `[]` is not required.
- * }
- *
- * interface SampleEvent {
- *   fuga: [number, string];        // callback function's args type tuple
- * }
- *
- * // declare client class
- * class SampleSource extends EventSource<SampleEvent> {
- *   constructor(target: EventSource<TargetEvent>) {
- *     super();
- *     this.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
- *     this.listenTo(broker, 'bar', (e: Error) => { ... });
- *     this.listenTo(broker, ['foo', 'hoo'], () => { ... });
- *   }
- *
- *   release(): void {
- *     this.stopListening();
- *   }
- * }
- *
- * const sample = new SampleSource();
- *
- * sample.on('fuga', (a: number, b: string) => { ... });    // OK. standard usage.
- * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
- * ```
- */
 export declare type EventSource<T extends {}> = EventBroker<T> & EventRevceiver;
-/**
- * @en Constructor of [[EventSource]]
- * @ja [[EventSource]] のコンストラクタ実体
- */
 export declare const EventSource: {
     readonly prototype: EventSource<any>;
     new <T>(): EventSource<T>;
@@ -1894,7 +1870,7 @@ export declare class CancelToken<T extends {} = {}> {
      * @en `toString` tag override.
      * @ja `toString` タグのオーバーライド
      */
-    protected get [Symbol.toStringTag](): 'CancelToken';
+    protected get [Symbol.toStringTag](): "CancelToken";
     /**
      * @en Register custom cancellation callback.
      * @ja キャンセル時のカスタム処理の登録
@@ -2179,7 +2155,7 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    on(property: '@', listener: (context: ObservableObject) => any): Subscription;
+    on(property: "@", listener: (context: ObservableObject) => any): Subscription;
     /**
      * @en Subscrive property change(s).
      * @ja プロパティ変更購読設定
@@ -2203,7 +2179,7 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    off(property: '@', listener?: (context: ObservableObject) => any): void;
+    off(property: "@", listener?: (context: ObservableObject) => any): void;
     /**
      * @en Unsubscribe property change(s).
      * @ja プロパティ変更購読解除
@@ -2757,7 +2733,7 @@ export interface RegistrySchemaBase {
      * @en Registry wildcard property.
      * @ja レジストリワイルドカードプロパティ
      */
-    '*': void;
+    "*": void;
 }
 /**
  * @en Registry event definition
@@ -2768,12 +2744,16 @@ export interface RegistryEvent<T extends {} = any, K extends keyof T = keyof T> 
      * @en Change event. (key, newValue, oldValue)
      * @ja 変更通知 (key, newValue, oldValue)
      */
-    'change': [K | null, T[K] | null | undefined, T[K] | null | undefined];
+    "change": [
+        K | null,
+        T[K] | null | undefined,
+        T[K] | null | undefined
+    ];
     /**
      * @en Before save event.
      * @ja 永続化前に発行
      */
-    'will-save': void;
+    "will-save": void;
 }
 /**
  * @en Registry read options.
@@ -3052,7 +3032,10 @@ export declare type TemplateToken = any;
  * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
  * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
  */
-export declare type TemplateTags = [string, string];
+export declare type TemplateTags = [
+    string,
+    string
+];
 /**
  * @en Scanner interface.
  * @ja スキャナーインターフェイス

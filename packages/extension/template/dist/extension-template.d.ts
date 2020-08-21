@@ -18,9 +18,6 @@
  * http://polymer.github.io/PATENTS.txt
  */
 /**
- * @module lit-html
- */
-/**
  * The Part interface represents a dynamic part of a template instance rendered
  * by lit-html.
  */
@@ -65,10 +62,10 @@ declare class Template {
  * to Part.update().
  */
 export declare type TemplatePart = {
-    readonly type: 'node';
+    readonly type: "node";
     index: number;
 } | {
-    readonly type: 'attribute';
+    readonly type: "attribute";
     index: number;
     readonly name: string;
     readonly strings: ReadonlyArray<string>;
@@ -142,13 +139,22 @@ declare class NodePart implements Part {
 }
 export interface TemplateProcessor {
     /**
-     * Create parts for an attribute-position binding, given the event, attribute
-     * name, and string literals.
+     * Create parts for an attribute-position binding, given the element,
+     * attribute name, and string literals.
      *
      * @param element The element containing the binding
-     * @param name  The attribute name
-     * @param strings The string literals. There are always at least two strings,
-     *   event for fully-controlled bindings with a single expression.
+     * @param name  The attribute name, including a possible prefix. The name may
+     *   be prefixed by `.` (for a property binding), `@` (for an event binding)
+     * or
+     *   `?` (for a boolean attribute binding).
+     * @param strings The array of literal strings that form the static part of
+     *     the
+     *   attribute value. There are always at least two strings,
+     *   even for fully-controlled bindings with a single expression. For example,
+     *   for the binding `attr="${e1}-${e2}"`, the `strings` array includes three
+     *   strings (`['', '-', '']`)—the text _before_ the first expression (the
+     * empty string), the text between the two expressions (`'-'`), and the text
+     * after the last expression (another empty string).
      */
     handleAttributeExpressions(element: Element, name: string, strings: ReadonlyArray<string>, options: RenderOptions): ReadonlyArray<Part>;
     /**

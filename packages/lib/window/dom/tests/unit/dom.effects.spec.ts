@@ -42,6 +42,7 @@ describe('dom/effects spec', () => {
         // NOTE: 塗りつぶしモードはスコアが高いまま永続化されるので finished で値を入れる代価の方式が推奨されている
         // https://developer.mozilla.org/en-US/docs/Web/API/EffectTiming/fill#Alternatives_to_fill_modes
         const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
+        contexts.finished.catch((e: DOMException) => expect(e.name).toBe('AbortError'));
         $dom.cancel();
         await wait(150);
         expect([...contexts.animations.values()][0].playState).toBe('idle');
@@ -53,6 +54,7 @@ describe('dom/effects spec', () => {
         prepareTestElements(testee(`<div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>`));
         const $dom = $('.test-dom');
         const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
+        contexts.finished.catch((e: DOMException) => expect(e.name).toBe('AbortError'));
         $dom.finish();
         await wait(150);
         expect([...contexts.animations.values()][0].playState).toBe('finished');
