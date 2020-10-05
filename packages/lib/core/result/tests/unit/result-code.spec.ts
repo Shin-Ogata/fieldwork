@@ -9,6 +9,7 @@ import {
     SUCCEEDED,
     FAILED,
 } from '@cdp/result';
+import './result-code-defs';
 
 enum MODULE_RESULT_CODE {
     MODULE_SUCCEEDED = DECLARE_SUCCESS_CODE(RESULT_CODE_BASE.TEST, 300, 'module succeess result.'),

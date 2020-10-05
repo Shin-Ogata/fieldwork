@@ -10,6 +10,6 @@
  */
 declare namespace jasmine {
     interface Spy<Fn extends Func = Func> {
-        andCallThrough: Spy;
+        andCallThrough(): Spy<Fn>;
     }
 }

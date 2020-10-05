@@ -11,7 +11,7 @@ declare namespace i18n {
     export interface FallbackLngObjList {
         [language: string]: string[];
     }
-    export type FallbackLng = string | string[] | FallbackLngObjList;
+    export type FallbackLng = string | string[] | FallbackLngObjList | ((code: string) => string | string[] | FallbackLngObjList);
     export type FormatFunction = (value: any, format?: string, lng?: string) => string;
     export interface InterpolationOptions {
         /**

@@ -68,7 +68,7 @@ export const directives: TemplateDirectives = {
  *  - `ja` プレーン文字列. ex) [[JST]] の戻り値などを想定
  */
 export const toTemplateStringsArray = (src: string): TemplateStringsArray => {
-    const ta: any = [src]; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const ta = [src] as { raw?: string[]; };
     ta.raw = [src];
-    return ta;
+    return ta as unknown as TemplateStringsArray;
 };
