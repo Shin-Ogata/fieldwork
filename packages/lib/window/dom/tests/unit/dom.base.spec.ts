@@ -24,7 +24,7 @@ describe('dom/base spec', () => {
         expect($).toBe(dom);
     });
 
-    it('check construction performance', () => {
+    xit('check construction performance', () => {
         // peformance
         class Vanilla { }
         console.time('vanilla');

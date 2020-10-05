@@ -11,7 +11,7 @@ import {
 import { Subscription } from '@cdp/events';
 import { CancelToken } from './cancel-token';
 
-declare global {
+declare global { // eslint-disable-line @typescript-eslint/no-unused-vars
 
     interface PromiseConstructor {
         new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, cancelToken?: CancelToken | null): Promise<T>;

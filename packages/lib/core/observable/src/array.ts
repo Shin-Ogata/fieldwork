@@ -135,7 +135,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
 Object.freeze(_proxyHandler);
 
 /** @internal valid array index helper */
-function isValidArrayIndex<T>(index: any): boolean {
+function isValidArrayIndex<T>(index: T): boolean {
     const s = String(index);
     const n = Math.trunc(s as any);
     return String(n) === s && 0 <= n && n < 0xFFFFFFFF;

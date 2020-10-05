@@ -52,7 +52,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
         if ('html' === attr) {
             $el.html(i18next.t(key, extendDefault(opts, $el.html())));
         } else if ('text' === attr) {
-            $el.text(i18next.t(key, extendDefault(opts, $el.text())) as string); // eslint-disable-line
+            $el.text(i18next.t(key, extendDefault(opts, $el.text())) as string); // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
         } else if ('prepend' === attr) {
             insert('prepend', $el, key, opts);
         } else if ('append' === attr) {
@@ -63,7 +63,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
             $el.data(dataAttr, translated);
             $el.attr(attr, translated);
         } else {
-            $el.attr(attr, i18next.t(key, extendDefault(opts, $el.attr(attr) as string)) as string); // eslint-disable-line
+            $el.attr(attr, i18next.t(key, extendDefault(opts, $el.attr(attr) as string)) as string); // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
         }
     };
 

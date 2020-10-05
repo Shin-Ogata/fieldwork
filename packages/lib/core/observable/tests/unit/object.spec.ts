@@ -241,7 +241,7 @@ describe('observable/object spec', () => {
         }, 0);
     });
 
-    it('check construction performance', () => {
+    xit('check construction performance', () => {
         const _wmap = new WeakMap<any, any>();
         // peformance
         class Vanilla { }

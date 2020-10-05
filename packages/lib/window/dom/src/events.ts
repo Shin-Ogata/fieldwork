@@ -297,7 +297,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         options?: boolean | AddEventListenerOptions
     ): this;
 
-    public on<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
+    public on(...args: any[]): this {
         const { type: events, selector, listener, options } = parseEventArgs(...args);
 
         function handleLiveEvent(e: Event): void {
@@ -381,7 +381,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      */
     public off(): this;
 
-    public off<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
+    public off(...args: any[]): this {
         const { type: events, selector, listener, options } = parseEventArgs(...args);
 
         if (events.length <= 0) {
@@ -460,7 +460,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         options?: boolean | AddEventListenerOptions
     ): this;
 
-    public once<TEventMap extends DOMEventMap<TElement>>(...args: any[]): this {
+    public once(...args: any[]): this {
         const { type, selector, listener, options } = parseEventArgs(...args);
         const opts = { ...options, ...{ once: true } };
 
