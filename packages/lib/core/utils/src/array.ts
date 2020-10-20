@@ -1,7 +1,6 @@
 /* eslint-disable
     no-invalid-this
  ,  @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  ,  @typescript-eslint/explicit-module-boundary-types
  */
 
@@ -152,7 +151,7 @@ export type GroupByReturnValue<
     TKEYS extends keyof T,
     TSUMKEYS extends keyof T = never,
     TGROUPKEY extends string = 'items'
-> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
+> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
 
 /**
  * @en Execute `GROUP BY` for array elements.

@@ -1,3 +1,4 @@
+import { UnknownFunction } from './types';
 /**
  * @en Type of handle for timer functions.
  * @ja タイマー関数に使用するハンドル型
@@ -8,7 +9,7 @@ export interface TimerHandle {
  * @en Type of timer start functions.
  * @ja タイマー開始関数の型
  */
-export declare type TimerStartFunction = (handler: Function, timeout?: number, ...args: any[]) => TimerHandle;
+export declare type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
 /**
  * @en Type of timer stop functions.
  * @ja タイマー停止関数の型

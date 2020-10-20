@@ -17,7 +17,7 @@ import { AjaxDataTypes, AjaxRequestOptions, AjaxResult } from './interfaces';
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export declare function get<T extends AjaxDataTypes | {} = 'json'>(url: string, data?: PlainObject, dataType?: T extends AjaxDataTypes ? T : 'json', options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
+export declare function get<T extends AjaxDataTypes | object = 'json'>(url: string, data?: PlainObject, dataType?: T extends AjaxDataTypes ? T : 'json', options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
 /**
  * @en `GET` text request shortcut.
  * @ja `GET` テキストリクエストショートカット
@@ -47,7 +47,7 @@ export declare function text(url: string, data?: PlainObject, options?: AjaxRequ
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export declare function json<T extends 'json' | {} = 'json'>(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
+export declare function json<T extends 'json' | object = 'json'>(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
 /**
  * @en `GET` Blob request shortcut.
  * @ja `GET` Blob リクエストショートカット
@@ -80,7 +80,7 @@ export declare function blob(url: string, data?: PlainObject, options?: AjaxRequ
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export declare function post<T extends AjaxDataTypes | {} = 'json'>(url: string, data: PlainObject, dataType?: T extends AjaxDataTypes ? T : 'json', options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
+export declare function post<T extends AjaxDataTypes | object = 'json'>(url: string, data: PlainObject, dataType?: T extends AjaxDataTypes ? T : 'json', options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
 /**
  * @en Synchronous `GET` request for resource access. <br>
  *     Many browsers have deprecated synchronous XHR support on the main thread entirely.
@@ -97,4 +97,4 @@ export declare function post<T extends AjaxDataTypes | {} = 'json'>(url: string,
  *  - `en` Data to be sent to the server.
  *  - `ja` サーバーに送信されるデータ.
  */
-export declare function resource<T extends 'text' | 'json' | {} = 'json'>(url: string, dataType?: T extends 'text' | 'json' ? T : 'json', data?: PlainObject): AjaxResult<T>;
+export declare function resource<T extends 'text' | 'json' | object = 'json'>(url: string, dataType?: T extends 'text' | 'json' ? T : 'json', data?: PlainObject): AjaxResult<T>;

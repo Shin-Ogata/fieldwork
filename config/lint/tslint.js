@@ -88,6 +88,21 @@ module.exports = {
                 ignoreStatic: true,
             },
         ],
+        /*
+         * continue consideration
+         * https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/ban-types.md#default-options
+         * https://github.com/typescript-eslint/typescript-eslint/issues/2063#issuecomment-634318313
+         */
+        '@typescript-eslint/ban-types': [
+            'error',
+            {
+                extendDefaults: true,
+                types: {
+                    'object': false,
+                }
+            },
+
+        ],
         '@typescript-eslint/no-for-in-array': 'warn',
         '@typescript-eslint/no-unnecessary-qualifier': 'warn',
         '@typescript-eslint/no-useless-constructor': 'warn',

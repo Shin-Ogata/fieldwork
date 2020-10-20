@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import { mixins } from '@cdp/core-utils';
@@ -51,7 +50,7 @@ import { EventRevceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-type EventSourceBase<T extends {}> = EventBroker<T> & EventRevceiver;
+type EventSourceBase<T extends object> = EventBroker<T> & EventRevceiver;
 
 /** @internal [[EventSource]] class */
 class EventSource extends mixins(EventBroker, EventRevceiver) {
@@ -67,7 +66,7 @@ class EventSource extends mixins(EventBroker, EventRevceiver) {
  */
 const EventSourceBase: {
     readonly prototype: EventSourceBase<any>;
-    new <T>(): EventSourceBase<T>;
+    new <T extends object>(): EventSourceBase<T>;
 } = EventSource as any;
 
 export { EventSourceBase as EventSource };

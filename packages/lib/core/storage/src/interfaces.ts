@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import {
     Keys,
     Types,
@@ -26,7 +22,7 @@ export interface StorageDataTypeList {
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */
-export type StorageInputDataTypeList<T> = Types<T> | null | undefined;
+export type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
 
 /**
  * @en [[IStorage]] common option interface.
@@ -194,7 +190,7 @@ export interface RegistrySchemaBase {
  * @en Registry event definition
  * @ja レジストリイベント
  */
-export interface RegistryEvent<T extends {} = any, K extends keyof T = keyof T> { // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface RegistryEvent<T extends object = any, K extends keyof T = keyof T> { // eslint-disable-line @typescript-eslint/no-explicit-any
     /**
      * @en Change event. (key, newValue, oldValue)
      * @ja 変更通知 (key, newValue, oldValue)

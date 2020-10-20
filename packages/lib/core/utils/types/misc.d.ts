@@ -1,4 +1,4 @@
-import { Primitive, TypedData } from './types';
+import { UnknownFunction, Primitive, TypedData } from './types';
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -47,7 +47,7 @@ export declare function sleep(elapse: number): Promise<void>;
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends Function>(executor: T, elapse: number, options?: {
+export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: {
     leading?: boolean;
     trailing?: boolean;
 }): T & {
@@ -67,7 +67,7 @@ export declare function throttle<T extends Function>(executor: T, elapse: number
  *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
  *  - `ja` `true` の場合, 初回のコールは即時実行
  */
-export declare function debounce<T extends Function>(executor: T, wait: number, immediate?: boolean): T & {
+export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & {
     cancel(): void;
 };
 /**
@@ -78,7 +78,7 @@ export declare function debounce<T extends Function>(executor: T, wait: number, 
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export declare function once<T extends Function>(executor: T): T;
+export declare function once<T extends UnknownFunction>(executor: T): T;
 /**
  * @en Create escape function from map.
  * @ja 文字置換関数を作成

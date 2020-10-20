@@ -149,7 +149,7 @@ export declare const enum DynamicLimit {
  * @en Property definitions of dynamic query context.
  * @ja ダイナミッククエリの条件コンテキスト
  */
-export interface DynamicOperatorContext<T extends {}> {
+export interface DynamicOperatorContext<T extends object> {
     operator: DynamicOperator;
     prop: Keys<T>;
     value: T[Keys<T>] | number;
@@ -160,7 +160,7 @@ export interface DynamicOperatorContext<T extends {}> {
  * @en Limit condition definitions for dynamic query.
  * @ja ダイナミッククエリの上限設定
  */
-export interface DynamicLimitCondition<T extends {}> {
+export interface DynamicLimitCondition<T extends object> {
     unit: DynamicLimit;
     /** when DynamicLimit.COUNT, set `undefined`. */
     prop: Keys<T> | undefined;
@@ -172,7 +172,7 @@ export interface DynamicLimitCondition<T extends {}> {
  * @en Dynamic query condition seed interface.
  * @ja ダイナミッククエリの条件
  */
-export interface DynamicConditionSeed<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> {
+export interface DynamicConditionSeed<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> {
     /**
      * @en filter condition
      * @ja フィルタ条件
@@ -216,7 +216,7 @@ export interface DynamicConditionSeed<TItem extends {}, TKey extends Keys<TItem>
  * @en [[Collection]] sort options.
  * @ja [[Collection]] の sort に使用するオプション
  */
-export interface CollectionSortOptions<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> {
+export interface CollectionSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> {
     /**
      * @en Sort key properties. <br>
      *     An end of element is given priority to.
@@ -244,7 +244,7 @@ export interface CollectionSortOptions<TItem extends {}, TKey extends Keys<TItem
  * @en [[Collection]] filter options.
  * @ja [[Collection]] の filter に使用するオプション
  */
-export interface CollectionFilterOptions<TItem extends {}> {
+export interface CollectionFilterOptions<TItem extends object> {
     /**
      * @en filter function.
      * @ja フィルタ関数を指定
@@ -255,7 +255,7 @@ export interface CollectionFilterOptions<TItem extends {}> {
  * @en Base option interface for [[Collection]]`#fetch()`.
  * @ja [[Collection]]`#fetch()` に使用する基底オプション
  */
-export interface CollectionFetchOptions<TItem extends {}> extends Cancelable {
+export interface CollectionFetchOptions<TItem extends object> extends Cancelable {
     /**
      * @en Query start index. default: 0
      * @ja 取得開始 Index を指定 default: 0
@@ -281,7 +281,7 @@ export interface CollectionFetchOptions<TItem extends {}> extends Cancelable {
  * @en Return value type for [[Collection]]`#fetch()`.
  * @ja [[Collection]]`#fetch()` の戻り値
  */
-export declare type CollectionFetchResult<TItem extends {}, TSumKey extends Keys<TItem> = never> = {
+export declare type CollectionFetchResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
     total: number;
     items: TItem[];
     options?: CollectionQueryOptions<TItem>;
@@ -292,12 +292,12 @@ export declare type CollectionFetchResult<TItem extends {}, TSumKey extends Keys
  * @ja [[CollectionFetchOptions]]`.auto` が指定された場合に使用する進捗取得用コールバック関数 <br>
  *     最終進捗 の items は Promise.resolve() に渡るものと同等
  */
-export declare type CollectionFetchProgress<TItem extends {}> = (progress: CollectionFetchResult<TItem>) => void;
+export declare type CollectionFetchProgress<TItem extends object> = (progress: CollectionFetchResult<TItem>) => void;
 /**
  * @en [[Collection]] standard query options.
  * @ja [[Collection]] 標準のクエリオプション
  */
-export interface CollectionQueryOptions<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> extends CollectionSortOptions<TItem, TKey>, CollectionFilterOptions<TItem>, CollectionFetchOptions<TItem> {
+export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> extends CollectionSortOptions<TItem, TKey>, CollectionFilterOptions<TItem>, CollectionFetchOptions<TItem> {
     /**
      * @en Dynamic query condition.
      * @ja ダイナミッククエリの条件
@@ -318,7 +318,7 @@ export interface CollectionQueryOptions<TItem extends {}, TKey extends Keys<TIte
  * @en Query information interface.
  * @ja クエリ情報を格納するインターフェイス
  */
-export interface CollectionQueryInfo<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> {
+export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> {
     sortKeys: SortKey<TKey>[];
     comparators: SortCallback<TItem>[];
     filter?: FilterCallback<TItem>;
@@ -328,4 +328,4 @@ export interface CollectionQueryInfo<TItem extends {}, TKey extends Keys<TItem> 
  * @en [[Collection]] items provider function type.
  * @ja [[Collection]] の Item を供給する関数の型
  */
-export declare type CollectionItemProvider<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionQueryOptions<TItem, TKey>) => Promise<CollectionFetchResult<TItem>>;
+export declare type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionQueryOptions<TItem, TKey>) => Promise<CollectionFetchResult<TItem>>;

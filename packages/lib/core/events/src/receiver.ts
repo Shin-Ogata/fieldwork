@@ -1,9 +1,12 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
-import { Arguments, isArray } from '@cdp/core-utils';
+import {
+    UnknownFunction,
+    Arguments,
+    isArray,
+} from '@cdp/core-utils';
 import {
     Subscribable,
     Subscription,
@@ -14,7 +17,7 @@ import {
 const _context = Symbol('context');
 
 /** @internal */
-type SubscriptionMap = Map<Function, Subscription>;
+type SubscriptionMap = Map<UnknownFunction, Subscription>;
 /** @internal */
 type ListerMap       = Map<string, SubscriptionMap>;
 /** @internal */
@@ -29,7 +32,7 @@ interface Context {
 }
 
 /** @internal register listener context */
-function register(context: Context, target: Subscribable, channel: string | string[], listener: Function): Subscription {
+function register(context: Context, target: Subscribable, channel: string | string[], listener: UnknownFunction): Subscription {
     const subscriptions: Subscription[] = [];
 
     const channels = isArray(channel) ? channel : [channel];
@@ -38,8 +41,8 @@ function register(context: Context, target: Subscribable, channel: string | stri
         context.set.add(s);
         subscriptions.push(s);
 
-        const listenerMap = context.map.get(target) || new Map<string, Map<Function, Subscription>>();
-        const map = listenerMap.get(ch) || new Map<Function, Subscription>();
+        const listenerMap = context.map.get(target) || new Map<string, Map<UnknownFunction, Subscription>>();
+        const map = listenerMap.get(ch) || new Map<UnknownFunction, Subscription>();
         map.set(listener, s);
 
         if (!listenerMap.has(ch)) {
@@ -68,7 +71,7 @@ function register(context: Context, target: Subscribable, channel: string | stri
 }
 
 /** @internal unregister listener context */
-function unregister(context: Context, target?: Subscribable, channel?: string | string[], listener?: Function): void {
+function unregister(context: Context, target?: Subscribable, channel?: string | string[], listener?: UnknownFunction): void {
     if (null != target) {
         target.off(channel, listener as any);
 

@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import { SyncEvent, dataSyncNULL } from '@cdp/data-sync';
 import { EventBroker } from '@cdp/events';
 import { CancelToken } from '@cdp/promise';
@@ -11,8 +7,8 @@ describe('data-sync/null spec', () => {
     const { token } = cancelSource;
     cancelSource.cancel(new Error('aborted'));
 
-    class Context extends EventBroker<SyncEvent<{}>> {
-        toJSON(): {} {
+    class Context extends EventBroker<SyncEvent<object>> {
+        toJSON(): object {
             return {};
         }
     }

@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  ,  @typescript-eslint/explicit-module-boundary-types
  */
 
@@ -12,7 +11,7 @@ import {
 import { EventBroker } from '@cdp/events';
 
 /** @internal EventBrokerProxy */
-export class EventBrokerProxy<Event extends {}> {
+export class EventBrokerProxy<Event extends object> {
     private _broker?: EventBroker<Event>;
     public get(): EventBroker<Event> {
         return this._broker || (this._broker = new EventBroker());

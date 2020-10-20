@@ -57,6 +57,7 @@
     <Folder Include="types\utils\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\base.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\query\dynamic-condition.ts" />
@@ -76,6 +77,7 @@
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
+    <TypeScriptCompile Include="types\base.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\query\dynamic-condition.d.ts" />

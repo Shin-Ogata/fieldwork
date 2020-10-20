@@ -1,9 +1,9 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import {
+    UnknownFunction,
     Nil,
     Type,
     Class,
@@ -38,14 +38,14 @@ export declare class MixinClass {
      *  - `en` set target class constructor
      *  - `ja` 対象クラスのコンストラクタを指定
      */
-    public isMixedWith<T>(mixedClass: Constructor<T>): boolean;
+    public isMixedWith<T extends object>(mixedClass: Constructor<T>): boolean;
 }
 
 /**
  * @en Mixed sub class constructor definitions.
  * @ja 合成したサブクラスのコンストラクタ定義
  */
-export interface MixinConstructor<B extends Class, U> extends Type<U> {
+export interface MixinConstructor<B extends Class, U extends object> extends Type<U> {
     /**
      * @en constructor
      * @ja コンストラクタ
@@ -114,7 +114,7 @@ function copyProperties(target: object, source: object): void {
 }
 
 // helper for setMixClassAttribute(target, 'instanceOf')
-function setInstanceOf<T extends {}>(target: Constructor<T>, method: ((inst: object) => boolean) | Nil): void {
+function setInstanceOf<T extends object>(target: Constructor<T>, method: ((inst: object) => boolean) | Nil): void {
     const behaviour = method || (null === method ? undefined : ((i: object) => Object.prototype.isPrototypeOf.call(target.prototype, i)));
     const applied = behaviour && Object.getOwnPropertyDescriptor(target, _override);
     if (!applied) {
@@ -192,7 +192,7 @@ function setInstanceOf<T extends {}>(target: Constructor<T>, method: ((inst: obj
  *                          既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
  *                         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
-export function setMixClassAttribute<T extends {}, U extends keyof MixClassAttribute>(
+export function setMixClassAttribute<T extends object, U extends keyof MixClassAttribute>(
     target: Constructor<T>,
     attr: U,
     method?: MixClassAttribute[U]
@@ -244,7 +244,17 @@ export function setMixClassAttribute<T extends {}, U extends keyof MixClassAttri
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
+export function mixins<
+    B extends Class,
+    S1 extends object,
+    S2 extends object,
+    S3 extends object,
+    S4 extends object,
+    S5 extends object,
+    S6 extends object,
+    S7 extends object,
+    S8 extends object,
+    S9 extends object>(
     base: B,
     ...sources: [
         Constructor<S1>,
@@ -264,14 +274,14 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     class _MixinBase extends (base as any as Constructor<MixinClass>) {
 
-        private readonly [_constructors]: Map<Constructor<any>, Function | null>;
+        private readonly [_constructors]: Map<Constructor<any>, UnknownFunction | null>;
         private readonly [_classBase]: Constructor<any>;
 
         constructor(...args: any[]) {
             // eslint-disable-next-line constructor-super
             super(...args);
 
-            const constructors = new Map<Constructor<any>, Function>();
+            const constructors = new Map<Constructor<any>, UnknownFunction>();
             this[_constructors] = constructors;
             this[_classBase] = base;
 
@@ -301,7 +311,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             return this;
         }
 
-        public isMixedWith<T>(srcClass: Constructor<T>): boolean {
+        public isMixedWith<T extends object>(srcClass: Constructor<T>): boolean {
             if (this.constructor === srcClass) {
                 return false;
             } else if (this[_classBase] === srcClass) {
@@ -315,7 +325,7 @@ export function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
             return Object.prototype.isPrototypeOf.call(_MixinBase.prototype, instance);
         }
 
-        public [_isInherited]<T>(srcClass: Constructor<T>): boolean {
+        public [_isInherited]<T extends object>(srcClass: Constructor<T>): boolean {
             const ctors = this[_constructors];
             if (ctors.has(srcClass)) {
                 return true;

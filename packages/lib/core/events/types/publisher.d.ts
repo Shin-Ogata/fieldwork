@@ -45,7 +45,7 @@ import { Subscription, Subscribable } from './interfaces';
  *                                                          //     but got 3.
  * ```
  */
-export declare abstract class EventPublisher<Event extends {}> implements Subscribable<Event> {
+export declare abstract class EventPublisher<Event extends object> implements Subscribable<Event> {
     /** constructor */
     constructor();
     /**

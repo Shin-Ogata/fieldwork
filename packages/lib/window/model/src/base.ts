@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import {
@@ -74,7 +73,7 @@ interface Property<T> {
 export const RESULT_VALID_ATTRS = Object.freeze(makeResult(RESULT_CODE.SUCCESS, 'valid attribute.'));
 
 /** @internal helper for save() */
-function parseSaveArgs<A extends {}>(...args: any[]): { attrs?: ModelAttributeInput<A>; options?: ModelSaveOptions; } {
+function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttributeInput<A>; options?: ModelSaveOptions; } {
     let [key, value, options] = args; // eslint-disable-line prefer-const
     let attrs: any;
 
@@ -161,10 +160,13 @@ function parseSaveArgs<A extends {}>(...args: any[]): { attrs?: ModelAttributeIn
  * :
  *
  * // early cast
- * const Mode = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
+ * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
+ * class Content extends Model {
+ *   :
+ * }
  *
  * // late cast
- * class ContentBase extends ModelBase<ContentAttribute, CustomEvent> {
+ * class Content extends ModelBase<ContentAttribute, CustomEvent> {
  *   :
  * }
  *
@@ -172,7 +174,7 @@ function parseSaveArgs<A extends {}>(...args: any[]): { attrs?: ModelAttributeIn
  * content.trigger('fire', true, 100);
  * ```
  */
-abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
+abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
     /**
      * @en Attributes pool
      * @ja 属性格納領域

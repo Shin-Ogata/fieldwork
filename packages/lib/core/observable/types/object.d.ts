@@ -155,7 +155,7 @@ export declare abstract class ObservableObject implements IObservable {
      * // => 'b changed from 1 to 200.'
      * ```
      */
-    static from<T extends {}>(src: T): ObservableObject & T;
+    static from<T extends object>(src: T): ObservableObject & T;
     /**
      * @en Force notify property change(s) in spite of active state.
      * @ja アクティブ状態にかかわらず強制的にプロパティ変更通知を発行

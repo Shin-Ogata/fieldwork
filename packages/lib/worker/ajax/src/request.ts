@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import { PlainObject } from '@cdp/core-utils';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import {
@@ -39,7 +35,7 @@ function ensureDataType(dataType?: AjaxDataTypes): AjaxDataTypes {
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function get<T extends AjaxDataTypes | {} = 'json'>(
+export function get<T extends AjaxDataTypes | object = 'json'>(
     url: string,
     data?: PlainObject,
     dataType?: T extends AjaxDataTypes ? T : 'json',
@@ -80,7 +76,7 @@ export function text(url: string, data?: PlainObject, options?: AjaxRequestOptio
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function json<T extends 'json' | {} = 'json'>(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<T>> {
+export function json<T extends 'json' | object = 'json'>(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<T>> {
     return get<T>(url, data, ('json' as T extends AjaxDataTypes ? T : 'json'), options);
 }
 
@@ -119,7 +115,7 @@ export function blob(url: string, data?: PlainObject, options?: AjaxRequestOptio
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function post<T extends AjaxDataTypes | {} = 'json'>(
+export function post<T extends AjaxDataTypes | object = 'json'>(
     url: string,
     data: PlainObject,
     dataType?: T extends AjaxDataTypes ? T : 'json',
@@ -144,7 +140,7 @@ export function post<T extends AjaxDataTypes | {} = 'json'>(
  *  - `en` Data to be sent to the server.
  *  - `ja` サーバーに送信されるデータ.
  */
-export function resource<T extends 'text' | 'json' | {} = 'json'>(
+export function resource<T extends 'text' | 'json' | object = 'json'>(
     url: string,
     dataType?: T extends 'text' | 'json' ? T : 'json',
     data?: PlainObject,

@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import { PlainObject } from '@cdp/core-utils';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import { IStorage, IStorageOptions } from '@cdp/core-storage';
@@ -19,7 +15,7 @@ import { resolveURL } from './internal';
  * @en [[IDataSync]] interface for [[IStorage]] accessor.
  * @ja [[IStorage]] アクセッサを備える [[IDataSync]] インターフェイス
  */
-export interface IStorageDataSync<T extends {} = PlainObject> extends IDataSync<T> {
+export interface IStorageDataSync<T extends object = PlainObject> extends IDataSync<T> {
     /**
      * @en Get current [[IStorage]] instance.
      * @ja 現在対象の [[IStorage]] インスタンスにアクセス

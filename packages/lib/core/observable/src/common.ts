@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  ,  @typescript-eslint/explicit-module-boundary-types
  */
 
@@ -64,7 +63,7 @@ export interface IObservable {
  * @en Interface able to access to [[EventBroker]] with [[IObservable]].
  * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
  */
-export interface IObservableEventBrokerAccess<T extends {} = any> extends IObservable {
+export interface IObservableEventBrokerAccess<T extends object = any> extends IObservable {
     /**
      * @en Get [[EventBroker]] instance.
      * @ja [[EventBroker]] インスタンスの取得

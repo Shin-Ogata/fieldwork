@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import { PlainObject, isFunction } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
@@ -121,7 +117,7 @@ export function toAjaxParams(data: PlainObject): Record<string, string> {
  *  - `en` Ajax request settings.
  *  - `ja` Ajaxリクエスト設定
  */
-export async function ajax<T extends AjaxDataTypes | {} = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>> {
+export async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>> {
     const controller = new AbortController();
     const abort = (): void => controller.abort();
 

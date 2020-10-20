@@ -3,7 +3,7 @@ import { Subscription } from '@cdp/events';
  * @en Cancellation source interface.
  * @ja キャンセル管理インターフェイス
  */
-export interface CancelTokenSource<T extends {} = {}> {
+export interface CancelTokenSource<T = unknown> {
     /**
      * @en [[CancelToken]] getter.
      * @ja [[CancelToken]] 取得
@@ -81,7 +81,7 @@ export interface CancelTokenSource<T extends {} = {}> {
  * }
  * ```
  */
-export declare class CancelToken<T extends {} = {}> {
+export declare class CancelToken<T = unknown> {
     /**
      * @en Create [[CancelTokenSource]] instance.
      * @ja [[CancelTokenSource]] インスタンスの取得
@@ -92,7 +92,7 @@ export declare class CancelToken<T extends {} = {}> {
      *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
-    static source<T extends {} = {}>(...linkedTokens: CancelToken[]): CancelTokenSource<T>;
+    static source<T = unknown>(...linkedTokens: CancelToken[]): CancelTokenSource<T>;
     /**
      * constructor
      *

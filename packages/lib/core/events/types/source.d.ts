@@ -44,13 +44,13 @@ import { EventRevceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-declare type EventSourceBase<T extends {}> = EventBroker<T> & EventRevceiver;
+declare type EventSourceBase<T extends object> = EventBroker<T> & EventRevceiver;
 /**
  * @en Constructor of [[EventSource]]
  * @ja [[EventSource]] のコンストラクタ実体
  */
 declare const EventSourceBase: {
     readonly prototype: EventSourceBase<any>;
-    new <T>(): EventSourceBase<T>;
+    new <T extends object>(): EventSourceBase<T>;
 };
 export { EventSourceBase as EventSource };

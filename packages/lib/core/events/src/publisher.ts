@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import {
@@ -24,7 +23,7 @@ type ListenersMap<T> = Map<keyof T, Set<(...args: T[keyof T][]) => unknown>>;
 const _mapListeners = new WeakMap<EventPublisher<any>, ListenersMap<any>>();
 
 /** @internal LisnerMap の取得 */
-function listeners<T>(instance: EventPublisher<T>): ListenersMap<T> {
+function listeners<T extends object>(instance: EventPublisher<T>): ListenersMap<T> {
     if (!_mapListeners.has(instance)) {
         throw new TypeError('This is not a valid EventPublisher.');
     }
@@ -119,7 +118,7 @@ function triggerEvent<Event, Channel extends keyof Event>(
  *                                                          //     but got 3.
  * ```
  */
-export abstract class EventPublisher<Event extends {}> implements Subscribable<Event> {
+export abstract class EventPublisher<Event extends object> implements Subscribable<Event> {
 
     /** constructor */
     constructor() {

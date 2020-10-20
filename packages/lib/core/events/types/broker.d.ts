@@ -21,7 +21,7 @@ export { Arguments as EventArguments };
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
-export interface EventBroker<Event extends {}> extends Subscribable<Event> {
+export interface EventBroker<Event extends object> extends Subscribable<Event> {
     /**
      * @en Notify event to clients.
      * @ja event 発行
@@ -41,5 +41,5 @@ export interface EventBroker<Event extends {}> extends Subscribable<Event> {
  */
 export declare const EventBroker: {
     readonly prototype: EventBroker<any>;
-    new <T>(): EventBroker<T>;
+    new <T extends object>(): EventBroker<T>;
 };

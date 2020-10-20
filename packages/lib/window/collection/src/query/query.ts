@@ -1,6 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/ban-types
- ,  @typescript-eslint/restrict-template-expressions
+    @typescript-eslint/restrict-template-expressions
  */
 
 import {
@@ -27,7 +26,7 @@ import { DynamicCondition } from './dynamic-condition';
 const { trunc } = Math;
 
 /** @internal 使用するプロパティが保証された CollectionQueryOptions */
-interface SafeCollectionQueryOptions<TItem extends {}, TKey extends Keys<TItem>> extends CollectionQueryOptions<TItem, TKey> {
+interface SafeCollectionQueryOptions<TItem extends object, TKey extends Keys<TItem>> extends CollectionQueryOptions<TItem, TKey> {
     sortKeys: SortKey<TKey>[];
     comparators: SortCallback<TItem>[];
 }
@@ -51,7 +50,7 @@ export function searchItems<TItem>(items: TItem[], filter?: FilterCallback<TItem
 //__________________________________________________________________________________________________//
 
 /** @internal すでにキャッシュされている対象に対して CollectionQueryOptions に指定された振る舞いを行う内部 query 関数 */
-async function queryFromCache<TItem extends {}, TKey extends Keys<TItem>>(
+async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
     cached: TItem[],
     options: SafeCollectionQueryOptions<TItem, TKey>
 ): Promise<CollectionFetchResult<TItem>> {
@@ -108,7 +107,7 @@ async function queryFromCache<TItem extends {}, TKey extends Keys<TItem>>(
 }
 
 /** @internal `provider` 関数を使用して CollectionQueryOptions に指定された振る舞いを行う内部 `query` 関数 */
-async function queryFromProvider<TItem extends {}, TKey extends Keys<TItem>>(
+async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>(
     provider: CollectionItemProvider<TItem, TKey>,
     options: CollectionQueryOptions<TItem, TKey>
 ): Promise<CollectionFetchResult<TItem>> {
@@ -189,7 +188,7 @@ const _limitCriteria = {
  *  - `en` condition object
  *  - `ja` 条件オブジェクト
  */
-export function conditionalFix<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>>(
+export function conditionalFix<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>(
     items: TItem[],
     condition: DynamicCondition<TItem, TKey>
 ): CollectionFetchResult<TItem> {
@@ -250,7 +249,7 @@ export function conditionalFix<TItem extends {}, TKey extends Keys<TItem> = Keys
 //__________________________________________________________________________________________________//
 
 /** @internal SafeCollectionQueryOptions に変換 */
-function ensureOptions<TItem extends {}, TKey extends Keys<TItem>>(
+function ensureOptions<TItem extends object, TKey extends Keys<TItem>>(
     options: CollectionQueryOptions<TItem, TKey> | undefined
 ): SafeCollectionQueryOptions<TItem, TKey> {
     const opts = Object.assign({ sortKeys: [] }, options);
@@ -264,7 +263,7 @@ function ensureOptions<TItem extends {}, TKey extends Keys<TItem>>(
 }
 
 /** @internal キャッシュ可能か判定 */
-function canCache<TItem extends {}>(result: CollectionFetchResult<TItem>, options: CollectionQueryOptions<TItem>): boolean {
+function canCache<TItem extends object>(result: CollectionFetchResult<TItem>, options: CollectionQueryOptions<TItem>): boolean {
     const { noCache, noSearch } = options;
     return !noCache && !noSearch && result.total === result.items.length;
 }
@@ -283,7 +282,7 @@ function canCache<TItem extends {}>(result: CollectionFetchResult<TItem>, option
  *  - `en` query options
  *  - `ja` クエリオプション
  */
-export async function queryItems<TItem extends {}, TKey extends Keys<TItem>>(
+export async function queryItems<TItem extends object, TKey extends Keys<TItem>>(
     queryInfo: CollectionQueryInfo<TItem, TKey>,
     provider: CollectionItemProvider<TItem, TKey>,
     options?: CollectionQueryOptions<TItem, TKey>

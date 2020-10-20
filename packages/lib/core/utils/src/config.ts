@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 /**
  * @en Safe `global` accessor.
  * @ja `global` アクセッサ
@@ -26,7 +22,7 @@ export function getGlobal(): typeof globalThis {
  *  - `en` object name chain for ensure instance.
  *  - `ja` 保証するオブジェクトの名前
  */
-export function ensureObject<T extends {} = {}>(parent: object | null, ...names: string[]): T {
+export function ensureObject<T extends object = object>(parent: object | null, ...names: string[]): T {
     let root = parent || getGlobal();
     for (const name of names) {
         root[name] = root[name] || {};
@@ -39,7 +35,7 @@ export function ensureObject<T extends {} = {}>(parent: object | null, ...names:
  * @en Global namespace accessor.
  * @ja グローバルネームスペースアクセッサ
  */
-export function getGlobalNamespace<T extends {} = {}>(namespace: string): T {
+export function getGlobalNamespace<T extends object = object>(namespace: string): T {
     return ensureObject<T>(null, namespace);
 }
 
@@ -49,6 +45,6 @@ export function getGlobalNamespace<T extends {} = {}>(namespace: string): T {
  *
  * @returns default: `CDP.Config`
  */
-export function getConfig<T extends {} = {}>(namespace = 'CDP', configName = 'Config'): T {
+export function getConfig<T extends object = object>(namespace = 'CDP', configName = 'Config'): T {
     return ensureObject<T>(getGlobalNamespace(namespace), configName);
 }

@@ -1,7 +1,7 @@
 import { CancelToken } from './cancel-token';
 declare global {
     interface PromiseConstructor {
-        new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, cancelToken?: CancelToken | null): Promise<T>;
+        new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null): Promise<T>;
         resolve<T>(value?: T | PromiseLike<T>, cancelToken?: CancelToken | null): Promise<T>;
     }
 }
@@ -24,7 +24,7 @@ declare class CancelablePromise<T> extends NativePromise<T> {
      *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
      *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
      */
-    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, cancelToken?: CancelToken | null);
+    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null);
 }
 /**
  * @en Switch the global `Promise` constructor `Native Promise` or [[CancelablePromise]]. <br>

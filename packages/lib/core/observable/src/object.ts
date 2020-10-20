@@ -1,9 +1,9 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import {
+    NonFunctionProperties,
     NonFunctionPropertyNames,
     isString,
     isArray,
@@ -247,7 +247,7 @@ export abstract class ObservableObject implements IObservable {
 // implements: IObservableEventBrokerAccess
 
     /** @internal */
-    getBroker(): EventBroker<ObservableKeys<this>> {
+    getBroker(): EventBroker<NonFunctionProperties<this>> {
         const { broker } = this[_internal];
         return broker.get();
     }
@@ -277,7 +277,7 @@ export abstract class ObservableObject implements IObservable {
      * // => 'b changed from 1 to 200.'
      * ```
      */
-    public static from<T extends {}>(src: T): ObservableObject & T {
+    public static from<T extends object>(src: T): ObservableObject & T {
         const observable = deepMerge(new class extends ObservableObject { }(ObservableState.DISABLED), src);
         observable.resume();
         return observable as any;
