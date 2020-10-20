@@ -30,19 +30,24 @@ export declare function getGlobal(): typeof globalThis;
  *  - `en` object name chain for ensure instance.
  *  - `ja` 保証するオブジェクトの名前
  */
-export declare function ensureObject<T extends {} = {}>(parent: object | null, ...names: string[]): T;
+export declare function ensureObject<T extends object = object>(parent: object | null, ...names: string[]): T;
 /**
  * @en Global namespace accessor.
  * @ja グローバルネームスペースアクセッサ
  */
-export declare function getGlobalNamespace<T extends {} = {}>(namespace: string): T;
+export declare function getGlobalNamespace<T extends object = object>(namespace: string): T;
 /**
  * @en Global config accessor.
  * @ja グローバルコンフィグアクセッサ
  *
  * @returns default: `CDP.Config`
  */
-export declare function getConfig<T extends {} = {}>(namespace?: string, configName?: string): T;
+export declare function getConfig<T extends object = object>(namespace?: string, configName?: string): T;
+/**
+ * @en Primitive type of JavaScript.
+ * @ja JavaScript のプリミティブ型
+ */
+export declare type Primitive = string | number | boolean | symbol | null | undefined;
 /**
  * @en The general null type.
  * @ja 空を示す型定義
@@ -52,12 +57,22 @@ export declare type Nil = void | null | undefined;
  * @en The type of object or [[Nil]].
  * @ja [[Nil]] になりえるオブジェクト型定義
  */
-export declare type Nillable<T extends {}> = T | Nil;
+export declare type Nillable<T extends object> = T | Nil;
 /**
- * @en Primitive type of JavaScript.
- * @ja JavaScript のプリミティブ型
+ * @en Avoid the `Function`types.
+ * @ja 汎用関数型
  */
-export declare type Primitive = string | number | boolean | symbol | null | undefined;
+export declare type UnknownFunction = (...args: unknown[]) => unknown;
+/**
+ * @en Avoid the `Object` and `{}` types, as they mean "any non-nullish value".
+ * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
+ */
+export declare type UnknownObject = Record<string, unknown>;
+/**
+ * @en Non-nullish value.
+ * @ja 非 Null 値
+ */
+export declare type NonNil = {};
 /**
  * @en JavaScript type set interface.
  * @ja JavaScript の型の集合
@@ -80,21 +95,21 @@ export declare type TypeKeys = keyof TypeList;
  * @en Type base definition.
  * @ja 型の規定定義
  */
-export interface Type<T extends {}> extends Function {
+export interface Type<T extends object> extends Function {
     readonly prototype: T;
 }
 /**
  * @en Type of constructor.
  * @ja コンストラクタ型
  */
-export interface Constructor<T> extends Type<T> {
+export interface Constructor<T extends object> extends Type<T> {
     new (...args: unknown[]): T;
 }
 /**
  * @en Type of class.
  * @ja クラス型
  */
-export declare type Class<T = any> = Constructor<T>;
+export declare type Class<T extends object = object> = Constructor<T>;
 /**
  * @en Ensure for function parameters to tuple.
  * @ja 関数パラメータとして tuple を保証
@@ -137,22 +152,22 @@ export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<
  * @en Extract object key list. (ensure only 'string')
  * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
-export declare type Keys<T extends {}> = keyof Omit<T, number | symbol>;
+export declare type Keys<T extends object> = keyof Omit<T, number | symbol>;
 /**
  * @en Extract object type list.
  * @ja オブジェクトの型一覧を抽出
  */
-export declare type Types<T extends {}> = T[keyof T];
+export declare type Types<T extends object> = T[keyof T];
 /**
  * @en Convert object key to type.
  * @ja オブジェクトキーから型へ変換
  */
-export declare type KeyToType<O extends {}, K extends keyof O> = K extends keyof O ? O[K] : never;
+export declare type KeyToType<O extends object, K extends keyof O> = K extends keyof O ? O[K] : never;
 /**
  * @en Convert object type to key.
  * @ja オブジェクト型からキーへ変換
  */
-export declare type TypeToKey<O extends {}, T extends Types<O>> = {
+export declare type TypeToKey<O extends object, T extends Types<O>> = {
     [K in keyof O]: O[K] extends T ? K : never;
 }[keyof O];
 /**
@@ -182,8 +197,7 @@ export declare type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | In
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function exists<O extends {}>(x: Nillable<O>): x is O;
-export declare function exists(x: unknown): x is unknown;
+export declare function exists<T>(x: T | Nil): x is T;
 /**
  * @en Check the value-type is [[Nil]].
  * @ja [[Nil]] 型であるか判定
@@ -325,7 +339,7 @@ export declare function isTypedArray(x: unknown): x is TypedArray;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T;
+export declare function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T;
 /**
  * @en Check the value instance of input constructor (except sub class).
  * @ja 指定コンストラクタのインスタンスであるか判定 (派生クラスは含めない)
@@ -337,7 +351,7 @@ export declare function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unk
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function ownInstanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T;
+export declare function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T;
 /**
  * @en Get the value's class name.
  * @ja クラス名を取得
@@ -583,13 +597,13 @@ export declare class MixinClass {
      *  - `en` set target class constructor
      *  - `ja` 対象クラスのコンストラクタを指定
      */
-    isMixedWith<T>(mixedClass: Constructor<T>): boolean;
+    isMixedWith<T extends object>(mixedClass: Constructor<T>): boolean;
 }
 /**
  * @en Mixed sub class constructor definitions.
  * @ja 合成したサブクラスのコンストラクタ定義
  */
-export interface MixinConstructor<B extends Class, U> extends Type<U> {
+export interface MixinConstructor<B extends Class, U extends object> extends Type<U> {
     /**
      * @en constructor
      * @ja コンストラクタ
@@ -683,7 +697,7 @@ export interface MixClassAttribute {
  *                          既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
  *                         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
-export declare function setMixClassAttribute<T extends {}, U extends keyof MixClassAttribute>(target: Constructor<T>, attr: U, method?: MixClassAttribute[U]): void;
+export declare function setMixClassAttribute<T extends object, U extends keyof MixClassAttribute>(target: Constructor<T>, attr: U, method?: MixClassAttribute[U]): void;
 /**
  * @en Mixin function for multiple inheritance. <br>
  *     Resolving type support for maximum 10 classes.
@@ -719,7 +733,7 @@ export declare function setMixClassAttribute<T extends {}, U extends keyof MixCl
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [
+export declare function mixins<B extends Class, S1 extends object, S2 extends object, S3 extends object, S4 extends object, S5 extends object, S6 extends object, S7 extends object, S8 extends object, S9 extends object>(base: B, ...sources: [
     Constructor<S1>,
     Constructor<S2>?,
     Constructor<S3>?,
@@ -813,7 +827,7 @@ export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEY
  * @en Return type of [[groupBy]]().
  * @ja [[groupBy]]() が返却する型
  */
-export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items"> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
+export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items"> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
 /**
  * @en Execute `GROUP BY` for array elements.
  * @ja 配列の要素の `GROUP BY` 集合を抽出
@@ -1068,7 +1082,7 @@ export interface TimerHandle {
  * @en Type of timer start functions.
  * @ja タイマー開始関数の型
  */
-export declare type TimerStartFunction = (handler: Function, timeout?: number, ...args: any[]) => TimerHandle;
+export declare type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
 /**
  * @en Type of timer stop functions.
  * @ja タイマー停止関数の型
@@ -1126,7 +1140,7 @@ export declare function sleep(elapse: number): Promise<void>;
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends Function>(executor: T, elapse: number, options?: {
+export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: {
     leading?: boolean;
     trailing?: boolean;
 }): T & {
@@ -1146,7 +1160,7 @@ export declare function throttle<T extends Function>(executor: T, elapse: number
  *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
  *  - `ja` `true` の場合, 初回のコールは即時実行
  */
-export declare function debounce<T extends Function>(executor: T, wait: number, immediate?: boolean): T & {
+export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & {
     cancel(): void;
 };
 /**
@@ -1157,7 +1171,7 @@ export declare function debounce<T extends Function>(executor: T, wait: number, 
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export declare function once<T extends Function>(executor: T): T;
+export declare function once<T extends UnknownFunction>(executor: T): T;
 /**
  * @en Create escape function from map.
  * @ja 文字置換関数を作成
@@ -1396,7 +1410,7 @@ export interface Subscription {
  * @ja イベント供給を行うインターフェイス定義 <br>
  *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
  */
-export interface Subscribable<Event extends {} = any> {
+export interface Subscribable<Event extends object = any> {
     /** type resolver */
     readonly [$cdp]?: Event;
     /**
@@ -1515,7 +1529,7 @@ export interface Silenceable {
  *                                                          //     but got 3.
  * ```
  */
-export declare abstract class EventPublisher<Event extends {}> implements Subscribable<Event> {
+export declare abstract class EventPublisher<Event extends object> implements Subscribable<Event> {
     /** constructor */
     constructor();
     /**
@@ -1608,7 +1622,7 @@ export declare abstract class EventPublisher<Event extends {}> implements Subscr
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
-export interface EventBroker<Event extends {}> extends Subscribable<Event> {
+export interface EventBroker<Event extends object> extends Subscribable<Event> {
     /**
      * @en Notify event to clients.
      * @ja event 発行
@@ -1628,7 +1642,7 @@ export interface EventBroker<Event extends {}> extends Subscribable<Event> {
  */
 export declare const EventBroker: {
     readonly prototype: EventBroker<any>;
-    new <T>(): EventBroker<T>;
+    new <T extends object>(): EventBroker<T>;
 };
 /**
  * @en The class to which the safe event register/unregister method is offered for the object which is a short life cycle than subscription target. <br>
@@ -1734,16 +1748,16 @@ export declare class EventRevceiver {
      */
     stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }
-export declare type EventSource<T extends {}> = EventBroker<T> & EventRevceiver;
+export declare type EventSource<T extends object> = EventBroker<T> & EventRevceiver;
 export declare const EventSource: {
     readonly prototype: EventSource<any>;
-    new <T>(): EventSource<T>;
+    new <T extends object>(): EventSource<T>;
 };
 /**
  * @en Cancellation source interface.
  * @ja キャンセル管理インターフェイス
  */
-export interface CancelTokenSource<T extends {} = {}> {
+export interface CancelTokenSource<T = unknown> {
     /**
      * @en [[CancelToken]] getter.
      * @ja [[CancelToken]] 取得
@@ -1821,7 +1835,7 @@ export interface CancelTokenSource<T extends {} = {}> {
  * }
  * ```
  */
-export declare class CancelToken<T extends {} = {}> {
+export declare class CancelToken<T = unknown> {
     /**
      * @en Create [[CancelTokenSource]] instance.
      * @ja [[CancelTokenSource]] インスタンスの取得
@@ -1832,7 +1846,7 @@ export declare class CancelToken<T extends {} = {}> {
      *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
-    static source<T extends {} = {}>(...linkedTokens: CancelToken[]): CancelTokenSource<T>;
+    static source<T = unknown>(...linkedTokens: CancelToken[]): CancelTokenSource<T>;
     /**
      * constructor
      *
@@ -1904,7 +1918,7 @@ export declare class CancelablePromise<T> extends NativePromise<T> {
      *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
      *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
      */
-    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, cancelToken?: CancelToken | null);
+    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null);
 }
 /**
  * @en Switch the global `Promise` constructor `Native Promise` or [[CancelablePromise]]. <br>
@@ -2067,7 +2081,7 @@ export interface IObservable {
  * @en Interface able to access to [[EventBroker]] with [[IObservable]].
  * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
  */
-export interface IObservableEventBrokerAccess<T extends {} = any> extends IObservable {
+export interface IObservableEventBrokerAccess<T extends object = any> extends IObservable {
     /**
      * @en Get [[EventBroker]] instance.
      * @ja [[EventBroker]] インスタンスの取得
@@ -2237,7 +2251,7 @@ export declare abstract class ObservableObject implements IObservable {
      * // => 'b changed from 1 to 200.'
      * ```
      */
-    static from<T extends {}>(src: T): ObservableObject & T;
+    static from<T extends object>(src: T): ObservableObject & T;
     /**
      * @en Force notify property change(s) in spite of active state.
      * @ja アクティブ状態にかかわらず強制的にプロパティ変更通知を発行
@@ -2589,7 +2603,7 @@ export interface StorageDataTypeList {
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */
-export declare type StorageInputDataTypeList<T> = Types<T> | null | undefined;
+export declare type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
 /**
  * @en [[IStorage]] common option interface.
  * @ja [[IStorage]] 操作に使用する共通のオプションインターフェイス
@@ -2739,7 +2753,7 @@ export interface RegistrySchemaBase {
  * @en Registry event definition
  * @ja レジストリイベント
  */
-export interface RegistryEvent<T extends {} = any, K extends keyof T = keyof T> {
+export interface RegistryEvent<T extends object = any, K extends keyof T = keyof T> {
     /**
      * @en Change event. (key, newValue, oldValue)
      * @ja 変更通知 (key, newValue, oldValue)

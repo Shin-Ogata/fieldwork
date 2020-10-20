@@ -29,14 +29,14 @@ export interface Waitable {
  * @en [[Model]] attribute change event definition.
  * @ja [[Model]] 属性変更イベント定義
  */
-export declare type ModelAttributeChangeEvent<T extends {}> = {
+export declare type ModelAttributeChangeEvent<T extends object> = {
     [K in keyof T]: [T[K], T[K], K];
 };
 /**
  * @en Default [[Model]] event definition.
  * @ja 既定の [[Model]] イベント定義
  */
-export declare type ModelEvent<T extends {}> = EventAll & ModelAttributeChangeEvent<T> & {
+export declare type ModelEvent<T extends object> = EventAll & ModelAttributeChangeEvent<T> & {
     /**
      * @en notified when some attribute changed.
      * @ja 属性が変更されたときに発行
@@ -67,14 +67,14 @@ export declare type ModelEvent<T extends {}> = EventAll & ModelAttributeChangeEv
  * @en [[Model]] attributes definition.
  * @ja [[Model]] が持つ属性の定義
  */
-export declare type ModelAttributes<T extends {}> = {
+export declare type ModelAttributes<T extends object> = {
     [P in keyof T]: T[P];
 };
 /**
  * @en [[Model]] base constructor definition.
  * @ja [[Model]] の基底コンストラクタの定義
  */
-export declare type ModelConstructor<C, T extends {}> = new (...args: ConstructorParameters<Constructor<C>>) => C & ModelAttributes<T>;
+export declare type ModelConstructor<C extends object, T extends object> = new (...args: ConstructorParameters<Constructor<C>>) => C & ModelAttributes<T>;
 /**
  * @en [[Model]] validate options.
  * @ja [[Model]] 検証オプション
@@ -96,12 +96,12 @@ export declare type ModelSetOptions = Validable & ModelValidateAttributeOptions;
  * @en [[Model]] construction options.
  * @ja [[Model]] 構築に指定するオプション
  */
-export interface ModelConstructionOptions<T extends {}> extends ModelSetOptions, Parseable {
+export interface ModelConstructionOptions<T extends object> extends ModelSetOptions, Parseable {
     idAttribute?: keyof T;
 }
 /** re-exports */
 export declare type ModelSyncMethods = SyncMethods;
-export declare type ModelSyncResult<K extends SyncMethods, T extends {} = PlainObject> = SyncResult<K, T>;
+export declare type ModelSyncResult<K extends SyncMethods, T extends object = PlainObject> = SyncResult<K, T>;
 export declare type ModelDataSyncOptions = RestDataSyncOptions;
 /**
  * @en [[Model]] fetch options.

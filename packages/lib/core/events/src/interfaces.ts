@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import { Arguments, $cdp } from '@cdp/core-utils';
@@ -37,7 +36,7 @@ export interface Subscription {
  * @ja イベント供給を行うインターフェイス定義 <br>
  *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
  */
-export interface Subscribable<Event extends {} = any> {
+export interface Subscribable<Event extends object = any> {
     /** type resolver */
     readonly [$cdp]?: Event;
 

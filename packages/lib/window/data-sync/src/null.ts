@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import {
     Cancelable,
     checkCanceled as cc,
@@ -17,7 +13,7 @@ import {
  * @en The [[IDataSync]] implemant class which has no effects.
  * @ja 何もしない [[IDataSync]] 実装クラス
  */
-class NullDataSync implements IDataSync<{}> {
+class NullDataSync implements IDataSync<object> {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IDataSync
@@ -44,13 +40,13 @@ class NullDataSync implements IDataSync<{}> {
      *  - `en` option object
      *  - `ja` オプション
      */
-    async sync<K extends SyncMethods>(method: K, context: SyncContext<{}>, options?: Cancelable): Promise<SyncResult<K, {}>> {
+    async sync<K extends SyncMethods>(method: K, context: SyncContext<object>, options?: Cancelable): Promise<SyncResult<K, object>> {
         const { cancel } = options || {};
         await cc(cancel);
         const responce = Promise.resolve('read' === method ? {} : undefined);
         context.trigger('@request', context, responce);
-        return responce as Promise<SyncResult<K, {}>>;
+        return responce as Promise<SyncResult<K, object>>;
     }
 }
 
-export const dataSyncNULL = new NullDataSync() as IDataSync<{}>;
+export const dataSyncNULL = new NullDataSync() as IDataSync<object>;

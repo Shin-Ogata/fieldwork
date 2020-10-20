@@ -1,7 +1,5 @@
 /* eslint-disable
     no-redeclare
- ,  @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import { verify } from '@cdp/core-utils';
@@ -18,7 +16,7 @@ import {
  * @en Cancellation source interface.
  * @ja キャンセル管理インターフェイス
  */
-export interface CancelTokenSource<T extends {} = {}> {
+export interface CancelTokenSource<T = unknown> {
     /**
      * @en [[CancelToken]] getter.
      * @ja [[CancelToken]] 取得
@@ -43,10 +41,10 @@ export interface CancelTokenSource<T extends {} = {}> {
 }
 
 /** @internal */
-const _tokens = new WeakMap<CancelToken<any>, CancelTokenContext<any>>();
+const _tokens = new WeakMap<CancelToken, CancelTokenContext>();
 
 /** @internal */
-function getContext<T>(instance: CancelToken<T>): CancelTokenContext<T> {
+function getContext<T = unknown>(instance: CancelToken<T>): CancelTokenContext<T> {
     if (!_tokens.has(instance)) {
         throw new TypeError('The object is not a valid CancelToken.');
     }
@@ -110,7 +108,7 @@ function getContext<T>(instance: CancelToken<T>): CancelTokenContext<T> {
  * }
  * ```
  */
-export class CancelToken<T extends {} = {}> {
+export class CancelToken<T = unknown> {
 
     /**
      * @en Create [[CancelTokenSource]] instance.
@@ -122,7 +120,7 @@ export class CancelToken<T extends {} = {}> {
      *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
-    public static source<T extends {} = {}>(...linkedTokens: CancelToken[]): CancelTokenSource<T> {
+    public static source<T = unknown>(...linkedTokens: CancelToken[]): CancelTokenSource<T> {
         let cancel!: (reason: T) => void;
         let close!: () => void;
         const token = new CancelToken<T>((onCancel, onClose) => {

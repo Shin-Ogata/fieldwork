@@ -4,7 +4,7 @@ import { SortCallback, FilterCallback, SortKey, DynamicConditionSeed, DynamicOpe
  * @en Dynamic query condition manager class.
  * @ja ダイナミッククエリ状態管理クラス
  */
-export declare class DynamicCondition<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> implements DynamicConditionSeed<TItem, TKey> {
+export declare class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> implements DynamicConditionSeed<TItem, TKey> {
     private _operators;
     private _combination;
     private _sumKeys;

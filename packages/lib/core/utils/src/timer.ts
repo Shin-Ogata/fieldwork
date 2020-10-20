@@ -1,9 +1,9 @@
 /* eslint-disable
     @typescript-eslint/no-empty-interface
  ,  @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
+import { UnknownFunction } from './types';
 import { getGlobal } from './config';
 import { safe } from './safe';
 
@@ -17,7 +17,7 @@ export interface TimerHandle { }
  * @en Type of timer start functions.
  * @ja タイマー開始関数の型
  */
-export type TimerStartFunction = (handler: Function, timeout?: number, ...args: any[]) => TimerHandle;
+export type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
 
 /**
  * @en Type of timer stop functions.

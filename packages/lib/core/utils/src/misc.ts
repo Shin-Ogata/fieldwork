@@ -1,9 +1,9 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import {
+    UnknownFunction,
     Primitive,
     TypedData,
     isString,
@@ -73,7 +73,7 @@ export function sleep(elapse: number): Promise<void> {
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export function throttle<T extends Function>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
+export function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
     const opts = options || {};
     let handle: TimerHandle | undefined;
     let args: any[] | undefined;
@@ -137,7 +137,7 @@ export function throttle<T extends Function>(executor: T, elapse: number, option
  *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
  *  - `ja` `true` の場合, 初回のコールは即時実行
  */
-export function debounce<T extends Function>(executor: T, wait: number, immediate?: boolean): T & { cancel(): void; } {
+export function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & { cancel(): void; } {
     /* eslint-disable no-invalid-this */
     let handle: TimerHandle | undefined;
     let result: any;
@@ -182,7 +182,7 @@ export function debounce<T extends Function>(executor: T, wait: number, immediat
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export function once<T extends Function>(executor: T): T {
+export function once<T extends UnknownFunction>(executor: T): T {
     /* eslint-disable no-invalid-this, @typescript-eslint/no-non-null-assertion */
     let memo: any;
     return function (this: any, ...args: any[]): any {

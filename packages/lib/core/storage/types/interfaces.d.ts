@@ -15,7 +15,7 @@ export interface StorageDataTypeList {
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */
-export declare type StorageInputDataTypeList<T> = Types<T> | null | undefined;
+export declare type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
 /**
  * @en [[IStorage]] common option interface.
  * @ja [[IStorage]] 操作に使用する共通のオプションインターフェイス
@@ -165,7 +165,7 @@ export interface RegistrySchemaBase {
  * @en Registry event definition
  * @ja レジストリイベント
  */
-export interface RegistryEvent<T extends {} = any, K extends keyof T = keyof T> {
+export interface RegistryEvent<T extends object = any, K extends keyof T = keyof T> {
     /**
      * @en Change event. (key, newValue, oldValue)
      * @ja 変更通知 (key, newValue, oldValue)

@@ -17,7 +17,7 @@ export declare function searchItems<TItem>(items: TItem[], filter?: FilterCallba
  *  - `en` condition object
  *  - `ja` 条件オブジェクト
  */
-export declare function conditionalFix<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>>(items: TItem[], condition: DynamicCondition<TItem, TKey>): CollectionFetchResult<TItem>;
+export declare function conditionalFix<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>(items: TItem[], condition: DynamicCondition<TItem, TKey>): CollectionFetchResult<TItem>;
 /**
  * @en Low level function for [[Collection]] query items.
  * @ja [[Collection]] Item をクエリする低レベル関数
@@ -32,4 +32,4 @@ export declare function conditionalFix<TItem extends {}, TKey extends Keys<TItem
  *  - `en` query options
  *  - `ja` クエリオプション
  */
-export declare function queryItems<TItem extends {}, TKey extends Keys<TItem>>(queryInfo: CollectionQueryInfo<TItem, TKey>, provider: CollectionItemProvider<TItem, TKey>, options?: CollectionQueryOptions<TItem, TKey>): Promise<TItem[]>;
+export declare function queryItems<TItem extends object, TKey extends Keys<TItem>>(queryInfo: CollectionQueryInfo<TItem, TKey>, provider: CollectionItemProvider<TItem, TKey>, options?: CollectionQueryOptions<TItem, TKey>): Promise<TItem[]>;

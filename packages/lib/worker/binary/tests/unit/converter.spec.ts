@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/ban-types
  */
 
 import { deepEqual, deepCopy } from '@cdp/core-utils';

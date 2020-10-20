@@ -5,6 +5,12 @@
  */
 
 /**
+ * @en Primitive type of JavaScript.
+ * @ja JavaScript のプリミティブ型
+ */
+export type Primitive = string | number | boolean | symbol | null | undefined;
+
+/**
  * @en The general null type.
  * @ja 空を示す型定義
  */
@@ -14,13 +20,25 @@ export type Nil = void | null | undefined;
  * @en The type of object or [[Nil]].
  * @ja [[Nil]] になりえるオブジェクト型定義
  */
-export type Nillable<T extends {}> = T | Nil;
+export type Nillable<T extends object> = T | Nil;
 
 /**
- * @en Primitive type of JavaScript.
- * @ja JavaScript のプリミティブ型
+ * @en Avoid the `Function`types.
+ * @ja 汎用関数型
  */
-export type Primitive = string | number | boolean | symbol | null | undefined;
+export type UnknownFunction = (...args: unknown[]) => unknown;
+
+/**
+ * @en Avoid the `Object` and `{}` types, as they mean "any non-nullish value".
+ * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
+ */
+export type UnknownObject = Record<string, unknown>;
+
+/**
+ * @en Non-nullish value.
+ * @ja 非 Null 値
+ */
+export type NonNil = {};
 
 /**
  * @en JavaScript type set interface.
@@ -46,7 +64,7 @@ export type TypeKeys = keyof TypeList;
  * @en Type base definition.
  * @ja 型の規定定義
  */
-export interface Type<T extends {}> extends Function {
+export interface Type<T extends object> extends Function {
     readonly prototype: T;
 }
 
@@ -54,7 +72,7 @@ export interface Type<T extends {}> extends Function {
  * @en Type of constructor.
  * @ja コンストラクタ型
  */
-export interface Constructor<T> extends Type<T> {
+export interface Constructor<T extends object> extends Type<T> {
     new(...args: unknown[]): T;
 }
 
@@ -62,7 +80,7 @@ export interface Constructor<T> extends Type<T> {
  * @en Type of class.
  * @ja クラス型
  */
-export type Class<T = any> = Constructor<T>;
+export type Class<T extends object = object> = Constructor<T>;
 
 /**
  * @en Ensure for function parameters to tuple.
@@ -104,25 +122,25 @@ export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
  * @en Extract object key list. (ensure only 'string')
  * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
-export type Keys<T extends {}> = keyof Omit<T, number | symbol>;
+export type Keys<T extends object> = keyof Omit<T, number | symbol>;
 
 /**
  * @en Extract object type list.
  * @ja オブジェクトの型一覧を抽出
  */
-export type Types<T extends {}> = T[keyof T];
+export type Types<T extends object> = T[keyof T];
 
 /**
  * @en Convert object key to type.
  * @ja オブジェクトキーから型へ変換
  */
-export type KeyToType<O extends {}, K extends keyof O> = K extends keyof O ? O[K] : never;
+export type KeyToType<O extends object, K extends keyof O> = K extends keyof O ? O[K] : never;
 
 /**
  * @en Convert object type to key.
  * @ja オブジェクト型からキーへ変換
  */
-export type TypeToKey<O extends {}, T extends Types<O>> = { [K in keyof O]: O[K] extends T ? K : never }[keyof O];
+export type TypeToKey<O extends object, T extends Types<O>> = { [K in keyof O]: O[K] extends T ? K : never }[keyof O];
 
 /**
  * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
@@ -156,9 +174,7 @@ export type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function exists<O extends {}>(x: Nillable<O>): x is O;
-export function exists(x: unknown): x is unknown;
-export function exists(x: any): any {
+export function exists<T>(x: T | Nil): x is T {
     return null != x;
 }
 
@@ -371,7 +387,7 @@ export function isTypedArray(x: unknown): x is TypedArray {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T {
+export function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T {
     return ('function' === typeof ctor) && (x instanceof ctor);
 }
 
@@ -386,7 +402,7 @@ export function instanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function ownInstanceOf<T extends {}>(ctor: Nillable<Type<T>>, x: unknown): x is T {
+export function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T {
     return (null != x) && ('function' === typeof ctor) && (Object.getPrototypeOf(x) === Object(ctor.prototype));
 }
 

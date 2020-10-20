@@ -1,2 +1,2 @@
 import { IDataSync } from './interfaces';
-export declare const dataSyncNULL: IDataSync<{}>;
+export declare const dataSyncNULL: IDataSync<object>;

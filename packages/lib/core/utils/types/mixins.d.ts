@@ -26,13 +26,13 @@ export declare class MixinClass {
      *  - `en` set target class constructor
      *  - `ja` 対象クラスのコンストラクタを指定
      */
-    isMixedWith<T>(mixedClass: Constructor<T>): boolean;
+    isMixedWith<T extends object>(mixedClass: Constructor<T>): boolean;
 }
 /**
  * @en Mixed sub class constructor definitions.
  * @ja 合成したサブクラスのコンストラクタ定義
  */
-export interface MixinConstructor<B extends Class, U> extends Type<U> {
+export interface MixinConstructor<B extends Class, U extends object> extends Type<U> {
     /**
      * @en constructor
      * @ja コンストラクタ
@@ -126,7 +126,7 @@ export interface MixClassAttribute {
  *                          既定では `{ return target.prototype.isPrototypeOf(instance) }` が使用される
  *                         `null` 指定をすると [Symbol.hasInstance] プロパティを削除する
  */
-export declare function setMixClassAttribute<T extends {}, U extends keyof MixClassAttribute>(target: Constructor<T>, attr: U, method?: MixClassAttribute[U]): void;
+export declare function setMixClassAttribute<T extends object, U extends keyof MixClassAttribute>(target: Constructor<T>, attr: U, method?: MixClassAttribute[U]): void;
 /**
  * @en Mixin function for multiple inheritance. <br>
  *     Resolving type support for maximum 10 classes.
@@ -162,7 +162,7 @@ export declare function setMixClassAttribute<T extends {}, U extends keyof MixCl
  *  - `en` mixined class constructor
  *  - `ja` 合成されたクラスコンストラクタ
  */
-export declare function mixins<B extends Class, S1, S2, S3, S4, S5, S6, S7, S8, S9>(base: B, ...sources: [
+export declare function mixins<B extends Class, S1 extends object, S2 extends object, S3 extends object, S4 extends object, S5 extends object, S6 extends object, S7 extends object, S8 extends object, S9 extends object>(base: B, ...sources: [
     Constructor<S1>,
     Constructor<S2>?,
     Constructor<S3>?,

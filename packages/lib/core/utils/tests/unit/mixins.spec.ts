@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import { mixins, setMixClassAttribute } from '@cdp/core-utils';
 
 describe('utils/mixins spec', () => {

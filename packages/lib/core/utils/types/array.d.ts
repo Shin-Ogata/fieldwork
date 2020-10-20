@@ -80,7 +80,7 @@ export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEY
  * @en Return type of [[groupBy]]().
  * @ja [[groupBy]]() が返却する型
  */
-export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, {}> & Record<TSUMKEYS, {}> & Record<TGROUPKEY, T[]>>;
+export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
 /**
  * @en Execute `GROUP BY` for array elements.
  * @ja 配列の要素の `GROUP BY` 集合を抽出

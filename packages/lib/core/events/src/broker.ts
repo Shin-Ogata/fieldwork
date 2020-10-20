@@ -1,7 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
  ,  @typescript-eslint/unbound-method
- ,  @typescript-eslint/ban-types
  */
 
 import { Arguments } from '@cdp/core-utils';
@@ -31,7 +30,7 @@ export { Arguments as EventArguments };
  *                                          //     to parameter of type 'string | undefined'.
  * ```
  */
-export interface EventBroker<Event extends {}> extends Subscribable<Event> {
+export interface EventBroker<Event extends object> extends Subscribable<Event> {
     /**
      * @en Notify event to clients.
      * @ja event 発行
@@ -52,7 +51,7 @@ export interface EventBroker<Event extends {}> extends Subscribable<Event> {
  */
 export const EventBroker: {
     readonly prototype: EventBroker<any>;
-    new <T>(): EventBroker<T>;
+    new <T extends object>(): EventBroker<T>;
 } = EventPublisher as any;
 
 EventBroker.prototype.trigger = (EventPublisher.prototype as any).publish;

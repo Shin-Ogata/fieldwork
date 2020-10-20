@@ -1,6 +1,5 @@
 /* eslint-disable
     no-global-assign
- ,  @typescript-eslint/no-explicit-any
  */
 
 import {
@@ -14,7 +13,7 @@ import { CancelToken } from './cancel-token';
 declare global { // eslint-disable-line @typescript-eslint/no-unused-vars
 
     interface PromiseConstructor {
-        new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, cancelToken?: CancelToken | null): Promise<T>;
+        new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null): Promise<T>;
         resolve<T>(value?: T | PromiseLike<T>, cancelToken?: CancelToken | null): Promise<T>;
     }
 
@@ -66,7 +65,7 @@ class CancelablePromise<T> extends NativePromise<T> {
         token?: CancelToken | null,
         thenArgs?: [
             ((value: T) => TResult1 | PromiseLike<TResult1>) | null | undefined,
-            ((reason: any) => TResult2 | PromiseLike<TResult2>) | null | undefined
+            ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null | undefined
         ] | null
     ): CancelablePromise<TResult1 | TResult2> {
         verify('instanceOf', NativePromise, src);
@@ -118,7 +117,7 @@ class CancelablePromise<T> extends NativePromise<T> {
      *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
      */
     constructor(
-        executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void,
+        executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void,
         cancelToken?: CancelToken | null
     ) {
         super(executor);
@@ -136,7 +135,7 @@ class CancelablePromise<T> extends NativePromise<T> {
      */
     then<TResult1 = T, TResult2 = never>(
         onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
-        onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
+        onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
     ): Promise<TResult1 | TResult2> {
         return CancelablePromise[_create](this, _tokens.get(this), [onfulfilled, onrejected]);
     }
@@ -149,7 +148,7 @@ class CancelablePromise<T> extends NativePromise<T> {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult2 = never>(onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null): Promise<T | TResult2> {
+    catch<TResult2 = never>(onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null): Promise<T | TResult2> {
         return this.then(undefined, onrejected);
     }
 

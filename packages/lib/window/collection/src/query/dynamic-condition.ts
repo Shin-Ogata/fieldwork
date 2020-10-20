@@ -1,6 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/ban-types
- ,  @typescript-eslint/restrict-template-expressions
+    @typescript-eslint/restrict-template-expressions
  ,  @typescript-eslint/explicit-module-boundary-types
  */
 
@@ -38,7 +37,7 @@ import {
  * @en Dynamic query condition manager class.
  * @ja ダイナミッククエリ状態管理クラス
  */
-export class DynamicCondition<TItem extends {}, TKey extends Keys<TItem> = Keys<TItem>> implements DynamicConditionSeed<TItem, TKey> {
+export class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> implements DynamicConditionSeed<TItem, TKey> {
 
     private _operators: DynamicOperatorContext<TItem>[];
     private _combination: DynamicCombination;

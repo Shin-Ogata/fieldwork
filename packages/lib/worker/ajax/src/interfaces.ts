@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/ban-types
- */
-
 import { PlainObject } from '@cdp/core-utils';
 import { Cancelable } from '@cdp/promise';
 
@@ -20,7 +16,7 @@ export interface AjaxDataStream {
  * @en Ajax data type list.
  * @ja Ajax で使用できる型定義リスト
  */
-export interface AjaxDataTypeList<T extends {} = PlainObject> {
+export interface AjaxDataTypeList<T extends unknown = PlainObject> {
     arrayBuffer: ArrayBuffer;
     blob: Blob;
     formData: FormData;
@@ -40,7 +36,7 @@ export type AjaxDataTypes = keyof AjaxDataTypeList;
  * @en [[ajax]]() method options.
  * @ja [[ajax]]() に指定可能なオプション
  */
-export interface AjaxOptions<T extends AjaxDataTypes | {} = 'response'> extends RequestInit, Cancelable {
+export interface AjaxOptions<T extends AjaxDataTypes | object = 'response'> extends RequestInit, Cancelable {
     /**
      * @en When sending data to the server, use this content type. Default is `application/x-www-form-urlencoded; charset=UTF-8`.
      * @ja サーバーへデータが送信される際に付与するコンテンツタイプ. 既定値 `application/x-www-form-urlencoded; charset=UTF-8`
@@ -92,4 +88,4 @@ export type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'm
  * @en Result of [[ajax]]() returns value.
  * @ja [[ajax]]() が返却する結果
  */
-export type AjaxResult<T extends AjaxDataTypes | {}> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];
+export type AjaxResult<T extends AjaxDataTypes | object> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];

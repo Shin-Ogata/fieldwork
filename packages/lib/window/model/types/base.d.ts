@@ -75,10 +75,13 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * :
  *
  * // early cast
- * const Mode = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
+ * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
+ * class Content extends Model {
+ *   :
+ * }
  *
  * // late cast
- * class ContentBase extends ModelBase<ContentAttribute, CustomEvent> {
+ * class Content extends ModelBase<ContentAttribute, CustomEvent> {
  *   :
  * }
  *
@@ -86,7 +89,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * content.trigger('fire', true, 100);
  * ```
  */
-declare abstract class Model<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
+declare abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
     /**
      * constructor
      *
