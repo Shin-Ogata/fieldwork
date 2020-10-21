@@ -1,14 +1,10 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import { PlainObject, escapeHTML } from '@cdp/core-utils';
 
 /**
  * @en [[TemplateEngine]] token structure.
  * @ja [[TemplateEngine]] token 型
  */
-export type TemplateToken = any;
+export type TemplateToken = unknown;
 
 /**
  * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
@@ -69,7 +65,7 @@ export interface TemplateContext {
      * Returns the value of the given name in this context, traversing
      * up the context hierarchy if the value is absent in this context's view.
      */
-    lookup(name: string): any;
+    lookup(name: string): unknown;
 }
 
 /**

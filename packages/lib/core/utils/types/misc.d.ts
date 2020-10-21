@@ -18,7 +18,7 @@ export declare function post<T>(executor: () => T): Promise<T>;
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export declare function noop(...args: any[]): any;
+export declare function noop(...args: unknown[]): any;
 /**
  * @en Wait for the designation elapse.
  * @ja 指定時間処理を待機

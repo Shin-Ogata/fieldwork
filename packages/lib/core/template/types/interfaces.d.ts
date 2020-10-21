@@ -3,7 +3,7 @@ import { PlainObject, escapeHTML } from '@cdp/core-utils';
  * @en [[TemplateEngine]] token structure.
  * @ja [[TemplateEngine]] token 型
  */
-export declare type TemplateToken = any;
+export declare type TemplateToken = unknown;
 /**
  * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
  * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
@@ -55,7 +55,7 @@ export interface TemplateContext {
      * Returns the value of the given name in this context, traversing
      * up the context hierarchy if the value is absent in this context's view.
      */
-    lookup(name: string): any;
+    lookup(name: string): unknown;
 }
 /**
  * @en Writer interface.

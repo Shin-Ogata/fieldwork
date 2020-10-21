@@ -1,10 +1,6 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import {
     TypedArray,
+    TypedArrayConstructor,
     isFunction,
     isArray,
     isObject,
@@ -103,14 +99,14 @@ export function deepEqual(lhs: unknown, rhs: unknown): boolean {
         const isArrayL = isArray(lhs);
         const isArrayR = isArray(rhs);
         if (isArrayL || isArrayR) {
-            return isArrayL === isArrayR && arrayEqual(lhs as any, rhs as any);
+            return isArrayL === isArrayR && arrayEqual(lhs as unknown[], rhs as unknown[]);
         }
     }
     { // ArrayBuffer
         const isBufferL = lhs instanceof ArrayBuffer;
         const isBufferR = rhs instanceof ArrayBuffer;
         if (isBufferL || isBufferR) {
-            return isBufferL === isBufferR && bufferEqual(lhs as any, rhs as any);
+            return isBufferL === isBufferR && bufferEqual(lhs as ArrayBuffer, rhs as ArrayBuffer);
         }
     }
     { // ArrayBufferView
@@ -125,7 +121,7 @@ export function deepEqual(lhs: unknown, rhs: unknown): boolean {
         const isIterableL = isIterable(lhs);
         const isIterableR = isIterable(rhs);
         if (isIterableL || isIterableR) {
-            return isIterableL === isIterableR && arrayEqual([...(lhs as any)], [...(rhs as any)]);
+            return isIterableL === isIterableR && arrayEqual([...(lhs as unknown[])], [...(rhs as unknown[])]);
         }
     }
     if (sameClass(lhs, rhs)) {
@@ -191,7 +187,7 @@ function cloneDataView(dataView: DataView): DataView {
 /** @internal clone TypedArray */
 function cloneTypedArray<T extends TypedArray>(typedArray: T): T {
     const buffer = cloneArrayBuffer(typedArray.buffer);
-    return new (typedArray as any).constructor(buffer, typedArray.byteOffset, typedArray.length);
+    return new (typedArray.constructor as TypedArrayConstructor)(buffer, typedArray.byteOffset, typedArray.length) as T;
 }
 
 /** @internal check necessary to update */
@@ -204,7 +200,7 @@ function needUpdate(oldValue: unknown, newValue: unknown, exceptUndefined: boole
 }
 
 /** @internal merge Array */
-function mergeArray(target: any[], source: any[]): any[] {
+function mergeArray(target: unknown[], source: unknown[]): unknown[] {
     for (let i = 0, len = source.length; i < len; i++) {
         const oldValue = target[i];
         const newValue = merge(oldValue, source[i]);
@@ -214,7 +210,7 @@ function mergeArray(target: any[], source: any[]): any[] {
 }
 
 /** @internal merge Set */
-function mergeSet(target: Set<any>, source: Set<any>): Set<any> {
+function mergeSet(target: Set<unknown>, source: Set<unknown>): Set<unknown> {
     for (const item of source) {
         target.has(item) || target.add(merge(undefined, item));
     }
@@ -222,7 +218,7 @@ function mergeSet(target: Set<any>, source: Set<any>): Set<any> {
 }
 
 /** @internal merge Map */
-function mergeMap(target: Map<any, any>, source: Map<any, any>): Map<any, any> {
+function mergeMap(target: Map<unknown, unknown>, source: Map<unknown, unknown>): Map<unknown, unknown> {
     for (const [k, v] of source) {
         const oldValue = target.get(k);
         const newValue = merge(oldValue, v);
@@ -232,7 +228,7 @@ function mergeMap(target: Map<any, any>, source: Map<any, any>): Map<any, any> {
 }
 
 /** @internal helper for deepMerge() */
-function merge(target: unknown, source: unknown): any {
+function merge(target: unknown, source: unknown): unknown {
     if (undefined === source || target === source) {
         return target;
     }
@@ -241,7 +237,7 @@ function merge(target: unknown, source: unknown): any {
     }
     // Primitive Wrapper Objects / Date
     if (source.valueOf() !== source) {
-        return deepEqual(target, source) ? target : new (source as any).constructor(source.valueOf());
+        return deepEqual(target, source) ? target : new (source.constructor as ObjectConstructor)(source.valueOf());
     }
     // RegExp
     if (source instanceof RegExp) {
@@ -295,10 +291,10 @@ function merge(target: unknown, source: unknown): any {
  */
 export function deepMerge<T, S1, S2, S3, S4, S5, S6, S7, S8, S9>(
     target: T,
-    ...sources: [S1, S2?, S3?, S4?, S5?, S6?, S7?, S8?, S9?, ...any[]]
+    ...sources: [S1, S2?, S3?, S4?, S5?, S6?, S7?, S8?, S9?, ...unknown[]]
 ): T & S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 & S9;
-export function deepMerge<X>(target: any, ...sources: any[]): X;
-export function deepMerge(target: any, ...sources: any[]): any {
+export function deepMerge<X>(target: unknown, ...sources: unknown[]): X;
+export function deepMerge(target: unknown, ...sources: unknown[]): unknown {
     let result = target;
     for (const source of sources) {
         result = merge(result, source);

@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import {
     UnknownFunction,
     Arguments,
@@ -37,7 +33,7 @@ function register(context: Context, target: Subscribable, channel: string | stri
 
     const channels = isArray(channel) ? channel : [channel];
     for (const ch of channels) {
-        const s = target.on(ch, listener as any);
+        const s = target.on(ch, listener);
         context.set.add(s);
         subscriptions.push(s);
 
@@ -73,7 +69,7 @@ function register(context: Context, target: Subscribable, channel: string | stri
 /** @internal unregister listener context */
 function unregister(context: Context, target?: Subscribable, channel?: string | string[], listener?: UnknownFunction): void {
     if (null != target) {
-        target.off(channel, listener as any);
+        target.off(channel, listener);
 
         const listenerMap = context.map.get(target);
         if (!listenerMap) {

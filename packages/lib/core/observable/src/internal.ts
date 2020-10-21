@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import {
     isString,
     isSymbol,
@@ -28,8 +23,8 @@ export const _stockChange = Symbol('stock-change');
 export const _notifyChanges = Symbol('notify-changes');
 
 /** @internal */
-export function verifyObservable(x: any): void | never {
-    if (!x || !x[_internal]) {
+export function verifyObservable(x: unknown): void | never {
+    if (!x || !(x as object)[_internal]) {
         throw new TypeError(`The object passed is not an IObservable.`);
     }
 }

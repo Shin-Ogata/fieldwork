@@ -1,7 +1,5 @@
 /* eslint-disable
     no-invalid-this
- ,  @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 const random = Math.random.bind(Math);
@@ -229,7 +227,7 @@ export function groupBy<
  *  - `en` Returns a Promise with the resultant *Array* as value.
  *  - `ja` イテレーション結果配列を格納した Promise オブジェクト
  */
-export async function map<T, U>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => U | Promise<U>, thisArg?: any): Promise<U[]> {
+export async function map<T, U>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => U | Promise<U>, thisArg?: unknown): Promise<U[]> {
     return Promise.all(
         array.map(async (v, i, a) => {
             return await callback.call(thisArg || this, v, i, a);
@@ -254,7 +252,7 @@ export async function map<T, U>(this: any, array: T[], callback: (value: T, inde
  *  - `en` Returns a Promise with the resultant *Array* as value.
  *  - `ja` イテレーション結果配列を格納した Promise オブジェクト
  */
-export async function filter<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: any): Promise<T[]> {
+export async function filter<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<T[]> {
     const bits: boolean[] = await map(array, (v, i, a) => callback.call(thisArg || this, v, i, a));
     return array.filter(() => bits.shift());
 }
@@ -276,7 +274,7 @@ export async function filter<T>(this: any, array: T[], callback: (value: T, inde
  *  - `en` Returns a Promise with the resultant value.
  *  - `ja` イテレーション結果を格納した Promise オブジェクト
  */
-export async function find<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: any): Promise<T | undefined> {
+export async function find<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<T | undefined> {
     for (const [i, v] of array.entries()) {
         if (await callback.call(thisArg || this, v, i, array)) {
             return v;
@@ -302,7 +300,7 @@ export async function find<T>(this: any, array: T[], callback: (value: T, index:
  *  - `en` Returns a Promise with the resultant index value.
  *  - `ja` インデックスを格納した Promise オブジェクト
  */
-export async function findIndex<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: any): Promise<number> {
+export async function findIndex<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<number> {
     for (const [i, v] of array.entries()) {
         if (await callback.call(thisArg || this, v, i, array)) {
             return i;
@@ -328,7 +326,7 @@ export async function findIndex<T>(this: any, array: T[], callback: (value: T, i
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export async function some<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: any): Promise<boolean> {
+export async function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean> {
     for (const [i, v] of array.entries()) {
         if (await callback.call(thisArg || this, v, i, array)) {
             return true;
@@ -354,7 +352,7 @@ export async function some<T>(this: any, array: T[], callback: (value: T, index:
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export async function every<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: any): Promise<boolean> {
+export async function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean> {
     for (const [i, v] of array.entries()) {
         if (!await callback.call(thisArg || this, v, i, array)) {
             return false;

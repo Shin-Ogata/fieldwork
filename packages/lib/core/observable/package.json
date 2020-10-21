@@ -1,7 +1,7 @@
 {
   "name": "@cdp/observable",
   "description": "observable utility module",
-  "version": "0.9.0",
+  "version": "0.9.5",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../utils",

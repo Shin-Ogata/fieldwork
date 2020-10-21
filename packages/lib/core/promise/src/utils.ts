@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/explicit-function-return-type
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import { CancelToken, CancelTokenSource } from './cancel-token';
 
 /**
@@ -82,7 +77,7 @@ export class PromiseManager {
     public add<T>(promise: Promise<T>, cancelSource?: CancelTokenSource): Promise<T> {
         this._pool.set(promise, cancelSource && cancelSource.cancel); // eslint-disable-line @typescript-eslint/unbound-method
 
-        const always = () => {
+        const always = (): void => {
             this._pool.delete(promise);
             if (cancelSource) {
                 cancelSource.close();
@@ -115,7 +110,7 @@ export class PromiseManager {
      * @en Call `Promise.all()` for under the management.
      * @ja 管理対象に対して `Promise.all()`
      */
-    public all() {
+    public all(): Promise<unknown[]> {
         return Promise.all(this.promises());
     }
 
@@ -123,7 +118,7 @@ export class PromiseManager {
      * @en Call `Promise.race()` for under the management.
      * @ja 管理対象に対して `Promise.race()`
      */
-    public race() {
+    public race(): Promise<unknown> {
         return Promise.race(this.promises());
     }
 
@@ -131,7 +126,7 @@ export class PromiseManager {
      * @en Call [[wait]]() for under the management.
      * @ja 管理対象に対して [[wait]]()
      */
-    public wait() {
+    public wait(): Promise<unknown[]> {
         return wait(this.promises());
     }
 

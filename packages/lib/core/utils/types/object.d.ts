@@ -38,7 +38,7 @@ export declare function omit<T extends object, K extends keyof T>(target: T, ...
  *  - `en` target object
  *  - `ja` 対象オブジェクト
  */
-export declare function invert<T extends object = any>(target: object): T;
+export declare function invert<T extends object = object>(target: object): T;
 /**
  * @en Get shallow copy of difference between `base` and `src`.
  * @ja `base` と `src` の差分プロパティをもつオブジェクトの Shallow Copy を取得

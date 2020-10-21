@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/restrict-template-expressions
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import { Keys } from '@cdp/core-utils';
 import { convertSortKeys } from '../utils';
 import {
@@ -212,7 +207,7 @@ export class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = K
                     );
                     break;
                 default:
-                    console.warn(`unknown operator: ${cond.operator}`);
+                    console.warn(`unknown operator: ${cond.operator}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
                     break;
             }
         }

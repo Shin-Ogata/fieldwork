@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/restrict-template-expressions
- */
-
 import {
     Keys,
     isFunction,
@@ -75,7 +71,7 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
         if (index < 0 || targets.length <= index || trunc(index) !== index) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_ACCESS, `invalid index: ${index}`);
         } else if (null != limit && (limit <= 0 || trunc(limit) !== limit)) {
-            throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_ACCESS, `invalid limit: ${ options.limit }`);
+            throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_ACCESS, `invalid limit: ${ limit }`);
         }
 
         const opts = Object.assign(options, { index });
@@ -128,7 +124,7 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
         if (index < 0 || trunc(index) !== index) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_ACCESS, `invalid index: ${index}`);
         } else if (null != limit && (limit <= 0 || trunc(limit) !== limit)) {
-            throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_ACCESS, `invalid limit: ${options.limit}`);
+            throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_ACCESS, `invalid limit: ${limit}`);
         }
 
         const opts = Object.assign(options, { index });
@@ -211,7 +207,7 @@ export function conditionalFix<TItem extends object, TKey extends Keys<TItem> = 
             } else if (null != item[prop as Keys<TItem>]) {
                 count += (Number(item[prop as Keys<TItem>]) / criteria.coeff);
             } else {
-                console.warn(`cannot access property: ${prop}`);
+                console.warn(`cannot access property: ${prop}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
                 continue;
             }
 

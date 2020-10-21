@@ -1,10 +1,9 @@
 /* eslint-disable
     prefer-rest-params
- ,  @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 import {
+    UnknownFunction,
     Writable,
     isNumber,
     verify,
@@ -75,7 +74,7 @@ interface IArrayChangeEvent<T> {
 }
 
 /** @internal */
-interface InternalProps<T = any> {
+interface InternalProps<T = unknown> {
     state: ObservableState;
     byMethod: boolean;
     records: MutableChangeRecord<T>[];
@@ -112,7 +111,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
             result && stock();
             return result;
         } else if (newValue !== oldValue && isValidArrayIndex(p)) {
-            const i = p as any >>> 0;
+            const i = p as number >>> 0;
             const type: ArrayChangeType = Number(i >= target.length); // INSERT or UPDATE
             const result = Reflect.defineProperty(target, p, attributes);
             result && target[_stockChange](type, i, newValue, oldValue);
@@ -128,7 +127,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
         }
         const oldValue = target[p];
         const result = Reflect.deleteProperty(target, p);
-        result && isValidArrayIndex(p) && target[_stockChange](ArrayChangeType.UPDATE, p as any >>> 0, undefined, oldValue);
+        result && isValidArrayIndex(p) && target[_stockChange](ArrayChangeType.UPDATE, p as number >>> 0, undefined, oldValue);
         return result;
     },
 };
@@ -137,7 +136,7 @@ Object.freeze(_proxyHandler);
 /** @internal valid array index helper */
 function isValidArrayIndex<T>(index: T): boolean {
     const s = String(index);
-    const n = Math.trunc(s as any);
+    const n = Math.trunc(s as unknown as number);
     return String(n) === s && 0 <= n && n < 0xFFFFFFFF;
 }
 
@@ -187,7 +186,7 @@ function findRelatedChangeIndex<T>(records: MutableChangeRecord<T>[], type: Arra
  * }
  * ```
  */
-export class ObservableArray<T = any> extends Array<T> implements IObservable {
+export class ObservableArray<T = unknown> extends Array<T> implements IObservable {
     /** @internal */
     private readonly [_internal]: InternalProps<T>;
 
@@ -214,7 +213,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
                 this[_stockChange](ArrayChangeType.INSERT, i, arguments[i]);
             }
         }
-        return new Proxy(this, _proxyHandler);
+        return new Proxy(this, _proxyHandler) as ObservableArray<T>;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -228,7 +227,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
      *  - `en` callback function of the array change.
      *  - `ja` 配列変更通知コールバック関数
      */
-    on(listener: (records: ArrayChangeRecord<T>[]) => any): Subscription {
+    on(listener: (records: ArrayChangeRecord<T>[]) => unknown): Subscription {
         verifyObservable(this);
         return this[_internal].broker.get().on('@', listener);
     }
@@ -243,7 +242,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
      *  - `ja` 配列変更通知コールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    off(listener?: (records: ArrayChangeRecord<T>[]) => any): void {
+    off(listener?: (records: ArrayChangeRecord<T>[]) => unknown): void {
         verifyObservable(this);
         this[_internal].broker.get().off('@', listener);
     }
@@ -333,7 +332,7 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
         const internal = this[_internal];
         const oldLen = this.length;
         internal.byMethod = true;
-        const result = (super.splice as any)(...arguments) as ObservableArray<T>;
+        const result = (super.splice as UnknownFunction)(...arguments) as ObservableArray<T>;
         internal.byMethod = false;
         if (ObservableState.DISABLED !== internal.state) {
             start = Math.trunc(start);
@@ -389,12 +388,12 @@ export class ObservableArray<T = any> extends Array<T> implements IObservable {
      * @param callbackfn A function that accepts up to three arguments. The map method calls the callbackfn function one time for each element in the array.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): ObservableArray<U> {
+    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: unknown): ObservableArray<U> {
         /*
          * [NOTE] original implement is very very high-cost.
          *        so it's converted native Array once, and restored.
          *
-         * return (super.map as any)(...arguments);
+         * return (super.map as UnknownFunction)(...arguments);
          */
         return ObservableArray.from([...this].map(callbackfn, thisArg));
     }
@@ -496,13 +495,13 @@ export interface ObservableArray<T> {
      * @param callbackfn A function that accepts up to three arguments. The filter method calls the callbackfn function one time for each element in the array.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    filter<S extends T>(callbackfn: (value: T, index: number, array: T[]) => value is S, thisArg?: any): ObservableArray<S>;
+    filter<S extends T>(callbackfn: (value: T, index: number, array: T[]) => value is S, thisArg?: unknown): ObservableArray<S>;
     /**
      * Returns the elements of an array that meet the condition specified in a callback function.
      * @param callbackfn A function that accepts up to three arguments. The filter method calls the callbackfn function one time for each element in the array.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    filter(callbackfn: (value: T, index: number, array: T[]) => any, thisArg?: any): ObservableArray<T>;
+    filter(callbackfn: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): ObservableArray<T>;
 }
 
 /**

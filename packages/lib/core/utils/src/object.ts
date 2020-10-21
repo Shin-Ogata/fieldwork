@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import { deepEqual } from './deep-circuit';
 import {
     Nil,
@@ -73,7 +69,7 @@ export function omit<T extends object, K extends keyof T>(target: T, ...omitKeys
  *  - `en` target object
  *  - `ja` 対象オブジェクト
  */
-export function invert<T extends object = any>(target: object): T {
+export function invert<T extends object = object>(target: object): T {
     const result = {};
     for (const key of Object.keys(target)) {
         result[target[key]] = key;
@@ -125,23 +121,23 @@ export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
  * - `en` The value to be returned in case `property` doesn't exist or is undefined.
  * - `ja` 存在しなかった場合の fallback 値
  */
-export function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T {
+export function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T { // eslint-disable-line @typescript-eslint/no-explicit-any
     const props = isArray(property) ? property : [property];
     if (!props.length) {
         return isFunction(fallback) ? fallback.call(target) : fallback;
     }
 
-    const resolve = (o: unknown, p: unknown): any => {
+    const resolve = (o: unknown, p: unknown): unknown => {
         return isFunction(p) ? p.call(o) : p;
     };
 
-    let obj: any = target;
+    let obj = target;
     for (const name of props) {
         const prop = null == obj ? undefined : obj[name];
         if (undefined === prop) {
-            return resolve(obj, fallback);
+            return resolve(obj, fallback) as T;
         }
-        obj = resolve(obj, prop);
+        obj = resolve(obj, prop) as object;
     }
-    return obj;
+    return obj as unknown as T;
 }

@@ -12,7 +12,7 @@ export interface BlobReadOptions extends Cancelable {
      *  - `en` worker progress event
      *  - `ja` worker 進捗イベント
      */
-    onprogress?: (progress: ProgressEvent) => any;
+    onprogress?: (progress: ProgressEvent) => unknown;
 }
 /**
  * @en Get the `ArrayBuffer` result from `Blob` or `File`.

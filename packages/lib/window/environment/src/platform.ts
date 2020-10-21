@@ -1,8 +1,3 @@
-/* eslint-disable
-    space-in-parens
- ,  @typescript-eslint/no-explicit-any
- */
-
 import { Writable, getGlobal } from '@cdp/core-utils';
 import {
     navigator,
@@ -115,9 +110,9 @@ export const queryPlatform = (
         firefox: false,
         macos: false,
         windows: false,
-        cordova: !!(getGlobal() as any).cordova,
+        cordova: !!(getGlobal()['cordova']),
         electron: false,
-    } as any as Writable<Platform>;
+    } as unknown as Writable<Platform>;
 
     const { userAgent: ua, platform: os, standalone } = context.navigator || navigator as { userAgent: string; platform: string; standalone?: boolean; };
     const { width: screenWidth, height: screenHeight } = context.screen || screen;

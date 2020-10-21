@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import { Subscription, EventBroker } from '@cdp/events';
 import { _internal } from './internal';
 
@@ -28,13 +23,13 @@ export interface IObservable {
      * @en Subscrive event(s).
      * @ja イベント購読設定
      */
-    on(...args: any[]): Subscription;
+    on(...args: unknown[]): Subscription;
 
     /**
      * @en Unsubscribe event(s).
      * @ja イベント購読解除
      */
-    off(...args: any[]): void;
+    off(...args: unknown[]): void;
 
     /**
      * @en Suspend or disable the event observation state.
@@ -63,7 +58,7 @@ export interface IObservable {
  * @en Interface able to access to [[EventBroker]] with [[IObservable]].
  * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
  */
-export interface IObservableEventBrokerAccess<T extends object = any> extends IObservable {
+export interface IObservableEventBrokerAccess<T extends object = any> extends IObservable { // eslint-disable-line @typescript-eslint/no-explicit-any
     /**
      * @en Get [[EventBroker]] instance.
      * @ja [[EventBroker]] インスタンスの取得
@@ -79,6 +74,6 @@ export interface IObservableEventBrokerAccess<T extends object = any> extends IO
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isObservable(x: any): x is IObservable {
-    return Boolean(x && x[_internal]);
+export function isObservable(x: unknown): x is IObservable {
+    return Boolean(x && (x as object)[_internal]);
 }

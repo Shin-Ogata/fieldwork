@@ -20,12 +20,12 @@ export interface IObservable {
      * @en Subscrive event(s).
      * @ja イベント購読設定
      */
-    on(...args: any[]): Subscription;
+    on(...args: unknown[]): Subscription;
     /**
      * @en Unsubscribe event(s).
      * @ja イベント購読解除
      */
-    off(...args: any[]): void;
+    off(...args: unknown[]): void;
     /**
      * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
@@ -65,4 +65,4 @@ export interface IObservableEventBrokerAccess<T extends object = any> extends IO
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isObservable(x: any): x is IObservable;
+export declare function isObservable(x: unknown): x is IObservable;

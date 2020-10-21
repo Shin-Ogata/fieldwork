@@ -68,11 +68,11 @@ describe('storage/attributes spec', () => {
     });
 
     it('check WebStorage#getItem()', async done => {
-        expect(await _storage.getItem('str')).toBe('hoge' as any);
-        expect(await _storage.getItem('num')).toBe(100 as any);
-        expect(await _storage.getItem('bool')).toBe(false as any);
-        expect(await _storage.getItem('obj')).toEqual({ hoge: 'fuga' } as any);
-        expect(await _storage.getItem('nil')).toBe(null as any);
+        expect(await _storage.getItem('str')).toBe('hoge');
+        expect(await _storage.getItem('num')).toBe(100);
+        expect(await _storage.getItem('bool')).toBe(false);
+        expect(await _storage.getItem('obj')).toEqual({ hoge: 'fuga' });
+        expect(await _storage.getItem('nil')).toBe(null);
         done();
     });
 

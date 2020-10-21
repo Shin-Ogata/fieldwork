@@ -3,6 +3,7 @@
  */
 
 import {
+    UnknownFunction,
     TypeKeys,
     isArray,
     exists,
@@ -216,8 +217,8 @@ const _verifier: Verifier = {
         }
     },
 
-    hasProperty: (x: any, prop: PropertyKey, message?: string | null): void | never => {    // eslint-disable-line @typescript-eslint/no-explicit-any
-        if (null == x || !(prop in x)) {
+    hasProperty: (x: unknown, prop: PropertyKey, message?: string | null): void | never => {
+        if (null == x || !(prop in (x as object))) {
             exists(message) || (message = `The object does not have property ${String(prop)}.`);
             throw new TypeError(message);
         }
@@ -243,7 +244,7 @@ const _verifier: Verifier = {
  *  - `ja` メソッド名に対応する引数
  */
 export function verify<TMethod extends VerifyMethod>(method: TMethod, ...args: Parameters<Verifier[TMethod]>): void | never {
-    (_verifier[method] as any)(...args);    // eslint-disable-line @typescript-eslint/no-explicit-any
+    (_verifier[method] as UnknownFunction)(...args);
 }
 
 export { verify as default };

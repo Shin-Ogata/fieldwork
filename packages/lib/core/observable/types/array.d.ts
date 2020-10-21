@@ -66,7 +66,7 @@ export interface ArrayChangeRecord<T> {
  * }
  * ```
  */
-export declare class ObservableArray<T = any> extends Array<T> implements IObservable {
+export declare class ObservableArray<T = unknown> extends Array<T> implements IObservable {
     /** @final constructor */
     private constructor();
     /**
@@ -77,7 +77,7 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      *  - `en` callback function of the array change.
      *  - `ja` 配列変更通知コールバック関数
      */
-    on(listener: (records: ArrayChangeRecord<T>[]) => any): Subscription;
+    on(listener: (records: ArrayChangeRecord<T>[]) => unknown): Subscription;
     /**
      * @en Unsubscribe array change(s).
      * @ja 配列変更購読解除
@@ -88,7 +88,7 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      *  - `ja` 配列変更通知コールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    off(listener?: (records: ArrayChangeRecord<T>[]) => any): void;
+    off(listener?: (records: ArrayChangeRecord<T>[]) => unknown): void;
     /**
      * @en Suspend or disable the event observation state.
      * @ja イベント購読状態のサスペンド
@@ -140,7 +140,7 @@ export declare class ObservableArray<T = any> extends Array<T> implements IObser
      * @param callbackfn A function that accepts up to three arguments. The map method calls the callbackfn function one time for each element in the array.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): ObservableArray<U>;
+    map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: unknown): ObservableArray<U>;
 }
 /**
  * Override return type of prototype methods
@@ -171,13 +171,13 @@ export interface ObservableArray<T> {
      * @param callbackfn A function that accepts up to three arguments. The filter method calls the callbackfn function one time for each element in the array.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    filter<S extends T>(callbackfn: (value: T, index: number, array: T[]) => value is S, thisArg?: any): ObservableArray<S>;
+    filter<S extends T>(callbackfn: (value: T, index: number, array: T[]) => value is S, thisArg?: unknown): ObservableArray<S>;
     /**
      * Returns the elements of an array that meet the condition specified in a callback function.
      * @param callbackfn A function that accepts up to three arguments. The filter method calls the callbackfn function one time for each element in the array.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    filter(callbackfn: (value: T, index: number, array: T[]) => any, thisArg?: any): ObservableArray<T>;
+    filter(callbackfn: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): ObservableArray<T>;
 }
 /**
  * Override return type of static methods

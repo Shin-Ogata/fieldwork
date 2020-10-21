@@ -1,9 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/restrict-template-expressions
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import { Keys, computeDate } from '@cdp/core-utils';
 import { FilterCallback, DynamicCombination } from '../interfaces';
 
@@ -60,7 +54,7 @@ export function notLike<T extends object>(prop: keyof T, value: ValueTypeString<
 export function dateLessEqual<T extends object>(prop: keyof T, value: number, unit: DynamicOperatorDateUnit): FilterCallback<T> {
     return (item: T) => {
         const date = computeDate(new Date(), -1 * value, unit);
-        return date <= (item[prop] as any);
+        return date <= (item[prop] as unknown as Date);
     };
 }
 
@@ -68,7 +62,7 @@ export function dateLessEqual<T extends object>(prop: keyof T, value: number, un
 export function dateLessNotEqual<T extends object>(prop: keyof T, value: number, unit: DynamicOperatorDateUnit): FilterCallback<T> {
     return (item: T) => {
         const date = computeDate(new Date(), -1 * value, unit);
-        return !(date <= (item[prop] as any));
+        return !(date <= (item[prop] as unknown as Date));
     };
 }
 
@@ -86,7 +80,7 @@ export function combination<T extends object>(type: DynamicCombination, lhs: Fil
             case DynamicCombination.OR:
                 return lhs(item) || rhs(item);
             default:
-                console.warn(`unknown combination: ${type}`);
+                console.warn(`unknown combination: ${type}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
                 // fail safe
                 return lhs(item) && rhs(item);
         }

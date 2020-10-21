@@ -1,7 +1,3 @@
-/* eslint-disable
-    no-redeclare
- */
-
 import { verify } from '@cdp/core-utils';
 import { EventBroker, Subscription } from '@cdp/events';
 import {

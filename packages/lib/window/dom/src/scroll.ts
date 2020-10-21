@@ -1,7 +1,3 @@
-/* eslint-disable
-   @typescript-eslint/no-explicit-any
- */
-
 import {
     Nil,
     isNumber,
@@ -78,7 +74,7 @@ function queryTargetElement(el: ElementBase | Nil): Element | null {
 }
 
 /** @internal helper for `scrollTo()` */
-function parseArgs(...args: any[]): DOMScrollOptions {
+function parseArgs(...args: unknown[]): DOMScrollOptions {
     const options: DOMScrollOptions = { easing: 'swing' };
     if (1 === args.length) {
         Object.assign(options, args[0]);
@@ -355,7 +351,7 @@ export class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEle
      */
     public scrollTo(options: DOMScrollOptions): this;
 
-    public scrollTo(...args: any[]): this {
+    public scrollTo(...args: unknown[]): this {
         const options = parseArgs(...args);
         for (const el of this) {
             const elem = queryTargetElement(el);

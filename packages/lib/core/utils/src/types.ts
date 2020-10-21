@@ -164,6 +164,58 @@ export type TypedData = string | number | boolean | null | object;
  */
 export type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array;
 
+/**
+ * @en TypedArray constructor.
+ * @ja TypedArray コンストラクタ定義
+ */
+export interface TypedArrayConstructor {
+    readonly prototype: TypedArray;
+    new(seed: number | ArrayLike<number> | ArrayBufferLike): TypedArray;
+    new(buffer: ArrayBufferLike, byteOffset?: number, length?: number): TypedArray;
+
+    /**
+     * @en The size in bytes of each element in the array.
+     * @ja 要素のバイトサイズ
+     */
+    readonly BYTES_PER_ELEMENT: number;
+
+    /**
+     * @en Returns a new array from a set of elements.
+     * @ja 要素を設定し新規配列を返却
+     *
+     * @param items
+     *  - `en` A set of elements to include in the new array object.
+     *  - `ja` 新たに設定する要素
+     */
+    of(...items: number[]): TypedArray;
+
+    /**
+     * @en Creates an array from an array-like or iterable object.
+     * @ja array-like / iteratable オブジェクトから新規配列を作成
+     *
+     * @param arrayLike
+     *  - `en` An array-like or iterable object to convert to an array.
+     *  - `ja` array-like もしくは iteratable オブジェクト
+     */
+    from(arrayLike: ArrayLike<number>): TypedArray;
+
+    /**
+     * @en Creates an array from an array-like or iterable object.
+     * @ja array-like / iteratable オブジェクトから新規配列を作成
+     *
+     * @param arrayLike
+     *  - `en` An array-like or iterable object to convert to an array.
+     *  - `ja` array-like もしくは iteratable オブジェクト
+     * @param mapfn
+     *  - `en` A mapping function to call on every element of the array.
+     *  - `ja` 全要素に適用するプロキシ関数
+     * @param thisArg
+     *  - `en` Value of 'this' used to invoke the mapfn.
+     *  - `ja` mapfn に使用する 'this'
+     */
+    from<T>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => number, thisArg?: unknown): TypedArray;
+}
+
 //__________________________________________________________________________________________________//
 
 /**

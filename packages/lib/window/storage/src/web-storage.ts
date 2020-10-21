@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/require-await
- */
-
 import {
     Keys,
     Types,
@@ -37,7 +32,7 @@ import {
  */
 export type WebStorageDataTypeList = StorageDataTypeList & Serializable;
 /** WebStorage I/O options */
-export type WebStorageOptions<K extends Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
+export type WebStorageOptions<K extends Keys<WebStorageDataTypeList> = Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
 /** WebStorage return value */
 export type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
 /** WebStorage data type */
@@ -126,8 +121,8 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
         options?: WebStorageOptions<K>
     ): Promise<WebStorageResult<K> | null>;
 
-    async getItem(key: string, options?: WebStorageOptions<any>): Promise<WebStorageDataTypes | null> {
-        return dropUndefined(await deserialize(this._storage[key], options));
+    async getItem(key: string, options?: WebStorageOptions): Promise<WebStorageDataTypes | null> {
+        return dropUndefined(await deserialize(this._storage[key], options!)); // eslint-disable-line @typescript-eslint/no-non-null-assertion
     }
 
     /**

@@ -1,10 +1,4 @@
-/* eslint-disable
-    prefer-spread
- ,  @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/no-non-null-assertion
- */
-
-import { verify } from '@cdp/core-utils';
+import { UnknownFunction, verify } from '@cdp/core-utils';
 import { CancelToken, Cancelable } from '@cdp/promise';
 
 /** @internal */
@@ -34,7 +28,7 @@ export interface BlobReadOptions extends Cancelable {
      *  - `en` worker progress event
      *  - `ja` worker 進捗イベント
      */
-    onprogress?: (progress: ProgressEvent) => any;
+    onprogress?: (progress: ProgressEvent) => unknown;
 }
 
 /** execute read blob */
@@ -55,14 +49,14 @@ function exec<T extends keyof FileReaderResultMap>(
         reader.onabort = reader.onerror = () => {
             reject(reader.error);
         };
-        reader.onprogress = onprogress!;
+        reader.onprogress = onprogress!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
         reader.onload = () => {
             resolve(reader.result as TResult);
         };
         reader.onloadend = () => {
             subscription && subscription.unsubscribe();
         };
-        reader[methodName].apply(reader, args);
+        (reader[methodName] as UnknownFunction)(...args);
     }, token);
 }
 
