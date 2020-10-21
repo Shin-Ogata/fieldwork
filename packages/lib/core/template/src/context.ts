@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/no-this-alias
- */
-
 import { TemplateContext } from './interfaces';
 import {
     PlainObject,
@@ -49,14 +44,14 @@ export class Context implements TemplateContext {
      * Returns the value of the given name in this context, traversing
      * up the context hierarchy if the value is absent in this context's view.
      */
-    lookup(name: string): any {
+    lookup(name: string): unknown {
         const cache = this._cache;
 
-        let value: any;
+        let value: unknown;
         if (Object.prototype.hasOwnProperty.call(cache, name)) {
             value = cache[name];
         } else {
-            let context: Context | undefined = this;
+            let context: Context | undefined = this; // eslint-disable-line @typescript-eslint/no-this-alias
             let intermediateValue: PlainObject;
             let names: string[];
             let index: number;

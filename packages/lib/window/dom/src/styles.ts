@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import {
     PlainObject,
     isString,
@@ -145,14 +141,17 @@ function manageInnerSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
     }
 }
 
+/** @internal */
+type ParseOuterSizeArgsResult = { includeMargin: boolean; value: number | string; };
+
 /** @internal helper for `outerWidth()` and `outerHeigth()` */
-function parseOuterSizeArgs(...args: any[]): { includeMargin: boolean; value: number | string; } {
+function parseOuterSizeArgs(...args: unknown[]): ParseOuterSizeArgsResult {
     let [value, includeMargin] = args;
     if (!isNumber(value) && !isString(value)) {
         includeMargin = !!value;
         value = undefined;
     }
-    return { includeMargin, value };
+    return { includeMargin, value } as ParseOuterSizeArgsResult;
 }
 
 /** @internal helper for `outerWidth()` and `outerHeigth()` */
@@ -478,7 +477,7 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
      */
     public outerWidth(value: number | string, includeMargin?: boolean): this;
 
-    public outerWidth(...args: any[]): number | this {
+    public outerWidth(...args: unknown[]): number | this {
         const { includeMargin, value } = parseOuterSizeArgs(...args);
         return manageOuterSizeFor(this, 'width', includeMargin, value) as (number | this);
     }
@@ -506,7 +505,7 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
      */
     public outerHeight(value: number | string, includeMargin?: boolean): this;
 
-    public outerHeight(...args: any[]): number | this {
+    public outerHeight(...args: unknown[]): number | this {
         const { includeMargin, value } = parseOuterSizeArgs(...args);
         return manageOuterSizeFor(this, 'height', includeMargin, value) as (number | this);
     }

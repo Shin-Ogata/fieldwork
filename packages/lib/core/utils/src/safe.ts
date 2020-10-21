@@ -1,13 +1,9 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
-function callable(): any {
+function callable(): unknown {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return accessible;
 }
 
-const accessible: any = new Proxy(callable, {
+const accessible: unknown = new Proxy(callable, {
     get: (target, name) => {
         const prop = target[name];
         if (null != prop) {
@@ -18,7 +14,7 @@ const accessible: any = new Proxy(callable, {
     },
 });
 
-function create(): any {
+function create(): unknown {
     const stub = new Proxy({}, {
         get: (target, name) => {
             const prop = target[name];
@@ -59,5 +55,5 @@ function create(): any {
  *  - `ja` 実体またはスタブインスタンス
  */
 export function safe<T>(target: T): T {
-    return target || create();
+    return target || create() as T;
 }

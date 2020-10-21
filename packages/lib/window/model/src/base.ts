@@ -208,14 +208,14 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
         }
 
         this[_changeHandler] = () => {
-            (this as any).trigger('@change', this);
+            (this as Model).trigger('@change', this as Model);
         };
 
         this[_validate]({}, opts);
     }
 
     /** @internal attribute bridge def */
-    private [_defineAttributes](instance: any, name: string): void {
+    private [_defineAttributes](instance: object, name: string): void {
         const proto = instance.constructor.prototype;
         if (!(name in proto)) {
             Object.defineProperty(proto, name, {
@@ -280,7 +280,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      */
     protected get _changedAttrs(): Partial<T> {
         if (null == this[_properties].changedAttrs) {
-            this[_properties].changedAttrs = diff(this._baseAttrs, this._attrs as any);
+            this[_properties].changedAttrs = diff(this._baseAttrs, this._attrs as unknown as Partial<T>);
         }
         return this[_properties].changedAttrs as Partial<T>;
     }
@@ -445,7 +445,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
             const result = this.validateAttributes(attrs, options);
             if (FAILED(result.code)) {
                 if (!silent) {
-                    (this as any).trigger('@invalid', this, attrs, result);
+                    (this as Model).trigger('@invalid', this as Model, attrs, result);
                 }
                 if (!noThrow) {
                     throw result;
@@ -465,7 +465,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      * @ja [[Model]] が有効なプロパティを持っているか確認 (`null` または `undefined` でない)
      */
     public has(attribute: keyof T): boolean {
-        return null != (this._attrs as any)[attribute];
+        return null != (this._attrs as unknown as T)[attribute];
     }
 
     /**
@@ -565,7 +565,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
         if (!attributes) {
             return this.hasChanged() ? { ...this._changedAttrs } : undefined;
         } else {
-            const changed = diff(this._attrs as any, attributes);
+            const changed = diff(this._attrs, attributes);
             return !isEmptyObject(changed) ? changed : undefined;
         }
     }
@@ -613,7 +613,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      *  - `ja` オプション
      */
     protected sync<K extends ModelSyncMethods>(method: K, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<K, T>> {
-        return defaultSync().sync(method, context as SyncContext<T>, options) as Promise<any>;
+        return defaultSync().sync(method, context as SyncContext<T>, options) as unknown as Promise<ModelSyncResult<K, T>>;
     }
 
     /**
@@ -626,10 +626,10 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
         try {
             const resp = await this.sync('read', this as Model<T>, opts);
             this.setAttributes(opts.parse ? this.parse(resp, options) as T : resp, opts);
-            (this as any).trigger('@sync', this, resp, opts);
+            (this as Model).trigger('@sync', this as Model, resp, opts);
             return resp;
         } catch (e) {
-            (this as any).trigger('@error', this, e, opts);
+            (this as Model).trigger('@error', this as Model, e, opts);
             throw e;
         }
     }
@@ -667,7 +667,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      */
     public async save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<PlainObject | void>;
 
-    public async save(...args: any[]): Promise<PlainObject | void> {
+    public async save(...args: unknown[]): Promise<PlainObject | void> {
         const { attrs, options } = parseSaveArgs(...args);
         const opts = Object.assign({ validate: true, parse: true, wait: true }, options);
 
@@ -701,10 +701,10 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
                 this[_properties].baseAttrs = { ...this._attrs } as T;
             }
 
-            (this as any).trigger('@sync', this, resp, opts);
+            (this as Model).trigger('@sync', this as Model, resp as PlainObject, opts);
             return resp;
         } catch (e) {
-            (this as any).trigger('@error', this, e, opts);
+            (this as Model).trigger('@error', this as Model, e, opts);
             throw e;
         }
     }
@@ -725,7 +725,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
             const exists = !this.isNew();
             const destruct = (): void => {
                 this.stopListening();
-                (this as any).trigger('@destroy', this, opts);
+                (this as Model).trigger('@destroy', this as Model, opts);
             };
 
             !wait && destruct();
@@ -738,11 +738,11 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
             }
 
             wait && destruct();
-            exists && (this as any).trigger('@sync', this, resp, opts);
+            exists && (this as Model).trigger('@sync', this as Model, resp as PlainObject, opts);
 
             return resp;
         } catch (e) {
-            (this as any).trigger('@error', this, e, opts);
+            (this as Model).trigger('@error', this as Model, e, opts);
             throw e;
         }
     }

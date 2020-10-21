@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import { promisify } from 'util';
 import {
     existsSync,
@@ -27,7 +23,7 @@ import {
 } from '@cdp/core-storage';
 
 /** FsStorage I/O options */
-export type FsStorageOptions<K extends Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
+export type FsStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
 /** FsStorage return value */
 export type FsStorageResult<K extends Keys<StorageDataTypeList>> = MemoryStorageResult<K>;
 /** FsStorage data type */
@@ -121,7 +117,7 @@ export class FsStorage implements IStorage {
         options?: FsStorageOptions<K>
     ): Promise<FsStorageResult<K> | null>;
 
-    getItem(key: string, options?: FsStorageOptions<any>): Promise<FsStorageDataTypes | null> {
+    getItem(key: string, options?: FsStorageOptions): Promise<FsStorageDataTypes | null> {
         return this._storage.getItem(key, options);
     }
 

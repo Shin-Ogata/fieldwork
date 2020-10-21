@@ -272,16 +272,16 @@ export function mixins<
     let _hasSourceConstructor = false;
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    class _MixinBase extends (base as any as Constructor<MixinClass>) {
+    class _MixinBase extends (base as unknown as Constructor<MixinClass>) {
 
-        private readonly [_constructors]: Map<Constructor<any>, UnknownFunction | null>;
-        private readonly [_classBase]: Constructor<any>;
+        private readonly [_constructors]: Map<Constructor<object>, UnknownFunction | null>;
+        private readonly [_classBase]: Constructor<object>;
 
-        constructor(...args: any[]) {
+        constructor(...args: unknown[]) {
             // eslint-disable-next-line constructor-super
             super(...args);
 
-            const constructors = new Map<Constructor<any>, UnknownFunction>();
+            const constructors = new Map<Constructor<object>, UnknownFunction>();
             this[_constructors] = constructors;
             this[_classBase] = base;
 
@@ -289,13 +289,13 @@ export function mixins<
                 for (const srcClass of sources) {
                     if (!srcClass[_protoExtendsOnly]) {
                         const handler = {
-                            apply: (target: any, thisobj: any, arglist: any[]) => {
+                            apply: (target: unknown, thisobj: unknown, arglist: unknown[]) => {
                                 const obj = new srcClass(...arglist);
                                 copyProperties(this, obj);
                             }
                         };
                         // proxy for 'construct' and cache constructor
-                        constructors.set(srcClass, new Proxy(srcClass, handler));
+                        constructors.set(srcClass, new Proxy(srcClass, handler as ProxyHandler<object>));
                     }
                 }
             }
@@ -321,7 +321,7 @@ export function mixins<
             }
         }
 
-        public static [Symbol.hasInstance](instance: any): boolean {
+        public static [Symbol.hasInstance](instance: unknown): boolean {
             return Object.prototype.isPrototypeOf.call(_MixinBase.prototype, instance);
         }
 
@@ -338,7 +338,7 @@ export function mixins<
             return false;
         }
 
-        private get [_classSources](): Constructor<any>[] {
+        private get [_classSources](): Constructor<object>[] {
             return [...this[_constructors].keys()];
         }
     }

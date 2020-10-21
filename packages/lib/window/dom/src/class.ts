@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/no-empty-interface
- */
-
 import { mixins } from '@cdp/core-utils';
 import {
     ElementBase,
@@ -43,7 +38,7 @@ type DOMFeatures<T extends ElementBase>
  *  - https://github.com/microsoft/TypeScript/issues/33326
  *  - https://stackoverflow.com/questions/57848134/trouble-updating-an-interface-using-declaration-merging
  */
-export interface DOMPlugin { }
+export interface DOMPlugin { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 /**
  * @en This interface provides DOM operations like `jQuery` library.
@@ -121,9 +116,9 @@ export class DOMClass extends mixins(
     public static create<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T> {
         if (selector && !context) {
             if (selector instanceof DOMClass) {
-                return selector as any;
+                return selector as unknown as DOMResult<T>;
             }
         }
-        return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as any;
+        return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as unknown as DOMResult<T>;
     }
 }

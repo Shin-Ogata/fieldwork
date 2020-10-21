@@ -43,12 +43,12 @@ export type DOMModificationCallback<T extends ElementBase, U extends ElementBase
 function winnow<T extends SelectorBase, U extends ElementBase>(
     selector: DOMSelector<T> | DOMIterateCallback<U>,
     dom: DOMTraversing<U>,
-    validCallback: (el: U) => any,
-    invalidCallback?: () => any,
+    validCallback: (el: U) => unknown,
+    invalidCallback?: () => unknown,
 ): any {
     invalidCallback = invalidCallback || noop;
 
-    let retval: any;
+    let retval: unknown;
     for (const [index, el] of dom.entries()) {
         if (isFunction(selector)) {
             if (selector.call(el, index, el)) {
@@ -317,7 +317,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         if (this.length <= 0 || isEmptySelector(selector as DOMSelector<T>)) {
             return false;
         }
-        return winnow(selector, this, () => true, () => false);
+        return winnow(selector, this, () => true, () => false) as boolean;
     }
 
     /**
@@ -516,7 +516,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
             }
             return $([...closests]) as DOMResult<T>;
         } else if (this.is(selector)) {
-            return $(this as any);
+            return $(this as unknown as Element) as DOMResult<T>;
         } else {
             return this.parents(selector).eq(0) as DOM<Node> as DOMResult<T>;
         }

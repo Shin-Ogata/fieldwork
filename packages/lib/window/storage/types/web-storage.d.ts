@@ -9,7 +9,7 @@ import { Serializable } from '@cdp/binary';
  */
 export declare type WebStorageDataTypeList = StorageDataTypeList & Serializable;
 /** WebStorage I/O options */
-export declare type WebStorageOptions<K extends Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
+export declare type WebStorageOptions<K extends Keys<WebStorageDataTypeList> = Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
 /** WebStorage return value */
 export declare type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
 /** WebStorage data type */

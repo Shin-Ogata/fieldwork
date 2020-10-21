@@ -3,7 +3,7 @@ import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import { IStorage, IStorageOptions, StorageDataTypeList, MemoryStorageOptions, MemoryStorageResult, MemoryStorageDataTypes, MemoryStorageReturnType, MemoryStorageInputDataTypes, MemoryStorageEventCallback } from '@cdp/core-storage';
 /** FsStorage I/O options */
-export declare type FsStorageOptions<K extends Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
+export declare type FsStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
 /** FsStorage return value */
 export declare type FsStorageResult<K extends Keys<StorageDataTypeList>> = MemoryStorageResult<K>;
 /** FsStorage data type */

@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-empty-interface
- ,  @typescript-eslint/no-explicit-any
- */
-
 import { UnknownFunction } from './types';
 import { getGlobal } from './config';
 import { safe } from './safe';
@@ -11,7 +6,7 @@ import { safe } from './safe';
  * @en Type of handle for timer functions.
  * @ja タイマー関数に使用するハンドル型
  */
-export interface TimerHandle { }
+export interface TimerHandle { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 /**
  * @en Type of timer start functions.
@@ -25,7 +20,15 @@ export type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ..
  */
 export type TimerStopFunction = (handle: TimerHandle) => void;
 
-const root: any = getGlobal();
+/** @internal */
+interface TimerContext {
+    setTimeout: TimerStartFunction;
+    clearTimeout: TimerStopFunction;
+    setInterval: TimerStartFunction;
+    clearInterval: TimerStopFunction;
+}
+
+const root = getGlobal() as unknown as TimerContext;
 const _setTimeout: TimerStartFunction = safe(root.setTimeout);
 const _clearTimeout: TimerStopFunction = safe(root.clearTimeout);
 const _setInterval: TimerStartFunction = safe(root.setInterval);

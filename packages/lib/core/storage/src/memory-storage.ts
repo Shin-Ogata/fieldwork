@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import {
     PlainObject,
     Keys,
@@ -29,7 +25,7 @@ import {
 } from './interfaces';
 
 /** MemoryStorage I/O options */
-export type MemoryStorageOptions<K extends Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
+export type MemoryStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
 /** MemoryStorage return value */
 export type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
 /** MemoryStorage data type */
@@ -106,7 +102,7 @@ export class MemoryStorage implements IStorage {
         options?: MemoryStorageOptions<K>
     ): Promise<MemoryStorageResult<K> | null>;
 
-    async getItem(key: string, options?: MemoryStorageOptions<any>): Promise<MemoryStorageDataTypes | null> {
+    async getItem(key: string, options?: MemoryStorageOptions): Promise<MemoryStorageDataTypes | null> {
         options = options || {};
         await cc(options.cancel);
 

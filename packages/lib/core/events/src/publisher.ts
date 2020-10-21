@@ -143,7 +143,7 @@ export abstract class EventPublisher<Event extends object> implements Subscribab
         triggerEvent(map, channel, undefined, ...args);
         // trigger for all handler
         if ('*' !== channel) {
-            triggerEvent(map as any as ListenersMap<EventAll>, '*', channel as string, ...args);
+            triggerEvent(map as unknown as ListenersMap<EventAll>, '*', channel as string, ...args);
         }
     }
 

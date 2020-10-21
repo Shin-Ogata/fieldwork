@@ -1,8 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-module-boundary-types
- */
-
 import {
     className,
     isNil,
@@ -46,7 +41,7 @@ export class Result extends Error {
      *  - `en` low-level error information
      *  - `ja` 下位のエラー情報
      */
-    constructor(code?: number, message?: string, cause?: any) {
+    constructor(code?: number, message?: string, cause?: unknown) {
         code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
         super(message || toHelpString(code));
         let time = isError(cause) ? (cause as Result).time : undefined;
@@ -69,7 +64,7 @@ export class Result extends Error {
      * @en Stock low-level error information.
      * @ja 下位のエラー情報を格納
      */
-    readonly cause: any;
+    readonly cause: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     /**
      * @en Generated time information.
@@ -153,7 +148,7 @@ export function toResult(o: unknown): Result {
     } else {
         const e = Object(o) as Result;
         const message = isString(e.message) ? e.message : isString(o) ? o : undefined;
-        const code = isChancelLikeError(message) ? RESULT_CODE.ABORT : isNumber(e.code) ? e.code : o as any;
+        const code = isChancelLikeError(message) ? RESULT_CODE.ABORT : isNumber(e.code) ? e.code : o as number;
         const cause = isError(e.cause) ? e.cause : isError(o) ? o : isString(o) ? new Error(o) : o;
         return new Result(code, message, cause);
     }
@@ -173,7 +168,7 @@ export function toResult(o: unknown): Result {
  *  - `en` low-level error information
  *  - `ja` 下位のエラー情報
  */
-export function makeResult(code: number, message?: string, cause?: any): Result {
+export function makeResult(code: number, message?: string, cause?: unknown): Result {
     return new Result(code, message, cause);
 }
 
@@ -188,6 +183,6 @@ export function makeResult(code: number, message?: string, cause?: any): Result 
  *  - `en` low-level error information
  *  - `ja` 下位のエラー情報
  */
-export function makeCanceledResult(message?: string, cause?: any): Result {
+export function makeCanceledResult(message?: string, cause?: unknown): Result {
     return new Result(RESULT_CODE.ABORT, message, cause);
 }

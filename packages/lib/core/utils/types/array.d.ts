@@ -110,7 +110,7 @@ export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEY
  *  - `en` Returns a Promise with the resultant *Array* as value.
  *  - `ja` イテレーション結果配列を格納した Promise オブジェクト
  */
-export declare function map<T, U>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => U | Promise<U>, thisArg?: any): Promise<U[]>;
+export declare function map<T, U>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => U | Promise<U>, thisArg?: unknown): Promise<U[]>;
 /**
  * @en Substitution method of `Array.prototype.filter()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.filter()` の代替メソッド
@@ -128,7 +128,7 @@ export declare function map<T, U>(this: any, array: T[], callback: (value: T, in
  *  - `en` Returns a Promise with the resultant *Array* as value.
  *  - `ja` イテレーション結果配列を格納した Promise オブジェクト
  */
-export declare function filter<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: any): Promise<T[]>;
+export declare function filter<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<T[]>;
 /**
  * @en Substitution method of `Array.prototype.find()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.find()` の代替メソッド
@@ -146,7 +146,7 @@ export declare function filter<T>(this: any, array: T[], callback: (value: T, in
  *  - `en` Returns a Promise with the resultant value.
  *  - `ja` イテレーション結果を格納した Promise オブジェクト
  */
-export declare function find<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: any): Promise<T | undefined>;
+export declare function find<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<T | undefined>;
 /**
  * @en Substitution method of `Array.prototype.findIndex()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.findIndex()` の代替メソッド
@@ -164,7 +164,7 @@ export declare function find<T>(this: any, array: T[], callback: (value: T, inde
  *  - `en` Returns a Promise with the resultant index value.
  *  - `ja` インデックスを格納した Promise オブジェクト
  */
-export declare function findIndex<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: any): Promise<number>;
+export declare function findIndex<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<number>;
 /**
  * @en Substitution method of `Array.prototype.some()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.some()` の代替メソッド
@@ -182,7 +182,7 @@ export declare function findIndex<T>(this: any, array: T[], callback: (value: T,
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export declare function some<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: any): Promise<boolean>;
+export declare function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean>;
 /**
  * @en Substitution method of `Array.prototype.every()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.every()` の代替メソッド
@@ -200,7 +200,7 @@ export declare function some<T>(this: any, array: T[], callback: (value: T, inde
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export declare function every<T>(this: any, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: any): Promise<boolean>;
+export declare function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean>;
 /**
  * @en Substitution method of `Array.prototype.reduce()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.reduce()` の代替メソッド

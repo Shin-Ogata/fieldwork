@@ -125,7 +125,7 @@ export class Writer implements TemplateWriter {
                 buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(v), partials, originalTemplate);
             }
         } else if ('object' === typeof value || 'string' === typeof value || 'number' === typeof value) {
-            buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(value), partials, originalTemplate);
+            buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(value as object), partials, originalTemplate);
         } else if (isFunction(value)) {
             if ('string' !== typeof originalTemplate) {
                 throw new Error('Cannot use higher-order sections without the original template');
@@ -185,7 +185,7 @@ export class Writer implements TemplateWriter {
     private unescapedValue(token: Token, context: Context): string | void {
         const value = context.lookup(token[$.VALUE]);
         if (null != value) {
-            return value;
+            return value as string;
         }
     }
 
@@ -193,7 +193,7 @@ export class Writer implements TemplateWriter {
     private escapedValue(token: Token, context: Context): string | void {
         const value = context.lookup(token[$.VALUE]);
         if (null != value) {
-            return globalSettings.escape(value);
+            return globalSettings.escape(value as string);
         }
     }
 

@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import {
     UnknownFunction,
     Primitive,
@@ -38,7 +34,7 @@ export function post<T>(executor: () => T): Promise<T> {
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export function noop(...args: any[]): any {    // eslint-disable-line @typescript-eslint/no-unused-vars
+export function noop(...args: unknown[]): any { // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     // noop
 }
 
@@ -76,8 +72,8 @@ export function sleep(elapse: number): Promise<void> {
 export function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
     const opts = options || {};
     let handle: TimerHandle | undefined;
-    let args: any[] | undefined;
-    let context: any, result: any;
+    let args: unknown[] | undefined;
+    let context: unknown, result: unknown;
     let previous = 0;
 
     const later = function (): void {
@@ -89,7 +85,7 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
         }
     };
 
-    const throttled = function (this: any, ...arg: any[]): any {
+    const throttled = function (this: unknown, ...arg: unknown[]): unknown {
         const now = Date.now();
         if (!previous && false === opts.leading) {
             previous = now;
@@ -120,7 +116,7 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
         handle = context = args = undefined;
     };
 
-    return throttled as any;
+    return throttled as (T & { cancel(): void; });
 }
 
 /**
@@ -140,16 +136,16 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
 export function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & { cancel(): void; } {
     /* eslint-disable no-invalid-this */
     let handle: TimerHandle | undefined;
-    let result: any;
+    let result: undefined;
 
-    const later = function (context: any, args: any[]): void {
+    const later = function (context: undefined, args: undefined[]): void {
         handle = undefined;
         if (args) {
             result = executor.apply(context, args);
         }
     };
 
-    const debounced = function (this: any, ...args: any[]): any {
+    const debounced = function (this: undefined, ...args: undefined[]): undefined {
         if (handle) {
             clearTimeout(handle);
         }
@@ -170,7 +166,7 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, i
         handle = undefined;
     };
 
-    return debounced as any;
+    return debounced as (T & { cancel(): void; });
     /* eslint-enable no-invalid-this */
 }
 
@@ -184,14 +180,14 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, i
  */
 export function once<T extends UnknownFunction>(executor: T): T {
     /* eslint-disable no-invalid-this, @typescript-eslint/no-non-null-assertion */
-    let memo: any;
-    return function (this: any, ...args: any[]): any {
+    let memo: unknown;
+    return function (this: unknown, ...args: unknown[]): unknown {
         if (executor) {
             memo = executor.call(this, ...args);
             executor = null!;
         }
         return memo;
-    } as any;
+    } as T;
     /* eslint-enable no-invalid-this, @typescript-eslint/no-non-null-assertion */
 }
 

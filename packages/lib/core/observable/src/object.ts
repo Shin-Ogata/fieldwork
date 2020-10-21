@@ -140,7 +140,7 @@ export abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    on(property: '@', listener: (context: ObservableObject) => any): Subscription;
+    on(property: '@', listener: (context: ObservableObject) => unknown): Subscription;
 
     /**
      * @en Subscrive property change(s).
@@ -153,9 +153,9 @@ export abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription;
+    on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => unknown): Subscription;
 
-    on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => any): Subscription {
+    on<K extends ObservableKeys<this>>(property: K | K[], listener: (newValue: this[K], oldValue: this[K], key: K) => unknown): Subscription {
         verifyObservable(this);
         const { changeMap, broker } = this[_internal];
         const result = broker.get().on(property, listener);
@@ -196,9 +196,9 @@ export abstract class ObservableObject implements IObservable {
      *  - `ja` プロパティ変更通知コールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void;
+    off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => unknown): void;
 
-    off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => any): void {
+    off<K extends ObservableKeys<this>>(property?: K | K[], listener?: (newValue: this[K], oldValue: this[K], key: K) => unknown): void {
         verifyObservable(this);
         this[_internal].broker.get().off(property, listener);
     }

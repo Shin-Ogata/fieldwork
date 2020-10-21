@@ -18,7 +18,7 @@ export declare class Result extends Error {
      *  - `en` low-level error information
      *  - `ja` 下位のエラー情報
      */
-    constructor(code?: number, message?: string, cause?: any);
+    constructor(code?: number, message?: string, cause?: unknown);
     /**
      * @en [[RESULT_CODE]] value.
      * @ja [[RESULT_CODE]] の値
@@ -81,7 +81,7 @@ export declare function toResult(o: unknown): Result;
  *  - `en` low-level error information
  *  - `ja` 下位のエラー情報
  */
-export declare function makeResult(code: number, message?: string, cause?: any): Result;
+export declare function makeResult(code: number, message?: string, cause?: unknown): Result;
 /**
  * @en Create canceled [[Result]] helper.
  * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
@@ -93,4 +93,4 @@ export declare function makeResult(code: number, message?: string, cause?: any):
  *  - `en` low-level error information
  *  - `ja` 下位のエラー情報
  */
-export declare function makeCanceledResult(message?: string, cause?: any): Result;
+export declare function makeCanceledResult(message?: string, cause?: unknown): Result;
