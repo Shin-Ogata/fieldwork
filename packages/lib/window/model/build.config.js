@@ -9,14 +9,13 @@ function patch(index, code) {
         return code;
     }
 
-    const TRIM_EXPORT  = 'declare abstract class Model';
-    const EXPORT_ALIAS = 'export type ModelBase<T extends {} = {}, Event extends ModelEvent<T> = ModelEvent<T>> = Model<T, Event>;';
+    const EXPORT_ALIAS = 'export type ModelBase<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> = Model<T, Event>;';
 
     code = code
+        // rename `declare abstract class Model<...> { ... }` → `declare abstract class Model<...> { ... } export type ModelBase ...`
+        .replace(/(declare abstract class Model)([^\n]+)([^\}]+)(\})/, `$1$2$3$4\n${EXPORT_ALIAS}`)
         // rename `EventSourceBase` → `EventSource`
         .replace(/EventSourceBase/gm, 'EventSource')
-        // rename `export declare abstract class Model<...> { ... }` → `declare abstract class Model<...> { ... } export type ModelBase ...`
-        .replace(/(export declare abstract class Model)([^\n]+)([^\}]+)(\})/, `${TRIM_EXPORT}$2$3$4\n${EXPORT_ALIAS}`)
     ;
 
     return code;

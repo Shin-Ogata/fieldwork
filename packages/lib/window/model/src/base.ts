@@ -113,7 +113,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  *
  * ```ts
  * // early cast
- * const Mode = ModelBase as ModelConstructor<ModelBase<ContentAttribute>, ContentAttribute>;
+ * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute>, ContentAttribute>;
  *
  * class Content extends Model {
  *   constructor(attrs: ContentAttribute) {
@@ -125,13 +125,12 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * or
  *
  * ```ts
+ * // late cast
  * class ContentBase extends ModelBase<ContentAttribute> {
  *   constructor(attrs: ContentAttribute) {
  *     super(attrs);
  *   }
  * }
- *
- * // late cast
  * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
  * ```
  * then
@@ -166,9 +165,10 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * }
  *
  * // late cast
- * class Content extends ModelBase<ContentAttribute, CustomEvent> {
+ * class ContentBase extends ModelBase<ContentAttribute, CustomEvent> {
  *   :
  * }
+ * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
  *
  * const content = new Content({ ... });
  * content.trigger('fire', true, 100);
