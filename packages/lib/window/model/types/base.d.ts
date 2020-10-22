@@ -28,7 +28,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  *
  * ```ts
  * // early cast
- * const Mode = ModelBase as ModelConstructor<ModelBase<ContentAttribute>, ContentAttribute>;
+ * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute>, ContentAttribute>;
  *
  * class Content extends Model {
  *   constructor(attrs: ContentAttribute) {
@@ -40,13 +40,12 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * or
  *
  * ```ts
+ * // late cast
  * class ContentBase extends ModelBase<ContentAttribute> {
  *   constructor(attrs: ContentAttribute) {
  *     super(attrs);
  *   }
  * }
- *
- * // late cast
  * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
  * ```
  * then
@@ -81,9 +80,10 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * }
  *
  * // late cast
- * class Content extends ModelBase<ContentAttribute, CustomEvent> {
+ * class ContentBase extends ModelBase<ContentAttribute, CustomEvent> {
  *   :
  * }
+ * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
  *
  * const content = new Content({ ... });
  * content.trigger('fire', true, 100);
