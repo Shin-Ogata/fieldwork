@@ -236,8 +236,14 @@ describe('utils/mixins spec', () => {
         expect(mutableBD instanceof ClassD).toBeFalsy();
     });
 
-    it('check setMixClassAttribute(any, `instanceOf`)', () => {
+    it('check setMixClassAttribute(class, `instanceOf`)', () => {
+        const plainA = new ClassA(0, 'a');
+        const plainE = new ClassE(1, 'e');
+
         expect(ClassE[Symbol.hasInstance]).toBeDefined();   // NOTE: 制限事項 mixin により ClassA[Symbol.hasInstance] を呼び出す
+        expect(plainA instanceof ClassE).toBeTruthy();
+        expect(plainE instanceof ClassE).toBeTruthy();
+        expect(mixAB instanceof ClassE).toBeTruthy();
         expect(mixAB instanceof ClassE).toBeTruthy();
         expect(mixBA instanceof ClassE).toBeTruthy();
         expect(mixBD instanceof ClassE).toBeTruthy();
@@ -245,6 +251,8 @@ describe('utils/mixins spec', () => {
 
         setMixClassAttribute(ClassE, 'instanceOf');         // 上書き抑止
         expect(ClassE[Symbol.hasInstance]).toBeDefined();
+        expect(plainA instanceof ClassE).toBeFalsy();
+        expect(plainE instanceof ClassE).toBeTruthy();
         expect(mixAB instanceof ClassE).toBeFalsy();
         expect(mixBA instanceof ClassE).toBeFalsy();
         expect(mixBD instanceof ClassE).toBeFalsy();
@@ -252,10 +260,64 @@ describe('utils/mixins spec', () => {
 
         setMixClassAttribute(ClassE, 'instanceOf', null);   // 削除抑止
         expect(ClassE[Symbol.hasInstance]).not.toBeDefined();
+        expect(plainA instanceof ClassE).toBeFalsy();
+        expect(plainE instanceof ClassE).toBeTruthy();
         expect(mixAB instanceof ClassE).toBeFalsy();
         expect(mixBA instanceof ClassE).toBeFalsy();
         expect(mixBD instanceof ClassE).toBeFalsy();
         expect(mixCAB instanceof ClassE).toBeFalsy();
+    });
+
+    it('check setMixClassAttribute(class, `instanceOf`) [Best Practice]', () => {
+        /*
+         * [Best Practice]
+         * `mixin` クラスから派生する場合は, setMixClassAttribute(DerivedClass, 'instanceOf'); を呼ぶ
+         */
+        class Derived1 extends MixinAB {
+            constructor() {
+                super(1, 100, 'd1', 'Derived1');
+            }
+        }
+        setMixClassAttribute(Derived1, 'instanceOf');
+
+        class Derived2 extends MixinAB {
+            constructor() {
+                super(2, 200, 'd2', 'Derived2');
+            }
+        }
+        setMixClassAttribute(Derived2, 'instanceOf');
+
+        // derived classes
+        class DerivedNG extends MixinAB {
+            constructor() {
+                super(0, 0, 'dNG', 'DerivedNG');
+            }
+        }
+        // using default mixin instanceof
+
+        const d1 = new Derived1();
+        expect(d1 instanceof MixinAB).toBe(true);
+        expect(d1 instanceof ClassA).toBe(true);
+        expect(d1 instanceof ClassB).toBe(true);
+        expect(d1 instanceof DerivedNG).toBe(true);  // !! NOTE: 制限事項 !!
+        expect(d1 instanceof Derived1).toBe(true);
+        expect(d1 instanceof Derived2).toBe(false);
+
+        const d2 = new Derived2();
+        expect(d2 instanceof MixinAB).toBe(true);
+        expect(d2 instanceof ClassA).toBe(true);
+        expect(d2 instanceof ClassB).toBe(true);
+        expect(d2 instanceof DerivedNG).toBe(true);  // !! NOTE: 制限事項 !!
+        expect(d2 instanceof Derived1).toBe(false);
+        expect(d2 instanceof Derived2).toBe(true);
+
+        const dNG = new DerivedNG();
+        expect(dNG instanceof MixinAB).toBe(true);
+        expect(dNG instanceof ClassA).toBe(true);
+        expect(dNG instanceof ClassB).toBe(true);
+        expect(dNG instanceof DerivedNG).toBe(true);
+        expect(dNG instanceof Derived1).toBe(false);
+        expect(dNG instanceof Derived2).toBe(false);
     });
 
     it('check advanced', () => {

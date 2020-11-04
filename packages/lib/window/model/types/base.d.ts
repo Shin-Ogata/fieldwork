@@ -1,5 +1,5 @@
 import { Nil, PlainObject, Arguments } from '@cdp/core-utils';
-import { Subscription, Silenceable, EventRevceiver, EventSource } from '@cdp/events';
+import { Subscription, Silenceable, EventReceiver, EventSource } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
 import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions, ModelSyncMethods, ModelSyncResult, ModelDataSyncOptions, ModelFetchOptions, ModelSaveOptions, ModelDestroyOptions } from './interfaces';
@@ -15,7 +15,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * @example <br>
  *
  * ```ts
- * import { ModelBase, ModelConstructor } from '@cdp/model';
+ * import { Model, ModelConstructor } from '@cdp/model';
  *
  * interface ContentAttribute {
  *   uri: string;
@@ -28,9 +28,9 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  *
  * ```ts
  * // early cast
- * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute>, ContentAttribute>;
+ * const ContentBase = Model as ModelConstructor<Model<ContentAttribute>, ContentAttribute>;
  *
- * class Content extends Model {
+ * class Content extends ContentBase {
  *   constructor(attrs: ContentAttribute) {
  *     super(attrs);
  *   }
@@ -41,12 +41,13 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  *
  * ```ts
  * // late cast
- * class ContentBase extends ModelBase<ContentAttribute> {
+ * class ContentClass extends Model<ContentAttribute> {
  *   constructor(attrs: ContentAttribute) {
  *     super(attrs);
  *   }
  * }
- * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
+ *
+ * const Content = ContentClass as ModelConstructor<ContentClass, ContentAttribute>;
  * ```
  * then
  *
@@ -74,22 +75,29 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * :
  *
  * // early cast
- * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
- * class Content extends Model {
+ * const ContentBase = Model as ModelConstructor<Model<ContentAttribute, CustomEvent>, ContentAttribute>;
+ * class Content extends ContentBase {
  *   :
  * }
  *
  * // late cast
- * class ContentBase extends ModelBase<ContentAttribute, CustomEvent> {
+ * class ContentClass extends Model<ContentAttribute, CustomEvent> {
  *   :
  * }
- * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
+ * const Content = ContentClass as ModelConstructor<ContentClass, ContentAttribute>;
  *
  * const content = new Content({ ... });
  * content.trigger('fire', true, 100);
  * ```
  */
-declare abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
+export declare abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
+    /**
+     * @en Get ID attribute name.
+     * @ja ID アトリビュート名にアクセス
+     *
+     * @override
+     */
+    static idAttribute: string;
     /**
      * constructor
      *
@@ -97,7 +105,7 @@ declare abstract class Model<T extends object = object, Event extends ModelEvent
      *  - `en` initial attribute values
      *  - `ja` 属性の初期値を指定
      */
-    constructor(attributes: Required<T>, options?: ModelConstructionOptions<T>);
+    constructor(attributes: Required<T>, options?: ModelConstructionOptions);
     /**
      * @en Get content ID.
      * @ja コンテンツ ID を取得
@@ -128,6 +136,11 @@ declare abstract class Model<T extends object = object, Event extends ModelEvent
      * @ja 内部のコンテンツ ID を取得
      */
     protected get _cid(): string;
+    /**
+     * @en Get creating options.
+     * @ja 構築時のオプションを取得
+     */
+    protected get _options(): ModelSetOptions;
     /**
      * @en Check whether this object has clients.
      * @ja クライアントが存在するか判定
@@ -254,6 +267,13 @@ declare abstract class Model<T extends object = object, Event extends ModelEvent
      */
     toJSON(): T;
     /**
+     * @es Clone this instance.
+     * @ja インスタンスの複製を返却
+     *
+     * @override
+     */
+    clone(): this;
+    /**
      * @en Check changed attributes.
      * @ja 変更された属性値を持つか判定
      *
@@ -284,11 +304,15 @@ declare abstract class Model<T extends object = object, Event extends ModelEvent
     /**
      * @en Converts a response into the hash of attributes to be `set` on the model. The default implementation is just to pass the response along.
      * @ja レスポンスの変換メソッド. 既定では何もしない
+     *
+     * @override
      */
     protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void;
     /**
      * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
      * @ja データ同期. 必要に応じてオーバーライド可能.
+     *
+     * @override
      *
      * @param method
      *  - `en` operation string
@@ -347,4 +371,17 @@ declare abstract class Model<T extends object = object, Event extends ModelEvent
      */
     destroy(options?: ModelDestroyOptions): Promise<PlainObject | void>;
 }
-export { Model as ModelBase };
+/**
+ * @en Check the value-type is [[Model]].
+ * @ja [[Model]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isModel(x: unknown): x is Model;
+/**
+ * @en Query [[Model]] `id-attribute`.
+ * @ja [[Model]] の `id-attribute` を取得
+ */
+export declare function idAttribute(x: unknown, fallback?: string): string;

@@ -163,7 +163,7 @@ function unregister(context: Context, target?: Subscribable, channel?: string | 
  * receiver.stopListening();
  * ```
  */
-export class EventRevceiver {
+export class EventReceiver {
     /** @internal */
     private readonly [_context]: Context;
 

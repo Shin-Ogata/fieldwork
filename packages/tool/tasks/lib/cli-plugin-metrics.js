@@ -102,6 +102,17 @@ async function queryTargets(options) {
     return targets;
 }
 
+function patch(src) {
+    return dropSourceMap(src)
+        // aboid `?.` [Optional Chaining]
+        .replace(/\?\.\[/gm, '[')
+        .replace(/\?\.\(/gm, '(')
+        .replace(/\?\./gm, '.')
+        // aboid `??` [Nullish Coalescing]
+        .replace(/\?\?/gm, '||')
+    ;
+}
+
 async function runPlato(options) {
     const targets = await queryTargets(options);
 
@@ -112,7 +123,7 @@ async function runPlato(options) {
             return existsSync(mjs) ? mjs : bak;
         })();
         moveSync(tgt, bak, { overwrite: true });
-        writeFileSync(tgt, dropSourceMap(src));
+        writeFileSync(tgt, patch(src));
         return { org: tgt, bak };
     });
     const restore = () => {

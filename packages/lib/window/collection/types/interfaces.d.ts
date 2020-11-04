@@ -1,5 +1,10 @@
-import { Keys } from '@cdp/core-utils';
+import { Keys, PlainObject } from '@cdp/core-utils';
+import { Silenceable, EventAll } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
+import { Result } from '@cdp/result';
+import { SyncEvent, RestDataSyncOptions } from '@cdp/data-sync';
+import { Parseable, ModelConstructionOptions, ModelSaveOptions, ModelDestroyOptions } from '@cdp/model';
+import type { Collection } from './base';
 /**
  * @en Sort order const definitions.
  * @ja ソート順
@@ -329,3 +334,108 @@ export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TIt
  * @ja [[Collection]] の Item を供給する関数の型
  */
 export declare type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionQueryOptions<TItem, TKey>) => Promise<CollectionFetchResult<TItem>>;
+/**
+ * @en Base options for collection operation.
+ * @ja コレクション操作の基底オプション定義
+ */
+export declare type CollectionOperationOptions = Silenceable & Parseable;
+/**
+ * @en Add item to [[Collection]] options.
+ * @ja [[Collection]] への追加オプション
+ */
+export interface CollectionAddOptions extends CollectionOperationOptions {
+    at?: number;
+    merge?: boolean;
+    sort?: boolean;
+}
+/**
+ * @en [[Collection]] setup options.
+ * @ja [[Collection]] 設定オプション
+ */
+export interface CollectionSetOptions extends CollectionAddOptions {
+    add?: boolean;
+    remove?: boolean;
+    merge?: boolean;
+    index?: number;
+}
+/**
+ * @en [[Collection]] re-sort options.
+ * @ja [[Collection]] 再ソートオプション
+ */
+export declare type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
+/**
+ * @en [[Collection]] update options.
+ * @ja [[Collection]] 更新時のオプション
+ */
+export declare type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & CollectionSetOptions & {
+    changes: {
+        added: TItem[];
+        removed: TItem[];
+        merged: TItem[];
+    };
+};
+/** re-exports */
+export declare type CollectionDataSyncOptions = RestDataSyncOptions;
+/**
+ * @en Default [[Collection]] event definition.
+ * @ja 既定の [[Collection]] イベント定義
+ */
+export interface CollectionEvent<TItem extends object> extends EventAll, SyncEvent<Collection<TItem>> {
+    /**
+     * @en when a model is added to a collection.
+     * @ja モデルがコレクションに追加されたときに発行
+     */
+    '@add': [TItem, Collection<TItem>, CollectionSetOptions];
+    /**
+     * @en when a model is removed from a collection.
+     * @ja モデルがコレクションから削除されたときに発行
+     */
+    '@remove': [TItem, Collection<TItem>, CollectionSetOptions];
+    /**
+     * @en single event triggered after any number of models have been added, removed or changed in a collection.
+     * @ja コレクション内のモデルの追加・削除・変化時に1回発行
+     */
+    '@update': [Collection<TItem>, CollectionUpdateOptions<TItem>];
+    /**
+     * @en when the collection's entire contents have been reset.
+     * @ja コレクションが置き換えられたときに発行
+     */
+    '@reset': [Collection<TItem>, CollectionSetOptions & {
+        previous: TItem[];
+    }];
+    /**
+     * @en when the collection has been re-sorted.
+     * @ja コレクションが再ソートされたときに発行
+     */
+    '@sort': [Collection<TItem>, CollectionReSortOptions<TItem>];
+    /**
+     * @en notified when a model has been successfully synced with the server.
+     * @ja サーバー同期に成功したときに発行
+     */
+    '@sync': [Collection<TItem>, PlainObject, CollectionDataSyncOptions];
+    /**
+     * @en notified when a model is destroyed.
+     * @ja モデルが破棄されたときに発行
+     */
+    '@destroy': [TItem, Collection<TItem>, ModelDestroyOptions];
+    /**
+     * @en notified when setup model failed.
+     * @ja モデル設定に失敗したときに発行
+     */
+    '@invalid': [TItem, Collection<TItem>, Result, CollectionOperationOptions];
+    /**
+     * @en notified when a collection's request to the server has failed.
+     * @ja サーバーリクエストに失敗したときに発行
+     */
+    '@error': [Collection<TItem>, Error, CollectionDataSyncOptions];
+}
+/**
+ * @en [[Collection]] construction options.
+ * @ja [[Collection]] 構築に指定するオプション
+ */
+export interface CollectionConstructionOptions<T extends object> extends Silenceable {
+    /** default model construction options */
+    modelOptions?: ModelConstructionOptions;
+    /** default query options */
+    queryOptions?: CollectionQueryOptions<T>;
+}

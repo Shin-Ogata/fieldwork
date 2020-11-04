@@ -101,14 +101,23 @@ export interface MixClassAttribute {
  *
  * class Other extends Source {};
  *
+ * const other = new Other();
  * const mixed = new MixinClass();
+ * console.log(other instanceof Source);        // true
+ * console.log(other instanceof Other);         // true
  * console.log(mixed instanceof MixinClass);    // true
  * console.log(mixed instanceof Base);          // true
  * console.log(mixed instanceof Source);        // true
  * console.log(mixed instanceof Other);         // true ???
  *
  * setMixClassAttribute(Other, 'instanceOf'); // or setMixClassAttribute(Other, 'instanceOf', null);
+ * console.log(other instanceof Source);        // true
+ * console.log(other instanceof Other);         // true
  * console.log(mixed instanceof Other);         // false !
+ *
+ * // [Best Practice] If you declare the derived-class from mixin, you should call the function for avoiding `instanceof` limitation.
+ * class DerivedClass extends MixinClass {}
+ * setMixClassAttribute(DerivedClass, 'instanceOf');
  * ```
  *
  * @param target

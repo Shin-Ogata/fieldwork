@@ -9,7 +9,7 @@ import {
 } from './static';
 
 /** @internal */
-const _createIterableIterator = Symbol('createIterableIterator');
+const _createIterableIterator = Symbol('create-iterable-iterator');
 
 /**
  * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.

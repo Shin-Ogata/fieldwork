@@ -49,7 +49,7 @@ import { Subscribable, Subscription, EventSchema } from './interfaces';
  * receiver.stopListening();
  * ```
  */
-export declare class EventRevceiver {
+export declare class EventReceiver {
     /** constructor */
     constructor();
     /**

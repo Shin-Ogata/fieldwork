@@ -87,11 +87,11 @@ export interface MixClassAttribute {
 const _objPrototype     = Object.prototype;
 const _instanceOf       = Function.prototype[Symbol.hasInstance];
 const _override         = Symbol('override');
-const _isInherited      = Symbol('isInherited');
+const _isInherited      = Symbol('is-inherited');
 const _constructors     = Symbol('constructors');
-const _classBase        = Symbol('classBase');
-const _classSources     = Symbol('classSources');
-const _protoExtendsOnly = Symbol('protoExtendsOnly');
+const _classBase        = Symbol('class-base');
+const _classSources     = Symbol('class-sources');
+const _protoExtendsOnly = Symbol('proto-extends-only');
 
 // copy properties core
 function reflectProperties(target: object, source: object, key: string | symbol): void {
@@ -167,14 +167,23 @@ function setInstanceOf<T extends object>(target: Constructor<T>, method: ((inst:
  *
  * class Other extends Source {};
  *
+ * const other = new Other();
  * const mixed = new MixinClass();
+ * console.log(other instanceof Source);        // true
+ * console.log(other instanceof Other);         // true
  * console.log(mixed instanceof MixinClass);    // true
  * console.log(mixed instanceof Base);          // true
  * console.log(mixed instanceof Source);        // true
  * console.log(mixed instanceof Other);         // true ???
  *
  * setMixClassAttribute(Other, 'instanceOf'); // or setMixClassAttribute(Other, 'instanceOf', null);
+ * console.log(other instanceof Source);        // true
+ * console.log(other instanceof Other);         // true
  * console.log(mixed instanceof Other);         // false !
+ *
+ * // [Best Practice] If you declare the derived-class from mixin, you should call the function for avoiding `instanceof` limitation.
+ * class DerivedClass extends MixinClass {}
+ * setMixClassAttribute(DerivedClass, 'instanceOf');
  * ```
  *
  * @param target
