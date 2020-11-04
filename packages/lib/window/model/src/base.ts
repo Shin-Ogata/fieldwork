@@ -5,6 +5,8 @@
 import {
     Nil,
     PlainObject,
+    Constructor,
+    Class,
     Arguments,
     isArray,
     isObject,
@@ -14,12 +16,13 @@ import {
     deepCopy,
     deepEqual,
     diff,
+    setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
     Subscription,
     Silenceable,
     EventBroker,
-    EventRevceiver,
+    EventReceiver,
     EventSource,
 } from '@cdp/events';
 import { checkCanceled as cc } from '@cdp/promise';
@@ -62,8 +65,8 @@ interface Property<T> {
     baseAttrs: T;
     prevAttrs: T;
     changedAttrs?: Partial<T>;
-    readonly idAttribute: string;
     readonly cid: string;
+    readonly options: ModelSetOptions;
 }
 
 /**
@@ -100,7 +103,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * @example <br>
  *
  * ```ts
- * import { ModelBase, ModelConstructor } from '@cdp/model';
+ * import { Model, ModelConstructor } from '@cdp/model';
  *
  * interface ContentAttribute {
  *   uri: string;
@@ -113,9 +116,9 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  *
  * ```ts
  * // early cast
- * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute>, ContentAttribute>;
+ * const ContentBase = Model as ModelConstructor<Model<ContentAttribute>, ContentAttribute>;
  *
- * class Content extends Model {
+ * class Content extends ContentBase {
  *   constructor(attrs: ContentAttribute) {
  *     super(attrs);
  *   }
@@ -126,12 +129,13 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  *
  * ```ts
  * // late cast
- * class ContentBase extends ModelBase<ContentAttribute> {
+ * class ContentClass extends Model<ContentAttribute> {
  *   constructor(attrs: ContentAttribute) {
  *     super(attrs);
  *   }
  * }
- * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
+ *
+ * const Content = ContentClass as ModelConstructor<ContentClass, ContentAttribute>;
  * ```
  * then
  *
@@ -159,22 +163,30 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * :
  *
  * // early cast
- * const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
- * class Content extends Model {
+ * const ContentBase = Model as ModelConstructor<Model<ContentAttribute, CustomEvent>, ContentAttribute>;
+ * class Content extends ContentBase {
  *   :
  * }
  *
  * // late cast
- * class ContentBase extends ModelBase<ContentAttribute, CustomEvent> {
+ * class ContentClass extends Model<ContentAttribute, CustomEvent> {
  *   :
  * }
- * const Content = ContentBase as ModelConstructor<Content, ContentAttribute>;
+ * const Content = ContentClass as ModelConstructor<ContentClass, ContentAttribute>;
  *
  * const content = new Content({ ... });
  * content.trigger('fire', true, 100);
  * ```
  */
-abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventRevceiver implements EventSource<Event> {
+export abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
+    /**
+     * @en Get ID attribute name.
+     * @ja ID アトリビュート名にアクセス
+     *
+     * @override
+     */
+    static idAttribute = 'id';
+
     /**
      * @en Attributes pool
      * @ja 属性格納領域
@@ -190,16 +202,16 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      *  - `en` initial attribute values
      *  - `ja` 属性の初期値を指定
      */
-    constructor(attributes: Required<T>, options?: ModelConstructionOptions<T>) {
+    constructor(attributes: Required<T>, options?: ModelConstructionOptions) {
         super();
-        const opts = Object.assign({ idAttribute: 'id' }, options);
+        const opts = Object.assign({}, options);
         const attrs = opts.parse ? this.parse(attributes, opts) as T : attributes;
         const props: Property<T> = {
             attrs: ObservableObject.from(attrs),
             baseAttrs: { ...attrs },
             prevAttrs: { ...attrs },
-            idAttribute: opts.idAttribute,
             cid: luid('model:', 8),
+            options: opts,
         };
         Object.defineProperty(this, _properties, { value: props });
 
@@ -243,8 +255,9 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      * @ja コンテンツ ID を取得
      */
     get id(): string {
-        const { idAttribute, cid, attrs } = this[_properties];
-        return (idAttribute in attrs) ? attrs[idAttribute] : cid;
+        const idAttr = idAttribute(this, 'id');
+        const { cid, attrs } = this[_properties];
+        return (idAttr in attrs) ? attrs[idAttr] : cid;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -291,6 +304,14 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      */
     protected get _cid(): string {
         return this[_properties].cid;
+    }
+
+    /**
+     * @en Get creating options.
+     * @ja 構築時のオプションを取得
+     */
+    protected get _options(): ModelSetOptions {
+        return this[_properties].options;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -370,7 +391,7 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      *  - `ja` `channel` に対応したコールバック関数
      */
     public on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
-        if ('@change' === channel || (isArray(channel) && channel.includes('@change' as Channel))) {
+        if ('*' === channel || '@change' === channel || (isArray(channel) && channel.includes('@change' as Channel))) {
             this._attrs.on('@', this[_changeHandler]);
         }
         return this._attrs.on(channel as any, listener as any);
@@ -538,6 +559,17 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
     }
 
     /**
+     * @es Clone this instance.
+     * @ja インスタンスの複製を返却
+     *
+     * @override
+     */
+    public clone(): this {
+        const { constructor, _attrs, _options } = this;
+        return new (constructor as Constructor<this>)(_attrs, _options);
+    }
+
+    /**
      * @en Check changed attributes.
      * @ja 変更された属性値を持つか判定
      *
@@ -586,13 +618,15 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
      * @ja [[Model]] がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
      */
     protected isNew(): boolean {
-        const { idAttribute } = this[_properties];
-        return !this.has(idAttribute as keyof T);
+        const idAttr = idAttribute(this, 'id');
+        return !this.has(idAttr as keyof T);
     }
 
     /**
      * @en Converts a response into the hash of attributes to be `set` on the model. The default implementation is just to pass the response along.
      * @ja レスポンスの変換メソッド. 既定では何もしない
+     *
+     * @override
      */
     protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void { // eslint-disable-line @typescript-eslint/no-unused-vars
         return response as T;
@@ -601,6 +635,8 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
     /**
      * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
      * @ja データ同期. 必要に応じてオーバーライド可能.
+     *
+     * @override
      *
      * @param method
      *  - `en` operation string
@@ -748,4 +784,25 @@ abstract class Model<T extends object = object, Event extends ModelEvent<T> = Mo
     }
 }
 
-export { Model as ModelBase };
+// mixin による `instanceof` は無効に設定
+setMixClassAttribute(Model as unknown as Class, 'instanceOf', null);
+
+/**
+ * @en Check the value-type is [[Model]].
+ * @ja [[Model]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isModel(x: unknown): x is Model {
+    return x instanceof Model;
+}
+
+/**
+ * @en Query [[Model]] `id-attribute`.
+ * @ja [[Model]] の `id-attribute` を取得
+ */
+export function idAttribute(x: unknown, fallback = ''): string {
+    return isObject(x) ? (x.constructor['idAttribute'] || fallback) : fallback;
+}

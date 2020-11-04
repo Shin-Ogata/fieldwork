@@ -6,7 +6,7 @@
 
 import { EventSource } from '@cdp/events';
 
-const symbolKey = Symbol('SymbolKey');
+const symbolKey = Symbol('symbol-key');
 
 interface TestEvent {
     error: [Error];

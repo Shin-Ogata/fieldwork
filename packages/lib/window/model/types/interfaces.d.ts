@@ -1,8 +1,8 @@
 import { Constructor, PlainObject } from '@cdp/core-utils';
 import { EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
-import { SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
-import { ModelBase } from './base';
+import { SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
+import type { Model } from './base';
 /**
  * @en Validable base interface.
  * @ja 検証可否の定義
@@ -36,32 +36,42 @@ export declare type ModelAttributeChangeEvent<T extends object> = {
  * @en Default [[Model]] event definition.
  * @ja 既定の [[Model]] イベント定義
  */
-export declare type ModelEvent<T extends object> = EventAll & ModelAttributeChangeEvent<T> & {
+export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttributeChangeEvent<T> & {
+    /**
+     * @en when a model is added to a collection.
+     * @ja モデルがコレクションに追加されたときに発行
+    */
+    '@add': [Model<T>, unknown, Silenceable];
+    /**
+     * @en when a model is removed from a collection.
+     * @ja モデルがコレクションから削除されたときに発行
+     */
+    '@remove': [Model<T>, unknown, Silenceable];
     /**
      * @en notified when some attribute changed.
      * @ja 属性が変更されたときに発行
      */
-    '@change': ModelBase<T>;
+    '@change': Model<T>;
     /**
      * @en notified when a model has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
      */
-    '@sync': [ModelBase<T>, PlainObject, ModelDataSyncOptions];
+    '@sync': [Model<T>, PlainObject, ModelDataSyncOptions];
     /**
      * @en notified when a model is destroyed.
      * @ja モデルが破棄されたときに発行
      */
-    '@destroy': [ModelBase<T>, ModelDestroyOptions];
+    '@destroy': [Model<T>, ModelDestroyOptions];
     /**
      * @en notified when some attribute failed.
      * @ja 属性が変更に失敗したときに発行
      */
-    '@invalid': [ModelBase<T>, T, Result];
+    '@invalid': [Model<T>, T, Result];
     /**
      * @en notified when a model's request to the server has failed.
      * @ja サーバーリクエストに失敗したときに発行
      */
-    '@error': [ModelBase<T>, Error, ModelDataSyncOptions];
+    '@error': [Model<T>, Error, ModelDataSyncOptions];
 };
 /**
  * @en [[Model]] attributes definition.
@@ -74,7 +84,10 @@ export declare type ModelAttributes<T extends object> = {
  * @en [[Model]] base constructor definition.
  * @ja [[Model]] の基底コンストラクタの定義
  */
-export declare type ModelConstructor<C extends object, T extends object> = new (...args: ConstructorParameters<Constructor<C>>) => C & ModelAttributes<T>;
+export interface ModelConstructor<C extends object, T extends object> {
+    idAttribute: string;
+    new (...args: ConstructorParameters<Constructor<C>>): C & ModelAttributes<T>;
+}
 /**
  * @en [[Model]] validate options.
  * @ja [[Model]] 検証オプション
@@ -96,9 +109,7 @@ export declare type ModelSetOptions = Validable & ModelValidateAttributeOptions;
  * @en [[Model]] construction options.
  * @ja [[Model]] 構築に指定するオプション
  */
-export interface ModelConstructionOptions<T extends object> extends ModelSetOptions, Parseable {
-    idAttribute?: keyof T;
-}
+export declare type ModelConstructionOptions = ModelSetOptions & Parseable;
 /** re-exports */
 export declare type ModelSyncMethods = SyncMethods;
 export declare type ModelSyncResult<K extends SyncMethods, T extends object = PlainObject> = SyncResult<K, T>;

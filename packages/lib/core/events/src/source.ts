@@ -4,12 +4,12 @@
 
 import { mixins } from '@cdp/core-utils';
 import { EventBroker } from './broker';
-import { EventRevceiver } from './receiver';
+import { EventReceiver } from './receiver';
 
 /**
- * @en The class which have I/F of [[EventBroker]] and [[EventRevceiver]]. <br>
+ * @en The class which have I/F of [[EventBroker]] and [[EventReceiver]]. <br>
  *     `Events` class of `Backbone.js` equivalence.
- * @ja [[EventBroker]] と [[EventRevceiver]] の I/F をあわせ持つクラス <br>
+ * @ja [[EventBroker]] と [[EventReceiver]] の I/F をあわせ持つクラス <br>
  *     `Backbone.js` の `Events` クラス相当
  *
  * @example <br>
@@ -50,13 +50,13 @@ import { EventRevceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-type EventSourceBase<T extends object> = EventBroker<T> & EventRevceiver;
+type EventSourceBase<T extends object> = EventBroker<T> & EventReceiver;
 
 /** @internal [[EventSource]] class */
-class EventSource extends mixins(EventBroker, EventRevceiver) {
+class EventSource extends mixins(EventBroker, EventReceiver) {
     constructor() {
         super();
-        this.super(EventRevceiver);
+        this.super(EventReceiver);
     }
 }
 

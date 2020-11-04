@@ -1,4 +1,8 @@
-import { mixins } from '@cdp/core-utils';
+import {
+    Class,
+    mixins,
+    setMixClassAttribute,
+} from '@cdp/core-utils';
 import {
     ElementBase,
     SelectorBase,
@@ -122,3 +126,6 @@ export class DOMClass extends mixins(
         return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as unknown as DOMResult<T>;
     }
 }
+
+// mixin による `instanceof` は無効に設定
+setMixClassAttribute(DOMClass as unknown as Class, 'instanceOf', null);

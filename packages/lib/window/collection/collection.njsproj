@@ -71,6 +71,7 @@
     <TypeScriptCompile Include="src\utils\index.ts" />
     <TypeScriptCompile Include="tests\unit\array-cursor.spec.ts" />
     <TypeScriptCompile Include="tests\unit\array-editor.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\collection.spec.ts" />
     <TypeScriptCompile Include="tests\unit\comparator.spec.ts" />
     <TypeScriptCompile Include="tests\unit\dynamic-condition.spec.ts" />
     <TypeScriptCompile Include="tests\unit\query.spec.ts" />

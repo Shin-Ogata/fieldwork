@@ -13,7 +13,11 @@ import {
     PlainObject,
     post,
 } from '@cdp/core-utils';
-import { EventBroker } from '@cdp/events';
+import {
+    EventPublisher,
+    EventBroker,
+    EventReceiver,
+} from '@cdp/events';
 import {
     RESULT_CODE,
     Result,
@@ -26,13 +30,15 @@ import {
     dataSyncNULL,
 } from '@cdp/data-sync';
 import {
-    ModelBase,
+    Model,
     ModelEvent,
     ModelConstructor,
     ModelValidateAttributeOptions,
     ModelAttributeInput,
     ModelConstructionOptions,
     ModelSetOptions,
+    isModel,
+    idAttribute,
 } from '@cdp/model';
 
 describe('model/model spec', () => {
@@ -52,13 +58,14 @@ describe('model/model spec', () => {
         message: string;
     }
 
-    type ContentConstructionOptions = ContentParseOptions & ModelConstructionOptions<ContentAttribute>;
+    type ContentConstructionOptions = ContentParseOptions & ModelConstructionOptions;
 
     const errorInvalidData = makeResult(RESULT_CODE.ERROR_MVC_INVALID_DATA, 'size is readonly.');
 
-    const Model = ModelBase as ModelConstructor<ModelBase<ContentAttribute, CustomEvent>, ContentAttribute>;
-
-    class Content extends Model {
+    // early cast
+    const ContentBase = Model as ModelConstructor<Model<ContentAttribute, CustomEvent>, ContentAttribute>;
+    class Content extends ContentBase {
+        static idAttribute = 'cookie';
         constructor(attrs?: Partial<ContentAttribute>, options?: ContentConstructionOptions) {
             super(Object.assign({}, Content.defaults, attrs), options);
         }
@@ -101,6 +108,14 @@ describe('model/model spec', () => {
         }
     }
 
+    // late cast
+    class ContentClass extends Model<ContentAttribute, CustomEvent> {
+        public getCID(): string {
+            return this._cid;
+        }
+    }
+    const ContentLate = ContentClass as ModelConstructor<ContentClass, ContentAttribute>;
+
     const broker = new EventBroker<CustomEvent>();
 
     let count: number;
@@ -114,15 +129,39 @@ describe('model/model spec', () => {
         count++;
     };
 
-    it('check Model#id', (): void => {
+    it('check isModel', (): void => {
         const content = new Content({ uri: 'aaa.html', size: 10, cookie: undefined });
+        expect(isModel(content)).toBeTruthy();
+        const content2 = { ...content };
+        expect(isModel(content2)).toBeFalsy();
+        expect(content instanceof Model).toBe(true);
+        expect(content instanceof EventPublisher).toBe(false);
+        expect(content instanceof EventBroker).toBe(false);
+        expect(content instanceof EventReceiver).toBe(true);
+    });
+
+    it('check late cast', (): void => {
+        const content = new ContentLate({ uri: 'aaa.html', size: 10, cookie: undefined });
+        expect(content instanceof Model).toBe(true);
+        expect(content instanceof EventPublisher).toBe(false);
+        expect(content instanceof EventBroker).toBe(false);
+        expect(content instanceof EventReceiver).toBe(true);
+    });
+
+    it('check Model#id', (): void => {
+        const content = new ContentLate({ uri: 'aaa.html', size: 10, cookie: undefined });
         expect(content.id).toBeDefined();
         expect(content.id).toBe(content.getCID());
         expect(content.id.startsWith('model:')).toBe(true);
+    });
 
-        const content2 = new Content({ uri: 'aaa.html', size: 10, cookie: '{3F9989A3-41E8-4E7C-AF9C-6F68C6C84084}' }, { idAttribute: 'cookie' });
-        expect(content2.id).not.toBe(content2.getCID());
-        expect(content2.id).toBe('{3F9989A3-41E8-4E7C-AF9C-6F68C6C84084}');
+    it('check idAttribute', (): void => {
+        const content = new Content({ uri: 'aaa.html', size: 10, cookie: '{3F9989A3-41E8-4E7C-AF9C-6F68C6C84084}' });
+        expect(content.id).toBe('{3F9989A3-41E8-4E7C-AF9C-6F68C6C84084}');
+        expect(content.id).not.toBe(content.getCID());
+        expect(idAttribute(content)).toBe('cookie');
+        expect(idAttribute({ id: 100, url: 'aaa.html' }, 'object fallback')).toBe('object fallback');
+        expect(idAttribute(true, 'primitive fallback')).toBe('primitive fallback');
     });
 
     it('check property access', () => {
@@ -190,6 +229,14 @@ describe('model/model spec', () => {
         expect(count).toBe(1);
 
         done();
+    });
+
+    it('check Model#clone()', () => {
+        const content = new Content();
+        const clone = content.clone();
+        expect(clone instanceof Content).toBe(true);
+        expect(clone === content).toBe(false);
+        expect(clone).toEqual(content);
     });
 
     it('check Model#hasListener()', () => {
@@ -713,8 +760,8 @@ describe('model/model spec', () => {
 
     it('check Model#clear()', async done => {
         type WritableAttr = Writable<ContentAttribute>;
-        class WritableContent extends Model {
-            constructor(attrs: WritableAttr, options?: ModelConstructionOptions<WritableAttr>) {
+        class WritableContent extends ContentBase {
+            constructor(attrs: WritableAttr, options?: ModelConstructionOptions) {
                 super(attrs, options);
             }
         }
@@ -927,7 +974,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        const content = new Content({ cookie: 'from:constructor' }, { idAttribute: 'cookie' });
+        const content = new Content({ cookie: 'from:constructor' });
         content.on('@sync', stub.onCallback);
 
         const resp = await content.save({ uri: 'bbb.html' });
@@ -950,7 +997,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        const content = new Content({ cookie: 'from:constructor' }, { idAttribute: 'cookie' });
+        const content = new Content({ cookie: 'from:constructor' });
         content.on('@sync', stub.onCallback);
 
         const resp = await content.save(undefined, { patch: true, data: { uri: 'bbb.html' } });
@@ -1000,7 +1047,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        const content = new Content(undefined, { idAttribute: 'cookie' });
+        const content = new Content(undefined);
         content.on('@sync', stub.onCallback);
         content.on('@destroy', stub.onCallback);
 
@@ -1029,7 +1076,7 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        const content = new Content(undefined, { idAttribute: 'cookie' });
+        const content = new Content(undefined);
         content.on('@sync', stub.onCallback);
         content.on('@destroy', stub.onCallback);
 

@@ -11,7 +11,7 @@ import {
     EventArguments,
 } from '@cdp/events';
 
-const symbolKey = Symbol('SymbolKey');
+const symbolKey = Symbol('symbol-key');
 
 interface TestEvent extends EventAll {
     error: [Error];

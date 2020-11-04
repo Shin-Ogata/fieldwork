@@ -4,9 +4,9 @@
  ,  @typescript-eslint/no-empty-function
  */
 
-import { EventBroker, EventRevceiver } from '@cdp/events';
+import { EventBroker, EventReceiver } from '@cdp/events';
 
-const symbolKey = Symbol('SymbolKey');
+const symbolKey = Symbol('symbol-key');
 
 interface TestEvent {
     error: [Error];
@@ -21,7 +21,7 @@ interface TestEvent {
 const broker = new EventBroker<TestEvent>();
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const checkCompile = new EventRevceiver();
+const checkCompile = new EventReceiver();
 checkCompile.stopListening();
 checkCompile.stopListening(broker, 'error', () => { });
 checkCompile.stopListening(broker, 'error', (e: Error) => { });
@@ -45,7 +45,7 @@ describe('events/receiver spec', () => {
     };
 
     it('check listenTo(single)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -65,7 +65,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check listenTo(multi)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -85,7 +85,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check subscription', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -109,7 +109,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check stopListening(single)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -140,7 +140,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check stopListening(multi)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const error1 = new Error('error1');
         const error2 = new Error('error2');
         const stub = { onCallback };
@@ -183,7 +183,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check stopListening(variation)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         const broker2 = new EventBroker<TestEvent>();
         const stub2 = { onCallback };
@@ -217,7 +217,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check listenToOnce(single)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -237,7 +237,7 @@ describe('events/receiver spec', () => {
     });
 
     it('check listenToOnce(multi)', async done => {
-        const receiver = new EventRevceiver();
+        const receiver = new EventReceiver();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
