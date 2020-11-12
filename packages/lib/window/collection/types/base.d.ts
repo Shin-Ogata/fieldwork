@@ -1,6 +1,6 @@
 import { Class, UnknownObject, PlainObject, Keys } from '@cdp/core-utils';
 import { EventSource } from '@cdp/events';
-import { SortCallback, CollectionQueryInfo, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions } from './interfaces';
+import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
 declare const _removeModels: unique symbol;
 /**
  * @en Base class definition for object collection.
@@ -26,7 +26,26 @@ export declare abstract class Collection<TModel extends object = object, Event e
      *  - `en` construction options.
      *  - `ja` 構築オプション
      */
-    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel>);
+    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel, TKey>);
+    /**
+     * @ja Initialize query info
+     * @ja クエリ情報の初期化
+     */
+    protected initQueryInfo(): void;
+    /**
+     * @en Released all instances and event listener under the management.
+     * @ja 管理対象を破棄
+     *
+     * @param options
+     *  - `en` options (reserved).
+     *  - `ja` オプション (予約)
+     */
+    release(options?: CollectionOperationOptions): this;
+    /**
+     * @ja Clear cache instance method
+     * @ja キャッシュの破棄
+     */
+    protected clearCache(): void;
     /**
      * @en Get content ID.
      * @ja コンテント ID を取得
@@ -36,32 +55,17 @@ export declare abstract class Collection<TModel extends object = object, Event e
      * @en Get models.
      * @ja モデルアクセス
      */
-    get models(): TModel[];
+    get models(): readonly TModel[];
     /**
      * @en number of models.
      * @ja 内包するモデル数
      */
     get length(): number;
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Check applied after-filter.
+     * @ja 絞り込み用フィルタが適用されているかを判定
      */
-    [Symbol.iterator](): Iterator<TModel>;
-    /**
-     * @en Returns an iterable of key(id), value(model) pairs for every entry in the array.
-     * @ja key(id), value(model) 配列にアクセス可能なイテレータオブジェクトを返却
-     */
-    entries(): IterableIterator<[string, TModel]>;
-    /**
-     * @en Returns an iterable of keys(id) in the array.
-     * @ja key(id) 配列にアクセス可能なイテレータオブジェクトを返却
-     */
-    keys(): IterableIterator<string>;
-    /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
-     */
-    values(): IterableIterator<TModel>;
+    get filtered(): boolean;
     /**
      * @en [[CollectionQueryInfo]] instance
      * @ja [[CollectionQueryInfo]] を格納するインスタンス
@@ -73,12 +77,45 @@ export declare abstract class Collection<TModel extends object = object, Event e
      */
     protected set _queryInfo(val: CollectionQueryInfo<TModel, TKey>);
     /**
-     * @en Initialize [[CollectionQueryInfo]].
-     * @ja [[CollectionQueryInfo]] の初期化
-     *
-     * @override
+     * @en Get creating options.
+     * @ja 構築時のオプションを取得
      */
-    protected initQueryInfo(): CollectionQueryInfo<TModel, TKey>;
+    protected get _options(): CollectionConstructionOptions<TModel, TKey>;
+    /**
+     * @en Get default provider.
+     * @ja 既定のプロバイダを取得
+     */
+    protected get _provider(): CollectionItemProvider<TModel, TKey>;
+    /**
+     * @en Get default parse behaviour.
+     * @ja 既定の parse 動作を取得
+     */
+    protected get _defaultParse(): boolean | undefined;
+    /**
+     * @en Get default query options.
+     * @ja 既定のクエリオプションを取得
+     */
+    protected get _defaultQueryOptions(): CollectionItemQueryOptions<TModel, TKey>;
+    /**
+     * @en Get last query options.
+     * @ja 最後のクエリオプションを取得
+     */
+    protected get _lastQueryOptions(): CollectionItemQueryOptions<TModel, TKey>;
+    /**
+     * @en Access to sort comparators.
+     * @ja ソート用比較関数へのアクセス
+     */
+    protected get _comparators(): SortCallback<TModel>[];
+    /**
+     * @en Access to query-filter.
+     * @ja クエリ用フィルタ関数へのアクセス
+     */
+    protected get _queryFilter(): FilterCallback<TModel> | undefined;
+    /**
+     * @en Access to after-filter.
+     * @ja 絞り込み用フィルタ関数へのアクセス
+     */
+    protected get _afterFilter(): FilterCallback<TModel> | undefined;
     /**
      * @en Get a model from a collection, specified by an `id`, a `cid`, or by passing in a model instance.
      * @ja `id`, `cid` およびインスタンスからモデルを特定
@@ -89,6 +126,36 @@ export declare abstract class Collection<TModel extends object = object, Event e
      */
     get(seed: string | object | undefined): TModel | undefined;
     /**
+     * @en Return a copy of the model's `attributes` object.
+     * @ja モデル属性値のコピーを返却
+     */
+    toJSON(): object[];
+    /**
+     * @es Clone this instance.
+     * @ja インスタンスの複製を返却
+     *
+     * @override
+     */
+    clone(): this;
+    /**
+     * @en Force a collection to re-sort itself.
+     * @ja コレクション要素の再ソート
+     *
+     * @param options
+     *  - `en` sort options.
+     *  - `ja` ソートオプション
+     */
+    sort(options?: CollectionReSortOptions<TModel, TKey>): this;
+    /**
+     * @en Apply after-filter to collection itself.
+     * @ja 絞り込み用フィルタの適用
+     *
+     * @param options
+     *  - `en` after-filter options.
+     *  - `ja` 絞り込みオプション
+     */
+    filter(options?: CollectionAfterFilterOptions<TModel>): this;
+    /**
      * @en Converts a response into the hash of attributes to be `set` on the collection. The default implementation is just to pass the response along.
      * @ja レスポンスの変換メソッド. 既定では何もしない
      *
@@ -96,15 +163,34 @@ export declare abstract class Collection<TModel extends object = object, Event e
      */
     protected parse(response: PlainObject | void, options?: CollectionSetOptions): TModel[] | PlainObject[] | undefined;
     /**
-     * @en Access to sort comparators.
-     * @ja ソート用比較関数へのアクセス
+     * @en The [[fetch]] method proxy that is compatible with [[CollectionItemProvider]] returns one-shot result.
+     * @ja [[CollectionItemProvider]] 互換の単発の fetch 結果を返却. 必要に応じてオーバーライド可能.
+     *
+     * @override
+     *
+     * @param options
+     *  - `en` option object
+     *  - `ja` オプション
      */
-    protected get _comparators(): SortCallback<TModel>[];
+    protected sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<object>>;
     /**
-     * @en Force a collection to re-sort itself.
-     * @ja コレクション要素の再ソート
+     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
+     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     *
+     * @param options
+     *  - `en` fetch options.
+     *  - `ja` フェッチオプション
      */
-    sort(options?: CollectionReSortOptions<TModel, TKey>): this;
+    fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<object[]>;
+    /**
+     * @en Execute `fetch()` with last query options.
+     * @ja 前回と同条件で `fetch()` を実行
+     *
+     * @param options
+     *  - `en` requery options.
+     *  - `ja` リクエリオプション
+     */
+    requery(options?: CollectionRequeryOptions): Promise<object[]>;
     /**
      * @en "Smart" update method of the collection with the passed list of models.
      *       - if the model is already in the collection its attributes will be merged.
@@ -221,5 +307,25 @@ export declare abstract class Collection<TModel extends object = object, Event e
     remove(seeds: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
     /** @ineternal Internal method called by both remove and set. */
     private [_removeModels];
+    /**
+     * @en Iterator of [[ElementBase]] values in the array.
+     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     */
+    [Symbol.iterator](): Iterator<TModel>;
+    /**
+     * @en Returns an iterable of key(id), value(model) pairs for every entry in the array.
+     * @ja key(id), value(model) 配列にアクセス可能なイテレータオブジェクトを返却
+     */
+    entries(): IterableIterator<[string, TModel]>;
+    /**
+     * @en Returns an iterable of keys(id) in the array.
+     * @ja key(id) 配列にアクセス可能なイテレータオブジェクトを返却
+     */
+    keys(): IterableIterator<string>;
+    /**
+     * @en Returns an iterable of values([[ElementBase]]) in the array.
+     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     */
+    values(): IterableIterator<TModel>;
 }
 export {};

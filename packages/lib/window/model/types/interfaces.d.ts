@@ -104,7 +104,9 @@ export declare type ModelAttributeInput<T> = Partial<T> & PlainObject;
  * @en [[Model]] attributes setup options.
  * @ja [[Model]] 属性設定時に指定するオプション
  */
-export declare type ModelSetOptions = Validable & ModelValidateAttributeOptions;
+export interface ModelSetOptions extends Validable, ModelValidateAttributeOptions {
+    syncMethod?: SyncMethods;
+}
 /**
  * @en [[Model]] construction options.
  * @ja [[Model]] 構築に指定するオプション

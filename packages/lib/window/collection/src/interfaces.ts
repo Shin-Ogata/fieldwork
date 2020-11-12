@@ -5,6 +5,7 @@ import { Result } from '@cdp/result';
 import { SyncEvent, RestDataSyncOptions } from '@cdp/data-sync';
 import {
     Parseable,
+    Validable,
     ModelConstructionOptions,
     ModelSaveOptions,
     ModelDestroyOptions,
@@ -328,13 +329,13 @@ export interface CollectionFetchOptions<TItem extends object> extends Cancelable
 }
 
 /**
- * @en Return value type for [[Collection]]`#fetch()`.
- * @ja [[Collection]]`#fetch()` の戻り値
+ * @en Argument value type for [[CollectionFetchProgress]].
+ * @ja [[CollectionFetchProgress]] に渡される引数
  */
-export type CollectionFetchResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
+export type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
     total: number;
     items: TItem[];
-    options?: CollectionQueryOptions<TItem>;
+    options?: CollectionItemQueryOptions<TItem>;
 } & Pick<TItem, TSumKey>;
 
 /**
@@ -343,13 +344,13 @@ export type CollectionFetchResult<TItem extends object, TSumKey extends Keys<TIt
  * @ja [[CollectionFetchOptions]]`.auto` が指定された場合に使用する進捗取得用コールバック関数 <br>
  *     最終進捗 の items は Promise.resolve() に渡るものと同等
  */
-export type CollectionFetchProgress<TItem extends object> = (progress: CollectionFetchResult<TItem>) => void;
+export type CollectionFetchProgress<TItem extends object> = (progress: CollectionItemQueryResult<TItem>) => void;
 
 /**
- * @en [[Collection]] standard query options.
- * @ja [[Collection]] 標準のクエリオプション
+ * @en Standard query options for `queryItems()`.
+ * @ja `queryItems()` の標準のクエリオプション
  */
-export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
+export interface CollectionItemQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
     extends CollectionSortOptions<TItem, TKey>, CollectionFilterOptions<TItem>, CollectionFetchOptions<TItem> {
     /**
      * @en Dynamic query condition.
@@ -378,7 +379,7 @@ export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TIt
     sortKeys: SortKey<TKey>[];
     comparators: SortCallback<TItem>[];
     filter?: FilterCallback<TItem>;
-    cache?: CollectionFetchResult<TItem>;
+    cache?: CollectionItemQueryResult<TItem>;
 }
 
 /**
@@ -386,9 +387,24 @@ export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TIt
  * @ja [[Collection]] の Item を供給する関数の型
  */
 export type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
-    = (options?: CollectionQueryOptions<TItem, TKey>) => Promise<CollectionFetchResult<TItem>>;
+    = (options?: CollectionItemQueryOptions<TItem, TKey>) => Promise<CollectionItemQueryResult<TItem>>;
 
 //__________________________________________________________________________________________________//
+
+/**
+ * @en [[Collection]] construction options.
+ * @ja [[Collection]] 構築に指定するオプション
+ */
+export interface CollectionConstructionOptions<T extends object, K extends Keys<T> = Keys<T>> extends Silenceable {
+    /** custom model provider */
+    provider?: CollectionItemProvider<T, K>;
+    /** default parse behaviour */
+    parse?: boolean;
+    /** default model construction options */
+    modelOptions?: ModelConstructionOptions;
+    /** default query options */
+    queryOptions?: CollectionItemQueryOptions<T>;
+}
 
 /**
  * @en Base options for collection operation.
@@ -414,20 +430,27 @@ export interface CollectionSetOptions extends CollectionAddOptions {
     add?: boolean;
     remove?: boolean;
     merge?: boolean;
-    index?: number;
 }
 
 /**
  * @en [[Collection]] re-sort options.
  * @ja [[Collection]] 再ソートオプション
  */
-export type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
+export type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
+    = Validable & CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
+
+/**
+ * @en [[Collection]] after-filter options.
+ * @ja [[Collection]] 絞り込みフィルタオプション
+ */
+export type CollectionAfterFilterOptions<TItem extends object> = CollectionFilterOptions<TItem> & Silenceable;
 
 /**
  * @en [[Collection]] update options.
  * @ja [[Collection]] 更新時のオプション
  */
 export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & CollectionSetOptions & {
+    index?: number;
     changes: {
         added: TItem[];
         removed: TItem[];
@@ -437,6 +460,31 @@ export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & C
 
 /** re-exports */
 export type CollectionDataSyncOptions = RestDataSyncOptions;
+
+/**
+ * @en [[Collection]]`#fetch()` options.
+ * @ja [[Collection]]`#fetch()` のオプション
+ */
+export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
+    extends CollectionItemQueryOptions<TItem, TKey>, CollectionSetOptions {
+    /**
+     * @en If given `true`, [[Collection]]`#fetch()` calls [[Collection]]`#reset()` instead of [[Collection]]`#add()`.
+     * @ja 明示的に `[[Collection]]`#reset()` メソッドを呼ぶ場合に true
+     */
+    reset?: boolean;
+
+    /**
+     * @en If given `true`, [[Collection]]`#fetch()` calls [[Collection]]`#sort()`.
+     * @ja `[[Collection]]`#sort()` を実行する場合 true
+     */
+    sort?: boolean;
+}
+
+/**
+ * @en [[Collection]]`#requery()` options.
+ * @ja [[Collection]]`#requery()` のオプション
+ */
+export type CollectionRequeryOptions = Silenceable & Cancelable;
 
 /**
  * @en Default [[Collection]] event definition.
@@ -474,7 +522,13 @@ export interface CollectionEvent<TItem extends object> extends EventAll, SyncEve
     '@sort': [Collection<TItem>, CollectionReSortOptions<TItem>];
 
     /**
-     * @en notified when a model has been successfully synced with the server.
+     * @en when the collection has been re-sorted.
+     * @ja コレクションが再ソートされたときに発行
+     */
+    '@filter': [Collection<TItem>, CollectionAfterFilterOptions<TItem>];
+
+    /**
+     * @en notified when a collection has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
      */
     '@sync': [Collection<TItem>, PlainObject, CollectionDataSyncOptions];
@@ -496,15 +550,4 @@ export interface CollectionEvent<TItem extends object> extends EventAll, SyncEve
      * @ja サーバーリクエストに失敗したときに発行
      */
     '@error': [Collection<TItem>, Error, CollectionDataSyncOptions];
-}
-
-/**
- * @en [[Collection]] construction options.
- * @ja [[Collection]] 構築に指定するオプション
- */
-export interface CollectionConstructionOptions<T extends object> extends Silenceable {
-    /** default model construction options */
-    modelOptions?: ModelConstructionOptions;
-    /** default query options */
-    queryOptions?: CollectionQueryOptions<T>;
 }

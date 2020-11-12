@@ -10,8 +10,8 @@ import {
     SortKey,
     SortCallback,
     FilterCallback,
-    CollectionQueryOptions,
-    CollectionFetchResult,
+    CollectionItemQueryOptions,
+    CollectionItemQueryResult,
     CollectionQueryInfo,
     CollectionItemProvider,
     DynamicLimit,
@@ -21,8 +21,8 @@ import { DynamicCondition } from './dynamic-condition';
 
 const { trunc } = Math;
 
-/** @internal 使用するプロパティが保証された CollectionQueryOptions */
-interface SafeCollectionQueryOptions<TItem extends object, TKey extends Keys<TItem>> extends CollectionQueryOptions<TItem, TKey> {
+/** @internal 使用するプロパティが保証された CollectionItemQueryOptions */
+interface SafeCollectionQueryOptions<TItem extends object, TKey extends Keys<TItem>> extends CollectionItemQueryOptions<TItem, TKey> {
     sortKeys: SortKey<TKey>[];
     comparators: SortCallback<TItem>[];
 }
@@ -45,11 +45,11 @@ export function searchItems<TItem>(items: TItem[], filter?: FilterCallback<TItem
 
 //__________________________________________________________________________________________________//
 
-/** @internal すでにキャッシュされている対象に対して CollectionQueryOptions に指定された振る舞いを行う内部 query 関数 */
+/** @internal すでにキャッシュされている対象に対して CollectionItemQueryOptions に指定された振る舞いを行う内部 query 関数 */
 async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
     cached: TItem[],
     options: SafeCollectionQueryOptions<TItem, TKey>
-): Promise<CollectionFetchResult<TItem>> {
+): Promise<CollectionItemQueryResult<TItem>> {
     const {
         filter,
         comparators,
@@ -64,6 +64,7 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
     // キャッシュに対してフィルタリング, ソートを実行
     const targets = noSearch ? cached.slice() : searchItems(cached, filter, ...comparators);
 
+    const results: TItem[] = [];
     let index: number = (null != baseIndex) ? baseIndex : 0;
 
     while (true) {
@@ -75,13 +76,15 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
         }
 
         const opts = Object.assign(options, { index });
-        const result = targets.slice(index, (null != limit) ? index + limit : undefined);
+        const items = targets.slice(index, (null != limit) ? index + limit : undefined);
+
+        results.push(...items);
 
         const retval = {
             total: targets.length,
-            items: result,
-            options: { ...opts } as CollectionQueryOptions<TItem>,
-        } as CollectionFetchResult<TItem>;
+            items,
+            options: { ...opts } as CollectionItemQueryOptions<TItem>,
+        } as CollectionItemQueryResult<TItem>;
 
         // 進捗通知
         if (isFunction(progress)) {
@@ -91,9 +94,9 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
         if (auto && null != limit) {
             if (targets.length <= index + limit) {
                 // 自動継続指定時には最後にすべての item を返却
-                retval.items = targets;
+                retval.items = results;
             } else {
-                index += result.length;
+                index += items.length;
                 continue;
             }
         }
@@ -102,11 +105,11 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
     }
 }
 
-/** @internal `provider` 関数を使用して CollectionQueryOptions に指定された振る舞いを行う内部 `query` 関数 */
+/** @internal `provider` 関数を使用して CollectionItemQueryOptions に指定された振る舞いを行う内部 `query` 関数 */
 async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>(
     provider: CollectionItemProvider<TItem, TKey>,
-    options: CollectionQueryOptions<TItem, TKey>
-): Promise<CollectionFetchResult<TItem>> {
+    options: CollectionItemQueryOptions<TItem, TKey>
+): Promise<CollectionItemQueryResult<TItem>> {
     const {
         index: baseIndex,
         limit,
@@ -115,8 +118,7 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
         auto,
     } = options;
 
-    const targets: TItem[] = [];
-
+    const results: TItem[] = [];
     let index: number = (null != baseIndex) ? baseIndex : 0;
 
     while (true) {
@@ -128,15 +130,15 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
         }
 
         const opts = Object.assign(options, { index });
-        const result = await provider(opts);
+        const resp = await provider(opts);
 
-        targets.push(...result.items);
+        results.push(...resp.items);
 
         const retval = {
-            total: result.total,
-            items: result.items,
-            options: Object.assign({}, opts, result.options) as CollectionQueryOptions<TItem>,
-        } as CollectionFetchResult<TItem>;
+            total: resp.total,
+            items: resp.items,
+            options: Object.assign({}, opts, resp.options) as CollectionItemQueryOptions<TItem>,
+        } as CollectionItemQueryResult<TItem>;
 
         // 進捗通知
         if (isFunction(progress)) {
@@ -144,11 +146,11 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
         }
 
         if (auto && null != limit) {
-            if (result.total <= index + limit) {
+            if (resp.total <= index + limit) {
                 // 自動継続指定時には最後にすべての item を返却
-                retval.items = targets;
+                retval.items = results;
             } else {
-                index += result.items.length;
+                index += resp.items.length;
                 continue;
             }
         }
@@ -187,7 +189,7 @@ const _limitCriteria = {
 export function conditionalFix<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>(
     items: TItem[],
     condition: DynamicCondition<TItem, TKey>
-): CollectionFetchResult<TItem> {
+): CollectionItemQueryResult<TItem> {
     const { random, limit, sumKeys } = condition;
 
     if (random) {
@@ -226,7 +228,7 @@ export function conditionalFix<TItem extends object, TKey extends Keys<TItem> = 
     const result = {
         total: items.length,
         items,
-    } as CollectionFetchResult<TItem, Keys<TItem>>;
+    } as CollectionItemQueryResult<TItem, Keys<TItem>>;
 
     if (0 < sumKeys.length) {
         for (const item of items) {
@@ -246,7 +248,7 @@ export function conditionalFix<TItem extends object, TKey extends Keys<TItem> = 
 
 /** @internal SafeCollectionQueryOptions に変換 */
 function ensureOptions<TItem extends object, TKey extends Keys<TItem>>(
-    options: CollectionQueryOptions<TItem, TKey> | undefined
+    options: CollectionItemQueryOptions<TItem, TKey> | undefined
 ): SafeCollectionQueryOptions<TItem, TKey> {
     const opts = Object.assign({ sortKeys: [] }, options);
     const { noSearch, sortKeys } = opts;
@@ -259,7 +261,7 @@ function ensureOptions<TItem extends object, TKey extends Keys<TItem>>(
 }
 
 /** @internal キャッシュ可能か判定 */
-function canCache<TItem extends object>(result: CollectionFetchResult<TItem>, options: CollectionQueryOptions<TItem>): boolean {
+function canCache<TItem extends object>(result: CollectionItemQueryResult<TItem>, options: CollectionItemQueryOptions<TItem>): boolean {
     const { noCache, noSearch } = options;
     return !noCache && !noSearch && result.total === result.items.length;
 }
@@ -281,7 +283,7 @@ function canCache<TItem extends object>(result: CollectionFetchResult<TItem>, op
 export async function queryItems<TItem extends object, TKey extends Keys<TItem>>(
     queryInfo: CollectionQueryInfo<TItem, TKey>,
     provider: CollectionItemProvider<TItem, TKey>,
-    options?: CollectionQueryOptions<TItem, TKey>
+    options?: CollectionItemQueryOptions<TItem, TKey>
 ): Promise<TItem[]> {
     const opts = ensureOptions(options);
     const { sortKeys, comparators, filter } = opts;
@@ -295,7 +297,7 @@ export async function queryItems<TItem extends object, TKey extends Keys<TItem>>
         return (await queryFromCache(queryInfo.cache.items, opts)).items;
     } else {
         let result = await queryFromProvider(provider, opts);
-        const nextOpts = result.options as CollectionQueryOptions<TItem>;
+        const nextOpts = result.options as CollectionItemQueryOptions<TItem>;
         if (canCache(result, nextOpts)) {
             queryInfo.cache = { ...result };
             delete queryInfo.cache.options;

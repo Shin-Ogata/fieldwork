@@ -38,7 +38,7 @@ export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = 
  * @en Context type of [[IDataSync]]`#sync()`.
  * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
  */
-export type SyncContext<T extends object = PlainObject> = EventBroker<SyncEvent<T>> & { toJSON(): T; };
+export type SyncContext<T extends object = PlainObject> = EventBroker<SyncEvent<T>> & { id?: string; toJSON(): T; };
 
 /**
  * @en [[IDataSync]] sync() options.
