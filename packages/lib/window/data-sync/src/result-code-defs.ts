@@ -15,7 +15,9 @@ namespace CDP_DECLARE {
      * @ja 拡張通エラーコード定義
      */
     export enum RESULT_CODE {
-        MVC_SYNC_DECLARE              = RESULT_CODE_BASE.DECLARE,
-        ERROR_MVC_INVALID_SYNC_PARAMS = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.SYNC + 1, 'invalid sync params.'),
+        MVC_SYNC_DECLARE                              = RESULT_CODE_BASE.DECLARE,
+        ERROR_MVC_INVALID_SYNC_PARAMS                 = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.SYNC + 1, 'invalid sync params.'),
+        ERROR_MVC_INVALID_SYNC_STORAGE_ENTRY          = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.SYNC + 2, 'invalid sync storage entires.'),
+        ERROR_MVC_INVALID_SYNC_STORAGE_DATA_NOT_FOUND = DECLARE_ERROR_CODE(RESULT_CODE_BASE.CDP, LOCAL_CODE_BASE.SYNC + 3, 'data not found.'),
     }
 }

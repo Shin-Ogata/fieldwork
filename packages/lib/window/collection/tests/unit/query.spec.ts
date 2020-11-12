@@ -13,9 +13,9 @@ import {
     SortOrder,
     FilterCallback,
     SortCallback,
-    CollectionQueryOptions,
+    CollectionItemQueryOptions,
     CollectionQueryInfo,
-    CollectionFetchResult,
+    CollectionItemQueryResult,
     DynamicCondition,
     DynamicOperator,
     DynamicLimit,
@@ -30,7 +30,7 @@ interface Item {
 }
 
 type ItemSortKeys = keyof Pick<Item, 'name'>;
-type ItemQueryOptions = CollectionQueryOptions<Item, ItemSortKeys>;
+type ItemQueryOptions = CollectionItemQueryOptions<Item, ItemSortKeys>;
 type ItemQueryInfo = CollectionQueryInfo<Item, ItemSortKeys>;
 
 const items: Item[] = [
@@ -43,7 +43,7 @@ const items: Item[] = [
     { name: 'j' },
 ];
 
-const provider = async (options?: ItemQueryOptions): Promise<CollectionFetchResult<Item>> => {
+const provider = async (options?: ItemQueryOptions): Promise<CollectionItemQueryResult<Item>> => {
     const opts = Object.assign({ comparators: [] }, options);
     const {
         filter,
@@ -96,7 +96,7 @@ describe('query/query spec', () => {
     });
 
     // eslint-disable-next-line
-    const onProgress = (progress: CollectionFetchResult<any>): void => {
+    const onProgress = (progress: CollectionItemQueryResult<any>): void => {
         count++;
     };
 
@@ -119,7 +119,7 @@ describe('query/query spec', () => {
         { title: '006', trackArtist: 'aaa', albumTitle: 'CCC', duration: 4000, size: 128000, releaseDate: new Date(), compilation: false, },
     ];
 
-    type TrackQueryOptions = CollectionQueryOptions<Track, keyof Track>;
+    type TrackQueryOptions = CollectionItemQueryOptions<Track, keyof Track>;
     type TrackQueryInfo = CollectionQueryInfo<Track, keyof Track>;
 
     describe('searchItems()', () => {
@@ -686,7 +686,7 @@ describe('query/query spec', () => {
                 ],
             });
 
-            const result = conditionalFix(tracks.slice(), cond) as CollectionFetchResult<Track, 'duration'>; // eslint-disable-line
+            const result = conditionalFix(tracks.slice(), cond) as CollectionItemQueryResult<Track, 'duration'>; // eslint-disable-line
 
             expect(result.total).toBe(6);
             expect(result.duration).toBe(31000);
@@ -702,7 +702,7 @@ describe('query/query spec', () => {
                 };
             });
 
-            const provider2 = async (options?: TrackQueryOptions): Promise<CollectionFetchResult<Track>> => {
+            const provider2 = async (options?: TrackQueryOptions): Promise<CollectionItemQueryResult<Track>> => {
                 const opts = Object.assign({ comparators: [] }, options);
                 const {
                     index,

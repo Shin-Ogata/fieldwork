@@ -42,12 +42,12 @@ export function lessEqual<T extends object>(prop: keyof T, value: ValueTypeCompa
 
 /** @internal DynamicPackageOperator.LIKE */
 export function like<T extends object>(prop: keyof T, value: ValueTypeString<T>): FilterCallback<T> {
-    return (item: T) => -1 !== String(item[prop]).toLocaleLowerCase().indexOf(value.toLocaleLowerCase());
+    return (item: T) => String(item[prop]).toLocaleLowerCase().includes(value.toLocaleLowerCase());
 }
 
 /** @internal DynamicPackageOperator.NOT_LIKE */
 export function notLike<T extends object>(prop: keyof T, value: ValueTypeString<T>): FilterCallback<T> {
-    return (item: T) => -1 === String(item[prop]).toLocaleLowerCase().indexOf(value.toLocaleLowerCase());
+    return (item: T) => !String(item[prop]).toLocaleLowerCase().includes(value.toLocaleLowerCase());
 }
 
 /** @internal DynamicPackageOperator.DATE_LESS_EQUAL */

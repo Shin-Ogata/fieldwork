@@ -22,4 +22,13 @@ export interface IStorageDataSync<T extends object = PlainObject> extends IDataS
  * @ja [[StorageDataSync]] に指定するオプション
  */
 export declare type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
-export declare const dataSyncSTORAGE: IDataSync<PlainObject<any>>;
+/**
+ * @en Create [[IStorageDataSync]] object with [[IStorage]].
+ * @ja [[IStorage]] を指定して, [[IStorageDataSync]] オブジェクトを構築
+ *
+ * @param storage
+ *  - `en` [[IStorage]] object
+ *  - `ja` [[IStorage]] オブジェクト
+ */
+export declare const createStorageDataSync: (storage: IStorage) => IStorageDataSync;
+export declare const dataSyncSTORAGE: IStorageDataSync<PlainObject<any>>;

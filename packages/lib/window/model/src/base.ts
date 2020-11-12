@@ -657,11 +657,11 @@ export abstract class Model<T extends object = object, Event extends ModelEvent<
      * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
      */
     public async fetch(options?: ModelFetchOptions): Promise<T> {
-        const opts = Object.assign({ parse: true }, options);
+        const opts = Object.assign({ parse: true }, options, { syncMethod: 'read' });
 
         try {
             const resp = await this.sync('read', this as Model<T>, opts);
-            this.setAttributes(opts.parse ? this.parse(resp, options) as T : resp, opts);
+            this.setAttributes(opts.parse ? this.parse(resp, opts) as T : resp, opts);
             (this as Model).trigger('@sync', this as Model, resp, opts);
             return resp;
         } catch (e) {
@@ -710,7 +710,7 @@ export abstract class Model<T extends object = object, Event extends ModelEvent<
         try {
             const { wait } = opts;
 
-            const method = this.isNew() ? 'create' : opts.patch ? 'patch' : 'update';
+            const method = opts.syncMethod = this.isNew() ? 'create' : opts.patch ? 'patch' : 'update';
 
             if (attrs) {
                 if (!wait) {
@@ -754,7 +754,7 @@ export abstract class Model<T extends object = object, Event extends ModelEvent<
      *  - `ja` 破棄オプション
      */
     public async destroy(options?: ModelDestroyOptions): Promise<PlainObject | void> {
-        const opts = Object.assign({ wait: true }, options);
+        const opts = Object.assign({ wait: true }, options, { syncMethod: 'delete' });
 
         try {
             const { wait, cancel } = opts;

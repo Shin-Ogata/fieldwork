@@ -8,6 +8,7 @@ import {
     isArray,
     isFunction,
     isString,
+    noop,
     luid,
     setMixClassAttribute,
 } from '@cdp/core-utils';
@@ -23,6 +24,7 @@ import {
     FAILED,
     makeResult,
 } from '@cdp/result';
+import { SyncContext, defaultSync } from '@cdp/data-sync';
 import {
     Model,
     ModelConstructionOptions,
@@ -30,19 +32,25 @@ import {
 } from '@cdp/model';
 import {
     SortCallback,
+    FilterCallback,
     CollectionSortOptions,
+    CollectionItemQueryResult,
+    CollectionItemQueryOptions,
+    CollectionItemProvider,
     CollectionQueryInfo,
     CollectionEvent,
     CollectionConstructionOptions,
-    CollectionQueryOptions,
     CollectionOperationOptions,
     CollectionAddOptions,
     CollectionSetOptions,
     CollectionReSortOptions,
     CollectionUpdateOptions,
+    CollectionQueryOptions,
+    CollectionRequeryOptions,
+    CollectionAfterFilterOptions,
 } from './interfaces';
 import { convertSortKeys } from './utils';
-import { searchItems } from './query';
+import { searchItems, queryItems } from './query';
 
 const _properties             = Symbol('properties');
 const _createIterableIterator = Symbol('create-iterable-iterator');
@@ -54,12 +62,15 @@ const _onModelEvent           = Symbol('model-event-handler');
 
 /** @internal */
 interface Property<T extends object, K extends Keys<T>> {
+    readonly constructOptions: CollectionConstructionOptions<T, K>;
+    readonly provider: CollectionItemProvider<T, K>;
     readonly cid: string;
-    readonly defaultQueryOptions?: CollectionQueryOptions<T, K>;
+    readonly queryOptions: CollectionItemQueryOptions<T, K>;
     queryInfo: CollectionQueryInfo<T, K>;
-    readonly defaultModelOptions?: ModelConstructionOptions;
+    readonly modelOptions: ModelConstructionOptions;
     readonly byId: Map<string, T>;
     store: T[];
+    afterFilter?: FilterCallback<T>;
 }
 
 /** @internal reset model context */
@@ -69,8 +80,8 @@ const resetModelStore = <T extends object, K extends Keys<T>>(context: Property<
 };
 
 /** @internal */
-const ensureSortOptions = <T extends object, K extends Keys<T>>(options?: CollectionSortOptions<T, K>): Required<CollectionSortOptions<T, K>> => {
-    const { sortKeys: keys, comparators: comps } = options || {};
+const ensureSortOptions = <T extends object, K extends Keys<T>>(options: CollectionSortOptions<T, K>): Required<CollectionSortOptions<T, K>> => {
+    const { sortKeys: keys, comparators: comps } = options;
     return {
         sortKeys: keys || [],
         comparators: comps || convertSortKeys(keys || []),
@@ -130,8 +141,7 @@ const _addOptions = { add: true, remove: false };
  * TODO:
  */
 export abstract class Collection<TModel extends object = object, Event extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>>
-    extends EventSource<Event>
-    implements Iterable<TModel> {
+    extends EventSource<Event> implements Iterable<TModel> {
 
     /**
      * @en Model constructor. <br>
@@ -144,6 +154,9 @@ export abstract class Collection<TModel extends object = object, Event extends C
     /** @internal */
     private readonly [_properties]: Property<TModel, TKey>;
 
+///////////////////////////////////////////////////////////////////////
+// construction/destruction:
+
     /**
      * constructor
      *
@@ -154,22 +167,24 @@ export abstract class Collection<TModel extends object = object, Event extends C
      *  - `en` construction options.
      *  - `ja` 構築オプション
      */
-    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel>) {
+    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel, TKey>) {
         super();
-        const opts = Object.assign({}, options);
+        const opts = Object.assign({ modelOptions: {}, queryOptions: {} }, options);
 
         const { modelOptions, queryOptions } = opts;
 
         this[_properties] = {
+            constructOptions: opts,
+            provider: opts.provider || this.sync.bind(this),
             cid: luid('collection:', 8),
-            defaultQueryOptions: queryOptions as CollectionQueryOptions<TModel, TKey>,
-            queryInfo: {} as CollectionQueryInfo<TModel, TKey>,
-            defaultModelOptions: modelOptions,
+            queryOptions,
+            queryInfo: {},
+            modelOptions,
             byId: new Map<string, TModel>(),
             store: [],
-        } as Property<TModel, TKey>;
-        this._queryInfo = this.initQueryInfo();
+        } as unknown as Property<TModel, TKey>;
 
+        this.initQueryInfo();
 
         /* model event handler */
         this[_onModelEvent] = (event: string, model: TModel | undefined, collection: this, options: CollectionOperationOptions): void => {
@@ -206,8 +221,40 @@ export abstract class Collection<TModel extends object = object, Event extends C
         }
     }
 
+    /**
+     * @ja Initialize query info
+     * @ja クエリ情報の初期化
+     */
+    protected initQueryInfo(): void {
+        const { sortKeys, comparators } = ensureSortOptions(this._defaultQueryOptions);
+        this._queryInfo = { sortKeys, comparators };
+    }
+
+    /**
+     * @en Released all instances and event listener under the management.
+     * @ja 管理対象を破棄
+     *
+     * @param options
+     *  - `en` options (reserved).
+     *  - `ja` オプション (予約)
+     */
+    public release(options?: CollectionOperationOptions): this { // eslint-disable-line @typescript-eslint/no-unused-vars
+        this[_properties].afterFilter = undefined;
+        this[_properties].store = [];
+        this.initQueryInfo();
+        return this.stopListening();
+    }
+
+    /**
+     * @ja Clear cache instance method
+     * @ja キャッシュの破棄
+     */
+    protected clearCache(): void {
+        delete this._queryInfo.cache;
+    }
+
 ///////////////////////////////////////////////////////////////////////
-// accessor: public properties
+// accessor: attributes
 
     /**
      * @en Get content ID.
@@ -221,8 +268,10 @@ export abstract class Collection<TModel extends object = object, Event extends C
      * @en Get models.
      * @ja モデルアクセス
      */
-    get models(): TModel[] {
-        return this[_properties].store;
+    get models(): readonly TModel[] {
+        const { _queryFilter, _afterFilter } = this;
+        const { store } = this[_properties];
+        return (_afterFilter && _afterFilter !== _queryFilter) ? store.filter(_afterFilter) : store;
     }
 
     /**
@@ -233,95 +282,13 @@ export abstract class Collection<TModel extends object = object, Event extends C
         return this[_properties].store.length;
     }
 
-///////////////////////////////////////////////////////////////////////
-// implements: Iterable<TModel>
-
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Check applied after-filter.
+     * @ja 絞り込み用フィルタが適用されているかを判定
      */
-    [Symbol.iterator](): Iterator<TModel> {
-        const iterator = {
-            base: this[_properties].store,
-            pointer: 0,
-            next(): IteratorResult<TModel> {
-                if (this.pointer < this.base.length) {
-                    return {
-                        done: false,
-                        value: this.base[this.pointer++],
-                    };
-                } else {
-                    return {
-                        done: true,
-                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-                    };
-                }
-            },
-        };
-        return iterator as Iterator<TModel>;
+    get filtered(): boolean {
+        return !!this[_properties].afterFilter;
     }
-
-    /**
-     * @en Returns an iterable of key(id), value(model) pairs for every entry in the array.
-     * @ja key(id), value(model) 配列にアクセス可能なイテレータオブジェクトを返却
-     */
-    entries(): IterableIterator<[string, TModel]> {
-        return this[_createIterableIterator]((key: string, value: TModel) => [key, value]);
-    }
-
-    /**
-     * @en Returns an iterable of keys(id) in the array.
-     * @ja key(id) 配列にアクセス可能なイテレータオブジェクトを返却
-     */
-    keys(): IterableIterator<string> {
-        return this[_createIterableIterator]((key: string) => key);
-    }
-
-    /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
-     */
-    values(): IterableIterator<TModel> {
-        return this[_createIterableIterator]((key: string, value: TModel) => value);
-    }
-
-    /** @internal common iterator create function */
-    private [_createIterableIterator]<R>(valueGenerator: (key: string, value: TModel) => R): IterableIterator<R> {
-        const context = {
-            base: this[_properties].store,
-            pointer: 0,
-        };
-
-        const pos2key = (pos: number): string => {
-            return getModelId(context.base[pos], modelConstructor(this)) || String(pos);
-        };
-
-        const iterator: IterableIterator<R> = {
-            next(): IteratorResult<R> {
-                const current = context.pointer;
-                if (current < context.base.length) {
-                    context.pointer++;
-                    return {
-                        done: false,
-                        value: valueGenerator(pos2key(current), context.base[current]),
-                    };
-                } else {
-                    return {
-                        done: true,
-                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
-                    };
-                }
-            },
-            [Symbol.iterator](): IterableIterator<R> {
-                return this;
-            },
-        };
-
-        return iterator;
-    }
-
-///////////////////////////////////////////////////////////////////////
-// accessor: protected query-info
 
     /**
      * @en [[CollectionQueryInfo]] instance
@@ -340,17 +307,78 @@ export abstract class Collection<TModel extends object = object, Event extends C
     }
 
     /**
-     * @en Initialize [[CollectionQueryInfo]].
-     * @ja [[CollectionQueryInfo]] の初期化
-     *
-     * @override
+     * @en Get creating options.
+     * @ja 構築時のオプションを取得
      */
-    protected initQueryInfo(): CollectionQueryInfo<TModel, TKey> {
-        return ensureSortOptions(this[_properties].defaultQueryOptions);
+    protected get _options(): CollectionConstructionOptions<TModel, TKey> {
+        return this[_properties].constructOptions;
+    }
+
+    /**
+     * @en Get default provider.
+     * @ja 既定のプロバイダを取得
+     */
+    protected get _provider(): CollectionItemProvider<TModel, TKey> {
+        return this[_properties].provider;
+    }
+
+    /**
+     * @en Get default parse behaviour.
+     * @ja 既定の parse 動作を取得
+     */
+    protected get _defaultParse(): boolean | undefined {
+        return this._options.parse;
+    }
+
+    /**
+     * @en Get default query options.
+     * @ja 既定のクエリオプションを取得
+     */
+    protected get _defaultQueryOptions(): CollectionItemQueryOptions<TModel, TKey> {
+        return this[_properties].queryOptions;
+    }
+
+    /**
+     * @en Get last query options.
+     * @ja 最後のクエリオプションを取得
+     */
+    protected get _lastQueryOptions(): CollectionItemQueryOptions<TModel, TKey> {
+        const { sortKeys, comparators, filter } = this[_properties].queryInfo;
+        const opts: CollectionItemQueryOptions<TModel, TKey> = {};
+
+        sortKeys.length && (opts.sortKeys = sortKeys);
+        comparators.length && (opts.comparators = comparators);
+        filter && (opts.filter = filter);
+
+        return opts;
+    }
+
+    /**
+     * @en Access to sort comparators.
+     * @ja ソート用比較関数へのアクセス
+     */
+    protected get _comparators(): SortCallback<TModel>[] {
+        return this[_properties].queryInfo.comparators;
+    }
+
+    /**
+     * @en Access to query-filter.
+     * @ja クエリ用フィルタ関数へのアクセス
+     */
+    protected get _queryFilter(): FilterCallback<TModel> | undefined {
+        return this[_properties].queryInfo.filter;
+    }
+
+    /**
+     * @en Access to after-filter.
+     * @ja 絞り込み用フィルタ関数へのアクセス
+     */
+    protected get _afterFilter(): FilterCallback<TModel> | undefined {
+        return this[_properties].afterFilter;
     }
 
 ///////////////////////////////////////////////////////////////////////
-// operation: general
+// operations: utils
 
     /**
      * @en Get a model from a collection, specified by an `id`, a `cid`, or by passing in a model instance.
@@ -376,6 +404,83 @@ export abstract class Collection<TModel extends object = object, Event extends C
         return byId.get(id) || (cid && byId.get(cid)) as TModel | undefined;
     }
 
+    /**
+     * @en Return a copy of the model's `attributes` object.
+     * @ja モデル属性値のコピーを返却
+     */
+    public toJSON(): object[] {
+        return this.models.map(m => isModel(m) ? m.toJSON() : m);
+    }
+
+    /**
+     * @es Clone this instance.
+     * @ja インスタンスの複製を返却
+     *
+     * @override
+     */
+    public clone(): this {
+        const { constructor, _options } = this;
+        return new (constructor as Constructor<this>)(this[_properties].store, _options);
+    }
+
+    /**
+     * @en Force a collection to re-sort itself.
+     * @ja コレクション要素の再ソート
+     *
+     * @param options
+     *  - `en` sort options.
+     *  - `ja` ソートオプション
+     */
+    public sort(options?: CollectionReSortOptions<TModel, TKey>): this {
+        const opts = options || {};
+        const { noThrow, silent } = opts;
+        const { sortKeys, comparators: comps } = ensureSortOptions(opts);
+        const comparators = 0 < comps.length ? comps : this._comparators;
+
+        if (comparators.length <= 0) {
+            if (noThrow) {
+                return this;
+            }
+            throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_COMPARATORS, 'Cannot sort a set without a comparator.');
+        }
+
+        this[_properties].store = searchItems(this[_properties].store, this._afterFilter, ...comparators);
+
+        // update queryInfo
+        this[_properties].queryInfo.comparators = comparators;
+        if (0 < sortKeys.length) {
+            this[_properties].queryInfo.sortKeys = sortKeys;
+        }
+
+        if (!silent) {
+            type Context = Collection<TModel>;
+            (this as Context).trigger('@sort', this as Context, opts);
+        }
+
+        return this;
+    }
+
+    /**
+     * @en Apply after-filter to collection itself.
+     * @ja 絞り込み用フィルタの適用
+     *
+     * @param options
+     *  - `en` after-filter options.
+     *  - `ja` 絞り込みオプション
+     */
+    public filter(options?: CollectionAfterFilterOptions<TModel>): this {
+        const opts = options || {};
+        const { filter, silent } = opts;
+        if (filter !== this[_properties].afterFilter) {
+            this[_properties].afterFilter = filter;
+            if (!silent) {
+                type Context = Collection<TModel>;
+                (this as Context).trigger('@filter', this as Context, opts);
+            }
+        }
+        return this;
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // operations: sync
 
@@ -389,45 +494,85 @@ export abstract class Collection<TModel extends object = object, Event extends C
         return response as TModel[];
     }
 
+    /**
+     * @en The [[fetch]] method proxy that is compatible with [[CollectionItemProvider]] returns one-shot result.
+     * @ja [[CollectionItemProvider]] 互換の単発の fetch 結果を返却. 必要に応じてオーバーライド可能.
+     *
+     * @override
+     *
+     * @param options
+     *  - `en` option object
+     *  - `ja` オプション
+     */
+    protected async sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<object>> {
+        const items = await defaultSync().sync('read', this as SyncContext, options) as TModel[];
+        return {
+            total: items.length,
+            items,
+            options,
+        } as CollectionItemQueryResult<object>;
+    }
+
+    /**
+     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
+     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     *
+     * @param options
+     *  - `en` fetch options.
+     *  - `ja` フェッチオプション
+     */
+    public async fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<object[]> {
+        type Context = Collection<TModel>;
+
+        const opts = Object.assign({ progress: noop }, this._defaultQueryOptions, options);
+
+        try {
+            const { progress: original, limit, reset, noCache } = opts;
+            const { _queryInfo, _provider } = this;
+            const finalize = (null == limit);
+
+            opts.progress = (info: CollectionItemQueryResult<TModel>) => {
+                original(info);
+                !finalize && this.add(info.items, opts);
+            };
+
+            if (noCache) {
+                this.clearCache();
+            }
+
+            if (!finalize && reset) {
+                this.reset(undefined, { silent: true });
+            }
+
+            const resp = await queryItems(_queryInfo, _provider, opts);
+
+            if (finalize) {
+                reset ? this.reset(resp, opts) : this.add(resp, opts);
+            }
+
+            (this as Context).trigger('@sync', this as Context, resp, opts);
+            return resp;
+        } catch (e) {
+            (this as Context).trigger('@error', this as Context, e, opts);
+            throw e;
+        }
+    }
+
+    /**
+     * @en Execute `fetch()` with last query options.
+     * @ja 前回と同条件で `fetch()` を実行
+     *
+     * @param options
+     *  - `en` requery options.
+     *  - `ja` リクエリオプション
+     */
+    public requery(options?: CollectionRequeryOptions): Promise<object[]> {
+        const opts = Object.assign({}, this._lastQueryOptions, options, { reset: true });
+        return this.fetch(opts);
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // operations: collection setup
-
-    /**
-     * @en Access to sort comparators.
-     * @ja ソート用比較関数へのアクセス
-     */
-    protected get _comparators(): SortCallback<TModel>[] {
-        return this[_properties].queryInfo.comparators;
-    }
-
-    /**
-     * @en Force a collection to re-sort itself.
-     * @ja コレクション要素の再ソート
-     */
-    public sort(options?: CollectionReSortOptions<TModel, TKey>): this {
-        const opts = options || {};
-        const { sortKeys, comparators: comps } = ensureSortOptions(opts);
-        const comparators = 0 < comps.length ? comps : this._comparators;
-
-        if (comparators.length <= 0) {
-            throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_COMPARATORS, 'Cannot sort a set without a comparator.');
-        }
-
-        this[_properties].store = searchItems(this[_properties].store, null, ...comparators);
-
-        // update queryInfo
-        this[_properties].queryInfo.comparators = comparators;
-        if (0 < sortKeys.length) {
-            this[_properties].queryInfo.sortKeys = sortKeys;
-        }
-
-        if (!opts.silent) {
-            type Context = Collection<TModel>;
-            (this as Context).trigger('@sort', this as Context, opts);
-        }
-
-        return this;
-    }
 
     /**
      * @en "Smart" update method of the collection with the passed list of models.
@@ -491,7 +636,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
             return;
         }
 
-        const opts = Object.assign({}, _setOptions, options) as CollectionUpdateOptions<TModel>;
+        const opts = Object.assign({ parse: this._defaultParse }, _setOptions, options) as CollectionUpdateOptions<TModel>;
         if (opts.parse && !isCollectionModel(seeds, this)) {
             seeds = this.parse(seeds, options) || [];
         }
@@ -743,9 +888,9 @@ export abstract class Collection<TModel extends object = object, Event extends C
         }
 
         const constructor = modelConstructor(this);
-        const { defaultModelOptions } = this[_properties];
+        const { modelOptions } = this[_properties];
         if (constructor) {
-            const opts = Object.assign({}, defaultModelOptions, options);
+            const opts = Object.assign({}, modelOptions, options);
             const model = new constructor(attrs, opts) as { validate: () => Result; };
             if (isFunction(model.validate)) {
                 const result = model.validate();
@@ -764,7 +909,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
 
     /** @ineternal Internal method called by both remove and set. */
     private [_removeModels](models: TModel[], options: CollectionSetOptions): TModel[] {
-        const opts = Object.assign({}, options);
+        const opts = Object.assign({}, options) as CollectionUpdateOptions<TModel>;
         const removed: TModel[] = [];
         for (const mdl of models) {
             const model = this.get(mdl);
@@ -824,6 +969,93 @@ export abstract class Collection<TModel extends object = object, Event extends C
             this.stopListening(model as Subscribable, '*', this[_onModelEvent]);
         }
     }
+
+///////////////////////////////////////////////////////////////////////
+// implements: Iterable<TModel>
+
+    /**
+     * @en Iterator of [[ElementBase]] values in the array.
+     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     */
+    [Symbol.iterator](): Iterator<TModel> {
+        const iterator = {
+            base: this[_properties].store,
+            pointer: 0,
+            next(): IteratorResult<TModel> {
+                if (this.pointer < this.base.length) {
+                    return {
+                        done: false,
+                        value: this.base[this.pointer++],
+                    };
+                } else {
+                    return {
+                        done: true,
+                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                    };
+                }
+            },
+        };
+        return iterator as Iterator<TModel>;
+    }
+
+    /**
+     * @en Returns an iterable of key(id), value(model) pairs for every entry in the array.
+     * @ja key(id), value(model) 配列にアクセス可能なイテレータオブジェクトを返却
+     */
+    entries(): IterableIterator<[string, TModel]> {
+        return this[_createIterableIterator]((key: string, value: TModel) => [key, value]);
+    }
+
+    /**
+     * @en Returns an iterable of keys(id) in the array.
+     * @ja key(id) 配列にアクセス可能なイテレータオブジェクトを返却
+     */
+    keys(): IterableIterator<string> {
+        return this[_createIterableIterator]((key: string) => key);
+    }
+
+    /**
+     * @en Returns an iterable of values([[ElementBase]]) in the array.
+     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     */
+    values(): IterableIterator<TModel> {
+        return this[_createIterableIterator]((key: string, value: TModel) => value);
+    }
+
+    /** @internal common iterator create function */
+    private [_createIterableIterator]<R>(valueGenerator: (key: string, value: TModel) => R): IterableIterator<R> {
+        const context = {
+            base: this[_properties].store,
+            pointer: 0,
+        };
+
+        const pos2key = (pos: number): string => {
+            return getModelId(context.base[pos], modelConstructor(this)) || String(pos);
+        };
+
+        const iterator: IterableIterator<R> = {
+            next(): IteratorResult<R> {
+                const current = context.pointer;
+                if (current < context.base.length) {
+                    context.pointer++;
+                    return {
+                        done: false,
+                        value: valueGenerator(pos2key(current), context.base[current]),
+                    };
+                } else {
+                    return {
+                        done: true,
+                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                    };
+                }
+            },
+            [Symbol.iterator](): IterableIterator<R> {
+                return this;
+            },
+        };
+
+        return iterator;
+    }
 }
 
 // mixin による `instanceof` は無効に設定
@@ -833,8 +1065,9 @@ setMixClassAttribute(Collection as Class, 'instanceOf', null);
  ☆ id
  ☆ models/items
  ☆ length
- ★ release()
- ★ fetch()
+ ☆ release()
+ ☆ fetch()
+ ☆ requery()
 
  ★ - ListEditable<T> をどうするか?
 
@@ -847,7 +1080,7 @@ setMixClassAttribute(Collection as Class, 'instanceOf', null);
  ★ at(index: number): TModel;
  ☆ get(id: number | string | Model): TModel;
  ★ has(key: number | string | Model): boolean;
- ★ clone(): this;
+ ☆ clone(): this;
  ★ create(attributes: any, options ?: ModelSaveOptions): TModel;
  ★ pluck(attribute: string): any[];
  ★ push(model: TModel, options ?: AddOptions): TModel;
@@ -864,7 +1097,7 @@ setMixClassAttribute(Collection as Class, 'instanceOf', null);
  ★ modelId(attrs: any) : any
  ★ slice(min?: number, max?: number): TModel[];
 
- // mixins from underscore (基本やらない)
+ // mixins from underscore (基本やらない includes だけやる. + filter を afterFilter で実現する)
 
  ★ all(iterator?: _.ListIterator<TModel, boolean>, context?: any): boolean;
  ★ any(iterator?: _.ListIterator<TModel, boolean>, context?: any): boolean;
@@ -878,7 +1111,7 @@ setMixClassAttribute(Collection as Class, 'instanceOf', null);
  ★ drop(n?: number): TModel[];
  ★ each(iterator: _.ListIterator<TModel, void>, context?: any): TModel[];
  ★ every(iterator: _.ListIterator<TModel, boolean>, context?: any): boolean;
- ★ filter(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel[];
+ ☆ filter(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel[];
  ★ find(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel;
  ★ findIndex(predicate: _.ListIterator<TModel, boolean>, context?: any): number;
  ★ findLastIndex(predicate: _.ListIterator<TModel, boolean>, context?: any): number;

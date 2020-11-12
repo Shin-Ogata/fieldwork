@@ -21,7 +21,7 @@ module.exports = {
     replace: {
         delimiters: ['', ''],
         values: {
-            'var CDP_DECLARE;': 'globalThis.CDP_DECLARE = globalThis.CDP_DECLARE;',
+            'var CDP_DECLARE;\n': '',
             '(CDP_DECLARE)': '()',
             '(CDP_DECLARE || (CDP_DECLARE = {}))': '()',
             'let RESULT_CODE;': 'let RESULT_CODE = CDP_DECLARE.RESULT_CODE;',

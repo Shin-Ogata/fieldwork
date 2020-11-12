@@ -34,6 +34,7 @@ export declare type SyncResult<K extends SyncMethods, T extends object = PlainOb
  * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
  */
 export declare type SyncContext<T extends object = PlainObject> = EventBroker<SyncEvent<T>> & {
+    id?: string;
     toJSON(): T;
 };
 /**
