@@ -180,7 +180,7 @@ describe('collection/base spec', () => {
     });
 
     describe('operations: utils', () => {
-        it('check Collection#get', (): void => {
+        it('check Collection#get()', (): void => {
             const playlist = new Playlist(tracks);
 
             let seed: string | object | undefined;
@@ -201,6 +201,67 @@ describe('collection/base spec', () => {
             content = playlist.get(seed);
             expect(content).toBeDefined();
             expect(content?.title).toBe('008');
+        });
+
+        it('check Collection#get() w/ filter', (): void => {
+            const playlist = new Playlist(tracks);
+
+            // get is not affected by after-filter
+            playlist.filter(oddPassFilter);
+
+            let seed: string | object | undefined;
+            let content = playlist.get(seed);
+            expect(content).toBeUndefined();
+
+            seed = '008';
+            content = playlist.get(seed);
+            expect(content).toBeDefined();
+            expect(content?.title).toBe('008');
+
+            seed = { _cid: (content as any)._cid };
+            content = playlist.get(seed);
+            expect(content).toBeDefined();
+            expect(content?.title).toBe('008');
+
+            seed = content?.clone();
+            content = playlist.get(seed);
+            expect(content).toBeDefined();
+            expect(content?.title).toBe('008');
+        });
+
+        it('check Collection#has()', (): void => {
+            const playlist = new Playlist(tracks);
+
+            let seed: string | object | undefined;
+            let result = playlist.has(seed);
+            expect(result).toBe(false);
+
+            seed = '008';
+            result = playlist.has(seed);
+            expect(result).toBe(true);
+
+            seed = { _cid: (playlist.models[7] as any)._cid };
+            result = playlist.has(seed);
+            expect(result).toBe(true);
+        });
+
+        it('check Collection#has() w/ filter', (): void => {
+            const playlist = new Playlist(tracks);
+
+            // get is not affected by after-filter
+            playlist.filter(oddPassFilter);
+
+            let seed: string | object | undefined;
+            let result = playlist.has(seed);
+            expect(result).toBe(false);
+
+            seed = '008';
+            result = playlist.has(seed);
+            expect(result).toBe(true);
+
+            seed = { _cid: (playlist.models[7] as any)._cid };
+            result = playlist.has(seed);
+            expect(result).toBe(true);
         });
 
         it('check Collection#toJSON() w/Model ', () => {
@@ -312,7 +373,7 @@ describe('collection/base spec', () => {
             expect(count).toBe(0);
 
             // same filter
-            const models2 = playlist.filter({ filter: oddPassFilter }).models;
+            const models2 = playlist.filter(oddPassFilter, { silent: false }).models;
 
             expect(playlist.filtered).toBe(true);
             expect(models2.length).toBe(9);
@@ -325,7 +386,7 @@ describe('collection/base spec', () => {
             expect(count).toBe(0);
 
             // release after-filter
-            const models3 = playlist.filter().models;
+            const models3 = playlist.filter(undefined).models;
 
             expect(playlist.filtered).toBe(false);
             expect(models3.length).toBe(18);
@@ -338,6 +399,79 @@ describe('collection/base spec', () => {
             expect(count).toBe(1);
 
             done();
+        });
+
+        it('check Collection#at()', () => {
+            const playlist = new Playlist(tracks);
+            let track = playlist.at(0);
+            expect(track.title).toBe('001');
+            track = playlist.at(1.7);
+            expect(track.title).toBe('002');
+            track = playlist.at(-1);
+            expect(track.title).toBe('018');
+            track = playlist.at(-2.9);
+            expect(track.title).toBe('017');
+
+            expect(() => playlist.at(19)).toThrow(new RangeError('invalid array index. [length: 18, given: 19]'));
+            expect(() => playlist.at(-19)).toThrow(new RangeError('invalid array index. [length: 18, given: -19]'));
+        });
+
+        it('check Collection#at() w/ filter', () => {
+            const playlist = new Playlist(tracks);
+            playlist.filter(oddPassFilter);
+            let track = playlist.at(0);
+            expect(track.title).toBe('001');
+            track = playlist.at(1.7);
+            expect(track.title).toBe('003');
+            track = playlist.at(-1);
+            expect(track.title).toBe('017');
+            track = playlist.at(-2.9);
+            expect(track.title).toBe('015');
+
+            expect(() => playlist.at(10)).toThrow(new RangeError('invalid array index. [length: 9, given: 10]'));
+            expect(() => playlist.at(-10)).toThrow(new RangeError('invalid array index. [length: 9, given: -10]'));
+        });
+
+        it('check Collection#first()', () => {
+            const playlist = new Playlist(tracks);
+            const track = playlist.first();
+            expect(track?.title).toBe('001');
+            const list = playlist.first(3);
+            expect(list[0].title).toBe('001');
+            expect(list[1].title).toBe('002');
+            expect(list[2].title).toBe('003');
+        });
+
+        it('check Collection#first() w/ filter', () => {
+            const playlist = new Playlist(tracks);
+            playlist.filter(oddPassFilter);
+            const track = playlist.first();
+            expect(track?.title).toBe('001');
+            const list = playlist.first(3);
+            expect(list[0].title).toBe('001');
+            expect(list[1].title).toBe('003');
+            expect(list[2].title).toBe('005');
+        });
+
+        it('check Collection#last()', () => {
+            const playlist = new Playlist(tracks);
+            const track = playlist.last();
+            expect(track?.title).toBe('018');
+            const list = playlist.last(3);
+            expect(list[0].title).toBe('016');
+            expect(list[1].title).toBe('017');
+            expect(list[2].title).toBe('018');
+        });
+
+        it('check Collection#last() w/ filter', () => {
+            const playlist = new Playlist(tracks);
+            playlist.filter(oddPassFilter);
+            const track = playlist.last();
+            expect(track?.title).toBe('017');
+            const list = playlist.last(3);
+            expect(list[0].title).toBe('013');
+            expect(list[1].title).toBe('015');
+            expect(list[2].title).toBe('017');
         });
     });
 
@@ -601,7 +735,7 @@ describe('collection/base spec', () => {
                 expect(e.message).toBe('aborted');
             }
 
-            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.any(Error), jasmine.anything()); // @error
+            expect(stub.onCallback).toHaveBeenCalledWith(undefined, playlist, jasmine.any(Error), jasmine.anything()); // @error
             expect(count).toBe(1);
 
             done();
@@ -1485,6 +1619,308 @@ describe('collection/base spec', () => {
 
             done();
         });
+
+        it('check Collection#push()', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks.slice(3, 5));
+            playlist.on(['@add', '@update'], stub.onCallback);
+
+            const added = playlist.push(tracks[0]);
+
+            expect(playlist.models.length).toBe(3);
+            expect(playlist.models[0].title).toBe('004');
+            expect(playlist.models[1].title).toBe('005');
+            expect(playlist.models[2].title).toBe('001');
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything());  // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check Collection#push() w/ filter', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks.slice(3, 5));
+            playlist.on(['@add', '@update'], stub.onCallback);
+            playlist.filter(oddPassFilter);
+
+            const added = playlist.push(tracks[1]);
+
+            expect(playlist.models.length).toBe(1);
+            expect(playlist.models[0].title).toBe('005');
+
+            playlist.filter(undefined);
+
+            expect(playlist.models.length).toBe(3);
+            expect(playlist.models[0].title).toBe('004');
+            expect(playlist.models[1].title).toBe('005');
+            expect(playlist.models[2].title).toBe('002');
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything()); // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());        // @update
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check Collection#pop()', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks.slice(3, 5));
+            playlist.on(['@remove', '@update'], stub.onCallback);
+
+            const removed = playlist.pop();
+
+            expect(playlist.models.length).toBe(1);
+            expect(playlist.models[0].title).toBe('004');
+            expect(removed?.title).toBe('005');
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, jasmine.anything()); // @remove
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());          // @update
+            expect(count).toBe(2);
+
+            const removed2 = playlist.pop();
+            expect(removed2?.title).toBe('004');
+
+            const removed3 = playlist.pop();
+            expect(removed3).toBeUndefined();
+
+            done();
+        });
+
+        it('check Collection#pop() w/ filter', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks);
+            playlist.on(['@remove', '@update'], stub.onCallback);
+            playlist.filter(oddPassFilter);
+
+            const removed = playlist.pop();
+
+            expect(playlist.models.length).toBe(9);
+            expect(removed?.title).toBe('018');
+
+            playlist.filter(undefined);
+
+            expect(playlist.models.length).toBe(17);
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, jasmine.anything()); // @remove
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());          // @update
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check Collection#unshift()', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks.slice(3, 5));
+            playlist.on(['@add', '@update'], stub.onCallback);
+
+            const added = playlist.unshift(tracks[0]);
+
+            expect(playlist.models.length).toBe(3);
+            expect(playlist.models[0].title).toBe('001');
+            expect(playlist.models[1].title).toBe('004');
+            expect(playlist.models[2].title).toBe('005');
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything());  // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check Collection#unshift() w/ filter', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks.slice(3, 5));
+            playlist.on(['@add', '@update'], stub.onCallback);
+            playlist.filter(oddPassFilter);
+
+            const added = playlist.unshift(tracks[1]);
+
+            expect(playlist.models.length).toBe(1);
+            expect(playlist.models[0].title).toBe('005');
+
+            playlist.filter(undefined);
+
+            expect(playlist.models.length).toBe(3);
+            expect(playlist.models[0].title).toBe('002');
+            expect(playlist.models[1].title).toBe('004');
+            expect(playlist.models[2].title).toBe('005');
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything()); // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());        // @update
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check Collection#shift()', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks.slice(3, 5));
+            playlist.on(['@remove', '@update'], stub.onCallback);
+
+            const removed = playlist.shift();
+
+            expect(playlist.models.length).toBe(1);
+            expect(playlist.models[0].title).toBe('005');
+            expect(removed?.title).toBe('004');
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, jasmine.anything()); // @remove
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());          // @update
+            expect(count).toBe(2);
+
+            const removed2 = playlist.shift();
+            expect(removed2?.title).toBe('005');
+
+            const removed3 = playlist.shift();
+            expect(removed3).toBeUndefined();
+
+            done();
+        });
+
+        it('check Collection#shift() w/ filter', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks);
+            playlist.on(['@remove', '@update'], stub.onCallback);
+            playlist.filter(oddPassFilter);
+
+            const removed = playlist.shift();
+
+            expect(playlist.models.length).toBe(8);
+            expect(removed?.title).toBe('001');
+
+            playlist.filter(undefined);
+
+            expect(playlist.models.length).toBe(17);
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, jasmine.anything()); // @remove
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());          // @update
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check Collection#create(object)', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new TrackList();
+            playlist.on(['@add', '@update', '@error'], stub.onCallback);
+
+            const result = playlist.create(tracks[0]);
+            expect(result).toBeDefined();
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
+
+            done();
+        });
+
+        it('check Collection#create(object, { wait: true })', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new TrackList();
+            playlist.on(['@add', '@update', '@error'], stub.onCallback);
+
+            const result = playlist.create(tracks[0], { wait: true });
+            expect(result).toBeDefined();
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
+
+            done();
+        });
+
+        it('check Collection#create(Model)', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist();
+            playlist.on(['@add', '@update', '@error'], stub.onCallback);
+
+            const result = playlist.create(tracks[0]);
+            expect(result).toBeDefined();
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
+
+            done();
+        });
+
+        it('check Collection#create(Model, { wait: true })', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist();
+            playlist.on(['@add', '@update', '@error'], stub.onCallback);
+
+            const result = playlist.create(tracks[0], { wait: true });
+            expect(result).toBeDefined();
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
+            expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
+
+            done();
+        });
+
+        it('check Collection#create(Model) w/ error', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist();
+            playlist.on(['@add', '@update', '@error'], stub.onCallback);
+
+            const result = playlist.create(tracks[0], { wait: true, cancel: token });
+            expect(result).toBeDefined();
+            expect(playlist.length).toBe(0);
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.any(Error), jasmine.anything()); // @error
+
+            done();
+        });
     });
 
     describe('implements: Iterable<T>', () => {
@@ -1522,6 +1958,29 @@ describe('collection/base spec', () => {
             for (const value of playlist.values()) {
                 count++;
                 expect(value.id).toBe(String(count).padStart(3, '0'));
+            }
+        });
+
+        it('check [Symbol.iterator] w/ after-filter', (): void => {
+            const playlist = new TrackList(tracks);
+            playlist.filter({ filter: oddPassFilter });
+            let position = 0;
+            for (const t of playlist) {
+                expect(t).toEqual(tracks[position]);
+                position += 2;
+            }
+        });
+
+        it('check entries() w/ after-filter', (): void => {
+            const playlist = new TrackList(tracks);
+            playlist.filter(oddPassFilter);
+            let count = 0;
+            let position = 0;
+            for (const [key, value] of playlist.entries()) {
+                expect(key).toBe(String(count));
+                expect(value).toEqual(tracks[position]);
+                count++;
+                position += 2;
             }
         });
     });
@@ -2043,6 +2502,25 @@ describe('collection/base spec', () => {
             ret = invalidList.set(tracks.slice(3, 5), { parse: true });
             expect(ret).toBeUndefined();
             expect(invalidList.length).toBe(0);
+        });
+
+        it('check Collection#create() w/ InvalidModel', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const seed = { title: '001', albumArtist: 'aaa', albumTitle: 'AAA', duration: 0, size: 0, releaseDate: new Date('2009/01/01'), compilation: false, };
+            const playlist = new InvalidPlaylist();
+            playlist.on('@invalid', stub.onCallback);
+
+            const added = playlist.create(seed);
+            expect(added).toBeUndefined();
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(seed, playlist, errorInvalidData, jasmine.anything()); // @invalid
+            expect(count).toBe(1);
+
+            done();
         });
 
         it('check Collection#[_onModelEvent(@change)] coverage', () => {

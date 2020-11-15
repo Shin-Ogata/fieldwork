@@ -97,8 +97,8 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
 //__________________________________________________________________________________________________//
 
 /**
- * @en [[Model]] base class definition.
- * @ja [[Model]] の基底クラス定義
+ * @en Base class definition for model that provides a basic set of functionality for managing interaction.
+ * @ja インタラクションのための基本機能を提供するモデルの基底クラス定義
  *
  * @example <br>
  *
@@ -178,7 +178,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * content.trigger('fire', true, 100);
  * ```
  */
-export abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
+export abstract class Model<T extends object = any, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
     /**
      * @en Get ID attribute name.
      * @ja ID アトリビュート名にアクセス

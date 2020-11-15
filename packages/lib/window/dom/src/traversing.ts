@@ -215,7 +215,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
 
     public get(index?: number): TElement[] | TElement | undefined {
         if (null != index) {
-            index = Math.floor(index);
+            index = Math.trunc(index);
             return index < 0 ? this[index + this.length] : this[index];
         } else {
             return this.toArray();

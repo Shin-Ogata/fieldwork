@@ -9,8 +9,8 @@ import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSe
  */
 export declare const RESULT_VALID_ATTRS: Readonly<Result>;
 /**
- * @en [[Model]] base class definition.
- * @ja [[Model]] の基底クラス定義
+ * @en Base class definition for model that provides a basic set of functionality for managing interaction.
+ * @ja インタラクションのための基本機能を提供するモデルの基底クラス定義
  *
  * @example <br>
  *
@@ -90,7 +90,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * content.trigger('fire', true, 100);
  * ```
  */
-export declare abstract class Model<T extends object = object, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
+export declare abstract class Model<T extends object = any, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
     /**
      * @en Get ID attribute name.
      * @ja ID アトリビュート名にアクセス

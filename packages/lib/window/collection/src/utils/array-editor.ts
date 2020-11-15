@@ -6,6 +6,8 @@ import {
 import { ObservableArray, ArrayChangeRecord } from '@cdp/observable';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 
+const trunc = Math.trunc.bind(Math);
+
 /** @internal wait for change detection */
 function makePromise<T>(editor: ObservableArray<T>, remap?: T[]): Promise<ArrayChangeRecord<T>[]> {
     return new Promise(resolve => {
@@ -42,6 +44,21 @@ async function getEditContext<T>(
     } else {
         throw makeResult(RESULT_CODE.NOT_SUPPORTED, 'target is not Array or ObservableArray.');
     }
+}
+
+/** @internal valid orders index */
+function validOrders(length: number, orders: number[]): boolean | never {
+    if (null == orders || orders.length <= 0) {
+        return false;
+    }
+
+    for (const index of orders) {
+        if (index < 0 || length <= index || trunc(index) !== index) {
+            throw makeResult(RESULT_CODE.NOT_SUPPORTED, `orders[] index is invalid. index: ${index}`);
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -121,7 +138,7 @@ export async function appendArray<T>(target: ObservableArray<T> | T[], src: T[],
  */
 export async function insertArray<T>(target: ObservableArray<T> | T[], index: number, src: T[], token?: CancelToken): Promise<ArrayChangeRecord<T>[]> {
     // 最後の要素に追加するため index == target.length を許容
-    if (index < 0 || target.length < index || Math.trunc(index) !== index) {
+    if (index < 0 || target.length < index || trunc(index) !== index) {
         throw makeResult(RESULT_CODE.NOT_SUPPORTED, `insertArray(), index is invalid. index: ${index}`);
     } else if (null == src || src.length <= 0) {
         return [];
@@ -156,9 +173,9 @@ export async function insertArray<T>(target: ObservableArray<T> | T[], index: nu
  */
 export async function reorderArray<T>(target: ObservableArray<T> | T[], index: number, orders: number[], token?: CancelToken): Promise<ArrayChangeRecord<T>[]> {
     // 最後の要素に追加するため index == target.length を許容
-    if (index < 0 || target.length < index || Math.trunc(index) !== index) {
-        throw makeResult(RESULT_CODE.NOT_SUPPORTED, `insertArray(), index is invalid. index: ${index}`);
-    } else if (null == orders || orders.length <= 0) {
+    if (index < 0 || target.length < index || trunc(index) !== index) {
+        throw makeResult(RESULT_CODE.NOT_SUPPORTED, `reorderArray(), index is invalid. index: ${index}`);
+    } else if (!validOrders(target.length, orders)) {
         return [];
     }
 
@@ -205,7 +222,7 @@ export async function reorderArray<T>(target: ObservableArray<T> | T[], index: n
  *  - `ja` 変更情報
  */
 export async function removeArray<T>(target: ObservableArray<T> | T[], orders: number[], token?: CancelToken): Promise<ArrayChangeRecord<T>[]> {
-    if (null == orders || orders.length <= 0) {
+    if (!validOrders(target.length, orders)) {
         return [];
     }
 
