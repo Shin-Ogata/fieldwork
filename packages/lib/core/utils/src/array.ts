@@ -85,6 +85,30 @@ export function union<T>(...arrays: T[][]): T[] {
 //__________________________________________________________________________________________________//
 
 /**
+ * @en Get the model at the given index. If negative value is given, the target will be found from the last index.
+ * @ja インデックス指定によるモデルへのアクセス. 負値の場合は末尾検索を実行
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param index
+ *  - `en` A zero-based integer indicating which element to retrieve. <br>
+ *         If negative index is counted from the end of the matched set.
+ *  - `ja` 0 base のインデックスを指定 <br>
+ *         負値が指定された場合, 末尾からのインデックスとして解釈される
+ */
+export function at<T>(array: T[], index: number): T | never {
+    const idx = Math.trunc(index);
+    const el = idx < 0 ? array[idx + array.length] : array[idx];
+    if (null == el) {
+        throw new RangeError(`invalid array index. [length: ${array.length}, given: ${index}]`);
+    }
+    return el;
+}
+
+//__________________________________________________________________________________________________//
+
+/**
  * @en Make index array.
  * @ja インデックス配列の作成
  *

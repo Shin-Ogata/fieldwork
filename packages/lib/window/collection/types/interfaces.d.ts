@@ -1,6 +1,7 @@
 import { Keys, PlainObject } from '@cdp/core-utils';
 import { Silenceable, EventAll } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
+import { ArrayChangeRecord } from '@cdp/observable';
 import { Result } from '@cdp/result';
 import { SyncEvent, RestDataSyncOptions } from '@cdp/data-sync';
 import { Parseable, Validable, ModelConstructionOptions, ModelSaveOptions, ModelDestroyOptions } from '@cdp/model';
@@ -472,5 +473,39 @@ export interface CollectionEvent<TItem extends object> extends EventAll, SyncEve
      * @en notified when a collection's request to the server has failed.
      * @ja サーバーリクエストに失敗したときに発行
      */
-    '@error': [Collection<TItem>, Error, CollectionDataSyncOptions];
+    '@error': [TItem | undefined, Collection<TItem>, Error, CollectionDataSyncOptions];
+}
+/**
+ * @en Base options for editing list operation.
+ * @ja 編集可能リスト用基底オプション
+ */
+export declare type ListEditOptions = Silenceable & Cancelable;
+/**
+ * @en Editable list changed information.
+ * @ja 編集可能リスト用変更情報
+ */
+export interface ListChanged<T> {
+    /**
+     * @en change type
+     * @ja 変更タイプ
+     */
+    readonly type: 'add' | 'remove' | 'reorder';
+    /**
+     * @en change range of index
+     * @ja 変更が発生した要素の範囲 index
+     */
+    readonly range?: {
+        from: number;
+        to: number;
+    };
+    /**
+     * @en changed index detail
+     * @ja 変更情報 index
+     */
+    readonly list: ArrayChangeRecord<T>[];
+    /**
+     * @en inserted-to information (not available when element was removed)
+     * @ja 追加先 (削除時には 取得不可)
+     */
+    readonly insertedTo?: number;
 }

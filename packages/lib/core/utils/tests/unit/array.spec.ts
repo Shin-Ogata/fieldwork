@@ -8,6 +8,7 @@ import {
     sort,
     unique,
     union,
+    at,
     indices,
     groupBy,
     map,
@@ -93,6 +94,21 @@ describe('utils/array spec', () => {
         expect(result[2]).toBe(3);
         expect(result[3]).toBe(101);
         expect(result[4]).toBe(10);
+    });
+
+    it('check at()', () => {
+        const array = [1, 2, 3, 4, 5];
+        let result = at(array, 0);
+        expect(result).toBe(1);
+        result = at(array, 1.1);
+        expect(result).toBe(2);
+        result = at(array, -1);
+        expect(result).toBe(5);
+        result = at(array, -2.8);
+        expect(result).toBe(4);
+
+        expect(() => at(array, 6)).toThrow(new RangeError('invalid array index. [length: 5, given: 6]'));
+        expect(() => at(array, -6.1)).toThrow(new RangeError('invalid array index. [length: 5, given: -6.1]'));
     });
 
     it('check indecies()', () => {

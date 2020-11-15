@@ -233,6 +233,18 @@ describe('query/query spec', () => {
             done();
         });
 
+        it('check w/ limit', async done => {
+            const ret = await queryItems(info, provider, { limit: 3 });
+
+            expect(ret.length).toBe(3);
+            expect(ret[0].name).toBe('a');
+            expect(ret[1].name).toBe('s');
+            expect(ret[2].name).toBe('d');
+            expect(info.cache).toBeUndefined();
+
+            done();
+        });
+
         it('check w/ limit & index', async done => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
@@ -442,6 +454,18 @@ describe('query/query spec', () => {
             expect(ret[4].name).toBe('f');
             expect(ret[5].name).toBe('d');
             expect(ret[6].name).toBe('a');
+
+            done();
+        });
+
+        it('check w/ limit', async done => {
+            const ret = await queryItems(info, provider, { limit: 3 });
+
+            expect(ret.length).toBe(3);
+            expect(ret[0].name).toBe('a');
+            expect(ret[1].name).toBe('s');
+            expect(ret[2].name).toBe('d');
+            expect(info.cache).toBeDefined();
 
             done();
         });

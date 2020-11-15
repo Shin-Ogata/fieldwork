@@ -1,14 +1,87 @@
 import { Class, UnknownObject, PlainObject, Keys } from '@cdp/core-utils';
-import { EventSource } from '@cdp/events';
+import { Silenceable, EventSource } from '@cdp/events';
+import { ModelSaveOptions } from '@cdp/model';
 import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
 declare const _removeModels: unique symbol;
 /**
- * @en Base class definition for object collection.
- * @ja オブジェクトの集合を扱う基底クラス定義
+ * @en Base class definition for collection that is ordered sets of models.
+ * @ja モデルの集合を扱うコレクションの基底クラス定義.
  *
- * TODO:
+ * @example <br>
+ *
+ * ```ts
+ * import { PlainObject } from '@cdp/core-utils';
+ * import { Model, ModelConstructor } from '@cdp/model';
+ * import {
+ *     Collection,
+ *     CollectionItemQueryOptions,
+ *     CollectionItemQueryResult,
+ * } from '@cdp/collection';
+ *
+ * // Model schema
+ * interface TrackAttribute {
+ *   uri: string;
+ *   title: string;
+ *   artist: string;
+ *   album:  string;
+ *   releaseDate: Date;
+ *   :
+ * }
+ *
+ * // Model definition
+ * const TrackBase = Model as ModelConstructor<Model<TrackAttribute>, TrackAttribute>;
+ * class Track extends TrackBase {
+ *     static idAttribute = 'uri';
+ * }
+ *
+ * // Collection definition
+ * class Playlist extends Collection<Track> {
+ *     // set target Model constructor
+ *     static readonly model = Track;
+ *
+ *     // @override if need to use custom content provider for fetch.
+ *     protected async sync(
+ *         options?: CollectionItemQueryOptions<Track>
+ *     ): Promise<CollectionItemQueryResult<object>> {
+ *         // some specific implementation here.
+ *         const items = await customProvider(options);
+ *         return {
+ *             total: items.length,
+ *             items,
+ *             options,
+ *         } as CollectionItemQueryResult<object>;
+ *     }
+ *
+ *     // @override if need to convert a response into a list of models.
+ *     protected parse(response: PlainObject[]): TrackAttribute[] {
+ *         return response.map(seed => {
+ *             const date = seed.releaseDate;
+ *             seed.releaseDate = new Date(date);
+ *             return seed;
+ *         }) as TrackAttribute[];
+ *      }
+ * }
+ *
+ * let seeds: TrackAttribute[];
+ *
+ * const playlist = new Playlist(seeds, {
+ *     // default query options
+ *     queryOptions: {
+ *         sortKeys: [
+ *             { name: 'title', order: SortOrder.DESC, type: 'string' },
+ *         ],
+ *     }
+ * });
+ *
+ * await playlist.requery();
+ *
+ * for (const track of playlist) {
+ *     console.log(JSON.stringify(track.toJSON()));
+ * }
+ * ```
  */
-export declare abstract class Collection<TModel extends object = object, Event extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>> extends EventSource<Event> implements Iterable<TModel> {
+export declare abstract class Collection<TModel extends object = any, // eslint-disable-line @typescript-eslint/no-explicit-any
+Event extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>> extends EventSource<Event> implements Iterable<TModel> {
     /**
      * @en Model constructor. <br>
      *     The constructor is used internally by this [[Collection]] class for [[TModel]] construction.
@@ -126,6 +199,15 @@ export declare abstract class Collection<TModel extends object = object, Event e
      */
     get(seed: string | object | undefined): TModel | undefined;
     /**
+     * @en Returns `true` if the model is in the collection by an `id`, a `cid`, or by passing in a model instance.
+     * @ja `id`, `cid` およびインスタンスからモデルを所有しているか判定
+     *
+     * @param seed
+     *  - `en` `id`, a `cid`, or by passing in a model instance
+     *  - `ja`  `id`, `cid` およびインスタンス
+     */
+    has(seed: string | object | undefined): boolean;
+    /**
      * @en Return a copy of the model's `attributes` object.
      * @ja モデル属性値のコピーを返却
      */
@@ -150,11 +232,54 @@ export declare abstract class Collection<TModel extends object = object, Event e
      * @en Apply after-filter to collection itself.
      * @ja 絞り込み用フィルタの適用
      *
+     * @param callback
+     *  - `en` filter callback.
+     *  - `ja` フィルタコールバック関数
+     * @param options
+     *  - `en` Silenceable options.
+     *  - `ja` Silenceable オプション
+     */
+    filter(callback: FilterCallback<TModel> | undefined, options?: Silenceable): this;
+    /**
+     * @en Apply after-filter to collection itself.
+     * @ja 絞り込み用フィルタの適用
+     *
      * @param options
      *  - `en` after-filter options.
      *  - `ja` 絞り込みオプション
      */
-    filter(options?: CollectionAfterFilterOptions<TModel>): this;
+    filter(options: CollectionAfterFilterOptions<TModel>): this;
+    /**
+     * @en Get the model at the given index. If negative value is given, the target will be found from the last index.
+     * @ja インデックス指定によるモデルへのアクセス. 負値の場合は末尾検索を実行
+     *
+     * @param index
+     *  - `en` A zero-based integer indicating which element to retrieve. <br>
+     *         If negative index is counted from the end of the matched set.
+     *  - `ja` 0 base のインデックスを指定 <br>
+     *         負値が指定された場合, 末尾からのインデックスとして解釈される
+     */
+    at(index: number): TModel;
+    /**
+     * @en Get the first element of the model.
+     * @ja モデルの最初の要素を取得
+     */
+    first(): TModel | undefined;
+    /**
+     * @en Get the value of `count` elements of the model from the first.
+     * @ja モデルの先頭から`count` 分の要素を取得
+     */
+    first(count: number): TModel[];
+    /**
+     * @en Get the last element of the model.
+     * @ja モデルの最初の要素を取得
+     */
+    last(): TModel | undefined;
+    /**
+     * @en Get the value of `count` elements of the model from the last.
+     * @ja モデルの先頭から`count` 分の要素を取得
+     */
+    last(count: number): TModel[];
     /**
      * @en Converts a response into the hash of attributes to be `set` on the collection. The default implementation is just to pass the response along.
      * @ja レスポンスの変換メソッド. 既定では何もしない
@@ -305,6 +430,60 @@ export declare abstract class Collection<TModel extends object = object, Event e
      *  - `ja` 削除オプション
      */
     remove(seeds: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
+    /**
+     * @en Add a model to the end of the collection.
+     * @ja 末尾にモデルを追加
+     *
+     * @param seed
+     *  - `en` given the seed of model.
+     *  - `ja` モデル要素を指定
+     * @param options
+     *  - `en` add options.
+     *  - `ja` 追加オプション
+     */
+    push(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel;
+    /**
+     * @en Remove a model from the end of the collection.
+     * @ja 末尾のモデルを削除
+     *
+     * @param options
+     *  - `en` Silenceable options.
+     *  - `ja` Silenceable オプション
+     */
+    pop(options?: Silenceable): TModel | undefined;
+    /**
+     * @en Add a model to the beginning of the collection.
+     * @ja 先頭にモデルを追加
+     *
+     * @param seed
+     *  - `en` given the seed of model.
+     *  - `ja` モデル要素を指定
+     * @param options
+     *  - `en` add options.
+     *  - `ja` 追加オプション
+     */
+    unshift(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel;
+    /**
+     * @en Remove a model from the beginning of the collection.
+     * @ja 先頭のモデルを削除
+     *
+     * @param options
+     *  - `en` Silenceable options.
+     *  - `ja` Silenceable オプション
+     */
+    shift(options?: Silenceable): TModel | undefined;
+    /**
+     * @en Create a new instance of a model in this collection.
+     * @ja 新しいモデルインスタンスを作成し, コレクションに追加
+     *
+     * @param attrs
+     *  - `en` attributes object.
+     *  - `ja` 属性オブジェクトを指定
+     * @param options
+     *  - `en` model construction options.
+     *  - `ja` モデル構築オプション
+     */
+    create(attrs: object, options?: ModelSaveOptions): TModel | undefined;
     /** @ineternal Internal method called by both remove and set. */
     private [_removeModels];
     /**

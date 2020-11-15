@@ -128,86 +128,87 @@ export class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = K
         let fltr: FilterCallback<TItem> | undefined;
 
         for (const cond of this._operators) {
-            switch (cond.operator) {
+            const { operator, prop, value } = cond;
+            switch (operator) {
                 case DynamicOperator.EQUAL:
                     fltr = combination(
                         this._combination,
-                        equal<TItem>(cond.prop, cond.value as ValueTypeALL<TItem>),
+                        equal<TItem>(prop, value as ValueTypeALL<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.NOT_EQUAL:
                     fltr = combination(
                         this._combination,
-                        notEqual<TItem>(cond.prop, cond.value as ValueTypeALL<TItem>),
+                        notEqual<TItem>(prop, value as ValueTypeALL<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.GREATER:
                     fltr = combination(
                         this._combination,
-                        greater<TItem>(cond.prop, cond.value as ValueTypeComparable<TItem>),
+                        greater<TItem>(prop, value as ValueTypeComparable<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.LESS:
                     fltr = combination(
                         this._combination,
-                        less<TItem>(cond.prop, cond.value as ValueTypeComparable<TItem>),
+                        less<TItem>(prop, value as ValueTypeComparable<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.GREATER_EQUAL:
                     fltr = combination(
                         this._combination,
-                        greaterEqual<TItem>(cond.prop, cond.value as ValueTypeComparable<TItem>),
+                        greaterEqual<TItem>(prop, value as ValueTypeComparable<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.LESS_EQUAL:
                     fltr = combination(
                         this._combination,
-                        lessEqual<TItem>(cond.prop, cond.value as ValueTypeComparable<TItem>),
+                        lessEqual<TItem>(prop, value as ValueTypeComparable<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.LIKE:
                     fltr = combination(
                         this._combination,
-                        like<TItem>(cond.prop, cond.value as ValueTypeString<TItem>),
+                        like<TItem>(prop, value as ValueTypeString<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.NOT_LIKE:
                     fltr = combination(
                         this._combination,
-                        notLike<TItem>(cond.prop, cond.value as ValueTypeString<TItem>),
+                        notLike<TItem>(prop, value as ValueTypeString<TItem>),
                         fltr,
                     );
                     break;
                 case DynamicOperator.DATE_LESS_EQUAL:
                     fltr = combination(
                         this._combination,
-                        dateLessEqual<TItem>(cond.prop, cond.value as number, cond.unit),
+                        dateLessEqual<TItem>(prop, value as number, cond.unit),
                         fltr,
                     );
                     break;
                 case DynamicOperator.DATE_LESS_NOT_EQUAL:
                     fltr = combination(
                         this._combination,
-                        dateLessNotEqual<TItem>(cond.prop, cond.value as number, cond.unit),
+                        dateLessNotEqual<TItem>(prop, value as number, cond.unit),
                         fltr,
                     );
                     break;
                 case DynamicOperator.RANGE:
                     fltr = combination(
                         this._combination,
-                        range<TItem>(cond.prop, cond.value as ValueTypeComparable<TItem>, cond.range as ValueTypeComparable<TItem>),
+                        range<TItem>(prop, value as ValueTypeComparable<TItem>, cond.range as ValueTypeComparable<TItem>),
                         fltr,
                     );
                     break;
                 default:
-                    console.warn(`unknown operator: ${cond.operator}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
+                    console.warn(`unknown operator: ${operator}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
                     break;
             }
         }

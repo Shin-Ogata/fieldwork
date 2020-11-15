@@ -10,9 +10,11 @@ import {
     isString,
     noop,
     luid,
+    at,
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
+    Silenceable,
     Subscribable,
     EventBroker,
     EventSource,
@@ -28,6 +30,7 @@ import { SyncContext, defaultSync } from '@cdp/data-sync';
 import {
     Model,
     ModelConstructionOptions,
+    ModelSaveOptions,
     isModel,
 } from '@cdp/model';
 import {
@@ -129,19 +132,105 @@ const spliceArray = <T>(target: T[], insert: T[], at: number): void => {
     target.splice(at, 0, ...insert);
 };
 
+/** @internal */
+function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterFilterOptions<T> {
+    const [filter, options] = args;
+    if (null == filter) {
+        return {};
+    } else if (!isFunction(filter)) {
+        return filter as CollectionAfterFilterOptions<T>;
+    } else {
+        return Object.assign({}, options, { filter }) as CollectionAfterFilterOptions<T>;
+    }
+}
+
 const _setOptions = { add: true, remove: true, merge: true };
 const _addOptions = { add: true, remove: false };
 
 //__________________________________________________________________________________________________//
 
 /**
- * @en Base class definition for object collection.
- * @ja オブジェクトの集合を扱う基底クラス定義
+ * @en Base class definition for collection that is ordered sets of models.
+ * @ja モデルの集合を扱うコレクションの基底クラス定義.
  *
- * TODO:
+ * @example <br>
+ *
+ * ```ts
+ * import { PlainObject } from '@cdp/core-utils';
+ * import { Model, ModelConstructor } from '@cdp/model';
+ * import {
+ *     Collection,
+ *     CollectionItemQueryOptions,
+ *     CollectionItemQueryResult,
+ * } from '@cdp/collection';
+ *
+ * // Model schema
+ * interface TrackAttribute {
+ *   uri: string;
+ *   title: string;
+ *   artist: string;
+ *   album:  string;
+ *   releaseDate: Date;
+ *   :
+ * }
+ *
+ * // Model definition
+ * const TrackBase = Model as ModelConstructor<Model<TrackAttribute>, TrackAttribute>;
+ * class Track extends TrackBase {
+ *     static idAttribute = 'uri';
+ * }
+ *
+ * // Collection definition
+ * class Playlist extends Collection<Track> {
+ *     // set target Model constructor
+ *     static readonly model = Track;
+ *
+ *     // @override if need to use custom content provider for fetch.
+ *     protected async sync(
+ *         options?: CollectionItemQueryOptions<Track>
+ *     ): Promise<CollectionItemQueryResult<object>> {
+ *         // some specific implementation here.
+ *         const items = await customProvider(options);
+ *         return {
+ *             total: items.length,
+ *             items,
+ *             options,
+ *         } as CollectionItemQueryResult<object>;
+ *     }
+ *
+ *     // @override if need to convert a response into a list of models.
+ *     protected parse(response: PlainObject[]): TrackAttribute[] {
+ *         return response.map(seed => {
+ *             const date = seed.releaseDate;
+ *             seed.releaseDate = new Date(date);
+ *             return seed;
+ *         }) as TrackAttribute[];
+ *      }
+ * }
+ *
+ * let seeds: TrackAttribute[];
+ *
+ * const playlist = new Playlist(seeds, {
+ *     // default query options
+ *     queryOptions: {
+ *         sortKeys: [
+ *             { name: 'title', order: SortOrder.DESC, type: 'string' },
+ *         ],
+ *     }
+ * });
+ *
+ * await playlist.requery();
+ *
+ * for (const track of playlist) {
+ *     console.log(JSON.stringify(track.toJSON()));
+ * }
+ * ```
  */
-export abstract class Collection<TModel extends object = object, Event extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>>
-    extends EventSource<Event> implements Iterable<TModel> {
+export abstract class Collection<
+    TModel extends object = any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    Event extends CollectionEvent<TModel> = CollectionEvent<TModel>,
+    TKey extends Keys<TModel> = Keys<TModel>
+> extends EventSource<Event> implements Iterable<TModel> {
 
     /**
      * @en Model constructor. <br>
@@ -211,9 +300,9 @@ export abstract class Collection<TModel extends object = object, Event extends C
                         }
                     }
                 }
+                // delegate event
+                this.trigger.call(this, event, model, collection, options); // eslint-disable-line no-useless-call
             }
-            // delegate event
-            this.trigger.call(this, event, model, collection, options); // eslint-disable-line no-useless-call
         };
 
         if (seeds) {
@@ -279,7 +368,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
      * @ja 内包するモデル数
      */
     get length(): number {
-        return this[_properties].store.length;
+        return this.models.length;
     }
 
     /**
@@ -405,6 +494,18 @@ export abstract class Collection<TModel extends object = object, Event extends C
     }
 
     /**
+     * @en Returns `true` if the model is in the collection by an `id`, a `cid`, or by passing in a model instance.
+     * @ja `id`, `cid` およびインスタンスからモデルを所有しているか判定
+     *
+     * @param seed
+     *  - `en` `id`, a `cid`, or by passing in a model instance
+     *  - `ja`  `id`, `cid` およびインスタンス
+     */
+    public has(seed: string | object | undefined): boolean {
+        return null != this.get(seed);
+    }
+
+    /**
      * @en Return a copy of the model's `attributes` object.
      * @ja モデル属性値のコピーを返却
      */
@@ -453,8 +554,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
         }
 
         if (!silent) {
-            type Context = Collection<TModel>;
-            (this as Context).trigger('@sort', this as Context, opts);
+            (this as Collection).trigger('@sort', this as Collection, opts);
         }
 
         return this;
@@ -464,21 +564,91 @@ export abstract class Collection<TModel extends object = object, Event extends C
      * @en Apply after-filter to collection itself.
      * @ja 絞り込み用フィルタの適用
      *
+     * @param callback
+     *  - `en` filter callback.
+     *  - `ja` フィルタコールバック関数
+     * @param options
+     *  - `en` Silenceable options.
+     *  - `ja` Silenceable オプション
+     */
+    public filter(callback: FilterCallback<TModel> | undefined, options?: Silenceable): this;
+
+    /**
+     * @en Apply after-filter to collection itself.
+     * @ja 絞り込み用フィルタの適用
+     *
      * @param options
      *  - `en` after-filter options.
      *  - `ja` 絞り込みオプション
      */
-    public filter(options?: CollectionAfterFilterOptions<TModel>): this {
-        const opts = options || {};
+    public filter(options: CollectionAfterFilterOptions<TModel>): this;
+
+    public filter(...args: unknown[]): this {
+        const opts = parseFilterArgs(...args);
         const { filter, silent } = opts;
         if (filter !== this[_properties].afterFilter) {
             this[_properties].afterFilter = filter;
             if (!silent) {
-                type Context = Collection<TModel>;
-                (this as Context).trigger('@filter', this as Context, opts);
+                (this as Collection).trigger('@filter', this as Collection, opts);
             }
         }
         return this;
+    }
+
+    /**
+     * @en Get the model at the given index. If negative value is given, the target will be found from the last index.
+     * @ja インデックス指定によるモデルへのアクセス. 負値の場合は末尾検索を実行
+     *
+     * @param index
+     *  - `en` A zero-based integer indicating which element to retrieve. <br>
+     *         If negative index is counted from the end of the matched set.
+     *  - `ja` 0 base のインデックスを指定 <br>
+     *         負値が指定された場合, 末尾からのインデックスとして解釈される
+     */
+    public at(index: number): TModel {
+        return at(this.models as TModel[], index);
+    }
+
+    /**
+     * @en Get the first element of the model.
+     * @ja モデルの最初の要素を取得
+     */
+    public first(): TModel | undefined;
+
+    /**
+     * @en Get the value of `count` elements of the model from the first.
+     * @ja モデルの先頭から`count` 分の要素を取得
+     */
+    public first(count: number): TModel[];
+
+    public first(count?: number): TModel | TModel[] | undefined {
+        const targets = this.models;
+        if (null == count) {
+            return targets[0];
+        } else {
+            return targets.slice(0, count);
+        }
+    }
+
+    /**
+     * @en Get the last element of the model.
+     * @ja モデルの最初の要素を取得
+     */
+    public last(): TModel | undefined;
+
+    /**
+     * @en Get the value of `count` elements of the model from the last.
+     * @ja モデルの先頭から`count` 分の要素を取得
+     */
+    public last(count: number): TModel[];
+
+    public last(count?: number): TModel | TModel[] | undefined {
+        const targets = this.models;
+        if (null == count) {
+            return targets[targets.length - 1];
+        } else {
+            return targets.slice(-1 * count);
+        }
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -522,8 +692,6 @@ export abstract class Collection<TModel extends object = object, Event extends C
      *  - `ja` フェッチオプション
      */
     public async fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<object[]> {
-        type Context = Collection<TModel>;
-
         const opts = Object.assign({ progress: noop }, this._defaultQueryOptions, options);
 
         try {
@@ -550,10 +718,10 @@ export abstract class Collection<TModel extends object = object, Event extends C
                 reset ? this.reset(resp, opts) : this.add(resp, opts);
             }
 
-            (this as Context).trigger('@sync', this as Context, resp, opts);
+            (this as Collection).trigger('@sync', this as Collection, resp, opts);
             return resp;
         } catch (e) {
-            (this as Context).trigger('@error', this as Context, e, opts);
+            (this as Collection).trigger('@error', undefined, this as Collection, e, opts);
             throw e;
         }
     }
@@ -750,7 +918,6 @@ export abstract class Collection<TModel extends object = object, Event extends C
 
         // Unless silenced, it's time to fire all appropriate add/sort/update events.
         if (!silent) {
-            type Context = Collection<TModel>;
             for (const [i, model] of toAdd.entries()) {
                 if (null != at) {
                     opts.index = at + i;
@@ -758,11 +925,11 @@ export abstract class Collection<TModel extends object = object, Event extends C
                 if (isModel(model) || (model instanceof EventBroker)) {
                     (model as Model).trigger('@add', model as Model, this, opts);
                 } else {
-                    (this as Context).trigger('@add', model, this as Context, opts);
+                    (this as Collection).trigger('@add', model, this as Collection, opts);
                 }
             }
             if (sort || orderChanged) {
-                (this as Context).trigger('@sort', this as Context, opts);
+                (this as Collection).trigger('@sort', this as Collection, opts);
             }
             if (toAdd.length || toRemove.length || toMerge.length) {
                 opts.changes = {
@@ -770,7 +937,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
                     removed: toRemove,
                     merged: toMerge
                 };
-                (this as Context).trigger('@update', this as Context, opts);
+                (this as Collection).trigger('@update', this as Collection, opts);
             }
         }
 
@@ -805,8 +972,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
         const models = seeds ? this.add(seeds, Object.assign({ silent: true }, opts)) : [];
 
         if (!opts.silent) {
-            type Context = Collection<TModel>;
-            (this as Context).trigger('@reset', this as Context, opts);
+            (this as Collection).trigger('@reset', this as Collection, opts);
         }
 
         return models;
@@ -868,17 +1034,112 @@ export abstract class Collection<TModel extends object = object, Event extends C
      */
     public remove(seeds: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
 
-    public remove(seeds: TModel | UnknownObject | (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel | TModel[] {
+    public remove(seeds: TModel | UnknownObject | (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel | TModel[] | undefined {
         const opts = Object.assign({}, options) as CollectionUpdateOptions<TModel>;
         const singular = !isArray(seeds);
         const items = singular ? [seeds as TModel] : (seeds as TModel[]).slice();
         const removed = this[_removeModels](items, opts);
         if (!opts.silent && removed.length) {
             opts.changes = { added: [], merged: [], removed };
-            type Context = Collection<TModel>;
-            (this as Context).trigger('@update', this as Context, opts);
+            (this as Collection).trigger('@update', this as Collection, opts);
         }
         return singular ? removed[0] : removed;
+    }
+
+    /**
+     * @en Add a model to the end of the collection.
+     * @ja 末尾にモデルを追加
+     *
+     * @param seed
+     *  - `en` given the seed of model.
+     *  - `ja` モデル要素を指定
+     * @param options
+     *  - `en` add options.
+     *  - `ja` 追加オプション
+     */
+    public push(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel {
+        const { store } = this[_properties];
+        return this.add(seed, Object.assign({ at: store.length }, options));
+    }
+
+    /**
+     * @en Remove a model from the end of the collection.
+     * @ja 末尾のモデルを削除
+     *
+     * @param options
+     *  - `en` Silenceable options.
+     *  - `ja` Silenceable オプション
+     */
+    public pop(options?: Silenceable): TModel | undefined {
+        const { store } = this[_properties];
+        return this.remove(store[store.length - 1], options);
+    }
+
+    /**
+     * @en Add a model to the beginning of the collection.
+     * @ja 先頭にモデルを追加
+     *
+     * @param seed
+     *  - `en` given the seed of model.
+     *  - `ja` モデル要素を指定
+     * @param options
+     *  - `en` add options.
+     *  - `ja` 追加オプション
+     */
+    public unshift(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel {
+        return this.add(seed, Object.assign({ at: 0 }, options));
+    }
+
+    /**
+     * @en Remove a model from the beginning of the collection.
+     * @ja 先頭のモデルを削除
+     *
+     * @param options
+     *  - `en` Silenceable options.
+     *  - `ja` Silenceable オプション
+     */
+    public shift(options?: Silenceable): TModel | undefined {
+        const { store } = this[_properties];
+        return this.remove(store[0], options);
+    }
+
+    /**
+     * @en Create a new instance of a model in this collection.
+     * @ja 新しいモデルインスタンスを作成し, コレクションに追加
+     *
+     * @param attrs
+     *  - `en` attributes object.
+     *  - `ja` 属性オブジェクトを指定
+     * @param options
+     *  - `en` model construction options.
+     *  - `ja` モデル構築オプション
+     */
+    public create(attrs: object, options?: ModelSaveOptions): TModel | undefined {
+        const { wait } = options || {};
+        const seed = this[_prepareModel](attrs, options as Silenceable);
+        if (!seed) {
+            return undefined;
+        }
+
+        const model = isModel(seed) ? seed : undefined;
+        if (!wait || !model) {
+            this.add(seed, options);
+        }
+
+        if (model) {
+            void (async () => {
+                try {
+                    await model.save(undefined, options);
+                    if (wait) {
+                        this.add(seed, options);
+                    }
+                } catch (e) {
+                    (this as Collection).trigger('@error', model, this as Collection, e, options);
+                }
+            })();
+        }
+
+        return seed;
     }
 
     /** @internal model preparation */
@@ -895,8 +1156,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
             if (isFunction(model.validate)) {
                 const result = model.validate();
                 if (FAILED(result.code)) {
-                    type Context = Collection<TModel>;
-                    (this as Context).trigger('@invalid', attrs as TModel, this as Context, result, opts);
+                    (this as Collection).trigger('@invalid', attrs as Model, this as Collection, result, opts);
                     return undefined;
                 }
             }
@@ -929,8 +1189,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
                 if (isModel(model) || (model instanceof EventBroker)) {
                     (model as Model).trigger('@remove', model as Model, this, opts);
                 } else {
-                    type Context = Collection<TModel>;
-                    (this as Context).trigger('@remove', model, this as Context, opts);
+                    (this as Collection).trigger('@remove', model, this as Collection, opts);
                 }
             }
 
@@ -979,7 +1238,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
      */
     [Symbol.iterator](): Iterator<TModel> {
         const iterator = {
-            base: this[_properties].store,
+            base: this.models,
             pointer: 0,
             next(): IteratorResult<TModel> {
                 if (this.pointer < this.base.length) {
@@ -1025,7 +1284,7 @@ export abstract class Collection<TModel extends object = object, Event extends C
     /** @internal common iterator create function */
     private [_createIterableIterator]<R>(valueGenerator: (key: string, value: TModel) => R): IterableIterator<R> {
         const context = {
-            base: this[_properties].store,
+            base: this.models,
             pointer: 0,
         };
 
@@ -1060,114 +1319,3 @@ export abstract class Collection<TModel extends object = object, Event extends C
 
 // mixin による `instanceof` は無効に設定
 setMixClassAttribute(Collection as Class, 'instanceOf', null);
-
-/*
- ☆ id
- ☆ models/items
- ☆ length
- ☆ release()
- ☆ fetch()
- ☆ requery()
-
- ★ - ListEditable<T> をどうするか?
-
- ★ url: string | (() => string);
-
- ★ without(...values: TModel[]): TModel[];
-
- ☆ add(model: {}|TModel, options?: AddOptions): TModel;
- ☆ add(models: ({}|TModel)[], options?: AddOptions): TModel[];
- ★ at(index: number): TModel;
- ☆ get(id: number | string | Model): TModel;
- ★ has(key: number | string | Model): boolean;
- ☆ clone(): this;
- ★ create(attributes: any, options ?: ModelSaveOptions): TModel;
- ★ pluck(attribute: string): any[];
- ★ push(model: TModel, options ?: AddOptions): TModel;
- ★ pop(options ?: Silenceable): TModel;
- ☆ remove(model: {} | TModel, options ?: Silenceable): TModel;
- ☆ remove(models: ({} | TModel)[], options ?: Silenceable): TModel[];
- ☆ reset(models ?: TModel[], options ?: Silenceable): TModel[];
- ☆ set(models ?: TModel[], options ?: CollectionSetOptions): TModel[];
- ★ shift(options ?: Silenceable): TModel;
- ☆ sort(options ?: Silenceable): Collection<TModel>;
- ★ unshift(model: TModel, options ?: AddOptions): TModel;
- ★ where(properties: any): TModel[];
- ★ findWhere(properties: any): TModel;
- ★ modelId(attrs: any) : any
- ★ slice(min?: number, max?: number): TModel[];
-
- // mixins from underscore (基本やらない includes だけやる. + filter を afterFilter で実現する)
-
- ★ all(iterator?: _.ListIterator<TModel, boolean>, context?: any): boolean;
- ★ any(iterator?: _.ListIterator<TModel, boolean>, context?: any): boolean;
- ★ chain(): any;
- ★ collect<TResult>(iterator: _.ListIterator<TModel, TResult>, context?: any): TResult[];
- ★ contains(value: TModel): boolean;
- ★ countBy(iterator?: _.ListIterator<TModel, any>): _.Dictionary<number>;
- ★ countBy(iterator: string): _.Dictionary<number>;
- ★ detect(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel;
- ★ difference(others: TModel[]): TModel[];
- ★ drop(n?: number): TModel[];
- ★ each(iterator: _.ListIterator<TModel, void>, context?: any): TModel[];
- ★ every(iterator: _.ListIterator<TModel, boolean>, context?: any): boolean;
- ☆ filter(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel[];
- ★ find(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel;
- ★ findIndex(predicate: _.ListIterator<TModel, boolean>, context?: any): number;
- ★ findLastIndex(predicate: _.ListIterator<TModel, boolean>, context?: any): number;
- ★ first(): TModel;
- ★ first(n: number): TModel[];
- ★ foldl<TResult>(iterator: _.MemoIterator<TModel, TResult>, memo?: TResult, context?: any): TResult;
- ★ foldr<TResult>(iterator: _.MemoIterator<TModel, TResult>, memo?: TResult, context?: any): TResult;
- ★ forEach(iterator: _.ListIterator<TModel, void>, context?: any): TModel[];
- ★ groupBy(iterator: _.ListIterator<TModel, any>, context?: any): _.Dictionary<TModel[]>;
- ★ groupBy(iterator: string, context?: any): _.Dictionary<TModel[]>;
- ★ head(): TModel;
- ★ head(n: number): TModel[];
- ★ include(value: TModel): boolean;
- ★ includes(value: TModel): boolean;
- ★ indexBy(iterator: _.ListIterator<TModel, any>, context?: any): _.Dictionary<TModel>;
- ★ indexBy(iterator: string, context?: any): _.Dictionary<TModel>;
- ★ indexOf(value: TModel, isSorted?: boolean): number;
- ★ initial(): TModel;
- ★ initial(n: number): TModel[];
- ★ inject<TResult>(iterator: _.MemoIterator<TModel, TResult>, memo?: TResult, context?: any): TResult;
- ★ invoke(methodName: string, ...args: any[]): any;
- ★ isEmpty(): boolean;
- ★ last(): TModel;
- ★ last(n: number): TModel[];
- ★ lastIndexOf(value: TModel, from?: number): number;
- ★ map<TResult>(iterator: _.ListIterator<TModel, TResult>, context?: any): TResult[];
- ★ max(iterator?: _.ListIterator<TModel, any>, context?: any): TModel;
- ★ min(iterator?: _.ListIterator<TModel, any>, context?: any): TModel;
- ★ partition(iterator: _.ListIterator<TModel, boolean>): TModel[][];
- ★ reduce<TResult>(iterator: _.MemoIterator<TModel, TResult>, memo?: TResult, context?: any): TResult;
- ★ reduceRight<TResult>(iterator: _.MemoIterator<TModel, TResult>, memo?: TResult, context?: any): TResult;
- ★ reject(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel[];
- ★ rest(n?: number): TModel[];
- ★ sample(): TModel;
- ★ sample(n: number): TModel[];
- ★ select(iterator: _.ListIterator<TModel, boolean>, context?: any): TModel[];
- ★ shuffle(): TModel[];
- ★ size(): number;
- ★ some(iterator?: _.ListIterator<TModel, boolean>, context?: any): boolean;
- ★ sortBy<TSort>(iterator?: _.ListIterator<TModel, TSort>, context?: any): TModel[];
- ★ sortBy(iterator: string, context?: any): TModel[];
- ★ tail(n?: number): TModel[];
- ★ take(): TModel;
- ★ take(n: number): TModel[];
- ★ toArray(): TModel[];
-
-★ model の所属に collection の id を書き込むかも
-   その場合 _prepareModel, _removeReference にも対応が必要
-
-- Event:
-    '@add': [TItem, Collection < TItem >, CollectionSetOptions];
-    '@remove': [TItem, Collection < TItem >, CollectionSetOptions];
-    '@update': [Collection < TItem >, CollectionUpdateOptions];
-    '@reset': [Collection < TItem >, CollectionAddOptions];
-    '@sort': [Collection < TItem >, CollectionSetOptions];
-    '@sync': [Collection < TItem >, PlainObject, CollectionDataSyncOptions];
-    '@destroy': [TItem, Collection < TItem >, ModelDestroyOptions];
-    '@error': [Collection < TItem >, Error, CollectionDataSyncOptions];
- */

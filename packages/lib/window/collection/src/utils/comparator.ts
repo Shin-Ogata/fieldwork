@@ -136,18 +136,18 @@ export const getNumberComparator = getGenericComparator;
  * @ja [[SortKey]] を comparator に変換
  */
 export function toComparator<T, K extends string = string>(sortKey: SortKey<K>): SortCallback<T> {
-    const propName = sortKey.name;
-    switch (sortKey.type) {
+    const { name, type, order } = sortKey;
+    switch (type) {
         case 'string':
-            return getStringComparator<T, K>(propName, sortKey.order);
+            return getStringComparator<T, K>(name, order);
         case 'boolean':
-            return getBooleanComparator<T, K>(propName, sortKey.order);
+            return getBooleanComparator<T, K>(name, order);
         case 'number':
-            return getNumberComparator<T, K>(propName, sortKey.order);
+            return getNumberComparator<T, K>(name, order);
         case 'date':
-            return getDateComparator<T, K>(propName, sortKey.order);
+            return getDateComparator<T, K>(name, order);
         default:
-            return getGenericComparator<T, K>(propName, sortKey.order);
+            return getGenericComparator<T, K>(name, order);
     }
 }
 

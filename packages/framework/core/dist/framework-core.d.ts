@@ -847,6 +847,20 @@ export declare function unique<T>(array: T[]): T[];
  */
 export declare function union<T>(...arrays: T[][]): T[];
 /**
+ * @en Get the model at the given index. If negative value is given, the target will be found from the last index.
+ * @ja インデックス指定によるモデルへのアクセス. 負値の場合は末尾検索を実行
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param index
+ *  - `en` A zero-based integer indicating which element to retrieve. <br>
+ *         If negative index is counted from the end of the matched set.
+ *  - `ja` 0 base のインデックスを指定 <br>
+ *         負値が指定された場合, 末尾からのインデックスとして解釈される
+ */
+export declare function at<T>(array: T[], index: number): T | never;
+/**
  * @en Make index array.
  * @ja インデックス配列の作成
  *

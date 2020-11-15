@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\base.ts" />
+    <TypeScriptCompile Include="src\collection-editor.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
     <TypeScriptCompile Include="src\query\dynamic-condition.ts" />
@@ -71,6 +72,7 @@
     <TypeScriptCompile Include="src\utils\index.ts" />
     <TypeScriptCompile Include="tests\unit\array-cursor.spec.ts" />
     <TypeScriptCompile Include="tests\unit\array-editor.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\collection-editor.spec.ts" />
     <TypeScriptCompile Include="tests\unit\collection.spec.ts" />
     <TypeScriptCompile Include="tests\unit\comparator.spec.ts" />
     <TypeScriptCompile Include="tests\unit\dynamic-condition.spec.ts" />
@@ -79,6 +81,7 @@
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\base.d.ts" />
+    <TypeScriptCompile Include="types\collection-editor.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
     <TypeScriptCompile Include="types\query\dynamic-condition.d.ts" />
