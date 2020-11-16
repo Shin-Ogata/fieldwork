@@ -11,6 +11,10 @@ import {
     at,
     indices,
     groupBy,
+    intersection,
+    difference,
+    without,
+    sample,
     map,
     filter,
     find,
@@ -205,6 +209,39 @@ describe('utils/array spec', () => {
         expect(result[0].items[0].title).toBe('011');
         expect(result[0].albumTitle).toBe('BBB');
         expect(result[0].trackArtist).toBe('bbb');
+    });
+
+    it('check intersection()', () => {
+        const result = intersection([1, 2, 3], [101, 2, 1, 10], [2, 1]);
+        expect(result).toEqual([1, 2]);
+    });
+
+    it('check difference()', () => {
+        const array = [1, 2, 3, 4, 5];
+        let result = difference(array, [5, 2, 10]);
+        expect(result).toEqual([1, 3, 4]);
+
+        result = difference(array, [5, 10], [8, 2]);
+        expect(result).toEqual([1, 3, 4]);
+    });
+
+    it('check without()', () => {
+        const array = [1, 2, 1, 0, 3, 1, 4];
+        let result = without(array, 1);
+        expect(result).toEqual([2, 0, 3, 4]);
+
+        result = without(array, 0, 1);
+        expect(result).toEqual([2, 3, 4]);
+    });
+
+    it('check sample()', () => {
+        const array = [1, 2, 3, 4, 5, 6];
+        const res1 = sample(array);
+        expect(array.includes(res1)).toBe(true);
+
+        const res2 = sample(array, 3);
+        expect(res2.length).toBe(3);
+        expect(res2.every(el => array.includes(el))).toBe(true);
     });
 
     it('check async map()', async done => {

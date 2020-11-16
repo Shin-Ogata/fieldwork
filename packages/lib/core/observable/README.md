@@ -1,0 +1,3 @@
+# @cdp/observable
+
+[description]

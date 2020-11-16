@@ -19,7 +19,8 @@ import {
 import { convertSortKeys } from '../utils/comparator';
 import { DynamicCondition } from './dynamic-condition';
 
-const { trunc } = Math;
+/** @internal */
+const trunc = Math.trunc.bind(Math);
 
 /** @internal 使用するプロパティが保証された CollectionItemQueryOptions */
 interface SafeCollectionQueryOptions<TItem extends object, TKey extends Keys<TItem>> extends CollectionItemQueryOptions<TItem, TKey> {

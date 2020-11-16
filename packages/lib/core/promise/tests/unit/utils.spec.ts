@@ -195,6 +195,40 @@ describe('promise/utils spec', () => {
         }
     });
 
+    it('check PromiseManager#allSettled', async () => {
+        const manager = new PromiseManager();
+
+        try {
+            manager.add(resolve100());
+            manager.add(resolve50());
+            manager.add(resolve0());
+            manager.add(reject100());
+            manager.add(reject50());
+            manager.add(reject0());
+
+            const results = await manager.allSettled();
+
+            type S = PromiseFulfilledResult<string>;
+            type F = PromiseRejectedResult;
+
+            expect(results.length).toBe(6);
+            expect((results[0] as S).status).toBe('fulfilled');
+            expect((results[0] as S).value).toBe('resolve:100');
+            expect((results[1] as S).status).toBe('fulfilled');
+            expect((results[1] as S).value).toBe('resolve:50');
+            expect((results[2] as S).status).toBe('fulfilled');
+            expect((results[2] as S).value).toBe('resolve:0');
+            expect((results[3] as F).status).toBe('rejected');
+            expect((results[3] as F).reason).toBe('reject:100');
+            expect((results[4] as F).status).toBe('rejected');
+            expect((results[4] as F).reason).toBe('reject:50');
+            expect((results[5] as F).status).toBe('rejected');
+            expect((results[5] as F).reason).toBe('reject:0');
+        } catch (e) {
+            fail(e);
+        }
+    });
+
     it('check PromiseManager#abort', async () => {
         const manager = new PromiseManager();
 

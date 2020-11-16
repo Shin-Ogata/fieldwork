@@ -219,6 +219,7 @@ export function createEscaper(map: object): (src: Primitive) => string {
     };
 }
 
+/** @internal */
 const mapHtmlEscape = {
     '<': '&lt;',
     '>': '&gt;',
@@ -330,6 +331,7 @@ export function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undef
 
 //__________________________________________________________________________________________________//
 
+/** @internal */
 let _localId = 0;
 
 /**
@@ -348,6 +350,37 @@ let _localId = 0;
 export function luid(prefix = '', zeroPad?: number): string {
     const id = (++_localId).toString(16);
     return (null != zeroPad) ? `${prefix}${id.padStart(zeroPad, '0')}` : `${prefix}${id}`;
+}
+
+/**
+ * @en Returns a random integer between `0` and `max`, inclusive.
+ * @ja `0` - `max` のランダムの整数値を生成
+ *
+ * @param max
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ */
+export function randomInt(max: number): number;
+
+/**
+ * @en Returns a random integer between `min` and `max`, inclusive.
+ * @ja `min` - `max` のランダムの整数値を生成
+ *
+ * @param min
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ * @param max
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ */
+export function randomInt(min: number, max: number): number; // eslint-disable-line @typescript-eslint/unified-signatures
+
+export function randomInt(min: number, max?: number): number {
+    if (null == max) {
+        max = min;
+        min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
 }
 
 //__________________________________________________________________________________________________//

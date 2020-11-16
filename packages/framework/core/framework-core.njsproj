@@ -67,6 +67,7 @@
     <Content Include="dist\framework-core.mjs" />
     <Content Include="docs\typedoc\index.html" />
     <Content Include="package.json" />
+    <Content Include="README.md" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>

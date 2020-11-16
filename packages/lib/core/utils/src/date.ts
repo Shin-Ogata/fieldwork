@@ -4,6 +4,7 @@
  */
 export type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec';
 
+/** @internal */
 const _computeDateFuncMap = {
     year: (date: Date, base: Date, add: number) => {
         date.setUTCFullYear(base.getUTCFullYear() + add);

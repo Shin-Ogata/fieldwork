@@ -854,10 +854,8 @@ export declare function union<T>(...arrays: T[][]): T[];
  *  - `en` source array
  *  - `ja` 入力配列
  * @param index
- *  - `en` A zero-based integer indicating which element to retrieve. <br>
- *         If negative index is counted from the end of the matched set.
- *  - `ja` 0 base のインデックスを指定 <br>
- *         負値が指定された場合, 末尾からのインデックスとして解釈される
+ *  - `en` A zero-based integer indicating which element to retrieve. <br> If negative index is counted from the end of the matched set.
+ *  - `ja` 0 base のインデックスを指定 <br> 負値が指定された場合, 末尾からのインデックスとして解釈される
  */
 export declare function at<T>(array: T[], index: number): T | never;
 /**
@@ -910,6 +908,95 @@ export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, 
  *  - `ja` `GROUP BY` オプション
  */
 export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items">(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
+/**
+ * @en Computes the list of values that are the intersection of all the arrays. Each value in the result is present in each of the arrays.
+ * @ja 配列の積集合を返却. 返却された配列の要素はすべての入力された配列に含まれる
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(intersection([1, 2, 3], [101, 2, 1, 10], [2, 1]));
+ * // => [1, 2]
+ * ```
+ *
+ * @param arrays
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export declare function intersection<T>(...arrays: T[][]): T[];
+/**
+ * @en Returns the values from array that are not present in the other arrays.
+ * @ja 配列からほかの配列に含まれないものを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(difference([1, 2, 3, 4, 5], [5, 2, 10]));
+ * // => [1, 3, 4]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param others
+ *  - `en` exclude element in return value.
+ *  - `ja` 戻り値配列に含めない要素を指定
+ */
+export declare function difference<T>(array: T[], ...others: T[][]): T[];
+/**
+ * @en Returns a copy of the array with all instances of the values removed.
+ * @ja 配列から指定要素を取り除いたものを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(without([1, 2, 1, 0, 3, 1, 4], 0, 1));
+ * // => [2, 3, 4]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param values
+ *  - `en` exclude element in return value.
+ *  - `ja` 戻り値配列に含めない要素を指定
+ */
+export declare function without<T>(array: T[], ...values: T[]): T[];
+/**
+ * @en Produce a random sample from the list.
+ * @ja ランダムにサンプル値を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(sample([1, 2, 3, 4, 5, 6], 3));
+ * // => [1, 6, 2]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param count
+ *  - `en` number of sampling count.
+ *  - `ja` 返却するサンプル数を指定
+ */
+export declare function sample<T>(array: T[], count: number): T[];
+/**
+ * @en Produce a random sample from the list.
+ * @ja ランダムにサンプル値を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(sample([1, 2, 3, 4, 5, 6]));
+ * // => 4
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export declare function sample<T>(array: T[]): T;
 /**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.map()` の代替メソッド
@@ -1158,10 +1245,10 @@ export declare type TimerStartFunction = (handler: UnknownFunction, timeout?: nu
  * @ja タイマー停止関数の型
  */
 export declare type TimerStopFunction = (handle: TimerHandle) => void;
-declare const _setTimeout: TimerStartFunction;
-declare const _clearTimeout: TimerStopFunction;
-declare const _setInterval: TimerStartFunction;
-declare const _clearInterval: TimerStopFunction;
+export declare const setTimeout: TimerStartFunction;
+export declare const clearTimeout: TimerStopFunction;
+export declare const setInterval: TimerStartFunction;
+export declare const clearInterval: TimerStopFunction;
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -1322,6 +1409,27 @@ export declare function restoreNil<T>(value: T | "null" | "undefined"): T | null
  *  - `ja` 0 詰めする桁数を指定
  */
 export declare function luid(prefix?: string, zeroPad?: number): string;
+/**
+ * @en Returns a random integer between `0` and `max`, inclusive.
+ * @ja `0` - `max` のランダムの整数値を生成
+ *
+ * @param max
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ */
+export declare function randomInt(max: number): number;
+/**
+ * @en Returns a random integer between `min` and `max`, inclusive.
+ * @ja `min` - `max` のランダムの整数値を生成
+ *
+ * @param min
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ * @param max
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ */
+export declare function randomInt(min: number, max: number): number;
 /**
  * @en Presume whether it's a canceled error.
  * @ja キャンセルされたエラーであるか推定
@@ -1672,6 +1780,382 @@ export declare abstract class EventPublisher<Event extends object> implements Su
      */
     off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }
+/** re-export */
+export declare type EventArguments<T> = Arguments<T>;
+/**
+ * @en Eventing framework object able to call `publish()` method from outside.
+ * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventBroker } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ * }
+ *
+ * const broker = new EventBroker<SampleEvent>();
+ * broker.trigger('hoge', 100, 'test');     // OK. standard usage.
+ * broker.trigger('hoge', 100, true);       // NG. argument of type 'true' is not assignable
+ *                                          //     to parameter of type 'string | undefined'.
+ * ```
+ */
+export interface EventBroker<Event extends object> extends Subscribable<Event> {
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+}
+/**
+ * @en Constructor of [[EventBroker]]
+ * @ja [[EventBroker]] のコンストラクタ実体
+ */
+export declare const EventBroker: {
+    readonly prototype: EventBroker<any>;
+    new <T extends object>(): EventBroker<T>;
+};
+/**
+ * @en The class to which the safe event register/unregister method is offered for the object which is a short life cycle than subscription target. <br>
+ *     The advantage of using this form, instead of `on()`, is that `listenTo()` allows the object to keep track of the events,
+ *     and they can be removed all at once later call `stopListening()`.
+ * @ja 購読対象よりもライフサイクルが短いオブジェクトに対して, 安全なイベント登録/解除メソッドを提供するクラス <br>
+ *     `on()` の代わりに `listenTo()` を使用することで, 後に `stopListening()` を1度呼ぶだけですべてのリスナーを解除できる利点がある.
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventReceiver, EventBroker } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ *   foo: [void];                   // no args
+ *   hoo: void;                     // no args (same the upon)
+ *   bar: [Error];                  // any class is available.
+ *   baz: Error | Number;           // if only one argument, `[]` is not required.
+ * }
+ *
+ * // declare client class
+ * class SampleReceiver extends EventReceiver {
+ *   constructor(broker: EventBroker<SampleEvent>) {
+ *     super();
+ *     this.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
+ *     this.listenTo(broker, 'bar', (e: Error) => { ... });
+ *     this.listenTo(broker, ['foo', 'hoo'], () => { ... });
+ *   }
+ *
+ *   release(): void {
+ *     this.stopListening();
+ *   }
+ * }
+ * ```
+ *
+ * or
+ *
+ * ```ts
+ * const broker   = new EventBroker<SampleEvent>();
+ * const receiver = new EventReceiver();
+ *
+ * receiver.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
+ * receiver.listenTo(broker, 'bar', (e: Error) => { ... });
+ * receiver.listenTo(broker, ['foo', 'hoo'], () => { ... });
+ *
+ * receiver.stopListening();
+ * ```
+ */
+export declare class EventReceiver {
+    /** constructor */
+    constructor();
+    /**
+     * @en Tell an object to listen to a particular event on an other object.
+     * @ja 対象オブジェクトのイベント購読設定
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *  - `ja` イベント購読対象のオブジェクト
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    listenTo<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target: T, channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Just like listenTo, but causes the bound callback to fire only once before being removed.
+     * @ja 対象オブジェクトの一度だけハンドリング可能なイベント購読設定
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *  - `ja` イベント購読対象のオブジェクト
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    listenToOnce<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target: T, channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Tell an object to stop listening to events.
+     * @ja イベント購読解除
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *         When not set this parameter, everything is released.
+     *  - `ja` イベント購読対象のオブジェクト
+     *         指定しない場合はすべてのリスナーを解除
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released listeners from `target`.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合は対象 `target` のリスナーをすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
+}
+export declare type EventSource<T extends object> = EventBroker<T> & EventReceiver;
+export declare const EventSource: {
+    readonly prototype: EventSource<any>;
+    new <T extends object>(): EventSource<T>;
+};
+/**
+ * @en All event handle base interface definition.
+ * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
+ */
+export interface EventAll {
+    "*": any[];
+}
+/**
+ * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
+ * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ */
+export interface Subscription {
+    /**
+     * @en Status for receiving event
+     * @ja 購読可否ステータス
+     */
+    readonly enable: boolean;
+    /**
+     * @en Disposes the resources held by the subscription
+     * @ja 購読停止
+     */
+    unsubscribe(): void;
+}
+/**
+ * @en Event supplyer interface definitions <br>
+ *     If the client listener returns `true`, the class stops delegation event to the next.
+ * @ja イベント供給を行うインターフェイス定義 <br>
+ *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
+ */
+export interface Subscribable<Event extends object = any> {
+    /** type resolver */
+    readonly [$cdp]?: Event;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
+    /**
+     * @en Subscrive event(s).
+     * @ja イベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @ja 一度だけハンドリング可能なイベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+}
+/**
+ * @en Extract event schema from [[Subscribable]] type.
+ * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ */
+export declare type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
+/**
+ * @en Common interface for notification restraint.
+ * @ja 通知抑止に使用する共通インターフェイス
+ */
+export interface Silenceable {
+    /** true: restraint notification / false: fire notification (default) */
+    silent?: boolean;
+}
+/**
+ * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
+ *     The client of this class can implement original Pub-Sub (Observer) design pattern.
+ * @ja 型安全を保障するイベント登録・発行クラス <br>
+ *     クライアントは本クラスを派生して独自の Pub-Sub (Observer) パターンを実装可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventPublisher } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ *   foo: [void];                   // no args
+ *   hoo: void;                     // no args (same the upon)
+ *   bar: [Error];                  // any class is available.
+ *   baz: Error | Number;           // if only one argument, `[]` is not required.
+ * }
+ *
+ * // declare client class
+ * class SamplePublisher extends EventPublisher<SampleEvent> {
+ *   :
+ *   someMethod(): void {
+ *     this.publish('hoge', 100, 'test');       // OK. standard usage.
+ *     this.publish('hoge', 100, true);         // NG. argument of type 'true' is not assignable
+ *                                              //     to parameter of type 'string | undefined'.
+ *     this.publish('hoge', 100);               // OK. all args to be optional automatically.
+ *     this.publish('foo');                     // OK. standard usage.
+ *     this.publish('foo', 100);                // NG. argument of type '100' is not assignable
+ *                                              //     to parameter of type 'void | undefined'.
+ *   }
+ * }
+ *
+ * const sample = new SamplePublisher();
+ *
+ * sample.on('hoge', (a: number, b: string) => { ... });    // OK. standard usage.
+ * sample.on('hoge', (a: number, b: boolean) => { ... });   // NG. types of parameters 'b'
+ *                                                          //     and 'args_1' are incompatible.
+ * sample.on('hoge', (a) => { ... });                       // OK. all args
+ *                                                          //     to be optional automatically.
+ * sample.on('hoge', (a, b, c) => { ... });                 // NG. expected 1-2 arguments,
+ *                                                          //     but got 3.
+ * ```
+ */
+export declare abstract class EventPublisher<Event extends object> implements Subscribable<Event> {
+    /** constructor */
+    constructor();
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    protected publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
+    /**
+     * @en Subscrive event(s).
+     * @ja イベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @ja 一度だけハンドリング可能なイベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
+}
+/** re-export */
+export declare type EventArguments<T> = Arguments<T>;
 /**
  * @en Eventing framework object able to call `publish()` method from outside.
  * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
@@ -1970,14 +2454,13 @@ export declare class CancelToken<T = unknown> {
      */
     register(onCancel: (reason: T) => unknown): Subscription;
 }
-declare const NativePromise: PromiseConstructor;
 /**
  * @en Extended `Promise` class which enabled cancellation. <br>
  *     `Native Promise` constructor is overridden by framework default behaviour.
  * @ja キャンセルを可能にした `Promise` 拡張クラス <br>
  *     既定で `Native Promise` をオーバーライドする.
  */
-export declare class CancelablePromise<T> extends NativePromise<T> {
+export declare class CancelablePromise<T> extends Promise<T> {
     /**
      * constructor
      *
@@ -2088,6 +2571,11 @@ export declare class PromiseManager {
      */
     wait(): Promise<unknown[]>;
     /**
+     * @en Call `Promise.allSettled()` for under the management.
+     * @ja 管理対象に対して `Promise.allSettled()`
+     */
+    allSettled(): Promise<PromiseSettledResult<unknown>[]>;
+    /**
      * @en Invoke `cancel` message for under the management promises.
      * @ja 管理対象の `Promise` に対してキャンセルを発行
      *
@@ -2100,6 +2588,380 @@ export declare class PromiseManager {
      */
     abort<T>(reason?: T): Promise<unknown[]>;
 }
+/**
+ * @en All event handle base interface definition.
+ * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
+ */
+export interface EventAll {
+    "*": any[];
+}
+/**
+ * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
+ * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ */
+export interface Subscription {
+    /**
+     * @en Status for receiving event
+     * @ja 購読可否ステータス
+     */
+    readonly enable: boolean;
+    /**
+     * @en Disposes the resources held by the subscription
+     * @ja 購読停止
+     */
+    unsubscribe(): void;
+}
+/**
+ * @en Event supplyer interface definitions <br>
+ *     If the client listener returns `true`, the class stops delegation event to the next.
+ * @ja イベント供給を行うインターフェイス定義 <br>
+ *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
+ */
+export interface Subscribable<Event extends object = any> {
+    /** type resolver */
+    readonly [$cdp]?: Event;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
+    /**
+     * @en Subscrive event(s).
+     * @ja イベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @ja 一度だけハンドリング可能なイベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+}
+/**
+ * @en Extract event schema from [[Subscribable]] type.
+ * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ */
+export declare type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
+/**
+ * @en Common interface for notification restraint.
+ * @ja 通知抑止に使用する共通インターフェイス
+ */
+export interface Silenceable {
+    /** true: restraint notification / false: fire notification (default) */
+    silent?: boolean;
+}
+/**
+ * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
+ *     The client of this class can implement original Pub-Sub (Observer) design pattern.
+ * @ja 型安全を保障するイベント登録・発行クラス <br>
+ *     クライアントは本クラスを派生して独自の Pub-Sub (Observer) パターンを実装可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventPublisher } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ *   foo: [void];                   // no args
+ *   hoo: void;                     // no args (same the upon)
+ *   bar: [Error];                  // any class is available.
+ *   baz: Error | Number;           // if only one argument, `[]` is not required.
+ * }
+ *
+ * // declare client class
+ * class SamplePublisher extends EventPublisher<SampleEvent> {
+ *   :
+ *   someMethod(): void {
+ *     this.publish('hoge', 100, 'test');       // OK. standard usage.
+ *     this.publish('hoge', 100, true);         // NG. argument of type 'true' is not assignable
+ *                                              //     to parameter of type 'string | undefined'.
+ *     this.publish('hoge', 100);               // OK. all args to be optional automatically.
+ *     this.publish('foo');                     // OK. standard usage.
+ *     this.publish('foo', 100);                // NG. argument of type '100' is not assignable
+ *                                              //     to parameter of type 'void | undefined'.
+ *   }
+ * }
+ *
+ * const sample = new SamplePublisher();
+ *
+ * sample.on('hoge', (a: number, b: string) => { ... });    // OK. standard usage.
+ * sample.on('hoge', (a: number, b: boolean) => { ... });   // NG. types of parameters 'b'
+ *                                                          //     and 'args_1' are incompatible.
+ * sample.on('hoge', (a) => { ... });                       // OK. all args
+ *                                                          //     to be optional automatically.
+ * sample.on('hoge', (a, b, c) => { ... });                 // NG. expected 1-2 arguments,
+ *                                                          //     but got 3.
+ * ```
+ */
+export declare abstract class EventPublisher<Event extends object> implements Subscribable<Event> {
+    /** constructor */
+    constructor();
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    protected publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
+    /**
+     * @en Subscrive event(s).
+     * @ja イベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @ja 一度だけハンドリング可能なイベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
+}
+/** re-export */
+export declare type EventArguments<T> = Arguments<T>;
+/**
+ * @en Eventing framework object able to call `publish()` method from outside.
+ * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventBroker } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ * }
+ *
+ * const broker = new EventBroker<SampleEvent>();
+ * broker.trigger('hoge', 100, 'test');     // OK. standard usage.
+ * broker.trigger('hoge', 100, true);       // NG. argument of type 'true' is not assignable
+ *                                          //     to parameter of type 'string | undefined'.
+ * ```
+ */
+export interface EventBroker<Event extends object> extends Subscribable<Event> {
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+}
+/**
+ * @en Constructor of [[EventBroker]]
+ * @ja [[EventBroker]] のコンストラクタ実体
+ */
+export declare const EventBroker: {
+    readonly prototype: EventBroker<any>;
+    new <T extends object>(): EventBroker<T>;
+};
+/**
+ * @en The class to which the safe event register/unregister method is offered for the object which is a short life cycle than subscription target. <br>
+ *     The advantage of using this form, instead of `on()`, is that `listenTo()` allows the object to keep track of the events,
+ *     and they can be removed all at once later call `stopListening()`.
+ * @ja 購読対象よりもライフサイクルが短いオブジェクトに対して, 安全なイベント登録/解除メソッドを提供するクラス <br>
+ *     `on()` の代わりに `listenTo()` を使用することで, 後に `stopListening()` を1度呼ぶだけですべてのリスナーを解除できる利点がある.
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventReceiver, EventBroker } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ *   foo: [void];                   // no args
+ *   hoo: void;                     // no args (same the upon)
+ *   bar: [Error];                  // any class is available.
+ *   baz: Error | Number;           // if only one argument, `[]` is not required.
+ * }
+ *
+ * // declare client class
+ * class SampleReceiver extends EventReceiver {
+ *   constructor(broker: EventBroker<SampleEvent>) {
+ *     super();
+ *     this.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
+ *     this.listenTo(broker, 'bar', (e: Error) => { ... });
+ *     this.listenTo(broker, ['foo', 'hoo'], () => { ... });
+ *   }
+ *
+ *   release(): void {
+ *     this.stopListening();
+ *   }
+ * }
+ * ```
+ *
+ * or
+ *
+ * ```ts
+ * const broker   = new EventBroker<SampleEvent>();
+ * const receiver = new EventReceiver();
+ *
+ * receiver.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
+ * receiver.listenTo(broker, 'bar', (e: Error) => { ... });
+ * receiver.listenTo(broker, ['foo', 'hoo'], () => { ... });
+ *
+ * receiver.stopListening();
+ * ```
+ */
+export declare class EventReceiver {
+    /** constructor */
+    constructor();
+    /**
+     * @en Tell an object to listen to a particular event on an other object.
+     * @ja 対象オブジェクトのイベント購読設定
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *  - `ja` イベント購読対象のオブジェクト
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    listenTo<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target: T, channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Just like listenTo, but causes the bound callback to fire only once before being removed.
+     * @ja 対象オブジェクトの一度だけハンドリング可能なイベント購読設定
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *  - `ja` イベント購読対象のオブジェクト
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    listenToOnce<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target: T, channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Tell an object to stop listening to events.
+     * @ja イベント購読解除
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *         When not set this parameter, everything is released.
+     *  - `ja` イベント購読対象のオブジェクト
+     *         指定しない場合はすべてのリスナーを解除
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released listeners from `target`.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合は対象 `target` のリスナーをすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
+}
+export declare type EventSource<T extends object> = EventBroker<T> & EventReceiver;
+export declare const EventSource: {
+    readonly prototype: EventSource<any>;
+    new <T extends object>(): EventSource<T>;
+};
 /**
  * @en Event observation state definition.
  * @ja イベント購読状態定義
@@ -2660,6 +3522,380 @@ export declare function makeResult(code: number, message?: string, cause?: unkno
  */
 export declare function makeCanceledResult(message?: string, cause?: unknown): Result;
 /**
+ * @en All event handle base interface definition.
+ * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
+ */
+export interface EventAll {
+    "*": any[];
+}
+/**
+ * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
+ * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ */
+export interface Subscription {
+    /**
+     * @en Status for receiving event
+     * @ja 購読可否ステータス
+     */
+    readonly enable: boolean;
+    /**
+     * @en Disposes the resources held by the subscription
+     * @ja 購読停止
+     */
+    unsubscribe(): void;
+}
+/**
+ * @en Event supplyer interface definitions <br>
+ *     If the client listener returns `true`, the class stops delegation event to the next.
+ * @ja イベント供給を行うインターフェイス定義 <br>
+ *     クライアントリスナーが `true` を返却するとき, 本クラスは次のイベント呼び出しを中止する.
+ */
+export interface Subscribable<Event extends object = any> {
+    /** type resolver */
+    readonly [$cdp]?: Event;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
+    /**
+     * @en Subscrive event(s).
+     * @ja イベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @ja 一度だけハンドリング可能なイベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+}
+/**
+ * @en Extract event schema from [[Subscribable]] type.
+ * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ */
+export declare type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
+/**
+ * @en Common interface for notification restraint.
+ * @ja 通知抑止に使用する共通インターフェイス
+ */
+export interface Silenceable {
+    /** true: restraint notification / false: fire notification (default) */
+    silent?: boolean;
+}
+/**
+ * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
+ *     The client of this class can implement original Pub-Sub (Observer) design pattern.
+ * @ja 型安全を保障するイベント登録・発行クラス <br>
+ *     クライアントは本クラスを派生して独自の Pub-Sub (Observer) パターンを実装可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventPublisher } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ *   foo: [void];                   // no args
+ *   hoo: void;                     // no args (same the upon)
+ *   bar: [Error];                  // any class is available.
+ *   baz: Error | Number;           // if only one argument, `[]` is not required.
+ * }
+ *
+ * // declare client class
+ * class SamplePublisher extends EventPublisher<SampleEvent> {
+ *   :
+ *   someMethod(): void {
+ *     this.publish('hoge', 100, 'test');       // OK. standard usage.
+ *     this.publish('hoge', 100, true);         // NG. argument of type 'true' is not assignable
+ *                                              //     to parameter of type 'string | undefined'.
+ *     this.publish('hoge', 100);               // OK. all args to be optional automatically.
+ *     this.publish('foo');                     // OK. standard usage.
+ *     this.publish('foo', 100);                // NG. argument of type '100' is not assignable
+ *                                              //     to parameter of type 'void | undefined'.
+ *   }
+ * }
+ *
+ * const sample = new SamplePublisher();
+ *
+ * sample.on('hoge', (a: number, b: string) => { ... });    // OK. standard usage.
+ * sample.on('hoge', (a: number, b: boolean) => { ... });   // NG. types of parameters 'b'
+ *                                                          //     and 'args_1' are incompatible.
+ * sample.on('hoge', (a) => { ... });                       // OK. all args
+ *                                                          //     to be optional automatically.
+ * sample.on('hoge', (a, b, c) => { ... });                 // NG. expected 1-2 arguments,
+ *                                                          //     but got 3.
+ * ```
+ */
+export declare abstract class EventPublisher<Event extends object> implements Subscribable<Event> {
+    /** constructor */
+    constructor();
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    protected publish<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+    /**
+     * @en Check whether this object has clients.
+     * @ja クライアントが存在するか判定
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    /**
+     * @en Returns registered channel keys.
+     * @ja 登録されているチャネルキーを返却
+     */
+    channels(): (keyof Event)[];
+    /**
+     * @en Subscrive event(s).
+     * @ja イベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
+     * @ja 一度だけハンドリング可能なイベント購読設定
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Unsubscribe event(s).
+     * @ja イベント購読解除
+     *
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合はすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
+}
+/** re-export */
+export declare type EventArguments<T> = Arguments<T>;
+/**
+ * @en Eventing framework object able to call `publish()` method from outside.
+ * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventBroker } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ * }
+ *
+ * const broker = new EventBroker<SampleEvent>();
+ * broker.trigger('hoge', 100, 'test');     // OK. standard usage.
+ * broker.trigger('hoge', 100, true);       // NG. argument of type 'true' is not assignable
+ *                                          //     to parameter of type 'string | undefined'.
+ * ```
+ */
+export interface EventBroker<Event extends object> extends Subscribable<Event> {
+    /**
+     * @en Notify event to clients.
+     * @ja event 発行
+     *
+     * @param channel
+     *  - `en` event channel key. (string | symbol)
+     *  - `ja` イベントチャネルキー (string | symbol)
+     * @param args
+     *  - `en` arguments for callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数に渡す引数
+     */
+    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+}
+/**
+ * @en Constructor of [[EventBroker]]
+ * @ja [[EventBroker]] のコンストラクタ実体
+ */
+export declare const EventBroker: {
+    readonly prototype: EventBroker<any>;
+    new <T extends object>(): EventBroker<T>;
+};
+/**
+ * @en The class to which the safe event register/unregister method is offered for the object which is a short life cycle than subscription target. <br>
+ *     The advantage of using this form, instead of `on()`, is that `listenTo()` allows the object to keep track of the events,
+ *     and they can be removed all at once later call `stopListening()`.
+ * @ja 購読対象よりもライフサイクルが短いオブジェクトに対して, 安全なイベント登録/解除メソッドを提供するクラス <br>
+ *     `on()` の代わりに `listenTo()` を使用することで, 後に `stopListening()` を1度呼ぶだけですべてのリスナーを解除できる利点がある.
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { EventReceiver, EventBroker } from '@cdp/events';
+ *
+ * // declare event interface
+ * interface SampleEvent {
+ *   hoge: [number, string];        // callback function's args type tuple
+ *   foo: [void];                   // no args
+ *   hoo: void;                     // no args (same the upon)
+ *   bar: [Error];                  // any class is available.
+ *   baz: Error | Number;           // if only one argument, `[]` is not required.
+ * }
+ *
+ * // declare client class
+ * class SampleReceiver extends EventReceiver {
+ *   constructor(broker: EventBroker<SampleEvent>) {
+ *     super();
+ *     this.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
+ *     this.listenTo(broker, 'bar', (e: Error) => { ... });
+ *     this.listenTo(broker, ['foo', 'hoo'], () => { ... });
+ *   }
+ *
+ *   release(): void {
+ *     this.stopListening();
+ *   }
+ * }
+ * ```
+ *
+ * or
+ *
+ * ```ts
+ * const broker   = new EventBroker<SampleEvent>();
+ * const receiver = new EventReceiver();
+ *
+ * receiver.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
+ * receiver.listenTo(broker, 'bar', (e: Error) => { ... });
+ * receiver.listenTo(broker, ['foo', 'hoo'], () => { ... });
+ *
+ * receiver.stopListening();
+ * ```
+ */
+export declare class EventReceiver {
+    /** constructor */
+    constructor();
+    /**
+     * @en Tell an object to listen to a particular event on an other object.
+     * @ja 対象オブジェクトのイベント購読設定
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *  - `ja` イベント購読対象のオブジェクト
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    listenTo<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target: T, channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Just like listenTo, but causes the bound callback to fire only once before being removed.
+     * @ja 対象オブジェクトの一度だけハンドリング可能なイベント購読設定
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *  - `ja` イベント購読対象のオブジェクト
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *  - `ja` `channel` に対応したコールバック関数
+     */
+    listenToOnce<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target: T, channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    /**
+     * @en Tell an object to stop listening to events.
+     * @ja イベント購読解除
+     *
+     * @param target
+     *  - `en` event listening target object.
+     *         When not set this parameter, everything is released.
+     *  - `ja` イベント購読対象のオブジェクト
+     *         指定しない場合はすべてのリスナーを解除
+     * @param channel
+     *  - `en` target event channel key. (string | symbol)
+     *         When not set this parameter, everything is released listeners from `target`.
+     *  - `ja` 対象のイベントチャネルキー (string | symbol)
+     *         指定しない場合は対象 `target` のリスナーをすべて解除
+     * @param listener
+     *  - `en` callback function of the `channel` corresponding.
+     *         When not set this parameter, all same `channel` listeners are released.
+     *  - `ja` `channel` に対応したコールバック関数
+     *         指定しない場合は同一 `channel` すべてを解除
+     */
+    stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
+}
+export declare type EventSource<T extends object> = EventBroker<T> & EventReceiver;
+export declare const EventSource: {
+    readonly prototype: EventSource<any>;
+    new <T extends object>(): EventSource<T>;
+};
+/**
  * @en Storage data type set interface.
  * @ja Storage に格納可能な型の集合
  */
@@ -2883,8 +4119,6 @@ export declare type MemoryStorageEventCallback = IStorageEventCallback<StorageDa
  * @ja メモリーストレージクラス. 本クラスはデータの永続化をサポートしない
  */
 export declare class MemoryStorage implements IStorage {
-    private readonly _broker;
-    private _storage;
     /**
      * @en [[IStorage]] kind signature.
      * @ja [[IStorage]] の種別を表す識別子
@@ -2980,8 +4214,8 @@ export declare class MemoryStorage implements IStorage {
      */
     off(listener?: MemoryStorageEventCallback): void;
     /**
-     * @en Return a shallow copy of the storage's attributes for JSON stringification.
-     * @ja JSON stringify のためにストレージプロパティのシャローコピー返却
+     * @en Return a storage-store object.
+     * @ja ストレージストアオブジェクトを返却
      */
     get context(): PlainObject;
 }
@@ -3018,10 +4252,6 @@ export declare const memoryStorage: MemoryStorage;
  * ```
  */
 export declare class Registry<T extends RegistrySchemaBase = any> extends EventPublisher<RegistryEvent<T>> {
-    private readonly _storage;
-    private readonly _rootKey;
-    private readonly _defaultOptions;
-    private _store;
     /**
      * constructor
      *
@@ -3104,8 +4334,6 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      *  - `ja` 書き込みオプションを指定
      */
     clear(options?: RegistryWriteOptions): void;
-    /** get root object */
-    private targetRoot;
 }
 /**
  * @en [[TemplateEngine]] token structure.
@@ -3433,6 +4661,13 @@ declare namespace CDP_DECLARE {
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
     function ASSIGN_RESULT_CODE(extend: Record<string, unknown>): void;
+    /**
+     * @en Access to error message map.
+     * @ja エラーメッセージマップの取得
+     */
+    function ERROR_MESSAGE_MAP(): {
+        [code: string]: string;
+    };
     /**
      * @en Generate success code.
      * @ja 成功コードを生成

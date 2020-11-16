@@ -19,8 +19,6 @@ export declare type FsStorageEventCallback = MemoryStorageEventCallback;
  * @ja ファイルシステムストレージクラス
  */
 export declare class FsStorage implements IStorage {
-    private readonly _location;
-    private readonly _storage;
     /**
      * constructor
      *

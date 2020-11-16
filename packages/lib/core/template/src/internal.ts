@@ -6,11 +6,13 @@ import {
 } from './interfaces';
 
 /** (string | Token[]) */
-type TokenList = unknown;
+export type TokenList = unknown;
 
 /**
  * @en [[TemplateEngine]] token structure.
  * @ja [[TemplateEngine]] token 型
+ *
+ * @internal
  */
 export type Token = [string, string, number, number, TokenList?, number?, boolean?];
 
@@ -34,6 +36,7 @@ export const enum TokenAddress {
  */
 export type Delimiters = string | TemplateTags;
 
+/** @internal */
 export const globalSettings = {
     tags: ['{{', '}}'],
     escape: escapeHTML,

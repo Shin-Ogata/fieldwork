@@ -16,6 +16,7 @@ export interface RestDataSyncOptions extends AjaxOptions<'json'> {
     url?: string;
 }
 
+/** @internal */
 const _methodMap = {
     create: 'POST',
     update: 'PUT',

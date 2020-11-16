@@ -404,6 +404,7 @@ export function isIterable(x: any): any {
     return Symbol.iterator in Object(x);
 }
 
+/** @internal */
 const _typedArrayNames = {
     'Int8Array': true,
     'Uint8Array': true,

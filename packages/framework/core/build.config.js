@@ -12,15 +12,6 @@ function patch(index, code) {
         return code;
     }
 
-    code = code
-        // rename `EventSourceBase` → `EventSource`
-        .replace(/EventSourceBase/gm, 'EventSource')
-        // 'declare type EventSource' → 'export declare type EventSource'
-        .replace(/^declare type EventSource/gm, 'export declare type EventSource')
-        // 'declare const EventSource' → 'export declare const EventSource'
-        .replace(/^declare const EventSource/gm, 'export declare const EventSource')
-    ;
-
     // global namespace: `@cdp/result result-code-defs.d.ts`
     code += readFileSync(resolve(__dirname, 'node_modules/@cdp/result/types/result-code-defs.d.ts')).toString();
 

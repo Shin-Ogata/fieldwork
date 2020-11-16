@@ -1,11 +1,6 @@
-import { TemplateTags, TemplateWriter, TemplateEscaper } from './interfaces';
+import { TemplateTags } from './interfaces';
 /** (string | Token[]) */
-declare type TokenList = unknown;
-/**
- * @en [[TemplateEngine]] token structure.
- * @ja [[TemplateEngine]] token 型
- */
-export declare type Token = [string, string, number, number, TokenList?, number?, boolean?];
+export declare type TokenList = unknown;
 /**
  * @en [[Token]] address id.
  * @ja [[Token]] アドレス識別子
@@ -24,9 +19,3 @@ export declare const enum TokenAddress {
  * @ja [[TemplateEngine]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
  */
 export declare type Delimiters = string | TemplateTags;
-export declare const globalSettings: {
-    tags: TemplateTags;
-    escape: TemplateEscaper;
-    writer: TemplateWriter;
-};
-export {};

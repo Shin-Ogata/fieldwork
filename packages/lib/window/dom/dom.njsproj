@@ -37,6 +37,7 @@
     <Content Include=".npmrc" />
     <Content Include="dist\dom.mjs" />
     <Content Include="package.json" />
+    <Content Include="README.md" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>

@@ -25,8 +25,6 @@ export declare type WebStorageEventCallback = IStorageEventCallback<WebStorageDa
  * @ja ウェブストレージクラス. 本クラスは `window.localStorage` を用いて `IStorage` を実装
  */
 export declare class WebStorage implements IStorage<WebStorageDataTypeList> {
-    private readonly _broker;
-    private readonly _storage;
     /**
      * constructor
      *

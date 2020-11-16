@@ -19,7 +19,7 @@ declare global { // eslint-disable-line @typescript-eslint/no-unused-vars
 
 }
 
-/** `Native Promise` constructor */
+/** @internal `Native Promise` constructor */
 const NativePromise = Promise;
 /** @internal */
 const _create = Symbol('create');
@@ -32,7 +32,7 @@ const _tokens = new WeakMap<Promise<unknown>, CancelToken>();
  * @ja キャンセルを可能にした `Promise` 拡張クラス <br>
  *     既定で `Native Promise` をオーバーライドする.
  */
-class CancelablePromise<T> extends NativePromise<T> {
+class CancelablePromise<T> extends Promise<T> {
 
     /**
      * @en Overriding of the default constructor used for generation of an object.

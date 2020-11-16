@@ -2,7 +2,6 @@ import { Class, UnknownObject, PlainObject, Keys } from '@cdp/core-utils';
 import { Silenceable, EventSource } from '@cdp/events';
 import { ModelSaveOptions } from '@cdp/model';
 import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
-declare const _removeModels: unique symbol;
 /**
  * @en Base class definition for collection that is ordered sets of models.
  * @ja モデルの集合を扱うコレクションの基底クラス定義.
@@ -484,8 +483,6 @@ Event extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Ke
      *  - `ja` モデル構築オプション
      */
     create(attrs: object, options?: ModelSaveOptions): TModel | undefined;
-    /** @ineternal Internal method called by both remove and set. */
-    private [_removeModels];
     /**
      * @en Iterator of [[ElementBase]] values in the array.
      * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
@@ -507,4 +504,3 @@ Event extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Ke
      */
     values(): IterableIterator<TModel>;
 }
-export {};

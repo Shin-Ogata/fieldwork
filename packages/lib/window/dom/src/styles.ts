@@ -46,6 +46,7 @@ function toNumber(val: string): number {
     return parseFloat(val) || 0;
 }
 
+/** @internal */
 const _resolver = {
     width: ['left', 'right'],
     height: ['top', 'bottom'],

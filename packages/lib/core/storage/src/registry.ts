@@ -54,9 +54,13 @@ import {
  */
 export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher<RegistryEvent<T>> {
 
+    /** @internal */
     private readonly _storage: IStorage;
+    /** @internal */
     private readonly _rootKey: string;
+    /** @internal */
     private readonly _defaultOptions: IStorageFormatOptions;
+    /** @internal */
     private _store: PlainObject = {};
 
     /**
@@ -240,7 +244,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 ///////////////////////////////////////////////////////////////////////
 // private methods:
 
-    /** get root object */
+    /** @internal get root object */
     private targetRoot(field?: string): PlainObject {
         if (field) {
             // ensure [field] object.

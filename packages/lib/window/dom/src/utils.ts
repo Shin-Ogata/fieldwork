@@ -108,6 +108,7 @@ export interface EvalOptions {
     noModule?: string;
 }
 
+/** @internal */
 const _scriptsAttrs: (keyof EvalOptions)[] = [
     'type',
     'src',

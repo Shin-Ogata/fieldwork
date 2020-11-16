@@ -31,7 +31,7 @@ export interface BlobReadOptions extends Cancelable {
     onprogress?: (progress: ProgressEvent) => unknown;
 }
 
-/** execute read blob */
+/** @internal execute read blob */
 function exec<T extends keyof FileReaderResultMap>(
     methodName: T,
     args: FileReaderArgsMap[T],

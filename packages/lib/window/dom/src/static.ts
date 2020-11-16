@@ -23,8 +23,9 @@ declare namespace dom {
     let fn: DOMClass;
 }
 
-type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
+export type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
 
+/** @internal */
 let _factory!: DOMFactory;
 
 /**

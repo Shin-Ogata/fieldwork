@@ -19,6 +19,7 @@ import { settings } from './settings';
 /** @internal */
 export type AjaxHeaderOptions = Pick<AjaxOptions<AjaxDataTypes>, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
 
+/** @internal */
 const _acceptHeaderMap = {
     text: 'text/plain, text/html, application/xml; q=0.8, text/xml; q=0.8, */*; q=0.01',
     json: 'application/json, text/javascript, */*; q=0.01',
@@ -70,7 +71,7 @@ export function setupHeaders(options: AjaxHeaderOptions): Headers {
     return headers;
 }
 
-/** ensure string value */
+/** @internal ensure string value */
 function ensureParamValue(prop: unknown): string {
     const value = isFunction(prop) ? prop() : prop;
     return undefined !== value ? String(value) : '';
