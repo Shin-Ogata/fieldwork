@@ -2,10 +2,18 @@
  * @en Platform information.
  * @ja プラットフォーム情報
  *
- * @see
- *  - https://github.com/framework7io/framework7/blob/master/src/core/utils/info.js
- *  - https://github.com/OnsenUI/OnsenUI/blob/master/core/src/ons/platform.js
- *  - https://www.bit-hive.com/articles/20190820
+ * @see other framework implementation <br>
+ *  - Framework7
+ *    - https://github.com/framework7io/framework7/blob/master/src/core/shared/get-device.js
+ *    - https://github.com/framework7io/framework7/blob/master/src/core/shared/get-device.d.ts
+ *    - https://github.com/framework7io/framework7/blob/master/src/core/shared/get-support.js
+ *    - https://github.com/framework7io/framework7/blob/master/src/core/shared/get-support.d.ts
+ *    - https://github.com/framework7io/framework7/blob/v4/src/core/utils/device.js    // check legacy device: iPhoneX etc
+ *    - https://github.com/framework7io/framework7/blob/v4/src/core/utils/device.d.ts
+ *  - OnsenUI
+ *    - https://github.com/OnsenUI/OnsenUI/blob/master/core/src/ons/platform.js
+ *  - Web
+ *    - https://www.bit-hive.com/articles/20190820
  */
 export interface Platform {
     /** true for iOS info */

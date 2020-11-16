@@ -6,6 +6,7 @@ import {
 import { ObservableArray, ArrayChangeRecord } from '@cdp/observable';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 
+/** @internal */
 const trunc = Math.trunc.bind(Math);
 
 /** @internal wait for change detection */

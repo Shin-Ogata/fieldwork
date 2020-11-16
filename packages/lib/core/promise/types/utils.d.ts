@@ -86,6 +86,11 @@ export declare class PromiseManager {
      */
     wait(): Promise<unknown[]>;
     /**
+     * @en Call `Promise.allSettled()` for under the management.
+     * @ja 管理対象に対して `Promise.allSettled()`
+     */
+    allSettled(): Promise<PromiseSettledResult<unknown>[]>;
+    /**
      * @en Invoke `cancel` message for under the management promises.
      * @ja 管理対象の `Promise` に対してキャンセルを発行
      *

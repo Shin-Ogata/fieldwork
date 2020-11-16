@@ -12,7 +12,7 @@ const doc = safe(globalThis.document);
 /** @internal */
 const evt = safe(globalThis.CustomEvent);
 /** @internal */
-const { requestAnimationFrame } = win;
+const requestAnimationFrame = win.requestAnimationFrame;
 
 /** @internal */
 export {

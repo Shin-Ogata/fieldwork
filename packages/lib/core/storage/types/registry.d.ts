@@ -32,10 +32,6 @@ import { IStorage, IStorageOptions, RegistrySchemaBase, RegistryEvent, RegistryR
  * ```
  */
 export declare class Registry<T extends RegistrySchemaBase = any> extends EventPublisher<RegistryEvent<T>> {
-    private readonly _storage;
-    private readonly _rootKey;
-    private readonly _defaultOptions;
-    private _store;
     /**
      * constructor
      *
@@ -118,6 +114,4 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      *  - `ja` 書き込みオプションを指定
      */
     clear(options?: RegistryWriteOptions): void;
-    /** get root object */
-    private targetRoot;
 }

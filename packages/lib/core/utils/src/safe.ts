@@ -1,8 +1,10 @@
+/** @internal */
 function callable(): unknown {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return accessible;
 }
 
+/** @internal */
 const accessible: unknown = new Proxy(callable, {
     get: (target, name) => {
         const prop = target[name];
@@ -14,6 +16,7 @@ const accessible: unknown = new Proxy(callable, {
     },
 });
 
+/** @internal */
 function create(): unknown {
     const stub = new Proxy({}, {
         get: (target, name) => {

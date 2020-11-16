@@ -160,6 +160,27 @@ export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null
  */
 export declare function luid(prefix?: string, zeroPad?: number): string;
 /**
+ * @en Returns a random integer between `0` and `max`, inclusive.
+ * @ja `0` - `max` のランダムの整数値を生成
+ *
+ * @param max
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ */
+export declare function randomInt(max: number): number;
+/**
+ * @en Returns a random integer between `min` and `max`, inclusive.
+ * @ja `min` - `max` のランダムの整数値を生成
+ *
+ * @param min
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ * @param max
+ *  - `en` The maximum random number.
+ *  - `ja` 整数の最大値
+ */
+export declare function randomInt(min: number, max: number): number;
+/**
  * @en Presume whether it's a canceled error.
  * @ja キャンセルされたエラーであるか推定
  *

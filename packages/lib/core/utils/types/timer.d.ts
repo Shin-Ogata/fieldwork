@@ -15,8 +15,8 @@ export declare type TimerStartFunction = (handler: UnknownFunction, timeout?: nu
  * @ja タイマー停止関数の型
  */
 export declare type TimerStopFunction = (handle: TimerHandle) => void;
-declare const _setTimeout: TimerStartFunction;
-declare const _clearTimeout: TimerStopFunction;
-declare const _setInterval: TimerStartFunction;
-declare const _clearInterval: TimerStopFunction;
-export { _setTimeout as setTimeout, _clearTimeout as clearTimeout, _setInterval as setInterval, _clearInterval as clearInterval, };
+declare const setTimeout: TimerStartFunction;
+declare const clearTimeout: TimerStopFunction;
+declare const setInterval: TimerStartFunction;
+declare const clearInterval: TimerStopFunction;
+export { setTimeout, clearTimeout, setInterval, clearInterval, };

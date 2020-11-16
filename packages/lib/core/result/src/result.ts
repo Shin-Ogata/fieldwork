@@ -12,9 +12,10 @@ import {
     toHelpString,
 } from './result-code';
 
-/* eslint-disable-next-line @typescript-eslint/unbound-method */
-const isNumber = Number.isFinite;
+/** @internal */
+const isNumber = Number.isFinite; /* eslint-disable-line @typescript-eslint/unbound-method */
 
+/** @internal */
 const enum Tag {
     ERROR  = 'Error',
     RESULT = 'Result',

@@ -17,6 +17,7 @@ import {
     dropUndefined,
     restoreNil,
     luid,
+    randomInt,
     isChancelLikeError,
     capitalize,
     decapitalize,
@@ -317,6 +318,16 @@ describe('utils/misc spec', () => {
 
         const id3 = luid('test:', 8);
         expect(id3.startsWith('test:00')).toBe(true);
+    });
+
+    it('check randomInt()', (): void => {
+        const val1 = randomInt(10);
+        expect(val1).toBeGreaterThanOrEqual(0);
+        expect(val1).toBeLessThanOrEqual(10);
+
+        const val2 = randomInt(10, 20);
+        expect(val2).toBeGreaterThanOrEqual(10);
+        expect(val2).toBeLessThanOrEqual(20);
     });
 
     it('check isChancelLikeError', () => {

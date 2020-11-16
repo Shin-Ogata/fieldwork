@@ -5,15 +5,13 @@ declare global {
         resolve<T>(value?: T | PromiseLike<T>, cancelToken?: CancelToken | null): Promise<T>;
     }
 }
-/** `Native Promise` constructor */
-declare const NativePromise: PromiseConstructor;
 /**
  * @en Extended `Promise` class which enabled cancellation. <br>
  *     `Native Promise` constructor is overridden by framework default behaviour.
  * @ja キャンセルを可能にした `Promise` 拡張クラス <br>
  *     既定で `Native Promise` をオーバーライドする.
  */
-declare class CancelablePromise<T> extends NativePromise<T> {
+declare class CancelablePromise<T> extends Promise<T> {
     /**
      * constructor
      *

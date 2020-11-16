@@ -61,13 +61,13 @@ function queryDataURLContext(dataURL: string): DataURLContext {
 
 //__________________________________________________________________________________________________//
 
-/** helper */
+/** @internal helper */
 function binaryStringToBinary(bytes: string): Uint8Array {
     const array = bytes.split('').map(c => c.charCodeAt(0));
     return new Uint8Array(array);
 }
 
-/** helper */
+/** @internal helper */
 function binaryToBinaryString(binary: Uint8Array): string {
     return Array.prototype.map.call(binary, (i: number) => String.fromCharCode(i)).join('');
 }

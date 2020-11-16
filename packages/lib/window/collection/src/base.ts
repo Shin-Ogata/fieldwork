@@ -55,12 +55,19 @@ import {
 import { convertSortKeys } from './utils';
 import { searchItems, queryItems } from './query';
 
+/** @internal */
 const _properties             = Symbol('properties');
+/** @internal */
 const _createIterableIterator = Symbol('create-iterable-iterator');
+/** @internal */
 const _prepareModel           = Symbol('prepare-model');
+/** @internal */
 const _removeModels           = Symbol('remove-models');
+/** @internal */
 const _addReference           = Symbol('add-reference');
+/** @internal */
 const _removeReference        = Symbol('remove-reference');
+/** @internal */
 const _onModelEvent           = Symbol('model-event-handler');
 
 /** @internal */
@@ -144,7 +151,9 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
     }
 }
 
+/** @internal */
 const _setOptions = { add: true, remove: true, merge: true };
+/** @internal */
 const _addOptions = { add: true, remove: false };
 
 //__________________________________________________________________________________________________//
@@ -1167,7 +1176,7 @@ export abstract class Collection<
         return attrs as TModel;
     }
 
-    /** @ineternal Internal method called by both remove and set. */
+    /** @internal Internal method called by both remove and set. */
     private [_removeModels](models: TModel[], options: CollectionSetOptions): TModel[] {
         const opts = Object.assign({}, options) as CollectionUpdateOptions<TModel>;
         const removed: TModel[] = [];

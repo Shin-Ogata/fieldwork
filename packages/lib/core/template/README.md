@@ -1,0 +1,3 @@
+# @cdp/core-template
+
+[description]

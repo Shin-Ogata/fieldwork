@@ -150,8 +150,6 @@ namespace CDP_DECLARE {
     /**
      * @en Access to error message map.
      * @ja エラーメッセージマップの取得
-     *
-     * @internal
      */
     export function ERROR_MESSAGE_MAP(): { [code: string]: string; } {
         return _code2message;

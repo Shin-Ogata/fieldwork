@@ -21,9 +21,10 @@
   },
   "scripts": {
     "build": "run-s -l build:*",
-    "build:src": "run-s compile:src bundle:src",
+    "build:src": "run-s compile:src bundle:src bundle:dts",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
+    "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
@@ -48,7 +49,7 @@
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",
     "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
-    "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc:i": "npm run clean:doc:a && typedoc dist --options ../../../../config/doc/typedoc.js --excludeExternals",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
     "ut": "npm run unit-test",
@@ -59,5 +60,5 @@
     "watch:ts:src": "npm run compile:src -- -w",
     "watch:ts:test": "npm run compile:test -- -w"
   },
-  "types": "types/index.d.ts"
+  "types": "dist/events.d.ts"
 }

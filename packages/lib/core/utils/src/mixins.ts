@@ -84,23 +84,31 @@ export interface MixClassAttribute {
 
 //__________________________________________________________________________________________________//
 
+/** @internal */
 const _objPrototype     = Object.prototype;
+/** @internal */
 const _instanceOf       = Function.prototype[Symbol.hasInstance];
+/** @internal */
 const _override         = Symbol('override');
+/** @internal */
 const _isInherited      = Symbol('is-inherited');
+/** @internal */
 const _constructors     = Symbol('constructors');
+/** @internal */
 const _classBase        = Symbol('class-base');
+/** @internal */
 const _classSources     = Symbol('class-sources');
+/** @internal */
 const _protoExtendsOnly = Symbol('proto-extends-only');
 
-// copy properties core
+/** @internal copy properties core */
 function reflectProperties(target: object, source: object, key: string | symbol): void {
     if (null == target[key]) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
     }
 }
 
-// object properties copy method
+/** @internal object properties copy method */
 function copyProperties(target: object, source: object): void {
     source && Object.getOwnPropertyNames(source)
         .filter(key => !/(prototype|name|constructor)/.test(key))
@@ -113,7 +121,7 @@ function copyProperties(target: object, source: object): void {
         });
 }
 
-// helper for setMixClassAttribute(target, 'instanceOf')
+/** @internal helper for setMixClassAttribute(target, 'instanceOf') */
 function setInstanceOf<T extends object>(target: Constructor<T>, method: ((inst: object) => boolean) | Nil): void {
     const behaviour = method || (null === method ? undefined : ((i: object) => Object.prototype.isPrototypeOf.call(target.prototype, i)));
     const applied = behaviour && Object.getOwnPropertyDescriptor(target, _override);

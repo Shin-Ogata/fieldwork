@@ -1,6 +1,24 @@
 'use strict';
 
-const config = require('../../../../config/bundle/rollup-core');
+const config     = require('../../../../config/bundle/rollup-core');
+const bundle_dts = require('../../../../config/bundle/dts-bundle');
+
+function patch(index, code) {
+    if (0 !== index) {
+        return code;
+    }
+
+    code = code
+        // rename `EventSourceBase` → `EventSource`
+        .replace(/EventSourceBase/gm, 'EventSource')
+        // 'declare type EventSource' → 'export declare type EventSource'
+        .replace(/^declare type EventSource/gm, 'export declare type EventSource')
+        // 'declare const EventSource' → 'export declare const EventSource'
+        .replace(/^declare const EventSource/gm, 'export declare const EventSource')
+    ;
+
+    return code;
+}
 
 module.exports = {
     __esModule: true,
@@ -17,4 +35,5 @@ module.exports = {
             warn(warning);
         }
     }),
+    dts: bundle_dts({ postProcess: patch }),
 };

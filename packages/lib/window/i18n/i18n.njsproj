@@ -37,6 +37,7 @@
     <Content Include=".npmrc" />
     <Content Include="dist\i18n.mjs" />
     <Content Include="package.json" />
+    <Content Include="README.md" />
     <Content Include="tests\res\locales\messages.en-US.json" />
     <Content Include="tests\res\locales\messages.ja-JP.json" />
     <Content Include="tests\tsconfig.json" />

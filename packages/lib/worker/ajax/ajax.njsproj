@@ -37,6 +37,7 @@
     <Content Include=".npmrc" />
     <Content Include="dist\ajax.mjs" />
     <Content Include="package.json" />
+    <Content Include="README.md" />
     <Content Include="tests\res\data.json" />
     <Content Include="tests\res\image.jpg" />
     <Content Include="tests\res\test.tpl" />

@@ -50,7 +50,9 @@ interface MemoryStorageEvent {
  */
 export class MemoryStorage implements IStorage {
 
+    /** @internal */
     private readonly _broker = new EventBroker<MemoryStorageEvent>();
+    /** @internal */
     private _storage: PlainObject = {};
 
 ///////////////////////////////////////////////////////////////////////
@@ -222,8 +224,8 @@ export class MemoryStorage implements IStorage {
 // operations:
 
     /**
-     * @en Return a shallow copy of the storage's attributes for JSON stringification.
-     * @ja JSON stringify のためにストレージプロパティのシャローコピー返却
+     * @en Return a storage-store object.
+     * @ja ストレージストアオブジェクトを返却
      */
     get context(): PlainObject {
         return this._storage;

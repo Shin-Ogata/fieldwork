@@ -37,6 +37,7 @@
     <Content Include=".npmrc" />
     <Content Include="dist\events.mjs" />
     <Content Include="package.json" />
+    <Content Include="README.md" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
@@ -53,6 +54,7 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="dist\events.d.ts" />
     <TypeScriptCompile Include="src\broker.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />

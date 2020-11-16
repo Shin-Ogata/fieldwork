@@ -57,7 +57,9 @@ interface WebStorageEvent {
  */
 export class WebStorage implements IStorage<WebStorageDataTypeList> {
 
+    /** @internal */
     private readonly _broker = new EventBroker<WebStorageEvent>();
+    /** @internal */
     private readonly _storage: Storage;
 
     /**

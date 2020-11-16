@@ -2,7 +2,10 @@
     no-invalid-this
  */
 
-const random = Math.random.bind(Math);
+import { randomInt } from './misc';
+
+/** @internal */
+const _random = Math.random.bind(Math);
 
 /**
  * @en Execute shuffle of an array elements.
@@ -19,7 +22,7 @@ export function shuffle<T>(array: T[], destructive = false): T[] {
     const source = destructive ? array : array.slice();
     const len = source.length;
     for (let i = len > 0 ? len >>> 0 : 0; i > 1;) {
-        const j = i * random() >>> 0;
+        const j = i * _random() >>> 0;
         const swap = source[--i];
         source[i] = source[j];
         source[j] = swap;
@@ -92,10 +95,8 @@ export function union<T>(...arrays: T[][]): T[] {
  *  - `en` source array
  *  - `ja` 入力配列
  * @param index
- *  - `en` A zero-based integer indicating which element to retrieve. <br>
- *         If negative index is counted from the end of the matched set.
- *  - `ja` 0 base のインデックスを指定 <br>
- *         負値が指定された場合, 末尾からのインデックスとして解釈される
+ *  - `en` A zero-based integer indicating which element to retrieve. <br> If negative index is counted from the end of the matched set.
+ *  - `ja` 0 base のインデックスを指定 <br> 負値が指定された場合, 末尾からのインデックスとして解釈される
  */
 export function at<T>(array: T[], index: number): T | never {
     const idx = Math.trunc(index);
@@ -230,6 +231,126 @@ export function groupBy<
     }, {});
 
     return Object.values(hash);
+}
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en Computes the list of values that are the intersection of all the arrays. Each value in the result is present in each of the arrays.
+ * @ja 配列の積集合を返却. 返却された配列の要素はすべての入力された配列に含まれる
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(intersection([1, 2, 3], [101, 2, 1, 10], [2, 1]));
+ * // => [1, 2]
+ * ```
+ *
+ * @param arrays
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export function intersection<T>(...arrays: T[][]): T[] {
+    return arrays.reduce((acc, ary) => acc.filter(el => ary.includes(el)));
+}
+
+/**
+ * @en Returns the values from array that are not present in the other arrays.
+ * @ja 配列からほかの配列に含まれないものを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(difference([1, 2, 3, 4, 5], [5, 2, 10]));
+ * // => [1, 3, 4]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param others
+ *  - `en` exclude element in return value.
+ *  - `ja` 戻り値配列に含めない要素を指定
+ */
+export function difference<T>(array: T[], ...others: T[][]): T[] {
+    const arrays = [array, ...others] as T[][];
+    return arrays.reduce((acc, ary) => acc.filter(el => !ary.includes(el)));
+}
+
+/**
+ * @en Returns a copy of the array with all instances of the values removed.
+ * @ja 配列から指定要素を取り除いたものを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(without([1, 2, 1, 0, 3, 1, 4], 0, 1));
+ * // => [2, 3, 4]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param values
+ *  - `en` exclude element in return value.
+ *  - `ja` 戻り値配列に含めない要素を指定
+ */
+export function without<T>(array: T[], ...values: T[]): T[] {
+    return difference(array, values);
+}
+
+/**
+ * @en Produce a random sample from the list.
+ * @ja ランダムにサンプル値を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(sample([1, 2, 3, 4, 5, 6], 3));
+ * // => [1, 6, 2]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param count
+ *  - `en` number of sampling count.
+ *  - `ja` 返却するサンプル数を指定
+ */
+export function sample<T>(array: T[], count: number): T[];
+
+/**
+ * @en Produce a random sample from the list.
+ * @ja ランダムにサンプル値を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * console.log(sample([1, 2, 3, 4, 5, 6]));
+ * // => 4
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ */
+export function sample<T>(array: T[]): T;
+
+export function sample<T>(array: T[], count?: number): T | T[] {
+    if (null == count) {
+        return array[randomInt(array.length - 1)];
+    }
+    const sample = array.slice();
+    const length = sample.length;
+    count = Math.max(Math.min(count, length), 0);
+    const last = length - 1;
+    for (let index = 0; index < count; index++) {
+        const rand = randomInt(index, last);
+        const temp = sample[index];
+        sample[index] = sample[rand];
+        sample[rand] = temp;
+    }
+    return sample.slice(0, count);
 }
 
 //__________________________________________________________________________________________________//

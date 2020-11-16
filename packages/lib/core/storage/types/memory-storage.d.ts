@@ -19,8 +19,6 @@ export declare type MemoryStorageEventCallback = IStorageEventCallback<StorageDa
  * @ja メモリーストレージクラス. 本クラスはデータの永続化をサポートしない
  */
 export declare class MemoryStorage implements IStorage {
-    private readonly _broker;
-    private _storage;
     /**
      * @en [[IStorage]] kind signature.
      * @ja [[IStorage]] の種別を表す識別子
@@ -116,8 +114,8 @@ export declare class MemoryStorage implements IStorage {
      */
     off(listener?: MemoryStorageEventCallback): void;
     /**
-     * @en Return a shallow copy of the storage's attributes for JSON stringification.
-     * @ja JSON stringify のためにストレージプロパティのシャローコピー返却
+     * @en Return a storage-store object.
+     * @ja ストレージストアオブジェクトを返却
      */
     get context(): PlainObject;
 }
