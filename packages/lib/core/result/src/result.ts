@@ -12,14 +12,25 @@ import {
     toHelpString,
 } from './result-code';
 
-/** @internal */
-const isNumber = Number.isFinite; /* eslint-disable-line @typescript-eslint/unbound-method */
+const {
+    /** @internal */ isFinite: isNumber
+} = Number;
 
 /** @internal */
 const enum Tag {
     ERROR  = 'Error',
     RESULT = 'Result',
 }
+
+/** @internal */
+const desc = (value: unknown): PropertyDescriptor => {
+    return {
+        configurable: false,
+        writable: false,
+        enumerable: true,
+        value,
+    };
+};
 
 /**
  * @en A result holder class. <br>
@@ -47,12 +58,7 @@ export class Result extends Error {
         super(message || toHelpString(code));
         let time = isError(cause) ? (cause as Result).time : undefined;
         isNumber(time as number) || (time = Date.now());
-        const descriptors: PropertyDescriptorMap = {
-            code:  { enumerable: true, value: code  },
-            cause: { enumerable: true, value: cause },
-            time:  { enumerable: true, value: time  },
-        };
-        Object.defineProperties(this, descriptors);
+        Object.defineProperties(this, { code: desc(code), cause: desc(cause), time: desc(time) });
     }
 
     /**
@@ -142,9 +148,9 @@ export function toResult(o: unknown): Result {
         code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
         isNumber(time) || (time = Date.now());
         // Do nothing if already defined
-        Reflect.defineProperty(o, 'code',  { enumerable: true, value: code  });
-        Reflect.defineProperty(o, 'cause', { enumerable: true, value: cause });
-        Reflect.defineProperty(o, 'time',  { enumerable: true, value: time  });
+        Reflect.defineProperty(o, 'code',  desc(code));
+        Reflect.defineProperty(o, 'cause', desc(cause));
+        Reflect.defineProperty(o, 'time',  desc(time));
         return o;
     } else {
         const e = Object(o) as Result;

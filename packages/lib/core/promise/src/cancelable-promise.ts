@@ -10,7 +10,7 @@ import {
 import { Subscription } from '@cdp/events';
 import { CancelToken } from './cancel-token';
 
-declare global { // eslint-disable-line @typescript-eslint/no-unused-vars
+declare global {
 
     interface PromiseConstructor {
         new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null): Promise<T>;
@@ -21,10 +21,8 @@ declare global { // eslint-disable-line @typescript-eslint/no-unused-vars
 
 /** @internal `Native Promise` constructor */
 const NativePromise = Promise;
-/** @internal */
-const _create = Symbol('create');
-/** @internal */
-const _tokens = new WeakMap<Promise<unknown>, CancelToken>();
+/** @internal */ const _create = Symbol('create');
+/** @internal */ const _tokens = new WeakMap<Promise<unknown>, CancelToken>();
 
 /**
  * @en Extended `Promise` class which enabled cancellation. <br>

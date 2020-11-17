@@ -53,16 +53,11 @@ import {
     ModelDestroyOptions,
 } from './interfaces';
 
-/** @internal */
-const _defineAttributes = Symbol('define');
-/** @internal */
-const _validate         = Symbol('validate');
-/** @internal */
-const _changeHandler    = Symbol('onchange');
-/** @internal */
-const _broker           = Symbol('broker');
-/** @internal */
-const _properties       = Symbol('properties');
+/** @internal */ const _defineAttributes = Symbol('define');
+/** @internal */ const _validate         = Symbol('validate');
+/** @internal */ const _changeHandler    = Symbol('onchange');
+/** @internal */ const _broker           = Symbol('broker');
+/** @internal */ const _properties       = Symbol('properties');
 
 /** @internal */
 interface Property<T> {

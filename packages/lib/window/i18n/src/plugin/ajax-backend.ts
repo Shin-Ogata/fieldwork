@@ -14,8 +14,7 @@ const enum Default {
     LOAD_PATH = 'res/locales/{{ns}}.{{lng}}.json',
 }
 
-/** @internal */
-type FallbackResourceMap = { [lng: string]: string; };
+/** @internal */ type FallbackResourceMap = { [lng: string]: string; };
 
 //__________________________________________________________________________________________________//
 

@@ -1,9 +1,7 @@
 import { URL } from './ssr';
 
-/** @internal */
-const _blobMap = new WeakMap<Blob, string>();
-/** @internal */
-const _urlSet  = new Set<string>();
+/** @internal */ const _blobMap = new WeakMap<Blob, string>();
+/** @internal */ const _urlSet  = new Set<string>();
 
 /**
  * @en `Blob URL` utility for automatic memory manegement.

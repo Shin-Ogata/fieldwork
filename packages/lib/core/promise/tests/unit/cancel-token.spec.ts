@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/restrict-template-expressions
  */
 
 import { noop, post } from '@cdp/core-utils';

@@ -331,8 +331,7 @@ export function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undef
 
 //__________________________________________________________________________________________________//
 
-/** @internal */
-let _localId = 0;
+/** @internal */ let _localId = 0;
 
 /**
  * @en Get local unique id. <br>
@@ -385,8 +384,7 @@ export function randomInt(min: number, max?: number): number {
 
 //__________________________________________________________________________________________________//
 
-/** @internal */
-const _regexCancelLikeString = /(abort|cancel)/im;
+/** @internal */ const _regexCancelLikeString = /(abort|cancel)/im;
 
 /**
  * @en Presume whether it's a canceled error.

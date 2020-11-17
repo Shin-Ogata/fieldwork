@@ -1,7 +1,6 @@
 import { isNumber } from '@cdp/core-utils';
 
-/** @internal */
-let _timeout: number | undefined;
+/** @internal */ let _timeout: number | undefined;
 
 export const settings = {
     get timeout(): number | undefined {

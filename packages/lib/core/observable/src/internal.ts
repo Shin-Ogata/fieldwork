@@ -13,14 +13,10 @@ export class EventBrokerProxy<Event extends object> {
     }
 }
 
-/** @internal */
-export const _internal = Symbol('internal');
-/** @internal */
-export const _notify = Symbol('notify');
-/** @internal */
-export const _stockChange = Symbol('stock-change');
-/** @internal */
-export const _notifyChanges = Symbol('notify-changes');
+/** @internal */ export const _internal      = Symbol('internal');
+/** @internal */ export const _notify        = Symbol('notify');
+/** @internal */ export const _stockChange   = Symbol('stock-change');
+/** @internal */ export const _notifyChanges = Symbol('notify-changes');
 
 /** @internal */
 export function verifyObservable(x: unknown): void | never {

@@ -19,8 +19,9 @@ import {
 import { convertSortKeys } from '../utils/comparator';
 import { DynamicCondition } from './dynamic-condition';
 
-/** @internal */
-const trunc = Math.trunc.bind(Math);
+const {
+    /** @internal */ trunc
+} = Math;
 
 /** @internal 使用するプロパティが保証された CollectionItemQueryOptions */
 interface SafeCollectionQueryOptions<TItem extends object, TKey extends Keys<TItem>> extends CollectionItemQueryOptions<TItem, TKey> {
@@ -94,7 +95,7 @@ export function conditionalFix<TItem extends object, TKey extends Keys<TItem> = 
             } else if (null != item[prop as Keys<TItem>]) {
                 count += (Number(item[prop as Keys<TItem>]) / criteria.coeff);
             } else {
-                console.warn(`cannot access property: ${prop}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
+                console.warn(`cannot access property: ${prop}`);
                 continue;
             }
 

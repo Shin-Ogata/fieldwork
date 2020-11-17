@@ -84,22 +84,14 @@ export interface MixClassAttribute {
 
 //__________________________________________________________________________________________________//
 
-/** @internal */
-const _objPrototype     = Object.prototype;
-/** @internal */
-const _instanceOf       = Function.prototype[Symbol.hasInstance];
-/** @internal */
-const _override         = Symbol('override');
-/** @internal */
-const _isInherited      = Symbol('is-inherited');
-/** @internal */
-const _constructors     = Symbol('constructors');
-/** @internal */
-const _classBase        = Symbol('class-base');
-/** @internal */
-const _classSources     = Symbol('class-sources');
-/** @internal */
-const _protoExtendsOnly = Symbol('proto-extends-only');
+/** @internal */ const _objPrototype     = Object.prototype;
+/** @internal */ const _instanceOf       = Function.prototype[Symbol.hasInstance];
+/** @internal */ const _override         = Symbol('override');
+/** @internal */ const _isInherited      = Symbol('is-inherited');
+/** @internal */ const _constructors     = Symbol('constructors');
+/** @internal */ const _classBase        = Symbol('class-base');
+/** @internal */ const _classSources     = Symbol('class-sources');
+/** @internal */ const _protoExtendsOnly = Symbol('proto-extends-only');
 
 /** @internal copy properties core */
 function reflectProperties(target: object, source: object, key: string | symbol): void {

@@ -44,8 +44,7 @@ export interface DOMEffectContext<TElement extends ElementBase> {
 
 //__________________________________________________________________________________________________//
 
-/** @internal */
-const _animContextMap = new WeakMap<Element, Set<Animation>>();
+/** @internal */ const _animContextMap = new WeakMap<Element, Set<Animation>>();
 
 //__________________________________________________________________________________________________//
 

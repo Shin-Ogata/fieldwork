@@ -1,8 +1,7 @@
 import { IDataSync } from './interfaces';
 import { dataSyncNULL } from './null';
 
-/** @internal */
-let _default: IDataSync = dataSyncNULL;
+/** @internal */ let _default: IDataSync = dataSyncNULL;
 
 /**
  * @en Get or update default [[IDataSync]] object.

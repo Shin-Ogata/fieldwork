@@ -35,8 +35,7 @@ export type FsStorageInputDataTypes = MemoryStorageInputDataTypes;
 /** FsStorage event callback */
 export type FsStorageEventCallback = MemoryStorageEventCallback;
 
-/** @internal */
-const writeFileAsync = promisify(writeFile);
+/** @internal */ const writeFileAsync = promisify(writeFile);
 
 //__________________________________________________________________________________________________//
 
