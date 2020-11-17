@@ -152,7 +152,12 @@ function extractAllHandlers(elem: ElementBase, remove = true): { event: string; 
 }
 
 /** @internal */
-type ParseEventArgsResult = { type: string[]; selector: string; listener: DOMEventListner; options: AddEventListenerOptions; };
+type ParseEventArgsResult = {
+    type: string[];
+    selector: string;
+    listener: DOMEventListner;
+    options: AddEventListenerOptions;
+};
 
 /** @internal parse event args */
 function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
@@ -173,8 +178,7 @@ function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
     return { type, selector, listener, options } as ParseEventArgsResult;
 }
 
-/** @internal */
-const _noTrigger = ['resize', 'scroll'];
+/** @internal */ const _noTrigger = ['resize', 'scroll'];
 
 /** @internal event-shortcut impl */
 function eventShortcut<T extends ElementBase>(this: DOMEvents<T>, name: string, handler?: EventListener, options?: boolean | AddEventListenerOptions): DOMEvents<T> {

@@ -1,15 +1,10 @@
 import { safe } from '@cdp/core-utils';
 
-/** @internal */
-const _btoa = safe(globalThis.btoa);
-/** @internal */
-const _atob = safe(globalThis.atob);
-/** @internal */
-const _Blob = safe(globalThis.Blob);
-/** @internal */
-const _FileReader = safe(globalThis.FileReader);
-/** @internal */
-const _URL = safe(globalThis.URL);
+/** @internal */ const _btoa       = safe(globalThis.btoa);
+/** @internal */ const _atob       = safe(globalThis.atob);
+/** @internal */ const _Blob       = safe(globalThis.Blob);
+/** @internal */ const _FileReader = safe(globalThis.FileReader);
+/** @internal */ const _URL        = safe(globalThis.URL);
 
 /** @internal */
 export {

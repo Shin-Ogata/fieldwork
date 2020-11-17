@@ -1,23 +1,40 @@
 /* eslint-disable
     @typescript-eslint/require-await
  ,  @typescript-eslint/no-explicit-any
+ ,  @typescript-eslint/explicit-member-accessibility
  */
 
 import {
     ObservableState,
     ObservableObject,
-    isObservable,
     IObservable,
     IObservableEventBrokerAccess,
+    isObservable,
 } from '@cdp/observable';
 
 describe('observable/object spec', () => {
 
+///*
     class Model extends ObservableObject {
-        constructor(public a: number, public b: number) { super(); }
+        constructor(public a: number, public b: number) {
+            super();
+        }
         get sum(): number { return this.a + this.b; }
     }
-
+//*/
+    // under `useDefineForClassFields` options, you should use following class instead of above.
+/*
+    class Model extends ObservableObject {
+        public a: number;
+        public b: number;
+        constructor(a: number, b: number) {
+            super();
+            this.a = a;
+            this.b = b;
+        }
+        get sum(): number { return this.a + this.b; }
+    }
+//*/
     it('ObservableObject#on(notify if target is changed)', async done => {
         const model = new Model(1, 1);
         model.on('sum', (newValue, oldValue, key): void => {
@@ -269,8 +286,10 @@ describe('observable/object spec', () => {
 
     it('check advanced', () => {
         const model = new Model(1, 1);
-        const invalid = Object.assign({}, model);
+        const invalid = {} as any;
         invalid.suspend = model.suspend;
-        expect(() => invalid.suspend()).toThrow(new TypeError(`The object passed is not an IObservable.`));
+        expect(() => {
+            invalid.suspend();
+        }).toThrow(new TypeError(`The object passed is not an IObservable.`));
     });
 });

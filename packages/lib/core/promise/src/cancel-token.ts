@@ -36,8 +36,7 @@ export interface CancelTokenSource<T = unknown> {
     close(): void;
 }
 
-/** @internal */
-const _tokens = new WeakMap<CancelToken, CancelTokenContext>();
+/** @internal */ const _tokens = new WeakMap<CancelToken, CancelTokenContext>();
 
 /** @internal */
 function getContext<T = unknown>(instance: CancelToken<T>): CancelTokenContext<T> {

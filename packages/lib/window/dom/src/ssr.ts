@@ -5,14 +5,10 @@ import { safe } from '@cdp/core-utils';
  * `window` オブジェクトと `document` オブジェクト等の存在を保証する
  */
 
-/** @internal */
-const win = safe(globalThis.window);
-/** @internal */
-const doc = safe(globalThis.document);
-/** @internal */
-const evt = safe(globalThis.CustomEvent);
-/** @internal */
-const requestAnimationFrame = win.requestAnimationFrame;
+/** @internal */ const win = safe(globalThis.window);
+/** @internal */ const doc = safe(globalThis.document);
+/** @internal */ const evt = safe(globalThis.CustomEvent);
+/** @internal */ const requestAnimationFrame = win.requestAnimationFrame;
 
 /** @internal */
 export {

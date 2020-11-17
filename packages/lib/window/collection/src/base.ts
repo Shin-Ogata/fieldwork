@@ -55,20 +55,13 @@ import {
 import { convertSortKeys } from './utils';
 import { searchItems, queryItems } from './query';
 
-/** @internal */
-const _properties             = Symbol('properties');
-/** @internal */
-const _createIterableIterator = Symbol('create-iterable-iterator');
-/** @internal */
-const _prepareModel           = Symbol('prepare-model');
-/** @internal */
-const _removeModels           = Symbol('remove-models');
-/** @internal */
-const _addReference           = Symbol('add-reference');
-/** @internal */
-const _removeReference        = Symbol('remove-reference');
-/** @internal */
-const _onModelEvent           = Symbol('model-event-handler');
+/** @internal */ const _properties             = Symbol('properties');
+/** @internal */ const _createIterableIterator = Symbol('create-iterable-iterator');
+/** @internal */ const _prepareModel           = Symbol('prepare-model');
+/** @internal */ const _removeModels           = Symbol('remove-models');
+/** @internal */ const _addReference           = Symbol('add-reference');
+/** @internal */ const _removeReference        = Symbol('remove-reference');
+/** @internal */ const _onModelEvent           = Symbol('model-event-handler');
 
 /** @internal */
 interface Property<T extends object, K extends Keys<T>> {
@@ -151,10 +144,8 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
     }
 }
 
-/** @internal */
-const _setOptions = { add: true, remove: true, merge: true };
-/** @internal */
-const _addOptions = { add: true, remove: false };
+/** @internal */ const _setOptions = { add: true, remove: true, merge: true };
+/** @internal */ const _addOptions = { add: true, remove: false };
 
 //__________________________________________________________________________________________________//
 

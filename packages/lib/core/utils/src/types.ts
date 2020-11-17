@@ -1,7 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
  ,  @typescript-eslint/ban-types
- ,  @typescript-eslint/explicit-module-boundary-types
  */
 
 /**
@@ -400,7 +399,7 @@ export function typeOf<K extends TypeKeys>(type: K, x: unknown): x is TypeList[K
  */
 export function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
 export function isIterable(x: unknown): x is Iterable<unknown>;
-export function isIterable(x: any): any {
+export function isIterable(x: unknown): any {
     return Symbol.iterator in Object(x);
 }
 
@@ -467,7 +466,7 @@ export function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unkn
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function className(x: any): string {
+export function className(x: any): string { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     if (x != null) {
         const toStringTagName = x[Symbol.toStringTag];
         if (isString(toStringTagName)) {

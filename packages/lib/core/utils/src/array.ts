@@ -4,8 +4,9 @@
 
 import { randomInt } from './misc';
 
-/** @internal */
-const _random = Math.random.bind(Math);
+const {
+    /** @internal */ random
+} = Math;
 
 /**
  * @en Execute shuffle of an array elements.
@@ -22,7 +23,7 @@ export function shuffle<T>(array: T[], destructive = false): T[] {
     const source = destructive ? array : array.slice();
     const len = source.length;
     for (let i = len > 0 ? len >>> 0 : 0; i > 1;) {
-        const j = i * _random() >>> 0;
+        const j = i * random() >>> 0;
         const swap = source[--i];
         source[i] = source[j];
         source[j] = swap;

@@ -25,8 +25,7 @@ declare namespace dom {
 
 export type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
 
-/** @internal */
-let _factory!: DOMFactory;
+/** @internal */ let _factory!: DOMFactory;
 
 /**
  * @en Create [[DOM]] instance from `selector` arg.

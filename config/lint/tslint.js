@@ -103,6 +103,15 @@ module.exports = {
             },
 
         ],
+        '@typescript-eslint/restrict-template-expressions': [
+            'error',
+            {
+                allowNumber: true,
+                allowBoolean: true,
+                allowAny: true,
+                allowNullish: true,
+            },
+        ],
         '@typescript-eslint/no-for-in-array': 'warn',
         '@typescript-eslint/no-unnecessary-qualifier': 'warn',
         '@typescript-eslint/no-useless-constructor': 'warn',
@@ -113,7 +122,7 @@ module.exports = {
         '@typescript-eslint/require-array-sort-compare': 'warn',
         '@typescript-eslint/restrict-plus-operands': 'warn',
         '@typescript-eslint/interface-name-prefix': 'off',
-        // TODO: reconsider to validate the following props.
+        // related `@typescript-eslint/no-explicit-any`. continue consideration to validate the following props.
         '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',

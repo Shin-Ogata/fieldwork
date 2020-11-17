@@ -9,17 +9,11 @@ import {
     EventSchema,
 } from './interfaces';
 
-/** @internal */
-const _context = Symbol('context');
-
-/** @internal */
-type SubscriptionMap = Map<UnknownFunction, Subscription>;
-/** @internal */
-type ListerMap       = Map<string, SubscriptionMap>;
-/** @internal */
-type SubscriptionSet = Set<Subscription>;
-/** @internal */
-type SubscribableMap = WeakMap<Subscribable, ListerMap>;
+/** @internal */ const _context = Symbol('context');
+/** @internal */ type SubscriptionMap = Map<UnknownFunction, Subscription>;
+/** @internal */ type ListerMap       = Map<string, SubscriptionMap>;
+/** @internal */ type SubscriptionSet = Set<Subscription>;
+/** @internal */ type SubscribableMap = WeakMap<Subscribable, ListerMap>;
 
 /** @internal Lisner 格納形式 */
 interface Context {

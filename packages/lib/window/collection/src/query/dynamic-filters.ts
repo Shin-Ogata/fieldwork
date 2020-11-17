@@ -1,14 +1,10 @@
 import { Keys, computeDate } from '@cdp/core-utils';
 import { FilterCallback, DynamicCombination } from '../interfaces';
 
-/** @internal */
-export type ValueTypeALL<T extends object> = Extract<number | string | Date, T[Keys<T>]>;
-/** @internal */
-export type ValueTypeComparable<T extends object> = Extract<number | Date, T[Keys<T>]>;
-/** @internal */
-export type ValueTypeString<T extends object> = Extract<string, T[Keys<T>]>;
-/** @internal */
-export type DynamicOperatorDateUnit = 'year' | 'month' | 'day' | undefined;
+/** @internal */ export type ValueTypeALL<T extends object> = Extract<number | string | Date, T[Keys<T>]>;
+/** @internal */ export type ValueTypeComparable<T extends object> = Extract<number | Date, T[Keys<T>]>;
+/** @internal */ export type ValueTypeString<T extends object> = Extract<string, T[Keys<T>]>;
+/** @internal */ export type DynamicOperatorDateUnit = 'year' | 'month' | 'day' | undefined;
 
 /** @internal DynamicPackageOperator.EQUAL */
 export function equal<T extends object>(prop: keyof T, value: ValueTypeALL<T>): FilterCallback<T> {

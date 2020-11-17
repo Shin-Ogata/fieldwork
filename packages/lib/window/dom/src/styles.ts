@@ -142,8 +142,7 @@ function manageInnerSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
     }
 }
 
-/** @internal */
-type ParseOuterSizeArgsResult = { includeMargin: boolean; value: number | string; };
+/** @internal */ type ParseOuterSizeArgsResult = { includeMargin: boolean; value: number | string; };
 
 /** @internal helper for `outerWidth()` and `outerHeigth()` */
 function parseOuterSizeArgs(...args: unknown[]): ParseOuterSizeArgsResult {

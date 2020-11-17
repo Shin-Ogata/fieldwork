@@ -6,8 +6,9 @@ import {
 import { ObservableArray, ArrayChangeRecord } from '@cdp/observable';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 
-/** @internal */
-const trunc = Math.trunc.bind(Math);
+const {
+    /** @internal */ trunc
+} = Math;
 
 /** @internal wait for change detection */
 function makePromise<T>(editor: ObservableArray<T>, remap?: T[]): Promise<ArrayChangeRecord<T>[]> {

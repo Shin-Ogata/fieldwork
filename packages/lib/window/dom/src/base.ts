@@ -8,8 +8,7 @@ import {
     dom as $,
 } from './static';
 
-/** @internal */
-const _createIterableIterator = Symbol('create-iterable-iterator');
+/** @internal */ const _createIterableIterator = Symbol('create-iterable-iterator');
 
 /**
  * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.

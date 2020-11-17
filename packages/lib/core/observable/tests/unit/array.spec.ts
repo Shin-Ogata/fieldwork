@@ -293,7 +293,7 @@ describe('observable/array spec', () => {
     it('ObservableArray#map()', async done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
-            const mapped = observable.map(e => `${e}${e}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
+            const mapped = observable.map(e => `${e}${e}`);
             expect(isObservable(mapped)).toBe(true);
             expect(mapped.length).toBe(3);
             expect(mapped[0]).toBe('aa');
