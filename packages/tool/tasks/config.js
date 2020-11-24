@@ -21,6 +21,7 @@ function query(cwd = process.cwd()) {
             task: 'tasks',
             test: 'tests',
             unit: 'unit',
+            dev: 'dev',
             type: 'types',
             temp: '.temp',
             external: 'external',
@@ -44,6 +45,8 @@ function query(cwd = process.cwd()) {
             get type() { return config.dir.type; },
             get test() { return config.dir.test; },
             get unit() { return config.dir.unit; },
+            get dev() { return config.dir.dev; },
+            get script() { return config.dir.script; },
             get temp() { return config.dir.temp; },
             relativePath: (srcRootDir) => {
                 srcRootDir = srcRootDir || querySrcRoot();

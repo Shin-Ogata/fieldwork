@@ -37,7 +37,7 @@ describe('collection-editor spec', () => {
     const TrackBase = Model as ModelConstructor<Model<TrackAttribute>, TrackAttribute>;
     class Track extends TrackBase {}
 
-    class Playlist<Event extends CollectionEvent<Track> = CollectionEvent<Track>> extends Collection<Track, Event> {
+    class Playlist<TEvent extends CollectionEvent<Track> = CollectionEvent<Track>> extends Collection<Track, TEvent> {
         static readonly model = Track;
         get tracks(): readonly Track[] { return this.models; }
     }

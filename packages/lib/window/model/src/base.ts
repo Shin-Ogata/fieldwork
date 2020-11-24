@@ -8,7 +8,6 @@ import {
     Constructor,
     Class,
     Arguments,
-    isArray,
     isObject,
     isEmptyObject,
     luid,
@@ -67,6 +66,7 @@ interface Property<T> {
     changedAttrs?: Partial<T>;
     readonly cid: string;
     readonly options: ModelSetOptions;
+    changeFired: boolean;
 }
 
 /**
@@ -98,7 +98,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
 
 /**
  * @en Base class definition for model that provides a basic set of functionality for managing interaction.
- * @ja インタラクションのための基本機能を提供するモデルの基底クラス定義
+ * @ja インタラクションのための基本機能を提供する Model の基底クラス定義
  *
  * @example <br>
  *
@@ -151,7 +151,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * console.log(content.cookie); // 'undefined'
  * ```
  *
- * - Using Custom Event
+ * - Using Custom TEvent
  *
  * ```ts
  * import { ModelEvent } from '@cdp/model';
@@ -178,7 +178,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * content.trigger('fire', true, 100);
  * ```
  */
-export abstract class Model<T extends object = any, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
+export abstract class Model<T extends object = any, TEvent extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<TEvent> {
     /**
      * @en Get ID attribute name.
      * @ja ID アトリビュート名にアクセス
@@ -212,6 +212,7 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
             prevAttrs: { ...attrs },
             cid: luid('model:', 8),
             options: opts,
+            changeFired: false,
         };
         Object.defineProperty(this, _properties, { value: props });
 
@@ -221,6 +222,14 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
 
         this[_changeHandler] = () => {
             (this as Model).trigger('@change', this as Model);
+
+            const { _prevAttrs, _attrs } = this;
+            const changedKeys = Object.keys(diff(_prevAttrs, _attrs as unknown as Partial<T>));
+            for (const key of changedKeys) {
+                (this as any).trigger(`@change:${key}`, this, _attrs[key], _prevAttrs[key], key);
+            }
+
+            this[_properties].changeFired = true;
         };
 
         this[_validate]({}, opts);
@@ -236,9 +245,14 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
                 },
                 set(val: unknown): void {
                     if (!deepEqual(this._attrs[name], val)) {
+                        const { attrs, changeFired } = this[_properties];
+                        if (changeFired) {
+                            this[_properties].changeFired = false;
+                            this[_properties].prevAttrs = { ...attrs };
+                        }
                         delete this[_properties].changedAttrs;
-                        this._prevAttrs[name] = this._attrs[name];
-                        this._attrs[name]     = val;
+                        this._prevAttrs[name] = attrs[name];
+                        attrs[name] = val;
                     }
                 },
                 enumerable: true,
@@ -333,7 +347,7 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean {
+    hasListener<Channel extends keyof TEvent>(channel?: Channel, listener?: (...args: Arguments<TEvent[Channel]>) => unknown): boolean {
         return this[_broker].hasListener(channel, listener);
     }
 
@@ -341,8 +355,8 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
      * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
      */
-    channels(): (keyof Event)[] {
-        return this[_broker].channels() as (keyof Event)[];
+    channels(): (keyof TEvent)[] {
+        return this[_broker].channels().filter(c => '@' !== c) as (keyof TEvent)[];
     }
 
     /**
@@ -356,7 +370,7 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
      *  - `en` arguments for callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数に渡す引数
      */
-    public trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void {
+    public trigger<Channel extends keyof TEvent>(channel: Channel, ...args: Arguments<Partial<TEvent[Channel]>>): void {
         (this[_broker] as any).trigger(channel, ...args);
     }
 
@@ -375,7 +389,7 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
      *  - `ja` `channel` に対応したコールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    public off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void {
+    public off<Channel extends keyof TEvent>(channel?: Channel | Channel[], listener?: (...args: Arguments<TEvent[Channel]>) => unknown): void {
         this._attrs.off(channel as any, listener as any);
     }
 
@@ -390,10 +404,8 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    public on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
-        if ('*' === channel || '@change' === channel || (isArray(channel) && channel.includes('@change' as Channel))) {
-            this._attrs.on('@', this[_changeHandler]);
-        }
+    public on<Channel extends keyof TEvent>(channel: Channel | Channel[], listener: (...args: Arguments<TEvent[Channel]>) => unknown): Subscription {
+        this._attrs.on('@', this[_changeHandler]);
         return this._attrs.on(channel as any, listener as any);
     }
 
@@ -408,7 +420,7 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    public once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription {
+    public once<Channel extends keyof TEvent>(channel: Channel | Channel[], listener: (...args: Arguments<TEvent[Channel]>) => unknown): Subscription {
         const context = this.on(channel, listener);
         const managed = this.on(channel, () => {
             context.unsubscribe();
@@ -523,10 +535,10 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
 
             for (const attr of Object.keys(attributes)) {
                 if (attr in this._attrs) {
-                    this._attrs[attr] = attributes[attr];
+                    this[attr] = attributes[attr];
                 } else if (extend) {
                     this[_defineAttributes](this, attr);
-                    this._attrs[attr] = attributes[attr];
+                    this[attr] = attributes[attr];
                 }
             }
         } finally {
@@ -552,7 +564,7 @@ export abstract class Model<T extends object = any, Event extends ModelEvent<T> 
 
     /**
      * @en Return a copy of the model's `attributes` object.
-     * @ja モデル属性値のコピーを返却
+     * @ja Model 属性値のコピーを返却
      */
     public toJSON(): T {
         return deepCopy({ ...this._attrs } as T);

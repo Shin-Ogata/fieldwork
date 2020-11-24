@@ -7,6 +7,7 @@ import {
     isFunction,
     isString,
     isArray,
+    combination,
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import { CustomEvent } from './ssr';
@@ -18,13 +19,13 @@ import {
 import { DOMIterable, isTypeElement } from './base';
 
 /** @internal */
-interface DOMEventListner extends EventListener {
+interface InternalEventListener extends EventListener {
     origin?: EventListener;
 }
 
 /** @internal */
 interface EventListenerHandler {
-    listener: DOMEventListner;
+    listener: InternalEventListener;
     proxy: EventListener;
 }
 
@@ -41,7 +42,10 @@ interface BindEventContext {
 
 /** @internal */
 const enum Const {
-    COOKIE_SEPARATOR = '|',
+    COOKIE_SEPARATOR  = '|',
+    ADDRESS_EVENT     = 0,
+    ADDRESS_NAMESPACE = 1,
+    ADDRESS_OPTIONS   = 2,
 }
 
 //__________________________________________________________________________________________________//
@@ -70,14 +74,99 @@ function deleteEventData(elem: ElementBase): void {
     _eventContextMap.eventData.delete(elem);
 }
 
+/** @internal normalize event namespace */
+function normalizeEventNamespaces(event: string): string {
+    const namespaces = event.split('.');
+    const main = namespaces.shift() as string;
+    if (!namespaces.length) {
+        return main;
+    } else {
+        namespaces.sort();
+        return `${main}.${namespaces.join('.')}`;
+    }
+}
+
+/** @internal split event namespaces */
+function splitEventNamespaces(event: string): { type: string; namespace: string; }[] {
+    const retval: { type: string; namespace: string; }[] = [];
+
+    const namespaces = event.split('.');
+    const main = namespaces.shift() as string;
+
+    if (!namespaces.length) {
+        retval.push({ type: main, namespace: '' });
+    } else {
+        namespaces.sort();
+
+        const combos: string[][] = [];
+        for (let i = namespaces.length; i >= 1; i--) {
+            combos.push(...combination(namespaces, i));
+        }
+
+        const signature = `.${namespaces.join('.')}.`;
+        retval.push({ type: main, namespace: signature });
+        for (const ns of combos) {
+            retval.push({ type: `${main}.${ns.join('.')}`, namespace: signature });
+        }
+    }
+
+    return retval;
+}
+
+/** @internal reverse resolution event namespaces */
+function resolveEventNamespaces(elem: ElementBase, event: string): { type: string; namespace: string; }[] {
+    const retval: { type: string; namespace: string; }[] = [];
+
+    const namespaces = event.split('.');
+    const main = namespaces.shift() as string;
+    const type = normalizeEventNamespaces(event);
+
+    if (!namespaces.length) {
+        retval.push({ type: main, namespace: '' });
+    } else {
+        const query = (context: BindEventContext | undefined): void => {
+            if (context) {
+                const cookies = Object.keys(context);
+
+                const signatures = cookies.filter(cookie => {
+                    return type === cookie.split(Const.COOKIE_SEPARATOR)[Const.ADDRESS_EVENT];
+                }).map(cookie => {
+                    return cookie.split(Const.COOKIE_SEPARATOR)[Const.ADDRESS_NAMESPACE];
+                });
+
+                const siblings = cookies.filter(cookie => {
+                    for (const signature of signatures) {
+                        if (signature === cookie.split(Const.COOKIE_SEPARATOR)[Const.ADDRESS_NAMESPACE]) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).map(cookie => {
+                    const seed = cookie.split(Const.COOKIE_SEPARATOR);
+                    return { type: seed[Const.ADDRESS_EVENT], namespace: seed[Const.ADDRESS_NAMESPACE] };
+                });
+
+                retval.push(...siblings);
+            }
+        };
+
+        const { eventListeners, liveEventListeners } = _eventContextMap;
+        query(eventListeners.get(elem));
+        query(liveEventListeners.get(elem));
+    }
+
+    return retval;
+}
+
 /** @internal convert event cookie from event name, selector, options */
-function toCookie(event: string, selector: string, options: AddEventListenerOptions): string {
-    delete options.once;
-    return `${event}${Const.COOKIE_SEPARATOR}${JSON.stringify(options)}${Const.COOKIE_SEPARATOR}${selector}`;
+function toCookie(event: string, namespace: string, selector: string, options: AddEventListenerOptions): string {
+    const opts = { ...options };
+    delete opts.once;
+    return `${event}${Const.COOKIE_SEPARATOR}${namespace}${Const.COOKIE_SEPARATOR}${JSON.stringify(opts)}${Const.COOKIE_SEPARATOR}${selector}`;
 }
 
 /** @internal get listener handlers context by element and event */
-function getEventListenersHandlers(elem: ElementBase, event: string, selector: string, options: AddEventListenerOptions, ensure: boolean): BindInfo {
+function getEventListenersHandlers(elem: ElementBase, event: string, namespace: string, selector: string, options: AddEventListenerOptions, ensure: boolean): BindInfo {
     const eventListeners = selector ? _eventContextMap.liveEventListeners : _eventContextMap.eventListeners;
     if (!eventListeners.has(elem)) {
         if (ensure) {
@@ -91,7 +180,7 @@ function getEventListenersHandlers(elem: ElementBase, event: string, selector: s
     }
 
     const context = eventListeners.get(elem) as BindEventContext;
-    const cookie = toCookie(event, selector, options);
+    const cookie = toCookie(event, namespace, selector, options);
     if (!context[cookie]) {
         context[cookie] = {
             registered: new Set<EventListener>(),
@@ -102,28 +191,6 @@ function getEventListenersHandlers(elem: ElementBase, event: string, selector: s
     return context[cookie];
 }
 
-/** @internal register listener handlers context from element and event */
-function registerEventListenerHandlers(
-    elem: ElementBase,
-    events: string[],
-    selector: string,
-    listener: EventListener,
-    proxy: EventListener,
-    options: AddEventListenerOptions
-): void {
-    for (const event of events) {
-        const { registered, handlers } = getEventListenersHandlers(elem, event, selector, options, true);
-        if (registered && !registered.has(listener)) {
-            registered.add(listener);
-            handlers.push({
-                listener,
-                proxy,
-            });
-            elem.addEventListener && elem.addEventListener(event, proxy, options);
-        }
-    }
-}
-
 /** @internal query all event and handler by element, for all `off()` and `clone(true)` */
 function extractAllHandlers(elem: ElementBase, remove = true): { event: string; handler: EventListener; options: object; }[] {
     const handlers: { event: string; handler: EventListener; options: object; }[] = [];
@@ -132,8 +199,8 @@ function extractAllHandlers(elem: ElementBase, remove = true): { event: string; 
         if (context) {
             for (const cookie of Object.keys(context)) {
                 const seed = cookie.split(Const.COOKIE_SEPARATOR);
-                const event = seed[0];
-                const options = JSON.parse(seed[1]);
+                const event = seed[Const.ADDRESS_EVENT];
+                const options = JSON.parse(seed[Const.ADDRESS_OPTIONS]);
                 for (const handler of context[cookie].handlers) {
                     handlers.push({ event, handler: handler.proxy, options });
                 }
@@ -151,11 +218,48 @@ function extractAllHandlers(elem: ElementBase, remove = true): { event: string; 
     return handlers;
 }
 
+/** @internal query namespace event and handler by element, for `off(`.${namespace}`)` */
+function extractNamespaceHandlers(elem: ElementBase, namespaces: string): { event: string; handler: EventListener; options: object; }[] {
+    const handlers: { event: string; handler: EventListener; options: object; }[] = [];
+
+    const names = namespaces.split('.').filter(n => !!n);
+    const namespaceFilter = (cookie: string): boolean => {
+        for (const namespace of names) {
+            if (cookie.includes(`.${namespace}.`)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const query = (context: BindEventContext | undefined): void => {
+        if (context) {
+            const cookies = Object.keys(context).filter(namespaceFilter);
+            for (const cookie of cookies) {
+                const seed = cookie.split(Const.COOKIE_SEPARATOR);
+                const event = seed[Const.ADDRESS_EVENT];
+                const options = JSON.parse(seed[Const.ADDRESS_OPTIONS]);
+                const { registered, handlers: _handlers } = context[cookie];
+                for (const handler of _handlers) {
+                    handlers.push({ event, handler: handler.proxy, options });
+                    registered.delete(handler.listener);
+                }
+            }
+        }
+    };
+
+    const { eventListeners, liveEventListeners } = _eventContextMap;
+    query(eventListeners.get(elem));
+    query(liveEventListeners.get(elem));
+
+    return handlers;
+}
+
 /** @internal */
 type ParseEventArgsResult = {
     type: string[];
     selector: string;
-    listener: DOMEventListner;
+    listener: InternalEventListener;
     options: AddEventListenerOptions;
 };
 
@@ -240,6 +344,15 @@ export type DOMEventMap<T>
     : GlobalEventHandlersEventMap;
 /* eslint-enable @typescript-eslint/indent */
 
+export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown
+
+export type EventWithNamespace<T extends DOMEventMap<unknown>> = keyof T | `${string & keyof T}.${string}`;
+export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
+export type EventType<T extends DOMEventMap<unknown>> = MakeEventType<EventWithNamespace<T>, T>;
+export type EventTypeOrNamespace<T extends DOMEventMap<unknown>> = EventType<T> | `.${string}`;
+
+//__________________________________________________________________________________________________//
+
 /**
  * @en Mixin base class which concentrated the event managements.
  * @ja イベント管理を集約した Mixin Base クラス
@@ -275,9 +388,9 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public on<TEventMap extends DOMEventMap<TElement>>(
-        type: keyof TEventMap | (keyof TEventMap)[],
+        type: EventType<TEventMap> | (EventType<TEventMap>)[],
         selector: string,
-        listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void,
+        listener: DOMEventListener<TElement, TEventMap>,
         options?: boolean | AddEventListenerOptions
     ): this;
 
@@ -299,8 +412,8 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public on<TEventMap extends DOMEventMap<TElement>>(
-        type: keyof TEventMap | (keyof TEventMap)[],
-        listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void,
+        type: EventType<TEventMap> | (EventType<TEventMap>)[],
+        listener: DOMEventListener<TElement, TEventMap>,
         options?: boolean | AddEventListenerOptions
     ): this;
 
@@ -328,7 +441,21 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         const proxy = selector ? handleLiveEvent : handleEvent;
 
         for (const el of this) {
-            registerEventListenerHandlers(el, events, selector, listener, proxy, options);
+            for (const event of events) {
+                const combos = splitEventNamespaces(event);
+                for (const combo of combos) {
+                    const { type, namespace } = combo;
+                    const { registered, handlers } = getEventListenersHandlers(el, type, namespace, selector, options, true);
+                    if (registered && !registered.has(listener)) {
+                        registered.add(listener);
+                        handlers.push({
+                            listener,
+                            proxy,
+                        });
+                        el.addEventListener(type, proxy, options);
+                    }
+                }
+            }
         }
 
         return this;
@@ -354,9 +481,9 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public off<TEventMap extends DOMEventMap<TElement>>(
-        type: keyof TEventMap | (keyof TEventMap)[],
+        type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[],
         selector: string,
-        listener?: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void,
+        listener?: DOMEventListener<TElement, TEventMap>,
         options?: boolean | AddEventListenerOptions
     ): this;
 
@@ -377,8 +504,8 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public off<TEventMap extends DOMEventMap<TElement>>(
-        type: keyof TEventMap | (keyof TEventMap)[],
-        listener?: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void,
+        type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[],
+        listener?: DOMEventListener<TElement, TEventMap>,
         options?: boolean | AddEventListenerOptions
     ): this;
 
@@ -399,20 +526,31 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
                 }
             }
         } else {
-            for (const event of events) {
-                for (const el of this) {
-                    const { registered, handlers } = getEventListenersHandlers(el, event, selector, options, false);
-                    if (0 < handlers.length) {
-                        for (let i = handlers.length - 1; i >= 0; i--) { // backward operation
-                            const handler = handlers[i];
-                            if (
-                                (listener && handler.listener === listener) ||
-                                (listener && handler.listener && handler.listener.origin && handler.listener.origin === listener) ||
-                                (!listener)
-                            ) {
-                                el.removeEventListener(event, handler.proxy, options);
-                                handlers.splice(i, 1);
-                                registered.delete(handler.listener);
+            for (const el of this) {
+                for (const event of events) {
+                    if (event.startsWith('.')) {
+                        const contexts = extractNamespaceHandlers(el, event);
+                        for (const context of contexts) {
+                            el.removeEventListener(context.event, context.handler, context.options);
+                        }
+                    } else {
+                        const combos = resolveEventNamespaces(el, event);
+                        for (const combo of combos) {
+                            const { type, namespace } = combo;
+                            const { registered, handlers } = getEventListenersHandlers(el, type, namespace, selector, options, false);
+                            if (0 < handlers.length) {
+                                for (let i = handlers.length - 1; i >= 0; i--) { // backward operation
+                                    const handler = handlers[i];
+                                    if (
+                                        (listener && handler.listener === listener) ||
+                                        (listener && handler.listener && handler.listener.origin && handler.listener.origin === listener) ||
+                                        (!listener)
+                                    ) {
+                                        el.removeEventListener(type, handler.proxy, options);
+                                        handlers.splice(i, 1);
+                                        registered.delete(handler.listener);
+                                    }
+                                }
                             }
                         }
                     }
@@ -441,9 +579,9 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public once<TEventMap extends DOMEventMap<TElement>>(
-        type: keyof TEventMap | (keyof TEventMap)[],
+        type: EventType<TEventMap> | (EventType<TEventMap>)[],
         selector: string,
-        listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void,
+        listener: DOMEventListener<TElement, TEventMap>,
         options?: boolean | AddEventListenerOptions
     ): this;
 
@@ -462,8 +600,8 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public once<TEventMap extends DOMEventMap<TElement>>(
-        type: keyof TEventMap | (keyof TEventMap)[],
-        listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void,
+        type: EventType<TEventMap> | (EventType<TEventMap>)[],
+        listener: DOMEventListener<TElement, TEventMap>,
         options?: boolean | AddEventListenerOptions
     ): this;
 
@@ -477,7 +615,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
             self.off(type as any, selector, onceHandler, opts);
             delete onceHandler.origin;
         }
-        onceHandler.origin = listener as DOMEventListner | undefined;
+        onceHandler.origin = listener as InternalEventListener | undefined;
         return this.on(type as any, selector, onceHandler, opts);
     }
 
@@ -485,6 +623,17 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      * @en Execute all handlers added to the matched elements for the specified event.
      * @ja 設定されているイベントハンドラに対してイベントを発行
      *
+     * @example <br>
+     *
+     * ```ts
+     * // w/ event-namespace behaviour
+     * $('.link').on('click.hoge.piyo', (e) => { ... });
+     * $('.link').on('click.hoge',  (e) => { ... });
+     *
+     * $('.link').trigger('.hoge');           // compile error. (not fire)
+     * $('.link').trigger('click.hoge');      // fire both.
+     * $('.link').trigger('click.hoge.piyo'); // fire only first one
+     * ```
      * @param seed
      *  - `en` event name or event name array. / `Event` instance or `Event` instance array.
      *  - `ja` イベント名またはイベント名配列 / `Event` インスタンスまたは `Event` インスタンス配列
@@ -493,12 +642,12 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` 送信する任意のデータ
      */
     public trigger<TEventMap extends DOMEventMap<TElement>>(
-        seed: keyof TEventMap | (keyof TEventMap)[] | Event | Event[] | (keyof TEventMap | Event)[],
+        seed: EventType<TEventMap> | (EventType<TEventMap>)[] | Event | Event[] | (EventType<TEventMap> | Event)[],
         ...eventData: unknown[]
     ): this {
-        const convert = (arg: keyof TEventMap | Event): Event => {
+        const convert = (arg: EventType<TEventMap> | Event): Event => {
             if (isString(arg)) {
-                return new CustomEvent(arg, {
+                return new CustomEvent(normalizeEventNamespaces(arg), {
                     detail: eventData,
                     bubbles: true,
                     cancelable: true,
@@ -589,7 +738,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` A function to execute when the `mouseleave` the element.
      *  - `ja` `mouseleave` ハンドラを指定
      */
-    public hover(handlerIn: (event: Event, ...args: unknown[]) => void, handlerOut?: (event: Event, ...args: unknown[]) => void): this {
+    public hover(handlerIn: DOMEventListener, handlerOut?: DOMEventListener): this {
         handlerOut = handlerOut || handlerIn;
         return this.mouseenter(handlerIn).mouseleave(handlerOut);
     }
@@ -608,7 +757,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public click(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public click(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('click', handler, options);
     }
 
@@ -623,7 +772,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public dblclick(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public dblclick(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('dblclick', handler, options);
     }
 
@@ -638,7 +787,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public blur(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public blur(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('blur', handler, options);
     }
 
@@ -653,7 +802,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public focus(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public focus(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('focus', handler, options);
     }
 
@@ -668,7 +817,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public focusin(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public focusin(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('focusin', handler, options);
     }
 
@@ -683,7 +832,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public focusout(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public focusout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('focusout', handler, options);
     }
 
@@ -698,7 +847,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public keyup(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public keyup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('keyup', handler, options);
     }
 
@@ -713,7 +862,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public keydown(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public keydown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('keydown', handler, options);
     }
 
@@ -728,7 +877,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public keypress(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public keypress(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('keypress', handler, options);
     }
 
@@ -743,7 +892,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public submit(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public submit(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('submit', handler, options);
     }
 
@@ -758,7 +907,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public contextmenu(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public contextmenu(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('contextmenu', handler, options);
     }
 
@@ -773,7 +922,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public change(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public change(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('change', handler, options);
     }
 
@@ -788,7 +937,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mousedown(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mousedown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mousedown', handler, options);
     }
 
@@ -803,7 +952,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mousemove(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mousemove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mousemove', handler, options);
     }
 
@@ -818,7 +967,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mouseup(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mouseup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mouseup', handler, options);
     }
 
@@ -833,7 +982,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mouseenter(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mouseenter(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mouseenter', handler, options);
     }
 
@@ -848,7 +997,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mouseleave(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mouseleave(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mouseleave', handler, options);
     }
 
@@ -863,7 +1012,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mouseout(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mouseout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mouseout', handler, options);
     }
 
@@ -878,7 +1027,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public mouseover(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public mouseover(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('mouseover', handler, options);
     }
 
@@ -893,7 +1042,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public touchstart(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public touchstart(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('touchstart', handler, options);
     }
 
@@ -908,7 +1057,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public touchend(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public touchend(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('touchend', handler, options);
     }
 
@@ -923,7 +1072,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public touchmove(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public touchmove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('touchmove', handler, options);
     }
 
@@ -938,7 +1087,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public touchcancel(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public touchcancel(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('touchcancel', handler, options);
     }
 
@@ -953,7 +1102,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public resize(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public resize(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('resize', handler, options);
     }
 
@@ -968,7 +1117,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    public scroll(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this {
+    public scroll(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
         return eventShortcut.bind(this)('scroll', handler, options);
     }
 

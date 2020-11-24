@@ -1,6 +1,11 @@
 import { ElementBase, DOM } from './static';
 import { DOMIterable } from './base';
 export declare type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap : T extends HTMLFrameSetElement ? HTMLFrameSetElementEventMap : T extends HTMLMarqueeElement ? HTMLMarqueeElementEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap : T extends HTMLElement ? HTMLElementEventMap : T extends Element ? ElementEventMap : GlobalEventHandlersEventMap;
+export declare type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
+export declare type EventWithNamespace<T extends DOMEventMap<unknown>> = keyof T | `${string & keyof T}.${string}`;
+export declare type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
+export declare type EventType<T extends DOMEventMap<unknown>> = MakeEventType<EventWithNamespace<T>, T>;
+export declare type EventTypeOrNamespace<T extends DOMEventMap<unknown>> = EventType<T> | `.${string}`;
 /**
  * @en Mixin base class which concentrated the event managements.
  * @ja イベント管理を集約した Mixin Base クラス
@@ -27,7 +32,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    on<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], selector: string, listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    on<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], selector: string, listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Add event handler function to one or more events to the elements. (live event available)
      * @ja 要素に対して, 1つまたは複数のイベントハンドラを設定 (動的要素にも有効)
@@ -45,7 +50,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    on<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    on<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
@@ -65,7 +70,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    off<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], selector: string, listener?: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    off<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], selector: string, listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
@@ -82,7 +87,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    off<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], listener?: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    off<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Remove all event handler.
      * @ja 設定されているすべてのイベントハンドラの解除
@@ -105,7 +110,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    once<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], selector: string, listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    once<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], selector: string, listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Add event handler function to one or more events to the elements that will be executed only once. (live event available)
      * @ja 要素に対して, 一度だけ呼び出されるイベントハンドラを設定 (動的要素に対しても有効)
@@ -120,11 +125,22 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    once<TEventMap extends DOMEventMap<TElement>>(type: keyof TEventMap | (keyof TEventMap)[], listener: (event: TEventMap[keyof TEventMap], ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    once<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Execute all handlers added to the matched elements for the specified event.
      * @ja 設定されているイベントハンドラに対してイベントを発行
      *
+     * @example <br>
+     *
+     * ```ts
+     * // w/ event-namespace behaviour
+     * $('.link').on('click.hoge.piyo', (e) => { ... });
+     * $('.link').on('click.hoge',  (e) => { ... });
+     *
+     * $('.link').trigger('.hoge');           // compile error. (not fire)
+     * $('.link').trigger('click.hoge');      // fire both.
+     * $('.link').trigger('click.hoge.piyo'); // fire only first one
+     * ```
      * @param seed
      *  - `en` event name or event name array. / `Event` instance or `Event` instance array.
      *  - `ja` イベント名またはイベント名配列 / `Event` インスタンスまたは `Event` インスタンス配列
@@ -132,7 +148,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` optional sending data.
      *  - `ja` 送信する任意のデータ
      */
-    trigger<TEventMap extends DOMEventMap<TElement>>(seed: keyof TEventMap | (keyof TEventMap)[] | Event | Event[] | (keyof TEventMap | Event)[], ...eventData: unknown[]): this;
+    trigger<TEventMap extends DOMEventMap<TElement>>(seed: EventType<TEventMap> | (EventType<TEventMap>)[] | Event | Event[] | (EventType<TEventMap> | Event)[], ...eventData: unknown[]): this;
     /**
      * @en Shortcut for [[once]]('transitionend').
      * @ja [[once]]('transitionend') のユーティリティ
@@ -170,7 +186,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` A function to execute when the `mouseleave` the element.
      *  - `ja` `mouseleave` ハンドラを指定
      */
-    hover(handlerIn: (event: Event, ...args: unknown[]) => void, handlerOut?: (event: Event, ...args: unknown[]) => void): this;
+    hover(handlerIn: DOMEventListener, handlerOut?: DOMEventListener): this;
     /**
      * @en Trigger or handle `click` event.
      * @ja `click` イベントの発行または捕捉
@@ -182,7 +198,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    click(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    click(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `dblclick` event.
      * @ja `dblclick` イベントの発行または捕捉
@@ -194,7 +210,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    dblclick(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    dblclick(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `blur` event.
      * @ja `blur` イベントの発行または捕捉
@@ -206,7 +222,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    blur(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    blur(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `focus` event.
      * @ja `focus` イベントの発行または捕捉
@@ -218,7 +234,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    focus(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    focus(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `focusin` event.
      * @ja `focusin` イベントの発行または捕捉
@@ -230,7 +246,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    focusin(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    focusin(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `focusout` event.
      * @ja `focusout` イベントの発行または捕捉
@@ -242,7 +258,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    focusout(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    focusout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `keyup` event.
      * @ja `keyup` イベントの発行または捕捉
@@ -254,7 +270,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    keyup(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    keyup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `keydown` event.
      * @ja `keydown` イベントの発行または捕捉
@@ -266,7 +282,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    keydown(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    keydown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `keypress` event.
      * @ja `keypress` イベントの発行または捕捉
@@ -278,7 +294,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    keypress(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    keypress(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `submit` event.
      * @ja `submit` イベントの発行または捕捉
@@ -290,7 +306,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    submit(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    submit(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `contextmenu` event.
      * @ja `contextmenu` イベントの発行または捕捉
@@ -302,7 +318,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    contextmenu(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    contextmenu(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `change` event.
      * @ja `change` イベントの発行または捕捉
@@ -314,7 +330,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    change(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    change(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mousedown` event.
      * @ja `mousedown` イベントの発行または捕捉
@@ -326,7 +342,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mousedown(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mousedown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mousemove` event.
      * @ja `mousemove` イベントの発行または捕捉
@@ -338,7 +354,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mousemove(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mousemove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseup` event.
      * @ja `mouseup` イベントの発行または捕捉
@@ -350,7 +366,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseup(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mouseup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseenter` event.
      * @ja `mouseenter` イベントの発行または捕捉
@@ -362,7 +378,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseenter(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mouseenter(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseleave` event.
      * @ja `mouseleave` イベントの発行または捕捉
@@ -374,7 +390,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseleave(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mouseleave(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseout` event.
      * @ja `mouseout` イベントの発行または捕捉
@@ -386,7 +402,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseout(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mouseout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseover` event.
      * @ja `mouseover` イベントの発行または捕捉
@@ -398,7 +414,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseover(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    mouseover(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchstart` event.
      * @ja `touchstart` イベントの発行または捕捉
@@ -410,7 +426,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchstart(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    touchstart(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchend` event.
      * @ja `touchend` イベントの発行または捕捉
@@ -422,7 +438,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchend(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    touchend(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchmove` event.
      * @ja `touchmove` イベントの発行または捕捉
@@ -434,7 +450,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchmove(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    touchmove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchcancel` event.
      * @ja `touchcancel` イベントの発行または捕捉
@@ -446,7 +462,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchcancel(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    touchcancel(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `resize` event.
      * @ja `resize` イベントの発行または捕捉
@@ -458,7 +474,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    resize(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    resize(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `scroll` event.
      * @ja `scroll` イベントの発行または捕捉
@@ -470,7 +486,7 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    scroll(handler?: (event: Event, ...args: unknown[]) => void, options?: boolean | AddEventListenerOptions): this;
+    scroll(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Create a deep copy of the set of matched elements.
      * @ja 配下の要素のディープコピーを作成

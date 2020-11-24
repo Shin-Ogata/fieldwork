@@ -172,7 +172,6 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
         $dom.on('click', stub.onCallback);
         $dom.on('click', stub.onCallback); // mistake register
-        $dom.on('click', stub.onCallback); // mistake register
 
         await $dom[0].dispatchEvent(evClick);
         expect(stub.onCallback).toHaveBeenCalled();
@@ -762,5 +761,153 @@ describe('dom/events spec', () => {
         expect(() => $(window).clone()).not.toThrow();
         expect(() => $(document).clone(true, true)).not.toThrow();
         done();
+    });
+
+    describe('event namespace', () => {
+        it('check DOM#on(type, listener), single namespace', async done => {
+            prepareTestElements();
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const $dom = $('#d1');
+            $dom.on('click.ns1', stub.onCallback);
+
+            await $dom[0].dispatchEvent(evClick);
+            expect(stub.onCallback).toHaveBeenCalled();
+            expect(count).toBe(1);
+
+            await $dom.trigger('click');
+            expect(count).toBe(2);
+
+            await $dom.trigger('click.ns1');
+            expect(count).toBe(3);
+
+            done();
+        });
+
+        it('check DOM#on(type, listener), multi namespace', async done => {
+            prepareTestElements();
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const $dom = $('#d1');
+            $dom.on('click.ns2.ns1', stub.onCallback);
+            $dom.on('dblclick.ns1', stub.onCallback);
+
+            await $dom.trigger('click');
+            expect(count).toBe(1);
+
+            await $dom.trigger('click.ns1');
+            expect(count).toBe(2);
+
+            await $dom.trigger('click.ns2');
+            expect(count).toBe(3);
+
+            await $dom.trigger('click.ns2.ns1');
+            expect(count).toBe(4);
+
+            await $dom.trigger('click.ns1.ns2');
+            expect(count).toBe(5);
+
+            await $dom.trigger('dblclick');
+            expect(count).toBe(6);
+
+            $dom.off('click.ns2');
+
+            await $dom.trigger('click.ns1');
+            expect(count).toBe(6);
+
+            await $dom.trigger('click.ns2');
+            expect(count).toBe(6);
+
+            await $dom.trigger('click.ns1.ns2');
+            expect(count).toBe(6);
+
+            await $dom.trigger('click');
+            expect(count).toBe(6);
+
+            await $dom.trigger('dblclick.ns1');
+            expect(count).toBe(7);
+
+            done();
+        });
+
+        it('check DOM#trigger(type), w/ namespace', async done => {
+            prepareTestElements();
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+            const stub2 = { onCallback2 };
+            spyOn(stub2, 'onCallback2').and.callThrough();
+
+            const $dom = $('#d1');
+            $dom.on('click.hoge.piyo', stub.onCallback);
+            $dom.on('click.hoge', stub2.onCallback2);
+
+//          await $dom.trigger('.hoge'); // compile error. (not fire)
+
+            await $dom.trigger('click');
+            expect(count).toBe(2);
+
+            await $dom.trigger('click.hoge');
+            expect(count).toBe(4);
+
+            await $dom.trigger('click.hoge.piyo');
+            expect(count).toBe(5);
+
+            done();
+        });
+
+        it('check DOM#off(type), w/ namespace1', async done => {
+            prepareTestElements();
+            const stub = { onCallback };
+            const stub2 = { onCallback2 };
+
+            const $dom = $('#d1');
+            $dom.on('click.hoge.piyo', stub.onCallback);
+            $dom.on('click.hoge', stub2.onCallback2);
+
+            $dom.off('.hoge');
+
+            await $dom.trigger('click');
+            expect(count).toBe(0);
+
+            await $dom.trigger('click.hoge');
+            expect(count).toBe(0);
+
+            await $dom.trigger('click.hoge.piyo');
+            expect(count).toBe(0);
+
+            $dom.off('.piyo');
+
+            done();
+        });
+
+        it('check DOM#off(type), w/ namespace2', async done => {
+            prepareTestElements();
+            const stub = { onCallback };
+            const stub2 = { onCallback2 };
+
+            const $dom = $('#d1');
+            $dom.on('click.piyo', stub.onCallback);
+            $dom.on('click.hoge', stub2.onCallback2);
+
+            $dom.off('.hoge');
+
+            await $dom.trigger('click');
+            expect(count).toBe(1);
+
+            await $dom.trigger('click.hoge');
+            expect(count).toBe(1);
+
+            await $dom.trigger('click.piyo');
+            expect(count).toBe(2);
+
+            $dom.off('.piyo');
+
+            await $dom.trigger('click.piyo');
+            expect(count).toBe(2);
+
+            done();
+        });
     });
 });

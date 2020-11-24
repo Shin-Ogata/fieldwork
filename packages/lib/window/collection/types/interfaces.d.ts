@@ -4,7 +4,7 @@ import { Cancelable } from '@cdp/promise';
 import { ArrayChangeRecord } from '@cdp/observable';
 import { Result } from '@cdp/result';
 import { SyncEvent, RestDataSyncOptions } from '@cdp/data-sync';
-import { Parseable, Validable, ModelConstructionOptions, ModelSaveOptions, ModelDestroyOptions } from '@cdp/model';
+import { Parseable, Validable, ModelConstructionOptions, ModelSaveOptions, ModelDestroyOptions, ChangedAttributeEvent } from '@cdp/model';
 import type { Collection } from './base';
 /**
  * @en Sort order const definitions.
@@ -351,7 +351,7 @@ export interface CollectionConstructionOptions<T extends object, K extends Keys<
 }
 /**
  * @en Base options for collection operation.
- * @ja コレクション操作の基底オプション定義
+ * @ja Collection 操作の基底オプション定義
  */
 export declare type CollectionOperationOptions = Silenceable & Parseable;
 /**
@@ -418,40 +418,52 @@ export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<
  */
 export declare type CollectionRequeryOptions = Silenceable & Cancelable;
 /**
+ * @en Model attribute change event definition.
+ * @ja Model 属性変更イベント定義
+ */
+export declare type CollectionModelAttributeChangeEvent<T extends object> = {
+    [K in ChangedAttributeEvent<T>]: K extends `@change:${string}` ? [T, Collection<T>, CollectionOperationOptions] : never;
+};
+/**
  * @en Default [[Collection]] event definition.
  * @ja 既定の [[Collection]] イベント定義
  */
-export interface CollectionEvent<TItem extends object> extends EventAll, SyncEvent<Collection<TItem>> {
+export declare type CollectionEvent<TItem extends object> = EventAll & SyncEvent<Collection<TItem>> & CollectionModelAttributeChangeEvent<TItem> & {
     /**
      * @en when a model is added to a collection.
-     * @ja モデルがコレクションに追加されたときに発行
+     * @ja Model が Collection に追加されたときに発行
      */
     '@add': [TItem, Collection<TItem>, CollectionSetOptions];
     /**
      * @en when a model is removed from a collection.
-     * @ja モデルがコレクションから削除されたときに発行
+     * @ja Model が Collection から削除されたときに発行
      */
     '@remove': [TItem, Collection<TItem>, CollectionSetOptions];
     /**
+     * @en notified when some attribute changed.
+     * @ja 属性が変更されたときに発行
+     */
+    '@change': [TItem, Collection<TItem>, CollectionOperationOptions];
+    /**
      * @en single event triggered after any number of models have been added, removed or changed in a collection.
-     * @ja コレクション内のモデルの追加・削除・変化時に1回発行
+     * @ja Collection 内の Model の追加・削除・変化時に1回発行
      */
     '@update': [Collection<TItem>, CollectionUpdateOptions<TItem>];
     /**
      * @en when the collection's entire contents have been reset.
-     * @ja コレクションが置き換えられたときに発行
+     * @ja Collection が置き換えられたときに発行
      */
     '@reset': [Collection<TItem>, CollectionSetOptions & {
         previous: TItem[];
     }];
     /**
      * @en when the collection has been re-sorted.
-     * @ja コレクションが再ソートされたときに発行
+     * @ja Collection が再ソートされたときに発行
      */
     '@sort': [Collection<TItem>, CollectionReSortOptions<TItem>];
     /**
      * @en when the collection has been re-sorted.
-     * @ja コレクションが再ソートされたときに発行
+     * @ja Collection が再ソートされたときに発行
      */
     '@filter': [Collection<TItem>, CollectionAfterFilterOptions<TItem>];
     /**
@@ -461,12 +473,12 @@ export interface CollectionEvent<TItem extends object> extends EventAll, SyncEve
     '@sync': [Collection<TItem>, PlainObject, CollectionDataSyncOptions];
     /**
      * @en notified when a model is destroyed.
-     * @ja モデルが破棄されたときに発行
+     * @ja Model が破棄されたときに発行
      */
     '@destroy': [TItem, Collection<TItem>, ModelDestroyOptions];
     /**
      * @en notified when setup model failed.
-     * @ja モデル設定に失敗したときに発行
+     * @ja Model 設定に失敗したときに発行
      */
     '@invalid': [TItem, Collection<TItem>, Result, CollectionOperationOptions];
     /**
@@ -474,7 +486,7 @@ export interface CollectionEvent<TItem extends object> extends EventAll, SyncEve
      * @ja サーバーリクエストに失敗したときに発行
      */
     '@error': [TItem | undefined, Collection<TItem>, Error, CollectionDataSyncOptions];
-}
+};
 /**
  * @en Base options for editing list operation.
  * @ja 編集可能リスト用基底オプション

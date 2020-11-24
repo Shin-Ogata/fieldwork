@@ -63,6 +63,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "i18n", "packages\lib\window
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "environment", "packages\lib\window\environment\environment.njsproj", "{C2BDDDDC-0DA7-4FDB-96D6-EB54BD653A51}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "view", "packages\lib\window\view\view.njsproj", "{D6904B0F-76CD-4516-9E4B-798DBD67F64F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{C2BDDDDC-0DA7-4FDB-96D6-EB54BD653A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2BDDDDC-0DA7-4FDB-96D6-EB54BD653A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2BDDDDC-0DA7-4FDB-96D6-EB54BD653A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6904B0F-76CD-4516-9E4B-798DBD67F64F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6904B0F-76CD-4516-9E4B-798DBD67F64F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6904B0F-76CD-4516-9E4B-798DBD67F64F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6904B0F-76CD-4516-9E4B-798DBD67F64F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,6 +189,7 @@ Global
 		{73BC9CF8-B1E3-48F4-89AE-B75C9F346874} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{EDD92F66-3864-4BB9-B62A-2F67CE6253FD} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{C2BDDDDC-0DA7-4FDB-96D6-EB54BD653A51} = {35317128-68DB-44C4-9168-3B083BE12CC4}
+		{D6904B0F-76CD-4516-9E4B-798DBD67F64F} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

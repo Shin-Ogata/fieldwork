@@ -43,7 +43,7 @@
     <Compile Include="config.js" />
     <Compile Include="downloader.js" />
     <Compile Include="index.js" />
-    <Compile Include="lib\cli-plugin-bundle-depends.js" />
+    <Compile Include="lib\cli-plugin-bundle.js" />
     <Compile Include="lib\cli-plugin-clean.js" />
     <Compile Include="lib\cli-command-parser.js" />
     <Compile Include="lib\cli-plugin-copy.js" />

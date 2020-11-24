@@ -151,7 +151,7 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
 
 /**
  * @en Base class definition for collection that is ordered sets of models.
- * @ja モデルの集合を扱うコレクションの基底クラス定義.
+ * @ja Model の集合を扱う Collection の基底クラス定義.
  *
  * @example <br>
  *
@@ -228,14 +228,14 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
  */
 export abstract class Collection<
     TModel extends object = any, // eslint-disable-line @typescript-eslint/no-explicit-any
-    Event extends CollectionEvent<TModel> = CollectionEvent<TModel>,
+    TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>,
     TKey extends Keys<TModel> = Keys<TModel>
-> extends EventSource<Event> implements Iterable<TModel> {
+> extends EventSource<TEvent> implements Iterable<TModel> {
 
     /**
      * @en Model constructor. <br>
      *     The constructor is used internally by this [[Collection]] class for [[TModel]] construction.
-     * @ja モデルコンストラクタ <br>
+     * @ja Model コンストラクタ <br>
      *     [[Collection]] クラスが [[TModel]] を構築するために使用する
      */
     static readonly model?: Class;
@@ -251,7 +251,7 @@ export abstract class Collection<
      *
      * @param seeds
      *  - `en` given the seed of model array.
-     *  - `ja` モデル要素の配列を指定
+     *  - `ja` Model 要素の配列を指定
      * @param options
      *  - `en` construction options.
      *  - `ja` 構築オプション
@@ -277,7 +277,7 @@ export abstract class Collection<
 
         /* model event handler */
         this[_onModelEvent] = (event: string, model: TModel | undefined, collection: this, options: CollectionOperationOptions): void => {
-            if (event.startsWith('@') && model) {
+            if (isString(event) && event.startsWith('@') && model) {
                 if (('@add' === event || '@remove' === event) && collection !== this) {
                     return;
                 }
@@ -287,15 +287,20 @@ export abstract class Collection<
                     collection = this;
                     this.remove(model, options);
                 }
-                if ('@change' === event) {
-                    const ids = getChangedIds(model, modelConstructor(this));
-                    if (ids) {
-                        const { id, prevId } = ids;
-                        if (prevId !== id) {
-                            const { byId } = this[_properties];
-                            byId.set(id, model);
-                            if (null != prevId) {
-                                byId.delete(prevId);
+                if (event.startsWith('@change')) {
+                    // model event arguments adjustment.
+                    options = {};
+                    collection = this;
+                    if ('@change' === event) {
+                        const ids = getChangedIds(model, modelConstructor(this));
+                        if (ids) {
+                            const { id, prevId } = ids;
+                            if (prevId !== id) {
+                                const { byId } = this[_properties];
+                                byId.set(id, model);
+                                if (null != prevId) {
+                                    byId.delete(prevId);
+                                }
                             }
                         }
                     }
@@ -355,7 +360,7 @@ export abstract class Collection<
 
     /**
      * @en Get models.
-     * @ja モデルアクセス
+     * @ja Model アクセス
      */
     get models(): readonly TModel[] {
         const { _queryFilter, _afterFilter } = this;
@@ -365,7 +370,7 @@ export abstract class Collection<
 
     /**
      * @en number of models.
-     * @ja 内包するモデル数
+     * @ja 内包する Model 数
      */
     get length(): number {
         return this.models.length;
@@ -471,7 +476,7 @@ export abstract class Collection<
 
     /**
      * @en Get a model from a collection, specified by an `id`, a `cid`, or by passing in a model instance.
-     * @ja `id`, `cid` およびインスタンスからモデルを特定
+     * @ja `id`, `cid` およびインスタンスから Model を特定
      *
      * @param seed
      *  - `en` `id`, a `cid`, or by passing in a model instance
@@ -495,7 +500,7 @@ export abstract class Collection<
 
     /**
      * @en Returns `true` if the model is in the collection by an `id`, a `cid`, or by passing in a model instance.
-     * @ja `id`, `cid` およびインスタンスからモデルを所有しているか判定
+     * @ja `id`, `cid` およびインスタンスから Model を所有しているか判定
      *
      * @param seed
      *  - `en` `id`, a `cid`, or by passing in a model instance
@@ -507,7 +512,7 @@ export abstract class Collection<
 
     /**
      * @en Return a copy of the model's `attributes` object.
-     * @ja モデル属性値のコピーを返却
+     * @ja Model 属性値のコピーを返却
      */
     public toJSON(): object[] {
         return this.models.map(m => isModel(m) ? m.toJSON() : m);
@@ -526,7 +531,7 @@ export abstract class Collection<
 
     /**
      * @en Force a collection to re-sort itself.
-     * @ja コレクション要素の再ソート
+     * @ja Collection 要素の再ソート
      *
      * @param options
      *  - `en` sort options.
@@ -597,7 +602,7 @@ export abstract class Collection<
 
     /**
      * @en Get the model at the given index. If negative value is given, the target will be found from the last index.
-     * @ja インデックス指定によるモデルへのアクセス. 負値の場合は末尾検索を実行
+     * @ja インデックス指定による Model へのアクセス. 負値の場合は末尾検索を実行
      *
      * @param index
      *  - `en` A zero-based integer indicating which element to retrieve. <br>
@@ -611,13 +616,13 @@ export abstract class Collection<
 
     /**
      * @en Get the first element of the model.
-     * @ja モデルの最初の要素を取得
+     * @ja Model の最初の要素を取得
      */
     public first(): TModel | undefined;
 
     /**
      * @en Get the value of `count` elements of the model from the first.
-     * @ja モデルの先頭から`count` 分の要素を取得
+     * @ja Model の先頭から`count` 分の要素を取得
      */
     public first(count: number): TModel[];
 
@@ -632,13 +637,13 @@ export abstract class Collection<
 
     /**
      * @en Get the last element of the model.
-     * @ja モデルの最初の要素を取得
+     * @ja Model の最初の要素を取得
      */
     public last(): TModel | undefined;
 
     /**
      * @en Get the value of `count` elements of the model from the last.
-     * @ja モデルの先頭から`count` 分の要素を取得
+     * @ja Model の先頭から`count` 分の要素を取得
      */
     public last(count: number): TModel[];
 
@@ -747,9 +752,9 @@ export abstract class Collection<
      *       - if the model is already in the collection its attributes will be merged.
      *       - if the collection contains any models that aren't present in the list, they'll be removed.
      *       - All of the appropriate `@add`, `@remove`, and `@update` events are fired as this happens.
-     * @ja コレクションの汎用更新処理
-     *       - 追加時にすでにモデルが存在するときは、属性をマージ
-     *       - 指定リストに存在しないモデルは削除
+     * @ja Collection の汎用更新処理
+     *       - 追加時にすでに Model が存在するときは、属性をマージ
+     *       - 指定リストに存在しない Model は削除
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seed
@@ -766,14 +771,14 @@ export abstract class Collection<
      *       - if the model is already in the collection its attributes will be merged.
      *       - if the collection contains any models that aren't present in the list, they'll be removed.
      *       - All of the appropriate `@add`, `@remove`, and `@update` events are fired as this happens.
-     * @ja コレクションの汎用更新処理
-     *       - 追加時にすでにモデルが存在するときは、属性をマージ
-     *       - 指定リストに存在しないモデルは削除
+     * @ja Collection の汎用更新処理
+     *       - 追加時にすでに Model が存在するときは、属性をマージ
+     *       - 指定リストに存在しない Model は削除
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seed
      *  - `en` given the seed of model.
-     *  - `ja` モデル要素を指定
+     *  - `ja` Model 要素を指定
      * @param options
      *  - `en` set options.
      *  - `ja` 設定オプション
@@ -785,14 +790,14 @@ export abstract class Collection<
      *       - if the model is already in the collection its attributes will be merged.
      *       - if the collection contains any models that aren't present in the list, they'll be removed.
      *       - All of the appropriate `@add`, `@remove`, and `@update` events are fired as this happens.
-     * @ja コレクションの汎用更新処理
-     *       - 追加時にすでにモデルが存在するときは、属性をマージ
-     *       - 指定リストに存在しないモデルは削除
+     * @ja Collection の汎用更新処理
+     *       - 追加時にすでに Model が存在するときは、属性をマージ
+     *       - 指定リストに存在しない Model は削除
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seeds
      *  - `en` given the seed of model array.
-     *  - `ja` モデル要素の配列を指定
+     *  - `ja` Model 要素の配列を指定
      * @param options
      *  - `en` set options.
      *  - `ja` 設定オプション
@@ -950,11 +955,11 @@ export abstract class Collection<
 
     /**
      * @en Replace a collection with a new list of models (or attribute hashes), triggering a single `reset` event on completion.
-     * @ja コレクションを新しいモデル一覧で置換. 完了時に `reset` イベントを発行
+     * @ja Collection を新しい Model 一覧で置換. 完了時に `reset` イベントを発行
      *
      * @param seeds
      *  - `en` given the seed of model array.
-     *  - `ja` モデル要素の配列を指定
+     *  - `ja` Model 要素の配列を指定
      * @param options
      *  - `en` reset options.
      *  - `ja` リセットオプション
@@ -980,11 +985,11 @@ export abstract class Collection<
 
     /**
      * @en Add model to the collection.
-     * @ja コレクションへのモデルの追加
+     * @ja Collection への Model の追加
      *
      * @param seed
      *  - `en` given the seed of model.
-     *  - `ja` モデル要素を指定
+     *  - `ja` Model 要素を指定
      * @param options
      *  - `en` add options.
      *  - `ja` 追加オプション
@@ -993,11 +998,11 @@ export abstract class Collection<
 
     /**
      * @en Add to the collection with the passed list of models.
-     * @ja モデルリスト指定によるコレクションへの追加
+     * @ja Model リスト指定による Collection への追加
      *
      * @param seeds
      *  - `en` given the seed of model array.
-     *  - `ja` モデル要素の配列を指定
+     *  - `ja` Model 要素の配列を指定
      * @param options
      *  - `en` add options.
      *  - `ja` 追加オプション
@@ -1010,11 +1015,11 @@ export abstract class Collection<
 
     /**
      * @en Remove a model from the set.
-     * @ja コレクションからモデルを削除
+     * @ja Collection から Model を削除
      *
      * @param seed
      *  - `en` given the seed of model.
-     *  - `ja` モデル要素を指定
+     *  - `ja` Model 要素を指定
      * @param options
      *  - `en` remove options.
      *  - `ja` 削除オプション
@@ -1023,11 +1028,11 @@ export abstract class Collection<
 
     /**
      * @en Remove a list of models from the set.
-     * @ja モデルリスト指定によるコレクションからの削除
+     * @ja Model リスト指定による Collection からの削除
      *
      * @param seeds
      *  - `en` given the seed of model array.
-     *  - `ja` モデル要素の配列を指定
+     *  - `ja` Model 要素の配列を指定
      * @param options
      *  - `en` remove options.
      *  - `ja` 削除オプション
@@ -1048,11 +1053,11 @@ export abstract class Collection<
 
     /**
      * @en Add a model to the end of the collection.
-     * @ja 末尾にモデルを追加
+     * @ja 末尾に Model を追加
      *
      * @param seed
      *  - `en` given the seed of model.
-     *  - `ja` モデル要素を指定
+     *  - `ja` Model 要素を指定
      * @param options
      *  - `en` add options.
      *  - `ja` 追加オプション
@@ -1064,7 +1069,7 @@ export abstract class Collection<
 
     /**
      * @en Remove a model from the end of the collection.
-     * @ja 末尾のモデルを削除
+     * @ja 末尾の Model を削除
      *
      * @param options
      *  - `en` Silenceable options.
@@ -1077,11 +1082,11 @@ export abstract class Collection<
 
     /**
      * @en Add a model to the beginning of the collection.
-     * @ja 先頭にモデルを追加
+     * @ja 先頭に Model を追加
      *
      * @param seed
      *  - `en` given the seed of model.
-     *  - `ja` モデル要素を指定
+     *  - `ja` Model 要素を指定
      * @param options
      *  - `en` add options.
      *  - `ja` 追加オプション
@@ -1092,7 +1097,7 @@ export abstract class Collection<
 
     /**
      * @en Remove a model from the beginning of the collection.
-     * @ja 先頭のモデルを削除
+     * @ja 先頭の Model を削除
      *
      * @param options
      *  - `en` Silenceable options.
@@ -1105,14 +1110,14 @@ export abstract class Collection<
 
     /**
      * @en Create a new instance of a model in this collection.
-     * @ja 新しいモデルインスタンスを作成し, コレクションに追加
+     * @ja 新しい Model インスタンスを作成し, Collection に追加
      *
      * @param attrs
      *  - `en` attributes object.
      *  - `ja` 属性オブジェクトを指定
      * @param options
      *  - `en` model construction options.
-     *  - `ja` モデル構築オプション
+     *  - `ja` Model 構築オプション
      */
     public create(attrs: object, options?: ModelSaveOptions): TModel | undefined {
         const { wait } = options || {};

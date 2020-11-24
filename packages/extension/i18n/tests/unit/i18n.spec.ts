@@ -310,7 +310,7 @@ describe('extention-i18n spec', () => {
         it('check eary binding `t`', async done => {
             const t: i18n.TFunction = i18next.t.bind(i18next);
 
-            const promise = new Promise(resolve => {
+            const promise = new Promise<void>(resolve => {
                 void post(() => {
                     i18next.init({
                         lng: 'ja-JP',
