@@ -357,6 +357,88 @@ export function sample<T>(array: T[], count?: number): T | T[] {
 //__________________________________________________________________________________________________//
 
 /**
+ * @en Returns a result of permutation from the list.
+ * @ja 配列から順列結果を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const arr = permutation(['a', 'b', 'c'], 2);
+ * console.log(JSON.stringify(arr));
+ * // => [['a','b'],['a','c'],['b','a'],['b','c'],['c','a'],['c','b']]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param count
+ *  - `en` number of pick up.
+ *  - `ja` 選択数
+ */
+export function permutation<T>(array: T[], count: number): T[][] {
+    const retval: T[][] = [];
+    if (array.length < count) {
+        return [];
+    }
+    if (1 === count) {
+        for (const [i, val] of array.entries()) {
+            retval[i] = [val];
+        }
+    } else {
+        for (let i = 0, n1 = array.length; i < n1; i++) {
+            const parts = array.slice(0);
+            parts.splice(i, 1);
+            const row = permutation(parts, count - 1);
+            for (let j = 0, n2 = row.length; j < n2; j++) {
+                retval.push([array[i]].concat(row[j]));
+            }
+        }
+    }
+    return retval;
+}
+
+/**
+ * @en Returns a result of combination from the list.
+ * @ja 配列から組み合わせ結果を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const arr = combination(['a', 'b', 'c'], 2);
+ * console.log(JSON.stringify(arr));
+ * // => [['a','b'],['a','c'],['b','c']]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param count
+ *  - `en` number of pick up.
+ *  - `ja` 選択数
+ */
+export function combination<T>(array: T[], count: number): T[][] {
+    const retval: T[][] = [];
+    if (array.length < count) {
+        return [];
+    }
+    if (1 === count) {
+        for (const [i, val] of array.entries()) {
+            retval[i] = [val];
+        }
+    } else {
+        for (let i = 0, n1 = array.length; i < n1 - count + 1; i++) {
+            const row = combination(array.slice(i + 1), count - 1);
+            for (let j = 0, n2 = row.length; j < n2; j++) {
+                retval.push([array[i]].concat(row[j]));
+            }
+        }
+    }
+    return retval;
+}
+
+//__________________________________________________________________________________________________//
+
+/**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.map()` の代替メソッド
  * 

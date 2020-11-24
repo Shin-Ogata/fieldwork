@@ -260,7 +260,7 @@ export declare function isPrimitive(x: unknown): x is Primitive;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare const isArray: (arg: any) => arg is any[];
+export declare const isArray: <T>(arg: {} | T) => arg is T extends readonly any[] ? unknown extends T ? never : readonly any[] : any[];
 /**
  * @en Check the value-type is Object.
  * @ja Object 型であるか判定

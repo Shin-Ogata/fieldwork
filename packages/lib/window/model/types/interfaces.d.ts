@@ -1,4 +1,4 @@
-import { Constructor, PlainObject } from '@cdp/core-utils';
+import { Constructor, PlainObject, NonFunctionPropertyNames } from '@cdp/core-utils';
 import { EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
 import { SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
@@ -25,12 +25,16 @@ export interface Parseable {
 export interface Waitable {
     wait?: boolean;
 }
+/** helper for [[ModelAttributeChangeEvent]] */
+export declare type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
+/** helper for [[ModelAttributeChangeEvent]] */
+export declare type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ? A extends keyof T ? [Model<T>, T[A], T[A], A] : never : never;
 /**
  * @en [[Model]] attribute change event definition.
  * @ja [[Model]] 属性変更イベント定義
  */
 export declare type ModelAttributeChangeEvent<T extends object> = {
-    [K in keyof T]: [T[K], T[K], K];
+    [K in ChangedAttributeEvent<T>]: MakeEventArg<T, K>;
 };
 /**
  * @en Default [[Model]] event definition.
@@ -39,12 +43,12 @@ export declare type ModelAttributeChangeEvent<T extends object> = {
 export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttributeChangeEvent<T> & {
     /**
      * @en when a model is added to a collection.
-     * @ja モデルがコレクションに追加されたときに発行
+     * @ja Model が  Collection に追加されたときに発行
     */
     '@add': [Model<T>, unknown, Silenceable];
     /**
      * @en when a model is removed from a collection.
-     * @ja モデルがコレクションから削除されたときに発行
+     * @ja Model が Collection から削除されたときに発行
      */
     '@remove': [Model<T>, unknown, Silenceable];
     /**
@@ -59,7 +63,7 @@ export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & Mod
     '@sync': [Model<T>, PlainObject, ModelDataSyncOptions];
     /**
      * @en notified when a model is destroyed.
-     * @ja モデルが破棄されたときに発行
+     * @ja Model が破棄されたときに発行
      */
     '@destroy': [Model<T>, ModelDestroyOptions];
     /**

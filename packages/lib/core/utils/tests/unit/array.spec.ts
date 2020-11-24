@@ -15,6 +15,8 @@ import {
     difference,
     without,
     sample,
+    permutation,
+    combination,
     map,
     filter,
     find,
@@ -242,6 +244,64 @@ describe('utils/array spec', () => {
         const res2 = sample(array, 3);
         expect(res2.length).toBe(3);
         expect(res2.every(el => array.includes(el))).toBe(true);
+    });
+
+    it('check permutation()', () => {
+        const array = ['a', 'b', 'c'];
+        const result = permutation(array, 2);
+        expect(result).toEqual([
+            ['a', 'b'],
+            ['a', 'c'],
+            ['b', 'a'],
+            ['b', 'c'],
+            ['c', 'a'],
+            ['c', 'b'],
+        ]);
+
+        const result2 = permutation(array, 4);
+        expect(result2).toEqual([]);
+    });
+
+    it('check combination()', () => {
+        const array = ['a', 'b', 'c'];
+        const result = combination(array, 2);
+        expect(result).toEqual([
+            ['a', 'b'],
+            ['a', 'c'],
+            ['b', 'c'],
+        ]);
+
+        const result2 = combination(array, 4);
+        expect(result2).toEqual([]);
+    });
+
+    it('check combination() example', () => {
+        const type = 'click.bb.aa.cc';
+        const namespaces = type.split('.');
+        const main = namespaces.shift() as string;
+        namespaces.sort();
+
+        const store: string[][] = [];
+        for (let i = namespaces.length; i >= 1; i--) {
+            store.push(...combination(namespaces, i));
+        }
+
+        const retval: { type: string; namespace: string; }[] = [];
+
+        const signature = `.${namespaces.join('.')}.`;
+        retval.push({ type: main, namespace: signature });
+        for (const ns of store) {
+            retval.push({ type: `${main}.${ns.join('.')}`, namespace: signature });
+        }
+
+        expect(retval[0]).toEqual({ type: 'click', namespace: '.aa.bb.cc.' });
+        expect(retval[1]).toEqual({ type: 'click.aa.bb.cc', namespace: '.aa.bb.cc.' });
+        expect(retval[2]).toEqual({ type: 'click.aa.bb', namespace: '.aa.bb.cc.' });
+        expect(retval[3]).toEqual({ type: 'click.aa.cc', namespace: '.aa.bb.cc.' });
+        expect(retval[4]).toEqual({ type: 'click.bb.cc', namespace: '.aa.bb.cc.' });
+        expect(retval[5]).toEqual({ type: 'click.aa', namespace: '.aa.bb.cc.' });
+        expect(retval[6]).toEqual({ type: 'click.bb', namespace: '.aa.bb.cc.' });
+        expect(retval[7]).toEqual({ type: 'click.cc', namespace: '.aa.bb.cc.' });
     });
 
     it('check async map()', async done => {

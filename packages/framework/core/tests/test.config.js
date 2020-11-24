@@ -24,7 +24,7 @@ module.exports = {
     testem: config.testem({
         requirejs: {
             map: {
-                'specs': {
+                specs: {
                     '@cdp/core-utils': '@cdp/framework-core',
                     '@cdp/events': '@cdp/framework-core',
                     '@cdp/promise': '@cdp/framework-core',

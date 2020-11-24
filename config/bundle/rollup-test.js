@@ -107,6 +107,7 @@ function getTestem(options) {
         }, external),
     });
     return {
+        external,
         requirejs_config,
         src_files: [
             `${TEMP}/${OUTNAME}.js`,

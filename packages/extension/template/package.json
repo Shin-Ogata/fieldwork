@@ -32,7 +32,7 @@
     "build:src": "run-s compile:src bundle:src bundle:dts minify:src",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
-    "bundle:dts": "cdp-task bundle-depends dts --config ./build.config.js",
+    "bundle:dts": "cdp-task bundle dts --config ./build.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",

@@ -195,6 +195,46 @@ export declare function sample<T>(array: T[], count: number): T[];
  */
 export declare function sample<T>(array: T[]): T;
 /**
+ * @en Returns a result of permutation from the list.
+ * @ja 配列から順列結果を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const arr = permutation(['a', 'b', 'c'], 2);
+ * console.log(JSON.stringify(arr));
+ * // => [['a','b'],['a','c'],['b','a'],['b','c'],['c','a'],['c','b']]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param count
+ *  - `en` number of pick up.
+ *  - `ja` 選択数
+ */
+export declare function permutation<T>(array: T[], count: number): T[][];
+/**
+ * @en Returns a result of combination from the list.
+ * @ja 配列から組み合わせ結果を返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const arr = combination(['a', 'b', 'c'], 2);
+ * console.log(JSON.stringify(arr));
+ * // => [['a','b'],['a','c'],['b','c']]
+ * ```
+ *
+ * @param array
+ *  - `en` source array
+ *  - `ja` 入力配列
+ * @param count
+ *  - `en` number of pick up.
+ *  - `ja` 選択数
+ */
+export declare function combination<T>(array: T[], count: number): T[][];
+/**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.map()` の代替メソッド
  *

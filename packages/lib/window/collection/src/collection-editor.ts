@@ -13,12 +13,12 @@ import type { Collection } from './base';
 
 /**
  * @en Edited collection type definition.
- * @ja 被編集コレクションの型定義
+ * @ja 被編集 Collection の型定義
  */
 export type CollectionEditee<M extends object> = Collection<M, any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /** @internal */
-function prepare<T extends object>(collection: Collection): T[] | never {
+function prepare<T extends object>(collection: Collection<T>): T[] | never {
     if (collection.filtered) {
         throw makeResult(RESULT_CODE.ERROR_MVC_EDIT_PERMISSION_DENIED, 'collection is applied after-filter.');
     }

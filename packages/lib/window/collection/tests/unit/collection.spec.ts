@@ -1923,6 +1923,51 @@ describe('collection/base spec', () => {
         });
     });
 
+    describe('operations: model edit', () => {
+        it('check model attribute edited', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks);
+            playlist.on('@change', stub.onCallback);
+
+            const target1 = playlist.models[5];
+            const target2 = playlist.models[3];
+
+            target1.albumTitle  = 'hoge';
+            target2.albumArtist = 'fuga';
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(target1, playlist, {}); // @change
+            expect(stub.onCallback).toHaveBeenCalledWith(target2, playlist, {}); // @change
+            expect(count).toBe(2);
+
+            done();
+        });
+
+        it('check model attribute edited w/ partial listening', async done => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const playlist = new Playlist(tracks);
+            playlist.on('@change:albumTitle', stub.onCallback);
+
+            const target1 = playlist.models[5];
+            const target2 = playlist.models[3];
+
+            target1.albumTitle  = 'hoge';
+            target2.albumArtist = 'fuga';
+
+            await sleep(0);
+
+            expect(stub.onCallback).toHaveBeenCalledWith(target1, playlist, {}); // @change:albumTitle
+            expect(count).toBe(1);
+
+            done();
+        });
+    });
+
     describe('implements: Iterable<T>', () => {
         it('check [Symbol.iterator]', (): void => {
             const playlist = new TrackList(tracks);

@@ -112,6 +112,12 @@ module.exports = {
                 allowNullish: true,
             },
         ],
+        '@typescript-eslint/require-array-sort-compare': [
+            'warn',
+            {
+                ignoreStringArrays: true,
+            },
+        ],
         '@typescript-eslint/no-for-in-array': 'warn',
         '@typescript-eslint/no-unnecessary-qualifier': 'warn',
         '@typescript-eslint/no-useless-constructor': 'warn',
@@ -119,7 +125,6 @@ module.exports = {
         '@typescript-eslint/prefer-includes': 'warn',
         '@typescript-eslint/prefer-string-starts-ends-with': 'warn',
         '@typescript-eslint/prefer-regexp-exec': 'warn',
-        '@typescript-eslint/require-array-sort-compare': 'warn',
         '@typescript-eslint/restrict-plus-operands': 'warn',
         '@typescript-eslint/interface-name-prefix': 'off',
         // related `@typescript-eslint/no-explicit-any`. continue consideration to validate the following props.

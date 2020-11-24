@@ -12,6 +12,7 @@ import {
     Writable,
     PlainObject,
     post,
+    $cdp,
 } from '@cdp/core-utils';
 import {
     EventPublisher,
@@ -52,6 +53,7 @@ describe('model/model spec', () => {
     interface CustomEvent extends ModelEvent<ContentAttribute> {
         fire: [boolean, number];
         message: string;
+        [$cdp]: string;
     }
 
     const errorInvalidData = makeResult(RESULT_CODE.ERROR_MVC_INVALID_DATA, 'size is readonly.');
@@ -170,9 +172,9 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on('uri', stub.onCallback);
+        content.on('@change:uri', stub.onCallback);
         await post(async () => content.uri = 'bbb.html');
-        expect(stub.onCallback).toHaveBeenCalledWith('bbb.html', 'aaa.html', 'uri');
+        expect(stub.onCallback).toHaveBeenCalledWith(content, 'bbb.html', 'aaa.html', 'uri');
         expect(count).toBe(1);
 
         done();
@@ -239,13 +241,13 @@ describe('model/model spec', () => {
 
         expect(content.hasListener()).toBeFalsy();
 
-        content.on('uri', stub.onCallback);
+        content.on('@change:uri', stub.onCallback);
         expect(content.hasListener()).toBeTruthy();
 
         content.off();
         expect(content.hasListener()).toBeFalsy();
 
-        content.on(['uri', 'size', 'cookie'], stub.onCallback);
+        content.on(['@change:uri', '@change:size', '@change:cookie'], stub.onCallback);
         expect(content.hasListener()).toBeTruthy();
 
         content.off();
@@ -258,17 +260,17 @@ describe('model/model spec', () => {
 
         expect(content.hasListener()).toBeFalsy();
 
-        content.on('uri', stub.onCallback);
-        expect(content.hasListener('size')).toBeFalsy();
-        expect(content.hasListener('uri')).toBeTruthy();
+        content.on('@change:uri', stub.onCallback);
+        expect(content.hasListener('@change:size')).toBeFalsy();
+        expect(content.hasListener('@change:uri')).toBeTruthy();
 
         content.off();
         expect(content.hasListener()).toBeFalsy();
 
-        content.on(['uri', 'size'], stub.onCallback);
-        expect(content.hasListener('uri')).toBeTruthy();
-        expect(content.hasListener('size')).toBeTruthy();
-        expect(content.hasListener('cookie')).toBeFalsy();
+        content.on(['@change:uri', '@change:size'], stub.onCallback);
+        expect(content.hasListener('@change:uri')).toBeTruthy();
+        expect(content.hasListener('@change:size')).toBeTruthy();
+        expect(content.hasListener('@change:cookie')).toBeFalsy();
 
         content.off();
         expect(content.hasListener()).toBeFalsy();
@@ -280,20 +282,20 @@ describe('model/model spec', () => {
 
         expect(content.hasListener()).toBeFalsy();
 
-        content.on('uri', stub.onCallback);
-        expect(content.hasListener('uri', stub.onCallback)).toBeTruthy();
-        expect(content.hasListener('uri', () => { })).toBeFalsy();
+        content.on('@change:uri', stub.onCallback);
+        expect(content.hasListener('@change:uri', stub.onCallback)).toBeTruthy();
+        expect(content.hasListener('@change:uri', () => { })).toBeFalsy();
 
         content.off();
         expect(content.hasListener()).toBeFalsy();
 
-        content.on(['uri', 'size'], stub.onCallback);
-        expect(content.hasListener('uri', stub.onCallback)).toBeTruthy();
-        expect(content.hasListener('uri', () => { })).toBeFalsy();
-        expect(content.hasListener('size', stub.onCallback)).toBeTruthy();
-        expect(content.hasListener('size', () => { })).toBeFalsy();
-        expect(content.hasListener('cookie', stub.onCallback)).toBeFalsy();
-        expect(content.hasListener('cookie', () => { })).toBeFalsy();
+        content.on(['@change:uri', '@change:size'], stub.onCallback);
+        expect(content.hasListener('@change:uri', stub.onCallback)).toBeTruthy();
+        expect(content.hasListener('@change:uri', () => { })).toBeFalsy();
+        expect(content.hasListener('@change:size', stub.onCallback)).toBeTruthy();
+        expect(content.hasListener('@change:size', () => { })).toBeFalsy();
+        expect(content.hasListener('@change:cookie', stub.onCallback)).toBeFalsy();
+        expect(content.hasListener('@change:cookie', () => { })).toBeFalsy();
 
         content.off();
         expect(content.hasListener()).toBeFalsy();
@@ -306,11 +308,24 @@ describe('model/model spec', () => {
         let channels = content.channels();
         expect(channels).toBeDefined();
         expect(channels.length).toBe(0);
-        content.on('uri', stub.onCallback);
 
+        content.on('@change:uri', stub.onCallback);
         channels = content.channels();
         expect(channels.length).toBe(1);
-        expect(channels[0]).toBe('uri');
+        expect(channels[0]).toBe('@change:uri');
+
+        content.on('message', stub.onCallback);
+        channels = content.channels();
+        expect(channels.length).toBe(2);
+        expect(channels[0]).toBe('@change:uri');
+        expect(channels[1]).toBe('message');
+
+        content.on($cdp, stub.onCallback);
+        channels = content.channels();
+        expect(channels.length).toBe(3);
+        expect(channels[0]).toBe('@change:uri');
+        expect(channels[1]).toBe('message');
+        expect(channels[2]).toBe($cdp);
 
         content.off();
         channels = content.channels();
@@ -411,21 +426,21 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.on(['message', 'fire', 'uri'], stub.onCallback);
+        content.on(['message', 'fire', '@change:uri'], stub.onCallback);
         await content.trigger('message', 'hello');
         await content.trigger('fire', true, 100);
-        await content.trigger('uri', 'bbb.html');
+        await content.trigger('@change:uri', content as any, 'bbb.html');
         expect(stub.onCallback).toHaveBeenCalledWith('hello');
         expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
-        expect(stub.onCallback).toHaveBeenCalledWith('bbb.html');
+        expect(stub.onCallback).toHaveBeenCalledWith(content, 'bbb.html');
 
-        content.off(['message', 'uri'], stub.onCallback);
+        content.off(['message', '@change:uri'], stub.onCallback);
         await content.trigger('message', 'good morning');
         await content.trigger('fire', false, 200);
-        await content.trigger('uri', 'ccc.html');
+        await content.trigger('@change:uri', content as any, 'ccc.html');
         expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
         expect(stub.onCallback).toHaveBeenCalledWith(false, 200);
-        expect(stub.onCallback).not.toHaveBeenCalledWith('ccc.html');
+        expect(stub.onCallback).not.toHaveBeenCalledWith(content, 'ccc.html');
 
         content.off(['fire'], stub.onCallback);
         await content.trigger('fire', true, 300);
@@ -441,9 +456,9 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.once('uri', stub.onCallback);
+        content.once('@change:uri', stub.onCallback);
         await post(async () => content.uri = 'bbb.html');
-        expect(stub.onCallback).toHaveBeenCalledWith('bbb.html', 'aaa.html', 'uri');
+        expect(stub.onCallback).toHaveBeenCalledWith(content, 'bbb.html', 'aaa.html', 'uri');
         expect(count).toBe(1);
 
         await post(async () => content.uri = 'ccc.html');
@@ -548,21 +563,21 @@ describe('model/model spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        content.listenTo(broker, ['message', 'fire', 'uri'], stub.onCallback);
+        content.listenTo(broker, ['message', 'fire', '@change:uri'], stub.onCallback);
         await broker.trigger('message', 'hello');
         await broker.trigger('fire', true, 100);
-        await broker.trigger('uri', 'bbb.html');
+        await broker.trigger('@change:uri', content as any, 'bbb.html');
         expect(stub.onCallback).toHaveBeenCalledWith('hello');
         expect(stub.onCallback).toHaveBeenCalledWith(true, 100);
-        expect(stub.onCallback).toHaveBeenCalledWith('bbb.html');
+        expect(stub.onCallback).toHaveBeenCalledWith(content, 'bbb.html');
 
-        content.stopListening(broker, ['message', 'uri'], stub.onCallback);
+        content.stopListening(broker, ['message', '@change:uri'], stub.onCallback);
         await broker.trigger('message', 'good morning');
         await broker.trigger('fire', false, 200);
-        await broker.trigger('uri', 'ccc.html');
+        await broker.trigger('@change:uri', content as any, 'ccc.html');
         expect(stub.onCallback).not.toHaveBeenCalledWith('good morning');
         expect(stub.onCallback).toHaveBeenCalledWith(false, 200);
-        expect(stub.onCallback).not.toHaveBeenCalledWith('ccc.html');
+        expect(stub.onCallback).not.toHaveBeenCalledWith(content, 'ccc.html');
 
         content.stopListening(broker, ['fire'], stub.onCallback);
         await broker.trigger('fire', true, 300);

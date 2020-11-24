@@ -10,7 +10,7 @@ import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSe
 export declare const RESULT_VALID_ATTRS: Readonly<Result>;
 /**
  * @en Base class definition for model that provides a basic set of functionality for managing interaction.
- * @ja インタラクションのための基本機能を提供するモデルの基底クラス定義
+ * @ja インタラクションのための基本機能を提供する Model の基底クラス定義
  *
  * @example <br>
  *
@@ -63,7 +63,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * console.log(content.cookie); // 'undefined'
  * ```
  *
- * - Using Custom Event
+ * - Using Custom TEvent
  *
  * ```ts
  * import { ModelEvent } from '@cdp/model';
@@ -90,7 +90,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * content.trigger('fire', true, 100);
  * ```
  */
-export declare abstract class Model<T extends object = any, Event extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<Event> {
+export declare abstract class Model<T extends object = any, TEvent extends ModelEvent<T> = ModelEvent<T>> extends EventReceiver implements EventSource<TEvent> {
     /**
      * @en Get ID attribute name.
      * @ja ID アトリビュート名にアクセス
@@ -152,12 +152,12 @@ export declare abstract class Model<T extends object = any, Event extends ModelE
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    hasListener<Channel extends keyof Event>(channel?: Channel, listener?: (...args: Arguments<Event[Channel]>) => unknown): boolean;
+    hasListener<Channel extends keyof TEvent>(channel?: Channel, listener?: (...args: Arguments<TEvent[Channel]>) => unknown): boolean;
     /**
      * @en Returns registered channel keys.
      * @ja 登録されているチャネルキーを返却
      */
-    channels(): (keyof Event)[];
+    channels(): (keyof TEvent)[];
     /**
      * @en Notify event to clients.
      * @ja event 発行
@@ -169,7 +169,7 @@ export declare abstract class Model<T extends object = any, Event extends ModelE
      *  - `en` arguments for callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数に渡す引数
      */
-    trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
+    trigger<Channel extends keyof TEvent>(channel: Channel, ...args: Arguments<Partial<TEvent[Channel]>>): void;
     /**
      * @en Unsubscribe event(s).
      * @ja イベント購読解除
@@ -185,7 +185,7 @@ export declare abstract class Model<T extends object = any, Event extends ModelE
      *  - `ja` `channel` に対応したコールバック関数
      *         指定しない場合は同一 `channel` すべてを解除
      */
-    off<Channel extends keyof Event>(channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): void;
+    off<Channel extends keyof TEvent>(channel?: Channel | Channel[], listener?: (...args: Arguments<TEvent[Channel]>) => unknown): void;
     /**
      * @en Subscrive event(s).
      * @ja イベント購読設定
@@ -197,7 +197,7 @@ export declare abstract class Model<T extends object = any, Event extends ModelE
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    on<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    on<Channel extends keyof TEvent>(channel: Channel | Channel[], listener: (...args: Arguments<TEvent[Channel]>) => unknown): Subscription;
     /**
      * @en Subscrive event(s) but it causes the bound callback to only fire once before being removed.
      * @ja 一度だけハンドリング可能なイベント購読設定
@@ -209,7 +209,7 @@ export declare abstract class Model<T extends object = any, Event extends ModelE
      *  - `en` callback function of the `channel` corresponding.
      *  - `ja` `channel` に対応したコールバック関数
      */
-    once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
+    once<Channel extends keyof TEvent>(channel: Channel | Channel[], listener: (...args: Arguments<TEvent[Channel]>) => unknown): Subscription;
     /**
      * @en Check valid or not.
      * @ja 検証の成否を取得
@@ -263,7 +263,7 @@ export declare abstract class Model<T extends object = any, Event extends ModelE
     clear(options?: ModelSetOptions): this;
     /**
      * @en Return a copy of the model's `attributes` object.
-     * @ja モデル属性値のコピーを返却
+     * @ja Model 属性値のコピーを返却
      */
     toJSON(): T;
     /**
