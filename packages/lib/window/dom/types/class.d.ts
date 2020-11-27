@@ -70,4 +70,13 @@ export declare class DOMClass extends DOMClass_base {
      */
     private constructor();
 }
+/**
+ * @en Check the value-type is [[DOM]].
+ * @ja [[DOM]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isDOMClass(x: unknown): x is DOM;
 export {};

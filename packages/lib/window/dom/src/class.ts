@@ -119,8 +119,8 @@ export class DOMClass extends mixins(
      */
     public static create<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T> {
         if (selector && !context) {
-            if (selector instanceof DOMClass) {
-                return selector as unknown as DOMResult<T>;
+            if (isDOMClass(selector)) {
+                return selector as DOMResult<T>;
             }
         }
         return new DOMClass((elementify(selector as ElementifySeed<T>, context))) as unknown as DOMResult<T>;
@@ -129,3 +129,15 @@ export class DOMClass extends mixins(
 
 // mixin による `instanceof` は無効に設定
 setMixClassAttribute(DOMClass as unknown as Class, 'instanceOf', null);
+
+/**
+ * @en Check the value-type is [[DOM]].
+ * @ja [[DOM]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isDOMClass(x: unknown): x is DOM {
+    return x instanceof DOMClass;
+}

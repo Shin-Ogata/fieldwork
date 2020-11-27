@@ -97,7 +97,7 @@ export type Writable<T> = { -readonly [K in keyof T]: T[K] };
  * @en Extract functional property names.
  * @ja 関数プロパティ名の抽出
  */
-export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T];
+export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T] & string;
 
 /**
  * @en Extract functional properties.
@@ -109,7 +109,7 @@ export type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
  * @en Extract non-functional property names.
  * @ja 非関数プロパティ名の抽出
  */
-export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
+export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T] & string;
 
 /**
  * @en Extract non-functional properties.
