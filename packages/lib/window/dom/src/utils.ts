@@ -40,13 +40,13 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
     try {
         if ('string' === typeof seed) {
             const html = seed.trim();
-            if (html.includes('<') && html.includes('>')) {
+            if (html.startsWith('<') && html.endsWith('>')) {
                 // markup
                 const template = document.createElement('template');
                 template.innerHTML = html;
                 elements.push(...template.content.children);
             } else {
-                const selector = seed.trim();
+                const selector = html;
                 // eslint-disable-next-line @typescript-eslint/unbound-method
                 if (isFunction(context.getElementById) && ('#' === selector[0]) && !/[ .<>:~]/.exec(selector)) {
                     // pure ID selector

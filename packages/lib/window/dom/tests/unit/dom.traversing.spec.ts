@@ -676,7 +676,7 @@ describe('dom/traversing spec', () => {
             expect($parent3.length).toBe(1); // <html>
         }
 
-        {// flagment parent
+        {// fragment parent
             const $dom = $('<div class="test-dom"></div>');
             expect($dom).toBeDefined();
             const $parent = $dom.parent();

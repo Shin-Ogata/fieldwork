@@ -401,9 +401,6 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      * @param type
      *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
-     * @param selector
-     *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
-     *  - `ja` イベント発行元をフィルタリングするセレクタ文字列
      * @param listener
      *  - `en` callback function
      *  - `ja` コールバック関数

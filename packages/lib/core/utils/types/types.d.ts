@@ -83,7 +83,7 @@ export declare type Writable<T> = {
  */
 export declare type FunctionPropertyNames<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
-}[keyof T];
+}[keyof T] & string;
 /**
  * @en Extract functional properties.
  * @ja 関数プロパティの抽出
@@ -95,7 +95,7 @@ export declare type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
  */
 export declare type NonFunctionPropertyNames<T> = {
     [K in keyof T]: T[K] extends Function ? never : K;
-}[keyof T];
+}[keyof T] & string;
 /**
  * @en Extract non-functional properties.
  * @ja 非関数プロパティの抽出

@@ -3,17 +3,8 @@
  */
 
 import { dom } from '@cdp/dom';
-import { i18n } from '@cdp/i18n';
 
 const body = document.body;
-
-export function ensureCleanI18N(): void {
-    const context: Partial<typeof i18n> = i18n;
-    delete context['options'];
-    delete context['language'];
-    delete context['languages'];
-    delete context['isInitialized'];
-}
 
 export function createTestElementsFromTemplate(): HTMLElement[] {
     const divs = dom.utils.elementify(`

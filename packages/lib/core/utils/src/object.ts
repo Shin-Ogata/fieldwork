@@ -108,6 +108,41 @@ export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
 }
 
 /**
+ * @en Get shallow copy of `base` without `dropValue`.
+ * @ja `dropValue` で指定されたプロパティ値以外のキーを持つ `target` の Shallow Copy を取得
+ *
+ * @param base
+ *  - `en` base object
+ *  - `ja` 基準となるオブジェクト
+ * @param dropValues
+ *  - `en` target value. default: `undefined`.
+ *  - `ja` 対象の値. 既定値: `undefined`
+ */
+export function drop<T extends object>(base: T, ...dropValues: unknown[]): Partial<T> {
+    if (!base || !isObject(base)) {
+        throw new TypeError(`${className(base)} is not an object.`);
+    }
+
+    const values = [...dropValues];
+    if (!values.length) {
+        values.push(undefined);
+    }
+
+    const retval: Partial<T> = { ...base };
+
+    for (const key of Object.keys(base)) {
+        for (const val of values) {
+            if (deepEqual(val, retval[key])) {
+                delete retval[key];
+                break;
+            }
+        }
+    }
+
+    return retval;
+}
+
+/**
  * @en If the value of the named property is a function then invoke it; otherwise, return it.
  * @ja object の property がメソッドならその実行結果を, プロパティならその値を返却
  *

@@ -4,6 +4,7 @@ export {
     dom,
 } from './static';
 export { dom as default } from './static';
+export { isDOMClass } from './class';
 export { DOMModificationCallback } from './traversing';
 export { DOMEventMap, DOMEventListener, EventWithNamespace, MakeEventType, EventType, EventTypeOrNamespace } from './events';
 export { DOMScrollOptions } from './scroll';

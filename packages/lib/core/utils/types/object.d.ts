@@ -52,6 +52,18 @@ export declare function invert<T extends object = object>(target: object): T;
  */
 export declare function diff<T extends object>(base: T, src: Partial<T>): Partial<T>;
 /**
+ * @en Get shallow copy of `base` without `dropValue`.
+ * @ja `dropValue` で指定されたプロパティ値以外のキーを持つ `target` の Shallow Copy を取得
+ *
+ * @param base
+ *  - `en` base object
+ *  - `ja` 基準となるオブジェクト
+ * @param dropValues
+ *  - `en` target value. default: `undefined`.
+ *  - `ja` 対象の値. 既定値: `undefined`
+ */
+export declare function drop<T extends object>(base: T, ...dropValues: unknown[]): Partial<T>;
+/**
  * @en If the value of the named property is a function then invoke it; otherwise, return it.
  * @ja object の property がメソッドならその実行結果を, プロパティならその値を返却
  *

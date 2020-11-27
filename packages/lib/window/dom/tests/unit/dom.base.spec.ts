@@ -4,7 +4,7 @@
  ,  @typescript-eslint/no-explicit-any
  */
 
-import { dom } from '@cdp/dom';
+import { dom, isDOMClass } from '@cdp/dom';
 // only '@cdp/dom' available
 // import $ from '@cdp/dom';
 import { dom as $ } from '@cdp/dom';
@@ -284,6 +284,14 @@ describe('dom/base spec', () => {
         expect($dom).toBeDefined();
         expect($dom.length).toBe(3);
         expect($dom).toEqual($base);
+    });
+
+    it('check isDOMClass()', () => {
+        prepareTestElements();
+
+        const $base = $('.test-dom');
+        expect(isDOMClass($base)).toBe(true);
+        expect(isDOMClass($base[0])).toBe(false);
     });
 });
 

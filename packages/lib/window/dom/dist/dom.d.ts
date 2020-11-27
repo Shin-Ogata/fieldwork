@@ -950,9 +950,6 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      * @param type
      *  - `en` event name or event name array.
      *  - `ja` イベント名またはイベント名配列
-     * @param selector
-     *  - `en` A selector string to filter the descendants of the selected elements that trigger the event.
-     *  - `ja` イベント発行元をフィルタリングするセレクタ文字列
      * @param listener
      *  - `en` callback function
      *  - `ja` コールバック関数
@@ -1613,6 +1610,15 @@ declare class DOMClass extends DOMClass_base {
      */
     private constructor();
 }
+/**
+ * @en Check the value-type is [[DOM]].
+ * @ja [[DOM]] 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isDOMClass(x: unknown): x is DOM;
 declare namespace dom {
     let fn: DOMClass;
 }

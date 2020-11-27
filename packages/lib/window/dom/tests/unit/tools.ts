@@ -20,11 +20,11 @@ export function createTestElementsFromTemplate(): HTMLElement[] {
 export function prepareTestElements(divs?: HTMLElement[]): HTMLElement[] {
     divs = divs || createTestElementsFromTemplate();
 
-    const flag = document.createDocumentFragment();
+    const fragment = document.createDocumentFragment();
     for (const div of divs) {
-        flag.appendChild(div);
+        fragment.appendChild(div);
     }
-    body.appendChild(flag);
+    body.appendChild(fragment);
 
     return divs;
 }

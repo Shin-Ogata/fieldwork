@@ -9,6 +9,7 @@ import {
     omit,
     invert,
     diff,
+    drop,
     result,
 } from '@cdp/core-utils';
 
@@ -108,6 +109,62 @@ describe('utils/object spec', () => {
         expect(dst.foo).toBe('good morning');
         expect(dst.bar).toEqual(src.bar);
         expect((dst as any).fuga).toBeUndefined();
+    });
+
+    it('check drop()', (): void => {
+        const base = {
+            hoge: 1,
+            foo: 'hello',
+            bar: undefined,
+            fuga: {
+                p1: 100,
+                p2: 'fuga',
+            },
+        };
+
+        expect(drop(base)).toEqual({
+            hoge: 1,
+            foo: 'hello',
+            fuga: {
+                p1: 100,
+                p2: 'fuga',
+            },
+        });
+        expect(drop(base, 1)).toEqual({
+            foo: 'hello',
+            bar: undefined,
+            fuga: {
+                p1: 100,
+                p2: 'fuga',
+            },
+        });
+        expect(drop(base, 'hello')).toEqual({
+            hoge: 1,
+            bar: undefined,
+            fuga: {
+                p1: 100,
+                p2: 'fuga',
+            },
+        });
+        expect(drop(base, { p1: 100, p2: 'fuga' })).toEqual({
+            hoge: 1,
+            foo: 'hello',
+            bar: undefined,
+        });
+        expect(drop(base, true)).toEqual({
+            hoge: 1,
+            foo: 'hello',
+            bar: undefined,
+            fuga: {
+                p1: 100,
+                p2: 'fuga',
+            },
+        });
+
+        expect(drop(base, 1, 'hello', undefined, { p1: 100, p2: 'fuga' })).toEqual({});
+
+        expect(() => drop(null as any, '')).toThrow();
+        expect(() => drop(false as any, '')).toThrow();
     });
 
     it('check result()', (): void => {

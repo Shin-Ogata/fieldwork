@@ -14,6 +14,7 @@ declare module '@cdp/dom' {
      *  - `output.exports` の項目参照
      */
     export const dom: typeof _Exports.dom;
+    export const isDOMClass: typeof _Exports.isDOMClass;
     export type ElementBase                                                                  = _Exports.ElementBase;
     export type SelectorBase                                                                 = _Exports.SelectorBase;
     export type QueryContext                                                                 = _Exports.QueryContext;
