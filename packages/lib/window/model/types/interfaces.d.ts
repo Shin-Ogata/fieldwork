@@ -1,5 +1,5 @@
 import { Constructor, PlainObject, NonFunctionPropertyNames } from '@cdp/core-utils';
-import { EventAll, Silenceable } from '@cdp/events';
+import { Subscribable, EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
 import { SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
 import type { Model } from './base';
@@ -92,6 +92,11 @@ export interface ModelConstructor<C extends object, T extends object> {
     idAttribute: string;
     new (...args: ConstructorParameters<Constructor<C>>): C & ModelAttributes<T>;
 }
+/**
+ * @en [[Model]]'s `EventSource` definition from attributes.
+ * @ja 属性から [[Model]] の `EventSource` 定義抽出
+ */
+export declare type ModelEventSource<T extends object> = Subscribable<ModelEvent<T>>;
 /**
  * @en [[Model]] validate options.
  * @ja [[Model]] 検証オプション

@@ -142,6 +142,11 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     protected get _options(): ModelSetOptions;
     /**
+     * @en EventSource type resolver.
+     * @ja EventSource 型解決用ヘルパーアクセッサ
+     */
+    get $(): EventSource<TEvent>;
+    /**
      * @en Check whether this object has clients.
      * @ja クライアントが存在するか判定
      *

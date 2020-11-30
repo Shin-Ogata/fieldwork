@@ -1,4 +1,5 @@
-import {
-    View,
-} from '@cdp/view';
-console.log('hello dev world! status: under construction');
+import { getConfig } from '@cdp/core-utils';
+import { AppView } from './app-view';
+
+const config = getConfig<{ app?: AppView; }>();
+config.app = new AppView();
