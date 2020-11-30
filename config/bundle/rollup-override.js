@@ -1,6 +1,6 @@
 'use strict';
 
-const { merge } = '@cdp/tasks';
+const { merge } = require('@cdp/tasks');
 
 function overrideConfig(config, options) {
     const { input, outputFile, sourcemapRoot, external: globals } = options || {};
@@ -21,7 +21,7 @@ function overrideConfig(config, options) {
         const output = config.output[0];
         output.globals = output.globals || {};
         merge(output.globals, globals);
-        output.external = Object.keys(output.globals);
+        merge(config.external, Object.keys(output.globals));
     }
 }
 

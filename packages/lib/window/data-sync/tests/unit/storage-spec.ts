@@ -8,6 +8,7 @@ import {
     createStorageDataSync,
     dataSyncSTORAGE,
 } from '@cdp/data-sync';
+import { PlainObject } from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 import { CancelToken } from '@cdp/promise';
 import { RESULT_CODE, toResult } from '@cdp/result';
@@ -25,7 +26,8 @@ describe('data-sync/storage spec', () => {
         bool: boolean;
     }
 
-    class TestA extends EventBroker<SyncEvent<Schema>> {
+    class Model extends EventBroker<SyncEvent<Schema>> {
+        static idAttribute = 'id';
         toJSON(): Schema {
             return {
                 id: '000A',
@@ -34,13 +36,18 @@ describe('data-sync/storage spec', () => {
                 bool: true,
             };
         }
+        get id(): string {
+            return '000A';
+        }
         get url(): string {
             return 'aaa';
         }
+        has(attr: string): boolean {
+            return 'id' === attr;
+        }
     }
 
-    class TestB extends EventBroker<SyncEvent<Schema>> {
-        static idAttribute = 'id';
+    class Collection extends EventBroker<SyncEvent<Schema>> {
         toJSON(): Schema {
             return {
                 id: '000A',
@@ -57,7 +64,44 @@ describe('data-sync/storage spec', () => {
         }
     }
 
-    class TestC extends EventBroker<SyncEvent<Schema>> {
+    class ModelLackId extends EventBroker<SyncEvent<Schema>> {
+        static idAttribute = 'id';
+        toJSON(): Partial<Schema> {
+            return {
+                num: 1000,
+                str: 'hogehoge',
+                bool: true,
+            };
+        }
+        get id(): string {
+            return 'cid';
+        }
+        get url(): string {
+            return 'aaa';
+        }
+        has(): boolean {
+            return false;
+        }
+    }
+
+    class ModelLackHas extends EventBroker<SyncEvent<Schema>> {
+        static idAttribute = 'id';
+        toJSON(): Partial<Schema> {
+            return {
+                num: 1000,
+                str: 'hogehoge',
+                bool: true,
+            };
+        }
+        get id(): string {
+            return '000A';
+        }
+        get url(): string {
+            return 'aaa';
+        }
+    }
+
+    class LackURL extends EventBroker<SyncEvent<Schema>> {
         toJSON(): Schema {
             return {
                 id: '000C',
@@ -98,7 +142,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check create', async done => {
-        const context = new TestA();
+        const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -109,7 +153,7 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(1);
 
         const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
-        const json = await storage.getItem<object>('aaa');
+        const json = await storage.getItem<object>('aaa::000A');
         expect(json).toEqual({
             id: '000A',
             num: 1000,
@@ -123,7 +167,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check create w/ data', async done => {
-        const context = new TestA();
+        const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -134,7 +178,7 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(1);
 
         const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
-        const json = await storage.getItem<object>('aaa');
+        const json = await storage.getItem<object>('aaa::000A');
         expect(json).toEqual({
             id: '000A',
             num: 1000,
@@ -147,14 +191,100 @@ describe('data-sync/storage spec', () => {
         done();
     });
 
-    it('check patch', async done => {
-        const context = new TestB();
+    it('check create w/ server id', async done => {
+        const context = new ModelLackId();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
         context.on('@request', stub.onCallback);
 
-        localStorage.setItem('aaa-000A', JSON.stringify({
+        await dataSyncSTORAGE.sync('create', context);
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const entries = await storage.getItem<object>('aaa') as PlainObject;
+        const json = await storage.getItem<object>(`aaa::${entries[0]}`) as PlainObject;
+
+        expect(json.id.startsWith('aaa:')).toBe(true);
+        expect(json.num).toBe(1000);
+        expect(json.str).toBe('hogehoge');
+        expect(json.bool).toBe(true);
+
+        await storage.clear();
+
+        done();
+    });
+
+    it('check create w/ server id invalid Model', async done => {
+        const context = new ModelLackHas();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        await dataSyncSTORAGE.sync('create', context);
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const entries = await storage.getItem<object>('aaa') as PlainObject;
+        const json = await storage.getItem<object>(`aaa::${entries[0]}`) as PlainObject;
+
+        expect(json.id.startsWith('aaa:')).toBe(true);
+        expect(json.num).toBe(1000);
+        expect(json.str).toBe('hogehoge');
+        expect(json.bool).toBe(true);
+
+        await storage.clear();
+
+        done();
+    });
+
+    it('check update w/ custom separator', async done => {
+        const context = new Model();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        localStorage.setItem('aaa$$000A', JSON.stringify({
+            id: '000A',
+            num: 1000,
+            str: 'fugafuga',
+            bool: true,
+        }));
+
+        const orgSeparator = dataSyncSTORAGE.setIdSeparator('$$');
+        expect(orgSeparator).toBe('::');
+
+        await dataSyncSTORAGE.sync('update', context);
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        const value = JSON.parse(localStorage.getItem('aaa$$000A') as string);
+        expect(value).toEqual({
+            id: '000A',
+            num: 1000,
+            str: 'hogehoge',
+            bool: true,
+        });
+
+        dataSyncSTORAGE.setIdSeparator(orgSeparator);
+
+        localStorage.clear();
+
+        done();
+    });
+
+    it('check patch', async done => {
+        const context = new Model();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        localStorage.setItem('aaa::000A', JSON.stringify({
             id: '000A',
             num: 1000,
             str: 'fugafuga',
@@ -165,7 +295,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa-000A') as string);
+        const value = JSON.parse(localStorage.getItem('aaa::000A') as string);
         expect(value).toEqual({
             id: '000A',
             num: 1000,
@@ -179,7 +309,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check patch w/ non-model', async done => {
-        const context = new TestA();
+        const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -210,13 +340,13 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check patch w/ other collection reserved', async done => {
-        const context = new TestB();
+        const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
         context.on('@request', stub.onCallback);
 
-        localStorage.setItem('aaa-000A', JSON.stringify({
+        localStorage.setItem('aaa::000A', JSON.stringify({
             id: '000A',
             num: 1000,
             str: 'fugafuga',
@@ -229,7 +359,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa-000A') as string);
+        const value = JSON.parse(localStorage.getItem('aaa::000A') as string);
         expect(value).toEqual({
             id: '000A',
             num: 1000,
@@ -246,7 +376,85 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check read', async done => {
-        const context = new TestA();
+        const context = new Model();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        localStorage.setItem('aaa::000A', JSON.stringify({
+            id: '000A',
+            num: 1000,
+            str: 'hogehoge',
+            bool: true,
+        }));
+
+        const response = await dataSyncSTORAGE.sync('read', context);
+        expect(response).toEqual({
+            id: '000A',
+            num: 1000,
+            str: 'hogehoge',
+            bool: true,
+        });
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        localStorage.clear();
+
+        done();
+    });
+
+    it('check read as collection', async done => {
+        const context = new Collection();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        localStorage.setItem('aaa::000A', JSON.stringify({
+            id: '000A',
+            num: 1000,
+            str: 'hogehoge',
+            bool: true,
+        }));
+        localStorage.setItem('aaa', JSON.stringify(['000A']));
+
+        const response = await dataSyncSTORAGE.sync('read', context);
+        expect(response).toEqual([{
+            id: '000A',
+            num: 1000,
+            str: 'hogehoge',
+            bool: true,
+        }]);
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        localStorage.clear();
+
+        done();
+    });
+
+    it('check read as collection w/ custom data', async done => {
+        const context = new Collection();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        context.on('@request', stub.onCallback);
+
+        localStorage.setItem('aaa', JSON.stringify([{ id: '000A' }]));
+
+        const response = await dataSyncSTORAGE.sync('read', context);
+        expect(response).toEqual([{ id: '000A' }]);
+        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
+        expect(count).toBe(1);
+
+        localStorage.clear();
+
+        done();
+    });
+
+    it('check read as collection w/ custom data simple case', async done => {
+        const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -274,57 +482,8 @@ describe('data-sync/storage spec', () => {
         done();
     });
 
-    it('check read as collection', async done => {
-        const context = new TestA();
-        const stub = { onCallback };
-        spyOn(stub, 'onCallback').and.callThrough();
-
-        context.on('@request', stub.onCallback);
-
-        localStorage.setItem('aaa-000A', JSON.stringify({
-            id: '000A',
-            num: 1000,
-            str: 'hogehoge',
-            bool: true,
-        }));
-        localStorage.setItem('aaa', JSON.stringify(['000A']));
-
-        const response = await dataSyncSTORAGE.sync('read', context);
-        expect(response).toEqual([{
-            id: '000A',
-            num: 1000,
-            str: 'hogehoge',
-            bool: true,
-        }]);
-        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
-        expect(count).toBe(1);
-
-        localStorage.clear();
-
-        done();
-    });
-
-    it('check read as collection w/ custom data', async done => {
-        const context = new TestA();
-        const stub = { onCallback };
-        spyOn(stub, 'onCallback').and.callThrough();
-
-        context.on('@request', stub.onCallback);
-
-        localStorage.setItem('aaa', JSON.stringify([{ id: '000A' }]));
-
-        const response = await dataSyncSTORAGE.sync('read', context);
-        expect(response).toEqual([{ id: '000A' }]);
-        expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
-        expect(count).toBe(1);
-
-        localStorage.clear();
-
-        done();
-    });
-
-    it('check read w/ error', async done => {
-        const context = new TestB();
+    it('check read w/ error data not found', async done => {
+        const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
         context.on('@request', stub.onCallback);
@@ -345,13 +504,13 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check delete', async done => {
-        const context = new TestB();
+        const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
         context.on('@request', stub.onCallback);
 
-        localStorage.setItem('aaa-000A', JSON.stringify({
+        localStorage.setItem('aaa::000A', JSON.stringify({
             id: '000A',
             num: 1000,
             str: 'hogehoge',
@@ -380,7 +539,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check delete w/ non-model', async done => {
-        const context = new TestA();
+        const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -405,13 +564,13 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check delete w/ other collection reserved', async done => {
-        const context = new TestB();
+        const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
         context.on('@request', stub.onCallback);
 
-        localStorage.setItem('aaa-000A', JSON.stringify({
+        localStorage.setItem('aaa::000A', JSON.stringify({
             id: '000A',
             num: 1000,
             str: 'hogehoge',
@@ -440,7 +599,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check read w/ cancel', async done => {
-        const context = new TestA();
+        const context = new Model();
         try {
             localStorage.setItem('aaa', JSON.stringify({
                 id: '000A',
@@ -458,8 +617,22 @@ describe('data-sync/storage spec', () => {
         done();
     });
 
+    it('check read w/ cancel as collection', async done => {
+        const context = new Collection();
+        try {
+            localStorage.setItem('aaa', JSON.stringify([{ id: '000A' }]));
+            await dataSyncSTORAGE.sync('read', context, { cancel: token });
+        } catch (e) {
+            expect(e.message).toBe('aborted');
+        }
+
+        localStorage.clear();
+
+        done();
+    });
+
     it('check read invalid url', async done => {
-        const context = new TestC();
+        const context = new LackURL();
         try {
             await dataSyncSTORAGE.sync('read', context);
         } catch (e) {
@@ -469,7 +642,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check invalid operation', async done => {
-        const context = new TestA();
+        const context = new Model();
         try {
             await dataSyncSTORAGE.sync('invalid' as any, context);
         } catch (e) {

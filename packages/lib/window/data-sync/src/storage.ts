@@ -2,6 +2,8 @@ import {
     PlainObject,
     isArray,
     isString,
+    isFunction,
+    deepMerge,
 } from '@cdp/core-utils';
 import {
     RESULT_CODE,
@@ -21,7 +23,7 @@ import { resolveURL } from './internal';
 
 /** @internal */
 const enum Const {
-    Separator = '-',
+    Separator = '::',
 }
 
 /**
@@ -40,6 +42,27 @@ export interface IStorageDataSync<T extends object = PlainObject> extends IDataS
      * @ja 新しい [[IStorage]] インスタンスを設定
      */
     setStorage(newStorage: IStorage): this;
+
+    /**
+     * @en Set new id-separator.
+     * @ja 新しい ID セパレータを設定
+     *
+     * @param newSeparator
+     *  - `en` new separator string
+     *  - `ja` 新しいセパレータ文字列
+     * @returns
+     *  - `en` old separator string
+     *  - `ja` 以前い設定されていたセパレータ文字列
+     */
+    setIdSeparator(newSeparator: string): string;
+}
+
+/**
+ * @en [[StorageDataSync]] construction options.
+ * @ja [[StorageDataSync]] 構築に指定するオプション
+ */
+export interface StorageDataSyncConstructionOptions {
+    separator?: string;
 }
 
 /**
@@ -55,15 +78,29 @@ function isModel(context: SyncContext): boolean {
     return !!context.constructor['idAttribute'];
 }
 
+/** @internal create id */
+function genId(url: string): string {
+    return `${url}:${Date.now().toString(36)}`;
+}
+
 /** @internal resolve key for localStorage */
-function parseContext(context: SyncContext): { model: boolean; key: string; url: string; } {
-    const model = isModel(context);
-    const url   = resolveURL(context);
-    const id    = context.id;
+function parseContext(context: SyncContext, separator: string): { model: boolean; key: string; url: string; data: { [idAttr: string]: string; }; } {
+    const model  = isModel(context);
+    const url    = resolveURL(context);
+    const idAttr = context.constructor['idAttribute'];
+    const data = (() => {
+        const retval = {} as { [idAttr: string]: string; };
+        if (model) {
+            const valid    = !isFunction(context['has']) ? false : context['has'](idAttr) as boolean;
+            retval[idAttr] = valid ? context.id as string : genId(url);
+        }
+        return retval;
+    })();
     return {
         model,
         url,
-        key: `${url}${(model && id) ? `${Const.Separator}${id}` : ''}`
+        key: `${url}${model ? `${separator}${data[idAttr]}` : ''}`,
+        data,
     };
 }
 
@@ -75,6 +112,7 @@ function parseContext(context: SyncContext): { model: boolean; key: string; url:
  */
 class StorageDataSync implements IStorageDataSync {
     private _storage: IStorage;
+    private _separator: string;
 
     /**
      * constructor
@@ -82,13 +120,17 @@ class StorageDataSync implements IStorageDataSync {
      * @param storage
      *  - `en` [[IStorage]] object
      *  - `ja` [[IStorage]] オブジェクト
+     * @param options
+     *  - `en` construction options
+     *  - `ja` 構築オプション
      */
-    constructor(storage: IStorage) {
+    constructor(storage: IStorage, options?: StorageDataSyncConstructionOptions) {
         this._storage = storage;
+        this._separator = options?.separator || Const.Separator;
     }
 
-///////////////////////////////////////////////////////////////////////
-// implements: IStorageDataSync
+    ///////////////////////////////////////////////////////////////////////
+    // implements: IStorageDataSync
 
     /**
      * @en Get current [[IStorage]] instance.
@@ -105,6 +147,23 @@ class StorageDataSync implements IStorageDataSync {
     setStorage(newStorage: IStorage): this {
         this._storage = newStorage;
         return this;
+    }
+
+    /**
+     * @en Set new id-separator.
+     * @ja 新しい ID セパレータを設定
+     *
+     * @param newSeparator
+     *  - `en` new separator string
+     *  - `ja` 新しいセパレータ文字列
+     * @returns
+     *  - `en` old separator string
+     *  - `ja` 以前い設定されていたセパレータ文字列
+     */
+    setIdSeparator(newSeparator: string): string {
+        const oldSeparator = this._separator;
+        this._separator = newSeparator;
+        return oldSeparator;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -133,17 +192,21 @@ class StorageDataSync implements IStorageDataSync {
      *  - `ja` ストレージオプション
      */
     async sync<K extends SyncMethods>(method: K, context: SyncContext, options?: StorageDataSyncOptions): Promise<SyncResult<K>> {
-        const { model, key, url } = parseContext(context);
+        const { model, key, url, data } = parseContext(context, this._separator);
         if (!url) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, 'A "url" property or function must be specified.');
         }
 
         let responce: PlainObject | void | null;
         switch (method) {
-            case 'create':
+            case 'create': {
+                const opts = deepMerge({ data }, options);
+                responce = await this.update(key, context, url, data[Object.keys(data)[0]], opts);
+                break;
+            }
             case 'update':
             case 'patch': {
-                responce = await this.update(key, context, url, options);
+                responce = await this.update(key, context, url, context.id, options);
                 break;
             }
             case 'delete':
@@ -172,7 +235,7 @@ class StorageDataSync implements IStorageDataSync {
         if (null == items) {
             return { ids: true, items: [] };
         } else if (isArray(items)) {
-            return { ids: isString(items[0]), items };
+            return { ids: !items.length || isString(items[0]), items };
         } else {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_STORAGE_ENTRY, `entry is not Array type.`);
         }
@@ -195,7 +258,7 @@ class StorageDataSync implements IStorageDataSync {
                     // findAll
                     const entires: PlainObject[] = [];
                     for (const id of items as string[]) {
-                        const entry = await this._storage.getItem<PlainObject>(`${url}${Const.Separator}${id}`, options);
+                        const entry = await this._storage.getItem<PlainObject>(`${url}${this._separator}${id}`, options);
                         entry && entires.push(entry);
                     }
                     return entires;
@@ -213,14 +276,14 @@ class StorageDataSync implements IStorageDataSync {
     }
 
     /** @internal */
-    private async update(key: string, context: SyncContext, url: string, options?: StorageDataSyncOptions): Promise<PlainObject | null> {
+    private async update(key: string, context: SyncContext, url: string, id?: string, options?: StorageDataSyncOptions): Promise<PlainObject | null> {
         const { data } = options || {};
         const attrs = Object.assign(context.toJSON(), data);
         await this._storage.setItem(key, attrs, options);
         if (key !== url) {
             const { ids, items } = await this.queryEntries(url, options);
-            if (ids && context.id && !items.includes(context.id)) {
-                items.push(context.id);
+            if (ids && id && !items.includes(id)) {
+                items.push(id);
                 await this.saveEntries(url, items as string[], options);
             }
         }
@@ -249,9 +312,12 @@ class StorageDataSync implements IStorageDataSync {
  * @param storage
  *  - `en` [[IStorage]] object
  *  - `ja` [[IStorage]] オブジェクト
+ * @param options
+ *  - `en` construction options
+ *  - `ja` 構築オプション
  */
-export const createStorageDataSync = (storage: IStorage): IStorageDataSync => {
-    return new StorageDataSync(storage);
+export const createStorageDataSync = (storage: IStorage, options?: StorageDataSyncConstructionOptions): IStorageDataSync => {
+    return new StorageDataSync(storage, options);
 };
 
 export const dataSyncSTORAGE = createStorageDataSync(webStorage);

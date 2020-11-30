@@ -53,6 +53,7 @@ import {
 } from './interfaces';
 
 /** @internal */ const _defineAttributes = Symbol('define');
+/** @internal */ const _updateAttributes = Symbol('update');
 /** @internal */ const _validate         = Symbol('validate');
 /** @internal */ const _changeHandler    = Symbol('onchange');
 /** @internal */ const _broker           = Symbol('broker');
@@ -235,6 +236,20 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
         this[_validate]({}, opts);
     }
 
+    /** @internal attribute update core */
+    private [_updateAttributes](name: string, val: unknown): void {
+        if (!deepEqual(this._attrs[name], val)) {
+            const { attrs, changeFired } = this[_properties];
+            if (changeFired) {
+                this[_properties].changeFired = false;
+                this[_properties].prevAttrs = { ...attrs } as T;
+            }
+            delete this[_properties].changedAttrs;
+            this._prevAttrs[name] = attrs[name];
+            attrs[name] = val;
+        }
+    }
+
     /** @internal attribute bridge def */
     private [_defineAttributes](instance: object, name: string): void {
         const proto = instance.constructor.prototype;
@@ -244,16 +259,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                     return this._attrs[name];
                 },
                 set(val: unknown): void {
-                    if (!deepEqual(this._attrs[name], val)) {
-                        const { attrs, changeFired } = this[_properties];
-                        if (changeFired) {
-                            this[_properties].changeFired = false;
-                            this[_properties].prevAttrs = { ...attrs };
-                        }
-                        delete this[_properties].changedAttrs;
-                        this._prevAttrs[name] = attrs[name];
-                        attrs[name] = val;
-                    }
+                    this[_updateAttributes](name, val);
                 },
                 enumerable: true,
                 configurable: true,
@@ -271,7 +277,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     get id(): string {
         const idAttr = idAttribute(this, 'id');
         const { cid, attrs } = this[_properties];
-        return (idAttr in attrs) ? attrs[idAttr] : cid;
+        return (idAttr in attrs) ? attrs[idAttr] || cid : cid;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -330,6 +336,14 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
 ///////////////////////////////////////////////////////////////////////
 // operations: events
+
+    /**
+     * @en EventSource type resolver.
+     * @ja EventSource 型解決用ヘルパーアクセッサ
+     */
+    get $(): EventSource<TEvent> {
+        return this;
+    }
 
     /** @internal broker access */
     private get [_broker](): EventBroker<any> {
@@ -535,10 +549,10 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
             for (const attr of Object.keys(attributes)) {
                 if (attr in this._attrs) {
-                    this[attr] = attributes[attr];
+                    this[_updateAttributes](attr, attributes[attr]);
                 } else if (extend) {
                     this[_defineAttributes](this, attr);
-                    this[attr] = attributes[attr];
+                    this[_updateAttributes](attr, attributes[attr]);
                 }
             }
         } finally {
@@ -717,7 +731,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
     public async save(...args: unknown[]): Promise<PlainObject | void> {
         const { attrs, options } = parseSaveArgs(...args);
-        const opts = Object.assign({ validate: true, parse: true, wait: true }, options);
+        const opts = Object.assign({ validate: true, parse: true, wait: true, extend: true }, options);
 
         try {
             const { wait } = opts;

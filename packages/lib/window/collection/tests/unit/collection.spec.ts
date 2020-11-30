@@ -494,11 +494,11 @@ describe('collection/base spec', () => {
         }
 
         const prepareRegistry = (): void => {
-            // The schema is similar to Backbone.LocalStorage, but id-list is not csv.
+            // The schema is similar to Backbone.LocalStorage, but id-list is not csv, and sepalator is '::'.
             const ids = tracks.map(t => t.title);
             localStorage.setItem('test', JSON.stringify(ids));
             for (const t of tracks) {
-                localStorage.setItem(`test-${t.title}`, JSON.stringify(t));
+                localStorage.setItem(`test::${t.title}`, JSON.stringify(t));
             }
         };
 

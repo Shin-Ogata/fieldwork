@@ -11,6 +11,12 @@
     "@cdp/dom": "file:../dom",
     "@cdp/events": "file:../../core/events"
   },
+  "devDependencies": {
+    "@cdp/collection": "file:../collection",
+    "@cdp/core-template": "file:../../core/template",
+    "@cdp/data-sync": "file:../data-sync",
+    "@cdp/model": "file:../model"
+  },
   "keywords": [
     "CDP",
     "TypeScript",
@@ -60,7 +66,7 @@
     "metrics:file": "cdp-task metrics -r file -l ../../../../config/lint/eslint.js",
     "metrics:module": "cdp-task metrics -r module -l ../../../../config/lint/eslint.js",
     "set-version": "cdp-task set-version",
-    "start": "http-server . -a localhost -p 8080 -s -o .temp/dev",
+    "start": "http-server . -a localhost -p 8080 -s -c-1 -o .temp/dev",
     "test": "run-s -l lint unit-test:ci",
     "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
     "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/doc/typedoc.js --excludeExternals",

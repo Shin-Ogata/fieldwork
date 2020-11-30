@@ -26,13 +26,14 @@ describe('view spec', () => {
     }
 
     class BaseView extends View<HTMLElement, ViewEvent> {
-        render(): void {
+        render(): this {
             count++;
             if (this.$el.has('p').length) {
                 this.$el.find('p').replaceWith($(`<p>${className(this)}: ${count}</p>`));
             } else {
                 this.$el.append(`<p>${className(this)}</p>`);
             }
+            return this;
         }
     }
 

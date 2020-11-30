@@ -3,7 +3,11 @@ import {
     PlainObject,
     NonFunctionPropertyNames,
 } from '@cdp/core-utils';
-import { EventAll, Silenceable } from '@cdp/events';
+import {
+    Subscribable,
+    EventAll,
+    Silenceable,
+} from '@cdp/events';
 import { Result } from '@cdp/result';
 import {
     SyncEvent,
@@ -107,11 +111,16 @@ export type ModelAttributes<T extends object> = { [P in keyof T]: T[P] };
  * @en [[Model]] base constructor definition.
  * @ja [[Model]] の基底コンストラクタの定義
  */
-//export type ModelConstructor<C extends object, T extends object> = new (...args: ConstructorParameters<Constructor<C>>) => C & ModelAttributes<T>;
 export interface ModelConstructor<C extends object, T extends object> {
     idAttribute: string;
     new(...args: ConstructorParameters<Constructor<C>>): C & ModelAttributes<T>;
 }
+
+/**
+ * @en [[Model]]'s `EventSource` definition from attributes.
+ * @ja 属性から [[Model]] の `EventSource` 定義抽出
+ */
+export type ModelEventSource<T extends object> = Subscribable<ModelEvent<T>>;
 
 /**
  * @en [[Model]] validate options.

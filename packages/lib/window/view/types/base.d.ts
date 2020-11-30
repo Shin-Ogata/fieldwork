@@ -200,5 +200,5 @@ export declare abstract class View<TElement extends Node = HTMLElement, TEvent e
      * }
      * ```
      */
-    abstract render(...args: unknown[]): Promise<void> | void;
+    abstract render(...args: unknown[]): Promise<this | void> | this | void;
 }

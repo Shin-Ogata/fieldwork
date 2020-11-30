@@ -148,6 +148,15 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
         noSearch,
     } = options;
 
+    // 対象なし
+    if (!cached.length) {
+        return {
+            total: 0,
+            items: [],
+            options,
+        } as CollectionItemQueryResult<TItem>;
+    }
+
     // キャッシュに対してフィルタリング, ソートを実行
     const targets = noSearch ? cached.slice() : searchItems(cached, filter, ...comparators);
 
@@ -199,7 +208,7 @@ function tryCache<TItem extends object, TKey extends Keys<TItem>>(
     options: CollectionItemQueryOptions<TItem>
 ): void {
     const { noCache, noSearch } = options;
-    const canCache = !noCache && !noSearch && result.total === result.items.length;
+    const canCache = !noCache && !noSearch && result.total && result.total === result.items.length;
     if (canCache) {
         queryInfo.cache = { ...result };
         delete queryInfo.cache.options;

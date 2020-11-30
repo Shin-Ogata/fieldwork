@@ -352,6 +352,22 @@ describe('query/query spec', () => {
             done();
         });
 
+        it('check w/ no items', async done => {
+            const emptyProvider = async (options?: ItemQueryOptions): Promise<CollectionItemQueryResult<Item>> => { // eslint-disable-line
+                return {
+                    total: 0,
+                    items: [],
+                    options,
+                };
+            };
+
+            const ret = await queryItems(info, emptyProvider);
+            expect(ret.length).toBe(0);
+            expect(info.cache).toBeUndefined();
+
+            done();
+        });
+
         it('check w/ invalid input', async done => {
             try {
                 const options: ItemQueryOptions = {

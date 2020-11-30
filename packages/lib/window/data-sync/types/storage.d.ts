@@ -16,6 +16,25 @@ export interface IStorageDataSync<T extends object = PlainObject> extends IDataS
      * @ja 新しい [[IStorage]] インスタンスを設定
      */
     setStorage(newStorage: IStorage): this;
+    /**
+     * @en Set new id-separator.
+     * @ja 新しい ID セパレータを設定
+     *
+     * @param newSeparator
+     *  - `en` new separator string
+     *  - `ja` 新しいセパレータ文字列
+     * @returns
+     *  - `en` old separator string
+     *  - `ja` 以前い設定されていたセパレータ文字列
+     */
+    setIdSeparator(newSeparator: string): string;
+}
+/**
+ * @en [[StorageDataSync]] construction options.
+ * @ja [[StorageDataSync]] 構築に指定するオプション
+ */
+export interface StorageDataSyncConstructionOptions {
+    separator?: string;
 }
 /**
  * @en Options interface for [[StorageDataSync]].
@@ -29,6 +48,9 @@ export declare type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
  * @param storage
  *  - `en` [[IStorage]] object
  *  - `ja` [[IStorage]] オブジェクト
+ * @param options
+ *  - `en` construction options
+ *  - `ja` 構築オプション
  */
-export declare const createStorageDataSync: (storage: IStorage) => IStorageDataSync;
+export declare const createStorageDataSync: (storage: IStorage, options?: StorageDataSyncConstructionOptions | undefined) => IStorageDataSync;
 export declare const dataSyncSTORAGE: IStorageDataSync<PlainObject<any>>;
