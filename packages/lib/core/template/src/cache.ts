@@ -3,7 +3,7 @@ import {
     ensureObject,
     getGlobalNamespace,
 } from '@cdp/core-utils';
-import { TemplateTags } from './interfaces';
+import { TemplateDelimiters } from './interfaces';
 
 /**
  * @en Cache location information.
@@ -22,7 +22,7 @@ export const enum CacheLocation {
  *
  * @internal
  */
-export function buildCacheKey(template: string, tags: TemplateTags): string {
+export function buildCacheKey(template: string, tags: TemplateDelimiters): string {
     return `${template}:${tags.join(':')}`;
 }
 

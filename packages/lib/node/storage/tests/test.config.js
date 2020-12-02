@@ -15,7 +15,7 @@ module.exports = {
             '@cdp/promise': null,
         },
         postproc: {
-            replacees: [resolveNodeTesteeValue()],
+            replaces: [resolveNodeTesteeValue()],
         },
     }),
 };

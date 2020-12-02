@@ -1,6 +1,6 @@
 import {
     JST,
-    TemplateTags,
+    TemplateDelimiters,
     ITemplateEngine,
     TemplateScanner,
     TemplateContext,
@@ -27,7 +27,7 @@ globalSettings.writer = new Writer();
  */
 export interface TemplateGlobalSettings {
     writer?: TemplateWriter;
-    tags?: TemplateTags;
+    tags?: TemplateDelimiters;
     escape?: TemplateEscaper;
 }
 
@@ -36,7 +36,7 @@ export interface TemplateGlobalSettings {
  * @ja [[TemplateEngine]] コンパイルオプション
  */
 export interface TemplateCompileOptions {
-    tags?: TemplateTags;
+    tags?: TemplateDelimiters;
 }
 
 /**

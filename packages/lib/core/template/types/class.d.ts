@@ -1,11 +1,11 @@
-import { JST, TemplateTags, ITemplateEngine, TemplateWriter, TemplateEscaper } from './interfaces';
+import { JST, TemplateDelimiters, ITemplateEngine, TemplateWriter, TemplateEscaper } from './interfaces';
 /**
  * @en [[TemplateEngine]] global settng options
  * @ja [[TemplateEngine]] グローバル設定オプション
  */
 export interface TemplateGlobalSettings {
     writer?: TemplateWriter;
-    tags?: TemplateTags;
+    tags?: TemplateDelimiters;
     escape?: TemplateEscaper;
 }
 /**
@@ -13,7 +13,7 @@ export interface TemplateGlobalSettings {
  * @ja [[TemplateEngine]] コンパイルオプション
  */
 export interface TemplateCompileOptions {
-    tags?: TemplateTags;
+    tags?: TemplateDelimiters;
 }
 /**
  * @en TemplateEngine utility class.

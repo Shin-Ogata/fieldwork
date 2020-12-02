@@ -1,0 +1,22 @@
+{
+  "extends": "../../../config/tsconfig/window",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "types",
+    "inlineSources": true,
+    "inlineSourceMap": true,
+    "outDir": "built",
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "baseUrl": "./src/@types",
+    "paths": {
+      "lit-transformer": [ "lit-transformer" ],
+    },
+    "typeRoots": [
+        "./node_modules/@types"
+      ]
+    },
+  "include": [
+    "src/**/*"
+  ]
+}

@@ -1,0 +1,3 @@
+# @cdp/extension-template
+
+[description]

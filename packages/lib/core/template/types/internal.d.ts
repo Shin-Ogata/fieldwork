@@ -1,4 +1,4 @@
-import { TemplateTags } from './interfaces';
+import { TemplateDelimiters } from './interfaces';
 /** (string | Token[]) */
 export declare type TokenList = unknown;
 /**
@@ -18,4 +18,4 @@ export declare const enum TokenAddress {
  * @en Internal delimiters definition for [[TemplateEngine]]. ex) ['{{','}}'] or '{{ }}'
  * @ja [[TemplateEngine]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
  */
-export declare type Delimiters = string | TemplateTags;
+export declare type Delimiters = string | TemplateDelimiters;
