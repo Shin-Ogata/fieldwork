@@ -1,15 +1,15 @@
 'use strict';
 
 function postproc(options = {}) {
-    const { replacees } = options;
+    const { replaces } = options;
     const replacers = [];
-    if (Array.isArray(replacees)) {
-        replacers.push(...replacees);
-    } else if ('object' === typeof replacees) {
-        for (const key of replacees) {
+    if (Array.isArray(replaces)) {
+        replacers.push(...replaces);
+    } else if ('object' === typeof replaces) {
+        for (const key of replaces) {
             replacers.push({
                 find: key,
-                replacement: replacees[key],
+                replacement: replaces[key],
             });
         }
     }

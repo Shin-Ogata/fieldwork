@@ -1,6 +1,6 @@
 import { escapeHTML } from '@cdp/core-utils';
 import {
-    TemplateTags,
+    TemplateDelimiters,
     TemplateWriter,
     TemplateEscaper,
 } from './interfaces';
@@ -34,14 +34,14 @@ export const enum TokenAddress {
  * @en Internal delimiters definition for [[TemplateEngine]]. ex) ['{{','}}'] or '{{ }}'
  * @ja [[TemplateEngine]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
  */
-export type Delimiters = string | TemplateTags;
+export type Delimiters = string | TemplateDelimiters;
 
 /** @internal */
 export const globalSettings = {
     tags: ['{{', '}}'],
     escape: escapeHTML,
 } as {
-    tags: TemplateTags;
+    tags: TemplateDelimiters;
     escape: TemplateEscaper;
     writer: TemplateWriter;
 };

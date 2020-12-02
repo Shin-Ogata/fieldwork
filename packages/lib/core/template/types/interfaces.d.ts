@@ -8,7 +8,7 @@ export declare type TemplateToken = unknown;
  * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
  * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
  */
-export declare type TemplateTags = [string, string];
+export declare type TemplateDelimiters = [string, string];
 /**
  * @en Scanner interface.
  * @ja スキャナーインターフェイス
@@ -67,7 +67,7 @@ export interface TemplateWriter {
      * `mustache.tags` if `tags` is omitted,  and returns the array of tokens
      * that is generated from the parse.
      */
-    parse(template: string, tags?: TemplateTags): {
+    parse(template: string, tags?: TemplateDelimiters): {
         tokens: TemplateToken[];
         cacheKey: string;
     };
@@ -84,7 +84,7 @@ export interface TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ "<%", "%>" ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateTags): string;
+    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string;
     /**
      * Low-level method that renders the given array of `tokens` using
      * the given `context` and `partials`.
@@ -94,7 +94,7 @@ export interface TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string;
+    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
 /**
  * @en Compiled JavaScript template interface

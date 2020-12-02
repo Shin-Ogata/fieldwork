@@ -1,4 +1,4 @@
-import { TemplateTags, TemplateWriter } from './interfaces';
+import { TemplateDelimiters, TemplateWriter } from './interfaces';
 import {
     Token,
     TokenAddress as $,
@@ -28,7 +28,7 @@ export class Writer implements TemplateWriter {
      * `mustache.tags` if `tags` is omitted,  and returns the array of tokens
      * that is generated from the parse.
      */
-    parse(template: string, tags?: TemplateTags): { tokens: Token[]; cacheKey: string; } {
+    parse(template: string, tags?: TemplateDelimiters): { tokens: Token[]; cacheKey: string; } {
         const cacheKey = buildCacheKey(template, tags || globalSettings.tags);
         let tokens = cache[cacheKey];
         if (null == tokens) {
@@ -50,7 +50,7 @@ export class Writer implements TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ "<%", "%>" ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateTags): string {
+    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string {
         const { tokens } = this.parse(template, tags);
         return this.renderTokens(tokens, view, partials, template, tags);
     }
@@ -64,7 +64,7 @@ export class Writer implements TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: Token[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateTags): string {
+    renderTokens(tokens: Token[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string {
         const context = (view instanceof Context) ? view : new Context(view);
         let buffer = '';
 
@@ -162,7 +162,7 @@ export class Writer implements TemplateWriter {
     }
 
     /** @internal */
-    private renderPartial(token: Token, context: Context, partials: PlainObject | undefined, tags: TemplateTags | undefined): string | void {
+    private renderPartial(token: Token, context: Context, partials: PlainObject | undefined, tags: TemplateDelimiters | undefined): string | void {
         if (!partials) {
             return;
         }
