@@ -21,6 +21,11 @@ const bundle = {
          * By default following is enabled.
          * @see https://github.com/timocov/dts-bundle-generator/issues/39
          * Optional. Default value is `true`.
+         *
+         * [注意]
+         *  - `true` かつ `excludeLibraries` → `excludeLibraries` も対象になってしまう
+         *  - `false` かつ`inlinedLibraries` → `inlinedLibraries` が import された分だけ展開されてしまう
+         *  回避するためには postprocess で2段階 bundle が必要
          */
         followSymlinks: false,
         preferredConfigPath: resolve(cwd, 'tsconfig.json'),
@@ -58,7 +63,7 @@ const bundle = {
                  * By default all packages are allowed and will be used according to their usages.
                  * Optional. Default value is `undefined`.
                  */
-                allowedTypesLibraries: ['jquery', 'react'],
+//              allowedTypesLibraries: ['jquery', 'react'],
 
                 /**
                  * Array of package names from node_modules to import typings from.
@@ -125,6 +130,9 @@ const bundleOptions = {
     // entries.noCheck true or `npm run bundle:dts -- --validate`
     validate: false,
 
+    //  EXPERIMENTAL! Allows disable resolving of symlinks to the original path.
+    followSymlinks: false,
+
     // tab indent default: '    ' (4)
     //  indent: '    '
 
@@ -139,11 +147,12 @@ const bundleOptions = {
 
 function getConfig(options = bundleOptions) {
     const settings = merge({ bundle, indent: '    ' }, options);
-    const { src, out, validate, inlinedLibraries, excludeLibraries } = settings;
+    const { src, out, validate, inlinedLibraries, excludeLibraries, followSymlinks } = settings;
     const main = settings.bundle.entries[0];
     src && (main.filePath = resolve(cwd, src));
     out && (main.outFile = resolve(cwd, out));
     validate && (main.noCheck = false);
+    followSymlinks && (settings.bundle.compilationOptions.followSymlinks = true);
     inlinedLibraries && (main.libraries.inlinedLibraries.push(...inlinedLibraries));
     excludeLibraries && (main.libraries.inlinedLibraries = main.libraries.inlinedLibraries.filter(l => {
         for (const e of excludeLibraries) {

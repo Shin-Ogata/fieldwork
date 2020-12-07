@@ -56,7 +56,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\fs-storage.ts" />
     <TypeScriptCompile Include="src\index.ts" />
-    <TypeScriptCompile Include="tests\unit\fs-storage-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\fs-storage.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />

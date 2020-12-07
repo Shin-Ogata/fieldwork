@@ -39,4 +39,6 @@ feasibility study
 | [data-sync](./packages/lib/window/data-sync/README.md)     | web api entry point I/F defs               |
 | [model](./packages/lib/window/model/README.md)             | abstract model class                       |
 | [collection](./packages/lib/window/collection/README.md)   | abstract collection class                  |
+| [view](./packages/lib/window/view/README.md)               | abstract view class                        |
+| [template](./packages/lib/window/template/README.md)       | template library collection                |
 

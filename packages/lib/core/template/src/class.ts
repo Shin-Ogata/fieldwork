@@ -52,10 +52,10 @@ export class TemplateEngine implements ITemplateEngine {
      * @en Get [[JST]] from template source.
      * @ja テンプレート文字列から [[JST]] を取得
      *
-     * @package template
+     * @param template
      *  - `en` template source string
      *  - `ja` テンプレート文字列
-     * @package options
+     * @param options
      *  - `en` compile options
      *  - `ja` コンパイルオプション
      */

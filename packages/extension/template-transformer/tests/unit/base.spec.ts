@@ -5,7 +5,7 @@ import {
 } from '@cdp/extension-template';
 import {
     TransformConfig,
-    create,
+    createTransformFactory,
     transformer,
 } from '@cdp/extension-template-transformer';
 import { DOM } from '@cdp/dom';
@@ -19,17 +19,17 @@ describe('extention-template-transformer spec', () => {
         _$dom = prepare();
     });
 
-    afterEach((): void => {
+    afterEach(() => {
         cleanup();
     });
 
     it('check instance', () => {
-        expect(create).toBeDefined();
+        expect(createTransformFactory).toBeDefined();
         expect(transformer).toBeDefined();
     });
 
     describe('basic', () => {
-        const convert = create(html, directives.unsafeHTML);
+        const convert = createTransformFactory(html, directives.unsafeHTML);
 
         interface Updater {
             (view?: Record<string, unknown>): DOM;
@@ -333,7 +333,7 @@ Curly`;
             customDelimiter,
         } = transformer;
 
-        const convert = create({
+        const convert = createTransformFactory({
             html,
             transformVariable: variable,
             transformers: {

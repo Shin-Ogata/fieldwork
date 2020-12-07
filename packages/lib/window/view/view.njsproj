@@ -84,7 +84,7 @@
     <TypeScriptCompile Include="tests\dev\ts\utils.ts" />
     <TypeScriptCompile Include="tests\dev\ts\_testee.d.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
-    <TypeScriptCompile Include="tests\unit\view-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\view.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />

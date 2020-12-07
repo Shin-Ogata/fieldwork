@@ -67,6 +67,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "view", "packages\lib\window
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "extension-template-transformer", "packages\extension\template-transformer\extension-template-transformer.njsproj", "{398F687F-C334-43A9-8DDC-8DB1FD84F8C4}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "template", "packages\lib\window\template\template.njsproj", "{4861442E-702A-40BB-9490-59ADCE057AAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{398F687F-C334-43A9-8DDC-8DB1FD84F8C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{398F687F-C334-43A9-8DDC-8DB1FD84F8C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{398F687F-C334-43A9-8DDC-8DB1FD84F8C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4861442E-702A-40BB-9490-59ADCE057AAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4861442E-702A-40BB-9490-59ADCE057AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4861442E-702A-40BB-9490-59ADCE057AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4861442E-702A-40BB-9490-59ADCE057AAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,6 +203,7 @@ Global
 		{C2BDDDDC-0DA7-4FDB-96D6-EB54BD653A51} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{D6904B0F-76CD-4516-9E4B-798DBD67F64F} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{398F687F-C334-43A9-8DDC-8DB1FD84F8C4} = {2AF3B313-39C9-47EE-93E1-2A870DE51D4A}
+		{4861442E-702A-40BB-9490-59ADCE057AAC} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

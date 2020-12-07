@@ -18,9 +18,9 @@ import invertedSection from 'lit-transformer/src/transformers/invertedSection';
 import comment from 'lit-transformer/src/transformers/comment';
 import customDelimiter from 'lit-transformer/src/transformers/customDelimiter';
 
-function create(html: TemplateTag, unsafeHTML: UnsafeHTMLDirective): TemplateTransformer;
-function create(config: TransformConfig): TemplateTransformer;
-function create(arg1: unknown, arg2?: unknown): TemplateTransformer {
+function createTransformFactory(html: TemplateTag, unsafeHTML: UnsafeHTMLDirective): TemplateTransformer;
+function createTransformFactory(config: TransformConfig): TemplateTransformer;
+function createTransformFactory(arg1: unknown, arg2?: unknown): TemplateTransformer {
     if ('function' === typeof arg1) {
         return createDefault(arg1 as TemplateTag, arg2 as UnsafeHTMLDirective);
     } else {
@@ -55,6 +55,6 @@ export {
     TransformExecutor,
     TransformeContext,
     TransformConfig,
-    create,
+    createTransformFactory,
     transformer,
 };

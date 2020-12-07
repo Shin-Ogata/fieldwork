@@ -22,8 +22,8 @@ export interface TransformConfig {
     };
     transformers?: Record<string, TransformeContext>;
 }
-export declare function create(html: TemplateTag, unsafeHTML: UnsafeHTMLDirective): TemplateTransformer;
-export declare function create(config: TransformConfig): TemplateTransformer;
+export declare function createTransformFactory(html: TemplateTag, unsafeHTML: UnsafeHTMLDirective): TemplateTransformer;
+export declare function createTransformFactory(config: TransformConfig): TemplateTransformer;
 export declare const transformer: {
     variable: TransformExecutor;
     unsafeVariable: (unsafeHTML: UnsafeHTMLDirective) => TransformeContext;

@@ -26,7 +26,10 @@ function patch(index, code) {
 module.exports = {
     __esModule: true,
     default: bundle_src(),
-    dts: bundle_dts({ postProcess: patch }),
+    dts: bundle_dts({
+        followSymlinks: true,
+        postProcess: patch,
+    }),
     minify: {
         js: minify_js(),
     },
