@@ -1,3 +1,3 @@
-# @cdp/extension-template
+# @cdp/extension-template-transformer
 
 [description]

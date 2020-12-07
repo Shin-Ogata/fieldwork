@@ -65,10 +65,10 @@
     <TypeScriptCompile Include="src\settings.ts" />
     <TypeScriptCompile Include="src\storage.ts" />
     <TypeScriptCompile Include="src\internal.ts" />
-    <TypeScriptCompile Include="tests\unit\null-spec.ts" />
-    <TypeScriptCompile Include="tests\unit\rest-spec.ts" />
-    <TypeScriptCompile Include="tests\unit\settings-spec.ts" />
-    <TypeScriptCompile Include="tests\unit\storage-spec.ts" />
+    <TypeScriptCompile Include="tests\unit\null.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\rest.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\settings.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\storage.spec.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />

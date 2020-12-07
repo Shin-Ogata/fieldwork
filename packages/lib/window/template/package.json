@@ -1,0 +1,83 @@
+{
+  "name": "@cdp/template",
+  "description": "HTML template library",
+  "version": "0.9.5",
+  "author": "Shin Ogata",
+  "browserslist": [
+    "defaults"
+  ],
+  "dependencies": {
+    "@cdp/ajax": "file:../../worker/ajax",
+    "@cdp/core-template": "file:../../core/template",
+    "@cdp/core-utils": "file:../../core/utils",
+    "@cdp/extension-template": "file:../../../extension/template",
+    "@cdp/extension-template-transformer": "file:../../../extension/template-transformer"
+  },
+  "devDependencies": {
+    "@cdp/dom": "file:../dom"
+  },
+  "keywords": [
+    "CDP",
+    "TypeScript",
+    "javascript"
+  ],
+  "license": "UNLICENSED",
+  "main": "dist/template",
+  "module": "dist/template.mjs",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shin-Ogata/fieldwork.git"
+  },
+  "scripts": {
+    "build": "run-s -l build:src build:test build:dev",
+    "build:dev": "run-s compile:dev bundle:dev copy:dev:framework",
+    "build:src": "run-s compile:src bundle:src",
+    "build:test": "run-s compile:test bundle:test",
+    "bundle": "run-p bundle:*",
+    "bundle:dev": "run-p bundle:dev:*",
+    "bundle:dev:html": "cdp-task bundle html --config ./tests/dev/dev.config.js",
+    "bundle:dev:ts": "rollup -c ./tests/dev/dev.config.js",
+    "bundle:src": "run-p bundle:src:*",
+    "bundle:src:built": "rollup -c ./build.config.js",
+    "bundle:test": "rollup -c ./tests/test.config.js",
+    "check-update": "exit 0",
+    "ci": "run-s -l clean:all build:src build:test build:dev lint unit-test:ci typedoc",
+    "clean": "cdp-task clean",
+    "clean:all": "cdp-task clean -a",
+    "clean:doc": "cdp-task clean -d",
+    "clean:doc:a": "cdp-task clean -t ./docs/typedoc",
+    "clean:doc:c": "cdp-task clean -t ./docs/reports/coverage",
+    "clean:doc:m": "cdp-task clean -t ./docs/reports/metrics",
+    "clear": "npm run clean && npm run clean:doc && cdp-task clean -t ./node_modules",
+    "compile": "run-s compile:src compile:test compile:dev",
+    "compile:dev": "run-p compile:dev:*",
+    "compile:dev:scss": "run-s compile:dev:scss:*",
+    "compile:dev:scss:compile": "node-sass --output-style expanded --source-map-embed --source-map-contents -o .temp/dev/scss tests/dev/scss",
+    "compile:dev:scss:prefix": "postcss .temp/dev/scss/**/*.css --use autoprefixer -d .temp/dev/scss",
+    "compile:dev:ts": "tsc -p ./tests/dev/tsconfig.json",
+    "compile:src": "tsc -p ./tsconfig.json",
+    "compile:test": "tsc -p ./tests/tsconfig.json",
+    "copy:dev:framework": "cdp-task copy require.js ../../../../lib/window/template/.temp/dev/ts/framework -w ../../../tool/tasks/node_modules/requirejs",
+    "debug": "npm run compile && run-p unit-test watch",
+    "lint": "eslint src tests/unit tests/dev/ts -c ../../../../config/lint/tslint.js --ext .ts",
+    "metrics": "run-s -l metrics:*",
+    "metrics:file": "cdp-task metrics -r file -l ../../../../config/lint/eslint.js",
+    "metrics:module": "cdp-task metrics -r module -l ../../../../config/lint/eslint.js",
+    "set-version": "cdp-task set-version",
+    "start": "http-server . -a localhost -p 8080 -s -c-1 -o .temp/dev",
+    "test": "run-s -l lint unit-test:ci",
+    "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/doc/typedoc.js --excludeExternals",
+    "unit-test": "cdp-task ut -c ./tests/test.config.js -r ./tests/res",
+    "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -r ./tests/res -s",
+    "ut": "npm run unit-test",
+    "ut:ci": "npm run unit-test:ci",
+    "watch": "run-p watch:*",
+    "watch:bundle:": "npm run bundle:test -- -w",
+    "watch:ts": "run-p watch:ts:*",
+    "watch:ts:src": "npm run compile:src -- -w",
+    "watch:ts:test": "npm run compile:test -- -w"
+  },
+  "types": "types/index.d.ts"
+}
