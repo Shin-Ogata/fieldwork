@@ -23,10 +23,11 @@ feasibility study
 
 - Worker
 
-| module                                                 | description                  |
-|:-------------------------------------------------------|:-----------------------------|
-| [binary](./packages/lib/worker/binary/README.md)       | binary utility               |
-| [ajax](./packages/lib/worker/ajax/README.md)           | ajax utility                 |
+| module                                                         | description                  |
+|:---------------------------------------------------------------|:-----------------------------|
+| [binary](./packages/lib/worker/binary/README.md)               | binary utility               |
+| [ajax](./packages/lib/worker/ajax/README.md)                   | ajax utility                 |
+| [inline-worker](./packages/lib/worker/inline-worker/README.md) | inline-worker utility        |
 
 - Window/DOM
 

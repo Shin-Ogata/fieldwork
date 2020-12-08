@@ -69,6 +69,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "extension-template-transfor
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "template", "packages\lib\window\template\template.njsproj", "{4861442E-702A-40BB-9490-59ADCE057AAC}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "inline-worker", "packages\lib\worker\inline-worker\inline-worker.njsproj", "{5839CA3D-D467-433E-AB79-33F64E042AEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{4861442E-702A-40BB-9490-59ADCE057AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4861442E-702A-40BB-9490-59ADCE057AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4861442E-702A-40BB-9490-59ADCE057AAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5839CA3D-D467-433E-AB79-33F64E042AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5839CA3D-D467-433E-AB79-33F64E042AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5839CA3D-D467-433E-AB79-33F64E042AEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5839CA3D-D467-433E-AB79-33F64E042AEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +210,7 @@ Global
 		{D6904B0F-76CD-4516-9E4B-798DBD67F64F} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{398F687F-C334-43A9-8DDC-8DB1FD84F8C4} = {2AF3B313-39C9-47EE-93E1-2A870DE51D4A}
 		{4861442E-702A-40BB-9490-59ADCE057AAC} = {35317128-68DB-44C4-9168-3B083BE12CC4}
+		{5839CA3D-D467-433E-AB79-33F64E042AEA} = {07FBA8FB-A230-4C6B-8863-952C8E0A830D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}
