@@ -17,14 +17,14 @@ describe('i18n/plugin/ajax-backend spec', () => {
             lng: 'ja-JP',
             fallbackLng: 'en',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
         });
         expect(t('app.common.refresh')).toBe('更新');
         done();
     });
 
     it('check `loadPath` function', async done => {
-        const loadPath = (): string => '../res/locales/{{ns}}.{{lng}}.json';
+        const loadPath = (): string => '../res/i18n/locales/{{ns}}.{{lng}}.json';
 
         await initializeI18N({
             lng: 'ja-JP',
@@ -44,7 +44,7 @@ describe('i18n/plugin/ajax-backend spec', () => {
             lng: 'ja',
             fallbackLng: 'en',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -94,7 +94,7 @@ describe('i18n/plugin/ajax-backend spec', () => {
         await expectAsync(initializeI18N({
             lng: 'ja',
             backend: {
-                loadPath: '../res/locales/{{ns}}.{{lng}}.json',
+                loadPath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
                 cancel: token,
             },
         })).not.toBeRejected();
@@ -122,7 +122,7 @@ describe('i18n/plugin/ajax-backend spec', () => {
         await expectAsync(initializeI18N({
             lng: 'ja',
             backend: {
-                loadPath: '../res/locales/{{ns}}.{{lng}}.json',
+                loadPath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
                 cancel: token,
             },
         })).not.toBeRejected();

@@ -73,7 +73,7 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
     [n: number]: T;
     [Symbol.iterator]: () => Iterator<T>;
 }
-export declare type DOMValueType<T, K = "value"> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
+export declare type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
 export declare type DOMData = PlainObject<TypedData>;
 declare class DOMAttributes<TElement extends ElementBase> implements DOMIterable<TElement> {
     readonly [n: number]: TElement;
@@ -201,8 +201,8 @@ declare class DOMAttributes<TElement extends ElementBase> implements DOMIterable
      * @ja value 値の取得. 最初の要素が取得対象
      *
      * @returns
-     *  - `en` `string` or `number` or `string[]` (`<select multiple="multiple">`).
-     *  - `ja` `string` または `number` または `string[]` (`<select multiple="multiple">`)
+     *  - `en` `string` or `number` or `string[]` (`<select multiple='multiple'>`).
+     *  - `ja` `string` または `number` または `string[]` (`<select multiple='multiple'>`)
      */
     val<T extends ElementBase = TElement>(): DOMValueType<T>;
     /**
@@ -210,8 +210,8 @@ declare class DOMAttributes<TElement extends ElementBase> implements DOMIterable
      * @ja 配下の要素に対して value 値を設定
      *
      * @param value
-     *  - `en` `string` or `number` or `string[]` (`<select multiple="multiple">`).
-     *  - `ja` `string` または `number` または `string[]` (`<select multiple="multiple">`)
+     *  - `en` `string` or `number` or `string[]` (`<select multiple='multiple'>`).
+     *  - `ja` `string` または `number` または `string[]` (`<select multiple='multiple'>`)
      */
     val<T extends ElementBase = TElement>(value: DOMValueType<T>): this;
     /**
@@ -1431,7 +1431,7 @@ export interface DOMScrollOptions {
      * @en timing function default: 'swing'
      * @ja タイミング関数 既定値: 'swing'
      */
-    easing?: "linear" | "swing" | ((progress: number) => number);
+    easing?: 'linear' | 'swing' | ((progress: number) => number);
     /**
      * @en scroll completion callback.
      * @ja スクロール完了コールバック
@@ -1468,7 +1468,7 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` scroll completion callback.
      *  - `ja` スクロール完了コールバック
      */
-    scrollTop(position: number, duration?: number, easing?: "linear" | "swing" | ((progress: number) => number), callback?: () => void): this;
+    scrollTop(position: number, duration?: number, easing?: 'linear' | 'swing' | ((progress: number) => number), callback?: () => void): this;
     /**
      * @en Get the number of pixels horizontal scrolled.
      * @ja 横方向スクロールされたピクセル数を取得
@@ -1491,7 +1491,7 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` scroll completion callback.
      *  - `ja` スクロール完了コールバック
      */
-    scrollLeft(position: number, duration?: number, easing?: "linear" | "swing" | ((progress: number) => number), callback?: () => void): this;
+    scrollLeft(position: number, duration?: number, easing?: 'linear' | 'swing' | ((progress: number) => number), callback?: () => void): this;
     /**
      * @en Set the number of pixels vertical and horizontal scrolled.
      * @ja 縦横方向スクロールするピクセル数を指定
@@ -1512,7 +1512,7 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` scroll completion callback.
      *  - `ja` スクロール完了コールバック
      */
-    scrollTo(x: number, y: number, duration?: number, easing?: "linear" | "swing" | ((progress: number) => number), callback?: () => void): this;
+    scrollTo(x: number, y: number, duration?: number, easing?: 'linear' | 'swing' | ((progress: number) => number), callback?: () => void): this;
     /**
      * @en Set the scroll values by optoins.
      * @ja オプションを用いてスクロール指定
@@ -1599,7 +1599,7 @@ export interface DOM<T extends ElementBase = HTMLElement> extends DOMFeatures<T>
 export declare type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
 export declare type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<HTMLElement>);
 export declare type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
-declare const DOMClass_base: import("@cdp/core-utils").MixinConstructor<typeof DOMBase, import("@cdp/core-utils").MixinClass & DOMBase<ElementBase> & DOMAttributes<any> & DOMTraversing<any> & DOMManipulation<any> & DOMStyles<any> & DOMEvents<any> & DOMScroll<any> & DOMEffects<any> & object>;
+declare const DOMClass_base: import('@cdp/core-utils').MixinConstructor<typeof DOMBase, import('@cdp/core-utils').MixinClass & DOMBase<ElementBase> & DOMAttributes<any> & DOMTraversing<any> & DOMManipulation<any> & DOMStyles<any> & DOMEvents<any> & DOMScroll<any> & DOMEffects<any> & object>;
 declare class DOMClass extends DOMClass_base {
     /**
      * private constructor

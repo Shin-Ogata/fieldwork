@@ -2,7 +2,7 @@
 
 const { resolve } = require('path');
 const fs          = require('fs-extra');
-const http        = require('http');
+const { merge }   = require('@cdp/tasks');
 const { dir }     = require('@cdp/tasks').config;
 const settings    = require('./testem-amd');
 
@@ -14,8 +14,7 @@ const COVERAGE_DIR = resolve(REPORTS_DIR, dir.coverage);
 fs.ensureDirSync(REPORTS_DIR);
 fs.ensureDirSync(COVERAGE_DIR);
 
-let server;
-const port = 7358;
+const port = settings.free_port();
 
 const config = {
     proxies: {
@@ -23,23 +22,12 @@ const config = {
             'target': `http://localhost:${port}`,
         }
     },
-
-    before_tests: (config, data, callback) => {
-        // start the server
-        server = http.createServer((req, res) => {
-            console.log(`... Received coverage of ${req.headers['content-length']} length`);
-            req.pipe(fs.createWriteStream(resolve(COVERAGE_DIR, 'coverage.json')));
-            req.on('end', res.end.bind(res));
-        }).listen(port, (serverErr) => {
-            console.log(` Listening for coverage on ${port}`);
-            callback(serverErr);
-        });
-    },
-
-    after_tests: (config, data, callback) => {
-        server.close();
-        callback(null);
-    },
 };
 
-module.exports = Object.assign({}, config, settings);
+settings.register_server(port, (req, res) => {
+    console.log(`... Received coverage of ${req.headers['content-length']} length`);
+    req.pipe(fs.createWriteStream(resolve(COVERAGE_DIR, 'coverage.json')));
+    req.on('end', res.end.bind(res));
+});
+
+module.exports = merge({}, config, settings);

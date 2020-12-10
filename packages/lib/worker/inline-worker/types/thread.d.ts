@@ -11,7 +11,15 @@ export declare type ThreadOptions = Cancelable & WorkerOptions;
  * @example <br>
  *
  * ```ts
- * const result = await thread(() => exec(arg));
+ * const exec = () => {
+ *    // this scope is worker scope. you cannot use closure access.
+ *    const param = {...};
+ *    const method = (p) => {...};
+ *    :
+ *    return method(param);
+ * };
+ *
+ * const result = await thread(exec);
  * ```
  *
  * @param executor

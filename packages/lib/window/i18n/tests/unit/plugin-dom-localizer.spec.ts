@@ -22,7 +22,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             load: 'languageOnly',
             fallbackLng: 'ja',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: { 'ja': 'ja-JP' },
         });
         done();
@@ -127,7 +127,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             lng: 'ja',
             fallbackLng: 'en',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -162,7 +162,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             lng: 'ja',
             fallbackLng: 'en',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -194,7 +194,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             lng: 'ja',
             fallbackLng: 'en',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -229,7 +229,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             lng: 'ja',
             fallbackLng: 'en',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -284,7 +284,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             load: 'languageOnly',
             fallbackLng: 'ja',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: { 'ja': 'ja-JP' },
             dom: {
                 useOptionsAttr: true,
@@ -321,7 +321,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
             load: 'languageOnly',
             fallbackLng: 'ja',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: { 'ja': 'ja-JP' },
             dom: {
                 parseDefaultValueFromContent: false,

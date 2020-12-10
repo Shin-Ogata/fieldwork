@@ -13,6 +13,7 @@ export type InlienWorkerSource = ((self: Worker) => unknown) | string;
 
 /** @internal */ const URL    = safe(globalThis.URL);
 /** @internal */ const Worker = safe(globalThis.Worker);
+/** @internal */ const Blob   = safe(globalThis.Blob);
 
 /** @internal */
 function createWorkerContext(src: InlienWorkerSource): string {

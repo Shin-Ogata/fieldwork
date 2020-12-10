@@ -1,5 +1,6 @@
 import { UnknownFunction, verify } from '@cdp/core-utils';
 import { CancelToken, Cancelable } from '@cdp/promise';
+import { FileReader } from './ssr';
 
 /** @internal */
 interface FileReaderArgsMap {

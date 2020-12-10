@@ -127,6 +127,7 @@ function cleaningDTS(code, indent) {
     // eslint-disable-next-line
     return code
         .replace(/\t/gm, indent)        // tab to space
+        .replace(/"/gm, `'`)            // no-use `"`
         .replace(/^export {};/m, '')    // trim 'export {};'
         .replace(/[\n\s]*$/, '')        // trim surplus line feed
         + '\n';                         // add final line feed

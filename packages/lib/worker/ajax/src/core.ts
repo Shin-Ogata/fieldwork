@@ -118,7 +118,7 @@ export function toAjaxParams(data: PlainObject): Record<string, string> {
  *  - `en` Ajax request settings.
  *  - `ja` Ajaxリクエスト設定
  */
-export async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>> {
+async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>> {
     const controller = new AbortController();
     const abort = (): void => controller.abort();
 
@@ -175,3 +175,7 @@ export async function ajax<T extends AjaxDataTypes | object = 'response'>(url: s
         return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response'>](), token);
     }
 }
+
+ajax.settings = settings;
+
+export { ajax };

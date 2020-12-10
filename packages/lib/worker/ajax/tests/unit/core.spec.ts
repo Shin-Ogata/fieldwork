@@ -9,7 +9,6 @@ import {
     makeCanceledResult,
 } from '@cdp/result';
 import {
-    settings,
     ajax,
     toQueryStrings,
     toAjaxParams,
@@ -41,11 +40,11 @@ describe('ajax/core spec', () => {
     };
 
     it('check settings', () => {
-        expect(settings.timeout).toBe(undefined);
-        settings.timeout = 100;
-        expect(settings.timeout).toBe(100);
-        settings.timeout = undefined;
-        expect(settings.timeout).toBe(undefined);
+        expect(ajax.settings.timeout).toBe(undefined);
+        ajax.settings.timeout = 100;
+        expect(ajax.settings.timeout).toBe(100);
+        ajax.settings.timeout = undefined;
+        expect(ajax.settings.timeout).toBe(undefined);
     });
 
     it('check toQueryStrings()', () => {
@@ -63,7 +62,7 @@ describe('ajax/core spec', () => {
     });
 
     it('check ajax() get json', async done => {
-        const data = await ajax('../../.temp/res/data.json', { dataType: 'json' });
+        const data = await ajax('../../.temp/res/ajax/data.json', { dataType: 'json' });
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
         expect(propNumber).toBe(100);
@@ -73,7 +72,7 @@ describe('ajax/core spec', () => {
     });
 
     it('check ajax() get text', async done => {
-        const template = await ajax('../../.temp/res/test.tpl', { dataType: 'text' });
+        const template = await ajax('../../.temp/res/ajax/test.tpl', { dataType: 'text' });
         expect(template).toBeDefined();
         const normlize = template.replace(/\s/gm, '');
         expect(normlize).toBe('<article><template><div></div></template></article>');
@@ -81,14 +80,14 @@ describe('ajax/core spec', () => {
     });
 
     it('check ajax() get blob', async done => {
-        const blob = await ajax('../../.temp/res/image.jpg', { dataType: 'blob' });
+        const blob = await ajax('../../.temp/res/ajax/image.jpg', { dataType: 'blob' });
         expect(blob).toBeDefined();
         expect(blob.type).toBe('image/jpeg');
         done();
     });
 
     it('check ajax() get response', async done => {
-        const response = await ajax('../../.temp/res/data.json');
+        const response = await ajax('../../.temp/res/ajax/data.json');
         expect(response).toBeDefined();
         const json = await response.json();
         const { propNumber, propBoolean, propString } = json.schema;
@@ -102,7 +101,7 @@ describe('ajax/core spec', () => {
     });
 
     it('check ajax() head query strings', async done => {
-        const response = await ajax('../../.temp/res/data.json', {
+        const response = await ajax('../../.temp/res/ajax/data.json', {
             method: 'HEAD',
             data: {
                 aaa: 'aaa',
@@ -118,7 +117,7 @@ describe('ajax/core spec', () => {
     it('check ajax() invalid response', async done => {
         let reason!: Result;
         try {
-            await ajax('../../.temp/res/hogehoge.json', {
+            await ajax('../../.temp/res/ajax/hogehoge.json', {
                 dataType: 'json',
                 username: 'shin',
                 mode: 'cors',
@@ -140,14 +139,14 @@ describe('ajax/core spec', () => {
     });
 
     it('check ajax() post json', async done => {
-        const data = await ajax('/api', { method: 'POST', dataType: 'json' });
+        const data = await ajax('/api-ajax', { method: 'POST', dataType: 'json' });
         expect(data).toBeDefined();
         expect(data.API).toBe('JSON response');
         done();
     });
 
     it('check ajax() post with data', async done => {
-        const response = await ajax('/api', {
+        const response = await ajax('/api-ajax', {
             method: 'POST',
             headers: {
                 'Content-Type': 'audio/x-sony-oma',
@@ -169,7 +168,7 @@ describe('ajax/core spec', () => {
     });
 
     it('check ajax() post with body', async done => {
-        const response = await ajax('/api', {
+        const response = await ajax('/api-ajax', {
             method: 'POST',
             contentType: 'application/x-www-form-urlencoded;charset=UTF-8', // default
             data: {
@@ -196,7 +195,7 @@ describe('ajax/core spec', () => {
     it('check ajax() timeout', async done => {
         let reason!: Result;
         try {
-            await ajax('/api', {
+            await ajax('/api-ajax', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'multipart/form-data; boundary=----hogehoge', // 削除される
@@ -221,7 +220,7 @@ describe('ajax/core spec', () => {
             setTimeout(() => {
                 source.cancel(makeCanceledResult());
             }, 50);
-            await ajax('/api', {
+            await ajax('/api-ajax', {
                 method: 'PUT',
                 cancel: source.token,
             });
@@ -235,7 +234,7 @@ describe('ajax/core spec', () => {
         reason = null!; // eslint-disable-line
 
         try {
-            await ajax('/api', {
+            await ajax('/api-ajax', {
                 method: 'PUT',
                 cancel: source.token,   // already requested
             });

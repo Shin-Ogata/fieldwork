@@ -38,8 +38,8 @@
     <Content Include="dist\i18n.mjs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="tests\res\locales\messages.en-US.json" />
-    <Content Include="tests\res\locales\messages.ja-JP.json" />
+    <Content Include="tests\res\i18n\locales\messages.en-US.json" />
+    <Content Include="tests\res\i18n\locales\messages.ja-JP.json" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
@@ -54,7 +54,8 @@
     <Folder Include="src\plugin\" />
     <Folder Include="tests\" />
     <Folder Include="tests\res\" />
-    <Folder Include="tests\res\locales\" />
+    <Folder Include="tests\res\i18n\" />
+    <Folder Include="tests\res\i18n\locales\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
     <Folder Include="types\plugin\" />

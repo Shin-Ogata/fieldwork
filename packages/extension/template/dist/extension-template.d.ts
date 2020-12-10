@@ -62,10 +62,10 @@ declare class Template {
  * to Part.update().
  */
 export declare type TemplatePart = {
-    readonly type: "node";
+    readonly type: 'node';
     index: number;
 } | {
-    readonly type: "attribute";
+    readonly type: 'attribute';
     index: number;
     readonly name: string;
     readonly strings: ReadonlyArray<string>;
@@ -151,7 +151,7 @@ export interface TemplateProcessor {
      *     the
      *   attribute value. There are always at least two strings,
      *   even for fully-controlled bindings with a single expression. For example,
-     *   for the binding `attr="${e1}-${e2}"`, the `strings` array includes three
+     *   for the binding `attr='${e1}-${e2}'`, the `strings` array includes three
      *   strings (`['', '-', '']`)—the text _before_ the first expression (the
      * empty string), the text between the two expressions (`'-'`), and the text
      * after the last expression (another empty string).
@@ -201,7 +201,7 @@ export declare type DirectiveFn = (part: Part) => void;
  *
  * A directive _factory_ is a function that takes arguments for data and
  * configuration and returns a directive. Users of directive usually refer to
- * the directive factory as the directive. For example, "The repeat directive".
+ * the directive factory as the directive. For example, 'The repeat directive'.
  *
  * Usually a template author will invoke a directive factory in their template
  * with relevant arguments, which will then return a directive function.

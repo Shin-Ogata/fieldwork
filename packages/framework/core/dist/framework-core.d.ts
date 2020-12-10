@@ -64,7 +64,7 @@ export declare type Nillable<T extends object> = T | Nil;
  */
 export declare type UnknownFunction = (...args: unknown[]) => unknown;
 /**
- * @en Avoid the `Object` and `{}` types, as they mean "any non-nullish value".
+ * @en Avoid the `Object` and `{}` types, as they mean 'any non-nullish value'.
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
  */
 export declare type UnknownObject = Record<string, unknown>;
@@ -343,7 +343,7 @@ export declare function isEmptyObject(x: unknown): x is object;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isFunction(x: unknown): x is TypeList["function"];
+export declare function isFunction(x: unknown): x is TypeList['function'];
 /**
  * @en Check the value-type is input.
  * @ja 指定した型であるか判定
@@ -895,7 +895,7 @@ export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEY
  * @en Return type of [[groupBy]]().
  * @ja [[groupBy]]() が返却する型
  */
-export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items"> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
+export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
 /**
  * @en Execute `GROUP BY` for array elements.
  * @ja 配列の要素の `GROUP BY` 集合を抽出
@@ -907,7 +907,7 @@ export declare type GroupByReturnValue<T extends object, TKEYS extends keyof T, 
  *  - `en` `GROUP BY` options
  *  - `ja` `GROUP BY` オプション
  */
-export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = "items">(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
+export declare function groupBy<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'>(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
 /**
  * @en Computes the list of values that are the intersection of all the arrays. Each value in the result is present in each of the arrays.
  * @ja 配列の積集合を返却. 返却された配列の要素はすべての入力された配列に含まれる
@@ -1246,7 +1246,7 @@ export declare function result<T = any>(target: object | Nil, property: string |
  * @en Date unit definitions.
  * @ja 日時オブジェクトの単位定義
  */
-export declare type DateUnit = "year" | "month" | "day" | "hour" | "min" | "sec" | "msec";
+export declare type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec';
 /**
  * @en Calculate from the date which becomes a cardinal point before a N date time or after a N date time (by [[DateUnit]]).
  * @ja 基点となる日付から、N日後、N日前を算出
@@ -1401,12 +1401,12 @@ export declare function createEscaper(map: object): (src: Primitive) => string;
  *
  * ```ts
  * const mapHtmlEscape = {
- *     '<': '&lt;',
- *     '>': '&gt;',
- *     '&': '&amp;',
- *     '"': '&quot;',
- *     "'": '&#39;',
- *     '`': '&#x60;'
+ *     '<' : '&lt;',
+ *     '>' : '&gt;',
+ *     '&' : '&amp;',
+ *     '″': '&quot;',
+ *     `'` : '&#39;',
+ *     '`' : '&#x60;'
  * };
  * ```
  */
@@ -1440,16 +1440,16 @@ export declare function fromTypedData(data: TypedData | undefined): string | und
  * @ja `Web API` 格納形式に変換 <br>
  *     `undefined` を返却しないことを保証
  */
-export declare function dropUndefined<T>(value: T | null | undefined, nilSerialize?: boolean): T | "null" | "undefined" | null;
+export declare function dropUndefined<T>(value: T | null | undefined, nilSerialize?: boolean): T | 'null' | 'undefined' | null;
 /**
  * @en Deserialize from `Web API` stocked type. <br>
  *     Convert from 'null' or 'undefined' string to original type.
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
-export declare function restoreNil<T>(value: T | "null" | "undefined"): T | null | undefined;
+export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined;
 /**
  * @en Get local unique id. <br>
- *     "local unique" means guarantees unique during in script life cycle only.
+ *     'local unique' means guarantees unique during in script life cycle only.
  * @ja ローカルユニーク ID の取得 <br>
  *     スクリプトライフサイクル中の同一性を保証する.
  *
@@ -1499,11 +1499,11 @@ export declare function isChancelLikeError(error: unknown): boolean;
  * @example <br>
  *
  * ```ts
- * capitalize("foo Bar");
- * // => "Foo Bar"
+ * capitalize('foo Bar');
+ * // => 'Foo Bar'
  *
- * capitalize("FOO Bar", true);
- * // => "Foo bar"
+ * capitalize('FOO Bar', true);
+ * // => 'Foo bar'
  * ```
  *
  * @param src
@@ -1521,8 +1521,8 @@ export declare function capitalize(src: string, lowercaseRest?: boolean): string
  * @example <br>
  *
  * ```ts
- * decapitalize("Foo Bar");
- * // => "foo Bar"
+ * decapitalize('Foo Bar');
+ * // => 'foo Bar'
  * ```
  *
  * @param src
@@ -1539,20 +1539,20 @@ export declare function decapitalize(src: string): string;
  * @example <br>
  *
  * ```ts
- * camelize("moz-transform");
- * // => "mozTransform"
+ * camelize('moz-transform');
+ * // => 'mozTransform'
  *
- * camelize("-moz-transform");
- * // => "MozTransform"
+ * camelize('-moz-transform');
+ * // => 'MozTransform'
  *
- * camelize("_moz_transform");
- * // => "MozTransform"
+ * camelize('_moz_transform');
+ * // => 'MozTransform'
  *
- * camelize("Moz-transform");
- * // => "MozTransform"
+ * camelize('Moz-transform');
+ * // => 'MozTransform'
  *
- * camelize("-moz-transform", true);
- * // => "mozTransform"
+ * camelize('-moz-transform', true);
+ * // => 'mozTransform'
  * ```
  *
  * @param src
@@ -1570,8 +1570,8 @@ export declare function camelize(src: string, lower?: boolean): string;
  * @example <br>
  *
  * ```ts
- * classify("some_class_name");
- * // => "SomeClassName"
+ * classify('some_class_name');
+ * // => 'SomeClassName'
  * ```
  *
  * @param src
@@ -1586,8 +1586,8 @@ export declare function classify(src: string): string;
  * @example <br>
  *
  * ```ts
- * underscored("MozTransform");
- * // => "moz_transform"
+ * underscored('MozTransform');
+ * // => 'moz_transform'
  * ```
  *
  * @param src
@@ -1602,8 +1602,8 @@ export declare function underscored(src: string): string;
  * @example <br>
  *
  * ```ts
- * dasherize("MozTransform");
- * // => "-moz-transform"
+ * dasherize('MozTransform');
+ * // => '-moz-transform'
  * ```
  *
  * @param src
@@ -1616,7 +1616,7 @@ export declare function dasherize(src: string): string;
  * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
  */
 export interface EventAll {
-    "*": any[];
+    '*': any[];
 }
 /**
  * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
@@ -2116,7 +2116,7 @@ export declare class CancelToken<T = unknown> {
      * @en `toString` tag override.
      * @ja `toString` タグのオーバーライド
      */
-    protected get [Symbol.toStringTag](): "CancelToken";
+    protected get [Symbol.toStringTag](): 'CancelToken';
     /**
      * @en Register custom cancellation callback.
      * @ja キャンセル時のカスタム処理の登録
@@ -2272,11 +2272,11 @@ export declare class PromiseManager {
  */
 export declare const enum ObservableState {
     /** observable ready */
-    ACTIVE = "active",
+    ACTIVE = 'active',
     /** NOT observed, but property changes are recorded. */
-    SUSEPNDED = "suspended",
+    SUSEPNDED = 'suspended',
     /** NOT observed, and not recording property changes. */
-    DISABLED = "disabled"
+    DISABLED = 'disabled'
 }
 /**
  * @en Observable common interface.
@@ -2405,7 +2405,7 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    on(property: "@", listener: (context: ObservableObject) => unknown): Subscription;
+    on(property: '@', listener: (context: ObservableObject) => unknown): Subscription;
     /**
      * @en Subscrive property change(s).
      * @ja プロパティ変更購読設定
@@ -2429,7 +2429,7 @@ export declare abstract class ObservableObject implements IObservable {
      *  - `en` callback function of the property change.
      *  - `ja` プロパティ変更通知コールバック関数
      */
-    off(property: "@", listener?: (context: ObservableObject) => any): void;
+    off(property: '@', listener?: (context: ObservableObject) => any): void;
     /**
      * @en Unsubscribe property change(s).
      * @ja プロパティ変更購読解除
@@ -2718,7 +2718,7 @@ export declare function SUCCEEDED(code: number): boolean;
  *
  * @param code [[RESULT_CODE]]
  * @param tag  custom tag if needed.
- * @returns name string ex) "[tag][NOT_SUPPORTED]"
+ * @returns name string ex) '[tag][NOT_SUPPORTED]'
  */
 export declare function toNameString(code: number, tag?: string): string;
 /**
@@ -2983,7 +2983,7 @@ export interface RegistrySchemaBase {
      * @en Registry wildcard property.
      * @ja レジストリワイルドカードプロパティ
      */
-    "*": void;
+    '*': void;
 }
 /**
  * @en Registry event definition
@@ -2994,7 +2994,7 @@ export interface RegistryEvent<T extends object = any, K extends keyof T = keyof
      * @en Change event. (key, newValue, oldValue)
      * @ja 変更通知 (key, newValue, oldValue)
      */
-    "change": [
+    'change': [
         K | null,
         T[K] | null | undefined,
         T[K] | null | undefined
@@ -3003,7 +3003,7 @@ export interface RegistryEvent<T extends object = any, K extends keyof T = keyof
      * @en Before save event.
      * @ja 永続化前に発行
      */
-    "will-save": void;
+    'will-save': void;
 }
 /**
  * @en Registry read options.
@@ -3351,7 +3351,7 @@ export interface TemplateWriter {
      *
      * If the optional `tags` argument is given here it must be an array with two
      * string values: the opening and closing tags used in the template (e.g.
-     * [ "<%", "%>" ]). The default is to mustache.tags.
+     * [ '<%', '%>' ]). The default is to mustache.tags.
      */
     render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string;
     /**
@@ -3525,8 +3525,8 @@ declare namespace CDP_DECLARE {
      *
      *  export enum RESULT_CODE {
      *      SOMEMODULE_DECLARE           = RESULT_CODE_BASE.DECLARE, // for avoid TS2432.
-     *      ERROR_SOMEMODULE_UNEXPECTED  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 1, "error unexpected."),
-     *      ERROR_SOMEMODULE_INVALID_ARG = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 2, "invalid arguments."),
+     *      ERROR_SOMEMODULE_UNEXPECTED  = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 1, 'error unexpected.'),
+     *      ERROR_SOMEMODULE_INVALID_ARG = DECLARE_ERROR_CODE(RESULT_CODE_BASE.SOMEMODULE, LOCAL_CODE_BASE.SOMEMODULE + 2, 'invalid arguments.'),
      *  }
      *  ASSIGN_RESULT_CODE(RESULT_CODE);
      * ```

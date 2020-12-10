@@ -38,21 +38,20 @@
     <Content Include="dist\data-sync.mjs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="tests\server\plugin-data-sync.js" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="build.config.js" />
     <Compile Include="dist\data-sync.js" />
-    <Compile Include="tests\custom\testem-amd.js" />
-    <Compile Include="tests\custom\testem-ci.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
     <Folder Include="tests\" />
-    <Folder Include="tests\custom\" />
+    <Folder Include="tests\server\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
   </ItemGroup>
