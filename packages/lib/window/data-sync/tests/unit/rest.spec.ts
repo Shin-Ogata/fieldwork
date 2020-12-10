@@ -28,7 +28,7 @@ describe('data-sync/rest spec', () => {
             };
         }
         get url(): string {
-            return '/api';
+            return '/api-data-sync';
         }
     }
 
@@ -42,7 +42,7 @@ describe('data-sync/rest spec', () => {
             };
         }
         url(): string {
-            return '/api';
+            return '/api-data-sync';
         }
     }
 
@@ -156,7 +156,7 @@ describe('data-sync/rest spec', () => {
         context.on('@request', stub.onCallback);
 
         const options: RestDataSyncOptions = {
-            url: '/api',
+            url: '/api-data-sync',
             data: {
                 id: 'CCCC',
                 num: 3333,

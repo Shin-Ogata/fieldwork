@@ -7,7 +7,7 @@ import { request } from '@cdp/ajax';
 
 describe('ajax/reauest spec', () => {
     it('check request#get()', async done => {
-        const data = await request.get('../../.temp/res/data.json');
+        const data = await request.get('../../.temp/res/ajax/data.json');
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
         expect(propNumber).toBe(100);
@@ -17,7 +17,7 @@ describe('ajax/reauest spec', () => {
     });
 
     it('check request#text()', async done => {
-        const template = await request.text('../../.temp/res/test.tpl');
+        const template = await request.text('../../.temp/res/ajax/test.tpl');
         expect(template).toBeDefined();
         const normlize = template.replace(/\s/gm, '');
         expect(normlize).toBe('<article><template><div></div></template></article>');
@@ -25,7 +25,7 @@ describe('ajax/reauest spec', () => {
     });
 
     it('check request#json()', async done => {
-        const data = await request.json('../../.temp/res/data.json');
+        const data = await request.json('../../.temp/res/ajax/data.json');
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
         expect(propNumber).toBe(100);
@@ -35,14 +35,14 @@ describe('ajax/reauest spec', () => {
     });
 
     it('check request#blob()', async done => {
-        const blob = await request.blob('../../.temp/res/image.jpg');
+        const blob = await request.blob('../../.temp/res/ajax/image.jpg');
         expect(blob).toBeDefined();
         expect(blob.type).toBe('image/jpeg');
         done();
     });
 
     it('check request#post()', async done => {
-        const json = await request.post('/api', {
+        const json = await request.post('/api-ajax', {
             aaa: 'aaa',
             bbb: true,
             ccc: null,
@@ -56,7 +56,7 @@ describe('ajax/reauest spec', () => {
     });
 
     it('check request#resource() json', () => {
-        const json = request.resource('../../.temp/res/data.json');
+        const json = request.resource('../../.temp/res/ajax/data.json');
         expect(json).toBeDefined();
         const { propNumber, propBoolean, propString } = json.schema;
         expect(propNumber).toBe(100);
@@ -65,7 +65,7 @@ describe('ajax/reauest spec', () => {
     });
 
     it('check request#resource() text', () => {
-        const template = request.resource('../../.temp/res/test.tpl', 'text', { a: 'a', b: true, c: null });
+        const template = request.resource('../../.temp/res/ajax/test.tpl', 'text', { a: 'a', b: true, c: null });
         expect(template).toBeDefined();
         const normlize = template.replace(/\s/gm, '');
         expect(normlize).toBe('<article><template><div></div></template></article>');
@@ -74,7 +74,7 @@ describe('ajax/reauest spec', () => {
     it('check request#resource() error', () => {
         let reason!: Result;
         try {
-            request.resource('../../.temp/res/invalid.res', 'text');
+            request.resource('../../.temp/res/ajax/invalid.res', 'text');
         } catch (e) {
             reason = e;
         }

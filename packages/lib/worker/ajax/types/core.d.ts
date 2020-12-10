@@ -21,4 +21,10 @@ export declare function toAjaxParams(data: PlainObject): Record<string, string>;
  *  - `en` Ajax request settings.
  *  - `ja` Ajaxリクエスト設定
  */
-export declare function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>>;
+declare function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, options?: AjaxOptions<T>): Promise<AjaxResult<T>>;
+declare namespace ajax {
+    var settings: {
+        timeout: number | undefined;
+    };
+}
+export { ajax };

@@ -99,12 +99,12 @@ export declare function createEscaper(map: object): (src: Primitive) => string;
  *
  * ```ts
  * const mapHtmlEscape = {
- *     '<': '&lt;',
- *     '>': '&gt;',
- *     '&': '&amp;',
- *     '"': '&quot;',
- *     "'": '&#39;',
- *     '`': '&#x60;'
+ *     '<' : '&lt;',
+ *     '>' : '&gt;',
+ *     '&' : '&amp;',
+ *     '″': '&quot;',
+ *     `'` : '&#39;',
+ *     '`' : '&#x60;'
  * };
  * ```
  */

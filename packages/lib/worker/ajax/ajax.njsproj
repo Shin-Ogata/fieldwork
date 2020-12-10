@@ -38,25 +38,25 @@
     <Content Include="dist\ajax.mjs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="tests\res\data.json" />
-    <Content Include="tests\res\image.jpg" />
-    <Content Include="tests\res\test.tpl" />
+    <Content Include="tests\res\ajax\data.json" />
+    <Content Include="tests\res\ajax\image.jpg" />
+    <Content Include="tests\res\ajax\test.tpl" />
+    <Content Include="tests\server\plugin-ajax.js" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dist\ajax.js" />
     <Compile Include="build.config.js" />
-    <Compile Include="tests\custom\testem-amd.js" />
-    <Compile Include="tests\custom\testem-ci.js" />
     <Compile Include="tests\test.config.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
     <Folder Include="tests\" />
-    <Folder Include="tests\custom\" />
     <Folder Include="tests\res\" />
+    <Folder Include="tests\res\ajax\" />
+    <Folder Include="tests\server\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
   </ItemGroup>

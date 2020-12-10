@@ -9,7 +9,7 @@ import { $cdp, Arguments } from '@cdp/core-utils';
  * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス
  */
 export interface EventAll {
-    "*": any[];
+    '*': any[];
 }
 /**
  * @en Represents a disposable resource, such as the execution of an [[Subscribable]].

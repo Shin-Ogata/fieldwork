@@ -124,7 +124,7 @@ declare namespace i18n {
          * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
          * @default 'default'
          */
-        nsMode?: "default" | "fallback";
+        nsMode?: 'default' | 'fallback';
         /**
          * Set it to the default parent element created by the Trans component.
          * @default 'div'
@@ -158,7 +158,7 @@ declare namespace i18n {
          * that always throws an error.
          * @default undefined
          */
-        hashTransKey?(defaultValue: TOptionsBase["defaultValue"]): TOptionsBase["defaultValue"];
+        hashTransKey?(defaultValue: TOptionsBase['defaultValue']): TOptionsBase['defaultValue'];
         /**
          * Convert eg. <br/> found in translations to a react component of type br
          * @default true
@@ -223,7 +223,7 @@ declare namespace i18n {
          * 'languageOnly' --> 'en'
          * @default 'all'
          */
-        load?: "all" | "currentOnly" | "languageOnly";
+        load?: 'all' | 'currentOnly' | 'languageOnly';
         /**
          * Array of languages to preload. Important on server-side to assert translations are loaded before rendering views.
          * @default false
@@ -270,7 +270,7 @@ declare namespace i18n {
         /**
          * @default 'fallback'
          */
-        saveMissingTo?: "current" | "all" | "fallback";
+        saveMissingTo?: 'current' | 'all' | 'fallback';
         /**
          * Used for custom missing key handling (needs saveMissing set to true!)
          * @default false
@@ -401,7 +401,7 @@ declare namespace i18n {
          * Compatibility JSON version
          * @default 'v3'
          */
-        compatibilityJSON?: "v1" | "v2" | "v3";
+        compatibilityJSON?: 'v1' | 'v2' | 'v3';
         /**
          * Options for https://github.com/locize/locize-editor
          * @default undefined
@@ -426,7 +426,7 @@ declare namespace i18n {
              * Turn on/off by pressing key combination. Combine this with `toggleKeyCode`
              * @default 'ctrlKey'
              */
-            toggleKeyModifier?: "ctrlKey" | "metaKey" | "altKey" | "shiftKey";
+            toggleKeyModifier?: 'ctrlKey' | 'metaKey' | 'altKey' | 'shiftKey';
             /**
              * Turn on/off by pressing key combination. Combine this with `toggleKeyModifier`
              * @default 24 (x)
@@ -447,7 +447,7 @@ declare namespace i18n {
              * Setting to window will open a new window/tab instead
              * @default 'iframe'
              */
-            mode?: "iframe" | "window";
+            mode?: 'iframe' | 'window';
             /**
              * Styles to adapt layout in iframe mode to your website layout.
              * This will add a style to the `<iframe>`
@@ -617,12 +617,12 @@ declare namespace i18n {
         /**
          * Gets fired when resources got added or removed
          */
-        on(event: "added" | "removed", callback: (lng: string, ns: string) => void): void;
+        on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
         /**
          * Remove event listener
          * removes all callback when callback not specified
          */
-        off(event: "added" | "removed", callback?: (lng: string, ns: string) => void): void;
+        off(event: 'added' | 'removed', callback?: (lng: string, ns: string) => void): void;
     }
     export interface Services {
         backendConnector: any;
@@ -635,7 +635,7 @@ declare namespace i18n {
         resourceStore: ResourceStore;
     }
     export interface Module {
-        type: "backend" | "logger" | "languageDetector" | "postProcessor" | "i18nFormat" | "3rdParty";
+        type: 'backend' | 'logger' | 'languageDetector' | 'postProcessor' | 'i18nFormat' | '3rdParty';
     }
     export type CallbackError = Error | null | undefined;
     export type ReadCallback = (err: CallbackError, data: ResourceKey | boolean) => void;
@@ -646,7 +646,7 @@ declare namespace i18n {
      * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
      */
     export interface BackendModule<TOptions = object> extends Module {
-        type: "backend";
+        type: 'backend';
         init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
         read(language: string, namespace: string, callback: ReadCallback): void;
         /** Save the missing translation */
@@ -662,7 +662,7 @@ declare namespace i18n {
      * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
      */
     export interface LanguageDetectorModule extends Module {
-        type: "languageDetector";
+        type: 'languageDetector';
         init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must return detected language */
         detect(): string | undefined;
@@ -674,7 +674,7 @@ declare namespace i18n {
      * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
      */
     export interface LanguageDetectorAsyncModule extends Module {
-        type: "languageDetector";
+        type: 'languageDetector';
         /** Set to true to enable async detection */
         async: true;
         init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
@@ -689,7 +689,7 @@ declare namespace i18n {
     export interface PostProcessorModule extends Module {
         /** Unique name */
         name: string;
-        type: "postProcessor";
+        type: 'postProcessor';
         process(value: string, key: string, options: TOptions, translator: any): string;
     }
     /**
@@ -697,16 +697,16 @@ declare namespace i18n {
      * Do not need to be a prototype function.
      */
     export interface LoggerModule extends Module {
-        type: "logger";
+        type: 'logger';
         log(...args: any[]): void;
         warn(...args: any[]): void;
         error(...args: any[]): void;
     }
     export interface I18nFormatModule extends Module {
-        type: "i18nFormat";
+        type: 'i18nFormat';
     }
     export interface ThirdPartyModule extends Module {
-        type: "3rdParty";
+        type: '3rdParty';
         init(i18next: i18n): void;
     }
     export interface Modules {
@@ -804,7 +804,7 @@ declare namespace i18n {
         /**
          * Returns rtl or ltr depending on languages read direction.
          */
-        dir(lng?: string): "ltr" | "rtl";
+        dir(lng?: string): 'ltr' | 'rtl';
         /**
          * Exposes interpolation.format function added on init.
          */
@@ -824,27 +824,27 @@ declare namespace i18n {
         /**
          * Gets fired after initialization.
          */
-        on(event: "initialized", callback: (options: InitOptions) => void): void;
+        on(event: 'initialized', callback: (options: InitOptions) => void): void;
         /**
          * Gets fired on loaded resources.
          */
-        on(event: "loaded", callback: (loaded: boolean) => void): void;
+        on(event: 'loaded', callback: (loaded: boolean) => void): void;
         /**
          * Gets fired if loading resources failed.
          */
-        on(event: "failedLoading", callback: (lng: string, ns: string, msg: string) => void): void;
+        on(event: 'failedLoading', callback: (lng: string, ns: string, msg: string) => void): void;
         /**
          * Gets fired on accessing a key not existing.
          */
-        on(event: "missingKey", callback: (lngs: string[], namespace: string, key: string, res: string) => void): void;
+        on(event: 'missingKey', callback: (lngs: string[], namespace: string, key: string, res: string) => void): void;
         /**
          * Gets fired when resources got added or removed.
          */
-        on(event: "added" | "removed", callback: (lng: string, ns: string) => void): void;
+        on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
         /**
          * Gets fired when changeLanguage got called.
          */
-        on(event: "languageChanged", callback: (lng: string) => void): void;
+        on(event: 'languageChanged', callback: (lng: string) => void): void;
         /**
          * Event listener
          */

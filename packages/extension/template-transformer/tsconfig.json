@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "baseUrl": "./src/@types",
     "paths": {
-      "lit-transformer": [ "lit-transformer" ],
+      "lit-transformer": [ "lit-transformer" ]
     },
     "typeRoots": [
         "./node_modules/@types"

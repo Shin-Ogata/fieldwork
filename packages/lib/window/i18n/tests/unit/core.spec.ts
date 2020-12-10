@@ -26,7 +26,7 @@ describe('i18n spec', () => {
         await expectAsync(initializeI18N({
             lng: 'ja',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
         })).not.toBeRejected();
 
         ensureCleanI18N();
@@ -35,7 +35,7 @@ describe('i18n spec', () => {
             await initializeI18N({
                 lng: 'ja',
                 namespace: 'messages',
-                resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+                resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
                 noThrow: false,
             });
             expect('UNEXPECTED FLOW').toBeNull();
@@ -55,7 +55,7 @@ describe('i18n spec', () => {
         await initializeI18N({
             lng: 'ja-JP',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
             },
@@ -75,7 +75,7 @@ describe('i18n spec', () => {
         await initializeI18N({
             lng: 'ja-JP',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -97,7 +97,7 @@ describe('i18n spec', () => {
         await expectAsync(initializeI18N({
             lng: 'ja-JP',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
@@ -113,7 +113,7 @@ describe('i18n spec', () => {
         await initializeI18N({
             lng: 'ja-JP',
             namespace: 'messages',
-            resourcePath: '../res/locales/{{ns}}.{{lng}}.json',
+            resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: {
                 'ja': 'ja-JP',
                 'en': 'en-US',
