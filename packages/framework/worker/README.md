@@ -1,3 +1,0 @@
-# @cdp/framework-worker
-
-[description]
