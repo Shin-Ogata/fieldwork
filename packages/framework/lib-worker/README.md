@@ -1,0 +1,3 @@
+# @cdp/lib-worker
+
+[description]
