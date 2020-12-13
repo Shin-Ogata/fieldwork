@@ -73,6 +73,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "inline-worker", "packages\l
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "framework-worker", "packages\framework\worker\framework-worker.njsproj", "{F8C2428C-C179-454E-9204-21B05DFAE010}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "framework-window", "packages\framework\window\framework-window.njsproj", "{6012C231-6243-4B5E-BA48-79EC4B577E6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +185,10 @@ Global
 		{F8C2428C-C179-454E-9204-21B05DFAE010}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8C2428C-C179-454E-9204-21B05DFAE010}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8C2428C-C179-454E-9204-21B05DFAE010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6012C231-6243-4B5E-BA48-79EC4B577E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6012C231-6243-4B5E-BA48-79EC4B577E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6012C231-6243-4B5E-BA48-79EC4B577E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6012C231-6243-4B5E-BA48-79EC4B577E6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -218,6 +224,7 @@ Global
 		{4861442E-702A-40BB-9490-59ADCE057AAC} = {35317128-68DB-44C4-9168-3B083BE12CC4}
 		{5839CA3D-D467-433E-AB79-33F64E042AEA} = {07FBA8FB-A230-4C6B-8863-952C8E0A830D}
 		{F8C2428C-C179-454E-9204-21B05DFAE010} = {7E623325-16E9-4287-8D2B-CB508EBEA3EB}
+		{6012C231-6243-4B5E-BA48-79EC4B577E6C} = {7E623325-16E9-4287-8D2B-CB508EBEA3EB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA17E8B9-F4FC-4DBE-9091-5FD4D67EC484}

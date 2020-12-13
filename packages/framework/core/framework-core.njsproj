@@ -62,6 +62,7 @@
     <TypeScriptCompile Include="types\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include=".npmrc" />
     <Content Include="dist\framework-core.min.map" />
     <Content Include="dist\framework-core.mjs" />

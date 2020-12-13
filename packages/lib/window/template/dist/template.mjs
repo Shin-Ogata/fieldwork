@@ -8,7 +8,7 @@ export * from '@cdp/extension-template';
 import { createTransformFactory } from '@cdp/extension-template-transformer';
 export * from '@cdp/extension-template-transformer';
 import { TemplateEngine } from '@cdp/core-template';
-export * from '@cdp/core-template';
+export { TemplateEngine } from '@cdp/core-template';
 import { request } from '@cdp/ajax';
 import { safe } from '@cdp/core-utils';
 

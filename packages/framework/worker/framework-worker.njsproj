@@ -62,6 +62,7 @@
     <TypeScriptCompile Include="types\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include=".npmrc" />
     <Content Include="dist\framework-worker.js" />
     <Content Include="dist\framework-worker.min.js" />

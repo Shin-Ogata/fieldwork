@@ -1,0 +1,29 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationDir": null,
+    "outDir": "../built/tests/unit",
+    "rootDir": "unit",
+    "baseUrl": ".",
+    "paths": {
+      "@cdp/extension-template": [ "../../../extension/template" ],
+      "@cdp/core-utils": [ "../../../lib/core/utils" ],
+      "@cdp/events": [ "../../../lib/core/events" ],
+      "@cdp/promise": [ "../../../lib/core/promise" ],
+      "@cdp/observable": [ "../../../lib/core/observable" ],
+      "@cdp/result": [ "../../../lib/core/result" ],
+      "@cdp/core-storage": [ "../../../lib/core/storage" ],
+      "@cdp/core-template": [ "../../../lib/core/template" ],
+      "@cdp/ajax": [ "../../../lib/worker/ajax" ],
+      "@cdp/binary": [ "../../../lib/worker/binary" ],
+      "@cdp/inline-worker": [ "../../../lib/worker/inline-worker" ]
+    }
+  },
+  "include": [
+    "unit/**/*"
+  ],
+  "exclude": [
+    "unit/*/**/_*.d.ts"
+  ]
+}
