@@ -1,6 +1,6 @@
 /*!
  * @cdp/framework-core 0.9.5
- *   core framework
+ *   core library collection
  */
 
 (function (global, factory) {

@@ -1,6 +1,6 @@
 {
   "name": "@cdp/framework-core",
-  "description": "core framework",
+  "description": "core library collection",
   "version": "0.9.5",
   "author": "Shin Ogata",
   "devDependencies": {
@@ -62,5 +62,5 @@
     "ut": "npm run unit-test",
     "ut:ci": "npm run unit-test:ci"
   },
-  "types": "types/index.d.ts"
+  "types": "dist/framework-core.d.ts"
 }

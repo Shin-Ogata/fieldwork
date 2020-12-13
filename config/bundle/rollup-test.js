@@ -54,7 +54,7 @@ function getDefault(testeeConfig, options) {
         {
             input: `${BUILT}/${TEST}/${UNIT}/**/*.js`,
             plugins: [
-                multiEntry(),
+                multiEntry({ exports: false }),
                 nodeResolve({
                     mainFields: ['module', 'main', 'jsnext:main'],
                     preferBuiltins: true,

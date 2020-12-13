@@ -1,15 +1,22 @@
 {
-  "name": "@cdp/framework-worker",
-  "description": "worker library collection",
+  "name": "@cdp/framework-window",
+  "description": "window library collection",
   "version": "0.9.5",
   "author": "Shin Ogata",
   "dependencies": {
-    "@cdp/framework-core": "file:../core"
+    "@cdp/framework-core": "file:../core",
+    "@cdp/framework-worker": "file:../worker"
   },
   "devDependencies": {
-    "@cdp/ajax": "file:../../lib/worker/ajax",
-    "@cdp/binary": "file:../../lib/worker/binary",
-    "@cdp/inline-worker": "file:../../lib/worker/inline-worker"
+    "@cdp/collection": "file:../../lib/window/collection",
+    "@cdp/data-sync": "file:../../lib/window/data-sync",
+    "@cdp/dom": "file:../../lib/window/dom",
+    "@cdp/environment": "file:../../lib/window/environment",
+    "@cdp/i18n": "file:../../lib/window/i18n",
+    "@cdp/model": "file:../../lib/window/model",
+    "@cdp/template": "file:../../lib/window/template",
+    "@cdp/view": "file:../../lib/window/view",
+    "@cdp/web-storage": "file:../../lib/window/storage"
   },
   "keywords": [
     "CDP",
@@ -17,8 +24,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/framework-worker",
-  "module": "dist/framework-worker.mjs",
+  "main": "dist/framework-window",
+  "module": "dist/framework-window.mjs",
   "private": true,
   "repository": {
     "type": "git",
@@ -61,5 +68,5 @@
     "ut": "npm run unit-test",
     "ut:ci": "npm run unit-test:ci"
   },
-  "types": "dist/framework-worker.d.ts"
+  "types": "dist/framework-window.d.ts"
 }
