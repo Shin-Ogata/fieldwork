@@ -96,7 +96,7 @@ function patch(index, code, includes) {
         prepend += `export { ${enumerate(coreReExportStuff)} };\n`;
         prepend += `import { ${enumerate(workerStuff)} } from '@cdp/lib-worker';\n`;
 
-        prepend += read(resolve('../../lib/window/dom/dist/dom.d.ts'));
+        prepend += read(resolve('../../lib/web/dom/dist/dom.d.ts'));
 
         code = prepend + code;
     }
@@ -114,7 +114,7 @@ function patch(index, code, includes) {
     }
 
     {// module-extends
-        const i18n = read(resolve('../../lib/window/i18n/types/plugin/module-extends.d.ts'));
+        const i18n = read(resolve('../../lib/web/i18n/types/plugin/module-extends.d.ts'));
         const pluginI18N = i18n.match(/( {4}namespace i18n {)([^}]+})([^}]+})([\s]+}\n)/)[0].replace('namespace', 'declare namespace');
         code += pluginI18N.split('\n').map(s => s.replace('    ', '')).join('\n');
         const pluginDOM = i18n.match(/( {4}interface DOMPlugin {)[\s\S]*?(}\n)/)[0].replace('interface', 'export interface');
@@ -122,10 +122,10 @@ function patch(index, code, includes) {
     }
 
     {// result-code-defs.d.ts
-        code += read(resolve('../../lib/window/i18n/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/window/data-sync/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/window/model/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/window/collection/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/i18n/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/data-sync/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/model/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/collection/types/result-code-defs.d.ts'));
     }
 
     return code;

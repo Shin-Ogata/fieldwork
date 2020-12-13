@@ -8,15 +8,15 @@
     "@cdp/lib-worker": "file:../lib-worker"
   },
   "devDependencies": {
-    "@cdp/collection": "file:../../lib/window/collection",
-    "@cdp/data-sync": "file:../../lib/window/data-sync",
-    "@cdp/dom": "file:../../lib/window/dom",
-    "@cdp/environment": "file:../../lib/window/environment",
-    "@cdp/i18n": "file:../../lib/window/i18n",
-    "@cdp/model": "file:../../lib/window/model",
-    "@cdp/template": "file:../../lib/window/template",
-    "@cdp/view": "file:../../lib/window/view",
-    "@cdp/web-storage": "file:../../lib/window/storage"
+    "@cdp/collection": "file:../../lib/web/collection",
+    "@cdp/data-sync": "file:../../lib/web/data-sync",
+    "@cdp/dom": "file:../../lib/web/dom",
+    "@cdp/environment": "file:../../lib/web/environment",
+    "@cdp/i18n": "file:../../lib/web/i18n",
+    "@cdp/model": "file:../../lib/web/model",
+    "@cdp/template": "file:../../lib/web/template",
+    "@cdp/view": "file:../../lib/web/view",
+    "@cdp/web-storage": "file:../../lib/web/storage"
   },
   "keywords": [
     "CDP",

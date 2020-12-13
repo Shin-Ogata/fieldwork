@@ -14,7 +14,7 @@
   "devDependencies": {
     "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",
-    "@cdp/dom": "file:../../lib/window/dom",
+    "@cdp/dom": "file:../../lib/web/dom",
     "lit-transformer": "1.0.2"
   },
   "keywords": [
