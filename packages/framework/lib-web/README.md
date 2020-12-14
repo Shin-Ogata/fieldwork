@@ -1,3 +1,3 @@
-# @cdp/framework-window
+# @cdp/lib-web
 
 [description]

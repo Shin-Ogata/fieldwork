@@ -21,7 +21,7 @@
     "autoprefixer": "10.1.0",
     "chalk": "4.1.0",
     "clean-css": "4.2.3",
-    "commander": "6.2.0",
+    "commander": "6.2.1",
     "convert-source-map": "1.7.0",
     "del": "6.0.0",
     "dts-bundle-generator": "5.5.0",

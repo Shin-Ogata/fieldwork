@@ -15,7 +15,7 @@ export declare type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = K
 /** WebStorage data type */
 export declare type WebStorageDataTypes = Types<WebStorageDataTypeList>;
 /** MemoryStorage return type */
-export declare type MemoryStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
+export declare type WebStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** WebStorage input data type */
 export declare type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
 /** WebStorage event callback */
@@ -52,7 +52,7 @@ export declare class WebStorage implements IStorage<WebStorageDataTypeList> {
      *  - `en` Returns the value which corresponds to a key with type change designated in `dataType`.
      *  - `ja` `dataType` で指定された型変換を行って, キーに対応する値を返却
      */
-    getItem<D extends WebStorageDataTypes = WebStorageDataTypes>(key: string, options?: WebStorageOptions<never>): Promise<MemoryStorageReturnType<D>>;
+    getItem<D extends WebStorageDataTypes = WebStorageDataTypes>(key: string, options?: WebStorageOptions<never>): Promise<WebStorageReturnType<D>>;
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
      * @ja キーに対応する値を取得. 存在しない場合は null を返却

@@ -38,7 +38,7 @@ export type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType
 /** WebStorage data type */
 export type WebStorageDataTypes = Types<WebStorageDataTypeList>;
 /** MemoryStorage return type */
-export type MemoryStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
+export type WebStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** WebStorage input data type */
 export type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
 /** WebStorage event callback */
@@ -102,7 +102,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
     getItem<D extends WebStorageDataTypes = WebStorageDataTypes>(
         key: string,
         options?: WebStorageOptions<never>
-    ): Promise<MemoryStorageReturnType<D>>;
+    ): Promise<WebStorageReturnType<D>>;
 
     /**
      * @en Returns the current value associated with the given key, or null if the given key does not exist in the list associated with the object.
