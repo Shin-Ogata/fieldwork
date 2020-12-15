@@ -118,7 +118,7 @@ export interface Type<T extends object> extends Function {
  * @ja コンストラクタ型
  */
 export interface Constructor<T extends object> extends Type<T> {
-    new (...args: unknown[]): T;
+    new (...args: any[]): T;
 }
 /**
  * @en Type of class.
@@ -4130,17 +4130,6 @@ export declare type ThreadOptions = Cancelable & WorkerOptions;
  *  - `ja` スレッドオプション
  */
 export declare function thread<T>(executor: () => T | Promise<T>, options?: ThreadOptions): Promise<T>;
-export declare namespace CDP_DECLARE {
-    /**
-     * @en Extends error code definitions.
-     * @ja 拡張通エラーコード定義
-     */
-    enum RESULT_CODE {
-        AJAX_DECLARE = 9007199254740991,
-        ERROR_AJAX_RESPONSE,
-        ERROR_AJAX_TIMEOUT
-    }
-}
 export declare const i18n: i18n.i18n;
 export declare namespace i18n {
     export interface FallbackLngObjList {

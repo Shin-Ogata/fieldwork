@@ -103,7 +103,7 @@ export interface Type<T extends object> extends Function {
  * @ja コンストラクタ型
  */
 export interface Constructor<T extends object> extends Type<T> {
-    new (...args: unknown[]): T;
+    new (...args: any[]): T;
 }
 /**
  * @en Type of class.

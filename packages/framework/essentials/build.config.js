@@ -41,10 +41,12 @@ function patch(index, code, includes) {
         return readFileSync(dts).toString().replace(/\/\*\![\s\S]*?\*\/\n/, '');
     };
 
-    {// trim
+    {// remove
         code = code
             // dynamic import: 'import('@cdp/lib-core').' → ''
             .replace(/import\('@cdp\/lib-core'\)\./g, '')
+            // export declare namespace CDP_DECLARE { {...}' → ''
+            .replace(/^export declare namespace CDP_DECLARE {[\s\S]*?^\}\n/gm, '')
         ;
 
     }
