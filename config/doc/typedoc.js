@@ -31,16 +31,10 @@ for (const scope of scopes) {
 module.exports = {
     disableOutputCheck: true,
     exclude,
-//  excludeExternals: true,
+    excludeExternals: true,
     excludePrivate: true,
-    externalPattern: [
-        '**/node_modules/**',
-    ],
     hideGenerator: true,
-    ignoreCompilerErrors: true,
-    includeDeclarations: true,
     logger: 'none',
-    mode: 'file',
     name,
     out: `${doc}/${api}`,
     readme: existsSync(resolve(cwd, 'README.md')) ? 'README.md' : 'none',
