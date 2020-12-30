@@ -10,8 +10,9 @@ let port = 7358;
 
 const starServer = (context) => {
     return new Promise((resolve) => {
+        const { request, port } = context;
         // start the server
-        context.server = http.createServer(context.request).listen(context.port, (serverErr) => {
+        context.server = http.createServer(request).listen(port, (serverErr) => {
             resolve(serverErr);
         });
     });

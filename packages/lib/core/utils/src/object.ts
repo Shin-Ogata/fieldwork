@@ -5,8 +5,8 @@ import {
     isArray,
     isObject,
     isFunction,
-    className,
 } from './types';
+import { verify } from './verify';
 
 /**
  * @en Check whether input source has a property.
@@ -30,9 +30,7 @@ export function has(src: unknown, propName: string): boolean {
  *  - `ja` コピー対象のキー一覧
  */
 export function pick<T extends object, K extends keyof T>(target: T, ...pickKeys: K[]): Writable<Pick<T, K>> {
-    if (!target || !isObject(target)) {
-        throw new TypeError(`${className(target)} is not an object.`);
-    }
+    verify('typeOf', 'object', target);
     return pickKeys.reduce((obj, key) => {
         key in target && (obj[key] = target[key]);
         return obj;
@@ -51,9 +49,7 @@ export function pick<T extends object, K extends keyof T>(target: T, ...pickKeys
  *  - `ja` 削除対象のキー一覧
  */
 export function omit<T extends object, K extends keyof T>(target: T, ...omitKeys: K[]): Writable<Omit<T, K>> {
-    if (!target || !isObject(target)) {
-        throw new TypeError(`${className(target)} is not an object.`);
-    }
+    verify('typeOf', 'object', target);
     const obj = {} as Writable<Omit<T, K>>;
     for (const key of Object.keys(target)) {
         !omitKeys.includes(key as K) && (obj[key] = target[key]);
@@ -89,12 +85,8 @@ export function invert<T extends object = object>(target: object): T {
  *  - `ja` コピー元オブジェクト
  */
 export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
-    if (!base || !isObject(base)) {
-        throw new TypeError(`${className(base)} is not an object.`);
-    }
-    if (!src || !isObject(src)) {
-        throw new TypeError(`${className(src)} is not an object.`);
-    }
+    verify('typeOf', 'object', base);
+    verify('typeOf', 'object', src);
 
     const retval: Partial<T> = {};
 
@@ -119,9 +111,7 @@ export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
  *  - `ja` 対象の値. 既定値: `undefined`
  */
 export function drop<T extends object>(base: T, ...dropValues: unknown[]): Partial<T> {
-    if (!base || !isObject(base)) {
-        throw new TypeError(`${className(base)} is not an object.`);
-    }
+    verify('typeOf', 'object', base);
 
     const values = [...dropValues];
     if (!values.length) {
