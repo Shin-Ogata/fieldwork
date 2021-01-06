@@ -51,7 +51,6 @@
     "start": "jasmine-node .temp/",
     "test": "run-s -l lint unit-test:ci",
     "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
-    "typedoc:i": "npm run clean:doc:a && typedoc types --options ../../../../config/doc/typedoc.js --excludeExternals",
     "unit-test": "jasmine-node .temp/",
     "unit-test:ci": "cdp-task unit-test run:unit-test -s",
     "ut": "npm run unit-test",
