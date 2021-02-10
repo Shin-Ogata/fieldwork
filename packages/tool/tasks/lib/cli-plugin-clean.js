@@ -31,7 +31,7 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-T, --type',       'for type dirctory')
         .action((options) => {
             cmd.action = COMMAND;
-            const { cwd, silent, target, all } = commander;
+            const { cwd, silent, target, all } = commander.opts();
             const { cache, temp, built, doc, report, dist, type } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),

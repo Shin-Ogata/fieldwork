@@ -13,7 +13,7 @@ function defineCommands(commander, cmd, isDefault) {
         .description('create tar-gz file')
         .action((file, directory, options) => {
             cmd.action = COMMAND;
-            const { cwd, silent } = commander;
+            const { cwd, silent } = commander.opts();
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),
                 silent,
