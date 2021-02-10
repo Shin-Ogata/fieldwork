@@ -14,7 +14,7 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-v, --verbose',       'print diagnostic messages')
         .action((type, options) => {
             cmd.action = COMMAND;
-            const { cwd, silent } = commander;
+            const { cwd, silent } = commander.opts();
             const { config, verbose } = options;
             if (!config) {
                 console.log(chalk.red.underline('for running minify, config-file is required.'));

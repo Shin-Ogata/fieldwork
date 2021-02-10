@@ -34,7 +34,7 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-o, --output',        'output file')
         .action((mode, options) => {
             cmd.action = COMMAND;
-            const { cwd, silent } = commander;
+            const { cwd, silent } = commander.opts();
             const { config, validate, input, output } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),

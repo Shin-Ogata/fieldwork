@@ -11,7 +11,7 @@ function defineCommands(commander, cmd, isDefault) {
         .description('copy source to destination')
         .action((source, dest, options) => {
             cmd.action = COMMAND;
-            const { cwd, silent } = commander;
+            const { cwd, silent } = commander.opts();
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),
                 silent,

@@ -25,7 +25,7 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-p, --packages <layer>',   'specified <mono-repo-root>/<packages>/<layer>, root only available')
         .action((options) => {
             cmd.action = COMMAND;
-            const { cwd, silent, target } = commander;
+            const { cwd, silent, target } = commander.opts();
             const { resolution, lint, engine, packages } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),

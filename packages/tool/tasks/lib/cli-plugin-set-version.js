@@ -15,7 +15,7 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-f, --force', 'for force update (permit decriment)')
         .action((version, options) => {
             cmd.action = COMMAND;
-            const { cwd, silent, target } = commander;
+            const { cwd, silent, target } = commander.opts();
             const { force } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),

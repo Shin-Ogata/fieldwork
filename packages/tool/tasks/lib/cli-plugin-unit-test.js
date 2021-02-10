@@ -34,7 +34,7 @@ function defineCommands(commander, cmd, isDefault) {
             }
 
             cmd.action = COMMAND;
-            const { cwd, silent } = commander;
+            const { cwd, silent } = commander.opts();
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),
                 silent,
