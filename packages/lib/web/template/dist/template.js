@@ -127,22 +127,6 @@
         }
     }
 
-    Object.keys(extensionTemplate).forEach(function (k) {
-        if (k !== 'default') Object.defineProperty(exports, k, {
-            enumerable: true,
-            get: function () {
-                return extensionTemplate[k];
-            }
-        });
-    });
-    Object.keys(extensionTemplateTransformer).forEach(function (k) {
-        if (k !== 'default') Object.defineProperty(exports, k, {
-            enumerable: true,
-            get: function () {
-                return extensionTemplateTransformer[k];
-            }
-        });
-    });
     Object.defineProperty(exports, 'TemplateEngine', {
         enumerable: true,
         get: function () {
@@ -152,6 +136,22 @@
     exports.TemplateBridge = TemplateBridge;
     exports.clearTemplateCache = clearTemplateCache;
     exports.getTemplate = getTemplate;
+    Object.keys(extensionTemplate).forEach(function (k) {
+        if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+            enumerable: true,
+            get: function () {
+                return extensionTemplate[k];
+            }
+        });
+    });
+    Object.keys(extensionTemplateTransformer).forEach(function (k) {
+        if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+            enumerable: true,
+            get: function () {
+                return extensionTemplateTransformer[k];
+            }
+        });
+    });
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
