@@ -304,20 +304,20 @@
         return dom.dom(selector).localize(options);
     };
 
-    Object.keys(extensionI18n).forEach(function (k) {
-        if (k !== 'default') Object.defineProperty(exports, k, {
-            enumerable: true,
-            get: function () {
-                return extensionI18n[k];
-            }
-        });
-    });
     exports.changeLanguage = changeLanguage;
     exports.getLanguage = getLanguage;
     exports.getLanguageList = getLanguageList;
     exports.initializeI18N = initializeI18N;
     exports.localize = localize;
     exports.t = t;
+    Object.keys(extensionI18n).forEach(function (k) {
+        if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+            enumerable: true,
+            get: function () {
+                return extensionI18n[k];
+            }
+        });
+    });
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
