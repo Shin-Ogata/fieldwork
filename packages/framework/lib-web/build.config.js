@@ -139,6 +139,7 @@ module.exports = {
             '@cdp/lib-worker': 'CDP',
         },
         replace: {
+            preventAssignment: true,
             delimiters: ['', ''],
             values: {
                 '@cdp/core-utils': '@cdp/lib-core',

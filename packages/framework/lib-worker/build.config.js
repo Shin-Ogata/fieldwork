@@ -29,6 +29,7 @@ module.exports = {
             '@cdp/lib-core': 'CDP',
         },
         replace: {
+            preventAssignment: true,
             delimiters: ['', ''],
             values: {
                 '@cdp/core-utils': '@cdp/lib-core',

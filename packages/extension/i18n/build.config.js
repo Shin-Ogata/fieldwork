@@ -53,6 +53,7 @@ module.exports = {
             ],
         },
         replace: {
+            preventAssignment: true,
             delimiters: ['', ''],
             values: {
                 'EventEmitter.call(this);': '/* EventEmitter.call(this) */',

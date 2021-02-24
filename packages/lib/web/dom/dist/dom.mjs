@@ -200,7 +200,7 @@ class DOMBase {
                 else {
                     return {
                         done: true,
-                        value: undefined,
+                        value: undefined, // eslint-disable-line @typescript-eslint/no-non-null-assertion
                     };
                 }
             },
@@ -247,7 +247,7 @@ class DOMBase {
                 else {
                     return {
                         done: true,
-                        value: undefined,
+                        value: undefined, // eslint-disable-line @typescript-eslint/no-non-null-assertion
                     };
                 }
             },

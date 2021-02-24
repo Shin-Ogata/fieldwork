@@ -816,7 +816,7 @@
             dataType: 'response',
             timeout: settings.timeout,
         }, options, {
-            signal: controller.signal,
+            signal: controller.signal, // force override
         });
         const { cancel: originalToken, timeout } = opts;
         // cancellation
