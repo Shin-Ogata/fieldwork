@@ -1920,7 +1920,7 @@ class Collection extends EventSource {
                 else {
                     return {
                         done: true,
-                        value: undefined,
+                        value: undefined, // eslint-disable-line @typescript-eslint/no-non-null-assertion
                     };
                 }
             },
@@ -1970,7 +1970,7 @@ class Collection extends EventSource {
                 else {
                     return {
                         done: true,
-                        value: undefined,
+                        value: undefined, // eslint-disable-line @typescript-eslint/no-non-null-assertion
                     };
                 }
             },

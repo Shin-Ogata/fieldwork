@@ -10,6 +10,7 @@ module.exports = {
             '@cdp/core-utils': 'CDP',
         },
         replace: {
+            preventAssignment: true,
             delimiters: ['', ''],
             values: {
                 'var CDP_DECLARE;': 'globalThis.CDP_DECLARE = globalThis.CDP_DECLARE;',

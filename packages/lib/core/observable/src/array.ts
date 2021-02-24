@@ -111,7 +111,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
             result && stock();
             return result;
         } else if (newValue !== oldValue && isValidArrayIndex(p)) {
-            const i = p as number >>> 0;
+            const i = p as unknown as number >>> 0;
             const type: ArrayChangeType = Number(i >= target.length); // INSERT or UPDATE
             const result = Reflect.defineProperty(target, p, attributes);
             result && target[_stockChange](type, i, newValue, oldValue);
@@ -127,7 +127,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
         }
         const oldValue = target[p];
         const result = Reflect.deleteProperty(target, p);
-        result && isValidArrayIndex(p) && target[_stockChange](ArrayChangeType.UPDATE, p as number >>> 0, undefined, oldValue);
+        result && isValidArrayIndex(p) && target[_stockChange](ArrayChangeType.UPDATE, p as unknown as number >>> 0, undefined, oldValue);
         return result;
     },
 };
