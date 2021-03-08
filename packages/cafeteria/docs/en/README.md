@@ -1,4 +1,0 @@
-﻿Developlers Guide
-======
-
-TODO:

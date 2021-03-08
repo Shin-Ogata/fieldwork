@@ -1,3 +1,0 @@
-﻿# master-tasks
-
-* TODO:
