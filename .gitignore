@@ -1,0 +1,24 @@
+# common settings
+.cache/
+.temp/
+.vs/
+bin/
+built/
+reports/
+etc/
+ipch/
+node_modules/
+obj/
+typedoc/
+*.csproj.user
+*.njsproj.user
+*.vcxproj.user
+
+# current directory
+!/bin/
+/dist/
+/reports/
+/.scannerwork/
+sonar-project.properties
+*.VC.db
+*.VC.VC.opendb
