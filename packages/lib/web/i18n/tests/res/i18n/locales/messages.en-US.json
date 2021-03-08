@@ -1,0 +1,38 @@
+{
+  "app": {
+    "name": "Test i18n",
+    "common": {
+      "backAllCaps": "BACK",
+      "nextAllCaps": "NEXT",
+      "doneAllCaps": "DONE",
+      "startAllCaps": "START",
+      "skipAllCaps": "SKIP",
+      "cancelAllCaps": "CANCEL",
+      "ok": "OK",
+      "back": "Back",
+      "next": "Next",
+      "done": "Done",
+      "skip": "Skip",
+      "cancel": "Cancel",
+      "close": "Close",
+      "transfer": "Send",
+      "save": "Save",
+      "delete": "Delete",
+      "remove": "Remove",
+      "unregister": "Unregister",
+      "refresh": "Refresh",
+      "select": "Select",
+      "reset": "Initialize",
+      "retry": "Retry",
+      "restore": "Restore",
+      "settings": "Settings",
+      "support": "Support"
+    },
+    "utility": {
+      "fraction": "{{count}}/{{total}}",
+      "bracket": "({{content}})",
+      "yyyymmdd": "{{yyyy}}/{{mm}}/{{dd}}"
+    }
+  },
+    "EOF": "EOF"
+}

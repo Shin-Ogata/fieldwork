@@ -1,0 +1,7 @@
+{
+    "schema": {
+        "propNumber": 100,
+        "propBoolean": true,
+        "propString": "hoge"
+    }
+}

@@ -1,0 +1,17 @@
+<script type="text/template" id="item-template">
+    <div class="view">
+        <input class="toggle" type="checkbox" {{#done}}checked="checked"{{/done}} />
+        <label>{{title}}</label>
+        <a class="destroy"></a>
+    </div>
+    <input class="edit" type="text" value="{{title}}" />
+</script>
+
+<script type="text/template" id="stats-template">
+    {{#done}}
+    <a id="clear-completed">Clear {{done}} completed {{#singular.done}}item{{/singular.done}}{{^singular.done}}items{{/singular.done}}</a>
+    {{/done}}
+    <div class="todo-count">
+        <b>{{remaining}}</b> {{#singular.remaining}}item{{/singular.remaining}}{{^singular.remaining}}items{{/singular.remaining}} left
+    </div>
+</script>

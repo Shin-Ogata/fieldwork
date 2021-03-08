@@ -1,19 +1,24 @@
-# temp files
-.DS_Store
-Thumbs.db
-Desktop.ini
-npm-debug.log
-
-# project files
-*.csproj.user
-*.suo
-
-# project ignores
-!.gitkeep
+# common settings
+.cache/
+.temp/
 .vs/
 bin/
-node_modules/
+built/
+reports/
+etc/
+ipch/
 node_modules/
 obj/
-tasks/
-temp/
+typedoc/
+*.csproj.user
+*.njsproj.user
+*.vcxproj.user
+
+# current directory
+!/bin/
+/dist/
+/reports/
+/.scannerwork/
+sonar-project.properties
+*.VC.db
+*.VC.VC.opendb

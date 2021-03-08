@@ -1,89 +1,45 @@
-﻿# cdp-js
+# fieldwork
+feasibility study
 
-<!--
-[![CircleCI](https://circleci.com/gh/CDP-Tokyo/cdp-js.svg?style=shield&circle-token=8d7cd7705fe4195f8110e82a76682c11b825dd67)](https://circleci.com/gh/CDP-Tokyo/cdp-js)
--->
+### library compornent
 
-## What is cdp-js
+- Core
 
-This monorepo contains cdp sdk modules.
+| module                                                 | description                  |
+|:-------------------------------------------------------|:-----------------------------|
+| [core-utils](./packages/lib/core/utils/README.md)      | core utility                 |
+| [events](./packages/lib/core/events/README.md)         | publish/subscribe library    |
+| [promise](./packages/lib/core/promise/README.md)       | cancelable promise utility   |
+| [observable](./packages/lib/core/observable/README.md) | observable object/array      |
+| [result](./packages/lib/core/result/README.md)         | error w/ result code utility |
+| [core-storage](./packages/lib/core/storage/README.md)  | core storage I/F defs        |
+| [core-template](./packages/lib/core/storage/README.md) | core template library        |
 
+- Node
 
-### Repository structure
+| module                                                 | description                    |
+|:-------------------------------------------------------|:-------------------------------|
+| [fs-storage](./packages/lib/node/storage/README.md)    | storage implementation w/ `fs` |
 
-Folder and file structure of this repository is the following list.
+- Worker
 
-    root/
-        dist/           // for internal release modules directory
-        documents/      // specification documents for sdk modules
-        packages/       // including monorepo packages
-        tests/          // test for task scripts
+| module                                                         | description                  |
+|:---------------------------------------------------------------|:-----------------------------|
+| [binary](./packages/lib/worker/binary/README.md)               | binary utility               |
+| [ajax](./packages/lib/worker/ajax/README.md)                   | ajax utility                 |
+| [inline-worker](./packages/lib/worker/inline-worker/README.md) | inline-worker utility        |
 
+- Window/DOM
 
-### How to start developping
+| module                                                     | description                                |
+|:-----------------------------------------------------------|:-------------------------------------------|
+| [dom](./packages/lib/window/dom/README.md)                 | dom manipulation library                   |
+| [environment](./packages/lib/window/environment/README.md) | judge for environment                      |
+| [i18n](./packages/lib/window/i18n/README.md)               | wrapper of `i18next`                      |
+| [web-storage](./packages/lib/window/storage/README.md)     | storage implementation w/ `localStorage` |
+| [data-sync](./packages/lib/window/data-sync/README.md)     | web api entry point I/F defs               |
+| [model](./packages/lib/window/model/README.md)             | abstract model class                       |
+| [collection](./packages/lib/window/collection/README.md)   | abstract collection class                  |
+| [view](./packages/lib/window/view/README.md)               | abstract view class                        |
+| [template](./packages/lib/window/template/README.md)       | template library collection                |
 
-You can use our scaffolding tool, [cdp-cli](https://github.com/sony/cdp-cli), for starting development on cdp-js.
-- Let you see https://github.com/sony/cdp-cli for more detail.
-
-
-### How to install (for internal release)
-
-* npm
-
-        $ npm install git+ssh://git@github.com/Sony/cdp-js.git
-
-### How to setup
-
-If you want to use newest version, you can build the modules yourself as follow steps.
-
-1. clone this repository
-
-2. build the modules
-
-        $ npm run setup
-        $ npm run build
-
-3. pick up from the `dist` directory.
-
-        root/
-            dist/
-                cdp.js             js modules for dev.
-                cdp.min.js         js modules for production.
-                cdp.min.map        js map file.
-                @types/
-                     cdp.d.ts      d.ts file for this module.
-
-4. setup bower module manualy to your project.
-
-
-### How to use
-Please see the following documentation.
-
-- [English/英語](documents/en)
-- [Japanese/日本語](documents/jp)
-
-Or following site also has many description.
-- https://sony.github.io/cdp-js
-
-## Release Notes
-Please see the following link.
-
-- [Release Notes](RELEASENOTE.md)
-
-
-## License
-
-Copyright 2016 Sony Corporation  
-Copyright 2017, 2018 Sony Network Communications Inc.  
-
-Licensed under the Apache License, Version 2.0 (the "License");  
-you may not use this file except in compliance with the License.  
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software  
-distributed under the License is distributed on an "AS IS" BASIS,  
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
-See the License for the specific language governing permissions and  
-limitations under the License.

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ -n ${Z_ENV} ]]; then
+	return
+fi
+export Z_ENV=true
+
+THIS=${BASH_SOURCE:-$0}
+BIN_DIR=$(cd ${THIS%/*}; pwd)
+export PATH=${BIN_DIR%/*}/node_modules/.bin:$PATH
+export NO_UPDATE_NOTIFIER=true

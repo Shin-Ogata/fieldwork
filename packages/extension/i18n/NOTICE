@@ -1,0 +1,19 @@
+@cdp/extension-i18n
+Copyright 2020 Sony Corporation.
+
+This product includes software developed at Sony Corporation.
+
+This product also includes the following third-party components.
+
+--------------------------------------------------------------------------------
+i18next
+--------------------------------------------------------------------------------
+
+ - i18next stuff including ./dist/extension-i18n.{js/mjs/.d.ts}
+   - - i18next
+    https://www.i18next.com/
+    https://github.com/i18next
+
+
+    Released under the MIT Licenses.
+    https://github.com/i18next/i18next/blob/master/LICENSE
