@@ -146,7 +146,7 @@ describe('promise/cancel-token spec', () => {
         expect(s1.token.requested).toBeTruthy();
     });
 
-    it('check CancelToken#register', (done) => {
+    it('check CancelToken#register', done => {
         const { cancel, token } = CancelToken.source();
         token.register(reason => {
             expect(reason).toBe(error);

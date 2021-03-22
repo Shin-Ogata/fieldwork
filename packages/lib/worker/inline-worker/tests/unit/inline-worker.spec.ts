@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/require-await
  */
 
 import { InlineWorker, thread } from '@cdp/inline-worker';
@@ -10,7 +9,7 @@ import { CancelToken } from '@cdp/promise';
 describe('inline-worker spec', () => {
 
     describe('inline-worker/inline-worker spec', () => {
-        it('basic', async done => {
+        it('basic', done => {
             const worker = new InlineWorker((self: Worker) => {
                 self.addEventListener('message', ({ data }) => {
                     console.log(data);
@@ -27,7 +26,7 @@ describe('inline-worker spec', () => {
             worker.postMessage('from_main');
         });
 
-        it('from string', async done => {
+        it('from string', done => {
             const func = (self: Worker): void => {
                 self.addEventListener('message', ({ data }) => {
                     console.log(data);
@@ -45,7 +44,7 @@ describe('inline-worker spec', () => {
             worker.postMessage('from_main');
         });
 
-        it('type error', async done => {
+        it('type error', done => {
             try {
                 new InlineWorker(100 as any); // eslint-disable-line
             } catch (e) {
@@ -69,29 +68,26 @@ describe('inline-worker spec', () => {
             return Promise.resolve('this is async exec!');
         };
 
-        it('check thread() w/ sync execute', async done => {
+        it('check thread() w/ sync execute', async () => {
             const data = await thread(execSync);
             expect(data).toBe('this is sync exec!');
-            done();
         });
 
-        it('check thread() w/ async execute', async done => {
+        it('check thread() w/ async execute', async () => {
             const data = await thread(execAsync);
             expect(data).toBe('this is async exec!');
-            done();
         });
 
-        it('check thread() w/ already canceled', async done => {
+        it('check thread() w/ already canceled', async () => {
             try {
                 void await thread(execAsync, { cancel: canceled });
                 expect('UNEXPECTED FLOW').toBeNull();
             } catch (e) {
                 expect(e.message).toBe('aborted');
             }
-            done();
         });
 
-        it('check thread() w/ after canceled', async done => {
+        it('check thread() w/ after canceled', async () => {
             try {
                 const cancelSource = CancelToken.source();
                 const { token } = cancelSource;
@@ -110,10 +106,9 @@ describe('inline-worker spec', () => {
             } catch (e) {
                 expect(e.message).toBe('cancel');
             }
-            done();
         });
 
-        it('check thread() w/ error', async done => {
+        it('check thread() w/ error', async () => {
             try {
                 void await thread(async () => {
                     await sleep(500);
@@ -125,7 +120,6 @@ describe('inline-worker spec', () => {
                 expect(e.message.startsWith('Uncaught ReferenceError:')).toBe(true);
                 expect(e.message.includes('is not defined')).toBe(true);
             }
-            done();
         });
     });
 });

@@ -166,7 +166,7 @@ describe('query/query spec', () => {
             };
         });
 
-        it('check w/ filter', async done => {
+        it('check w/ filter', async () => {
             const options: ItemQueryOptions = {
                 comparators: [],
                 filter: (item) => {
@@ -189,11 +189,9 @@ describe('query/query spec', () => {
             expect(info.cache).toBeFalsy();
             expect(info.filter).toBe(options.filter);
             expect(info.comparators).toEqual([]);
-
-            done();
         });
 
-        it('check w/ sort', async done => {
+        it('check w/ sort', async () => {
             const options: ItemQueryOptions = {
                 comparators: [
                     getStringComparator<Item>('name', SortOrder.DESC),
@@ -210,11 +208,9 @@ describe('query/query spec', () => {
             expect(ret[4].name).toBe('f');
             expect(ret[5].name).toBe('d');
             expect(ret[6].name).toBe('a');
-
-            done();
         });
 
-        it('check w/ sortKeys', async done => {
+        it('check w/ sortKeys', async () => {
             const options: ItemQueryOptions = {
                 sortKeys: [{ name: 'name', order: SortOrder.DESC, type: 'string' }],
             };
@@ -229,11 +225,9 @@ describe('query/query spec', () => {
             expect(ret[4].name).toBe('f');
             expect(ret[5].name).toBe('d');
             expect(ret[6].name).toBe('a');
-
-            done();
         });
 
-        it('check w/ limit', async done => {
+        it('check w/ limit', async () => {
             const ret = await queryItems(info, provider, { limit: 3 });
 
             expect(ret.length).toBe(3);
@@ -241,11 +235,9 @@ describe('query/query spec', () => {
             expect(ret[1].name).toBe('s');
             expect(ret[2].name).toBe('d');
             expect(info.cache).toBeUndefined();
-
-            done();
         });
 
-        it('check w/ limit & index', async done => {
+        it('check w/ limit & index', async () => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -275,11 +267,9 @@ describe('query/query spec', () => {
                     comparators: [],
                 } as any,
             });
-
-            done();
         });
 
-        it('check w/ limit & auto', async done => {
+        it('check w/ limit & auto', async () => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -348,11 +338,9 @@ describe('query/query spec', () => {
                     comparators: [],
                 } as any,
             });
-
-            done();
         });
 
-        it('check w/ no items', async done => {
+        it('check w/ no items', async () => {
             const emptyProvider = async (options?: ItemQueryOptions): Promise<CollectionItemQueryResult<Item>> => { // eslint-disable-line
                 return {
                     total: 0,
@@ -364,11 +352,9 @@ describe('query/query spec', () => {
             const ret = await queryItems(info, emptyProvider);
             expect(ret.length).toBe(0);
             expect(info.cache).toBeUndefined();
-
-            done();
         });
 
-        it('check w/ invalid input', async done => {
+        it('check w/ invalid input', async () => {
             try {
                 const options: ItemQueryOptions = {
                     index: 3.1,
@@ -390,8 +376,6 @@ describe('query/query spec', () => {
                 expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
                 expect(e.message).toBe('invalid limit: 3.1');
             }
-
-            done();
         });
     });
 
@@ -412,7 +396,7 @@ describe('query/query spec', () => {
             };
         });
 
-        it('check w/ filter', async done => {
+        it('check w/ filter', async () => {
             const options: ItemQueryOptions = {
                 comparators: [],
                 filter: (item) => {
@@ -430,11 +414,9 @@ describe('query/query spec', () => {
             expect(ret[1].name).toBe('s');
             expect(ret[2].name).toBe('h');
             expect(ret[3].name).toBe('j');
-
-            done();
         });
 
-        it('check w/ sort', async done => {
+        it('check w/ sort', async () => {
             const options: ItemQueryOptions = {
                 comparators: [
                     getStringComparator<Item>('name', SortOrder.DESC),
@@ -451,11 +433,9 @@ describe('query/query spec', () => {
             expect(ret[4].name).toBe('f');
             expect(ret[5].name).toBe('d');
             expect(ret[6].name).toBe('a');
-
-            done();
         });
 
-        it('check w/ sortKeys', async done => {
+        it('check w/ sortKeys', async () => {
             const options: ItemQueryOptions = {
                 sortKeys: [{ name: 'name', order: SortOrder.DESC, type: 'string' }],
             };
@@ -470,11 +450,9 @@ describe('query/query spec', () => {
             expect(ret[4].name).toBe('f');
             expect(ret[5].name).toBe('d');
             expect(ret[6].name).toBe('a');
-
-            done();
         });
 
-        it('check w/ limit', async done => {
+        it('check w/ limit', async () => {
             const ret = await queryItems(info, provider, { limit: 3 });
 
             expect(ret.length).toBe(3);
@@ -482,11 +460,9 @@ describe('query/query spec', () => {
             expect(ret[1].name).toBe('s');
             expect(ret[2].name).toBe('d');
             expect(info.cache).toBeDefined();
-
-            done();
         });
 
-        it('check w/ limit & index', async done => {
+        it('check w/ limit & index', async () => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -515,11 +491,9 @@ describe('query/query spec', () => {
                     comparators: [],
                 } as any,
             });
-
-            done();
         });
 
-        it('check w/ limit & auto', async done => {
+        it('check w/ limit & auto', async () => {
             const stub = { onProgress };
             spyOn(stub, 'onProgress').and.callThrough();
 
@@ -587,11 +561,9 @@ describe('query/query spec', () => {
                     comparators: [],
                 } as any,
             });
-
-            done();
         });
 
-        it('check w/ noSearch', async done => {
+        it('check w/ noSearch', async () => {
             info.sortKeys = [{ name: 'name', order: SortOrder.DESC, type: 'string' }];
             info.filter = (item) => {
                 if ('d' === item.name || 'g' === item.name || 'f' === item.name) {
@@ -615,11 +587,9 @@ describe('query/query spec', () => {
             expect(ret[4].name).toBe('g');
             expect(ret[5].name).toBe('h');
             expect(ret[6].name).toBe('j');
-
-            done();
         });
 
-        it('check w/ invalid input', async done => {
+        it('check w/ invalid input', async () => {
             try {
                 const options: ItemQueryOptions = {
                     index: 3.1,
@@ -641,8 +611,6 @@ describe('query/query spec', () => {
                 expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
                 expect(e.message).toBe('invalid limit: 3.1');
             }
-
-            done();
         });
     });
 
@@ -777,7 +745,7 @@ describe('query/query spec', () => {
                 }
             };
 
-            it('check w/ condition', async done => {
+            it('check w/ condition', async () => {
                 const options: TrackQueryOptions = {
                     sortKeys: [
                         { name: 'duration', order: SortOrder.ASC, type: 'number' }
@@ -802,11 +770,9 @@ describe('query/query spec', () => {
                 expect(ret.length).toBe(2);
                 expect(ret[0].title).toBe('005');
                 expect(ret[1].title).toBe('002');
-
-                done();
             });
 
-            it('check w/ noCache', async done => {
+            it('check w/ noCache', async () => {
                 const options: TrackQueryOptions = {
                     sortKeys: [
                         { name: 'duration', order: SortOrder.ASC, type: 'number' }
@@ -827,8 +793,6 @@ describe('query/query spec', () => {
                 expect(ret[0].title).toBe('005');
                 expect(ret[1].title).toBe('002');
                 expect(info.cache).toBeUndefined();
-
-                done();
             });
         });
     });

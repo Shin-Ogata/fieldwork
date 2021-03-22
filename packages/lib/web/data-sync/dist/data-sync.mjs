@@ -1,5 +1,5 @@
 /*!
- * @cdp/data-sync 0.9.5
+ * @cdp/data-sync 0.9.6
  *   web storage utility module
  */
 

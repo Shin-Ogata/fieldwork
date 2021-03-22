@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.5
+ * @cdp/lib-web 0.9.6
  *   web api library collection
  */
 
@@ -10,7 +10,7 @@
 }(this, (function (exports, libCore, libWorker) { 'use strict';
 
     /*!
-     * @cdp/dom 0.9.5
+     * @cdp/dom 0.9.6
      *   dom utility module
      */
 
@@ -3434,7 +3434,7 @@
     setup(DOMClass.prototype, DOMClass.create);
 
     /*!
-     * @cdp/environment 0.9.5
+     * @cdp/environment 0.9.6
      *   environment resolver module
      */
 
@@ -3650,7 +3650,7 @@
     const platform = queryPlatform();
 
     /*!
-     * @cdp/extension-i18n 0.9.5
+     * @cdp/extension-i18n 0.9.6
      *   extension for internationalization
      */
 
@@ -5912,7 +5912,7 @@
     const i18n = i18next;
 
     /*!
-     * @cdp/i18n 0.9.5
+     * @cdp/i18n 0.9.6
      *   internationalization module
      */
 
@@ -6212,7 +6212,7 @@
     };
 
     /*!
-     * @cdp/web-storage 0.9.5
+     * @cdp/web-storage 0.9.6
      *   web storage utility module
      */
 
@@ -6342,7 +6342,7 @@
     const webStorage = new WebStorage(localStorage);
 
     /*!
-     * @cdp/data-sync 0.9.5
+     * @cdp/data-sync 0.9.6
      *   web storage utility module
      */
 
@@ -6719,7 +6719,7 @@
     }
 
     /*!
-     * @cdp/model 0.9.5
+     * @cdp/model 0.9.6
      *   generic model scheme
      */
 
@@ -7409,7 +7409,7 @@
     }
 
     /*!
-     * @cdp/collection 0.9.5
+     * @cdp/collection 0.9.6
      *   generic collection scheme
      */
 
@@ -9528,7 +9528,7 @@
     }
 
     /*!
-     * @cdp/view 0.9.5
+     * @cdp/view 0.9.6
      *   generic view scheme
      */
 
@@ -9785,7 +9785,7 @@
     }
 
     /*!
-     * @cdp/extension-template 0.9.5
+     * @cdp/extension-template 0.9.6
      *   extension for template engine
      */
 
@@ -12161,7 +12161,7 @@
     };
 
     /*!
-     * @cdp/extension-template-transformer 0.9.5
+     * @cdp/extension-template-transformer 0.9.6
      *   extension for transform to HTML templates from mustache.
      */
 
@@ -12399,7 +12399,7 @@
     };
 
     /*!
-     * @cdp/template 0.9.5
+     * @cdp/template 0.9.6
      *   HTML template library
      */
 

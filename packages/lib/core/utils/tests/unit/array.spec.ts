@@ -304,7 +304,7 @@ describe('utils/array spec', () => {
         expect(retval[7]).toEqual({ type: 'click.cc', namespace: '.aa.bb.cc.' });
     });
 
-    it('check async map()', async done => {
+    it('check async map()', async () => {
         const array = [1, 2, 3, 4, 5];
         let results = await map(array, async (value) => value * 2);
         expect(results[0]).toBe(2);
@@ -320,11 +320,9 @@ describe('utils/array spec', () => {
         expect(results[2]).toBe(9);
         expect(results[3]).toBe(12);
         expect(results[4]).toBe(15);
-
-        done();
     });
 
-    it('check async filter()', async done => {
+    it('check async filter()', async () => {
         const array = [
             { count: 0, id: '00', },
             { count: 0, id: '01', },
@@ -342,11 +340,9 @@ describe('utils/array spec', () => {
         results = await filter(array, (value) => 3 === value.count);
         expect(results.length).toBe(1);
         expect(results[0]).toEqual({ count: 3, id: '04' });
-
-        done();
     });
 
-    it('check async find()', async done => {
+    it('check async find()', async () => {
         const array = [
             { count: 0, id: '00', },
             { count: 0, id: '01', },
@@ -365,11 +361,9 @@ describe('utils/array spec', () => {
         // sync callback
         result = await find(array, (value) => 3 === value.count);
         expect(result).toEqual({ count: 3, id: '04' });
-
-        done();
     });
 
-    it('check async findIndex()', async done => {
+    it('check async findIndex()', async () => {
         const array = [
             { count: 0, id: '00', },
             { count: 0, id: '01', },
@@ -388,11 +382,9 @@ describe('utils/array spec', () => {
         // sync callback
         result = await findIndex(array, (value) => 3 === value.count);
         expect(result).toBe(4);
-
-        done();
     });
 
-    it('check async some()', async done => {
+    it('check async some()', async () => {
         const array = [1, 2, 3, 4, 5];
         let result = await some(array, async (value) => value % 2);
         expect(result).toBe(true);
@@ -402,11 +394,9 @@ describe('utils/array spec', () => {
         // sync callback
         result = await some(array, (value) => value % 3);
         expect(result).toBe(true);
-
-        done();
     });
 
-    it('check async every()', async done => {
+    it('check async every()', async () => {
         const array = [1, 2, 3, 4, 5];
         let result = await every(array, async (value) => value % 2);
         expect(result).toBe(false);
@@ -416,11 +406,9 @@ describe('utils/array spec', () => {
         // sync callback
         result = await every(array, (value) => value % 3);
         expect(result).toBe(false);
-
-        done();
     });
 
-    it('check async reduce()', async done => {
+    it('check async reduce()', async () => {
         const array = [1, 2, 3, 4, 5];
         let result = await reduce(array, async (a: number, v: number) => a + v);
         expect(result).toBe(15);
@@ -431,7 +419,5 @@ describe('utils/array spec', () => {
 
         // error
         await expectAsync(reduce([], async (a: number, v: number) => a + v)).toBeRejected();
-
-        done();
     });
 });

@@ -56,7 +56,7 @@ describe('loader spec', () => {
         ],
     };
 
-    it('check getTemplate() w/ engine', async done => {
+    it('check getTemplate() w/ engine', async () => {
         _$dom = $('#d1');
 
         const template = await getTemplate('#test-mustache', {
@@ -98,11 +98,9 @@ describe('loader spec', () => {
             expect($ages[0].textContent).toBe('34');
             expect($ages[1].textContent).toBe('33');
         }
-
-        done();
     });
 
-    it('check getTemplate() w/ bridge', async done => {
+    it('check getTemplate() w/ bridge', async () => {
         const template = await getTemplate('#test-mustache', {
             type: 'bridge',
             url: '../../.temp/res/template/test.tpl',
@@ -143,11 +141,9 @@ describe('loader spec', () => {
             expect($ages[0].textContent).toBe('');
             expect($ages[1].textContent).toBe('');
         }
-
-        done();
     });
 
-    it('check getTemplate() w/ bridge, cache case', async done => {
+    it('check getTemplate() w/ bridge, cache case', async () => {
         void await getTemplate('#test-mustache', {
             type: 'bridge',
             url: '../../.temp/res/template/test.tpl',
@@ -193,11 +189,9 @@ describe('loader spec', () => {
             expect($ages[0].textContent).toBe('');
             expect($ages[1].textContent).toBe('');
         }
-
-        done();
     });
 
-    it('check getTemplate() w/ bridge in current html', async done => {
+    it('check getTemplate() w/ bridge in current html', async () => {
         _$dom = $('#d1');
         _$dom.append(`
 <script type="text/template" id="test-mustache">
@@ -255,12 +249,10 @@ describe('loader spec', () => {
             expect($ages[0].textContent).toBe('');
             expect($ages[1].textContent).toBe('');
         }
-
-        done();
     });
 
     describe('error case', () => {
-        it('check uri error', async done => {
+        it('check uri error', async () => {
             try {
                 void await getTemplate('#test-typo', {
                     type: 'bridge',
@@ -271,11 +263,9 @@ describe('loader spec', () => {
                 expect(e instanceof URIError).toBe(true);
                 expect(e.message).toBe('cannot specified template resource. { selector: #test-typo,  url: ../../.temp/res/template/test.tpl }');
             }
-
-            done();
         });
 
-        it('check type error', async done => {
+        it('check type error', async () => {
             try {
                 void await getTemplate('#test-mustache', {
                     type: 'typo',
@@ -286,8 +276,6 @@ describe('loader spec', () => {
                 expect(e instanceof TypeError).toBe(true);
                 expect(e.message).toBe('[type: typo] is unknown.');
             }
-
-            done();
         });
     });
 });

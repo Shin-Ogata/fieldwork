@@ -6,42 +6,38 @@ import { Result, RESULT_CODE } from '@cdp/result';
 import { request } from '@cdp/ajax';
 
 describe('ajax/reauest spec', () => {
-    it('check request#get()', async done => {
+    it('check request#get()', async () => {
         const data = await request.get('../../.temp/res/ajax/data.json');
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');
-        done();
     });
 
-    it('check request#text()', async done => {
+    it('check request#text()', async () => {
         const template = await request.text('../../.temp/res/ajax/test.tpl');
         expect(template).toBeDefined();
         const normlize = template.replace(/\s/gm, '');
         expect(normlize).toBe('<article><template><div></div></template></article>');
-        done();
     });
 
-    it('check request#json()', async done => {
+    it('check request#json()', async () => {
         const data = await request.json('../../.temp/res/ajax/data.json');
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');
-        done();
     });
 
-    it('check request#blob()', async done => {
+    it('check request#blob()', async () => {
         const blob = await request.blob('../../.temp/res/ajax/image.jpg');
         expect(blob).toBeDefined();
         expect(blob.type).toBe('image/jpeg');
-        done();
     });
 
-    it('check request#post()', async done => {
+    it('check request#post()', async () => {
         const json = await request.post('/api-ajax', {
             aaa: 'aaa',
             bbb: true,
@@ -52,7 +48,6 @@ describe('ajax/reauest spec', () => {
         expect(json.data.aaa).toBe('aaa');
         expect(json.data.bbb).toBe('true');
         expect(json.data.ccc).toBe('null');
-        done();
     });
 
     it('check request#resource() json', () => {

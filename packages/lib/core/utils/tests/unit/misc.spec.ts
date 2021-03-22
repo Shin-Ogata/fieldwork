@@ -57,14 +57,13 @@ describe('utils/misc spec', () => {
         expect(hook.noop).toHaveBeenCalled();
     });
 
-    it('check sleep()', async done => {
+    it('check sleep()', async () => {
         const start = Date.now();
         await sleep(100);
         expect(Date.now() - start).toBeGreaterThanOrEqual(100);
-        done();
     });
 
-    it('check throttle()', async done => {
+    it('check throttle()', async () => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -76,10 +75,9 @@ describe('utils/misc spec', () => {
             await sleep(10);
         }
         expect(count).toBe(2);
-        done();
     });
 
-    it('check throttle({ leading: false })', async done => {
+    it('check throttle({ leading: false })', async () => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -91,10 +89,9 @@ describe('utils/misc spec', () => {
             await sleep(10);
         }
         expect(count).toBe(1);
-        done();
     });
 
-    it('check throttle() w/ cancel', async done => {
+    it('check throttle() w/ cancel', async () => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -107,10 +104,9 @@ describe('utils/misc spec', () => {
             await sleep(50);
         }
         expect(count).toBe(5);
-        done();
     });
 
-    it('check throttle() w/ nest call', async done => {
+    it('check throttle() w/ nest call', async () => {
         let count = 0;
         const exec = (): void => {
             count++;
@@ -122,10 +118,9 @@ describe('utils/misc spec', () => {
             await sleep(10);
         }
         expect(count).toBe(3);
-        done();
     });
 
-    it('check throttle() for coverage', async done => {
+    it('check throttle() for coverage', async () => {
         let count = 0;
         const exec = (): number => {
             count++;
@@ -145,11 +140,9 @@ describe('utils/misc spec', () => {
         expect(count).toBe(2);
 
         Date.now = orgDateNow;
-
-        done();
     });
 
-    it('check debounce()', async done => {
+    it('check debounce()', async () => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -163,10 +156,9 @@ describe('utils/misc spec', () => {
         await sleep(50);
 
         expect(value).toBe(9);
-        done();
     });
 
-    it('check debounce(immediate)', async done => {
+    it('check debounce(immediate)', async () => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -180,10 +172,9 @@ describe('utils/misc spec', () => {
         await sleep(50);
 
         expect(value).toBe(1);
-        done();
     });
 
-    it('check debounce() w/ cancel', async done => {
+    it('check debounce() w/ cancel', async () => {
         let value = 0;
         const exec = (lhs: number, rhs: number): number => {
             value += (lhs + rhs);
@@ -198,7 +189,6 @@ describe('utils/misc spec', () => {
         await sleep(50);
 
         expect(value).toBe(0);
-        done();
     });
 
     it('check once()', () => {

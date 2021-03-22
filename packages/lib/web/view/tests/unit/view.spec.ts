@@ -72,7 +72,7 @@ describe('view spec', () => {
             expect(testView.$el).toBeDefined();
         });
 
-        it('check View#release() w/ callback', async done => {
+        it('check View#release() w/ callback', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -105,11 +105,9 @@ describe('view spec', () => {
 
             expect(count).toBe(3);
             expect($('#d1').length).toBe(1);
-
-            done();
         });
 
-        it('check View#remove() w/ callback', async done => {
+        it('check View#remove() w/ callback', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -142,8 +140,6 @@ describe('view spec', () => {
 
             expect(count).toBe(3);
             expect($('#d1').length).toBe(0);
-
-            done();
         });
     });
 
@@ -169,7 +165,7 @@ describe('view spec', () => {
             }
         }
 
-        it('check options events', async done => {
+        it('check options events', async () => {
             const testView = new BaseView({
                 events: {
                     click: 'render',
@@ -184,11 +180,9 @@ describe('view spec', () => {
             testView.$el.trigger('click');
             await sleep(0);
             expect(testView.$el.find('p').text()).toBe('BaseView: 2');
-
-            done();
         });
 
-        it('check member events', async done => {
+        it('check member events', async () => {
             prepareTestElements($.utils.elementify(`
 <div id="d1" class="test-dom" tabindex="-1">
     <div class="count-up"></div>
@@ -206,11 +200,9 @@ describe('view spec', () => {
             await sleep(0);
             expect(testView.$el.find('p').text()).toBe('EventView');
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check View#delegate() & undelegate()', async done => {
+        it('check View#delegate() & undelegate()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -233,8 +225,6 @@ describe('view spec', () => {
             await sleep(0);
 
             expect(count).toBe(1);
-
-            done();
         });
     });
 

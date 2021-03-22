@@ -61,32 +61,29 @@ describe('ajax/core spec', () => {
         expect(params.nil2).toBe('null');
     });
 
-    it('check ajax() get json', async done => {
+    it('check ajax() get json', async () => {
         const data = await ajax('../../.temp/res/ajax/data.json', { dataType: 'json' });
         expect(data).toBeDefined();
         const { propNumber, propBoolean, propString } = data.schema;
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');
-        done();
     });
 
-    it('check ajax() get text', async done => {
+    it('check ajax() get text', async () => {
         const template = await ajax('../../.temp/res/ajax/test.tpl', { dataType: 'text' });
         expect(template).toBeDefined();
         const normlize = template.replace(/\s/gm, '');
         expect(normlize).toBe('<article><template><div></div></template></article>');
-        done();
     });
 
-    it('check ajax() get blob', async done => {
+    it('check ajax() get blob', async () => {
         const blob = await ajax('../../.temp/res/ajax/image.jpg', { dataType: 'blob' });
         expect(blob).toBeDefined();
         expect(blob.type).toBe('image/jpeg');
-        done();
     });
 
-    it('check ajax() get response', async done => {
+    it('check ajax() get response', async () => {
         const response = await ajax('../../.temp/res/ajax/data.json');
         expect(response).toBeDefined();
         const json = await response.json();
@@ -97,10 +94,9 @@ describe('ajax/core spec', () => {
 
         // 後から型変換は不可
         await expectAsync(response.text()).toBeRejected();
-        done();
     });
 
-    it('check ajax() head query strings', async done => {
+    it('check ajax() head query strings', async () => {
         const response = await ajax('../../.temp/res/ajax/data.json', {
             method: 'HEAD',
             data: {
@@ -111,10 +107,9 @@ describe('ajax/core spec', () => {
         });
         expect(response).toBeDefined();
         expect(response.ok).toBe(true);
-        done();
     });
 
-    it('check ajax() invalid response', async done => {
+    it('check ajax() invalid response', async () => {
         let reason!: Result;
         try {
             await ajax('../../.temp/res/ajax/hogehoge.json', {
@@ -135,17 +130,15 @@ describe('ajax/core spec', () => {
 
         const { headers } = response;
         expect(headers.get('Content-Type'.toLowerCase())).toBe('text/html; charset=utf-8');
-        done();
     });
 
-    it('check ajax() post json', async done => {
+    it('check ajax() post json', async () => {
         const data = await ajax('/api-ajax', { method: 'POST', dataType: 'json' });
         expect(data).toBeDefined();
         expect(data.API).toBe('JSON response');
-        done();
     });
 
-    it('check ajax() post with data', async done => {
+    it('check ajax() post with data', async () => {
         const response = await ajax('/api-ajax', {
             method: 'POST',
             headers: {
@@ -164,10 +157,9 @@ describe('ajax/core spec', () => {
         expect(json.data.aaa).toBe('aaa');
         expect(json.data.bbb).toBe('true');
         expect(json.data.ccc).toBe('null');
-        done();
     });
 
-    it('check ajax() post with body', async done => {
+    it('check ajax() post with body', async () => {
         const response = await ajax('/api-ajax', {
             method: 'POST',
             contentType: 'application/x-www-form-urlencoded;charset=UTF-8', // default
@@ -189,10 +181,9 @@ describe('ajax/core spec', () => {
         expect(json.data.aaa).toBe('hoge');
         expect(json.data.bbb).toBe('false');
         expect(json.data.ccc).toBeUndefined();
-        done();
     });
 
-    it('check ajax() timeout', async done => {
+    it('check ajax() timeout', async () => {
         let reason!: Result;
         try {
             await ajax('/api-ajax', {
@@ -209,10 +200,9 @@ describe('ajax/core spec', () => {
 
         expect(reason).toBeDefined();
         expect(reason.code).toBe(RESULT_CODE.ERROR_AJAX_TIMEOUT);
-        done();
     });
 
-    it('check ajax() cancel', async done => {
+    it('check ajax() cancel', async () => {
         let reason!: Result;
         const source = CancelToken.source();
 
@@ -244,7 +234,5 @@ describe('ajax/core spec', () => {
 
         expect(reason).toBeDefined();
         expect(reason.code).toBe(RESULT_CODE.ABORT);
-
-        done();
     });
 });

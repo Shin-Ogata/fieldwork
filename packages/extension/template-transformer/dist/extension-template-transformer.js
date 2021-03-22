@@ -1,5 +1,5 @@
 /*!
- * @cdp/extension-template-transformer 0.9.5
+ * @cdp/extension-template-transformer 0.9.6
  *   extension for transform to HTML templates from mustache.
  */
 

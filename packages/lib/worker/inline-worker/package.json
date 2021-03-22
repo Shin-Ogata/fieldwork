@@ -1,7 +1,7 @@
 {
   "name": "@cdp/inline-worker",
   "description": "inline web worker utility module",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../../core/utils",

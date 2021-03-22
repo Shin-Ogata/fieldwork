@@ -12,7 +12,7 @@ describe('i18n/plugin/ajax-backend spec', () => {
         ensureCleanI18N();
     });
 
-    it('check `namespace` & `resourcePath`', async done => {
+    it('check `namespace` & `resourcePath`', async () => {
         await initializeI18N({
             lng: 'ja-JP',
             fallbackLng: 'en',
@@ -20,10 +20,9 @@ describe('i18n/plugin/ajax-backend spec', () => {
             resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
         });
         expect(t('app.common.refresh')).toBe('更新');
-        done();
     });
 
-    it('check `loadPath` function', async done => {
+    it('check `loadPath` function', async () => {
         const loadPath = (): string => '../res/i18n/locales/{{ns}}.{{lng}}.json';
 
         await initializeI18N({
@@ -36,10 +35,9 @@ describe('i18n/plugin/ajax-backend spec', () => {
             },
         });
         expect(t('app.common.support')).toBe('サポート');
-        done();
     });
 
-    it('check `fallbackResources`', async done => {
+    it('check `fallbackResources`', async () => {
         await initializeI18N({
             lng: 'ja',
             fallbackLng: 'en',
@@ -51,10 +49,9 @@ describe('i18n/plugin/ajax-backend spec', () => {
             },
         });
         expect(t('app.common.transfer')).toBe('送信');
-        done();
     });
 
-    it('check unuse backend', async done => {
+    it('check unuse backend', async () => {
         await initializeI18N({
             lng: 'ja',
             fallbackLng: 'en',
@@ -81,10 +78,9 @@ describe('i18n/plugin/ajax-backend spec', () => {
         });
         expect(t('app.common.say')).toBe('こんにちは、世界');
         expect(t('app.common.transfer')).toBe('app.common.transfer');
-        done();
     });
 
-    it('check cancel', async done => {
+    it('check cancel', async () => {
         const error = makeCanceledResult();
 
         const cancelSource = CancelToken.source();
@@ -100,11 +96,9 @@ describe('i18n/plugin/ajax-backend spec', () => {
         })).not.toBeRejected();
 
         expect(t('app.common.transfer')).toBe('app.common.transfer');
-
-        done();
     });
 
-    it('check server errors', async done => {
+    it('check server errors', async () => {
         class Status {
             private _status = 500;
             get status(): number {
@@ -128,7 +122,5 @@ describe('i18n/plugin/ajax-backend spec', () => {
         })).not.toBeRejected();
 
         expect(t('app.common.transfer')).toBe('app.common.transfer');
-
-        done();
     });
 });

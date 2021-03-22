@@ -22,7 +22,7 @@ describe('i18n spec', () => {
         expect(i18n).toBeDefined();
     });
 
-    it('check initialize error case', async done => {
+    it('check initialize error case', async () => {
         await expectAsync(initializeI18N({
             lng: 'ja',
             namespace: 'messages',
@@ -42,11 +42,9 @@ describe('i18n spec', () => {
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }
-
-        done();
     });
 
-    it('check getLanguage() / getLanguageList()', async done => {
+    it('check getLanguage() / getLanguageList()', async () => {
         const initialLanguage = getLanguage();
         const initialLngList  = getLanguageList();
         expect(initialLanguage).toBeDefined();
@@ -67,11 +65,9 @@ describe('i18n spec', () => {
         expect(setupLngList).toEqual(['ja-JP', 'ja', 'dev']);
         expect(setupLanguage).not.toBe(initialLanguage);
         expect(setupLngList).not.toEqual(initialLngList);
-
-        done();
     });
 
-    it('check change language', async done => {
+    it('check change language', async () => {
         await initializeI18N({
             lng: 'ja-JP',
             namespace: 'messages',
@@ -89,11 +85,9 @@ describe('i18n spec', () => {
         expect(getLanguage()).toBe('en');
         expect(getLanguageList()).toEqual(['en', 'dev']);
         expect(t('app.common.transfer')).toBe('Send');
-
-        done();
     });
 
-    it('check change language error case', async done => {
+    it('check change language error case', async () => {
         await expectAsync(initializeI18N({
             lng: 'ja-JP',
             namespace: 'messages',
@@ -126,7 +120,5 @@ describe('i18n spec', () => {
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }
-
-        done();
     });
 });

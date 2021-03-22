@@ -1,6 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/require-await
- ,  @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any
  */
 
 import {
@@ -14,7 +13,7 @@ import {
 } from '@cdp/observable';
 
 describe('observable/array spec', () => {
-    it('ObservableArray#on(INSERT)', async done => {
+    it('ObservableArray#on(INSERT)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         const newValue = 'x';
         const expected: ArrayChangeRecord<string> = {
@@ -33,7 +32,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#on(UPDATE)', async done => {
+    it('ObservableArray#on(UPDATE)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         const newValue = 'x';
         const expected: ArrayChangeRecord<string> = {
@@ -52,7 +51,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#on(REMOVE)', async done => {
+    it('ObservableArray#on(REMOVE)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         const expected: ArrayChangeRecord<string> = {
             type: ArrayChangeType.REMOVE,
@@ -70,7 +69,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#off()', async done => {
+    it('ObservableArray#off()', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         const callback = (): boolean => expect('UNEXPECTED FLOW').toBeNull();
         setTimeout(() => {
@@ -84,7 +83,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray w/ Subscription#unsubscribe()', async done => {
+    it('ObservableArray w/ Subscription#unsubscribe()', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             const subscription = observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
@@ -97,7 +96,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#on(NOT notify unless target is changed)', async done => {
+    it('ObservableArray#on(NOT notify unless target is changed)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
@@ -112,7 +111,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#suspend(NOT notify during suspend)', async done => {
+    it('ObservableArray#suspend(NOT notify during suspend)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             observable.suspend();
@@ -128,7 +127,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#resume(notify after called #resume)', async done => {
+    it('ObservableArray#resume(notify after called #resume)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             observable.suspend();
@@ -149,7 +148,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#suspend(true)', async done => {
+    it('ObservableArray#suspend(true)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             observable.suspend(true);
@@ -175,7 +174,7 @@ describe('observable/array spec', () => {
         });
     });
 
-    it('ObservableArray#on(notify merged change records)', async done => {
+    it('ObservableArray#on(notify merged change records)', done => {
         const observable = ObservableArray.from<string>([]);
         setTimeout(() => {
             observable.on(records => {
@@ -193,7 +192,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#on(UPDATE => UPDATE : UPDATE, UPDATE => REMOVE : INSERT)', async done => {
+    it('ObservableArray#on(UPDATE => UPDATE : UPDATE, UPDATE => REMOVE : INSERT)', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             observable.on(records => {
@@ -212,7 +211,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#pop()', async done => {
+    it('ObservableArray#pop()', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             observable.on(records => {
@@ -230,7 +229,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#shift()', async done => {
+    it('ObservableArray#shift()', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             observable.on(records => {
@@ -248,7 +247,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#sort()', async done => {
+    it('ObservableArray#sort()', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             observable.on(records => {
@@ -264,7 +263,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#splice(-1)', async done => {
+    it('ObservableArray#splice(-1)', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             observable.on(records => {
@@ -277,7 +276,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#length +', async done => {
+    it('ObservableArray#length +', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             observable.on(records => {
@@ -290,7 +289,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('ObservableArray#map()', async done => {
+    it('ObservableArray#map()', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         setTimeout(() => {
             const mapped = observable.map(e => `${e}${e}`);
@@ -303,7 +302,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    xit('check map performance', async done => {
+    xit('check map performance', done => {
         const array = new Array(100000);
         const observable = ObservableArray.from(array);
         let checkType: ObservableArray<any>;
@@ -379,7 +378,7 @@ describe('observable/array spec', () => {
         });
     });
 
-    it('IObservableEventBrokerAccess#trigger', async done => {
+    it('IObservableEventBrokerAccess#trigger', done => {
         const observable = ObservableArray.from(['a', 'b', 'c']);
         const expected: ArrayChangeRecord<string> = {
             type: ArrayChangeType.INSERT,
@@ -398,7 +397,7 @@ describe('observable/array spec', () => {
         }, 0);
     });
 
-    it('check advanced', async done => {
+    it('check advanced', done => {
         const observable = ObservableArray.from([]);
         // from new
         const fromNew = new (observable as any).constructor('x', 'y', 'z') as ObservableArray<string>;

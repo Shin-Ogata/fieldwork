@@ -15,7 +15,7 @@ import {
 } from './tools';
 
 describe('i18n/plugin/dom-localizer spec', () => {
-    beforeEach(async done  => {
+    beforeEach(async ()  => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -25,18 +25,16 @@ describe('i18n/plugin/dom-localizer spec', () => {
             resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
             fallbackResources: { 'ja': 'ja-JP' },
         });
-        done();
     });
 
     afterEach((): void => {
         cleanupTestElements();
     });
 
-    it('check instance', async done => {
+    it('check instance', async () => {
         await initializeI18N();
         expect(localize).toBeDefined();
         expect($().localize).toBeDefined();
-        done();
     });
 
     it('check translate an element', () => {
@@ -121,7 +119,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         expect($test.text()).toBe('保存');
     });
 
-    it('check prepend content', async done => {
+    it('check prepend content', async () => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -152,11 +150,9 @@ describe('i18n/plugin/dom-localizer spec', () => {
         $wrap = $test.find('cdp-i18n');
         expect($wrap.text()).toBe('Retry');
         expect($test.text()).toBe('Retryinsert before me, please!');
-
-        done();
     });
 
-    it('check prepend content w/ no use custom-tag', async done => {
+    it('check prepend content w/ no use custom-tag', async () => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -184,11 +180,9 @@ describe('i18n/plugin/dom-localizer spec', () => {
         await i18n.changeLanguage('en');
         $test.localize();
         expect($test.text()).toBe('Retry再試行insert before me, please!');
-
-        done();
     });
 
-    it('check append content', async done => {
+    it('check append content', async () => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -219,11 +213,9 @@ describe('i18n/plugin/dom-localizer spec', () => {
         $wrap = $test.find('cdp-i18n');
         expect($wrap.text()).toBe('Retry');
         expect($test.text()).toBe('append after me, please!Retry');
-
-        done();
     });
 
-    it('check append content w/ no use custom-tag', async done => {
+    it('check append content w/ no use custom-tag', async () => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -251,8 +243,6 @@ describe('i18n/plugin/dom-localizer spec', () => {
         await i18n.changeLanguage('en');
         $test.localize();
         expect($test.text()).toBe('append after me, please!再試行Retry');
-
-        done();
     });
 
     it('check set data', () => {
@@ -277,7 +267,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
         expect($test.text()).toBe('20/100');
     });
 
-    it('check options w/ attribute', async done => {
+    it('check options w/ attribute', async () => {
         ensureCleanI18N();
         await initializeI18N({
             lng: 'ja',
@@ -299,11 +289,9 @@ describe('i18n/plugin/dom-localizer spec', () => {
 
         $test.localize();
         expect($test.text()).toBe('20/100');
-
-        done();
     });
 
-    it('check set different attribute', async done => {
+    it('check set different attribute', async () => {
         $(prepareTestElements())
             .append(`
                 <a id="testee" href="#" data-i18n="[title]app.nothing.title;app.nothing.text" title="fallback.title">fallback.text</a>
@@ -338,8 +326,6 @@ describe('i18n/plugin/dom-localizer spec', () => {
 
         expect($test.attr('title')).toBe('app.nothing.title');
         expect($test.text()).toBe('app.nothing.text');
-
-        done();
     });
 
     it('check miss key management', () => {

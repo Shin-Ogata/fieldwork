@@ -65,7 +65,7 @@ describe('binary/converter spec', () => {
         expect(dec).toBe(src);
     });
 
-    it('check blobToXXX()', async done => {
+    it('check blobToXXX()', async () => {
         const blob = new Blob([text]);
 
         const buff = await blobToBuffer(blob);
@@ -83,11 +83,9 @@ describe('binary/converter spec', () => {
 
         const b64 = await blobToBase64(blob);
         expect(b64).toBe(base64);
-
-        done();
     });
 
-    it('check bufferToXXX()', async done => {
+    it('check bufferToXXX()', async () => {
         const buff = deepCopy(buffer);
 
         const blb = bufferToBlob(buff);
@@ -105,11 +103,9 @@ describe('binary/converter spec', () => {
 
         const b64 = bufferToBase64(buff);
         expect(b64).toBe(base64);
-
-        done();
     });
 
-    it('check binaryToXXX()', async done => {
+    it('check binaryToXXX()', async () => {
         const bin = new Uint8Array(buffer);
 
         const blb = binaryToBlob(bin);
@@ -126,11 +122,9 @@ describe('binary/converter spec', () => {
 
         const b64 = binaryToBase64(bin);
         expect(b64).toBe(base64);
-
-        done();
     });
 
-    it('check base64ToXXX()', async done => {
+    it('check base64ToXXX()', async () => {
         const b64 = base64;
 
         const blb = base64ToBlob(b64);
@@ -147,11 +141,9 @@ describe('binary/converter spec', () => {
 
         const txt = base64ToText(b64);
         expect(txt).toBe(text);
-
-        done();
     });
 
-    it('check textToXXX()', async done => {
+    it('check textToXXX()', async () => {
         const txt = text;
 
         const blb = textToBlob(txt);
@@ -168,11 +160,9 @@ describe('binary/converter spec', () => {
 
         const b64 = textToBase64(txt);
         expect(b64).toBe(base64);
-
-        done();
     });
 
-    it('check dataURLToXXX()', async done => {
+    it('check dataURLToXXX()', async () => {
         const dataURL = `data:application/octet-stream;base64,${base64}`;
 
         const blb = dataURLToBlob(dataURL);
@@ -189,11 +179,9 @@ describe('binary/converter spec', () => {
 
         const b64 = dataURLToBase64(dataURL);
         expect(b64).toBe(base64);
-
-        done();
     });
 
-    it('check serialize()', async done => {
+    it('check serialize()', async () => {
         const dataURL = `data:application/octet-stream;base64,${base64}`;
 
         expect(await serialize('str')).toBe('str');
@@ -205,11 +193,9 @@ describe('binary/converter spec', () => {
         expect(await serialize(dataURLToBlob(dataURL))).toBe(dataURL);
         expect(await serialize(null)).toBe('null');
         expect(await serialize(undefined)).toBe('undefined');
-
-        done();
     });
 
-    it('check deserialize()', async done => {
+    it('check deserialize()', async () => {
         const dataURL = `data:application/octet-stream;base64,${base64}`;
 
         expect(await deserialize('str')).toBe('str' as any);
@@ -232,10 +218,9 @@ describe('binary/converter spec', () => {
         expect(await deserialize<Blob>(dataURL)).not.toEqual(dataURLToBlob(dataURL));           // [warning] not working, but compilable
 //      expect(await deserialize<null>('null')).toBe(null);                                     // compile error
 //      expect(await deserialize<undefined>('undefined')).toBe(undefined);                      // compile error
-        done();
     });
 
-    it('check deserialize() w/ convert', async done => {
+    it('check deserialize() w/ convert', async () => {
         const dataURL = `data:application/octet-stream;base64,${base64}`;
 
         expect(await deserialize('str', { dataType: 'string' })).toBe('str');
@@ -249,11 +234,9 @@ describe('binary/converter spec', () => {
         expect(await deserialize('null', { dataType: 'number' })).toBe(0);
         // compile error
 //      expect(await deserialize<number>('100', { dataType: 'number' })).toBe(null);
-
-        done();
     });
 
-    it('check advanced', async done => {
+    it('check advanced', async () => {
         const b64 = dataURLToBase64('data:,Hello%2C%20World!');
         const txt = base64ToText(b64);
         expect(txt).toBe('Hello, World!');
@@ -271,6 +254,5 @@ describe('binary/converter spec', () => {
         expect(buff.byteLength).toBe(0);
 
         expect(() => dataURLToBase64(txt)).toThrow(new Error(`Invalid data-URL: ${txt}`)); // eslint-disable-line
-        done();
     });
 });

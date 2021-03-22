@@ -31,7 +31,7 @@ describe('data-sync/null spec', () => {
         expect(dataSyncNULL).toBeDefined();
     });
 
-    it('check read', async done => {
+    it('check read', async () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -41,11 +41,9 @@ describe('data-sync/null spec', () => {
         expect(await response).toEqual({});
         expect(stub.onCallback).toHaveBeenCalledWith(_context, jasmine.any(Promise));
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check create', async done => {
+    it('check create', async () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -55,11 +53,9 @@ describe('data-sync/null spec', () => {
         expect(await response).toBeUndefined();
         expect(stub.onCallback).toHaveBeenCalledWith(_context, jasmine.any(Promise));
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check update', async done => {
+    it('check update', async () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -69,11 +65,9 @@ describe('data-sync/null spec', () => {
         expect(await response).toBeUndefined();
         expect(stub.onCallback).toHaveBeenCalledWith(_context, jasmine.any(Promise));
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check patch', async done => {
+    it('check patch', async () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -83,11 +77,9 @@ describe('data-sync/null spec', () => {
         expect(await response).toBeUndefined();
         expect(stub.onCallback).toHaveBeenCalledWith(_context, jasmine.any(Promise));
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check delete', async done => {
+    it('check delete', async () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -97,16 +89,13 @@ describe('data-sync/null spec', () => {
         expect(await response).toBeUndefined();
         expect(stub.onCallback).toHaveBeenCalledWith(_context, jasmine.any(Promise));
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check read w/ cancel', async done => {
+    it('check read w/ cancel', async () => {
         try {
             await dataSyncNULL.sync('read', _context, { cancel: token });
         } catch (e) {
             expect(e.message).toBe('aborted');
         }
-        done();
     });
 });
