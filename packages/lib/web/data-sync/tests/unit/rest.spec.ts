@@ -72,7 +72,7 @@ describe('data-sync/rest spec', () => {
         expect(dataSyncREST).toBeDefined();
     });
 
-    it('check read w/ url property', async done => {
+    it('check read w/ url property', async () => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -83,11 +83,9 @@ describe('data-sync/rest spec', () => {
         expect(response).toEqual({ id: '0001', num: 100, str: 'string', bool: true });
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check read w/ url function', async done => {
+    it('check read w/ url function', async () => {
         const context = new TestB();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -98,11 +96,9 @@ describe('data-sync/rest spec', () => {
         expect(response).toEqual({ id: '0001', num: 100, str: 'string', bool: true });
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check create', async done => {
+    it('check create', async () => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -121,11 +117,9 @@ describe('data-sync/rest spec', () => {
         });
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check update', async done => {
+    it('check update', async () => {
         const context = new TestB();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -144,11 +138,9 @@ describe('data-sync/rest spec', () => {
         });
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check patch', async done => {
+    it('check patch', async () => {
         const context = new TestC();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -176,11 +168,9 @@ describe('data-sync/rest spec', () => {
         });
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check delete', async done => {
+    it('check delete', async () => {
         const context = new TestA();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -194,27 +184,23 @@ describe('data-sync/rest spec', () => {
         });
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check read w/ cancel', async done => {
+    it('check read w/ cancel', async () => {
         const context = new TestA();
         try {
             await dataSyncREST.sync('read', context, { cancel: token });
         } catch (e) {
             expect(e.message).toBe('aborted');
         }
-        done();
     });
 
-    it('check read invalid url', async done => {
+    it('check read invalid url', async () => {
         const context = new TestC();
         try {
             await dataSyncREST.sync('read', context);
         } catch (e) {
             expect(e.message).toBe('A "url" property or function must be specified.');
         }
-        done();
     });
 });

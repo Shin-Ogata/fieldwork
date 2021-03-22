@@ -18,7 +18,7 @@ describe('dom/effects spec', () => {
         cleanupTestElements();
     });
 
-    it('check DOM#animate()', async done => {
+    it('check DOM#animate()', async () => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>
 <div id="d2" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>
@@ -33,10 +33,9 @@ describe('dom/effects spec', () => {
         expect([...contexts.animations.values()][1].playState).toBe('finished');
         expect([...contexts.animations.values()][2].playState).toBe('finished');
         expect($dom.css('opacity')).toBe('0.5');
-        done();
     });
 
-    it('check DOM#cancel()', async done => {
+    it('check DOM#cancel()', async () => {
         prepareTestElements(testee(`<div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>`));
         const $dom = $('.test-dom');
         // NOTE: 塗りつぶしモードはスコアが高いまま永続化されるので finished で値を入れる代価の方式が推奨されている
@@ -47,10 +46,9 @@ describe('dom/effects spec', () => {
         await wait(150);
         expect([...contexts.animations.values()][0].playState).toBe('idle');
         expect($dom.css('opacity')).toBe('1');
-        done();
     });
 
-    it('check DOM#finish()', async done => {
+    it('check DOM#finish()', async () => {
         prepareTestElements(testee(`<div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px;"></div>`));
         const $dom = $('.test-dom');
         const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100, fill: 'forwards' });
@@ -64,10 +62,9 @@ describe('dom/effects spec', () => {
         $dom.cancel();
         expect([...contexts.animations.values()][0].playState).toBe('idle');
         expect($dom.css('opacity')).toBe('1');
-        done();
     });
 
-    it('check mixedCollection', async done => {
+    it('check mixedCollection', async () => {
         const $dom = mixedCollection().add(window).add(document);
         expect(() => $(window).animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100 })).not.toThrow();
         expect(() => $(document).animate([{ opacity: 1 }, { opacity: 0.5 }], { duration: 100 })).not.toThrow();
@@ -77,6 +74,5 @@ describe('dom/effects spec', () => {
         await wait(150);
         expect(() => $dom.finish()).not.toThrow();
         expect(() => $dom.cancel()).not.toThrow();
-        done();
     });
 });

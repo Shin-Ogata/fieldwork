@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-i18n",
   "description": "extension for internationalization",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {

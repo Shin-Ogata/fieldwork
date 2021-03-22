@@ -137,7 +137,7 @@ describe('collection/base spec', () => {
             expect(playlist3.models[17].id).toBe('018');
         });
 
-        it('check Collection#release()', async done => {
+        it('check Collection#release()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -163,8 +163,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).not.toHaveBeenCalled();
             expect(count).toBe(0);
-
-            done();
         });
     });
 
@@ -303,7 +301,7 @@ describe('collection/base spec', () => {
             expect(playlist1.toJSON()).toEqual(playlist2.toJSON());
         });
 
-        it('check Collection#sort() w/ callback', async done => {
+        it('check Collection#sort() w/ callback', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -328,8 +326,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, opts); // @sort
             expect(count).toBe(1);
-
-            done();
         });
 
         it('check Collection#sort() error case', () => {
@@ -346,7 +342,7 @@ describe('collection/base spec', () => {
             }).not.toThrow();
         });
 
-        it('check Collection#filter() w/ callback', async done => {
+        it('check Collection#filter() w/ callback', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -397,8 +393,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, {}); // @filter
             expect(count).toBe(1);
-
-            done();
         });
 
         it('check Collection#at()', () => {
@@ -540,7 +534,7 @@ describe('collection/base spec', () => {
             defaultSync(dataSyncNULL);
         });
 
-        it('check Collection#fetch({ parse: true }) simple version', async done => {
+        it('check Collection#fetch({ parse: true }) simple version', async () => {
             { // prepare simple registry
                 localStorage.clear();
                 localStorage.setItem('test', JSON.stringify(tracks));
@@ -560,11 +554,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, resp, { parse: true, progress: jasmine.anything() }); // @sync
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check Collection#fetch({ parse: true }) standard (Backbone.LocalStorage scheme)', async done => {
+        it('check Collection#fetch({ parse: true }) standard (Backbone.LocalStorage scheme)', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -579,11 +571,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, resp, { parse: true, progress: jasmine.anything() }); // @sync
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check Collection#fetch() w/ progress', async done => {
+        it('check Collection#fetch() w/ progress', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -635,11 +625,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, resp2, jasmine.anything()); // @sync
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#fetch({ reset, noCache })', async done => {
+        it('check Collection#fetch({ reset, noCache })', async () => {
             const playlist = new RichPlaylist();
             const resp1 = await playlist.fetch({
                 index: 10,
@@ -688,11 +676,9 @@ describe('collection/base spec', () => {
             expect(playlist.models.length).toBe(18);
             expect(playlist.models[0].id).toBe('001');
             expect(playlist.models[17].id).toBe('018');
-
-            done();
         });
 
-        it('check Collection#requery()', async done => {
+        it('check Collection#requery()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -718,11 +704,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, resp, jasmine.anything()); // @sync
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#fetch() w/ error case', async done => {
+        it('check Collection#fetch() w/ error case', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -737,13 +721,11 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(undefined, playlist, jasmine.any(Error), jasmine.anything()); // @error
             expect(count).toBe(1);
-
-            done();
         });
     });
 
     describe('operations: collection setup', () => {
-        it('check Collection#add(object) single', async done => {
+        it('check Collection#add(object) single', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -776,11 +758,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(2);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#add(object[]) multiple', async done => {
+        it('check Collection#add(object[]) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -816,11 +796,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(3);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#add(Model) single', async done => {
+        it('check Collection#add(Model) single', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -853,11 +831,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(2);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#add(Model[]) multiple', async done => {
+        it('check Collection#add(Model[]) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -893,11 +869,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(3);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#add([], { at: positive }) multiple', async done => {
+        it('check Collection#add([], { at: positive }) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -940,11 +914,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added[1], playlist, receiveOpts); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);           // @update
             expect(count).toBe(3);
-
-            done();
         });
 
-        it('check Collection#add([], { at: negative }) multiple', async done => {
+        it('check Collection#add([], { at: negative }) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -987,8 +959,6 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added[1], playlist, receiveOpts); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);           // @update
             expect(count).toBe(3);
-
-            done();
         });
 
         it('check Collection#add([], { at: over border }) multiple', (): void => {
@@ -1040,7 +1010,7 @@ describe('collection/base spec', () => {
             expect(playlist.models[6].id).toBe('008');
         });
 
-        it('check Collection#add([], { merge: false }) default', async done => {
+        it('check Collection#add([], { merge: false }) default', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1069,11 +1039,9 @@ describe('collection/base spec', () => {
             await sleep(0);
             expect(stub.onCallback).not.toHaveBeenCalled();
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#add(object[], { merge: true })', async done => {
+        it('check Collection#add(object[], { merge: true })', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1125,11 +1093,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts); // @update
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check Collection#add(Model[], { merge: true, parse: true })', async done => {
+        it('check Collection#add(Model[], { merge: true, parse: true })', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1181,11 +1147,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts); // @update
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check Collection#add([], { sort: false }) default', async done => {
+        it('check Collection#add([], { sort: false }) default', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1228,11 +1192,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added[1], playlist, receiveOpts); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);           // @update
             expect(count).toBe(3);
-
-            done();
         });
 
-        it('check Collection#add([], { sort: true })', async done => {
+        it('check Collection#add([], { sort: true })', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1275,11 +1237,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added[1], playlist, receiveOpts); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);           // @update/@sort
             expect(count).toBe(4);
-
-            done();
         });
 
-        it('check Collection#remove(object) single', async done => {
+        it('check Collection#remove(object) single', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1308,11 +1268,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(2);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#remove(object[]) multiple', async done => {
+        it('check Collection#remove(object[]) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1344,11 +1302,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(3);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#remove(Model) single', async done => {
+        it('check Collection#remove(Model) single', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1377,11 +1333,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(2);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#remove(Model[]) multiple', async done => {
+        it('check Collection#remove(Model[]) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1413,11 +1367,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(3);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#remove(object[]) no regist', async done => {
+        it('check Collection#remove(object[]) no regist', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1437,11 +1389,9 @@ describe('collection/base spec', () => {
             await sleep(0);
             expect(stub.onCallback).not.toHaveBeenCalled();
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#reset(object[])', async done => {
+        it('check Collection#reset(object[])', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1461,11 +1411,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, { previous });  // @update
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check Collection#reset(Model[])', async done => {
+        it('check Collection#reset(Model[])', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1504,11 +1452,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(seeds[4], playlist, receiveOpts);  // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);            // @update, @reset
             expect(count).toBe(7);
-
-            done();
         });
 
-        it('check Collection#reset()', async done => {
+        it('check Collection#reset()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1527,8 +1473,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, { previous });  // @update
             expect(count).toBe(1);
-
-            done();
         });
 
         it('check Collection#set(undefined)', (): void => {
@@ -1539,7 +1483,7 @@ describe('collection/base spec', () => {
             }).not.toThrow();
         });
 
-        it('check Collection#set(object[])', async done => {
+        it('check Collection#set(object[])', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1594,11 +1538,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(src[2], playlist, removeOpts);    // @remove
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);           // @update
             expect(count).toBe(5);
-
-            done();
         });
 
-        it('check Collection handle Model#destroy()', async done => {
+        it('check Collection handle Model#destroy()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1616,11 +1558,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(model, playlist, { wait: true, syncMethod: 'delete', index: 0 }); // @remove
             expect(stub.onCallback).toHaveBeenCalledWith(model, playlist, { wait: true, syncMethod: 'delete' });           // @destroy
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#push()', async done => {
+        it('check Collection#push()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1639,11 +1579,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything());  // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#push() w/ filter', async done => {
+        it('check Collection#push() w/ filter', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1668,11 +1606,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything()); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());        // @update
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#pop()', async done => {
+        it('check Collection#pop()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1696,11 +1632,9 @@ describe('collection/base spec', () => {
 
             const removed3 = playlist.pop();
             expect(removed3).toBeUndefined();
-
-            done();
         });
 
-        it('check Collection#pop() w/ filter', async done => {
+        it('check Collection#pop() w/ filter', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1722,11 +1656,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, jasmine.anything()); // @remove
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());          // @update
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#unshift()', async done => {
+        it('check Collection#unshift()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1745,11 +1677,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything());  // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#unshift() w/ filter', async done => {
+        it('check Collection#unshift() w/ filter', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1774,11 +1704,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(added, playlist, jasmine.anything()); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());        // @update
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#shift()', async done => {
+        it('check Collection#shift()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1802,11 +1730,9 @@ describe('collection/base spec', () => {
 
             const removed3 = playlist.shift();
             expect(removed3).toBeUndefined();
-
-            done();
         });
 
-        it('check Collection#shift() w/ filter', async done => {
+        it('check Collection#shift() w/ filter', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1828,11 +1754,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, jasmine.anything()); // @remove
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());          // @update
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check Collection#create(object)', async done => {
+        it('check Collection#create(object)', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1846,11 +1770,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
-
-            done();
         });
 
-        it('check Collection#create(object, { wait: true })', async done => {
+        it('check Collection#create(object, { wait: true })', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1864,11 +1786,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
-
-            done();
         });
 
-        it('check Collection#create(Model)', async done => {
+        it('check Collection#create(Model)', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1882,11 +1802,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
-
-            done();
         });
 
-        it('check Collection#create(Model, { wait: true })', async done => {
+        it('check Collection#create(Model, { wait: true })', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1900,11 +1818,9 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.anything()); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything());         // @update
-
-            done();
         });
 
-        it('check Collection#create(Model) w/ error', async done => {
+        it('check Collection#create(Model) w/ error', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1918,13 +1834,11 @@ describe('collection/base spec', () => {
             await sleep(0);
 
             expect(stub.onCallback).toHaveBeenCalledWith(result, playlist, jasmine.any(Error), jasmine.anything()); // @error
-
-            done();
         });
     });
 
     describe('operations: model edit', () => {
-        it('check model attribute edited', async done => {
+        it('check model attribute edited', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1942,11 +1856,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(target1, playlist, {}); // @change
             expect(stub.onCallback).toHaveBeenCalledWith(target2, playlist, {}); // @change
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check model attribute edited w/ partial listening', async done => {
+        it('check model attribute edited w/ partial listening', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -1963,8 +1875,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(target1, playlist, {}); // @change:albumTitle
             expect(count).toBe(1);
-
-            done();
         });
     });
 
@@ -2156,7 +2066,7 @@ describe('collection/base spec', () => {
             }
         }
 
-        it('example music library traversing', async done => {
+        it('example music library traversing', async () => {
             const identify = (album: Album): string => {
                 const { artist, title, totalTracks, totalDuration, totalSize } = album;
                 return `${artist}-${title}-${totalTracks}:${totalDuration}:${totalSize}`;
@@ -2192,8 +2102,6 @@ describe('collection/base spec', () => {
 
             expect(album.tracks[0].title).toBe('008');
             expect(album.tracks[1].title).toBe('011');
-
-            done();
         });
     });
 
@@ -2297,7 +2205,7 @@ describe('collection/base spec', () => {
             return ex;
         };
 
-        it('check Collection#add(CustomModel[]) multiple', async done => {
+        it('check Collection#add(CustomModel[]) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2333,11 +2241,9 @@ describe('collection/base spec', () => {
             expect(count).toBe(3);
 
             playlist.off();
-
-            done();
         });
 
-        it('check Collection#remove(CustomModel[]) multiple', async done => {
+        it('check Collection#remove(CustomModel[]) multiple', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2369,8 +2275,6 @@ describe('collection/base spec', () => {
             expect(count).toBe(3);
 
             playlist.off();
-
-            done();
         });
 
         it('check Collection#set/reset(plain[])', () => {
@@ -2387,7 +2291,7 @@ describe('collection/base spec', () => {
             expect(playlist.length).toBe(0);
         });
 
-        it('check Collection received notify w/ CustomModel', async done => {
+        it('check Collection received notify w/ CustomModel', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2428,11 +2332,9 @@ describe('collection/base spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(removed, playlist, { index: 0 }); // @remove
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, optsRemove);            // @update
             expect(count).toBe(4);
-
-            done();
         });
 
-        it('check Collection#set({ merge: true }) w/ plain object', async done => {
+        it('check Collection#set({ merge: true }) w/ plain object', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2461,8 +2363,6 @@ describe('collection/base spec', () => {
             };
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, opts); // @update
             expect(count).toBe(1);
-
-            done();
         });
 
         it('check Collection#set({ merge: true }) w/ CustomModel error case', () => {
@@ -2476,7 +2376,7 @@ describe('collection/base spec', () => {
             }).toThrowError();
         });
 
-        it('check Collection#set() w/ InvalidModel', async done => {
+        it('check Collection#set() w/ InvalidModel', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2491,8 +2391,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(seed, playlist, errorInvalidData, jasmine.anything()); // @invalid
             expect(count).toBe(1);
-
-            done();
         });
 
         it('check Collection#set() coverage', () => {
@@ -2549,7 +2447,7 @@ describe('collection/base spec', () => {
             expect(invalidList.length).toBe(0);
         });
 
-        it('check Collection#create() w/ InvalidModel', async done => {
+        it('check Collection#create() w/ InvalidModel', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2564,8 +2462,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(seed, playlist, errorInvalidData, jasmine.anything()); // @invalid
             expect(count).toBe(1);
-
-            done();
         });
 
         it('check Collection#[_onModelEvent(@change)] coverage', () => {
@@ -2594,7 +2490,7 @@ describe('collection/base spec', () => {
             expect(list.models[1].title).toBe('nnn');
         });
 
-        it('check Collection#[_onModelEvent(@add | @remove)] coverage', async done => {
+        it('check Collection#[_onModelEvent(@add | @remove)] coverage', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -2613,8 +2509,6 @@ describe('collection/base spec', () => {
 
             expect(stub.onCallback).not.toHaveBeenCalled();
             expect(count).toBe(0);
-
-            done();
         });
     });
 

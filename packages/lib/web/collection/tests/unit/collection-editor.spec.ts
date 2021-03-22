@@ -58,7 +58,7 @@ describe('collection-editor spec', () => {
     };
 
     describe('basic', () => {
-        it('check clearCollection()', async done => {
+        it('check clearCollection()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -92,11 +92,9 @@ describe('collection-editor spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts); // @update
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check appendCollection()', async done => {
+        it('check appendCollection()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -137,11 +135,9 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);        // @update
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything()); // @sort
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check insertCollection()', async done => {
+        it('check insertCollection()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -182,11 +178,9 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts);        // @update
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything()); // @sort
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check reorderCollection()', async done => {
+        it('check reorderCollection()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -209,11 +203,9 @@ describe('collection-editor spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything()); // @sort
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check removeCollection()', async done => {
+        it('check removeCollection()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -247,11 +239,9 @@ describe('collection-editor spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts); // @update
             expect(count).toBe(1);
-
-            done();
         });
 
-        it('check edit w/ no effect', async done => {
+        it('check edit w/ no effect', async () => {
             const playlist = new Playlist(tracks.slice(0, 3));
 
             const result = await reorderCollection(playlist, 2, []);
@@ -259,11 +249,9 @@ describe('collection-editor spec', () => {
             expect(result.range).toBeUndefined();
             expect(result.list.length).toBe(0);
             expect(result.insertedTo).toBeUndefined();
-
-            done();
         });
 
-        it('check edit w/ error', async done => {
+        it('check edit w/ error', async () => {
             const playlist = new Playlist(tracks.slice(0, 3));
             playlist.filter(oddPassFilter);
             const added = tracks.slice(3, 6).map(t => new Track(t));
@@ -274,8 +262,6 @@ describe('collection-editor spec', () => {
             } catch (e) {
                 expect(toResult(e).code).toBe(RESULT_CODE.ERROR_MVC_EDIT_PERMISSION_DENIED);
             }
-
-            done();
         });
     });
 
@@ -344,7 +330,7 @@ describe('collection-editor spec', () => {
             }
         }
 
-        it('check EditablePlaylist#clear()', async done => {
+        it('check EditablePlaylist#clear()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -379,11 +365,9 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts); // @update
             expect(stub.onCallback).toHaveBeenCalledWith(playlist);              // clear
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check EditablePlaylist#append()', async done => {
+        it('check EditablePlaylist#append()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -425,11 +409,9 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything()); // @sort
             expect(stub.onCallback).toHaveBeenCalledWith(playlist);                     // append
             expect(count).toBe(3);
-
-            done();
         });
 
-        it('check EditablePlaylist#insert()', async done => {
+        it('check EditablePlaylist#insert()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -471,11 +453,9 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything()); // @sort
             expect(stub.onCallback).toHaveBeenCalledWith(playlist);                     // insert
             expect(count).toBe(3);
-
-            done();
         });
 
-        it('check EditablePlaylist#reorder()', async done => {
+        it('check EditablePlaylist#reorder()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -499,11 +479,9 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, jasmine.anything()); // @sort
             expect(stub.onCallback).toHaveBeenCalledWith(playlist);                     // reorder
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check EditablePlaylist#detach()', async done => {
+        it('check EditablePlaylist#detach()', async () => {
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
 
@@ -538,8 +516,6 @@ describe('collection-editor spec', () => {
             expect(stub.onCallback).toHaveBeenCalledWith(playlist, receiveOpts); // @update
             expect(stub.onCallback).toHaveBeenCalledWith(playlist);              // reorder
             expect(count).toBe(2);
-
-            done();
         });
     });
 });

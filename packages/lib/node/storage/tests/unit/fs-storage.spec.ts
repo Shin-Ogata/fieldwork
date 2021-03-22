@@ -32,6 +32,7 @@ describe('storage/attributes spec', () => {
         _count++;
     };
 
+    // jasmine-node 3.x が抱える jasmine-2.x系は done() 必須
     beforeEach(async done => {
         _storage = new FsStorage(location);
         await _storage.setItem('str', 'hoge');

@@ -141,7 +141,7 @@ describe('data-sync/storage spec', () => {
         storageSync.setStorage(defaultStorage);
     });
 
-    it('check create', async done => {
+    it('check create', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -162,11 +162,9 @@ describe('data-sync/storage spec', () => {
         });
 
         await storage.clear();
-
-        done();
     });
 
-    it('check create w/ data', async done => {
+    it('check create w/ data', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -187,11 +185,9 @@ describe('data-sync/storage spec', () => {
         });
 
         await storage.clear();
-
-        done();
     });
 
-    it('check create w/ server id', async done => {
+    it('check create w/ server id', async () => {
         const context = new ModelLackId();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -212,11 +208,9 @@ describe('data-sync/storage spec', () => {
         expect(json.bool).toBe(true);
 
         await storage.clear();
-
-        done();
     });
 
-    it('check create w/ server id invalid Model', async done => {
+    it('check create w/ server id invalid Model', async () => {
         const context = new ModelLackHas();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -237,11 +231,9 @@ describe('data-sync/storage spec', () => {
         expect(json.bool).toBe(true);
 
         await storage.clear();
-
-        done();
     });
 
-    it('check update w/ custom separator', async done => {
+    it('check update w/ custom separator', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -273,11 +265,9 @@ describe('data-sync/storage spec', () => {
         dataSyncSTORAGE.setIdSeparator(orgSeparator);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check patch', async done => {
+    it('check patch', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -304,11 +294,9 @@ describe('data-sync/storage spec', () => {
         });
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check patch w/ non-model', async done => {
+    it('check patch w/ non-model', async () => {
         const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -335,11 +323,9 @@ describe('data-sync/storage spec', () => {
         });
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check patch w/ other collection reserved', async done => {
+    it('check patch w/ other collection reserved', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -371,11 +357,9 @@ describe('data-sync/storage spec', () => {
         expect(value2).toEqual([{ id: '000A' }]);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read', async done => {
+    it('check read', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -400,11 +384,9 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(1);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read as collection', async done => {
+    it('check read as collection', async () => {
         const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -430,11 +412,9 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(1);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read as collection w/ custom data', async done => {
+    it('check read as collection w/ custom data', async () => {
         const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -449,11 +429,9 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(1);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read as collection w/ custom data simple case', async done => {
+    it('check read as collection w/ custom data simple case', async () => {
         const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -478,11 +456,9 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(1);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read w/ error data not found', async done => {
+    it('check read w/ error data not found', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -499,11 +475,9 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(0);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check delete', async done => {
+    it('check delete', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -534,11 +508,9 @@ describe('data-sync/storage spec', () => {
         expect(value).toEqual([]);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check delete w/ non-model', async done => {
+    it('check delete w/ non-model', async () => {
         const context = new Collection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -559,11 +531,9 @@ describe('data-sync/storage spec', () => {
         expect(count).toBe(2);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check delete w/ other collection reserved', async done => {
+    it('check delete w/ other collection reserved', async () => {
         const context = new Model();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -594,11 +564,9 @@ describe('data-sync/storage spec', () => {
         expect(value).toEqual([{ id: '000A' }]);
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read w/ cancel', async done => {
+    it('check read w/ cancel', async () => {
         const context = new Model();
         try {
             localStorage.setItem('aaa', JSON.stringify({
@@ -613,11 +581,9 @@ describe('data-sync/storage spec', () => {
         }
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read w/ cancel as collection', async done => {
+    it('check read w/ cancel as collection', async () => {
         const context = new Collection();
         try {
             localStorage.setItem('aaa', JSON.stringify([{ id: '000A' }]));
@@ -627,27 +593,23 @@ describe('data-sync/storage spec', () => {
         }
 
         localStorage.clear();
-
-        done();
     });
 
-    it('check read invalid url', async done => {
+    it('check read invalid url', async () => {
         const context = new LackURL();
         try {
             await dataSyncSTORAGE.sync('read', context);
         } catch (e) {
             expect(e.message).toBe('A "url" property or function must be specified.');
         }
-        done();
     });
 
-    it('check invalid operation', async done => {
+    it('check invalid operation', async () => {
         const context = new Model();
         try {
             await dataSyncSTORAGE.sync('invalid' as any, context);
         } catch (e) {
             expect(e.message).toBe('unknown method: invalid');
         }
-        done();
     });
 });

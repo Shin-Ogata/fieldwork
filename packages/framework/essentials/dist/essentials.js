@@ -1,5 +1,5 @@
 /*!
- * @cdp/essentials 0.9.5
+ * @cdp/essentials 0.9.6
  *   web essentilas framework
  */
 
@@ -10,12 +10,12 @@
 }(this, (function (exports) { 'use strict';
 
     /*!
-     * @cdp/lib-core 0.9.5
+     * @cdp/lib-core 0.9.6
      *   core library collection
      */
 
     /*!
-     * @cdp/core-utils 0.9.5
+     * @cdp/core-utils 0.9.6
      *   core framework utilities
      */
 
@@ -2218,7 +2218,7 @@
     }
 
     /*!
-     * @cdp/events 0.9.5
+     * @cdp/events 0.9.6
      *   pub/sub framework
      */
 
@@ -2704,7 +2704,7 @@
     const EventSourceBase = EventSource;
 
     /*!
-     * @cdp/promise 0.9.5
+     * @cdp/promise 0.9.6
      *   promise utility module
      */
 
@@ -3214,7 +3214,7 @@
     }
 
     /*!
-     * @cdp/observable 0.9.5
+     * @cdp/observable 0.9.6
      *   observable utility module
      */
 
@@ -3842,7 +3842,7 @@
     }
 
     /*!
-     * @cdp/result 0.9.5
+     * @cdp/result 0.9.6
      *   result utility module
      */
 
@@ -4159,7 +4159,7 @@
     }
 
     /*!
-     * @cdp/core-storage 0.9.5
+     * @cdp/core-storage 0.9.6
      *   core storage utility module
      */
 
@@ -4522,7 +4522,7 @@
     }
 
     /*!
-     * @cdp/core-template 0.9.5
+     * @cdp/core-template 0.9.6
      *   template engine
      */
 
@@ -5239,12 +5239,12 @@
     }
 
     /*!
-     * @cdp/lib-worker 0.9.5
+     * @cdp/lib-worker 0.9.6
      *   worker library collection
      */
 
     /*!
-     * @cdp/binary 0.9.5
+     * @cdp/binary 0.9.6
      *   binary utility module
      */
 
@@ -5912,7 +5912,7 @@
     }
 
     /*!
-     * @cdp/ajax 0.9.5
+     * @cdp/ajax 0.9.6
      *   ajax utility module
      */
 
@@ -6236,7 +6236,7 @@
     });
 
     /*!
-     * @cdp/inline-worker 0.9.5
+     * @cdp/inline-worker 0.9.6
      *   inline web worker utility module
      */
 
@@ -6335,12 +6335,12 @@
     }
 
     /*!
-     * @cdp/lib-web 0.9.5
+     * @cdp/lib-web 0.9.6
      *   web api library collection
      */
 
     /*!
-     * @cdp/dom 0.9.5
+     * @cdp/dom 0.9.6
      *   dom utility module
      */
 
@@ -9764,7 +9764,7 @@
     setup(DOMClass.prototype, DOMClass.create);
 
     /*!
-     * @cdp/environment 0.9.5
+     * @cdp/environment 0.9.6
      *   environment resolver module
      */
 
@@ -9980,7 +9980,7 @@
     const platform = queryPlatform();
 
     /*!
-     * @cdp/extension-i18n 0.9.5
+     * @cdp/extension-i18n 0.9.6
      *   extension for internationalization
      */
 
@@ -12242,7 +12242,7 @@
     const i18n = i18next;
 
     /*!
-     * @cdp/i18n 0.9.5
+     * @cdp/i18n 0.9.6
      *   internationalization module
      */
 
@@ -12542,7 +12542,7 @@
     };
 
     /*!
-     * @cdp/web-storage 0.9.5
+     * @cdp/web-storage 0.9.6
      *   web storage utility module
      */
 
@@ -12672,7 +12672,7 @@
     const webStorage = new WebStorage(localStorage);
 
     /*!
-     * @cdp/data-sync 0.9.5
+     * @cdp/data-sync 0.9.6
      *   web storage utility module
      */
 
@@ -13049,7 +13049,7 @@
     }
 
     /*!
-     * @cdp/model 0.9.5
+     * @cdp/model 0.9.6
      *   generic model scheme
      */
 
@@ -13739,7 +13739,7 @@
     }
 
     /*!
-     * @cdp/collection 0.9.5
+     * @cdp/collection 0.9.6
      *   generic collection scheme
      */
 
@@ -15858,7 +15858,7 @@
     }
 
     /*!
-     * @cdp/view 0.9.5
+     * @cdp/view 0.9.6
      *   generic view scheme
      */
 
@@ -16115,7 +16115,7 @@
     }
 
     /*!
-     * @cdp/extension-template 0.9.5
+     * @cdp/extension-template 0.9.6
      *   extension for template engine
      */
 
@@ -18491,7 +18491,7 @@
     };
 
     /*!
-     * @cdp/extension-template-transformer 0.9.5
+     * @cdp/extension-template-transformer 0.9.6
      *   extension for transform to HTML templates from mustache.
      */
 
@@ -18729,7 +18729,7 @@
     };
 
     /*!
-     * @cdp/template 0.9.5
+     * @cdp/template 0.9.6
      *   HTML template library
      */
 

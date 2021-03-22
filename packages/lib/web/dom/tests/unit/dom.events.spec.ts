@@ -48,7 +48,7 @@ describe('dom/events spec', () => {
         cleanupTestElements();
     });
 
-    it('check DOM#on(type, listener), single element', async done => {
+    it('check DOM#on(type, listener), single element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -62,11 +62,9 @@ describe('dom/events spec', () => {
 
         await $dom[0].dispatchEvent(evClick);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#on(type, listener), multi element', async done => {
+    it('check DOM#on(type, listener), multi element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -85,11 +83,9 @@ describe('dom/events spec', () => {
         await $dom[2].dispatchEvent(evClick);
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(3);
-
-        done();
     });
 
-    it('check DOM#on(type, listener, options=true), multi element', async done => {
+    it('check DOM#on(type, listener, options=true), multi element', async () => {
         prepareTestElements();
         const stub = {
             onEvent: (e: Event): void => {
@@ -110,11 +106,9 @@ describe('dom/events spec', () => {
         expect(stub.onEvent).toHaveBeenCalled();
         expect(stub2.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#on(type, selector, listener), multi element', async done => {
+    it('check DOM#on(type, selector, listener), multi element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -128,11 +122,9 @@ describe('dom/events spec', () => {
         await $dom[2].dispatchEvent(evClick);
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#on(type, selector, listener), multi element child click', async done => {
+    it('check DOM#on(type, selector, listener), multi element child click', async () => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom father">
     <p class="test-dom-child"></p>
@@ -160,11 +152,9 @@ describe('dom/events spec', () => {
         await $children[3].dispatchEvent(evClick);
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#on(type, listener), single element, multi register ensure one call (mistake)', async done => {
+    it('check DOM#on(type, listener), single element, multi register ensure one call (mistake)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -179,11 +169,9 @@ describe('dom/events spec', () => {
 
         await $dom[0].dispatchEvent(evClick);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#off(type, listener), single element', async done => {
+    it('check DOM#off(type, listener), single element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -202,11 +190,9 @@ describe('dom/events spec', () => {
         $dom.off('click', stub.onCallback);
         await $dom[0].dispatchEvent(evClick);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#off(type), single element', async done => {
+    it('check DOM#off(type), single element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -225,11 +211,9 @@ describe('dom/events spec', () => {
         $dom.off('click');
         await $dom[0].dispatchEvent(evClick);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#off(), multi element', async done => {
+    it('check DOM#off(), multi element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -256,8 +240,6 @@ describe('dom/events spec', () => {
         await $dom[1].dispatchEvent(evClick);
         await $dom[2].dispatchEvent(evClick);
         expect(count).toBe(7);
-
-        done();
     });
 
     it('check DOM#off(), no set case', () => {
@@ -274,7 +256,7 @@ describe('dom/events spec', () => {
         expect(() => $dom.off('click', stub2.onCallback2)).not.toThrow();
     });
 
-    it('check DOM#on([type], selector, listener, options) -> DOM#off([type], selector, listener, options)', async done => {
+    it('check DOM#on([type], selector, listener, options) -> DOM#off([type], selector, listener, options)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -306,11 +288,9 @@ describe('dom/events spec', () => {
         await $dom[1].dispatchEvent(evDblClick);
         await $dom[2].dispatchEvent(evDblClick);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#once(type, listener), multi element', async done => {
+    it('check DOM#once(type, listener), multi element', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -323,11 +303,9 @@ describe('dom/events spec', () => {
         await $dom[2].dispatchEvent(evClick);
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#once(type, selector, listener) -> DOM#off(type, selector, listener)', async done => {
+    it('check DOM#once(type, selector, listener) -> DOM#off(type, selector, listener)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -339,11 +317,9 @@ describe('dom/events spec', () => {
         await $dom[0].dispatchEvent(evClick);
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
-
-        done();
     });
 
-    it('check DOM#once([type], listener) -> DOM#off([type])', async done => {
+    it('check DOM#once([type], listener) -> DOM#off([type])', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -357,11 +333,9 @@ describe('dom/events spec', () => {
         await $dom[0].dispatchEvent(evDblClick);
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
-
-        done();
     });
 
-    it('check DOM#trigger(string)', async done => {
+    it('check DOM#trigger(string)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -371,11 +345,9 @@ describe('dom/events spec', () => {
         await $dom.trigger('click');
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#trigger(string, ...args)', async done => {
+    it('check DOM#trigger(string, ...args)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -386,11 +358,9 @@ describe('dom/events spec', () => {
         expect(stub.onCallback).toHaveBeenCalled();
         expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 100, 'test');
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#trigger([string], ...args)', async done => {
+    it('check DOM#trigger([string], ...args)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -401,11 +371,9 @@ describe('dom/events spec', () => {
         expect(stub.onCallback).toHaveBeenCalled();
         expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 200, 'test2');
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#trigger(Event, ...args)', async done => {
+    it('check DOM#trigger(Event, ...args)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -416,11 +384,9 @@ describe('dom/events spec', () => {
         expect(stub.onCallback).toHaveBeenCalled();
         expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 100, 'test');
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#trigger([Event], ...args)', async done => {
+    it('check DOM#trigger([Event], ...args)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -432,11 +398,9 @@ describe('dom/events spec', () => {
         expect(stub.onCallback).toHaveBeenCalled();
         expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 200, 'test2');
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#trigger([string, Event], ...args)', async done => {
+    it('check DOM#trigger([string, Event], ...args)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -448,11 +412,9 @@ describe('dom/events spec', () => {
         expect(stub.onCallback).toHaveBeenCalled();
         expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 200, 'test2');
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#trigger("custom")', async done => {
+    it('check DOM#trigger("custom")', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -467,11 +429,9 @@ describe('dom/events spec', () => {
         await $dom.trigger<Hoge>('hoge');
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check events, mixedCollection', async done => {
+    it('check events, mixedCollection', async () => {
         const $dom = mixedCollection();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -480,11 +440,9 @@ describe('dom/events spec', () => {
         await $dom.trigger('click');
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe($dom.length);
-
-        done();
     });
 
-    it('check DOM#transitionEnd(callback)', async done => {
+    it('check DOM#transitionEnd(callback)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -499,11 +457,9 @@ describe('dom/events spec', () => {
 
         await $dom.trigger(evTransitionEnd);
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#transitionEnd(callback, true)', async done => {
+    it('check DOM#transitionEnd(callback, true)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -518,11 +474,9 @@ describe('dom/events spec', () => {
 
         await $dom.trigger(evTransitionEnd);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#transitionEnd(callback), child', async done => {
+    it('check DOM#transitionEnd(callback), child', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -534,8 +488,6 @@ describe('dom/events spec', () => {
         await $dom[0].firstElementChild!.dispatchEvent(evTransitionEnd); // eslint-disable-line
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
-
-        done();
     });
 
     it('check DOM#transitionEnd(callback), callback invalid', () => {
@@ -548,7 +500,7 @@ describe('dom/events spec', () => {
         expect(() => $dom.trigger(evTransitionEnd)).not.toThrow();
     });
 
-    it('check DOM#animationEnd(callback)', async done => {
+    it('check DOM#animationEnd(callback)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -563,11 +515,9 @@ describe('dom/events spec', () => {
 
         await $dom.trigger(evAnimationEnd);
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#animationEnd(callback, true)', async done => {
+    it('check DOM#animationEnd(callback, true)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -582,11 +532,9 @@ describe('dom/events spec', () => {
 
         await $dom.trigger(evAnimationEnd);
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#animationEnd(callback), child', async done => {
+    it('check DOM#animationEnd(callback), child', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -598,8 +546,6 @@ describe('dom/events spec', () => {
         await $dom[0].firstElementChild!.dispatchEvent(evAnimationEnd); // eslint-disable-line
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
-
-        done();
     });
 
     it('check DOM#animationEnd(callback), callback invalid', () => {
@@ -612,7 +558,7 @@ describe('dom/events spec', () => {
         expect(() => $dom.trigger(evAnimationEnd)).not.toThrow();
     });
 
-    it('check DOM#hover(handlerIn, handlerOut)', async done => {
+    it('check DOM#hover(handlerIn, handlerOut)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -632,11 +578,9 @@ describe('dom/events spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(jasmine.any(Event), 'enter');
         expect(stub2.onCallback2).toHaveBeenCalledWith(jasmine.any(Event), 'leave');
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#hover(handlerIOut)', async done => {
+    it('check DOM#hover(handlerIOut)', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -653,11 +597,9 @@ describe('dom/events spec', () => {
 
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check event shortcut, two-way', async done => {
+    it('check event shortcut, two-way', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -696,11 +638,9 @@ describe('dom/events spec', () => {
         }
 
         expect(count).toBeGreaterThanOrEqual(events.length - 2 /* focus, blur は Testem UI 上ではタイミング問題で発火しないことがある */);
-
-        done();
     });
 
-    it('check event shortcut, no-trigger', async done => {
+    it('check event shortcut, no-trigger', async () => {
         prepareTestElements();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -723,11 +663,9 @@ describe('dom/events spec', () => {
         $dom.trigger('scroll');
 
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check DOM#clone()', async done => {
+    it('check DOM#clone()', async () => {
         prepareTestElements(testee(`
 <div class="test-dom father">
     <p class="test-dom-child"></p>
@@ -760,11 +698,10 @@ describe('dom/events spec', () => {
 
         expect(() => $(window).clone()).not.toThrow();
         expect(() => $(document).clone(true, true)).not.toThrow();
-        done();
     });
 
     describe('event namespace', () => {
-        it('check DOM#on(type, listener), single namespace', async done => {
+        it('check DOM#on(type, listener), single namespace', async () => {
             prepareTestElements();
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
@@ -781,11 +718,9 @@ describe('dom/events spec', () => {
 
             await $dom.trigger('click.ns1');
             expect(count).toBe(3);
-
-            done();
         });
 
-        it('check DOM#on(type, listener), multi namespace', async done => {
+        it('check DOM#on(type, listener), multi namespace', async () => {
             prepareTestElements();
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
@@ -828,11 +763,9 @@ describe('dom/events spec', () => {
 
             await $dom.trigger('dblclick.ns1');
             expect(count).toBe(7);
-
-            done();
         });
 
-        it('check DOM#trigger(type), w/ namespace', async done => {
+        it('check DOM#trigger(type), w/ namespace', async () => {
             prepareTestElements();
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
@@ -853,11 +786,9 @@ describe('dom/events spec', () => {
 
             await $dom.trigger('click.hoge.piyo');
             expect(count).toBe(5);
-
-            done();
         });
 
-        it('check DOM#off(type), w/ namespace1', async done => {
+        it('check DOM#off(type), w/ namespace1', async () => {
             prepareTestElements();
             const stub = { onCallback };
             const stub2 = { onCallback2 };
@@ -878,11 +809,9 @@ describe('dom/events spec', () => {
             expect(count).toBe(0);
 
             $dom.off('.piyo');
-
-            done();
         });
 
-        it('check DOM#off(type), w/ namespace2', async done => {
+        it('check DOM#off(type), w/ namespace2', async () => {
             prepareTestElements();
             const stub = { onCallback };
             const stub2 = { onCallback2 };
@@ -906,8 +835,6 @@ describe('dom/events spec', () => {
 
             await $dom.trigger('click.piyo');
             expect(count).toBe(2);
-
-            done();
         });
     });
 });

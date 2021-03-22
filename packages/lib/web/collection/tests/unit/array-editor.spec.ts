@@ -17,7 +17,7 @@ describe('utils/array-editor spec', () => {
         observable = ObservableArray.from(array);
     });
 
-    it('check clearArray()', async done => {
+    it('check clearArray()', async () => {
         let ret = await clearArray(array);
 
         expect(array.length).toBe(0);
@@ -33,16 +33,13 @@ describe('utils/array-editor spec', () => {
         expect(ret[0].newValue).toBeFalsy();
         expect(ret[1].newValue).toBeFalsy();
 
-
         ret = await clearArray([]);
 
         expect(array.length).toBe(0);
         expect(ret.length).toBe(0);
-
-        done();
     });
 
-    it('check appendArray()', async done => {
+    it('check appendArray()', async () => {
         let ret = await appendArray(array, ['E', 'F']);
 
         expect(array.length).toBe(7);
@@ -66,11 +63,9 @@ describe('utils/array-editor spec', () => {
 
         ret = await appendArray(observable, []);
         expect(ret.length).toBe(0);
-
-        done();
     });
 
-    it('check insertArray()', async done => {
+    it('check insertArray()', async () => {
         let ret = await insertArray(array, 3, ['E', 'F']);
 
         expect(array.length).toBe(7);
@@ -102,11 +97,9 @@ describe('utils/array-editor spec', () => {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('insertArray(), index is invalid. index: 2.5');
         }
-
-        done();
     });
 
-    it('check reorderArray()', async done => {
+    it('check reorderArray()', async () => {
         let ret = await reorderArray(array, 2, [3, 1, 4]);
 
         expect(array.length).toBe(5);
@@ -130,11 +123,9 @@ describe('utils/array-editor spec', () => {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('reorderArray(), index is invalid. index: 2.5');
         }
-
-        done();
     });
 
-    it('check removeArray()', async done => {
+    it('check removeArray()', async () => {
         let ret = await removeArray(array, [2, 1, 3]);
 
         expect(array.length).toBe(2);
@@ -154,11 +145,9 @@ describe('utils/array-editor spec', () => {
 
         ret = await removeArray(array, []);
         expect(ret.length).toBe(0);
-
-        done();
     });
 
-    it('check illegal input', async done => {
+    it('check illegal input', async () => {
         try {
             await clearArray({} as any); // eslint-disable-line
             expect('UNEXPECTED FLOW').toBeNull();
@@ -182,7 +171,5 @@ describe('utils/array-editor spec', () => {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('orders[] index is invalid. index: -2');
         }
-
-        done();
     });
 });

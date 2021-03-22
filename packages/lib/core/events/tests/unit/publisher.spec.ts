@@ -163,7 +163,7 @@ describe('events/publisher spec', () => {
         expect(channels.length).toBe(0);
     });
 
-    it('check on(single)', async done => {
+    it('check on(single)', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -178,11 +178,9 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith('good morning');
 
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check on(multi)', async done => {
+    it('check on(multi)', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -197,11 +195,9 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(10, 'good morning', true);
 
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check on(*)', async done => {
+    it('check on(*)', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -219,11 +215,9 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith('any', 'any', 'any');
 
         expect(count).toBe(3);
-
-        done();
     });
 
-    it('check subscription', async done => {
+    it('check subscription', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -242,11 +236,9 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).not.toHaveBeenCalledWith(10, 'good morning', true);
 
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check off(single)', async done => {
+    it('check off(single)', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -272,11 +264,9 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).not.toHaveBeenCalledWith('good evening');
         expect(stub.onCallback).not.toHaveBeenCalledWith(3);
         expect(count).toBe(3);
-
-        done();
     });
 
-    it('check off(multi)', async done => {
+    it('check off(multi)', async () => {
         const publisher = new TestPublisher();
         const error1 = new Error('error1');
         const error2 = new Error('error2');
@@ -314,11 +304,9 @@ describe('events/publisher spec', () => {
         expect(stub.onCallback).not.toHaveBeenCalledWith(4);
 
         expect(count).toBe(7);
-
-        done();
     });
 
-    it('check once(single)', async done => {
+    it('check once(single)', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -333,11 +321,9 @@ describe('events/publisher spec', () => {
         expect(subscription.enable).toBeFalsy();
 
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check once(multi)', async done => {
+    it('check once(multi)', async () => {
         const publisher = new TestPublisher();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -354,8 +340,6 @@ describe('events/publisher spec', () => {
         expect(subscription.enable).toBeFalsy();
 
         expect(count).toBe(1);
-
-        done();
     });
 
     it('check query event', () => {

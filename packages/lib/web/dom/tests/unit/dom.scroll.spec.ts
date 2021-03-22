@@ -39,7 +39,7 @@ describe('dom/scroll spec', () => {
         expect(() => $(document).scrollTop()).not.toThrow();
     });
 
-    it('check DOM#scrollTop(...args) setter', async done => {
+    it('check DOM#scrollTop(...args) setter', async () => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px; overflow: auto;">
     <div class="test-dom-child" style="position: relative; width: 20px; height: 20px;"></div>
@@ -63,8 +63,6 @@ describe('dom/scroll spec', () => {
         $dom.scrollTop(5, 0, undefined, stub.onCallback);
         expect($dom[0].scrollTop).toBe(5);
         expect(count).toBe(3);
-
-        done();
     });
 
     it('check DOM#scrollLeft() getter', () => {
@@ -79,7 +77,7 @@ describe('dom/scroll spec', () => {
         expect(() => $(document).scrollLeft()).not.toThrow();
     });
 
-    it('check DOM#scrollLeft(...args) setter', async done => {
+    it('check DOM#scrollLeft(...args) setter', async () => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px; overflow: auto;">
     <div class="test-dom-child" style="position: relative; width: 20px; height: 20px;"></div>
@@ -103,11 +101,9 @@ describe('dom/scroll spec', () => {
         $dom.scrollLeft(5, 0, undefined, stub.onCallback);
         expect($dom[0].scrollLeft).toBe(5);
         expect(count).toBe(3);
-
-        done();
     });
 
-    it('check DOM#scrollTo(x, y, ...args)', async done => {
+    it('check DOM#scrollTo(x, y, ...args)', async () => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px; overflow: auto;">
     <div class="test-dom-child" style="position: relative; width: 20px; height: 20px;"></div>
@@ -133,11 +129,9 @@ describe('dom/scroll spec', () => {
         expect($dom[0].scrollTop).toBe(10);
         expect(stub.onCallback).toHaveBeenCalled();
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check DOM#scrollTo(options)', async done => {
+    it('check DOM#scrollTo(options)', async () => {
         prepareTestElements(testee(`
 <div id="d1" class="test-dom" style="position: absolute; width: 10px; height: 10px; overflow: auto;">
     <div class="test-dom-child" style="position: relative; width: 20px; height: 20px;"></div>
@@ -150,8 +144,6 @@ describe('dom/scroll spec', () => {
         expect($dom[0].scrollTop).toBe(5);
         $dom.scrollTo({ left: 5 });
         expect($dom[0].scrollLeft).toBe(5);
-
-        done();
     });
 
     it('check mixedCollection', () => {

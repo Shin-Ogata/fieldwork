@@ -148,7 +148,7 @@ describe('events/source spec', () => {
         expect(channels.length).toBe(0);
     });
 
-    it('check on(single)', async done => {
+    it('check on(single)', async () => {
         const source = new EventSource<TestEvent>();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -163,11 +163,9 @@ describe('events/source spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith('good morning');
 
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check on(multi)', async done => {
+    it('check on(multi)', async () => {
         const source = new EventSource<TestEvent>();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -182,11 +180,9 @@ describe('events/source spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(10, 'good morning', true);
 
         expect(count).toBe(2);
-
-        done();
     });
 
-    it('check off(single)', async done => {
+    it('check off(single)', async () => {
         const source = new EventSource<TestEvent>();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -212,11 +208,9 @@ describe('events/source spec', () => {
         expect(stub.onCallback).not.toHaveBeenCalledWith('good evening');
         expect(stub.onCallback).not.toHaveBeenCalledWith(3);
         expect(count).toBe(3);
-
-        done();
     });
 
-    it('check off(multi)', async done => {
+    it('check off(multi)', async () => {
         const source = new EventSource<TestEvent>();
         const error1 = new Error('error1');
         const error2 = new Error('error2');
@@ -254,11 +248,9 @@ describe('events/source spec', () => {
         expect(stub.onCallback).not.toHaveBeenCalledWith(4);
 
         expect(count).toBe(7);
-
-        done();
     });
 
-    it('check once(single)', async done => {
+    it('check once(single)', async () => {
         const source = new EventSource<TestEvent>();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -273,11 +265,9 @@ describe('events/source spec', () => {
         expect(subscription.enable).toBeFalsy();
 
         expect(count).toBe(1);
-
-        done();
     });
 
-    it('check once(multi)', async done => {
+    it('check once(multi)', async () => {
         const source = new EventSource<TestEvent>();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -294,8 +284,6 @@ describe('events/source spec', () => {
         expect(subscription.enable).toBeFalsy();
 
         expect(count).toBe(1);
-
-        done();
     });
 
     it('check query event', () => {
@@ -337,7 +325,7 @@ describe('events/source spec', () => {
         expect(youngbrother.onQuery).not.toHaveBeenCalled();
     });
 
-    it('check listenTo(single)', async done => {
+    it('check listenTo(single)', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -354,10 +342,9 @@ describe('events/source spec', () => {
         expect(count).toBe(2);
 
         source.stopListening();
-        done();
     });
 
-    it('check listenTo(multi)', async done => {
+    it('check listenTo(multi)', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -374,10 +361,9 @@ describe('events/source spec', () => {
         expect(count).toBe(2);
 
         source.stopListening();
-        done();
     });
 
-    it('check subscription', async done => {
+    it('check subscription', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -398,10 +384,9 @@ describe('events/source spec', () => {
         expect(count).toBe(1);
 
         source.stopListening();
-        done();
     });
 
-    it('check stopListening(single)', async done => {
+    it('check stopListening(single)', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -429,10 +414,9 @@ describe('events/source spec', () => {
         expect(count).toBe(3);
 
         source.stopListening();
-        done();
     });
 
-    it('check stopListening(multi)', async done => {
+    it('check stopListening(multi)', async () => {
         const source = new EventSource();
         const error1 = new Error('error1');
         const error2 = new Error('error2');
@@ -472,10 +456,9 @@ describe('events/source spec', () => {
         expect(count).toBe(7);
 
         source.stopListening();
-        done();
     });
 
-    it('check stopListening(variation)', async done => {
+    it('check stopListening(variation)', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         const broker2 = new EventSource<TestEvent>();
@@ -506,10 +489,9 @@ describe('events/source spec', () => {
         expect(() => source.stopListening(broker, 'void', () => {})).not.toThrow();
 
         source.stopListening();
-        done();
     });
 
-    it('check listenToOnce(single)', async done => {
+    it('check listenToOnce(single)', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -526,10 +508,9 @@ describe('events/source spec', () => {
         expect(count).toBe(1);
 
         source.stopListening();
-        done();
     });
 
-    it('check listenToOnce(multi)', async done => {
+    it('check listenToOnce(multi)', async () => {
         const source = new EventSource();
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -548,6 +529,5 @@ describe('events/source spec', () => {
         expect(count).toBe(1);
 
         source.stopListening();
-        done();
     });
 });
