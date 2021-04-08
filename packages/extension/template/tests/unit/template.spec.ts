@@ -156,7 +156,7 @@ describe('extention-template spec', () => {
     });
 
     describe('event listeners', () => {
-        it('check add event listeners', async done => {
+        it('check add event listeners', async () => {
             prepareTestElements();
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
@@ -175,11 +175,9 @@ describe('extention-template spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalled();
             expect(count).toBe(2);
-
-            done();
         });
 
-        it('check add event listener once', async done => {
+        it('check add event listener once', async () => {
             prepareTestElements();
             const clickHandler = {
                 handleEvent(ev: Event): void {
@@ -204,8 +202,6 @@ describe('extention-template spec', () => {
 
             await $test[0].dispatchEvent(evClick);
             expect(count).toBe(1);
-
-            done();
         });
     });
 
@@ -516,7 +512,7 @@ describe('extention-template spec', () => {
     });
 
     describe('rendering templates', () => {
-        it('check render options w/ eventContext', async done => {
+        it('check render options w/ eventContext', async () => {
             prepareTestElements();
             const stub = { onCallback };
             spyOn(stub, 'onCallback').and.callThrough();
@@ -535,8 +531,6 @@ describe('extention-template spec', () => {
             await $test[0].dispatchEvent(evClick);
             expect(stub.onCallback).toHaveBeenCalled();
             expect(count).toBe(1);
-
-            done();
         });
     });
 
@@ -552,7 +546,7 @@ describe('extention-template spec', () => {
             expect($dom.first().text()).toBe('Hello');
         });
 
-        it('check asyncReplace', async done => {
+        it('check asyncReplace', async () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -561,10 +555,9 @@ describe('extention-template spec', () => {
             await sleep(100);
 
             expect($dom.first().text()).toBe('Count: 3.');
-            done();
         });
 
-        it('check asyncAppend', async done => {
+        it('check asyncAppend', async () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -573,7 +566,6 @@ describe('extention-template spec', () => {
             await sleep(100);
 
             expect($dom.first().text()).toBe('Count: 0123.');
-            done();
         });
 
         it('check ifDefined', () => {
@@ -640,7 +632,7 @@ describe('extention-template spec', () => {
             expect($dom.find('.raw').text()).toBe('生のHTMLとして出力');
         });
 
-        it('check until', async done => {
+        it('check until', async () => {
             prepareTestElements();
             const $dom = $('#d1');
 
@@ -650,8 +642,6 @@ describe('extention-template spec', () => {
             render(template, $dom[0]);
             await sleep(100);
             expect($dom.text()).toBe('完了');
-
-            done();
         });
     });
 

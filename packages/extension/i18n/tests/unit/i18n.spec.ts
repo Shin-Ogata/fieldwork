@@ -22,7 +22,7 @@ describe('extention-i18n spec', () => {
             expect(i18n).toBeDefined();
         });
 
-        it('check i18next.init() w/ changeLanguage()', async done => {
+        it('check i18next.init() w/ changeLanguage()', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 fallbackLng: 'en',
@@ -59,11 +59,9 @@ describe('extention-i18n spec', () => {
                     },
                 },
             });
-
-            done();
         });
 
-        it('check i18next.use()', async done => {
+        it('check i18next.use()', async () => {
             const checker = {
                 log: '',
                 warn: '',
@@ -105,11 +103,9 @@ describe('extention-i18n spec', () => {
             expect(checker.log).toBe('i18next: initialized,[object Object]');
             expect(checker.warn).toBe('');
             expect(checker.error).toBe('');
-
-            done();
         });
 
-        it('check i18next.t()', async done => {
+        it('check i18next.t()', async () => {
             await i18next
                 .init({
                     lng: 'ja-JP',
@@ -137,11 +133,9 @@ describe('extention-i18n spec', () => {
             expect(i18next.t([`error.${errorCode}`, 'error.unspecific'])).toBe('The page was not found.');
             errorCode = 502;
             expect(i18next.t([`error.${errorCode}`, 'error.unspecific'])).toBe('Something went wrong.');
-
-            done();
         });
 
-        it('check i18next.exists()', async done => {
+        it('check i18next.exists()', async () => {
             await i18next
                 .init({
                     lng: 'ja-JP',
@@ -156,11 +150,9 @@ describe('extention-i18n spec', () => {
 
             expect(i18next.exists('key')).toBe(true);
             expect(i18next.exists('door')).toBe(false);
-
-            done();
         });
 
-        it('check i18next.getFixedT()', async done => {
+        it('check i18next.getFixedT()', async () => {
             await i18next
                 .init({
                     lng: 'ja-JP',
@@ -184,11 +176,9 @@ describe('extention-i18n spec', () => {
 
             const t = i18next.getFixedT('ja', 'message');
             expect(t('my.key')).toBe('こんばんは、世界');
-
-            done();
         });
 
-        it('check i18next.language & i18next.languages', async done => {
+        it('check i18next.language & i18next.languages', async () => {
             await i18next.init({
                 lng: 'ja-JP',
                 fallbackLng: 'en',
@@ -209,11 +199,9 @@ describe('extention-i18n spec', () => {
 
             expect(i18next.language).toBe('ja-JP');
             expect(i18next.languages).toEqual(['ja-jp', 'ja', 'en']);
-
-            done();
         });
 
-        it('check i18next/*load*/ no throw', async done => {
+        it('check i18next/*load*/ no throw', async () => {
             await i18next.init({
                 debug: true,
                 lng: 'ja-JP',
@@ -238,11 +226,9 @@ describe('extention-i18n spec', () => {
                 console.error(e);
                 expect('UNEXPECTED FLOW').toBeNull();
             }
-
-            done();
         });
 
-        it('check i18next.setDefaultNamespace()', async done => {
+        it('check i18next.setDefaultNamespace()', async () => {
             await i18next
                 .init({
                     lng: 'ja-JP',
@@ -269,11 +255,9 @@ describe('extention-i18n spec', () => {
             expect(i18next.t('my.key')).toBe('こんばんは、世界');
             // namespace specified
             expect(i18next.t('translation:my.key')).toBe('こんにちは、世界');
-
-            done();
         });
 
-        it('check i18next.dir()', async done => {
+        it('check i18next.dir()', async () => {
             await i18next.init({
                 lng: 'ja-JP',
                 fallbackLng: 'en',
@@ -282,11 +266,9 @@ describe('extention-i18n spec', () => {
             expect(i18next.dir()).toBe('ltr');
             expect(i18next.dir('en')).toBe('ltr');
             expect(i18next.dir('ar')).toBe('rtl');
-
-            done();
         });
 
-        it('check i18next.cloneInstance()', async done => {
+        it('check i18next.cloneInstance()', async () => {
             await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -303,11 +285,9 @@ describe('extention-i18n spec', () => {
 
             const cloned = i18next.cloneInstance({ defaultNS: 'message' });
             expect(cloned.t('key')).toBe('こんばんは、世界');
-
-            done();
         });
 
-        it('check eary binding `t`', async done => {
+        it('check eary binding `t`', async () => {
             const t: i18n.TFunction = i18next.t.bind(i18next);
 
             const promise = new Promise<void>(resolve => {
@@ -335,13 +315,11 @@ describe('extention-i18n spec', () => {
             await promise;
             expect(t('key')).toBe('こんにちは、世界');
             expect(i18next.isInitialized).toBeTruthy();
-
-            done();
         });
     });
 
     describe('Interpolation', () => {
-        it('check basic', async done => {
+        it('check basic', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -354,11 +332,9 @@ describe('extention-i18n spec', () => {
             });
 
             expect(t('key', { what: 'i18next', how: 'great' })).toBe('i18next is great');
-
-            done();
         });
 
-        it('check working w/ data models', async done => {
+        it('check working w/ data models', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -376,11 +352,9 @@ describe('extention-i18n spec', () => {
             };
 
             expect(t('key', { author })).toBe('I am Jan');
-
-            done();
         });
 
-        it('check unescape', async done => {
+        it('check unescape', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -396,11 +370,9 @@ describe('extention-i18n spec', () => {
             expect(t('keyEscaped', { myVar: '<img />' })).toBe('no danger &lt;img &#x2F;&gt;');
             expect(t('keyUnescaped', { myVar: '<img />' })).toBe('dangerous <img />');
             expect(t('keyEscaped', { myVar: '<img />', interpolation: { escapeValue: false } })).toBe('no danger <img />');
-
-            done();
         });
 
-        it('check additional options', async done => {
+        it('check additional options', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -420,13 +392,11 @@ describe('extention-i18n spec', () => {
 
             expect(t('key', { what: 'i18next', how: 'great' })).toBe('i18next is great');
             expect(t('keyEscaped', { myVar: '<img />' })).toBe('no danger &lt;img /&gt;');
-
-            done();
         });
     });
 
     describe('Formatting', () => {
-        it('check formatting', async done => {
+        it('check formatting', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -458,11 +428,9 @@ describe('extention-i18n spec', () => {
 
             expect(t('key', { date: new Date(1579754211640) })).toBe('The current date is 2020/01/23');
             expect(t('key2', { text: 'can you hear me' })).toBe('CAN YOU HEAR ME just uppercased');
-
-            done();
         });
 
-        it('check formatting late calling', async done => {
+        it('check formatting late calling', async () => {
             const t = await i18next.init({
                 lng: 'ja-JP',
                 resources: {
@@ -493,13 +461,11 @@ describe('extention-i18n spec', () => {
 
             expect(t('key', { date: i18next.format(new Date(1579754211640), undefined, i18next.language) })).toBe('The current date is 2020/01/23');
             expect(t('key2', { text: i18next.format('can you hear me', 'uppercase') })).toBe('CAN YOU HEAR ME just uppercased');
-
-            done();
         });
     });
 
     describe('Plurals', () => {
-        it('check singular / plural', async done => {
+        it('check singular / plural', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -522,11 +488,9 @@ describe('extention-i18n spec', () => {
             expect(t('keyWithCount', { count: 1 })).toBe('1 item');
             expect(t('keyWithCount', { count: 5 })).toBe('5 items');
             expect(t('keyWithCount', { count: 100 })).toBe('100 items');
-
-            done();
         });
 
-        it('check languages with multiple plurals', async done => {
+        it('check languages with multiple plurals', async () => {
             // uses `arabic` which has 5 plural forms beside the singular.
             // https://www.i18next.com/translation-function/plurals#languages-with-multiple-plurals
             const t = await i18next.init({
@@ -554,13 +518,11 @@ describe('extention-i18n spec', () => {
             expect(t('key', { count: 11 })).toBe('many');
             expect(t('key', { count: 99 })).toBe('many');
             expect(t('key', { count: 100 })).toBe('other');
-
-            done();
         });
     });
 
     describe('Nesting', () => {
-        it('check basic', async done => {
+        it('check basic', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -575,11 +537,9 @@ describe('extention-i18n spec', () => {
             });
 
             expect(t('nesting1')).toBe('1 2 3');
-
-            done();
         });
 
-        it('check passing options to nestings', async done => {
+        it('check passing options to nestings', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -595,11 +555,9 @@ describe('extention-i18n spec', () => {
             });
 
             expect(t('girlsAndBoys', { count: 2, girls: 3 })).toBe('3 girls and 2 boys');
-
-            done();
         });
 
-        it('check passing nesting to interpolated', async done => {
+        it('check passing nesting to interpolated', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -613,13 +571,11 @@ describe('extention-i18n spec', () => {
             });
 
             expect(t('key2', { val: '$t(key1)' })).toBe('say: hello world');
-
-            done();
         });
     });
 
     describe('Context', () => {
-        it('check basic', async done => {
+        it('check basic', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -636,11 +592,9 @@ describe('extention-i18n spec', () => {
             expect(t('friend')).toBe('A friend');
             expect(t('friend', { context: 'male' })).toBe('A boyfriend');
             expect(t('friend', { context: 'female' })).toBe('A girlfriend');
-
-            done();
         });
 
-        it('check combining with plurals', async done => {
+        it('check combining with plurals', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -659,13 +613,11 @@ describe('extention-i18n spec', () => {
             expect(t('friend', { context: 'female', count: 1 })).toBe('A girlfriend');
             expect(t('friend', { context: 'male', count: 100 })).toBe('100 boyfriends');
             expect(t('friend', { context: 'female', count: 100 })).toBe('100 girlfriends');
-
-            done();
         });
     });
 
     describe('Objects and Arrays', () => {
-        it('check objects', async done => {
+        it('check objects', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -682,11 +634,9 @@ describe('extention-i18n spec', () => {
 
             expect(t('tree', { returnObjects: true, something: 'gold' })).toEqual({ res: 'added gold' });
             expect(t('array', { returnObjects: true })).toEqual(['a', 'b', 'c']);
-
-            done();
         });
 
-        it('check arrays', async done => {
+        it('check arrays', async () => {
             const t = await i18next.init({
                 lng: 'en-US',
                 resources: {
@@ -714,8 +664,6 @@ describe('extention-i18n spec', () => {
             expect(t('arrayJoin', { joinArrays: '+' })).toBe('line1+line2+line3');
             expect(t('arrayJoinWithInterpolation', { myVar: 'interpolate', joinArrays: ' ' })).toBe('you can interpolate');
             expect(t('arrayOfObjects.0.name')).toBe('tom');
-
-            done();
         });
     });
 });
