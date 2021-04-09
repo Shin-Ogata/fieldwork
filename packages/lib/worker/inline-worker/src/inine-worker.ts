@@ -50,6 +50,10 @@ export class InlineWorker extends Worker {
 ///////////////////////////////////////////////////////////////////////
 // override: Worker
 
+    /**
+     * @en For BLOB release. When calling `close ()` in the Worker, call this method as well.
+     * @ja BLOB 解放用. Worker 内で `close()` を呼ぶ場合, 本メソッドもコールすること.
+     */
     terminate(): void {
         super.terminate();
         URL.revokeObjectURL(this._context);

@@ -13,7 +13,7 @@ function patch(index, code) {
     }
 
     // import type from '@cdp/lib-core'
-    const importTypes = `import { Cancelable, Keys, PlainObject, Types, TypeToKey } from '@cdp/lib-core';`;
+    const importTypes = `import { Cancelable, Keys, PlainObject, UnknownFunction, Types, TypeToKey } from '@cdp/lib-core';`;
     code = `${importTypes}\n${code}`;
 
     // global namespace: `@cdp/ajax result-code-defs.d.ts`
