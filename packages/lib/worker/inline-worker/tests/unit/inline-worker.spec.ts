@@ -68,6 +68,10 @@ describe('inline-worker spec', () => {
             return Promise.resolve('this is async exec!');
         };
 
+        const execArgs = (arg1: number, arg2: string, arg3: boolean): Promise<{ arg1?: number; arg2?: string; arg3?: boolean; }> => {
+            return Promise.resolve({ arg1, arg2, arg3 });
+        };
+
         it('check thread() w/ sync execute', async () => {
             const data = await thread(execSync);
             expect(data).toBe('this is sync exec!');
@@ -76,6 +80,11 @@ describe('inline-worker spec', () => {
         it('check thread() w/ async execute', async () => {
             const data = await thread(execAsync);
             expect(data).toBe('this is async exec!');
+        });
+
+        it('check thread() w/ arguments', async () => {
+            const data = await thread(execArgs, { args: [100, 'test', true] });
+            expect(data).toEqual({ arg1: 100, arg2: 'test', arg3: true });
         });
 
         it('check thread() w/ already canceled', async () => {
