@@ -12,14 +12,7 @@ import { IStorage } from '@cdp/core-storage';
 import { FsStorage } from '@cdp/fs-storage';
 
 describe('storage/attributes spec', () => {
-    /*
-     * [jasmine-node] 特別対応
-     * - jasmine-node は Native ではなく 独自で Promise オブジェクトの構築を行っているため,
-     *   CancelablePromise を再度有効化する必要がある
-     */
-    extendPromise(true);
-
-    const location = resolve(process.cwd(), '.temp/test-storage.json');
+    const location = resolve('.temp/test-storage.json');
 
     const cancelSource = CancelToken.source();
     const { token } = cancelSource;
@@ -32,8 +25,7 @@ describe('storage/attributes spec', () => {
         _count++;
     };
 
-    // jasmine-node 3.x が抱える jasmine-2.x系は done() 必須
-    beforeEach(async done => {
+    beforeEach(async () => {
         _storage = new FsStorage(location);
         await _storage.setItem('str', 'hoge');
         await _storage.setItem('num', 100);
@@ -41,7 +33,6 @@ describe('storage/attributes spec', () => {
         await _storage.setItem('obj', { hoge: 'fuga' });
         await _storage.setItem('nil', null);
         _count = 0;
-        done();
     });
 
     afterEach(() => {
@@ -52,7 +43,7 @@ describe('storage/attributes spec', () => {
         expect(_storage.kind).toBe('node-fs');
     });
 
-    it('check FsStorage#keys()', async done => {
+    it('check FsStorage#keys()', async () => {
         const keys = await _storage.keys();
         expect(keys.length).toBe(5);
         expect(keys.includes('str')).toBe(true);
@@ -60,94 +51,84 @@ describe('storage/attributes spec', () => {
         expect(keys.includes('bool')).toBe(true);
         expect(keys.includes('obj')).toBe(true);
         expect(keys.includes('nil')).toBe(true);
-        done();
     });
 
-    it('check FsStorage#keys() w/ cancel', async done => {
+    it('check FsStorage#keys() w/ cancel', async () => {
         try {
             await _storage.keys({ cancel: token });
         } catch (e) {
             expect(e.message).toBe('aborted');
         }
-        done();
     });
 
-    it('check FsStorage#getItem()', async done => {
+    it('check FsStorage#getItem()', async () => {
         expect(await _storage.getItem('str')).toBe('hoge');
         expect(await _storage.getItem('num')).toBe(100);
         expect(await _storage.getItem('bool')).toBe(false);
         expect(await _storage.getItem('obj')).toEqual({ hoge: 'fuga' });
         expect(await _storage.getItem('nil')).toBe(null);
-        done();
     });
 
-    it('check FsStorage#getItem<cast>()', async done => {
+    it('check FsStorage#getItem<cast>()', async () => {
         // check
         expect(await _storage.getItem<string>('str')).toBe('hoge');
         expect(await _storage.getItem<number>('num')).toBe(100);
         expect(await _storage.getItem<boolean>('bool')).toBe(false);
         expect(await _storage.getItem<object>('obj')).toEqual({ hoge: 'fuga' });
-        done();
     });
 
-    it('check FsStorage#getItem() w/ dataType', async done => {
+    it('check FsStorage#getItem() w/ dataType', async () => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
         expect(await _storage.getItem('obj', { dataType: 'object' })).toEqual({ hoge: 'fuga' });
         expect(await _storage.getItem('nil', { dataType: 'string' })).toBe('null');
-        //      expect(await _storage.getItem<number>('str', { dataType: 'string' })).toBe('hoge'); // compile error "cast" と "dataType" は同時使用不可
-        done();
+//      expect(await _storage.getItem<number>('str', { dataType: 'string' })).toBe('hoge'); // compile error "cast" と "dataType" は同時使用不可
     });
 
-    it('check FsStorage#getItem() w/ dataType convert string', async done => {
+    it('check FsStorage#getItem() w/ dataType convert string', async () => {
         expect(await _storage.getItem('str', { dataType: 'string' })).toBe('hoge');
         expect(await _storage.getItem('num', { dataType: 'string' })).toBe('100');
         expect(await _storage.getItem('bool', { dataType: 'string' })).toBe('false');
         expect(await _storage.getItem('obj', { dataType: 'string' })).toBe('{"hoge":"fuga"}');
         expect(await _storage.getItem('nil', { dataType: 'string' })).toBe('null');
-        done();
     });
 
-    it('check FsStorage#getItem() w/ dataType convert number', async done => {
+    it('check FsStorage#getItem() w/ dataType convert number', async () => {
         expect(await _storage.getItem('str', { dataType: 'number' })).toBeNaN();
         expect(await _storage.getItem('num', { dataType: 'number' })).toBe(100);
         expect(await _storage.getItem('bool', { dataType: 'number' })).toBe(0);
         expect(await _storage.getItem('obj', { dataType: 'number' })).toBeNaN();
         expect(await _storage.getItem('nil', { dataType: 'number' })).toBe(0);
-        done();
     });
 
-    it('check FsStorage#getItem() w/ dataType convert boolean', async done => {
+    it('check FsStorage#getItem() w/ dataType convert boolean', async () => {
         expect(await _storage.getItem('str', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('num', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('bool', { dataType: 'boolean' })).toBe(false);
         expect(await _storage.getItem('obj', { dataType: 'boolean' })).toBe(true);
         expect(await _storage.getItem('nil', { dataType: 'boolean' })).toBe(false);
-        done();
     });
 
-    it('check FsStorage#getItem() w/ dataType convert object', async done => {
+    it('check FsStorage#getItem() w/ dataType convert object', async () => {
         expect(deepEqual(await _storage.getItem('str', { dataType: 'object' }), new String('hoge'))).toBe(true);
         expect(deepEqual(await _storage.getItem('num', { dataType: 'object' }), new Number(100))).toBe(true);
         expect(deepEqual(await _storage.getItem('bool', { dataType: 'object' }), new Boolean(false))).toBe(true);
         expect(deepEqual(await _storage.getItem('obj', { dataType: 'object' }), { hoge: 'fuga' })).toBe(true);
         expect(deepEqual(await _storage.getItem('nil', { dataType: 'object' }), {})).toBe(true);
-        done();
     });
 
-    it('check FsStorage#getItem() w/ cancel', async done => {
+    it('check FsStorage#getItem() w/ cancel', async () => {
         try {
             await _storage.getItem('num', { cancel: token });
         } catch (e) {
             expect(e.message).toBe('aborted');
         }
-        done();
     });
 
-    it('check FsStorage#setItem() w/ callback', async done => {
+    it('check FsStorage#setItem() w/ callback', async () => {
         const stub = { onCallback };
-        spyOn(stub, 'onCallback').andCallThrough();
+        spyOn(stub, 'onCallback').and.callThrough();
 
         // on
         _storage.on(stub.onCallback);
@@ -165,13 +146,11 @@ describe('storage/attributes spec', () => {
         await _storage.setItem('str', 'fuga');
         expect(await _storage.getItem<string>('str')).toBe('fuga');
         expect(_count).toBe(1);
-
-        done();
     });
 
-    it('check FsStorage#setItem(silent) w/ callback', async done => {
+    it('check FsStorage#setItem(silent) w/ callback', async () => {
         const stub = { onCallback };
-        spyOn(stub, 'onCallback').andCallThrough();
+        spyOn(stub, 'onCallback').and.callThrough();
 
         // on
         _storage.on(stub.onCallback);
@@ -181,22 +160,20 @@ describe('storage/attributes spec', () => {
         expect(await _storage.getItem<number>('num')).toBe(200);
 
         expect(_count).toBe(0);
-        done();
     });
 
-    it('check FsStorage#setItem() w/ cancel', async done => {
+    it('check FsStorage#setItem() w/ cancel', async () => {
         try {
             await _storage.setItem('bool', true, { cancel: token });
         } catch (e) {
             expect(e.message).toBe('aborted');
         }
         expect(await _storage.getItem<boolean>('bool')).toBe(false);
-        done();
     });
 
-    it('check FsStorage#removeItem() w/ options', async done => {
+    it('check FsStorage#removeItem() w/ options', async () => {
         const stub = { onCallback };
-        spyOn(stub, 'onCallback').andCallThrough();
+        spyOn(stub, 'onCallback').and.callThrough();
 
         // on
         _storage.on(stub.onCallback);
@@ -226,13 +203,11 @@ describe('storage/attributes spec', () => {
             expect(e.message).toBe('aborted');
         }
         expect(await _storage.getItem('obj')).toBeDefined();
-
-        done();
     });
 
-    it('check FsStorage#clear() w/ callback', async done => {
+    it('check FsStorage#clear() w/ callback', async () => {
         const stub = { onCallback };
-        spyOn(stub, 'onCallback').andCallThrough();
+        spyOn(stub, 'onCallback').and.callThrough();
 
         // on
         _storage.on(stub.onCallback);
@@ -240,13 +215,11 @@ describe('storage/attributes spec', () => {
         await _storage.clear();
         expect(stub.onCallback).toHaveBeenCalledWith(null, null, null);
         expect((await _storage.keys()).length).toBe(0);
-
-        done();
     });
 
-    it('check FsStorage#clear() w/ options', async done => {
+    it('check FsStorage#clear() w/ options', async () => {
         const stub = { onCallback };
-        spyOn(stub, 'onCallback').andCallThrough();
+        spyOn(stub, 'onCallback').and.callThrough();
 
         // on
         _storage.on(stub.onCallback);
@@ -269,11 +242,9 @@ describe('storage/attributes spec', () => {
         await _storage.clear();
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect((await _storage.keys()).length).toBe(0);
-
-        done();
     });
 
-    it('check FsStorage features', async done => {
+    it('check FsStorage features', async () => {
         const storage = new FsStorage(location);
         expect(await storage.getItem('str')).toBe('hoge' as any);
         expect(await storage.getItem('num')).toBe(100 as any);
@@ -283,11 +254,9 @@ describe('storage/attributes spec', () => {
 
         storage.destroy();
         expect(existsSync(location)).toBe(false);
-
-        done();
     });
 
-    it('check FsStorage format', async done => {
+    it('check FsStorage format', async () => {
         await _storage.setItem('str', 'new', { jsonSpace: 4 });
         const json = readFileSync(location).toString();
         expect(json).toBe(`{
@@ -300,7 +269,5 @@ describe('storage/attributes spec', () => {
     "nil": "null"
 }
 `);
-
-        done();
     });
 });
