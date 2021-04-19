@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-if [[ -n ${Z_ENV} ]]; then
-	return
+if [[ -n ${SHELL_ENV} ]]; then
+  return
 fi
-export Z_ENV=true
+export SHELL_ENV=true
 
 THIS=${BASH_SOURCE:-$0}
 BIN_DIR=$(cd ${THIS%/*}; pwd)
