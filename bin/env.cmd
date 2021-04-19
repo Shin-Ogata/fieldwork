@@ -1,9 +1,9 @@
 @echo off
 
-if DEFINED Z_ENV (
+if DEFINED SHELL_ENV (
 	exit /B 0
 )
-set Z_ENV=true
+set SHELL_ENV=true
 
 setlocal
 set BIN_DIR=%~dp0

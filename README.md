@@ -1,6 +1,46 @@
 # fieldwork
 feasibility study
 
+### setup shell environment / 開発ツールにパスを通す
+
+共通で利用する開発ツールは root の `node_modules/` 以下にインストールされるので、これらを CLI から利用するためにパスを通しておく。  
+**この操作は terminal ごとに必要**
+
+#### `bash` 環境の場合
+
+```sh
+# 設定
+source bin/env
+
+# 確認
+echo $PATH
+```
+
+#### `Command Prompt` 環境の場合
+
+```cmd
+:: 設定
+call bin\env
+
+:: 確認
+echo %PATH%
+```
+
+#### `PowerShell` 環境の場合
+
+```ps
+# 設定
+. bin\env
+
+# 確認
+$ENV:Path
+```
+
+※ 署名なしローカルスクリプトを実行するためにポリシーの変更が必要
+```ps
+$ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
 ### library compornent
 
 - Core
@@ -45,6 +85,7 @@ feasibility study
 
 ## License
 
+Copyright 2021 Sony Group Corporation  
 Copyright 2016, 2019, 2020 Sony Corporation  
 Copyright 2017, 2018 Sony Network Communications Inc.  
 
