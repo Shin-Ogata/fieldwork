@@ -1,7 +1,9 @@
 # fieldwork
 feasibility study
 
-### setup shell environment / 開発ツールにパスを通す
+## How to setup
+
+### shell environment / 開発ツールにパスを通す
 
 共通で利用する開発ツールは root の `node_modules/` 以下にインストールされるので、これらを CLI から利用するためにパスを通しておく。  
 **この操作は terminal ごとに必要**
@@ -28,7 +30,7 @@ echo %PATH%
 
 #### `PowerShell` 環境の場合
 
-```ps
+```ps1
 # 設定
 . bin\env
 
@@ -41,7 +43,7 @@ $ENV:Path
 $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### library compornent
+## library compornent
 
 - Core
 
