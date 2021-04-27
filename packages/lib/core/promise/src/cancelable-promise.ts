@@ -1,5 +1,6 @@
 /* eslint-disable
     no-global-assign
+ ,  @typescript-eslint/unbound-method
  */
 
 import {
@@ -21,6 +22,8 @@ declare global {
 
 /** @internal `Native Promise` constructor */
 const NativePromise = Promise;
+/** @internal `Native then` method */
+const nativeThen = NativePromise.prototype.then;
 /** @internal */ const _create = Symbol('create');
 /** @internal */ const _tokens = new WeakMap<Promise<unknown>, CancelToken>();
 
@@ -77,7 +80,7 @@ class CancelablePromise<T> extends Promise<T> {
             let s: Subscription;
             p = new NativePromise((resolve, reject) => {
                 s = token.register(reject);
-                super.prototype.then.call(src, resolve, reject);
+                nativeThen.call(src, resolve, reject);
             });
             const dispose = (): void => {
                 s.unsubscribe();
@@ -93,7 +96,7 @@ class CancelablePromise<T> extends Promise<T> {
         }
 
         if (thenArgs) {
-            p = super.prototype.then.apply(p, thenArgs);
+            p = nativeThen.apply(p, thenArgs);
         }
         if (token && token.cancelable) {
             _tokens.set(p, token);
