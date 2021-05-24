@@ -71,7 +71,7 @@ describe('observable/array spec', () => {
 
     it('ObservableArray#off()', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
-        const callback = (): boolean => expect('UNEXPECTED FLOW').toBeNull();
+        const callback = (): void => expect('UNEXPECTED FLOW').toBeNull();
         setTimeout(() => {
             observable.on(callback);
             observable.off(callback);
