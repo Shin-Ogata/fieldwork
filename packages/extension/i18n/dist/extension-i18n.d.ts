@@ -685,7 +685,7 @@ declare namespace i18n {
         type: 'languageDetector';
         init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must return detected language */
-        detect(): string | undefined;
+        detect(): string | string[] | undefined;
         cacheUserLanguage(lng: string): void;
     }
     /**
@@ -699,7 +699,7 @@ declare namespace i18n {
         async: true;
         init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must call callback passing detected language */
-        detect(callback: (lng: string) => void): void;
+        detect(callback: (lng: string | string[] | undefined) => void): void;
         cacheUserLanguage(lng: string): void;
     }
     /**
