@@ -1,12 +1,12 @@
 /*!
- * @cdp/lib-worker 0.9.6
+ * @cdp/lib-worker 0.9.7
  *   worker library collection
  */
 
 import { safe, checkCanceled, fromTypedData, restoreNil, toTypedData, verify, CancelToken, makeResult, RESULT_CODE, isNumber, isFunction, isString, className } from '@cdp/lib-core';
 
 /*!
- * @cdp/binary 0.9.6
+ * @cdp/binary 0.9.7
  *   binary utility module
  */
 
@@ -674,7 +674,7 @@ class BlobURL {
 }
 
 /*!
- * @cdp/ajax 0.9.6
+ * @cdp/ajax 0.9.7
  *   ajax utility module
  */
 
@@ -998,7 +998,7 @@ const request = /*#__PURE__*/Object.freeze({
 });
 
 /*!
- * @cdp/inline-worker 0.9.6
+ * @cdp/inline-worker 0.9.7
  *   inline web worker utility module
  */
 

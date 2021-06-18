@@ -1,10 +1,9 @@
 'use strict';
 
-const cwd = process.cwd();
 const { existsSync } = require('fs-extra');
 const { resolve } = require('path');
 const { test, doc, api } = require('@cdp/tasks/config').dir;
-const { dependencies, name } = require(resolve(cwd, 'package.json'));
+const { dependencies, name } = require(resolve('package.json'));
 
 const exclude = [
     '**/node_modules/@types/{node,cordova}/**', // environment
@@ -36,6 +35,6 @@ module.exports = {
     hideGenerator: true,
     logger: 'none',
     name,
-    out: `${doc}/${api}`,
-    readme: existsSync(resolve(cwd, 'README.md')) ? 'README.md' : 'none',
+    out: resolve(`${doc}/${api}`),
+    readme: existsSync(resolve('README.md')) ? 'README.md' : 'none',
 };

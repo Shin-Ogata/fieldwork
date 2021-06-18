@@ -1,7 +1,7 @@
 {
   "name": "@cdp/essentials",
   "description": "web essentilas framework",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "author": "Shin Ogata",
   "devDependencies": {
     "@cdp/lib-core": "file:../lib-core",

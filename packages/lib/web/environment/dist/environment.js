@@ -1,5 +1,5 @@
 /*!
- * @cdp/environment 0.9.6
+ * @cdp/environment 0.9.7
  *   environment resolver module
  */
 
