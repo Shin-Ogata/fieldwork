@@ -788,9 +788,9 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         for (const el of this) {
             if (isNode(el)) {
                 if (nodeName(el, 'iframe')) {
-                    contents.add((el as Node as HTMLIFrameElement).contentDocument as Node);
+                    contents.add((el as HTMLIFrameElement).contentDocument as Node);
                 } else if (nodeName(el, 'template')) {
-                    contents.add((el as Node as HTMLTemplateElement).content);
+                    contents.add((el as HTMLTemplateElement).content);
                 } else {
                     for (const node of el.childNodes) {
                         contents.add(node);

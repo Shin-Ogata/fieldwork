@@ -22,7 +22,7 @@ import {
     isTypeHTMLOrSVGElement,
 } from './base';
 
-export type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
+export type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : string;
 export type DOMData = PlainObject<TypedData>;
 
 /** @internal helper for `val()`*/

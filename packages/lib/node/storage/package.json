@@ -1,7 +1,7 @@
 {
   "name": "@cdp/fs-storage",
   "description": "file-system storage utility module",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-storage": "file:../../core/storage",

@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-worker 0.9.6
+ * @cdp/lib-worker 0.9.7
  *   worker library collection
  */
 
@@ -10,7 +10,7 @@
 }(this, (function (exports, libCore) { 'use strict';
 
     /*!
-     * @cdp/binary 0.9.6
+     * @cdp/binary 0.9.7
      *   binary utility module
      */
 
@@ -678,7 +678,7 @@
     }
 
     /*!
-     * @cdp/ajax 0.9.6
+     * @cdp/ajax 0.9.7
      *   ajax utility module
      */
 
@@ -1002,7 +1002,7 @@
     });
 
     /*!
-     * @cdp/inline-worker 0.9.6
+     * @cdp/inline-worker 0.9.7
      *   inline web worker utility module
      */
 

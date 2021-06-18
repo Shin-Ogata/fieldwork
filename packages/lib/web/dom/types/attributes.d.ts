@@ -1,7 +1,7 @@
 import { PlainObject, NonFunctionPropertyNames, TypedData } from '@cdp/core-utils';
 import { ElementBase } from './static';
 import { DOMIterable } from './base';
-export declare type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : undefined;
+export declare type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : string;
 export declare type DOMData = PlainObject<TypedData>;
 /**
  * @en Mixin base class which concentrated the attributes methods.
