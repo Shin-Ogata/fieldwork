@@ -1,6 +1,6 @@
 /* eslint-disable
-    camelcase
- ,  @typescript-eslint/no-explicit-any
+    camelcase,
+    @typescript-eslint/no-explicit-any,
  */
 
 import { post, escapeHTML } from '@cdp/core-utils';

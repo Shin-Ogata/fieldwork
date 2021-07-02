@@ -1,6 +1,6 @@
 /* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/unbound-method
+    @typescript-eslint/no-explicit-any,
+    @typescript-eslint/unbound-method,
  */
 
 import {

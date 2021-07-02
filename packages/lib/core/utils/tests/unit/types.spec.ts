@@ -1,5 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/no-empty-function
+    @typescript-eslint/no-empty-function,
  */
 
 import {

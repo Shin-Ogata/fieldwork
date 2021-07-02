@@ -1,5 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/no-non-null-assertion
+    @typescript-eslint/no-non-null-assertion,
  */
 
 import { i18n } from '@cdp/extension-i18n';

@@ -1,5 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/ban-types
+    @typescript-eslint/ban-types,
  */
 
 import {
