@@ -1,5 +1,5 @@
 /* eslint-disable
-    prefer-rest-params
+    prefer-rest-params,
  */
 
 import {

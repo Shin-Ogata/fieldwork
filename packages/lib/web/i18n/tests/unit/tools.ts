@@ -1,5 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/no-explicit-any
+    @typescript-eslint/no-explicit-any,
  */
 
 import { dom } from '@cdp/dom';

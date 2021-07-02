@@ -1,7 +1,7 @@
 /* eslint-disable
-    no-inner-declarations
- ,  @typescript-eslint/no-namespace
- ,  @typescript-eslint/no-unused-vars
+    no-inner-declarations,
+    @typescript-eslint/no-namespace,
+    @typescript-eslint/no-unused-vars,
  */
 
 /*

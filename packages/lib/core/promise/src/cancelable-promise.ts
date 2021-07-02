@@ -1,6 +1,6 @@
 /* eslint-disable
-    no-global-assign
- ,  @typescript-eslint/unbound-method
+    no-global-assign,
+    @typescript-eslint/unbound-method,
  */
 
 import {

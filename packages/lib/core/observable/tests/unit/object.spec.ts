@@ -1,6 +1,6 @@
 /* eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/explicit-member-accessibility
+    @typescript-eslint/no-explicit-any,
+    @typescript-eslint/explicit-member-accessibility,
  */
 
 import {

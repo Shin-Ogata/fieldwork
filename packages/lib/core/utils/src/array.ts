@@ -1,5 +1,5 @@
 /* eslint-disable
-    no-invalid-this
+    no-invalid-this,
  */
 
 import { randomInt } from './misc';
