@@ -43,7 +43,7 @@
     "lint": "eslint ./**/*.js -c ../../../config/lint/eslint.js",
     "package": "run-s clean package:prepare package:gzip",
     "package:gzip": "cdp-task gzip ./.temp/tasks.tgz tasks -w .temp",
-    "package:prepare": "cdp-task copy **/*,!node_modules/**/*,!.*,!*njsproj* ./.temp/tasks",
+    "package:prepare": "cdp-task copy **/*;!node_modules/**/*;!.*;!*njsproj* ./.temp/tasks",
     "set-version": "cdp-task set-version",
     "test": "npm run lint"
   }
