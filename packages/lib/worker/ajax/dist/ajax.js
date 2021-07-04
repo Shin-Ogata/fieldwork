@@ -1,5 +1,5 @@
 /*!
- * @cdp/ajax 0.9.7
+ * @cdp/ajax 0.9.8
  *   ajax utility module
  */
 

@@ -2,7 +2,7 @@
 
 const { resolve } = require('path');
 const { readdirSync } = require('fs-extra');
-const commander = require('commander');
+const { program } = require('commander');
 const chalk = require('chalk');
 
 function loadPlugins() {
@@ -22,7 +22,7 @@ function parseCommand() {
     const cmd = {};
     const isDefault = (3 === argv.length);
 
-    commander
+    program
         .name('cdp-task')
         .option('-w, --cwd <path>',         'set working directory, default: process.cwd()')
         .option('-s, --silent',             'no output console')
@@ -35,30 +35,30 @@ function parseCommand() {
     const examples = [];
     const plugins = loadPlugins();
     for (const key of Object.keys(plugins)) {
-        examples.push(plugins[key].defineCommands(commander, cmd, isDefault));
+        examples.push(plugins[key].defineCommands(program, cmd, isDefault));
     }
 
-    commander
+    program
         .command('*', { noHelp: true })
         .action((c) => {
             console.log(chalk.red.underline(`  unsupported command: "${c}"`));
-            commander.help();
+            program.help();
         });
 
-    commander.on('--help', () => {
+    program.on('--help', () => {
         console.log('\nExamples:');
         for (const ex of examples) {
             console.log(chalk.gray(ex));
         }
     });
 
-    commander.parse(argv);
+    program.parse(argv);
 
     if (argv.length <= 2) {
-        commander.help();
+        program.help();
     }
 
-    if (commander.debug) {
+    if (program.opts().debug) {
         console.log(`debug command:\n${JSON.stringify(cmd, null, 4)}`);
         process.exit(0);
     }
