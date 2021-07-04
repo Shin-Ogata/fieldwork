@@ -1,5 +1,5 @@
 /*!
- * @cdp/web-storage 0.9.7
+ * @cdp/web-storage 0.9.8
  *   web storage utility module
  */
 

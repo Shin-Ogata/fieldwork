@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.7
+ * @cdp/lib-web 0.9.8
  *   web api library collection
  */
 
@@ -8,7 +8,7 @@ export { TemplateEngine } from '@cdp/lib-core';
 import { request, deserialize, serialize, ajax } from '@cdp/lib-worker';
 
 /*!
- * @cdp/dom 0.9.7
+ * @cdp/dom 0.9.8
  *   dom utility module
  */
 
@@ -3432,7 +3432,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.7
+ * @cdp/environment 0.9.8
  *   environment resolver module
  */
 
@@ -3648,7 +3648,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.7
+ * @cdp/extension-i18n 0.9.8
  *   extension for internationalization
  */
 
@@ -5981,7 +5981,7 @@ const i18next = new I18n();
 const i18n = i18next;
 
 /*!
- * @cdp/i18n 0.9.7
+ * @cdp/i18n 0.9.8
  *   internationalization module
  */
 
@@ -6281,7 +6281,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.7
+ * @cdp/web-storage 0.9.8
  *   web storage utility module
  */
 
@@ -6411,7 +6411,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.7
+ * @cdp/data-sync 0.9.8
  *   web storage utility module
  */
 
@@ -6788,7 +6788,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.7
+ * @cdp/model 0.9.8
  *   generic model scheme
  */
 
@@ -7478,7 +7478,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.7
+ * @cdp/collection 0.9.8
  *   generic collection scheme
  */
 
@@ -9597,7 +9597,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.7
+ * @cdp/view 0.9.8
  *   generic view scheme
  */
 
@@ -9854,7 +9854,7 @@ class View extends EventSource {
 }
 
 /*!
- * @cdp/extension-template 0.9.7
+ * @cdp/extension-template 0.9.8
  *   extension for template engine
  */
 
@@ -12230,7 +12230,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-transformer 0.9.7
+ * @cdp/extension-template-transformer 0.9.8
  *   extension for transform to HTML templates from mustache.
  */
 
@@ -12468,7 +12468,7 @@ const transformer = {
 };
 
 /*!
- * @cdp/template 0.9.7
+ * @cdp/template 0.9.8
  *   HTML template library
  */
 

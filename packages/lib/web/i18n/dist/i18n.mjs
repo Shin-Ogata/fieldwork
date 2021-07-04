@@ -1,5 +1,5 @@
 /*!
- * @cdp/i18n 0.9.7
+ * @cdp/i18n 0.9.8
  *   internationalization module
  */
 

@@ -1,5 +1,5 @@
 /*!
- * @cdp/core-utils 0.9.7
+ * @cdp/core-utils 0.9.8
  *   core framework utilities
  */
 

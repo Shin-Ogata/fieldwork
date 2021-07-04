@@ -1,7 +1,7 @@
 {
   "name": "@cdp/template",
   "description": "HTML template library",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"

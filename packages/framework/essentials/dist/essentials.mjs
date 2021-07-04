@@ -1,15 +1,15 @@
 /*!
- * @cdp/essentials 0.9.7
+ * @cdp/essentials 0.9.8
  *   web essentilas framework
  */
 
 /*!
- * @cdp/lib-core 0.9.7
+ * @cdp/lib-core 0.9.8
  *   core library collection
  */
 
 /*!
- * @cdp/core-utils 0.9.7
+ * @cdp/core-utils 0.9.8
  *   core framework utilities
  */
 
@@ -2212,7 +2212,7 @@ function computeDate(base, add, unit = 'day') {
 }
 
 /*!
- * @cdp/events 0.9.7
+ * @cdp/events 0.9.8
  *   pub/sub framework
  */
 
@@ -2698,7 +2698,7 @@ class EventSource extends mixins(EventBroker, EventReceiver) {
 const EventSourceBase = EventSource;
 
 /*!
- * @cdp/promise 0.9.7
+ * @cdp/promise 0.9.8
  *   promise utility module
  */
 
@@ -3211,7 +3211,7 @@ class PromiseManager {
 }
 
 /*!
- * @cdp/observable 0.9.7
+ * @cdp/observable 0.9.8
  *   observable utility module
  */
 
@@ -3839,7 +3839,7 @@ class ObservableArray extends Array {
 }
 
 /*!
- * @cdp/result 0.9.7
+ * @cdp/result 0.9.8
  *   result utility module
  */
 
@@ -4156,7 +4156,7 @@ function makeCanceledResult(message, cause) {
 }
 
 /*!
- * @cdp/core-storage 0.9.7
+ * @cdp/core-storage 0.9.8
  *   core storage utility module
  */
 
@@ -4519,7 +4519,7 @@ class Registry extends EventPublisher {
 }
 
 /*!
- * @cdp/core-template 0.9.7
+ * @cdp/core-template 0.9.8
  *   template engine
  */
 
@@ -5236,12 +5236,12 @@ class TemplateEngine {
 }
 
 /*!
- * @cdp/lib-worker 0.9.7
+ * @cdp/lib-worker 0.9.8
  *   worker library collection
  */
 
 /*!
- * @cdp/binary 0.9.7
+ * @cdp/binary 0.9.8
  *   binary utility module
  */
 
@@ -5909,7 +5909,7 @@ class BlobURL {
 }
 
 /*!
- * @cdp/ajax 0.9.7
+ * @cdp/ajax 0.9.8
  *   ajax utility module
  */
 
@@ -6233,7 +6233,7 @@ const request = /*#__PURE__*/Object.freeze({
 });
 
 /*!
- * @cdp/inline-worker 0.9.7
+ * @cdp/inline-worker 0.9.8
  *   inline web worker utility module
  */
 
@@ -6345,12 +6345,12 @@ function thread(executor, options) {
 }
 
 /*!
- * @cdp/lib-web 0.9.7
+ * @cdp/lib-web 0.9.8
  *   web api library collection
  */
 
 /*!
- * @cdp/dom 0.9.7
+ * @cdp/dom 0.9.8
  *   dom utility module
  */
 
@@ -9774,7 +9774,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.7
+ * @cdp/environment 0.9.8
  *   environment resolver module
  */
 
@@ -9990,7 +9990,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.7
+ * @cdp/extension-i18n 0.9.8
  *   extension for internationalization
  */
 
@@ -12323,7 +12323,7 @@ const i18next = new I18n();
 const i18n = i18next;
 
 /*!
- * @cdp/i18n 0.9.7
+ * @cdp/i18n 0.9.8
  *   internationalization module
  */
 
@@ -12623,7 +12623,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.7
+ * @cdp/web-storage 0.9.8
  *   web storage utility module
  */
 
@@ -12753,7 +12753,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.7
+ * @cdp/data-sync 0.9.8
  *   web storage utility module
  */
 
@@ -13130,7 +13130,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.7
+ * @cdp/model 0.9.8
  *   generic model scheme
  */
 
@@ -13820,7 +13820,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.7
+ * @cdp/collection 0.9.8
  *   generic collection scheme
  */
 
@@ -15939,7 +15939,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.7
+ * @cdp/view 0.9.8
  *   generic view scheme
  */
 
@@ -16196,7 +16196,7 @@ class View extends EventSourceBase {
 }
 
 /*!
- * @cdp/extension-template 0.9.7
+ * @cdp/extension-template 0.9.8
  *   extension for template engine
  */
 
@@ -18572,7 +18572,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-transformer 0.9.7
+ * @cdp/extension-template-transformer 0.9.8
  *   extension for transform to HTML templates from mustache.
  */
 
@@ -18810,7 +18810,7 @@ const transformer = {
 };
 
 /*!
- * @cdp/template 0.9.7
+ * @cdp/template 0.9.8
  *   HTML template library
  */
 

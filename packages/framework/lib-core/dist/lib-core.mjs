@@ -1,10 +1,10 @@
 /*!
- * @cdp/lib-core 0.9.7
+ * @cdp/lib-core 0.9.8
  *   core library collection
  */
 
 /*!
- * @cdp/core-utils 0.9.7
+ * @cdp/core-utils 0.9.8
  *   core framework utilities
  */
 
@@ -2207,7 +2207,7 @@ function computeDate(base, add, unit = 'day') {
 }
 
 /*!
- * @cdp/events 0.9.7
+ * @cdp/events 0.9.8
  *   pub/sub framework
  */
 
@@ -2693,7 +2693,7 @@ class EventSource extends mixins(EventBroker, EventReceiver) {
 const EventSourceBase = EventSource;
 
 /*!
- * @cdp/promise 0.9.7
+ * @cdp/promise 0.9.8
  *   promise utility module
  */
 
@@ -3206,7 +3206,7 @@ class PromiseManager {
 }
 
 /*!
- * @cdp/observable 0.9.7
+ * @cdp/observable 0.9.8
  *   observable utility module
  */
 
@@ -3834,7 +3834,7 @@ class ObservableArray extends Array {
 }
 
 /*!
- * @cdp/result 0.9.7
+ * @cdp/result 0.9.8
  *   result utility module
  */
 
@@ -4151,7 +4151,7 @@ function makeCanceledResult(message, cause) {
 }
 
 /*!
- * @cdp/core-storage 0.9.7
+ * @cdp/core-storage 0.9.8
  *   core storage utility module
  */
 
@@ -4514,7 +4514,7 @@ class Registry extends EventPublisher {
 }
 
 /*!
- * @cdp/core-template 0.9.7
+ * @cdp/core-template 0.9.8
  *   template engine
  */
 

@@ -1,7 +1,7 @@
 {
   "name": "@cdp/promise",
   "description": "promise utility module",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../utils",
