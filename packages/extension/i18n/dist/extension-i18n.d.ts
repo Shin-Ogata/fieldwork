@@ -177,6 +177,11 @@ declare namespace i18n {
          * @default ['br', 'strong', 'i', 'p']
          */
         transKeepBasicHtmlNodesFor?: string[];
+        /**
+         * Wrap text nodes in a user-specified element.
+         * @default ''
+         */
+        transWrapTextNodes?: string;
     }
     /**
      * This interface can be augmented by users to add types to `i18next` default PluginOptions.
