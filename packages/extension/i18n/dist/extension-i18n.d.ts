@@ -12,9 +12,9 @@ declare namespace i18n {
     export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
     export type MergeBy<T, K> = Omit<T, keyof K> & K;
     export interface FallbackLngObjList {
-        [language: string]: string[];
+        [language: string]: readonly string[];
     }
-    export type FallbackLng = string | string[] | FallbackLngObjList | ((code: string) => string | string[] | FallbackLngObjList);
+    export type FallbackLng = string | readonly string[] | FallbackLngObjList | ((code: string) => string | readonly string[] | FallbackLngObjList);
     export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & {
         [key: string]: any;
     }) => string;
@@ -176,7 +176,12 @@ declare namespace i18n {
          * Which nodes not to convert in defaultValue generation in the Trans component.
          * @default ['br', 'strong', 'i', 'p']
          */
-        transKeepBasicHtmlNodesFor?: string[];
+        transKeepBasicHtmlNodesFor?: readonly string[];
+        /**
+         * Wrap text nodes in a user-specified element.
+         * @default ''
+         */
+        transWrapTextNodes?: string;
     }
     /**
      * This interface can be augmented by users to add types to `i18next` default PluginOptions.
@@ -235,7 +240,7 @@ declare namespace i18n {
          * DEPRECATED use supportedLngs
          * @default false
          */
-        whitelist?: false | string[];
+        whitelist?: false | readonly string[];
         /**
          * DEPRECTADED use nonExplicitSupportedLngs
          * @default false
@@ -245,7 +250,7 @@ declare namespace i18n {
          * Array of allowed languages
          * @default false
          */
-        supportedLngs?: false | string[];
+        supportedLngs?: false | readonly string[];
         /**
          * If true will pass eg. en-US if finding en in supportedLngs
          * @default false
@@ -263,7 +268,7 @@ declare namespace i18n {
          * Array of languages to preload. Important on server-side to assert translations are loaded before rendering views.
          * @default false
          */
-        preload?: false | string[];
+        preload?: false | readonly string[];
         /**
          * Language will be lowercased eg. en-US --> en-us
          * @default false
@@ -278,7 +283,7 @@ declare namespace i18n {
          * String or array of namespaces to load
          * @default 'translation'
          */
-        ns?: string | string[];
+        ns?: string | readonly string[];
         /**
          * Default namespace used if not passed to translation function
          * @default 'translation'
@@ -288,7 +293,7 @@ declare namespace i18n {
          * String or array of namespaces to lookup key if not found in given namespace.
          * @default false
          */
-        fallbackNS?: false | string | string[];
+        fallbackNS?: false | string | readonly string[];
         /**
          * Calls save missing key function on backend if key not found
          * @default false
@@ -310,7 +315,7 @@ declare namespace i18n {
          * Used for custom missing key handling (needs saveMissing set to true!)
          * @default false
          */
-        missingKeyHandler?: false | ((lngs: string[], ns: string, key: string, fallbackValue: string) => void);
+        missingKeyHandler?: false | ((lngs: readonly string[], ns: string, key: string, fallbackValue: string) => void);
         /**
          * Receives a key that was not found in `t()` and returns a value, that will be returned by `t()`
          * @default noop
@@ -335,7 +340,7 @@ declare namespace i18n {
          * String or array of postProcessors to apply per default
          * @default false
          */
-        postProcess?: false | string | string[];
+        postProcess?: false | string | readonly string[];
         /**
          * passthrough the resolved object including 'usedNS', 'usedLang' etc into options object of postprocessors as 'i18nResolved' property
          * @default false
@@ -485,7 +490,7 @@ declare namespace i18n {
              * Handle when locize saved the edited translations, eg. reload website
              * @default noop
              */
-            onEditorSaved?: (lng: null, ns: string | string[]) => void;
+            onEditorSaved?: (lng: null, ns: string | readonly string[]) => void;
         };
         /**
          * Options for https://github.com/locize/locize-lastused
@@ -520,7 +525,7 @@ declare namespace i18n {
              * Please keep those to your local system, staging, test servers (not production)
              * @default ['localhost']
              */
-            allowedHosts?: string[];
+            allowedHosts?: readonly string[];
         };
         /**
          * Automatically lookup for a flat key if a nested key is not found an vice-versa
@@ -552,7 +557,7 @@ declare namespace i18n {
         /**
          * Override languages to use
          */
-        lngs?: string[];
+        lngs?: readonly string[];
         /**
          * Override language to lookup key if not found see fallbacks for details
          */
@@ -560,7 +565,7 @@ declare namespace i18n {
         /**
          * Override namespaces (string or array)
          */
-        ns?: string | string[];
+        ns?: string | readonly string[];
         /**
          * Override char to separate keys
          */
@@ -580,7 +585,7 @@ declare namespace i18n {
         /**
          * String or array of postProcessors to apply see interval plurals as a sample
          */
-        postProcess?: string | string[];
+        postProcess?: string | readonly string[];
         /**
          * Override interpolation options
          */
@@ -670,9 +675,9 @@ declare namespace i18n {
         init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
         read(language: string, namespace: string, callback: ReadCallback): void;
         /** Save the missing translation */
-        create?(languages: string[], namespace: string, key: string, fallbackValue: string): void;
+        create?(languages: readonly string[], namespace: string, key: string, fallbackValue: string): void;
         /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
-        readMulti?(languages: string[], namespaces: string[], callback: MultiReadCallback): void;
+        readMulti?(languages: readonly string[], namespaces: readonly string[], callback: MultiReadCallback): void;
         /** Store the translation. For backends acting as cache layer */
         save?(language: string, namespace: string, data: ResourceLanguage): void;
     }
@@ -685,7 +690,7 @@ declare namespace i18n {
         type: 'languageDetector';
         init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must return detected language */
-        detect(): string | string[] | undefined;
+        detect(): string | readonly string[] | undefined;
         cacheUserLanguage(lng: string): void;
     }
     /**
@@ -699,7 +704,7 @@ declare namespace i18n {
         async: true;
         init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must call callback passing detected language */
-        detect(callback: (lng: string | string[] | undefined) => void): void;
+        detect(callback: (lng: string | readonly string[] | undefined) => void): void;
         cacheUserLanguage(lng: string): void;
     }
     /**
@@ -788,8 +793,8 @@ declare namespace i18n {
          * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
          * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
          */
-        getFixedT(lng: string | string[], ns?: string | string[]): TFunction;
-        getFixedT(lng: null, ns: string | string[]): TFunction;
+        getFixedT(lng: string | readonly string[], ns?: string | readonly string[]): TFunction;
+        getFixedT(lng: null, ns: string | readonly string[]): TFunction;
         /**
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
          * HINT: For easy testing - setting lng to 'cimode' will set t function to always return the key.
@@ -803,20 +808,20 @@ declare namespace i18n {
         /**
          * Is set to an array of language-codes that will be used it order to lookup the translation value.
          */
-        languages: string[];
+        languages: readonly string[];
         /**
          * Loads additional namespaces not defined in init options.
          */
-        loadNamespaces(ns: string | string[], callback?: Callback): Promise<void>;
+        loadNamespaces(ns: string | readonly string[], callback?: Callback): Promise<void>;
         /**
          * Loads additional languages not defined in init options (preload).
          */
-        loadLanguages(lngs: string | string[], callback?: Callback): Promise<void>;
+        loadLanguages(lngs: string | readonly string[], callback?: Callback): Promise<void>;
         /**
          * Reloads resources on given state. Optionally you can pass an array of languages and namespaces as params if you don't want to reload all.
          */
-        reloadResources(lngs?: string | string[], ns?: string | string[], callback?: () => void): Promise<void>;
-        reloadResources(lngs: null, ns: string | string[], callback?: () => void): Promise<void>;
+        reloadResources(lngs?: string | readonly string[], ns?: string | readonly string[], callback?: () => void): Promise<void>;
+        reloadResources(lngs: null, ns: string | readonly string[], callback?: () => void): Promise<void>;
         /**
          * Changes the default namespace.
          */
@@ -856,7 +861,7 @@ declare namespace i18n {
         /**
          * Gets fired on accessing a key not existing.
          */
-        on(event: 'missingKey', callback: (lngs: string[], namespace: string, key: string, res: string) => void): void;
+        on(event: 'missingKey', callback: (lngs: readonly string[], namespace: string, key: string, res: string) => void): void;
         /**
          * Gets fired when resources got added or removed.
          */

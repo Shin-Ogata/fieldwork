@@ -30,7 +30,7 @@ export declare const getLanguage: () => string;
  * @see
  *  - https://www.i18next.com/overview/api#languages
  */
-export declare const getLanguageList: () => string[];
+export declare const getLanguageList: () => readonly string[];
 /**
  * @en Changes the language.
  * @ja 言語の切り替え

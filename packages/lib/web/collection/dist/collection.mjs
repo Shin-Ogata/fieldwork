@@ -4,7 +4,7 @@
  */
 
 import { getLanguage } from '@cdp/i18n';
-import { unique, computeDate, isFunction, sort, shuffle, luid, isString, at, noop, isNil, isArray, setMixClassAttribute } from '@cdp/core-utils';
+import { unique, computeDate, isFunction, sort, shuffle, setMixClassAttribute, luid, isString, at, noop, isNil, isArray } from '@cdp/core-utils';
 import { checkCanceled } from '@cdp/promise';
 import { ObservableArray } from '@cdp/observable';
 import { makeResult, RESULT_CODE, FAILED } from '@cdp/result';

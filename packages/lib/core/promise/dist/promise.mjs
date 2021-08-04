@@ -3,7 +3,7 @@
  *   promise utility module
  */
 
-import { verify, isFunction, getConfig } from '@cdp/core-utils';
+import { verify, getConfig, isFunction } from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 
 /** @internal */ const _cancel = Symbol('cancel');

@@ -40,7 +40,7 @@ describe('utils/misc spec', () => {
         };
         spyOn(stub, 'postee').and.callThrough();
 
-        post(stub.postee);
+        void post(stub.postee);
         expect(step).toBe(0);
         expect(stub.postee).not.toHaveBeenCalled();
 

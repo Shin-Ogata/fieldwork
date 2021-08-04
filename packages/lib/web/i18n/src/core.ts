@@ -80,7 +80,7 @@ export const getLanguage = (): string => {
  * @see
  *  - https://www.i18next.com/overview/api#languages
  */
-export const getLanguageList = (): string[] => {
+export const getLanguageList = (): readonly string[] => {
     return i18n.languages || [navigator.language];
 };
 

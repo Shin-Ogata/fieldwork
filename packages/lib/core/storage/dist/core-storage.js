@@ -369,7 +369,7 @@
 
     exports.MemoryStorage = MemoryStorage;
     exports.Registry = Registry;
-    exports.default = memoryStorage;
+    exports['default'] = memoryStorage;
     exports.memoryStorage = memoryStorage;
 
     Object.defineProperty(exports, '__esModule', { value: true });
