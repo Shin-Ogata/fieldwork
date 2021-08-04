@@ -3428,7 +3428,7 @@
     // init for static
     setup(DOMClass.prototype, DOMClass.create);
 
-    exports.default = dom;
+    exports['default'] = dom;
     exports.dom = dom;
     exports.isDOMClass = isDOMClass;
 

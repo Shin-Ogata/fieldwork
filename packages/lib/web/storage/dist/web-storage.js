@@ -135,7 +135,7 @@
     const webStorage = new WebStorage(localStorage);
 
     exports.WebStorage = WebStorage;
-    exports.default = webStorage;
+    exports['default'] = webStorage;
     exports.webStorage = webStorage;
 
     Object.defineProperty(exports, '__esModule', { value: true });

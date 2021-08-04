@@ -3,7 +3,7 @@
  *   observable utility module
  */
 
-import { verify, isArray, post, deepMerge, deepEqual, isString, isNumber } from '@cdp/core-utils';
+import { isString, verify, isArray, post, deepMerge, deepEqual, isNumber } from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 
 /** @internal EventBrokerProxy */
