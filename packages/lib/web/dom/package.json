@@ -1,7 +1,7 @@
 {
   "name": "@cdp/dom",
   "description": "dom utility module",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../../core/utils"

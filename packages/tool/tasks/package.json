@@ -1,13 +1,13 @@
 {
   "name": "@cdp/tasks",
   "description": "provide for development task scripts and commands",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "author": "Shin Ogata",
   "bin": {
     "cdp-task": "bin/index.js"
   },
   "dependencies": {
-    "jasmine-core": "3.8.0",
+    "jasmine-core": "3.9.0",
     "requirejs": "2.3.6"
   },
   "keywords": [
