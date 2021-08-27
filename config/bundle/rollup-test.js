@@ -36,10 +36,6 @@ function getDefault(testeeConfig, options) {
         return elem;
     });
 
-    const format = testeeConfig.output[0].format;
-    const umd = 'umd' === format;
-    const cjs = 'cjs' === format;
-
     testeeConfig.watch = {
         include: [
             `${BUILT}/**/*.js`,
@@ -48,6 +44,13 @@ function getDefault(testeeConfig, options) {
             `${BUILT}/${TEST}/**/*.js`,
         ],
     };
+
+    const testeeExternal = testeeConfig.external || [];
+    const testeeOutput   = testeeConfig.output[0];
+
+    const format = testeeOutput.format;
+    const umd = 'umd' === format;
+    const cjs = 'cjs' === format;
 
     return [
         testeeConfig,
@@ -70,6 +73,7 @@ function getDefault(testeeConfig, options) {
                 ...[
                     `${PACKAGE}`,
                 ],
+                ...testeeExternal,
                 ...external,
             ],
             output: [
@@ -80,6 +84,7 @@ function getDefault(testeeConfig, options) {
                     globals: umd ? Object.assign(
                         {},
                         { [PACKAGE]: `${GLOBAL}` },
+                        testeeOutput.globals,
                         globals,
                     ) : undefined,
                     preferConst: true,

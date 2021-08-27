@@ -8,11 +8,7 @@ module.exports = {
     __esModule: true,
     default: config.default(testee, {
         external: {
-            'path': null,
             'fs-extra': null,
-            '@cdp/core-utils': null,
-            '@cdp/events': null,
-            '@cdp/promise': null,
         },
         postproc: {
             replaces: [resolveNodeTesteeValue()],

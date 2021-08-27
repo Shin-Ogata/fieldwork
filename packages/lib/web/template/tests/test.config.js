@@ -7,11 +7,6 @@ module.exports = {
     __esModule: true,
     default: config.default(testee, {
         external: {
-            '@cdp/extension-template': 'CDP.Exension',
-            '@cdp/extension-template-transformer': 'CDP.Exension',
-            '@cdp/core-utils': 'CDP',
-            '@cdp/core-template': 'CDP',
-            '@cdp/ajax': 'CDP',
             '@cdp/dom': 'CDP',
         },
     }),

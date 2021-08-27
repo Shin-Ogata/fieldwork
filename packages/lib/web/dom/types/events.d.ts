@@ -1,6 +1,6 @@
 import { ElementBase, DOM } from './static';
 import { DOMIterable } from './base';
-export declare type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap : T extends HTMLFrameSetElement ? HTMLFrameSetElementEventMap : T extends HTMLMarqueeElement ? HTMLMarqueeElementEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap : T extends HTMLElement ? HTMLElementEventMap : T extends Element ? ElementEventMap : GlobalEventHandlersEventMap;
+export declare type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap : T extends HTMLElement ? HTMLElementEventMap : T extends Element ? ElementEventMap : GlobalEventHandlersEventMap;
 export declare type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
 export declare type EventWithNamespace<T extends DOMEventMap<unknown>> = keyof T | `${string & keyof T}.${string}`;
 export declare type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);

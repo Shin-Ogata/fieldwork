@@ -336,8 +336,6 @@ export type DOMEventMap<T>
     = T extends Window ? WindowEventMap
     : T extends Document ? DocumentEventMap
     : T extends HTMLBodyElement ? HTMLBodyElementEventMap
-    : T extends HTMLFrameSetElement ? HTMLFrameSetElementEventMap
-    : T extends HTMLMarqueeElement ? HTMLMarqueeElementEventMap
     : T extends HTMLMediaElement ? HTMLMediaElementEventMap
     : T extends HTMLElement ? HTMLElementEventMap
     : T extends Element ? ElementEventMap
