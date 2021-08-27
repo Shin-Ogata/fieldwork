@@ -125,10 +125,10 @@ function manageInnerSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
             if (isNodeHTMLOrSVGElement(el)) {
                 const { style, newVal } = (() => {
                     if (isTextProp) {
-                        el.style.setProperty(type, value as string);
+                        el.style.setProperty(type, value);
                     }
                     const style = getComputedStyleFrom(el);
-                    const newVal = isTextProp ? toNumber(style.getPropertyValue(type)) : value as number;
+                    const newVal = isTextProp ? toNumber(style.getPropertyValue(type)) : value;
                     return { style, newVal };
                 })();
                 if ('border-box' === style.getPropertyValue('box-sizing')) {
@@ -188,11 +188,11 @@ function manageOuterSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
             if (isNodeHTMLOrSVGElement(el)) {
                 const { style, newVal } = (() => {
                     if (isTextProp) {
-                        el.style.setProperty(type, value as string);
+                        el.style.setProperty(type, value);
                     }
                     const style = getComputedStyleFrom(el);
                     const margin = includeMargin ? getMargin(style, type) : 0;
-                    const newVal = (isTextProp ? toNumber(style.getPropertyValue(type)) : value as number) - margin;
+                    const newVal = (isTextProp ? toNumber(style.getPropertyValue(type)) : value) - margin;
                     return { style, newVal };
                 })();
                 if ('content-box' === style.getPropertyValue('box-sizing')) {

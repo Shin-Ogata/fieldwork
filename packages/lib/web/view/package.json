@@ -59,7 +59,7 @@
     "compile:dev:ts": "tsc -p ./tests/dev/tsconfig.json",
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
-    "copy:dev:framework": "cdp-task copy require.js ../../../../lib/web/view/.temp/dev/ts/framework -w ../../../tool/tasks/node_modules/requirejs",
+    "copy:dev:framework": "cdp-task copy require.js ../../../../lib/web/view/.temp/dev/ts/framework -w ../../../tool/tasks/node_modules/requirejs -s",
     "debug": "npm run compile && run-p unit-test watch",
     "lint": "eslint src tests/unit tests/dev/ts -c ../../../../config/lint/tslint.js --ext .ts",
     "metrics": "run-s -l metrics:*",

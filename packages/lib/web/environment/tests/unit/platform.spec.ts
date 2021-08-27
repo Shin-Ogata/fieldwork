@@ -14,7 +14,7 @@ describe('platform spec', () => {
 
     const ensureOrientation = (): void => {
         if (!has(globalThis, 'orientation')) {
-            globalThis['orientation'] = 'portrait';
+            globalThis['orientation'] = 'portrait' as any;
             rollback.orientation = true;
         }
     };

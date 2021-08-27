@@ -5,12 +5,7 @@ const testee = require('../build.config').default;
 
 module.exports = {
     __esModule: true,
-    default: config.default(testee, {
-        external: {
-            '@cdp/core-utils': 'CDP',
-            '@cdp/promise': 'CDP',
-        },
-    }),
+    default: config.default(testee),
     testem: config.testem({
         external: {
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',

@@ -7,13 +7,6 @@ module.exports = {
     __esModule: true,
     default: config.default(testee, {
         external: {
-            '@cdp/extension-i18n': 'CDP.Extension',
-            '@cdp/core-utils': 'CDP',
-            '@cdp/result': 'CDP',
-            '@cdp/ajax': 'CDP',
-            '@cdp/environment': 'CDP',
-            '@cdp/dom': 'CDP',
-            '@cdp/promise': 'CDP',
             '@cdp/events': 'CDP',
             '@cdp/binary': 'CDP',
         },

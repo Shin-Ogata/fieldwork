@@ -44,7 +44,7 @@ async function exec(options) {
     options = options || defaultOptions();
 
     const { cwd, silent, globs, dest } = options;
-    console.log(`globs: ${JSON.stringify(globs)}`);
+    !silent && console.log(`globs: ${JSON.stringify(globs)}`);
     const callback = silent ? null : (dst) => { console.log(chalk.gray(`  ${dst}`)); };
     !silent && console.log('copied:');
     copy(globs, dest, { cwd, callback });
