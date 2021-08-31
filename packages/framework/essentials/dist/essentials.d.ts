@@ -25,6 +25,7 @@
  *     - @cdp/collection
  *     - @cdp/view
  *     - @cdp/template
+ *     - @cdp/router
  */
 /**
  * @en Safe `global` accessor.
@@ -9920,6 +9921,7 @@ export declare function clearTemplateCache(): void;
  *  - `ja` クエリオプション
  */
 export declare function getTemplate<T extends TemplateQueryTypes = 'engine'>(selector: string, options?: TemplateQueryOptions<T>): Promise<TemplateQueryTypeList[T]>;
+export declare const STATUS = 'TODO';
 export declare namespace i18n {
     /**
      * @en [[AjaxBackend]] options interface.
@@ -10166,6 +10168,16 @@ declare namespace CDP_DECLARE {
         ERROR_MVC_INVALID_ACCESS,
         ERROR_MVC_INVALID_COMPARATORS,
         ERROR_MVC_EDIT_PERMISSION_DENIED
+    }
+}
+declare namespace CDP_DECLARE {
+    /**
+     * @en Extends error code definitions.
+     * @ja 拡張通エラーコード定義
+     */
+    enum RESULT_CODE {
+        MVC_ROUTER_DECLARE = 9007199254740991,
+        ERROR_MVC_ROUTER_ERROR
     }
 }
 import RESULT_CODE = CDP_DECLARE.RESULT_CODE;

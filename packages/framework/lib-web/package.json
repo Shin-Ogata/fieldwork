@@ -14,6 +14,7 @@
     "@cdp/environment": "file:../../lib/web/environment",
     "@cdp/i18n": "file:../../lib/web/i18n",
     "@cdp/model": "file:../../lib/web/model",
+    "@cdp/router": "file:../../lib/web/router",
     "@cdp/template": "file:../../lib/web/template",
     "@cdp/view": "file:../../lib/web/view",
     "@cdp/web-storage": "file:../../lib/web/storage"

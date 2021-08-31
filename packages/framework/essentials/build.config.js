@@ -35,6 +35,7 @@ function patch(index, code, includes) {
     includes.push('@cdp/collection');
     includes.push('@cdp/view');
     includes.push('@cdp/template');
+    includes.push('@cdp/router');
 
     const read = (dts) => {
         // trim banner
@@ -60,6 +61,7 @@ function patch(index, code, includes) {
         code += read(resolve('../../lib/web/data-sync/types/result-code-defs.d.ts'));
         code += read(resolve('../../lib/web/model/types/result-code-defs.d.ts'));
         code += read(resolve('../../lib/web/collection/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/router/types/result-code-defs.d.ts'));
 
         // re-export global constant
         const globalConstant = read(resolve('../../lib/core/result/types/result-code.d.ts'));

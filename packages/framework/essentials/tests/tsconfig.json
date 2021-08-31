@@ -26,6 +26,7 @@
       "@cdp/collection": [ "../../../lib/web/collection" ],
       "@cdp/view": [ "../../../lib/web/view" ],
       "@cdp/template": [ "../../../lib/web/template" ],
+      "@cdp/router": [ "../../../lib/web/router" ],
       "@cdp/web-storage": [ "../../../lib/web/storage" ]
     }
   },
