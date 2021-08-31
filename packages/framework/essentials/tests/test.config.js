@@ -33,6 +33,7 @@ module.exports = {
             '@cdp/collection': 'CDP',
             '@cdp/view': 'CDP',
             '@cdp/template': 'CDP',
+            '@cdp/router': 'CDP',
         },
         // for result tests
         replace,
@@ -61,6 +62,7 @@ module.exports = {
                     '@cdp/collection': '@cdp/essentials',
                     '@cdp/view': '@cdp/essentials',
                     '@cdp/template': '@cdp/essentials',
+                    '@cdp/router': '@cdp/essentials',
                 },
             },
         },

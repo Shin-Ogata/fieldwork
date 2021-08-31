@@ -75,15 +75,16 @@ $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 | module                                                     | description                                |
 |:-----------------------------------------------------------|:-------------------------------------------|
-| [dom](./packages/lib/window/dom/README.md)                 | dom manipulation library                   |
-| [environment](./packages/lib/window/environment/README.md) | judge for environment                      |
-| [i18n](./packages/lib/window/i18n/README.md)               | wrapper of `i18next`                      |
-| [web-storage](./packages/lib/window/storage/README.md)     | storage implementation w/ `localStorage` |
-| [data-sync](./packages/lib/window/data-sync/README.md)     | web api entry point I/F defs               |
-| [model](./packages/lib/window/model/README.md)             | abstract model class                       |
-| [collection](./packages/lib/window/collection/README.md)   | abstract collection class                  |
-| [view](./packages/lib/window/view/README.md)               | abstract view class                        |
-| [template](./packages/lib/window/template/README.md)       | template library collection                |
+| [dom](./packages/lib/web/dom/README.md)                    | dom manipulation library                   |
+| [environment](./packages/lib/web/environment/README.md)    | judge for environment                      |
+| [i18n](./packages/lib/web/i18n/README.md)                  | wrapper of `i18next`                       |
+| [web-storage](./packages/web/window/storage/README.md)     | storage implementation w/ `localStorage`   |
+| [data-sync](./packages/web/window/data-sync/README.md)     | web api entry point I/F defs               |
+| [model](./packages/lib/web/model/README.md)                | abstract model class                       |
+| [collection](./packages/lib/web/collection/README.md)      | abstract collection class                  |
+| [view](./packages/lib/web/view/README.md)                  | abstract view class                        |
+| [template](./packages/lib/web/template/README.md)          | template library collection                |
+| [router](./packages/lib/web/router/README.md)              | router class                               |
 
 ## License
 
