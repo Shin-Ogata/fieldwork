@@ -34,7 +34,7 @@ export class ToDo extends ToDoBase {
         return 'dev-todos';
     }
 
-    public toggle(): Promise<PlainObject | void> {
+    public toggle(): Promise<ToDoAttribute | void> {
         return this.save({ done: !this.done });
     }
 }

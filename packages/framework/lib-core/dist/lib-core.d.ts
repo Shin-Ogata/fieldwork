@@ -48,7 +48,7 @@ export declare function getConfig<T extends object = object>(namespace?: string,
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
  */
-export declare type Primitive = string | number | boolean | symbol | null | undefined;
+export declare type Primitive = string | number | boolean | symbol | bigint | null | undefined;
 /**
  * @en The general null type.
  * @ja 空を示す型定義
@@ -83,6 +83,7 @@ export interface TypeList {
     number: number;
     boolean: boolean;
     symbol: symbol;
+    bigint: bigint;
     undefined: void | undefined;
     object: object | null;
     function(...args: unknown[]): unknown;
@@ -150,6 +151,11 @@ export declare type NonFunctionPropertyNames<T> = {
  */
 export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 /**
+ * @en Extract non-functional types.
+ * @ja 非関数型の抽出
+ */
+export declare type NonFunction<T> = T extends Function ? never : T;
+/**
  * @en Extract object key list. (ensure only 'string')
  * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
@@ -174,12 +180,10 @@ export declare type TypeToKey<O extends object, T extends Types<O>> = {
 /**
  * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
  *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
- * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>The PlainObject type is a JavaScript object containing zero or more key-value pairs. <br>
+ * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>
  *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
  */
-export interface PlainObject<T = any> {
-    [key: string]: T;
-}
+export declare type PlainObject<T = {} | null | undefined> = Record<string, T>;
 /**
  * @en The data type list by which style compulsion is possible.
  * @ja 型強制可能なデータ型一覧
@@ -291,6 +295,15 @@ export declare function isBoolean(x: unknown): x is boolean;
  *  - `ja` 評価する値
  */
 export declare function isSymbol(x: unknown): x is symbol;
+/**
+ * @en Check the value-type is BigInt.
+ * @ja BigInt 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isBigInt(x: unknown): x is bigint;
 /**
  * @en Check the value-type is primitive type.
  * @ja プリミティブ型であるか判定
@@ -2235,25 +2248,40 @@ export declare class PromiseManager {
      */
     promises(): Promise<unknown>[];
     /**
-     * @en Call `Promise.all()` for under the management.
-     * @ja 管理対象に対して `Promise.all()`
+     * @en Call `Promise.all()` for under the management. <br>
+     *     Wait for all `fullfilled`.
+     * @ja 管理対象に対して `Promise.all()` <br>
+     *     すべてが `fullfilled` になるまで待機
      */
     all(): Promise<unknown[]>;
     /**
-     * @en Call `Promise.race()` for under the management.
-     * @ja 管理対象に対して `Promise.race()`
+     * @en Call `Promise.race()` for under the management. <br>
+     *     Wait for any `settled`.
+     * @ja 管理対象に対して `Promise.race()` <br>
+     *     いずれかが `settled` になるまで待機
      */
     race(): Promise<unknown>;
     /**
-     * @en Call [[wait]]() for under the management.
-     * @ja 管理対象に対して [[wait]]()
+     * @en Call [[wait]]() for under the management. <br>
+     *     Wait for all `settled`. (simplified version)
+     * @ja 管理対象に対して [[wait]]() <br>
+     *     すべてが `settled` になるまで待機 (簡易バージョン)
      */
     wait(): Promise<unknown[]>;
     /**
-     * @en Call `Promise.allSettled()` for under the management.
-     * @ja 管理対象に対して `Promise.allSettled()`
+     * @en Call `Promise.allSettled()` for under the management. <br>
+     *     Wait for all `settled`.
+     * @ja 管理対象に対して `Promise.allSettled()` <br>
+     *     すべてが `settled` になるまで待機
      */
     allSettled(): Promise<PromiseSettledResult<unknown>[]>;
+    /**
+     * @en Call `Promise.any()` for under the management. <br>
+     *     Wait for any `fullfilled`.
+     * @ja 管理対象に対して `Promise.any()` <br>
+     *     いずれかが `fullfilled` になるまで待機
+     */
+    any(): Promise<unknown>;
     /**
      * @en Invoke `cancel` message for under the management promises.
      * @ja 管理対象の `Promise` に対してキャンセルを発行
@@ -2837,6 +2865,16 @@ export interface StorageDataTypeList {
     object: object;
 }
 /**
+ * @en Storage data object types.
+ * @ja Storage に格納可能な型一覧
+ */
+export declare type StorageDataTypes = Types<StorageDataTypeList>;
+/**
+ * @en Storage data object interface.
+ * @ja Storage に格納可能な型
+ */
+export declare type StorageData = Record<string, StorageDataTypes>;
+/**
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */
@@ -3148,7 +3186,7 @@ export declare class MemoryStorage implements IStorage {
      * @en Return a storage-store object.
      * @ja ストレージストアオブジェクトを返却
      */
-    get context(): PlainObject;
+    get context(): StorageData;
 }
 export declare const memoryStorage: MemoryStorage;
 /**
@@ -3327,6 +3365,9 @@ export interface TemplateContext {
      */
     lookup(name: string): unknown;
 }
+export declare type TemplateViewParam = PlainObject | TemplateContext;
+export declare type TemplatePartialLookupFunction = (partialName?: string) => string | undefined | null;
+export declare type TemplatePartialParam = PlainObject | TemplatePartialLookupFunction;
 /**
  * @en Writer interface.
  * @ja ライターインターフェイス
@@ -3354,7 +3395,7 @@ export interface TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ '<%', '%>' ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string;
+    render(template: string, view: TemplateViewParam, partials?: TemplatePartialParam, tags?: TemplateDelimiters): string;
     /**
      * Low-level method that renders the given array of `tokens` using
      * the given `context` and `partials`.
@@ -3364,8 +3405,9 @@ export interface TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string;
+    renderTokens(tokens: TemplateToken[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
+export declare type JSTParam = PlainObject<any>;
 /**
  * @en Compiled JavaScript template interface
  * @ja コンパイル済み テンプレート格納インターフェイス
@@ -3400,7 +3442,7 @@ export interface JST {
      *  - `en` applied parameters string.
      *  - `ja` パラメータを適用した文字列
      */
-    (view?: PlainObject, partials?: PlainObject): string;
+    (view?: JSTParam, partials?: JSTParam): string;
 }
 /**
  * @en Value escaper definition.
@@ -3421,7 +3463,7 @@ export interface TemplateAccessor extends ITemplateEngine {
     /** Create [[TemplateScanner]] instance */
     createScanner(src: string): TemplateScanner;
     /** Create [[TemplateContext]] instance */
-    createContext(view: PlainObject, parentContext?: TemplateContext): TemplateContext;
+    createContext(view: TemplateViewParam, parentContext?: TemplateContext): TemplateContext;
     /** Create [[TemplateWriter]] instance */
     createWriter(): TemplateWriter;
 }

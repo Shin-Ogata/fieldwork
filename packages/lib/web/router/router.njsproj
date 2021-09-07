@@ -39,6 +39,7 @@
     <Content Include="dist\router.mjs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="tests\res\router\index.html" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
@@ -49,17 +50,33 @@
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\" />
+    <Folder Include="src\history\" />
     <Folder Include="tests\" />
+    <Folder Include="tests\res\" />
+    <Folder Include="tests\res\router\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
+    <Folder Include="types\history\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\history\index.ts" />
+    <TypeScriptCompile Include="src\history\interfaces.ts" />
+    <TypeScriptCompile Include="src\history\session.ts" />
+    <TypeScriptCompile Include="src\history\ssr.ts" />
     <TypeScriptCompile Include="src\index.ts" />
+    <TypeScriptCompile Include="src\result-code-defs.ts" />
+    <TypeScriptCompile Include="tests\unit\history.spec.ts" />
     <TypeScriptCompile Include="tests\unit\router.spec.ts" />
+    <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
+    <TypeScriptCompile Include="types\history\index.d.ts" />
+    <TypeScriptCompile Include="types\history\interfaces.d.ts" />
+    <TypeScriptCompile Include="types\history\session.d.ts" />
+    <TypeScriptCompile Include="types\history\ssr.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
+    <TypeScriptCompile Include="types\result-code-defs.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

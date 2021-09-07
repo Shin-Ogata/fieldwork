@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/restrict-template-expressions,
  */
 
 import {
@@ -25,6 +26,8 @@ describe('data-sync/storage spec', () => {
         str: string;
         bool: boolean;
     }
+
+    type StorageDataSchema = { id: string; num: number; str: string; bool: boolean; };
 
     class Model extends EventBroker<SyncEvent<Schema>> {
         static idAttribute = 'id';
@@ -200,7 +203,7 @@ describe('data-sync/storage spec', () => {
 
         const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
         const entries = await storage.getItem<object>('aaa') as PlainObject;
-        const json = await storage.getItem<object>(`aaa::${entries[0]}`) as PlainObject;
+        const json = await storage.getItem<object>(`aaa::${entries[0]}`) as StorageDataSchema;
 
         expect(json.id.startsWith('aaa:')).toBe(true);
         expect(json.num).toBe(1000);
@@ -223,7 +226,7 @@ describe('data-sync/storage spec', () => {
 
         const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
         const entries = await storage.getItem<object>('aaa') as PlainObject;
-        const json = await storage.getItem<object>(`aaa::${entries[0]}`) as PlainObject;
+        const json = await storage.getItem<object>(`aaa::${entries[0]}`) as StorageDataSchema;
 
         expect(json.id.startsWith('aaa:')).toBe(true);
         expect(json.num).toBe(1000);

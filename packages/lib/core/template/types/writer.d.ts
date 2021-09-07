@@ -1,6 +1,5 @@
-import { TemplateDelimiters, TemplateWriter } from './interfaces';
+import { TemplateDelimiters, TemplateWriter, TemplateViewParam, TemplatePartialParam } from './interfaces';
 import { Token } from './internal';
-import { PlainObject } from './utils';
 /**
  * A Writer knows how to take a stream of tokens and render them to a
  * string, given a context. It also maintains a cache of templates to
@@ -29,7 +28,7 @@ export declare class Writer implements TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ "<%", "%>" ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string;
+    render(template: string, view: TemplateViewParam, partials?: TemplatePartialParam, tags?: TemplateDelimiters): string;
     /**
      * Low-level method that renders the given array of `tokens` using
      * the given `context` and `partials`.
@@ -39,5 +38,5 @@ export declare class Writer implements TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: Token[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string;
+    renderTokens(tokens: Token[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }

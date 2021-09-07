@@ -229,6 +229,36 @@ describe('promise/utils spec', () => {
         }
     });
 
+    it('check PromiseManager#any w/ succeeded', async () => {
+        const manager = new PromiseManager();
+
+        try {
+            manager.add(resolve100());
+            manager.add(resolve50());
+            manager.add(reject50());
+            manager.add(reject0());
+
+            const result = await manager.any();
+            expect(result).toBe('resolve:50');
+        } catch (e) {
+            fail(e);
+        }
+    });
+
+    it('check PromiseManager#any w/ failed', async () => {
+        const manager = new PromiseManager();
+
+        try {
+            manager.add(reject50());
+            manager.add(reject0());
+
+            await manager.any();
+            fail('unexpected');
+        } catch (e) {
+            expect(e.name).toBe('AggregateError');
+        }
+    });
+
     it('check PromiseManager#abort', async () => {
         const manager = new PromiseManager();
 

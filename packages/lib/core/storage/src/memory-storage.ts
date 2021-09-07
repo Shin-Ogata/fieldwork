@@ -1,5 +1,4 @@
 import {
-    PlainObject,
     Keys,
     Types,
     KeyToType,
@@ -15,6 +14,8 @@ import {
     checkCanceled as cc,
 } from '@cdp/promise';
 import {
+    StorageData,
+    StorageDataTypes,
     StorageDataTypeList,
     StorageInputDataTypeList,
     IStorageOptions,
@@ -53,7 +54,7 @@ export class MemoryStorage implements IStorage {
     /** @internal */
     private readonly _broker = new EventBroker<MemoryStorageEvent>();
     /** @internal */
-    private _storage: PlainObject = {};
+    private _storage: StorageData = {};
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IStorage
@@ -120,7 +121,7 @@ export class MemoryStorage implements IStorage {
             case 'object':
                 return Object(restoreNil(value));
             default:
-                return restoreNil(value);
+                return restoreNil(value) as null;
         }
     }
 
@@ -141,7 +142,7 @@ export class MemoryStorage implements IStorage {
         const newVal = dropUndefined(value, true);         // `null` or `undefined` → 'null' or 'undefined'
         const oldVal = dropUndefined(this._storage[key]);  // `undefined` → `null`
         if (!deepEqual(oldVal, newVal)) {
-            this._storage[key] = newVal;
+            this._storage[key] = newVal as StorageDataTypes;
             !options.silent && this._broker.trigger('@', key, newVal, oldVal);
         }
     }
@@ -227,7 +228,7 @@ export class MemoryStorage implements IStorage {
      * @en Return a storage-store object.
      * @ja ストレージストアオブジェクトを返却
      */
-    get context(): PlainObject {
+    get context(): StorageData {
         return this._storage;
     }
 }

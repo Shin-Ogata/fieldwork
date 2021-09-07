@@ -19,6 +19,18 @@ export interface StorageDataTypeList {
 }
 
 /**
+ * @en Storage data object types.
+ * @ja Storage に格納可能な型一覧
+ */
+export type StorageDataTypes = Types<StorageDataTypeList>;
+
+/**
+ * @en Storage data object interface.
+ * @ja Storage に格納可能な型
+ */
+export type StorageData = Record<string, StorageDataTypes>;
+
+/**
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */

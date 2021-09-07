@@ -1,11 +1,10 @@
-import { PlainObject } from '@cdp/core-utils';
 import { IStorage, IStorageOptions } from '@cdp/core-storage';
-import { IDataSyncOptions, IDataSync } from './interfaces';
+import { IDataSyncOptions, IDataSync, SyncObject } from './interfaces';
 /**
  * @en [[IDataSync]] interface for [[IStorage]] accessor.
  * @ja [[IStorage]] アクセッサを備える [[IDataSync]] インターフェイス
  */
-export interface IStorageDataSync<T extends object = PlainObject> extends IDataSync<T> {
+export interface IStorageDataSync<T extends object = SyncObject> extends IDataSync<T> {
     /**
      * @en Get current [[IStorage]] instance.
      * @ja 現在対象の [[IStorage]] インスタンスにアクセス
@@ -53,4 +52,4 @@ export declare type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
  *  - `ja` 構築オプション
  */
 export declare const createStorageDataSync: (storage: IStorage, options?: StorageDataSyncConstructionOptions | undefined) => IStorageDataSync;
-export declare const dataSyncSTORAGE: IStorageDataSync<PlainObject<any>>;
+export declare const dataSyncSTORAGE: IStorageDataSync<SyncObject>;

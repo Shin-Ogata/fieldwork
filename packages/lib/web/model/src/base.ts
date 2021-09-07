@@ -4,7 +4,6 @@
 
 import {
     Nil,
-    PlainObject,
     Constructor,
     Class,
     Arguments,
@@ -39,6 +38,7 @@ import {
 } from '@cdp/result';
 import { SyncContext, defaultSync } from '@cdp/data-sync';
 import {
+    ModelSeed,
     ModelEvent,
     ModelValidateAttributeOptions,
     ModelAttributeInput,
@@ -654,7 +654,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *
      * @override
      */
-    protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void { // eslint-disable-line @typescript-eslint/no-unused-vars
+    protected parse(response: ModelSeed | void, options?: ModelSetOptions): T | void { // eslint-disable-line @typescript-eslint/no-unused-vars
         return response as T;
     }
 
@@ -687,8 +687,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
         try {
             const resp = await this.sync('read', this as Model<T>, opts);
-            this.setAttributes(opts.parse ? this.parse(resp, opts) as T : resp, opts);
-            (this as Model).trigger('@sync', this as Model, resp, opts);
+            this.setAttributes(opts.parse ? this.parse(resp as ModelSeed, opts) as T : resp, opts);
+            (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
             return resp;
         } catch (e) {
             (this as Model).trigger('@error', this as Model, e, opts);
@@ -712,7 +712,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    public async save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<PlainObject | void>;
+    public async save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<T | void>;
 
     /**
      * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
@@ -727,9 +727,9 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    public async save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<PlainObject | void>;
+    public async save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
 
-    public async save(...args: unknown[]): Promise<PlainObject | void> {
+    public async save(...args: unknown[]): Promise<T | void> {
         const { attrs, options } = parseSaveArgs(...args);
         const opts = Object.assign({ validate: true, parse: true, wait: true, extend: true }, options);
 
@@ -763,8 +763,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                 this[_properties].baseAttrs = { ...this._attrs } as T;
             }
 
-            (this as Model).trigger('@sync', this as Model, resp as PlainObject, opts);
-            return resp;
+            (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
+            return resp as T;
         } catch (e) {
             (this as Model).trigger('@error', this as Model, e, opts);
             throw e;
@@ -779,7 +779,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `en` destroy options
      *  - `ja` 破棄オプション
      */
-    public async destroy(options?: ModelDestroyOptions): Promise<PlainObject | void> {
+    public async destroy(options?: ModelDestroyOptions): Promise<T | void> {
         const opts = Object.assign({ wait: true }, options, { syncMethod: 'delete' });
 
         try {
@@ -792,7 +792,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
             !wait && destruct();
 
-            let resp: PlainObject | void;
+            let resp: ModelSeed | void;
             if (!exists) {
                 await cc(cancel);
             } else {
@@ -800,9 +800,9 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
             }
 
             wait && destruct();
-            exists && (this as Model).trigger('@sync', this as Model, resp as PlainObject, opts);
+            exists && (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
 
-            return resp;
+            return resp as T;
         } catch (e) {
             (this as Model).trigger('@error', this as Model, e, opts);
             throw e;

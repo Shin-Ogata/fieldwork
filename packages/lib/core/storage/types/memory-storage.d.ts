@@ -1,7 +1,7 @@
-import { PlainObject, Keys, Types, KeyToType } from '@cdp/core-utils';
+import { Keys, Types, KeyToType } from '@cdp/core-utils';
 import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
-import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
+import { StorageData, StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
 /** MemoryStorage I/O options */
 export declare type MemoryStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
 /** MemoryStorage return value */
@@ -117,6 +117,6 @@ export declare class MemoryStorage implements IStorage {
      * @en Return a storage-store object.
      * @ja ストレージストアオブジェクトを返却
      */
-    get context(): PlainObject;
+    get context(): StorageData;
 }
 export declare const memoryStorage: MemoryStorage;

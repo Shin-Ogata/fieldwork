@@ -1,7 +1,7 @@
 import { Constructor, PlainObject, NonFunctionPropertyNames } from '@cdp/core-utils';
 import { Subscribable, EventAll, Silenceable } from '@cdp/events';
 import { Result } from '@cdp/result';
-import { SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
+import { SyncObject, SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
 import type { Model } from './base';
 /**
  * @en Validable base interface.
@@ -25,6 +25,11 @@ export interface Parseable {
 export interface Waitable {
     wait?: boolean;
 }
+/**
+ * @en Default [[Model]] seed type.
+ * @ja 既定の [[Model]] シードデータ型
+ */
+export declare type ModelSeed = PlainObject;
 /** helper for [[ModelAttributeChangeEvent]] */
 export declare type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
 /** helper for [[ModelAttributeChangeEvent]] */
@@ -60,7 +65,7 @@ export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & Mod
      * @en notified when a model has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
      */
-    '@sync': [Model<T>, PlainObject, ModelDataSyncOptions];
+    '@sync': [Model<T>, ModelSeed, ModelDataSyncOptions];
     /**
      * @en notified when a model is destroyed.
      * @ja Model が破棄されたときに発行
@@ -108,7 +113,7 @@ export interface ModelValidateAttributeOptions extends Silenceable {
  * @en [[Model]] attributes argument type.
  * @ja [[Model]] 属性引数の型
  */
-export declare type ModelAttributeInput<T> = Partial<T> & PlainObject;
+export declare type ModelAttributeInput<T> = Partial<T> & SyncObject;
 /**
  * @en [[Model]] attributes setup options.
  * @ja [[Model]] 属性設定時に指定するオプション
@@ -123,7 +128,7 @@ export interface ModelSetOptions extends Validable, ModelValidateAttributeOption
 export declare type ModelConstructionOptions = ModelSetOptions & Parseable;
 /** re-exports */
 export declare type ModelSyncMethods = SyncMethods;
-export declare type ModelSyncResult<K extends SyncMethods, T extends object = PlainObject> = SyncResult<K, T>;
+export declare type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
 export declare type ModelDataSyncOptions = RestDataSyncOptions;
 /**
  * @en [[Model]] fetch options.

@@ -2,7 +2,6 @@ import {
     Constructor,
     Class,
     UnknownObject,
-    PlainObject,
     Keys,
     isNil,
     isArray,
@@ -41,6 +40,7 @@ import {
     CollectionItemQueryOptions,
     CollectionItemProvider,
     CollectionQueryInfo,
+    CollectionSeed,
     CollectionEvent,
     CollectionConstructionOptions,
     CollectionOperationOptions,
@@ -156,12 +156,12 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
  * @example <br>
  *
  * ```ts
- * import { PlainObject } from '@cdp/core-utils';
  * import { Model, ModelConstructor } from '@cdp/model';
  * import {
  *     Collection,
  *     CollectionItemQueryOptions,
  *     CollectionItemQueryResult,
+ *     CollectionSeed,
  * } from '@cdp/collection';
  *
  * // Model schema
@@ -199,7 +199,7 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
  *     }
  *
  *     // @override if need to convert a response into a list of models.
- *     protected parse(response: PlainObject[]): TrackAttribute[] {
+ *     protected parse(response: CollectionSeed[]): TrackAttribute[] {
  *         return response.map(seed => {
  *             const date = seed.releaseDate;
  *             seed.releaseDate = new Date(date);
@@ -256,7 +256,7 @@ export abstract class Collection<
      *  - `en` construction options.
      *  - `ja` 構築オプション
      */
-    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel, TKey>) {
+    constructor(seeds?: TModel[] | CollectionSeed[], options?: CollectionConstructionOptions<TModel, TKey>) {
         super();
         const opts = Object.assign({ modelOptions: {}, queryOptions: {} }, options);
 
@@ -665,7 +665,7 @@ export abstract class Collection<
      *
      * @override
      */
-    protected parse(response: PlainObject | void, options?: CollectionSetOptions): TModel[] | PlainObject[] | undefined { // eslint-disable-line @typescript-eslint/no-unused-vars
+    protected parse(response: CollectionSeed | CollectionSeed[] | void, options?: CollectionSetOptions): TModel[] | CollectionSeed[] | undefined { // eslint-disable-line @typescript-eslint/no-unused-vars
         return response as TModel[];
     }
 
@@ -802,9 +802,9 @@ export abstract class Collection<
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    public set(seeds: (TModel | PlainObject)[], options?: CollectionSetOptions): TModel[];
+    public set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[];
 
-    public set(seeds?: TModel | UnknownObject | (TModel | PlainObject)[], options?: CollectionSetOptions): TModel | TModel[] | void {
+    public set(seeds?: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel | TModel[] | void {
         if (isNil(seeds)) {
             return;
         }
@@ -964,7 +964,7 @@ export abstract class Collection<
      *  - `en` reset options.
      *  - `ja` リセットオプション
      */
-    public reset(seeds?: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[] {
+    public reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[] {
         const opts = Object.assign({}, options) as CollectionOperationOptions & { previous: TModel[]; };
         const { store } = this[_properties];
         for (const model of store) {
@@ -1007,9 +1007,9 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public add(seeds: (TModel | PlainObject)[], options?: CollectionAddOptions): TModel[];
+    public add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[];
 
-    public add(seeds: TModel | UnknownObject | (TModel | PlainObject)[], options?: CollectionAddOptions): TModel | TModel[] {
+    public add(seeds: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel | TModel[] {
         return this.set(seeds as UnknownObject, Object.assign({ merge: false }, options, _addOptions));
     }
 
@@ -1037,9 +1037,9 @@ export abstract class Collection<
      *  - `en` remove options.
      *  - `ja` 削除オプション
      */
-    public remove(seeds: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
+    public remove(seeds: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[];
 
-    public remove(seeds: TModel | UnknownObject | (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel | TModel[] | undefined {
+    public remove(seeds: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel | TModel[] | undefined {
         const opts = Object.assign({}, options) as CollectionUpdateOptions<TModel>;
         const singular = !isArray(seeds);
         const items = singular ? [seeds as TModel] : (seeds as TModel[]).slice();
@@ -1062,7 +1062,7 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public push(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel {
+    public push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel {
         const { store } = this[_properties];
         return this.add(seed, Object.assign({ at: store.length }, options));
     }
@@ -1091,7 +1091,7 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public unshift(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel {
+    public unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel {
         return this.add(seed, Object.assign({ at: 0 }, options));
     }
 

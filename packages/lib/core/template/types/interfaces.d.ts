@@ -57,6 +57,9 @@ export interface TemplateContext {
      */
     lookup(name: string): unknown;
 }
+export declare type TemplateViewParam = PlainObject | TemplateContext;
+export declare type TemplatePartialLookupFunction = (partialName?: string) => string | undefined | null;
+export declare type TemplatePartialParam = PlainObject | TemplatePartialLookupFunction;
 /**
  * @en Writer interface.
  * @ja ライターインターフェイス
@@ -84,7 +87,7 @@ export interface TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ "<%", "%>" ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string;
+    render(template: string, view: TemplateViewParam, partials?: TemplatePartialParam, tags?: TemplateDelimiters): string;
     /**
      * Low-level method that renders the given array of `tokens` using
      * the given `context` and `partials`.
@@ -94,8 +97,9 @@ export interface TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string;
+    renderTokens(tokens: TemplateToken[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
+export declare type JSTParam = PlainObject<any>;
 /**
  * @en Compiled JavaScript template interface
  * @ja コンパイル済み テンプレート格納インターフェイス
@@ -130,7 +134,7 @@ export interface JST {
      *  - `en` applied parameters string.
      *  - `ja` パラメータを適用した文字列
      */
-    (view?: PlainObject, partials?: PlainObject): string;
+    (view?: JSTParam, partials?: JSTParam): string;
 }
 /**
  * @en Value escaper definition.
@@ -151,7 +155,7 @@ export interface TemplateAccessor extends ITemplateEngine {
     /** Create [[TemplateScanner]] instance */
     createScanner(src: string): TemplateScanner;
     /** Create [[TemplateContext]] instance */
-    createContext(view: PlainObject, parentContext?: TemplateContext): TemplateContext;
+    createContext(view: TemplateViewParam, parentContext?: TemplateContext): TemplateContext;
     /** Create [[TemplateWriter]] instance */
     createWriter(): TemplateWriter;
 }

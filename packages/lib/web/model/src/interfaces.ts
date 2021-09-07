@@ -10,6 +10,7 @@ import {
 } from '@cdp/events';
 import { Result } from '@cdp/result';
 import {
+    SyncObject,
     SyncEvent,
     SyncMethods,
     SyncResult,
@@ -41,6 +42,12 @@ export interface Parseable {
 export interface Waitable {
     wait?: boolean;
 }
+
+/**
+ * @en Default [[Model]] seed type.
+ * @ja 既定の [[Model]] シードデータ型
+ */
+export type ModelSeed = PlainObject;
 
 /** helper for [[ModelAttributeChangeEvent]] */
 export type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
@@ -80,7 +87,7 @@ export type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttrib
      * @en notified when a model has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
      */
-    '@sync': [Model<T>, PlainObject, ModelDataSyncOptions];
+    '@sync': [Model<T>, ModelSeed, ModelDataSyncOptions];
 
     /**
      * @en notified when a model is destroyed.
@@ -134,7 +141,7 @@ export interface ModelValidateAttributeOptions extends Silenceable {
  * @en [[Model]] attributes argument type.
  * @ja [[Model]] 属性引数の型
  */
-export type ModelAttributeInput<T> = Partial<T> & PlainObject;
+export type ModelAttributeInput<T> = Partial<T> & SyncObject;
 
 /**
  * @en [[Model]] attributes setup options.
@@ -152,7 +159,7 @@ export type ModelConstructionOptions = ModelSetOptions & Parseable;
 
 /** re-exports */
 export type ModelSyncMethods = SyncMethods;
-export type ModelSyncResult<K extends SyncMethods, T extends object = PlainObject> = SyncResult<K, T>;
+export type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
 export type ModelDataSyncOptions = RestDataSyncOptions;
 
 /**
