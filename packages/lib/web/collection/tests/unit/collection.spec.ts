@@ -3,7 +3,6 @@
  */
 
 import {
-    PlainObject,
     Constructor,
     GroupByReturnValue,
     sleep,
@@ -39,6 +38,7 @@ import {
     CollectionItemQueryResult,
     CollectionFetchProgress,
     Collection,
+    CollectionSeed,
     CollectionConstructionOptions,
     CollectionSetOptions,
     CollectionReSortOptions,
@@ -478,7 +478,7 @@ describe('collection/base spec', () => {
             get url(): string {
                 return 'test';
             }
-            protected parse(response: PlainObject[]): Track[] {
+            protected parse(response: CollectionSeed[]): Track[] {
                 return response.map(seed => {
                     const date = seed.releaseDate;
                     seed.releaseDate = new Date(date);
@@ -2188,7 +2188,7 @@ describe('collection/base spec', () => {
 
         class InvalidPlaylist extends Collection<InvalidClass> {
             static readonly model = InvalidClass;
-            parse(response: PlainObject | void, options?: CollectionSetOptions): undefined { // eslint-disable-line
+            parse(response: CollectionSeed | void, options?: CollectionSetOptions): undefined { // eslint-disable-line
                 return undefined;
             }
         }

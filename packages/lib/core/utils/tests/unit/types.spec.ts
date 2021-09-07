@@ -1,15 +1,21 @@
 /* eslint-disable
+    @typescript-eslint/no-explicit-any,
     @typescript-eslint/no-empty-function,
+    @typescript-eslint/restrict-template-expressions,
+    @typescript-eslint/ban-types,
  */
 
 import {
     Nillable,
+    PlainObject,
+    UnknownObject,
     exists,
     isNil,
     isString,
     isNumber,
     isBoolean,
     isSymbol,
+    isBigInt,
     isPrimitive,
     isArray,
     isObject,
@@ -27,6 +33,149 @@ import {
 } from '@cdp/core-utils';
 //import { isNil } from './_testee';
 
+//* Object Type deference
+
+let plain: PlainObject;
+let unknown: UnknownObject;
+let obj: object;
+let anyobj: PlainObject<any>;
+let obj2: Object;
+let anyval: {};
+
+const unknownProp = (prop: unknown): string => `ok:${prop}`;
+
+// ~~ PlainObject ~~
+// plain = null;
+// plain = undefined;
+// plain = 1;
+// plain = 'string';
+// plain = false;
+// plain = [];
+// plain = () => "test";
+
+plain = {};
+plain = { aaa: null, bbb: undefined };
+plain = { ccc: { check: true } };
+
+unknownProp(plain.hoge);
+
+unknown = plain;
+obj     = plain;
+anyobj  = plain;
+obj2    = plain;
+anyval  = plain;
+
+// ~~ UnknownObject ~~
+// unknown = null;
+// unknown = undefined;
+// unknown = 1;
+// unknown = 'string';
+// unknown = false;
+// unknown = [];
+// unknown = () => "test";
+
+unknown = {};
+unknown = { aaa: null, bbb: undefined };
+unknown = { ccc: { check: true } };
+
+unknownProp(unknown.hoge);
+
+plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+obj     = unknown;
+anyobj  = unknown;
+obj2    = unknown;
+anyval  = unknown;
+
+// ~~ object ~~
+// obj = null;
+// obj = undefined;
+// obj = 1;
+// obj = 'string';
+// obj = false;
+
+obj = [];
+obj = () => 'test';
+
+obj = {};
+obj = { aaa: null, bbb: undefined };
+obj = { ccc: { check: true } };
+
+// unknownProp(obj.hoge);
+
+unknown = obj as UnknownObject; // need cast
+plain   = obj as PlainObject;   // need cast
+anyobj  = obj;
+obj2    = obj;
+anyval  = obj;
+
+// ~~ PlainObject<any> ~~
+// anyobj = null;
+// anyobj = undefined;
+// anyobj = 1;
+// anyobj = 'string';
+// anyobj = false;
+
+anyobj = [];
+anyobj = () => 'test';
+
+anyobj = {};
+anyobj = { aaa: null, bbb: undefined };
+anyobj = { ccc: { check: true } };
+
+unknownProp(anyobj.hoge); // ★ CAN access
+
+unknown = anyobj; // ★ need NOT cast ★
+plain   = anyobj; // ★ need NOT cast ★
+obj     = anyobj;
+obj2    = anyobj;
+anyval  = anyobj;
+
+// ~~ Object ~~
+// obj2 = null;
+// obj2 = undefined;
+obj2 = 1;
+obj2 = 'string';
+obj2 = false;
+
+obj2 = [];
+obj2 = () => 'test';
+
+obj2 = {};
+obj2 = { aaa: null, bbb: undefined };
+obj2 = { ccc: { check: true } };
+
+// unknownProp(obj2.hoge);
+
+unknown = obj2 as UnknownObject; // need cast
+plain   = obj2 as PlainObject;   // need cast
+obj     = obj2;
+anyobj  = obj2;
+anyval  = obj2;
+
+// ~~ {} ~~
+// anyval = null;
+// anyval = undefined;
+anyval = 1;
+anyval = 'string';
+anyval = false;
+
+anyval = [];
+anyval = () => 'test';
+
+anyval = {};
+anyval = { aaa: null, bbb: undefined };
+anyval = { ccc: { check: true } };
+
+// unknownProp(anyval.hoge);
+
+unknown = anyval;
+plain   = anyval;
+obj     = anyval;
+anyobj  = anyval;
+obj2    = anyval;
+
+//*/
+
 class TypeClass {
     public say(): string { return 'hello'; }
 }
@@ -41,6 +190,7 @@ describe('utils/types spec', (): void => {
     });
 
     const _symbol = Symbol('symbol:type');
+    const _bigint = BigInt(10);
     const _classInst = new TypeClass();
 
     it('check exists()', (): void => {
@@ -62,6 +212,8 @@ describe('utils/types spec', (): void => {
         val = [];
         expect(exists(val)).toBeTruthy();
         val = _symbol;
+        expect(exists(val)).toBeTruthy();
+        val = _bigint;
         expect(exists(val)).toBeTruthy();
         val = TypeClass;
         expect(exists(val)).toBeTruthy();
@@ -89,6 +241,8 @@ describe('utils/types spec', (): void => {
         expect(isNil(val)).toBeFalsy();
         val = _symbol;
         expect(isNil(val)).toBeFalsy();
+        val = _bigint;
+        expect(isNil(val)).toBeFalsy();
         val = TypeClass;
         expect(isNil(val)).toBeFalsy();
         val = _classInst;
@@ -110,6 +264,7 @@ describe('utils/types spec', (): void => {
         expect(isString([])).toBeFalsy();
         expect(isString(() => { return 1; })).toBeFalsy();
         expect(isString(_symbol)).toBeFalsy();
+        expect(isString(_bigint)).toBeFalsy();
         expect(isString(TypeClass)).toBeFalsy();
         expect(isString(_classInst)).toBeFalsy();
     });
@@ -129,6 +284,7 @@ describe('utils/types spec', (): void => {
         expect(isNumber([])).toBeFalsy();
         expect(isNumber(() => { return 1; })).toBeFalsy();
         expect(isNumber(_symbol)).toBeFalsy();
+        expect(isNumber(_bigint)).toBeFalsy();
         expect(isNumber(TypeClass)).toBeFalsy();
         expect(isNumber(_classInst)).toBeFalsy();
     });
@@ -148,6 +304,7 @@ describe('utils/types spec', (): void => {
         expect(isBoolean([])).toBeFalsy();
         expect(isBoolean(() => { return 1; })).toBeFalsy();
         expect(isBoolean(_symbol)).toBeFalsy();
+        expect(isBoolean(_bigint)).toBeFalsy();
         expect(isBoolean(TypeClass)).toBeFalsy();
         expect(isBoolean(_classInst)).toBeFalsy();
     });
@@ -167,8 +324,29 @@ describe('utils/types spec', (): void => {
         expect(isSymbol([])).toBeFalsy();
         expect(isSymbol(() => { return 1; })).toBeFalsy();
         expect(isSymbol(_symbol)).toBeTruthy();
+        expect(isSymbol(_bigint)).toBeFalsy();
         expect(isSymbol(TypeClass)).toBeFalsy();
         expect(isSymbol(_classInst)).toBeFalsy();
+    });
+
+    it('check isBigInt()', (): void => {
+        expect(isBigInt(undefined)).toBeFalsy();
+        expect(isBigInt(null)).toBeFalsy();
+        expect(isBigInt('')).toBeFalsy();
+        expect(isBigInt('hoge')).toBeFalsy();
+        expect(isBigInt(true)).toBeFalsy();
+        expect(isBigInt(false)).toBeFalsy();
+        expect(isBigInt(0)).toBeFalsy();
+        expect(isBigInt(1)).toBeFalsy();
+        expect(isBigInt(Infinity)).toBeFalsy();
+        expect(isBigInt(NaN)).toBeFalsy();
+        expect(isBigInt({})).toBeFalsy();
+        expect(isBigInt([])).toBeFalsy();
+        expect(isBigInt(() => { return 1; })).toBeFalsy();
+        expect(isBigInt(_symbol)).toBeFalsy();
+        expect(isBigInt(_bigint)).toBeTruthy();
+        expect(isBigInt(TypeClass)).toBeFalsy();
+        expect(isBigInt(_classInst)).toBeFalsy();
     });
 
     it('check isPrimitive()', (): void => {
@@ -186,6 +364,7 @@ describe('utils/types spec', (): void => {
         expect(isPrimitive([])).toBeFalsy();
         expect(isPrimitive(() => { return 1; })).toBeFalsy();
         expect(isPrimitive(_symbol)).toBeTruthy();
+        expect(isPrimitive(_bigint)).toBeTruthy();
         expect(isPrimitive(TypeClass)).toBeFalsy();
         expect(isPrimitive(_classInst)).toBeFalsy();
     });
@@ -206,6 +385,7 @@ describe('utils/types spec', (): void => {
         expect(isArray(args)).toBeTruthy();
         expect(isArray(() => { return 1; })).toBeFalsy();
         expect(isArray(_symbol)).toBeFalsy();
+        expect(isArray(_bigint)).toBeFalsy();
         expect(isArray(TypeClass)).toBeFalsy();
         expect(isArray(_classInst)).toBeFalsy();
     });
@@ -225,6 +405,7 @@ describe('utils/types spec', (): void => {
         expect(isObject([])).toBeTruthy();
         expect(isObject(() => { return 1; })).toBeFalsy();
         expect(isObject(_symbol)).toBeFalsy();
+        expect(isObject(_bigint)).toBeFalsy();
         expect(isObject(TypeClass)).toBeFalsy();
         expect(isObject(_classInst)).toBeTruthy();
     });
@@ -241,9 +422,11 @@ describe('utils/types spec', (): void => {
         expect(isPlainObject(Infinity)).toBeFalsy();
         expect(isPlainObject(NaN)).toBeFalsy();
         expect(isPlainObject({})).toBeTruthy();
+        expect(isPlainObject({ test: 'test', obj: {} })).toBeTruthy();
         expect(isPlainObject([])).toBeFalsy();
         expect(isPlainObject(() => { return 1; })).toBeFalsy();
         expect(isPlainObject(_symbol)).toBeFalsy();
+        expect(isPlainObject(_bigint)).toBeFalsy();
         expect(isPlainObject(TypeClass)).toBeFalsy();
         expect(isPlainObject(_classInst)).toBeFalsy();
         expect(isPlainObject(document)).toBeFalsy();
@@ -266,6 +449,7 @@ describe('utils/types spec', (): void => {
         expect(isEmptyObject([])).toBeFalsy();
         expect(isEmptyObject(() => { return 1; })).toBeFalsy();
         expect(isEmptyObject(_symbol)).toBeFalsy();
+        expect(isEmptyObject(_bigint)).toBeFalsy();
         expect(isEmptyObject(TypeClass)).toBeFalsy();
         expect(isEmptyObject(_classInst)).toBeFalsy();
         expect(isEmptyObject(document)).toBeFalsy();
@@ -287,6 +471,7 @@ describe('utils/types spec', (): void => {
         expect(isFunction([])).toBeFalsy();
         expect(isFunction(() => { return 1; })).toBeTruthy();
         expect(isFunction(_symbol)).toBeFalsy();
+        expect(isFunction(_bigint)).toBeFalsy();
         expect(isFunction(TypeClass)).toBeTruthy();
         expect(isFunction(_classInst)).toBeFalsy();
     });
@@ -303,6 +488,8 @@ describe('utils/types spec', (): void => {
         expect(typeOf('boolean', false)).toBeTruthy();
         expect(typeOf('symbol', undefined)).toBeFalsy();
         expect(typeOf('symbol', _symbol)).toBeTruthy();
+        expect(typeOf('bigint', undefined)).toBeFalsy();
+        expect(typeOf('bigint', _bigint)).toBeTruthy();
         expect(typeOf('undefined', undefined)).toBeTruthy();
         expect(typeOf('undefined', void 0)).toBeTruthy();
         expect(typeOf('undefined', null)).toBeFalsy();
@@ -330,6 +517,7 @@ describe('utils/types spec', (): void => {
         expect(isIterable([])).toBeTruthy();
         expect(isIterable(() => { return 1; })).toBeFalsy();
         expect(isIterable(_symbol)).toBeFalsy();
+        expect(isIterable(_bigint)).toBeFalsy();
         expect(isIterable(TypeClass)).toBeFalsy();
         expect(isIterable(_classInst)).toBeFalsy();
     });
@@ -349,6 +537,7 @@ describe('utils/types spec', (): void => {
         expect(isTypedArray([])).toBeFalsy();
         expect(isTypedArray(() => { return 1; })).toBeFalsy();
         expect(isTypedArray(_symbol)).toBeFalsy();
+        expect(isTypedArray(_bigint)).toBeFalsy();
         expect(isTypedArray(TypeClass)).toBeFalsy();
         expect(isTypedArray(_classInst)).toBeFalsy();
         expect(isTypedArray(new Int8Array(8))).toBeTruthy();
@@ -377,6 +566,7 @@ describe('utils/types spec', (): void => {
         expect(instanceOf(Object, [])).toBeTruthy();
         expect(instanceOf(Object, () => { return 1; })).toBeTruthy();
         expect(instanceOf(Object, _symbol)).toBeFalsy();
+        expect(instanceOf(Object, _bigint)).toBeFalsy();
         expect(instanceOf(Object, TypeClass)).toBeTruthy();
         expect(instanceOf(Object, _classInst)).toBeTruthy();
     });
@@ -396,6 +586,7 @@ describe('utils/types spec', (): void => {
         expect(ownInstanceOf(Object, [])).toBeFalsy();
         expect(ownInstanceOf(Object, () => { return 1; })).toBeFalsy();
         expect(ownInstanceOf(Object, _symbol)).toBeFalsy();
+        expect(ownInstanceOf(Object, _bigint)).toBeFalsy();
         expect(ownInstanceOf(Object, TypeClass)).toBeFalsy();
         expect(ownInstanceOf(Object, _classInst)).toBeFalsy();
         expect(ownInstanceOf(TypeClass, _classInst)).toBeTruthy();
@@ -416,6 +607,7 @@ describe('utils/types spec', (): void => {
         expect(className([])).toBe('Array');
         expect(className(() => { return 1; })).toBe('Function');
         expect(className(_symbol)).toBe('Symbol');
+        expect(className(_bigint)).toBe('BigInt');
         expect(className(TypeClass)).toBe('TypeClass');
         expect(className(_classInst)).toBe('TypeClass');
         expect(className(Object.create(null))).toBe('Object');
@@ -478,6 +670,11 @@ describe('utils/types spec', (): void => {
         expect(sameType(_symbol, undefined)).toBeFalsy();
         expect(sameType(_symbol, null)).toBeFalsy();
         expect(sameType(_symbol, Symbol)).toBeFalsy();
+        expect(sameType(_bigint, _bigint)).toBeTruthy();
+        expect(sameType(_bigint, BigInt(100))).toBeTruthy();
+        expect(sameType(_bigint, undefined)).toBeFalsy();
+        expect(sameType(_bigint, null)).toBeFalsy();
+        expect(sameType(_bigint, BigInt)).toBeFalsy();
     });
 
     it('check sameClass()', (): void => {
@@ -513,8 +710,14 @@ describe('utils/types spec', (): void => {
         expect(sameClass(() => { }, null)).toBeFalsy();
         expect(sameClass(() => { }, TypeClass)).toBeTruthy();
         expect(sameClass(_symbol, _symbol)).toBeTruthy();
+        expect(sameClass(_symbol, Symbol('hoge'))).toBeTruthy();
         expect(sameClass(_symbol, undefined)).toBeFalsy();
         expect(sameClass(_symbol, null)).toBeFalsy();
         expect(sameClass(_symbol, Symbol)).toBeFalsy();
+        expect(sameClass(_bigint, _bigint)).toBeTruthy();
+        expect(sameClass(_bigint, BigInt(100))).toBeTruthy();
+        expect(sameClass(_bigint, undefined)).toBeFalsy();
+        expect(sameClass(_bigint, null)).toBeFalsy();
+        expect(sameClass(_bigint, Symbol)).toBeFalsy();
     });
 });

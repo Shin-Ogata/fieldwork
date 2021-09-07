@@ -1,5 +1,5 @@
 {
-  "extends": "../../../../config/tsconfig/window",
+  "extends": "../../../../config/tsconfig/web",
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "types",

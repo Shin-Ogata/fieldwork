@@ -3,7 +3,6 @@
  */
 
 import {
-    PlainObject,
     post,
     deepEqual,
     deepCopy,
@@ -11,6 +10,7 @@ import {
 } from '@cdp/core-utils';
 import { EventPublisher } from '@cdp/events';
 import {
+    StorageData,
     IStorage,
     IStorageOptions,
     IStorageFormatOptions,
@@ -61,7 +61,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
     /** @internal */
     private readonly _defaultOptions: IStorageFormatOptions;
     /** @internal */
-    private _store: PlainObject = {};
+    private _store: StorageData = {};
 
     /**
      * constructor
@@ -149,11 +149,11 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
             if (!(name in reg)) {
                 return null;
             }
-            reg = reg[name];
+            reg = reg[name] as StorageData;
         }
 
         // return deep copy
-        return (null != reg[lastKey]) ? deepCopy(reg[lastKey]) : null;
+        return (null != reg[lastKey]) ? deepCopy(reg[lastKey]) as any : null;
     }
 
     /**
@@ -181,7 +181,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 
         while (name = structure.shift()) { // eslint-disable-line no-cond-assign
             if (name in reg) {
-                reg = reg[name];
+                reg = reg[name] as StorageData;
             } else if (remove) {
                 return; // すでに親キーがないため何もしない
             } else {
@@ -196,7 +196,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
         } else if (remove) {
             delete reg[lastKey];
         } else {
-            reg[lastKey] = deepCopy(newVal);
+            reg[lastKey] = deepCopy(newVal) as any;
         }
 
         if (!noSave) {
@@ -205,7 +205,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
         }
 
         if (!silent) {
-            void post(() => this.publish('change', key, newVal, oldVal));
+            void post(() => this.publish('change', key, newVal, oldVal as any));
         }
     }
 
@@ -245,11 +245,11 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 // private methods:
 
     /** @internal get root object */
-    private targetRoot(field?: string): PlainObject {
+    private targetRoot(field?: string): StorageData {
         if (field) {
             // ensure [field] object.
             this._store[field] = this._store[field] || {};
-            return this._store[field];
+            return this._store[field] as StorageData;
         } else {
             return this._store;
         }

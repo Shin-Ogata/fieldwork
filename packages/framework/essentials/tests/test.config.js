@@ -81,5 +81,6 @@ module.exports = {
         { module: '../../../lib/web/i18n', resource: 'res' },
         { module: '../../../lib/web/data-sync', server: 'server' },
         { module: '../../../lib/web/template', resource: 'res' },
+        { module: '../../../lib/web/router', resource: 'res' },
     ],
 };

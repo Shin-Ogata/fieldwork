@@ -52,7 +52,7 @@ export class Context implements TemplateContext {
             value = cache[name];
         } else {
             let context: Context | undefined = this; // eslint-disable-line @typescript-eslint/no-this-alias
-            let intermediateValue: PlainObject;
+            let intermediateValue: object | undefined | null;
             let names: string[];
             let index: number;
             let lookupHit = false;
@@ -122,7 +122,7 @@ export class Context implements TemplateContext {
                 context = context._parent;
             }
 
-            cache[name] = value;
+            cache[name] = value as object;
         }
 
         if (isFunction(value)) {

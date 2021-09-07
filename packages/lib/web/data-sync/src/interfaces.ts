@@ -35,10 +35,16 @@ export type SyncMethods = keyof SyncMethodList;
 export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
 
 /**
+ * @en Default [[SyncContext]] type.
+ * @ja [[SyncContext]] の既定型
+ */
+export type SyncObject = PlainObject<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+/**
  * @en Context type of [[IDataSync]]`#sync()`.
  * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
  */
-export type SyncContext<T extends object = PlainObject> = EventBroker<SyncEvent<T>> & { id?: string; toJSON(): T; };
+export type SyncContext<T extends object = SyncObject> = EventBroker<SyncEvent<T>> & { id?: string; toJSON(): T; };
 
 /**
  * @en [[IDataSync]] sync() options.
@@ -61,7 +67,7 @@ export interface IDataSyncOptions extends Cancelable {
  * @ja コンテキストとデータソース間の同期をとるためのインターフェイス <br>
  *     `Backbone.sync()` 相当の機能を提供
  */
-export interface IDataSync<T extends object = PlainObject> {
+export interface IDataSync<T extends object = SyncObject> {
     /**
      * @en [[IDataSync]] kind signature.
      * @ja [[IDataSync]] の種別を表す識別子

@@ -1,4 +1,9 @@
-import { TemplateDelimiters, TemplateWriter } from './interfaces';
+import {
+    TemplateDelimiters,
+    TemplateWriter,
+    TemplateViewParam,
+    TemplatePartialParam,
+} from './interfaces';
 import {
     Token,
     TokenAddress as $,
@@ -30,7 +35,7 @@ export class Writer implements TemplateWriter {
      */
     parse(template: string, tags?: TemplateDelimiters): { tokens: Token[]; cacheKey: string; } {
         const cacheKey = buildCacheKey(template, tags || globalSettings.tags);
-        let tokens = cache[cacheKey];
+        let tokens = cache[cacheKey] as Token[];
         if (null == tokens) {
             tokens = cache[cacheKey] = parseTemplate(template, tags);
         }
@@ -50,7 +55,7 @@ export class Writer implements TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ "<%", "%>" ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string {
+    render(template: string, view: TemplateViewParam, partials?: TemplatePartialParam, tags?: TemplateDelimiters): string {
         const { tokens } = this.parse(template, tags);
         return this.renderTokens(tokens, view, partials, template, tags);
     }
@@ -64,8 +69,8 @@ export class Writer implements TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: Token[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string {
-        const context = (view instanceof Context) ? view : new Context(view);
+    renderTokens(tokens: Token[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string {
+        const context = (view instanceof Context) ? view : new Context(view as PlainObject);
         let buffer = '';
 
         for (const token of tokens) {
@@ -105,7 +110,7 @@ export class Writer implements TemplateWriter {
 // private methods:
 
     /** @internal */
-    private renderSection(token: Token, context: Context, partials?: PlainObject, originalTemplate?: string): string | void {
+    private renderSection(token: Token, context: Context, partials?: TemplatePartialParam, originalTemplate?: string): string | void {
         const self = this;
         let buffer = '';
         let value = context.lookup(token[$.VALUE]);
@@ -125,7 +130,7 @@ export class Writer implements TemplateWriter {
                 buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(v), partials, originalTemplate);
             }
         } else if ('object' === typeof value || 'string' === typeof value || 'number' === typeof value) {
-            buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(value as object), partials, originalTemplate);
+            buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context.push(value as PlainObject), partials, originalTemplate);
         } else if (isFunction(value)) {
             if ('string' !== typeof originalTemplate) {
                 throw new Error('Cannot use higher-order sections without the original template');
@@ -142,7 +147,7 @@ export class Writer implements TemplateWriter {
     }
 
     /** @internal */
-    private renderInverted(token: Token, context: Context, partials?: PlainObject, originalTemplate?: string): string | void {
+    private renderInverted(token: Token, context: Context, partials?: TemplatePartialParam, originalTemplate?: string): string | void {
         const value = context.lookup(token[$.VALUE]);
         if (!value || (isArray(value) && 0 === value.length)) {
             return this.renderTokens(token[$.TOKEN_LIST] as Token[], context, partials, originalTemplate);
@@ -162,12 +167,12 @@ export class Writer implements TemplateWriter {
     }
 
     /** @internal */
-    private renderPartial(token: Token, context: Context, partials: PlainObject | undefined, tags: TemplateDelimiters | undefined): string | void {
+    private renderPartial(token: Token, context: Context, partials: TemplatePartialParam | undefined, tags: TemplateDelimiters | undefined): string | void {
         if (!partials) {
             return;
         }
 
-        const value = isFunction(partials) ? partials(token[$.VALUE]) : partials[token[$.VALUE]];
+        const value = (isFunction(partials) ? partials(token[$.VALUE]) : partials[token[$.VALUE]]) as string | undefined;
         if (null != value) {
             const lineHasNonSpace = token[$.HAS_NO_SPACE];
             const tagIndex        = token[$.TAG_INDEX];

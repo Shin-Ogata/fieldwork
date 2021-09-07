@@ -312,6 +312,12 @@ declare namespace i18n {
          */
         saveMissingTo?: 'current' | 'all' | 'fallback';
         /**
+         * Used to not fallback to the key as default value, when using saveMissing functionality.
+         * i.e. when using with i18next-http-backend this will result in having a key with an empty string value.
+         * @default false
+         */
+        missingKeyNoValueFallbackToKey?: boolean;
+        /**
          * Used for custom missing key handling (needs saveMissing set to true!)
          * @default false
          */
@@ -796,9 +802,11 @@ declare namespace i18n {
          * Returns a t function that defaults to given language or namespace.
          * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
          * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
+         *
+         * Accepts optional keyPrefix that will be automatically applied to returned t function.
          */
-        getFixedT(lng: string | readonly string[], ns?: string | readonly string[]): TFunction;
-        getFixedT(lng: null, ns: string | readonly string[]): TFunction;
+        getFixedT(lng: string | readonly string[], ns?: string | readonly string[], keyPrefix?: string): TFunction;
+        getFixedT(lng: null, ns: string | readonly string[] | null, keyPrefix?: string): TFunction;
         /**
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
          * HINT: For easy testing - setting lng to 'cimode' will set t function to always return the key.

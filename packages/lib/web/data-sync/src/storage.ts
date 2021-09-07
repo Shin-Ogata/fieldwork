@@ -16,6 +16,7 @@ import {
     IDataSyncOptions,
     IDataSync,
     SyncMethods,
+    SyncObject,
     SyncContext,
     SyncResult,
 } from './interfaces';
@@ -30,7 +31,7 @@ const enum Const {
  * @en [[IDataSync]] interface for [[IStorage]] accessor.
  * @ja [[IStorage]] アクセッサを備える [[IDataSync]] インターフェイス
  */
-export interface IStorageDataSync<T extends object = PlainObject> extends IDataSync<T> {
+export interface IStorageDataSync<T extends object = SyncObject> extends IDataSync<T> {
     /**
      * @en Get current [[IStorage]] instance.
      * @ja 現在対象の [[IStorage]] インスタンスにアクセス
@@ -213,7 +214,7 @@ class StorageDataSync implements IStorageDataSync {
                 responce = await this.destroy(key, context, url, options);
                 break;
             case 'read':
-                responce = await this.find(model, key, url, options);
+                responce = await this.find(model, key, url, options) as PlainObject;
                 if (null == responce) {
                     throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_STORAGE_DATA_NOT_FOUND, `method: ${method}`);
                 }
@@ -222,7 +223,7 @@ class StorageDataSync implements IStorageDataSync {
                 throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, `unknown method: ${method}`);
         }
 
-        context.trigger('@request', context, responce as Promise<PlainObject>);
+        context.trigger('@request', context, Promise.resolve(responce as PlainObject));
         return responce as SyncResult<K>;
     }
 
@@ -231,7 +232,7 @@ class StorageDataSync implements IStorageDataSync {
 
     /** @internal */
     private async queryEntries(url: string, options?: StorageDataSyncOptions): Promise<{ ids: boolean; items: (PlainObject | string)[]; }> {
-        const items = await this._storage.getItem<PlainObject>(url, options);
+        const items = await this._storage.getItem<object>(url, options);
         if (null == items) {
             return { ids: true, items: [] };
         } else if (isArray(items)) {
@@ -247,7 +248,7 @@ class StorageDataSync implements IStorageDataSync {
     }
 
     /** @internal */
-    private async find(model: boolean, key: string, url: string, options?: StorageDataSyncOptions): Promise<PlainObject | null> {
+    private async find(model: boolean, key: string, url: string, options?: StorageDataSyncOptions): Promise<PlainObject | PlainObject[] | null> {
         if (model) {
             return this._storage.getItem<PlainObject>(key, options);
         } else {
@@ -263,7 +264,7 @@ class StorageDataSync implements IStorageDataSync {
                     }
                     return entires;
                 } else {
-                    return items;
+                    return items as PlainObject[];
                 }
             } catch (e) {
                 const result = toResult(e);
@@ -287,7 +288,7 @@ class StorageDataSync implements IStorageDataSync {
                 await this.saveEntries(url, items as string[], options);
             }
         }
-        return this.find(true, key, url, options);
+        return this.find(true, key, url, options) as Promise<PlainObject | null>;
     }
 
     /** @internal */

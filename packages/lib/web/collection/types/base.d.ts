@@ -1,7 +1,7 @@
-import { Class, UnknownObject, PlainObject, Keys } from '@cdp/core-utils';
+import { Class, UnknownObject, Keys } from '@cdp/core-utils';
 import { Silenceable, EventSource } from '@cdp/events';
 import { ModelSaveOptions } from '@cdp/model';
-import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
+import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionSeed, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
 /**
  * @en Base class definition for collection that is ordered sets of models.
  * @ja Model の集合を扱う Collection の基底クラス定義.
@@ -9,12 +9,12 @@ import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItem
  * @example <br>
  *
  * ```ts
- * import { PlainObject } from '@cdp/core-utils';
  * import { Model, ModelConstructor } from '@cdp/model';
  * import {
  *     Collection,
  *     CollectionItemQueryOptions,
  *     CollectionItemQueryResult,
+ *     CollectionSeed,
  * } from '@cdp/collection';
  *
  * // Model schema
@@ -52,7 +52,7 @@ import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItem
  *     }
  *
  *     // @override if need to convert a response into a list of models.
- *     protected parse(response: PlainObject[]): TrackAttribute[] {
+ *     protected parse(response: CollectionSeed[]): TrackAttribute[] {
  *         return response.map(seed => {
  *             const date = seed.releaseDate;
  *             seed.releaseDate = new Date(date);
@@ -98,7 +98,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` construction options.
      *  - `ja` 構築オプション
      */
-    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel, TKey>);
+    constructor(seeds?: TModel[] | CollectionSeed[], options?: CollectionConstructionOptions<TModel, TKey>);
     /**
      * @ja Initialize query info
      * @ja クエリ情報の初期化
@@ -285,7 +285,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *
      * @override
      */
-    protected parse(response: PlainObject | void, options?: CollectionSetOptions): TModel[] | PlainObject[] | undefined;
+    protected parse(response: CollectionSeed | CollectionSeed[] | void, options?: CollectionSetOptions): TModel[] | CollectionSeed[] | undefined;
     /**
      * @en The [[fetch]] method proxy that is compatible with [[CollectionItemProvider]] returns one-shot result.
      * @ja [[CollectionItemProvider]] 互換の単発の fetch 結果を返却. 必要に応じてオーバーライド可能.
@@ -368,7 +368,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    set(seeds: (TModel | PlainObject)[], options?: CollectionSetOptions): TModel[];
+    set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[];
     /**
      * @en Replace a collection with a new list of models (or attribute hashes), triggering a single `reset` event on completion.
      * @ja Collection を新しい Model 一覧で置換. 完了時に `reset` イベントを発行
@@ -380,7 +380,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` reset options.
      *  - `ja` リセットオプション
      */
-    reset(seeds?: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
+    reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[];
     /**
      * @en Add model to the collection.
      * @ja Collection への Model の追加
@@ -404,7 +404,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    add(seeds: (TModel | PlainObject)[], options?: CollectionAddOptions): TModel[];
+    add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[];
     /**
      * @en Remove a model from the set.
      * @ja Collection から Model を削除
@@ -428,7 +428,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` remove options.
      *  - `ja` 削除オプション
      */
-    remove(seeds: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
+    remove(seeds: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[];
     /**
      * @en Add a model to the end of the collection.
      * @ja 末尾に Model を追加
@@ -440,7 +440,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    push(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel;
+    push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel;
     /**
      * @en Remove a model from the end of the collection.
      * @ja 末尾の Model を削除
@@ -461,7 +461,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    unshift(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel;
+    unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel;
     /**
      * @en Remove a model from the beginning of the collection.
      * @ja 先頭の Model を削除

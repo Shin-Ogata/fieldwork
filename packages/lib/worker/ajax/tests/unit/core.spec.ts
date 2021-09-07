@@ -64,7 +64,7 @@ describe('ajax/core spec', () => {
     it('check ajax() get json', async () => {
         const data = await ajax('../../.temp/res/ajax/data.json', { dataType: 'json' });
         expect(data).toBeDefined();
-        const { propNumber, propBoolean, propString } = data.schema;
+        const { propNumber, propBoolean, propString } = data.schema as { propNumber: number; propBoolean: boolean; propString: string; };
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');

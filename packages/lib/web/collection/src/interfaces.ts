@@ -496,6 +496,12 @@ export type CollectionModelAttributeChangeEvent<T extends object>
     = { [K in ChangedAttributeEvent<T>]: K extends `@change:${string}` ? [T, Collection<T>, CollectionOperationOptions] : never; }
 
 /**
+ * @en Default [[Collection]] seed type.
+ * @ja 既定の [[Collection]] シードデータ型
+ */
+export type CollectionSeed = PlainObject<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+/**
  * @en Default [[Collection]] event definition.
  * @ja 既定の [[Collection]] イベント定義
  */
@@ -546,7 +552,7 @@ export type CollectionEvent<TItem extends object> = EventAll & SyncEvent<Collect
      * @en notified when a collection has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
      */
-    '@sync': [Collection<TItem>, PlainObject, CollectionDataSyncOptions];
+    '@sync': [Collection<TItem>, CollectionSeed[], CollectionDataSyncOptions];
 
     /**
      * @en notified when a model is destroyed.

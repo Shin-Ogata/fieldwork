@@ -1,8 +1,8 @@
-import { Nil, PlainObject, Arguments } from '@cdp/core-utils';
+import { Nil, Arguments } from '@cdp/core-utils';
 import { Subscription, Silenceable, EventReceiver, EventSource } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
-import { ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions, ModelSyncMethods, ModelSyncResult, ModelDataSyncOptions, ModelFetchOptions, ModelSaveOptions, ModelDestroyOptions } from './interfaces';
+import { ModelSeed, ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions, ModelSyncMethods, ModelSyncResult, ModelDataSyncOptions, ModelFetchOptions, ModelSaveOptions, ModelDestroyOptions } from './interfaces';
 /**
  * @en Valid attributes result.
  * @ja 属性検証の有効値
@@ -312,7 +312,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *
      * @override
      */
-    protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void;
+    protected parse(response: ModelSeed | void, options?: ModelSetOptions): T | void;
     /**
      * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
      * @ja データ同期. 必要に応じてオーバーライド可能.
@@ -351,7 +351,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<PlainObject | void>;
+    save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
      *     If the server returns an attributes hash that differs, the model's state will be `set` again.
@@ -365,7 +365,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<PlainObject | void>;
+    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Destroy this [[Model]] on the server if it was already persisted.
      * @ja [[Model]] をサーバーから削除
@@ -374,7 +374,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` destroy options
      *  - `ja` 破棄オプション
      */
-    destroy(options?: ModelDestroyOptions): Promise<PlainObject | void>;
+    destroy(options?: ModelDestroyOptions): Promise<T | void>;
 }
 /**
  * @en Check the value-type is [[Model]].

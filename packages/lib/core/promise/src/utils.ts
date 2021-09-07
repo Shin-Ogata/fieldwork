@@ -107,35 +107,53 @@ export class PromiseManager {
     }
 
     /**
-     * @en Call `Promise.all()` for under the management.
-     * @ja 管理対象に対して `Promise.all()`
+     * @en Call `Promise.all()` for under the management. <br>
+     *     Wait for all `fullfilled`.
+     * @ja 管理対象に対して `Promise.all()` <br>
+     *     すべてが `fullfilled` になるまで待機
      */
     public all(): Promise<unknown[]> {
         return Promise.all(this.promises());
     }
 
     /**
-     * @en Call `Promise.race()` for under the management.
-     * @ja 管理対象に対して `Promise.race()`
+     * @en Call `Promise.race()` for under the management. <br>
+     *     Wait for any `settled`.
+     * @ja 管理対象に対して `Promise.race()` <br>
+     *     いずれかが `settled` になるまで待機
      */
     public race(): Promise<unknown> {
         return Promise.race(this.promises());
     }
 
     /**
-     * @en Call [[wait]]() for under the management.
-     * @ja 管理対象に対して [[wait]]()
+     * @en Call [[wait]]() for under the management. <br>
+     *     Wait for all `settled`. (simplified version)
+     * @ja 管理対象に対して [[wait]]() <br>
+     *     すべてが `settled` になるまで待機 (簡易バージョン)
      */
     public wait(): Promise<unknown[]> {
         return wait(this.promises());
     }
 
     /**
-     * @en Call `Promise.allSettled()` for under the management.
-     * @ja 管理対象に対して `Promise.allSettled()`
+     * @en Call `Promise.allSettled()` for under the management. <br>
+     *     Wait for all `settled`.
+     * @ja 管理対象に対して `Promise.allSettled()` <br>
+     *     すべてが `settled` になるまで待機
      */
     public allSettled(): Promise<PromiseSettledResult<unknown>[]> {
         return Promise.allSettled(this.promises());
+    }
+
+    /**
+     * @en Call `Promise.any()` for under the management. <br>
+     *     Wait for any `fullfilled`.
+     * @ja 管理対象に対して `Promise.any()` <br>
+     *     いずれかが `fullfilled` になるまで待機
+     */
+    public any(): Promise<unknown> {
+        return Promise.any(this.promises());
     }
 
     /**

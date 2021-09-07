@@ -5,11 +5,13 @@
 import { Result, RESULT_CODE } from '@cdp/result';
 import { request } from '@cdp/ajax';
 
+type RespSchema = { propNumber: number; propBoolean: boolean; propString: string; };
+
 describe('ajax/reauest spec', () => {
     it('check request#get()', async () => {
         const data = await request.get('../../.temp/res/ajax/data.json');
         expect(data).toBeDefined();
-        const { propNumber, propBoolean, propString } = data.schema;
+        const { propNumber, propBoolean, propString } = data.schema as RespSchema;
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');
@@ -25,7 +27,7 @@ describe('ajax/reauest spec', () => {
     it('check request#json()', async () => {
         const data = await request.json('../../.temp/res/ajax/data.json');
         expect(data).toBeDefined();
-        const { propNumber, propBoolean, propString } = data.schema;
+        const { propNumber, propBoolean, propString } = data.schema as RespSchema;
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');
@@ -42,7 +44,7 @@ describe('ajax/reauest spec', () => {
             aaa: 'aaa',
             bbb: true,
             ccc: null,
-        }, 'json');
+        }, 'json') as { API: string; data: { aaa: string; bbb: string; ccc: string; }; };
         expect(json).toBeDefined();
         expect(json.API).toBe('JSON response');
         expect(json.data.aaa).toBe('aaa');
@@ -53,7 +55,7 @@ describe('ajax/reauest spec', () => {
     it('check request#resource() json', () => {
         const json = request.resource('../../.temp/res/ajax/data.json');
         expect(json).toBeDefined();
-        const { propNumber, propBoolean, propString } = json.schema;
+        const { propNumber, propBoolean, propString } = json.schema as RespSchema;
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');

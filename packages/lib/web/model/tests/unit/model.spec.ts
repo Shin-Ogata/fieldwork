@@ -10,7 +10,6 @@
 
 import {
     Writable,
-    PlainObject,
     post,
     $cdp,
 } from '@cdp/core-utils';
@@ -33,6 +32,7 @@ import {
 } from '@cdp/data-sync';
 import {
     Model,
+    ModelSeed,
     ModelEvent,
     ModelConstructor,
     ModelValidateAttributeOptions,
@@ -83,8 +83,8 @@ describe('model/model spec', () => {
         }
 
         // example: parse()
-        protected parse(response: PlainObject, options?: ModelSetOptions): ContentAttribute {
-            let resp = super.parse(response, options) as PlainObject;
+        protected parse(response: ModelSeed, options?: ModelSetOptions): ContentAttribute {
+            let resp = super.parse(response, options) as { size?: number; cookie?: string; };
             const { size, syncMethod } = Object.assign({}, options, resp);
             if (null != size) {
                 resp.size = size * 2;
@@ -828,7 +828,7 @@ describe('model/model spec', () => {
         content.on('@sync', stub.onCallback);
 
         const resp = await content.fetch();
-        expect(resp as PlainObject).toEqual({ uri: 'sss.html', size: 60, cookie: 'localStorage' });
+        expect(resp).toEqual({ uri: 'sss.html', size: 60, cookie: 'localStorage' });
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
         expect(content.uri).toBe('sss.html');
         expect(content.size).toBe(60);
@@ -853,7 +853,7 @@ describe('model/model spec', () => {
         content.on('@sync', stub.onCallback);
 
         const resp = await content.fetch({ parse: false });
-        expect(resp as PlainObject).toEqual({ uri: 'sss.html', size: 30, cookie: 'localStorage' });
+        expect(resp).toEqual({ uri: 'sss.html', size: 30, cookie: 'localStorage' });
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
         expect(content.uri).toBe('sss.html');
         expect(content.size).toBe(30);

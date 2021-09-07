@@ -64,7 +64,7 @@ export declare function getConfig<T extends object = object>(namespace?: string,
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
  */
-export declare type Primitive = string | number | boolean | symbol | null | undefined;
+export declare type Primitive = string | number | boolean | symbol | bigint | null | undefined;
 /**
  * @en The general null type.
  * @ja 空を示す型定義
@@ -99,6 +99,7 @@ export interface TypeList {
     number: number;
     boolean: boolean;
     symbol: symbol;
+    bigint: bigint;
     undefined: void | undefined;
     object: object | null;
     function(...args: unknown[]): unknown;
@@ -166,6 +167,11 @@ export declare type NonFunctionPropertyNames<T> = {
  */
 export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 /**
+ * @en Extract non-functional types.
+ * @ja 非関数型の抽出
+ */
+export declare type NonFunction<T> = T extends Function ? never : T;
+/**
  * @en Extract object key list. (ensure only 'string')
  * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
@@ -190,12 +196,10 @@ export declare type TypeToKey<O extends object, T extends Types<O>> = {
 /**
  * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
  *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
- * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>The PlainObject type is a JavaScript object containing zero or more key-value pairs. <br>
+ * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>
  *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
  */
-export interface PlainObject<T = any> {
-    [key: string]: T;
-}
+export declare type PlainObject<T = {} | null | undefined> = Record<string, T>;
 /**
  * @en The data type list by which style compulsion is possible.
  * @ja 型強制可能なデータ型一覧
@@ -307,6 +311,15 @@ export declare function isBoolean(x: unknown): x is boolean;
  *  - `ja` 評価する値
  */
 export declare function isSymbol(x: unknown): x is symbol;
+/**
+ * @en Check the value-type is BigInt.
+ * @ja BigInt 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isBigInt(x: unknown): x is bigint;
 /**
  * @en Check the value-type is primitive type.
  * @ja プリミティブ型であるか判定
@@ -2251,25 +2264,40 @@ export declare class PromiseManager {
      */
     promises(): Promise<unknown>[];
     /**
-     * @en Call `Promise.all()` for under the management.
-     * @ja 管理対象に対して `Promise.all()`
+     * @en Call `Promise.all()` for under the management. <br>
+     *     Wait for all `fullfilled`.
+     * @ja 管理対象に対して `Promise.all()` <br>
+     *     すべてが `fullfilled` になるまで待機
      */
     all(): Promise<unknown[]>;
     /**
-     * @en Call `Promise.race()` for under the management.
-     * @ja 管理対象に対して `Promise.race()`
+     * @en Call `Promise.race()` for under the management. <br>
+     *     Wait for any `settled`.
+     * @ja 管理対象に対して `Promise.race()` <br>
+     *     いずれかが `settled` になるまで待機
      */
     race(): Promise<unknown>;
     /**
-     * @en Call [[wait]]() for under the management.
-     * @ja 管理対象に対して [[wait]]()
+     * @en Call [[wait]]() for under the management. <br>
+     *     Wait for all `settled`. (simplified version)
+     * @ja 管理対象に対して [[wait]]() <br>
+     *     すべてが `settled` になるまで待機 (簡易バージョン)
      */
     wait(): Promise<unknown[]>;
     /**
-     * @en Call `Promise.allSettled()` for under the management.
-     * @ja 管理対象に対して `Promise.allSettled()`
+     * @en Call `Promise.allSettled()` for under the management. <br>
+     *     Wait for all `settled`.
+     * @ja 管理対象に対して `Promise.allSettled()` <br>
+     *     すべてが `settled` になるまで待機
      */
     allSettled(): Promise<PromiseSettledResult<unknown>[]>;
+    /**
+     * @en Call `Promise.any()` for under the management. <br>
+     *     Wait for any `fullfilled`.
+     * @ja 管理対象に対して `Promise.any()` <br>
+     *     いずれかが `fullfilled` になるまで待機
+     */
+    any(): Promise<unknown>;
     /**
      * @en Invoke `cancel` message for under the management promises.
      * @ja 管理対象の `Promise` に対してキャンセルを発行
@@ -2853,6 +2881,16 @@ export interface StorageDataTypeList {
     object: object;
 }
 /**
+ * @en Storage data object types.
+ * @ja Storage に格納可能な型一覧
+ */
+export declare type StorageDataTypes = Types<StorageDataTypeList>;
+/**
+ * @en Storage data object interface.
+ * @ja Storage に格納可能な型
+ */
+export declare type StorageData = Record<string, StorageDataTypes>;
+/**
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */
@@ -3164,7 +3202,7 @@ export declare class MemoryStorage implements IStorage {
      * @en Return a storage-store object.
      * @ja ストレージストアオブジェクトを返却
      */
-    get context(): PlainObject;
+    get context(): StorageData;
 }
 export declare const memoryStorage: MemoryStorage;
 /**
@@ -3343,6 +3381,9 @@ export interface TemplateContext {
      */
     lookup(name: string): unknown;
 }
+export declare type TemplateViewParam = PlainObject | TemplateContext;
+export declare type TemplatePartialLookupFunction = (partialName?: string) => string | undefined | null;
+export declare type TemplatePartialParam = PlainObject | TemplatePartialLookupFunction;
 /**
  * @en Writer interface.
  * @ja ライターインターフェイス
@@ -3370,7 +3411,7 @@ export interface TemplateWriter {
      * string values: the opening and closing tags used in the template (e.g.
      * [ '<%', '%>' ]). The default is to mustache.tags.
      */
-    render(template: string, view: PlainObject, partials?: PlainObject, tags?: TemplateDelimiters): string;
+    render(template: string, view: TemplateViewParam, partials?: TemplatePartialParam, tags?: TemplateDelimiters): string;
     /**
      * Low-level method that renders the given array of `tokens` using
      * the given `context` and `partials`.
@@ -3380,8 +3421,9 @@ export interface TemplateWriter {
      * If the template doesn't use higher-order sections, this argument may
      * be omitted.
      */
-    renderTokens(tokens: TemplateToken[], view: PlainObject, partials?: PlainObject, originalTemplate?: string, tags?: TemplateDelimiters): string;
+    renderTokens(tokens: TemplateToken[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
+export declare type JSTParam = PlainObject<any>;
 /**
  * @en Compiled JavaScript template interface
  * @ja コンパイル済み テンプレート格納インターフェイス
@@ -3416,7 +3458,7 @@ export interface JST {
      *  - `en` applied parameters string.
      *  - `ja` パラメータを適用した文字列
      */
-    (view?: PlainObject, partials?: PlainObject): string;
+    (view?: JSTParam, partials?: JSTParam): string;
 }
 /**
  * @en Value escaper definition.
@@ -3437,7 +3479,7 @@ export interface TemplateAccessor extends ITemplateEngine {
     /** Create [[TemplateScanner]] instance */
     createScanner(src: string): TemplateScanner;
     /** Create [[TemplateContext]] instance */
-    createContext(view: PlainObject, parentContext?: TemplateContext): TemplateContext;
+    createContext(view: TemplateViewParam, parentContext?: TemplateContext): TemplateContext;
     /** Create [[TemplateWriter]] instance */
     createWriter(): TemplateWriter;
 }
@@ -4448,6 +4490,12 @@ export declare namespace i18n {
          */
         saveMissingTo?: 'current' | 'all' | 'fallback';
         /**
+         * Used to not fallback to the key as default value, when using saveMissing functionality.
+         * i.e. when using with i18next-http-backend this will result in having a key with an empty string value.
+         * @default false
+         */
+        missingKeyNoValueFallbackToKey?: boolean;
+        /**
          * Used for custom missing key handling (needs saveMissing set to true!)
          * @default false
          */
@@ -4932,9 +4980,11 @@ export declare namespace i18n {
          * Returns a t function that defaults to given language or namespace.
          * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
          * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
+         *
+         * Accepts optional keyPrefix that will be automatically applied to returned t function.
          */
-        getFixedT(lng: string | readonly string[], ns?: string | readonly string[]): TFunction;
-        getFixedT(lng: null, ns: string | readonly string[]): TFunction;
+        getFixedT(lng: string | readonly string[], ns?: string | readonly string[], keyPrefix?: string): TFunction;
+        getFixedT(lng: null, ns: string | readonly string[] | null, keyPrefix?: string): TFunction;
         /**
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
          * HINT: For easy testing - setting lng to 'cimode' will set t function to always return the key.
@@ -7382,10 +7432,15 @@ export declare type SyncMethods = keyof SyncMethodList;
  */
 export declare type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
 /**
+ * @en Default [[SyncContext]] type.
+ * @ja [[SyncContext]] の既定型
+ */
+export declare type SyncObject = PlainObject<any>;
+/**
  * @en Context type of [[IDataSync]]`#sync()`.
  * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
  */
-export declare type SyncContext<T extends object = PlainObject> = EventBroker<SyncEvent<T>> & {
+export declare type SyncContext<T extends object = SyncObject> = EventBroker<SyncEvent<T>> & {
     id?: string;
     toJSON(): T;
 };
@@ -7409,7 +7464,7 @@ export interface IDataSyncOptions extends Cancelable {
  * @ja コンテキストとデータソース間の同期をとるためのインターフェイス <br>
  *     `Backbone.sync()` 相当の機能を提供
  */
-export interface IDataSync<T extends object = PlainObject> {
+export interface IDataSync<T extends object = SyncObject> {
     /**
      * @en [[IDataSync]] kind signature.
      * @ja [[IDataSync]] の種別を表す識別子
@@ -7439,12 +7494,12 @@ export declare const dataSyncNULL: IDataSync<object>;
 export interface RestDataSyncOptions extends AjaxOptions<'json'> {
     url?: string;
 }
-export declare const dataSyncREST: IDataSync<PlainObject<any>>;
+export declare const dataSyncREST: IDataSync<SyncObject>;
 /**
  * @en [[IDataSync]] interface for [[IStorage]] accessor.
  * @ja [[IStorage]] アクセッサを備える [[IDataSync]] インターフェイス
  */
-export interface IStorageDataSync<T extends object = PlainObject> extends IDataSync<T> {
+export interface IStorageDataSync<T extends object = SyncObject> extends IDataSync<T> {
     /**
      * @en Get current [[IStorage]] instance.
      * @ja 現在対象の [[IStorage]] インスタンスにアクセス
@@ -7492,7 +7547,7 @@ export declare type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
  *  - `ja` 構築オプション
  */
 export declare const createStorageDataSync: (storage: IStorage, options?: StorageDataSyncConstructionOptions | undefined) => IStorageDataSync;
-export declare const dataSyncSTORAGE: IStorageDataSync<PlainObject<any>>;
+export declare const dataSyncSTORAGE: IStorageDataSync<SyncObject>;
 /**
  * @en Get or update default [[IDataSync]] object.
  * @ja 既定の [[IDataSync]] オブジェクトの取得 / 更新
@@ -7814,7 +7869,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *
      * @override
      */
-    protected parse(response: PlainObject | void, options?: ModelSetOptions): T | void;
+    protected parse(response: ModelSeed | void, options?: ModelSetOptions): T | void;
     /**
      * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
      * @ja データ同期. 必要に応じてオーバーライド可能.
@@ -7853,7 +7908,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<PlainObject | void>;
+    save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
      *     If the server returns an attributes hash that differs, the model's state will be `set` again.
@@ -7867,7 +7922,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<PlainObject | void>;
+    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Destroy this [[Model]] on the server if it was already persisted.
      * @ja [[Model]] をサーバーから削除
@@ -7876,7 +7931,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` destroy options
      *  - `ja` 破棄オプション
      */
-    destroy(options?: ModelDestroyOptions): Promise<PlainObject | void>;
+    destroy(options?: ModelDestroyOptions): Promise<T | void>;
 }
 /**
  * @en Check the value-type is [[Model]].
@@ -7914,6 +7969,11 @@ export interface Parseable {
 export interface Waitable {
     wait?: boolean;
 }
+/**
+ * @en Default [[Model]] seed type.
+ * @ja 既定の [[Model]] シードデータ型
+ */
+export declare type ModelSeed = PlainObject;
 /** helper for [[ModelAttributeChangeEvent]] */
 export declare type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
 /** helper for [[ModelAttributeChangeEvent]] */
@@ -7964,7 +8024,7 @@ export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & Mod
      */
     '@sync': [
         Model<T>,
-        PlainObject,
+        ModelSeed,
         ModelDataSyncOptions
     ];
     /**
@@ -8025,7 +8085,7 @@ export interface ModelValidateAttributeOptions extends Silenceable {
  * @en [[Model]] attributes argument type.
  * @ja [[Model]] 属性引数の型
  */
-export declare type ModelAttributeInput<T> = Partial<T> & PlainObject;
+export declare type ModelAttributeInput<T> = Partial<T> & SyncObject;
 /**
  * @en [[Model]] attributes setup options.
  * @ja [[Model]] 属性設定時に指定するオプション
@@ -8040,7 +8100,7 @@ export interface ModelSetOptions extends Validable, ModelValidateAttributeOption
 export declare type ModelConstructionOptions = ModelSetOptions & Parseable;
 /** re-exports */
 export declare type ModelSyncMethods = SyncMethods;
-export declare type ModelSyncResult<K extends SyncMethods, T extends object = PlainObject> = SyncResult<K, T>;
+export declare type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
 export declare type ModelDataSyncOptions = RestDataSyncOptions;
 /**
  * @en [[Model]] fetch options.
@@ -8066,12 +8126,12 @@ export declare type ModelDestroyOptions = ModelDataSyncOptions & Waitable;
  * @example <br>
  *
  * ```ts
- * import { PlainObject } from '@cdp/core-utils';
  * import { Model, ModelConstructor } from '@cdp/model';
  * import {
  *     Collection,
  *     CollectionItemQueryOptions,
  *     CollectionItemQueryResult,
+ *     CollectionSeed,
  * } from '@cdp/collection';
  *
  * // Model schema
@@ -8109,7 +8169,7 @@ export declare type ModelDestroyOptions = ModelDataSyncOptions & Waitable;
  *     }
  *
  *     // @override if need to convert a response into a list of models.
- *     protected parse(response: PlainObject[]): TrackAttribute[] {
+ *     protected parse(response: CollectionSeed[]): TrackAttribute[] {
  *         return response.map(seed => {
  *             const date = seed.releaseDate;
  *             seed.releaseDate = new Date(date);
@@ -8155,7 +8215,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` construction options.
      *  - `ja` 構築オプション
      */
-    constructor(seeds?: TModel[] | PlainObject[], options?: CollectionConstructionOptions<TModel, TKey>);
+    constructor(seeds?: TModel[] | CollectionSeed[], options?: CollectionConstructionOptions<TModel, TKey>);
     /**
      * @ja Initialize query info
      * @ja クエリ情報の初期化
@@ -8342,7 +8402,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *
      * @override
      */
-    protected parse(response: PlainObject | void, options?: CollectionSetOptions): TModel[] | PlainObject[] | undefined;
+    protected parse(response: CollectionSeed | CollectionSeed[] | void, options?: CollectionSetOptions): TModel[] | CollectionSeed[] | undefined;
     /**
      * @en The [[fetch]] method proxy that is compatible with [[CollectionItemProvider]] returns one-shot result.
      * @ja [[CollectionItemProvider]] 互換の単発の fetch 結果を返却. 必要に応じてオーバーライド可能.
@@ -8425,7 +8485,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    set(seeds: (TModel | PlainObject)[], options?: CollectionSetOptions): TModel[];
+    set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[];
     /**
      * @en Replace a collection with a new list of models (or attribute hashes), triggering a single `reset` event on completion.
      * @ja Collection を新しい Model 一覧で置換. 完了時に `reset` イベントを発行
@@ -8437,7 +8497,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` reset options.
      *  - `ja` リセットオプション
      */
-    reset(seeds?: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
+    reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[];
     /**
      * @en Add model to the collection.
      * @ja Collection への Model の追加
@@ -8461,7 +8521,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    add(seeds: (TModel | PlainObject)[], options?: CollectionAddOptions): TModel[];
+    add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[];
     /**
      * @en Remove a model from the set.
      * @ja Collection から Model を削除
@@ -8485,7 +8545,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` remove options.
      *  - `ja` 削除オプション
      */
-    remove(seeds: (TModel | PlainObject)[], options?: CollectionOperationOptions): TModel[];
+    remove(seeds: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[];
     /**
      * @en Add a model to the end of the collection.
      * @ja 末尾に Model を追加
@@ -8497,7 +8557,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    push(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel;
+    push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel;
     /**
      * @en Remove a model from the end of the collection.
      * @ja 末尾の Model を削除
@@ -8518,7 +8578,7 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    unshift(seed: TModel | PlainObject, options?: CollectionAddOptions): TModel;
+    unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel;
     /**
      * @en Remove a model from the beginning of the collection.
      * @ja 先頭の Model を削除
@@ -8987,6 +9047,11 @@ export declare type CollectionModelAttributeChangeEvent<T extends object> = {
     ] : never;
 };
 /**
+ * @en Default [[Collection]] seed type.
+ * @ja 既定の [[Collection]] シードデータ型
+ */
+export declare type CollectionSeed = PlainObject<any>;
+/**
  * @en Default [[Collection]] event definition.
  * @ja 既定の [[Collection]] イベント定義
  */
@@ -9058,7 +9123,7 @@ export declare type CollectionEvent<TItem extends object> = EventAll & SyncEvent
      */
     '@sync': [
         Collection<TItem>,
-        PlainObject,
+        CollectionSeed[],
         CollectionDataSyncOptions
     ];
     /**
@@ -9921,6 +9986,31 @@ export declare function clearTemplateCache(): void;
  *  - `ja` クエリオプション
  */
 export declare function getTemplate<T extends TemplateQueryTypes = 'engine'>(selector: string, options?: TemplateQueryOptions<T>): Promise<TemplateQueryTypeList[T]>;
+/**
+ * @en The event definition fired in [[IHistory]].
+ * @ja [[IHistory]] 内から発行されるイベント定義
+ */
+export interface HistoryEvent<T = PlainObject> {
+    'popstate': T;
+    'hashchange': [
+        string,
+        string
+    ];
+}
+/**
+ * @en History management interface.
+ * @ja 履歴管理インターフェイス
+ */
+export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>> {
+    readonly length: number;
+    readonly index: number;
+    readonly state: T;
+    back(): number;
+    forward(): number;
+    go(delta?: number): number;
+    pushState(data: T, url?: string | URL | null): number;
+    replaceState(data: T, url?: string | URL | null): number;
+}
 export declare const STATUS = 'TODO';
 export declare namespace i18n {
     /**
