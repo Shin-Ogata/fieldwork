@@ -157,6 +157,18 @@ export type TypeToKey<O extends object, T extends Types<O>> = { [K in keyof O]: 
 export type PlainObject<T = {} | null | undefined> = Record<string, T>;
 
 /**
+ * @en Object can be guaranteed definition. Be careful not to abuse it because it does not force the cast.
+ *   - Unlike [[PlainObject]], it can accept Class (built-in object), Array, Function.
+ *   - Unlike `object`, you can access unknown properties.
+ *   - Unlike `{} / Object`, it can repel [[Primitive]].
+ * @ja Object を保証可能な定義. キャストを強制しないため乱用しないように注意が必要.
+ *   - [[PlainObject]] と違い、Class (組み込みオブジェクト), Array, Function を受け付けることができる.
+ *   - `object` と違い、未知のプロパティにアクセスすることができる.
+ *   - `{} / Object` と違い、[[Primitive]] をはじくことができる.
+ */
+export type AnyObject = Record<string, any>;
+
+/**
  * @en The data type list by which style compulsion is possible.
  * @ja 型強制可能なデータ型一覧
  */

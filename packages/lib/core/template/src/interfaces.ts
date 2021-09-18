@@ -1,4 +1,8 @@
-import { PlainObject, escapeHTML } from '@cdp/core-utils';
+import {
+    PlainObject,
+    AnyObject,
+    escapeHTML,
+} from '@cdp/core-utils';
 
 /**
  * @en [[TemplateEngine]] token structure.
@@ -111,7 +115,7 @@ export interface TemplateWriter {
     renderTokens(tokens: TemplateToken[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
 
-export type JSTParam = PlainObject<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+export type JSTParam = AnyObject;
 
 /**
  * @en Compiled JavaScript template interface

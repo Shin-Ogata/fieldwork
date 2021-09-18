@@ -41,6 +41,7 @@ function patch(index, code, includes) {
             Nil,
             UnknownObject,
             PlainObject,
+            AnyObject,
             Constructor,
             Class,
             TypedData,
@@ -69,6 +70,7 @@ function patch(index, code, includes) {
             IStorageEventCallback,
             StorageDataTypeList,
             StorageInputDataTypeList,
+            $cdp,
         `;
 
         const coreReExportStuff = `

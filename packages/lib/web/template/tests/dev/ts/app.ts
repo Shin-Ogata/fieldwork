@@ -22,7 +22,7 @@ export const App = (): TemplateResult => html`
             store().inputText,
             inputText => store({ inputText }),
             e => {
-                if ('Enter' === e.key) {
+                if ('Enter' === e.code) {
                     const state = store();
                     store({
                         tasks: [...state.tasks, { title: state.inputText, id: luid('task:') }],

@@ -10,6 +10,8 @@ function patch(index, code) {
     }
 
     code = code
+        // Specifying multiple comments at the start of a file to use the first comment as the comment for the module has been deprecated.
+        .replace(/^(\/\*\*)(\n \* @license)/g, '/*!$2')
         // trim `import("xxx").`
         .replace(/import\("[\S]+"\)\./g, '')
     ;

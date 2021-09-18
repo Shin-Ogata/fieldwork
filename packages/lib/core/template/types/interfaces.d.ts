@@ -1,4 +1,4 @@
-import { PlainObject, escapeHTML } from '@cdp/core-utils';
+import { PlainObject, AnyObject, escapeHTML } from '@cdp/core-utils';
 /**
  * @en [[TemplateEngine]] token structure.
  * @ja [[TemplateEngine]] token 型
@@ -99,7 +99,7 @@ export interface TemplateWriter {
      */
     renderTokens(tokens: TemplateToken[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
-export declare type JSTParam = PlainObject<any>;
+export declare type JSTParam = AnyObject;
 /**
  * @en Compiled JavaScript template interface
  * @ja コンパイル済み テンプレート格納インターフェイス

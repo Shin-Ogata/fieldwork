@@ -49,36 +49,50 @@ export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & Mod
     /**
      * @en when a model is added to a collection.
      * @ja Model が  Collection に追加されたときに発行
-    */
+     *
+     * @args [model, collection, options]
+     */
     '@add': [Model<T>, unknown, Silenceable];
     /**
      * @en when a model is removed from a collection.
      * @ja Model が Collection から削除されたときに発行
+     *
+     * @args [model, collection, options]
      */
     '@remove': [Model<T>, unknown, Silenceable];
     /**
      * @en notified when some attribute changed.
      * @ja 属性が変更されたときに発行
+     *
+     * @args [model]
      */
     '@change': Model<T>;
     /**
      * @en notified when a model has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
+     *
+     * @args [model, seed, options]
      */
     '@sync': [Model<T>, ModelSeed, ModelDataSyncOptions];
     /**
      * @en notified when a model is destroyed.
      * @ja Model が破棄されたときに発行
+     *
+     * @args [model, options]
      */
     '@destroy': [Model<T>, ModelDestroyOptions];
     /**
      * @en notified when some attribute failed.
      * @ja 属性が変更に失敗したときに発行
+     *
+     * @args [model, attributes, errorInfo]
      */
     '@invalid': [Model<T>, T, Result];
     /**
      * @en notified when a model's request to the server has failed.
      * @ja サーバーリクエストに失敗したときに発行
+     *
+     * @args [model, errorInfo, options]
      */
     '@error': [Model<T>, Error, ModelDataSyncOptions];
 };

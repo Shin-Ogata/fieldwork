@@ -7,4 +7,4 @@ import { IDataSync } from './interfaces';
 export interface RestDataSyncOptions extends AjaxOptions<'json'> {
     url?: string;
 }
-export declare const dataSyncREST: IDataSync<import("./interfaces").SyncObject>;
+export declare const dataSyncREST: IDataSync<import("@cdp/core-utils").AnyObject>;

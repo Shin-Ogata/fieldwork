@@ -1,3 +1,3 @@
 import { safe } from '@cdp/core-utils';
 
-/** @internal */ export const webContext = safe(globalThis.window);
+/** @internal */ export const window = safe(globalThis.window);

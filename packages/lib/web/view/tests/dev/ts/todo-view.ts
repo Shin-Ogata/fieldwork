@@ -55,7 +55,7 @@ export class ToDoView extends View {
     }
 
     private updateOnEnter(e: KeyboardEvent): void {
-        if (13 === e.keyCode) {
+        if ('Enter' === e.code) {
             this.close();
         }
     }

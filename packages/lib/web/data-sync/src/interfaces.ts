@@ -1,4 +1,8 @@
-import { PlainObject, KeyToType } from '@cdp/core-utils';
+import {
+    PlainObject,
+    AnyObject,
+    KeyToType,
+} from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 
@@ -7,6 +11,7 @@ import { Cancelable } from '@cdp/promise';
  * @ja [[IDataSync]] 内から発行されるイベント定義
  */
 export interface SyncEvent<T extends object> {
+    /** @args [context, response] */
     '@request': [EventBroker<SyncEvent<T>>, Promise<T | PlainObject>];
 }
 
@@ -38,7 +43,7 @@ export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = 
  * @en Default [[SyncContext]] type.
  * @ja [[SyncContext]] の既定型
  */
-export type SyncObject = PlainObject<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+export type SyncObject = AnyObject;
 
 /**
  * @en Context type of [[IDataSync]]`#sync()`.

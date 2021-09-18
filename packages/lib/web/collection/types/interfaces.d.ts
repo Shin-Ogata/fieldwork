@@ -1,4 +1,4 @@
-import { Keys, PlainObject } from '@cdp/core-utils';
+import { Keys, AnyObject } from '@cdp/core-utils';
 import { Silenceable, EventAll } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import { ArrayChangeRecord } from '@cdp/observable';
@@ -428,7 +428,7 @@ export declare type CollectionModelAttributeChangeEvent<T extends object> = {
  * @en Default [[Collection]] seed type.
  * @ja 既定の [[Collection]] シードデータ型
  */
-export declare type CollectionSeed = PlainObject<any>;
+export declare type CollectionSeed = AnyObject;
 /**
  * @en Default [[Collection]] event definition.
  * @ja 既定の [[Collection]] イベント定義
@@ -437,26 +437,36 @@ export declare type CollectionEvent<TItem extends object> = EventAll & SyncEvent
     /**
      * @en when a model is added to a collection.
      * @ja Model が Collection に追加されたときに発行
+     *
+     * @args [model, collection, options]
      */
     '@add': [TItem, Collection<TItem>, CollectionSetOptions];
     /**
      * @en when a model is removed from a collection.
      * @ja Model が Collection から削除されたときに発行
+     *
+     * @args [model, collection, options]
      */
     '@remove': [TItem, Collection<TItem>, CollectionSetOptions];
     /**
      * @en notified when some attribute changed.
      * @ja 属性が変更されたときに発行
+     *
+     * @args [model, collection, options]
      */
     '@change': [TItem, Collection<TItem>, CollectionOperationOptions];
     /**
      * @en single event triggered after any number of models have been added, removed or changed in a collection.
      * @ja Collection 内の Model の追加・削除・変化時に1回発行
+     *
+     * @args [collection, options]
      */
     '@update': [Collection<TItem>, CollectionUpdateOptions<TItem>];
     /**
      * @en when the collection's entire contents have been reset.
      * @ja Collection が置き換えられたときに発行
+     *
+     * @args [collection, options]
      */
     '@reset': [Collection<TItem>, CollectionSetOptions & {
         previous: TItem[];
@@ -464,31 +474,43 @@ export declare type CollectionEvent<TItem extends object> = EventAll & SyncEvent
     /**
      * @en when the collection has been re-sorted.
      * @ja Collection が再ソートされたときに発行
+     *
+     * @args [collection, options]
      */
     '@sort': [Collection<TItem>, CollectionReSortOptions<TItem>];
     /**
      * @en when the collection has been re-sorted.
      * @ja Collection が再ソートされたときに発行
+     *
+     * @args [collection, options]
      */
     '@filter': [Collection<TItem>, CollectionAfterFilterOptions<TItem>];
     /**
      * @en notified when a collection has been successfully synced with the server.
      * @ja サーバー同期に成功したときに発行
+     *
+     * @args [collection, seeds, options]
      */
     '@sync': [Collection<TItem>, CollectionSeed[], CollectionDataSyncOptions];
     /**
      * @en notified when a model is destroyed.
      * @ja Model が破棄されたときに発行
+     *
+     * @args [model, collection, options]
      */
     '@destroy': [TItem, Collection<TItem>, ModelDestroyOptions];
     /**
      * @en notified when setup model failed.
      * @ja Model 設定に失敗したときに発行
+     *
+     * @args [model, collection, errorInfo, options]
      */
     '@invalid': [TItem, Collection<TItem>, Result, CollectionOperationOptions];
     /**
      * @en notified when a collection's request to the server has failed.
      * @ja サーバーリクエストに失敗したときに発行
+     *
+     * @args [model, collection, errorInfo, options]
      */
     '@error': [TItem | undefined, Collection<TItem>, Error, CollectionDataSyncOptions];
 };

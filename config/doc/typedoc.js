@@ -28,12 +28,14 @@ for (const scope of scopes) {
 // console.log(exclude);
 
 module.exports = {
-    disableOutputCheck: true,
+    cleanOutputDir: false,
+//  entryPointStrategy: 'resolve',
     exclude,
     excludeExternals: true,
     excludePrivate: true,
     hideGenerator: true,
-    logger: 'none',
+//  logger: 'none',
+    logLevel: 'Error',
     name,
     out: resolve(`${doc}/${api}`),
     readme: existsSync(resolve('README.md')) ? 'README.md' : 'none',

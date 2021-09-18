@@ -3,12 +3,15 @@
     @typescript-eslint/no-empty-function,
     @typescript-eslint/restrict-template-expressions,
     @typescript-eslint/ban-types,
+    @typescript-eslint/indent,
  */
 
 import {
     Nillable,
     PlainObject,
     UnknownObject,
+    Primitive,
+    AnyObject,
     exists,
     isNil,
     isString,
@@ -31,150 +34,6 @@ import {
     sameType,
     sameClass,
 } from '@cdp/core-utils';
-//import { isNil } from './_testee';
-
-//* Object Type deference
-
-let plain: PlainObject;
-let unknown: UnknownObject;
-let obj: object;
-let anyobj: PlainObject<any>;
-let obj2: Object;
-let anyval: {};
-
-const unknownProp = (prop: unknown): string => `ok:${prop}`;
-
-// ~~ PlainObject ~~
-// plain = null;
-// plain = undefined;
-// plain = 1;
-// plain = 'string';
-// plain = false;
-// plain = [];
-// plain = () => "test";
-
-plain = {};
-plain = { aaa: null, bbb: undefined };
-plain = { ccc: { check: true } };
-
-unknownProp(plain.hoge);
-
-unknown = plain;
-obj     = plain;
-anyobj  = plain;
-obj2    = plain;
-anyval  = plain;
-
-// ~~ UnknownObject ~~
-// unknown = null;
-// unknown = undefined;
-// unknown = 1;
-// unknown = 'string';
-// unknown = false;
-// unknown = [];
-// unknown = () => "test";
-
-unknown = {};
-unknown = { aaa: null, bbb: undefined };
-unknown = { ccc: { check: true } };
-
-unknownProp(unknown.hoge);
-
-plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
-obj     = unknown;
-anyobj  = unknown;
-obj2    = unknown;
-anyval  = unknown;
-
-// ~~ object ~~
-// obj = null;
-// obj = undefined;
-// obj = 1;
-// obj = 'string';
-// obj = false;
-
-obj = [];
-obj = () => 'test';
-
-obj = {};
-obj = { aaa: null, bbb: undefined };
-obj = { ccc: { check: true } };
-
-// unknownProp(obj.hoge);
-
-unknown = obj as UnknownObject; // need cast
-plain   = obj as PlainObject;   // need cast
-anyobj  = obj;
-obj2    = obj;
-anyval  = obj;
-
-// ~~ PlainObject<any> ~~
-// anyobj = null;
-// anyobj = undefined;
-// anyobj = 1;
-// anyobj = 'string';
-// anyobj = false;
-
-anyobj = [];
-anyobj = () => 'test';
-
-anyobj = {};
-anyobj = { aaa: null, bbb: undefined };
-anyobj = { ccc: { check: true } };
-
-unknownProp(anyobj.hoge); // ★ CAN access
-
-unknown = anyobj; // ★ need NOT cast ★
-plain   = anyobj; // ★ need NOT cast ★
-obj     = anyobj;
-obj2    = anyobj;
-anyval  = anyobj;
-
-// ~~ Object ~~
-// obj2 = null;
-// obj2 = undefined;
-obj2 = 1;
-obj2 = 'string';
-obj2 = false;
-
-obj2 = [];
-obj2 = () => 'test';
-
-obj2 = {};
-obj2 = { aaa: null, bbb: undefined };
-obj2 = { ccc: { check: true } };
-
-// unknownProp(obj2.hoge);
-
-unknown = obj2 as UnknownObject; // need cast
-plain   = obj2 as PlainObject;   // need cast
-obj     = obj2;
-anyobj  = obj2;
-anyval  = obj2;
-
-// ~~ {} ~~
-// anyval = null;
-// anyval = undefined;
-anyval = 1;
-anyval = 'string';
-anyval = false;
-
-anyval = [];
-anyval = () => 'test';
-
-anyval = {};
-anyval = { aaa: null, bbb: undefined };
-anyval = { ccc: { check: true } };
-
-// unknownProp(anyval.hoge);
-
-unknown = anyval;
-plain   = anyval;
-obj     = anyval;
-anyobj  = anyval;
-obj2    = anyval;
-
-//*/
 
 class TypeClass {
     public say(): string { return 'hello'; }
@@ -720,4 +579,250 @@ describe('utils/types spec', (): void => {
         expect(sameClass(_bigint, null)).toBeFalsy();
         expect(sameClass(_bigint, Symbol)).toBeFalsy();
     });
+
+//__________________________________________________________________________________________________//
+
+//* Object Type deference
+
+let plain: PlainObject;
+let unknown: UnknownObject;
+let obj: object;
+let anyobj: AnyObject;
+let obj2: Object;
+let anyval: {};
+let primobj: PlainObject<Primitive | UnknownObject>;
+
+const unknownProp = (prop: unknown): string => `ok:${prop}`;
+
+// ~~ PlainObject ~~
+// plain = null;
+// plain = undefined;
+// plain = 1;
+// plain = 'string';
+// plain = false;
+// plain = [];
+// plain = () => "test";
+
+plain = {};
+plain = { aaa: null, bbb: undefined };
+plain = { ccc: { check: true } };
+
+unknownProp(plain.hoge);
+
+unknown = plain;
+obj     = plain;
+anyobj  = plain;
+obj2    = plain;
+anyval  = plain;
+primobj = plain;
+
+plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+plain   = obj as PlainObject;   // need cast
+plain   = anyobj; // ★ need NOT cast ★
+plain   = obj2 as PlainObject;   // need cast
+plain   = anyval;
+plain   = primobj;
+
+// ~~ UnknownObject ~~
+// unknown = null;
+// unknown = undefined;
+// unknown = 1;
+// unknown = 'string';
+// unknown = false;
+// unknown = [];
+// unknown = () => "test";
+
+unknown = {};
+unknown = { aaa: null, bbb: undefined };
+unknown = { ccc: { check: true } };
+
+unknownProp(unknown.hoge);
+
+plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+obj     = unknown;
+anyobj  = unknown;
+obj2    = unknown;
+anyval  = unknown;
+primobj = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+
+// ~~ object ~~
+// obj = null;
+// obj = undefined;
+// obj = 1;
+// obj = 'string';
+// obj = false;
+
+obj = [];
+obj = () => 'test';
+
+obj = {};
+obj = { aaa: null, bbb: undefined };
+obj = { ccc: { check: true } };
+
+// unknownProp(obj.hoge);
+
+unknown = obj as UnknownObject; // need cast
+plain   = obj as PlainObject;   // need cast
+anyobj  = obj;
+obj2    = obj;
+anyval  = obj;
+primobj = obj as PlainObject;   // need cast
+
+// ~~ AnyObject ~~
+// anyobj = null;
+// anyobj = undefined;
+// anyobj = 1;
+// anyobj = 'string';
+// anyobj = false;
+
+anyobj = [];            // ★ Warn. Not Plain behaviour
+anyobj = () => 'test';  // ★ Warn. Not Plain behaviour
+
+anyobj = {};
+anyobj = { aaa: null, bbb: undefined };
+anyobj = { ccc: { check: true } };
+
+unknownProp(anyobj.hoge); // ★ CAN access
+
+unknown = anyobj; // ★ need NOT cast ★
+plain   = anyobj; // ★ need NOT cast ★
+obj     = anyobj;
+obj2    = anyobj;
+anyval  = anyobj;
+primobj = anyobj;
+
+// ~~ Object ~~
+// obj2 = null;
+// obj2 = undefined;
+obj2 = 1;
+obj2 = 'string';
+obj2 = false;
+
+obj2 = [];
+obj2 = () => 'test';
+
+obj2 = {};
+obj2 = { aaa: null, bbb: undefined };
+obj2 = { ccc: { check: true } };
+
+// unknownProp(obj2.hoge);
+
+unknown = obj2 as UnknownObject; // need cast
+plain   = obj2 as PlainObject;   // need cast
+obj     = obj2;
+anyobj  = obj2;
+anyval  = obj2;
+primobj = obj2 as PlainObject;  // need cast
+
+// ~~ {} ~~
+// anyval = null;
+// anyval = undefined;
+anyval = 1;
+anyval = 'string';
+anyval = false;
+
+anyval = [];
+anyval = () => 'test';
+
+anyval = {};
+anyval = { aaa: null, bbb: undefined };
+anyval = { ccc: { check: true } };
+
+// unknownProp(anyval.hoge);
+
+unknown = anyval;
+plain   = anyval;
+obj     = anyval;
+anyobj  = anyval;
+obj2    = anyval;
+primobj = anyval;
+
+// ~~ PlainObject<Primitive | UnknownObject> ~~
+// primobj = null;
+// primobj = undefined;
+// primobj = 1;
+// primobj = 'string';
+// primobj = false;
+// primobj = [];
+// primobj = () => "test";
+
+primobj = {};
+primobj = { aaa: null, bbb: undefined };
+primobj = { ccc: { check: true } };
+
+unknownProp(primobj.hoge);
+
+plain   = primobj;
+unknown = primobj;
+obj     = primobj;
+anyobj  = primobj;
+obj2    = primobj;
+anyval  = primobj;
+
+//__________________________________________________________________________________________________//
+
+plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+plain   = obj as PlainObject;   // need cast
+plain   = anyobj;
+plain   = obj2 as PlainObject;   // need cast
+plain   = anyval;
+plain   = primobj;
+
+unknown = plain;
+obj     = plain;
+anyobj  = plain;
+obj2    = plain;
+anyval  = plain;
+primobj = plain;
+
+//__________________________________________________________________________________________________//
+
+primobj = plain;
+primobj = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+primobj = obj as PlainObject;
+primobj = anyobj;
+primobj = obj2 as PlainObject;
+primobj = anyval;
+
+plain   = primobj;
+unknown = primobj;
+obj     = primobj;
+anyobj  = primobj;
+obj2    = primobj;
+anyval  = primobj;
+
+//__________________________________________________________________________________________________//
+
+anyobj  = plain;
+anyobj  = unknown;
+anyobj  = obj;
+anyobj  = obj2;
+anyobj  = anyval;
+anyobj  = primobj;
+
+unknown = anyobj;
+plain   = anyobj;
+obj     = anyobj;
+obj2    = anyobj;
+anyval  = anyobj;
+primobj = anyobj;
+
+// anyobj = undefined;
+// anyobj = null;
+// anyobj = 'hoge';
+// anyobj = true;
+// anyobj = 1;
+// anyobj = Infinity;
+// anyobj = NaN;
+anyobj = [];                    // NOT plain behaviour
+anyobj = () => { return 1; };   // NOT plain behaviour
+// anyobj = _symbol;
+// anyobj = _bigint;
+anyobj = TypeClass;             // NOT plain behaviour
+anyobj = _classInst;            // NOT plain behaviour
+anyobj = document;              // NOT plain behaviour
+anyobj = Object.create(null);
+
+//*/
+
 });

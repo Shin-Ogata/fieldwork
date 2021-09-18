@@ -177,8 +177,10 @@ export interface RegistrySchemaBase {
  */
 export interface RegistryEvent<T extends object = any, K extends keyof T = keyof T> {
     /**
-     * @en Change event. (key, newValue, oldValue)
-     * @ja 変更通知 (key, newValue, oldValue)
+     * @en Change event.
+     * @ja 変更通知
+     *
+     * @args [key, newValue, oldValue]
      */
     'change': [K | null, T[K] | null | undefined, T[K] | null | undefined];
     /**

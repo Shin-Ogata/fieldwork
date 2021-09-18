@@ -307,6 +307,8 @@ export function deepMerge(target: unknown, ...sources: unknown[]): unknown {
 /**
  * @en Create deep copy instance of source object.
  * @ja ディープコピーオブジェクトの生成
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/structuredClone
  */
 export function deepCopy<T>(src: T): T {
     return deepMerge(undefined, src);
