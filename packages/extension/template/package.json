@@ -58,7 +58,7 @@
     "set-version": "cdp-task set-version",
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc dist --options ../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc dist/extension-template.d.ts --options ../../../config/doc/typedoc.js --excludeExternals",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s -i true",
     "ut": "npm run unit-test",

@@ -1,4 +1,3 @@
-import { PlainObject } from '@cdp/core-utils';
 import {
     Model,
     ModelConstructor,

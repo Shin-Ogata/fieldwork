@@ -1,4 +1,4 @@
-import { PlainObject, KeyToType } from '@cdp/core-utils';
+import { PlainObject, AnyObject, KeyToType } from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 /**
@@ -6,6 +6,7 @@ import { Cancelable } from '@cdp/promise';
  * @ja [[IDataSync]] 内から発行されるイベント定義
  */
 export interface SyncEvent<T extends object> {
+    /** @args [context, response] */
     '@request': [EventBroker<SyncEvent<T>>, Promise<T | PlainObject>];
 }
 /**
@@ -33,7 +34,7 @@ export declare type SyncResult<K extends SyncMethods, T extends object = PlainOb
  * @en Default [[SyncContext]] type.
  * @ja [[SyncContext]] の既定型
  */
-export declare type SyncObject = PlainObject<any>;
+export declare type SyncObject = AnyObject;
 /**
  * @en Context type of [[IDataSync]]`#sync()`.
  * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
