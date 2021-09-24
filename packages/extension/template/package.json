@@ -12,7 +12,7 @@
     "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",
     "@cdp/dom": "file:../../lib/web/dom",
-    "lit-html": "1.4.1"
+    "lit-html": "2.0.0"
   },
   "keywords": [
     "CDP",
@@ -55,6 +55,7 @@
     "metrics:module": "cdp-task metrics -r module -l ../../../config/lint/eslint.js",
     "minify": "run-p minify:*",
     "minify:src": "cdp-task minify js --config ./build.config.js",
+    "postinstall": "node ./tasks/prepare-source.js",
     "set-version": "cdp-task set-version",
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",

@@ -48,7 +48,6 @@ module.exports = {
                 {
                     find: 'i18next',
                     replacement: 'node_modules/i18next/src/index.js',
-
                 },
             ],
         },

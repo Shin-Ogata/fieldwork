@@ -16,13 +16,21 @@ import {
     TemplateResult,
     SVGTemplateResult,
     RenderOptions,
+    Directive,
+    AsyncDirective,
+    HTMLTemplateResult,
+    DirectiveParameters,
     Part,
+    PartInfo,
+    PartType,
+    Ref,
     html,
     svg,
     render,
-    parts,
     directive,
     directives,
+    createRef,
+    _Σ,
     toTemplateStringsArray as bridge,
 } from '@cdp/extension-template';
 import $ from '@cdp/dom';
@@ -34,15 +42,27 @@ import {
 
 describe('extention-template spec', () => {
     const {
+        AttributePart,
+        PropertyPart,
+        BooleanAttributePart,
+        EventPart,
+        ElementPart,
+    } = _Σ;
+
+    const {
         asyncAppend,
         asyncReplace,
         cache,
         classMap,
         guard,
         ifDefined,
+        live,
+        ref,
         repeat,
         styleMap,
+        templateContent,
         unsafeHTML,
+        unsafeSVG,
         until,
     } = directives;
 
@@ -82,17 +102,26 @@ describe('extention-template spec', () => {
             expect(html).toBeDefined();
             expect(svg).toBeDefined();
             expect(render).toBeDefined();
-            expect(parts).toBeDefined();
             expect(directive).toBeDefined();
+            expect(_Σ).toBeDefined();
+            expect(AttributePart).toBeDefined();
+            expect(PropertyPart).toBeDefined();
+            expect(BooleanAttributePart).toBeDefined();
+            expect(EventPart).toBeDefined();
+            expect(ElementPart).toBeDefined();
             expect(asyncAppend).toBeDefined();
             expect(asyncReplace).toBeDefined();
             expect(cache).toBeDefined();
             expect(classMap).toBeDefined();
             expect(guard).toBeDefined();
             expect(ifDefined).toBeDefined();
+            expect(live).toBeDefined();
+            expect(ref).toBeDefined();
             expect(repeat).toBeDefined();
             expect(styleMap).toBeDefined();
+            expect(templateContent).toBeDefined();
             expect(unsafeHTML).toBeDefined();
+            expect(unsafeSVG).toBeDefined();
             expect(until).toBeDefined();
         });
 
@@ -201,6 +230,27 @@ describe('extention-template spec', () => {
             expect(clickHandler.handleEvent).toHaveBeenCalled();
 
             await $test[0].dispatchEvent(evClick);
+            expect(count).toBe(1);
+        });
+
+        it('check render options w/ host (eventContext)', async () => {
+            prepareTestElements();
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const $dom = $('#d1');
+            $dom.on('click', stub.onCallback);
+
+            const template = (): TemplateResult => html`<button class="test">Click Me!</button>`;
+            const options: Partial<RenderOptions> = {
+                host: $dom[0],
+            };
+
+            render(template(), $dom[0], options);
+            const $test = $dom.find('.test');
+
+            await $test[0].dispatchEvent(evClick);
+            expect(stub.onCallback).toHaveBeenCalled();
             expect(count).toBe(1);
         });
     });
@@ -320,51 +370,6 @@ describe('extention-template spec', () => {
             expect($listItems[1].textContent).toBe('item2');
         });
 
-        it('check repeating templates w/ the repeat directive', () => {
-            prepareTestElements();
-            const $dom = $('#d1');
-
-            interface Employee {
-                id: number;
-                familyName: string;
-                givenName: string;
-            }
-
-            let seeds: Employee[] = [
-                {
-                    id: 0,
-                    familyName: 'TEST',
-                    givenName: 'Taro',
-                },
-                {
-                    id: 1,
-                    familyName: 'TEST',
-                    givenName: 'Jiro',
-                },
-            ];
-
-            const employeeList = (employees: Employee[]): TemplateResult => html`
-                <ul class="list">
-                    ${repeat(employees, (employee) => employee.id, (employee, index) => html`
-                        <li class="list-item">${index}: ${employee.familyName}, ${employee.givenName}</li>
-                    `)}
-                </ul>
-            `;
-
-            render(employeeList(seeds), $dom[0]);
-            const $listItems = $dom.find('.list').children();
-            expect($listItems.length).toBe(2);
-            expect($listItems[0].textContent).toBe('0: TEST, Taro');
-            expect($listItems[1].textContent).toBe('1: TEST, Jiro');
-
-            seeds = seeds.sort((l, r) => l.id > r.id ? -1 : 1);
-            render(employeeList(seeds), $dom[0]);
-            const $listItems2 = $dom.find('.list').children();
-            expect($listItems2.length).toBe(2);
-            expect($listItems2[0].textContent).toBe('0: TEST, Jiro');
-            expect($listItems2[1].textContent).toBe('1: TEST, Taro');
-        });
-
         it('check rendering nothing', () => {
             prepareTestElements();
             const $dom = $('#d1');
@@ -381,41 +386,7 @@ describe('extention-template spec', () => {
         });
     });
 
-    describe('caching template results', () => {
-        it('check cache directive', () => {
-            prepareTestElements();
-            const $dom = $('#d1');
-
-            interface Data {
-                detail: string;
-                summary: string;
-                showDetails: boolean;
-            }
-
-            const data: Data = {
-                detail: 'DETAIL',
-                summary: 'SUMMARY',
-                showDetails: false,
-            };
-
-            const detailView = (data: Data): TemplateResult => html`<div>${data.detail}</div>`;
-            const summaryView = (data: Data): TemplateResult => html`<div>${data.summary}</div>`;
-            const template = (): TemplateResult => html`${cache(data.showDetails
-                ? detailView(data)
-                : summaryView(data)
-            )}`;
-
-            render(template(), $dom[0]);
-            expect($dom.first().text()).toBe('SUMMARY');
-
-            data.showDetails = true;
-
-            render(template(), $dom[0]);
-            expect($dom.first().text()).toBe('DETAIL');
-        });
-    });
-
-    describe('styling templates', () => {
+    describe('Styling:', () => {
         it('check basic', () => {
             prepareTestElements();
             const $dom = $('#d1');
@@ -511,78 +482,151 @@ describe('extention-template spec', () => {
         });
     });
 
-    describe('rendering templates', () => {
-        it('check render options w/ eventContext', async () => {
+    describe('Rendering special values:', () => {
+        it('check repeating templates w/ the repeat directive', () => {
             prepareTestElements();
-            const stub = { onCallback };
-            spyOn(stub, 'onCallback').and.callThrough();
-
             const $dom = $('#d1');
-            $dom.on('click', stub.onCallback);
 
-            const template = (): TemplateResult => html`<button class="test">Click Me!</button>`;
-            const options: Partial<RenderOptions> = {
-                eventContext: $dom[0],
-            };
+            interface Employee {
+                id: number;
+                familyName: string;
+                givenName: string;
+            }
 
-            render(template(), $dom[0], options);
-            const $test = $dom.find('.test');
+            let seeds: Employee[] = [
+                {
+                    id: 0,
+                    familyName: 'TEST',
+                    givenName: 'Taro',
+                },
+                {
+                    id: 1,
+                    familyName: 'TEST',
+                    givenName: 'Jiro',
+                },
+            ];
 
-            await $test[0].dispatchEvent(evClick);
-            expect(stub.onCallback).toHaveBeenCalled();
-            expect(count).toBe(1);
+            const employeeList = (employees: Employee[]): TemplateResult => html`
+                <ul class="list">
+                    ${repeat(employees, (employee) => employee.id, (employee, index) => html`
+                        <li class="list-item">${index}: ${employee.familyName}, ${employee.givenName}</li>
+                    `)}
+                </ul>
+            `;
+
+            render(employeeList(seeds), $dom[0]);
+            const $listItems = $dom.find('.list').children();
+            expect($listItems.length).toBe(2);
+            expect($listItems[0].textContent).toBe('0: TEST, Taro');
+            expect($listItems[1].textContent).toBe('1: TEST, Jiro');
+
+            seeds = seeds.sort((l, r) => l.id > r.id ? -1 : 1);
+            render(employeeList(seeds), $dom[0]);
+            const $listItems2 = $dom.find('.list').children();
+            expect($listItems2.length).toBe(2);
+            expect($listItems2[0].textContent).toBe('0: TEST, Jiro');
+            expect($listItems2[1].textContent).toBe('1: TEST, Taro');
+        });
+
+        it('check templateContent', () => {
+            prepareTestElements($.utils.elementify(`
+<div id="d1" class="test-dom">
+    <template id="myContent">
+        <h3 class="text">This is content stamped from an HTML &lt;template&gt;!</h3>
+        <img src="https://picsum.photos/id/429/200">
+    </template>
+</div>
+`));
+            const $dom = $('#d1');
+
+            const templateEl = $dom.find('#myContent')[0] as HTMLTemplateElement;
+            const template = html`
+Here's some content from a template element:
+${templateContent(templateEl)}`;
+            render(template, $dom[0]);
+            expect($dom.find('.text').text()).toBe('This is content stamped from an HTML <template>!');
+        });
+
+        it('check unsafeHTML', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const markup = '<div class="raw">生のHTMLとして出力</div>';
+
+            const template = html`
+                危険な可能性があるHTMLを出力:
+                ${unsafeHTML(markup)}
+            `;
+
+            render(template, $dom[0]);
+            expect($dom.find('.raw').text()).toBe('生のHTMLとして出力');
+        });
+
+        it('check unsafeSVG', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const svg = '<circle class="raw" cx="50" cy="50" r="40" fill="red" />';
+
+            const template = html`
+                危険な可能性があるSVGを出力:
+                ${unsafeSVG(svg)}
+            `;
+
+            render(template, $dom[0]);
+            expect($dom.find('.raw').attr('cx')).toBe('50');
         });
     });
 
-    describe('directives', () => {
-        it('check creating directives', () => {
+    describe('Conditional rendering:', () => {
+        it('check cache directive 1', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
-            const helloDirective = directive(() => (part: Part) => { part.setValue('Hello'); });
-            const template = html`<div class="test">${helloDirective()}</div>`;
+            const view = (): HTMLTemplateResult => html`View : <input value="edit me then toggle">`;
+            const template = html`${cache(view())}`;
 
             render(template, $dom[0]);
-            expect($dom.first().text()).toBe('Hello');
-        });
+            const $input = $dom.find('input');
+            expect($input.val()).toBe('edit me then toggle');
 
-        it('check asyncReplace', async () => {
-            prepareTestElements();
-            const $dom = $('#d1');
+            $input.val('cached text view 1');
+            expect($input.val()).toBe('cached text view 1');
 
-            const template = html`Count: <span>${asyncReplace(countUp())}</span>.`;
             render(template, $dom[0]);
-            await sleep(100);
-
-            expect($dom.first().text()).toBe('Count: 3.');
+            expect($dom.find('input').val()).toBe('cached text view 1');
         });
 
-        it('check asyncAppend', async () => {
+        it('check cache directive 2', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
-            const template = html`Count: <span>${asyncAppend(countUp())}</span>.`;
-            render(template, $dom[0]);
-            await sleep(100);
+            interface Data {
+                detail: string;
+                summary: string;
+                showDetails: boolean;
+            }
 
-            expect($dom.first().text()).toBe('Count: 0123.');
-        });
+            const data: Data = {
+                detail: 'DETAIL',
+                summary: 'SUMMARY',
+                showDetails: false,
+            };
 
-        it('check ifDefined', () => {
-            prepareTestElements();
-            const $dom = $('#d1');
+            const detailView = (data: Data): TemplateResult => html`<div>${data.detail}</div>`;
+            const summaryView = (data: Data): TemplateResult => html`<div>${data.summary}</div>`;
+            const template = (): TemplateResult => html`${cache(data.showDetails
+                ? detailView(data)
+                : summaryView(data)
+            )}`;
 
-            const template = (image: { filename?: string; }): TemplateResult => html`
-                <img src="/images/${ifDefined(image.filename)}">
-            `;
+            render(template(), $dom[0]);
+            expect($dom.first().text()).toBe('SUMMARY');
 
-            const prop1 = { filename: 'icon.jpeg' };
-            render(template(prop1), $dom[0]);
-            expect(($dom.find('img')[0] as HTMLImageElement).src.includes('/images/icon.jpeg')).toBe(true);
+            data.showDetails = true;
 
-            const prop2 = {};
-            render(template(prop2), $dom[0]);
-            expect(($dom.find('img')[0] as HTMLImageElement).src).toBe(''); // <img>
+            render(template(), $dom[0]);
+            expect($dom.first().text()).toBe('DETAIL');
         });
 
         it('check guard', () => {
@@ -617,21 +661,56 @@ describe('extention-template spec', () => {
             }
         });
 
-        it('check unsafeHTML', () => {
+        it('check ifDefined', () => {
             prepareTestElements();
             const $dom = $('#d1');
 
-            const markup = '<div class="raw">生のHTMLとして出力</div>';
-
-            const template = html`
-                危険な可能性があるHTMLを出力:
-                ${unsafeHTML(markup)}
+            const template = (image: { filename?: string; }): TemplateResult => html`
+                <img src="/images/${ifDefined(image.filename)}">
             `;
 
-            render(template, $dom[0]);
-            expect($dom.find('.raw').text()).toBe('生のHTMLとして出力');
+            const prop1 = { filename: 'icon.jpeg' };
+            render(template(prop1), $dom[0]);
+            expect(($dom.find('img')[0] as HTMLImageElement).src.includes('/images/icon.jpeg')).toBe(true);
+
+            const prop2 = {};
+            render(template(prop2), $dom[0]);
+            expect(($dom.find('img')[0] as HTMLImageElement).src).toBe(''); // <img>
         });
 
+        it('check live', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const data = { value: 'test' };
+            const template = (data: { value: string; }): HTMLTemplateResult => html`<input .value=${live(data.value)}>`;
+
+            render(template(data), $dom[0]);
+            expect($dom.find('input').val()).toBe('test');
+
+            $dom.find('input').val('hogehoge');
+
+            data.value = 'check';
+            render(template(data), $dom[0]);
+            expect($dom.find('input').val()).toBe('check');
+        });
+    });
+
+    describe('Referencing the rendered DOM:', () => {
+        it('check ref', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const inputRef: Ref<HTMLInputElement> = createRef();
+            const template = html`<input ${ref(inputRef)}>`;
+
+            render(template, $dom[0]);
+            $dom.find('input').val('hogehoge');
+            expect(inputRef.value?.value).toBe('hogehoge');
+        });
+    });
+
+    describe('Asynchronous rendering:', () => {
         it('check until', async () => {
             prepareTestElements();
             const $dom = $('#d1');
@@ -642,6 +721,128 @@ describe('extention-template spec', () => {
             render(template, $dom[0]);
             await sleep(100);
             expect($dom.text()).toBe('完了');
+        });
+
+        it('check asyncAppend', async () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = html`Count: <span>${asyncAppend(countUp())}</span>.`;
+            render(template, $dom[0]);
+            await sleep(100);
+
+            expect($dom.first().text()).toBe('Count: 0123.');
+        });
+
+        it('check asyncReplace', async () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = html`Count: <span>${asyncReplace(countUp())}</span>.`;
+            render(template, $dom[0]);
+            await sleep(100);
+
+            expect($dom.first().text()).toBe('Count: 3.');
+        });
+    });
+
+    describe('Custom directives', () => {
+        it('check creating directives', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            class HelloDirective extends Directive {
+                render(): string {
+                    return `Hello!`;
+                }
+            }
+            // Create the directive function
+            const helloDirective = directive(HelloDirective);
+              // Use directive
+            const template = html`<div class="test">${helloDirective()}</div>`;
+
+            render(template, $dom[0]);
+            expect($dom.first().text()).toBe('Hello!');
+
+/*
+            // lit-html v1.x
+            // https://lit.dev/docs/releases/upgrade/#example-directive-migration
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const helloDirective = directive(() => (part: Part) => { part.setValue('Hello'); });
+            const template = html`<div class="test">${helloDirective()}</div>`;
+
+            render(template, $dom[0]);
+            expect($dom.first().text()).toBe('Hello');
+*/
+        });
+
+        it('check custom directives (sync)', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            // Class-based directive API
+            class RenderCounter extends Directive {
+                // State stored in class field
+                value: number | undefined;
+                constructor(partInfo: PartInfo) {
+                    super(partInfo);
+                    // When necessary, validate part in constructor using `part.type`
+                    if (partInfo.type !== PartType.CHILD) {
+                        throw new Error('renderCounter only supports child expressions');
+                    }
+                }
+                // Optional: override update to perform any direct DOM manipulation
+                update(part: Part, [initialValue]: DirectiveParameters<this>): HTMLTemplateResult {
+                    /* Any imperative updates to DOM/parts would go here */
+                    return this.render(initialValue);
+                }
+                // Do SSR-compatible rendering (arguments are passed from call site)
+                render(initialValue: number): HTMLTemplateResult {
+                    // Previous state available on class field
+                    if (this.value === undefined) {
+                        this.value = initialValue;
+                    } else {
+                        this.value++;
+                    }
+                    return html`<p>${this.value}</p>`;
+                }
+            }
+            const renderCounter = directive(RenderCounter);
+
+            const template = html`<div class="test">${renderCounter(10)}</div>`;
+
+            render(template, $dom[0]);
+            expect($dom.first().text()).toBe('10');
+
+            render(template, $dom[0]);
+            expect($dom.first().text()).toBe('11');
+        });
+
+        it('check custom directives (async)', async () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            class ResolvePromise extends AsyncDirective {
+                render(promise: Promise<unknown>): string {
+                    void Promise.resolve(promise).then((resolvedValue) => {
+                        // Rendered asynchronously:
+                        this.setValue(resolvedValue);
+                    });
+                    // Rendered synchronously:
+                    return `Waiting for promise to resolve`;
+                }
+            }
+            const resolvePromise = directive(ResolvePromise);
+
+            const promise = Promise.resolve('Hello AsyncDirective!');
+            const template = html`<div class="test">${resolvePromise(promise)}</div>`;
+
+            render(template, $dom[0]);
+
+            await promise;
+            expect($dom.first().text()).toBe('Hello AsyncDirective!');
         });
     });
 

@@ -471,6 +471,32 @@ describe('extention-i18n spec', () => {
                 resources: {
                     en: {
                         translation: {
+                            key_one: 'item',
+                            key_other: 'items',
+                            keyWithCount_one: '{{count}} item',
+                            keyWithCount_other: '{{count}} items',
+                        },
+                    },
+                },
+            });
+
+            expect(t('key', { count: 0 })).toBe('items');
+            expect(t('key', { count: 1 })).toBe('item');
+            expect(t('key', { count: 5 })).toBe('items');
+            expect(t('key', { count: 100 })).toBe('items');
+            expect(t('keyWithCount', { count: 0 })).toBe('0 items');
+            expect(t('keyWithCount', { count: 1 })).toBe('1 item');
+            expect(t('keyWithCount', { count: 5 })).toBe('5 items');
+            expect(t('keyWithCount', { count: 100 })).toBe('100 items');
+        });
+
+        it('check singular / plural (v3)', async () => {
+            const t = await i18next.init({
+                compatibilityJSON: 'v3',
+                lng: 'en-US',
+                resources: {
+                    en: {
+                        translation: {
                             key: 'item',
                             key_plural: 'items',
                             keyWithCount: '{{count}} item',
@@ -494,6 +520,37 @@ describe('extention-i18n spec', () => {
             // uses `arabic` which has 5 plural forms beside the singular.
             // https://www.i18next.com/translation-function/plurals#languages-with-multiple-plurals
             const t = await i18next.init({
+                lng: 'ar',
+                resources: {
+                    ar: {
+                        translation: {
+                            key_zero: 'zero',
+                            key_one: 'singular',
+                            key_two: 'two',
+                            key_few: 'few',
+                            key_many: 'many',
+                            key_other: 'other',
+                        },
+                    },
+                },
+            });
+
+            expect(t('key', { count: 0 })).toBe('zero');
+            expect(t('key', { count: 1 })).toBe('singular');
+            expect(t('key', { count: 2 })).toBe('two');
+            expect(t('key', { count: 3 })).toBe('few');
+            expect(t('key', { count: 4 })).toBe('few');
+            expect(t('key', { count: 5 })).toBe('few');
+            expect(t('key', { count: 11 })).toBe('many');
+            expect(t('key', { count: 99 })).toBe('many');
+            expect(t('key', { count: 100 })).toBe('other');
+        });
+
+        it('check languages with multiple plurals (v3)', async () => {
+            // uses `arabic` which has 5 plural forms beside the singular.
+            // https://www.i18next.com/translation-function/plurals#languages-with-multiple-plurals
+            const t = await i18next.init({
+                compatibilityJSON: 'v3',
                 lng: 'ar',
                 resources: {
                     ar: {
@@ -545,10 +602,10 @@ describe('extention-i18n spec', () => {
                 resources: {
                     en: {
                         translation: {
-                            girlsAndBoys: '$t(girls, {"count": {{girls}} }) and {{count}} boy',
-                            girlsAndBoys_plural: '$t(girls, {"count": {{girls}} }) and {{count}} boys',
-                            girls: '{{count}} girl',
-                            girls_plural: '{{count}} girls',
+                            girlsAndBoys_one: '$t(girls, {"count": {{girls}} }) and {{count}} boy',
+                            girlsAndBoys_other: '$t(girls, {"count": {{girls}} }) and {{count}} boys',
+                            girls_one: '{{count}} girl',
+                            girls_other: '{{count}} girls',
                         },
                     },
                 },
@@ -567,6 +624,9 @@ describe('extention-i18n spec', () => {
                             key2: 'say: {{val}}',
                         },
                     },
+                },
+                interpolation: {
+                    skipOnVariables: false,
                 },
             });
 
@@ -600,10 +660,10 @@ describe('extention-i18n spec', () => {
                 resources: {
                     en: {
                         translation: {
-                            friend_male: 'A boyfriend',
-                            friend_female: 'A girlfriend',
-                            friend_male_plural: '{{count}} boyfriends',
-                            friend_female_plural: '{{count}} girlfriends',
+                            friend_male_one: 'A boyfriend',
+                            friend_female_one: 'A girlfriend',
+                            friend_male_other: '{{count}} boyfriends',
+                            friend_female_other: '{{count}} girlfriends',
                         },
                     },
                 },

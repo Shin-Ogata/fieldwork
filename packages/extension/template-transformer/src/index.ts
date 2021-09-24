@@ -1,6 +1,6 @@
 import type {
     TemplateTag,
-    UnsafeHTMLDirective,
+    TransformDirective,
     TemplateTransformer,
     TransformTester,
     TransformExecutor,
@@ -18,11 +18,11 @@ import invertedSection from 'lit-transformer/src/transformers/invertedSection';
 import comment from 'lit-transformer/src/transformers/comment';
 import customDelimiter from 'lit-transformer/src/transformers/customDelimiter';
 
-function createTransformFactory(html: TemplateTag, unsafeHTML: UnsafeHTMLDirective): TemplateTransformer;
+function createTransformFactory(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
 function createTransformFactory(config: TransformConfig): TemplateTransformer;
 function createTransformFactory(arg1: unknown, arg2?: unknown): TemplateTransformer {
     if ('function' === typeof arg1) {
-        return createDefault(arg1 as TemplateTag, arg2 as UnsafeHTMLDirective);
+        return createDefault(arg1 as TemplateTag, arg2 as TransformDirective);
     } else {
         return createCustom(Object.assign({
             delimiter: { start: '{{', end: '}}' },
@@ -33,7 +33,7 @@ function createTransformFactory(arg1: unknown, arg2?: unknown): TemplateTransfor
 
 const transformer: {
     variable: TransformExecutor;
-    unsafeVariable: (unsafeHTML: UnsafeHTMLDirective) => TransformeContext;
+    unsafeVariable: (unsafeHTML: TransformDirective) => TransformeContext;
     section: () => TransformeContext;
     invertedSection: () => TransformeContext;
     comment: () => TransformeContext;
@@ -49,7 +49,7 @@ const transformer: {
 
 export {
     TemplateTag,
-    UnsafeHTMLDirective,
+    TransformDirective,
     TemplateTransformer,
     TransformTester,
     TransformExecutor,

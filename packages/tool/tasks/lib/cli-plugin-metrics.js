@@ -110,6 +110,8 @@ function patch(src) {
         .replace(/\?\./gm, '.')
         // aboid `??` [Nullish Coalescing]
         .replace(/\?\?/gm, '||')
+        // aboid `catch {}` [Optional catch binding]
+        .replace(/catch {/gm, 'catch (e) {')
     ;
 }
 

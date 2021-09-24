@@ -1,12 +1,15 @@
 import {
-    Part,
     TemplateResult,
     SVGTemplateResult,
+    DirectiveResult,
+    noChange,
+    nothing,
 } from '@cdp/extension-template';
 
 export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult | SVGTemplateResult;
-export type UnsafeHTMLDirective = (value: unknown) => (part: Part) => void;
 export type TemplateTransformer = (mustache: string) => (view?: Record<string, unknown>) => TemplateResult | SVGTemplateResult;
+
+export type TransformDirective = (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
 
 export type TransformTester = (input: string, config: TransformConfig) => boolean;
 export type TransformExecutor = (input: string, config: TransformConfig) => TemplateResult | SVGTemplateResult | undefined;

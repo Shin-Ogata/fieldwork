@@ -10,13 +10,52 @@ function patch(index, code) {
     }
 
     code = code
-        // Specifying multiple comments at the start of a file to use the first comment as the comment for the module has been deprecated.
-        .replace(/^(\/\*\*)(\n \* @license)/g, '/*!$2')
         // trim `import("xxx").`
         .replace(/import\("[\S]+"\)\./g, '')
+        // replace `TrustedHTML` -> `HTMLElement`
+        .replace(/TrustedHTML/g, 'HTMLElement')
     ;
 
     return code;
+}
+
+// 内部の相対パス指定も置換対象に含めることで重複コードを避ける
+function resolveEntries(list) {
+    const { join } = require('path');
+    const SOURCE_ROOT = 'node_modules/lit-html/development';
+
+    const relativeModuleName = (module) => {
+        const paths = module.split('/');
+        if (1 === paths.length) {
+            return `${paths[0]}.js`;
+        } else {
+            paths.shift();
+            return `${paths.join('/')}.js`;
+        }
+    };
+
+    const moduleFileName = (moduleName) => {
+        const paths = moduleName.split('/');
+        return paths[paths.length - 1];
+    };
+
+    const entries = [];
+    for (const module of list) {
+        const moduleName  = relativeModuleName(module);
+        const fileName    = moduleFileName(moduleName);
+        const replacement = join(SOURCE_ROOT, moduleName);
+        entries.push({
+            find: module,
+            replacement,
+        },{
+            find: `./${fileName}`,
+            replacement,
+        },{
+            find: `../${fileName}`,
+            replacement,
+        });
+    }
+    return entries;
 }
 
 module.exports = {
@@ -29,7 +68,40 @@ module.exports = {
                 return;
             }
             warn(warning);
-        }
+        },
+        replace: {
+            // https://github.com/lit/lit/blob/main/rollup-common.js#L373
+            values: {
+                'const DEV_MODE = true': 'const DEV_MODE = false',
+                'const ENABLE_EXTRA_SECURITY_HOOKS = true': 'const ENABLE_EXTRA_SECURITY_HOOKS = false',
+                'const ENABLE_SHADYDOM_NOPATCH = true': 'const ENABLE_SHADYDOM_NOPATCH = false',
+                'export const INTERNAL = true': 'const INTERNAL = false',
+            },
+            preventAssignment: true,
+        },
+        alias: {
+            entries: resolveEntries([
+                'lit-html/directives/async-append',
+                'lit-html/directives/async-replace',
+                'lit-html/directives/cache',
+                'lit-html/directives/class-map',
+                'lit-html/directives/guard',
+                'lit-html/directives/if-defined',
+                'lit-html/directives/live',
+                'lit-html/directives/ref',
+                'lit-html/directives/repeat',
+                'lit-html/directives/style-map',
+                'lit-html/directives/template-content',
+                'lit-html/directives/unsafe-html',
+                'lit-html/directives/unsafe-svg',
+                'lit-html/directives/until',
+                'lit-html/private-ssr-support',
+                'lit-html/directive',
+                'lit-html/async-directive',
+                'lit-html/directive-helpers',
+                'lit-html',
+            ]),
+        },
     }),
     dts: bundle_dts({
         inlinedLibraries: ['lit-html'],
