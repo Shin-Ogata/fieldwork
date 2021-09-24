@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
- */
-
 import { PlainObject, $cdp } from '@cdp/core-utils';
 import { Subscribable, Silenceable } from '@cdp/events';
 

@@ -130,7 +130,7 @@ declare namespace i18n {
         maxReplaces?: number;
         /**
          * If true, it will skip to interpolate the variables
-         * @default false
+         * @default true
          */
         skipOnVariables?: boolean;
     }
@@ -248,16 +248,6 @@ declare namespace i18n {
          * @default 'dev'
          */
         fallbackLng?: false | FallbackLng;
-        /**
-         * DEPRECATED use supportedLngs
-         * @default false
-         */
-        whitelist?: false | readonly string[];
-        /**
-         * DEPRECTADED use nonExplicitSupportedLngs
-         * @default false
-         */
-        nonExplicitWhitelist?: boolean;
         /**
          * Array of allowed languages
          * @default false
@@ -834,6 +824,11 @@ declare namespace i18n {
          */
         languages: readonly string[];
         /**
+         * Is set to the current resolved language.
+         * It can be used as primary used language, for example in a language switcher.
+         */
+        resolvedLanguage: string;
+        /**
          * Loads additional namespaces not defined in init options.
          */
         loadNamespaces(ns: string | readonly string[], callback?: Callback): Promise<void>;
@@ -954,281 +949,540 @@ declare namespace i18n {
 }
 
 export { i18n };
-/*!
- * @license
- * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-/**
- * The Part interface represents a dynamic part of a template instance rendered
- * by lit-html.
- */
-export interface Part {
-    readonly value: unknown;
-    /**
-     * Sets the current part value, but does not write it to the DOM.
-     * @param value The value that will be committed.
-     */
-    setValue(value: unknown): void;
-    /**
-     * Commits the current part value, causing it to actually be written to the
-     * DOM.
-     *
-     * Directives are run at the start of `commit`, so that if they call
-     * `part.setValue(...)` synchronously that value will be used in the current
-     * commit, and there's no need to call `part.commit()` within the directive.
-     * If directives set a part value asynchronously, then they must call
-     * `part.commit()` manually.
-     */
-    commit(): void;
-}
-declare class Template {
-    readonly parts: TemplatePart[];
-    readonly element: HTMLTemplateElement;
-    constructor(result: TemplateResult, element: HTMLTemplateElement);
+export interface DirectiveClass {
+    new (part: PartInfo): Directive;
 }
 /**
- * A placeholder for a dynamic expression in an HTML template.
- *
- * There are two built-in part types: AttributePart and NodePart. NodeParts
- * always represent a single dynamic expression, while AttributeParts may
- * represent as many expressions are contained in the attribute.
- *
- * A Template's parts are mutable, so parts can be replaced or modified
- * (possibly to implement different template semantics). The contract is that
- * parts can only be replaced, not removed, added or reordered, and parts must
- * always consume the correct number of values in their `update()` method.
- *
- * TODO(justinfagnani): That requirement is a little fragile. A
- * TemplateInstance could instead be more careful about which values it gives
- * to Part.update().
+ * This utility type extracts the signature of a directive class's render()
+ * method so we can use it for the type of the generated directive function.
  */
-export declare type TemplatePart = {
-    readonly type: 'node';
-    index: number;
-} | {
-    readonly type: 'attribute';
-    index: number;
-    readonly name: string;
-    readonly strings: ReadonlyArray<string>;
+export declare type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
+/**
+ * A generated directive function doesn't evaluate the directive, but just
+ * returns a DirectiveResult object that captures the arguments.
+ */
+export interface DirectiveResult<C extends DirectiveClass = DirectiveClass> {
+}
+export declare const PartType: {
+    readonly ATTRIBUTE: 1;
+    readonly CHILD: 2;
+    readonly PROPERTY: 3;
+    readonly BOOLEAN_ATTRIBUTE: 4;
+    readonly EVENT: 5;
+    readonly ELEMENT: 6;
 };
-/**
- * A function type that creates a Template from a TemplateResult.
- *
- * This is a hook into the template-creation process for rendering that
- * requires some modification of templates before they're used, like ShadyCSS,
- * which must add classes to elements and remove styles.
- *
- * Templates should be cached as aggressively as possible, so that many
- * TemplateResults produced from the same expression only do the work of
- * creating the Template the first time.
- *
- * Templates are usually cached by TemplateResult.strings and
- * TemplateResult.type, but may be cached by other keys if this function
- * modifies the template.
- *
- * Note that currently TemplateFactories must not add, remove, or reorder
- * expressions, because there is no way to describe such a modification
- * to render() so that values are interpolated to the correct place in the
- * template instances.
- */
-export declare type TemplateFactory = (result: TemplateResult) => Template;
-export interface RenderOptions {
-    readonly templateFactory: TemplateFactory;
-    readonly eventContext?: EventTarget;
+export declare type PartType = typeof PartType[keyof typeof PartType];
+export interface ChildPartInfo {
+    readonly type: typeof PartType.CHILD;
 }
-declare class NodePart implements Part {
-    readonly options: RenderOptions;
-    startNode: Node;
-    endNode: Node;
-    value: unknown;
-    private __pendingValue;
-    constructor(options: RenderOptions);
-    /**
-     * Appends this part into a container.
-     *
-     * This part must be empty, as its contents are not automatically moved.
-     */
-    appendInto(container: Node): void;
-    /**
-     * Inserts this part after the `ref` node (between `ref` and `ref`'s next
-     * sibling). Both `ref` and its next sibling must be static, unchanging nodes
-     * such as those that appear in a literal section of a template.
-     *
-     * This part must be empty, as its contents are not automatically moved.
-     */
-    insertAfterNode(ref: Node): void;
-    /**
-     * Appends this part into a parent part.
-     *
-     * This part must be empty, as its contents are not automatically moved.
-     */
-    appendIntoPart(part: NodePart): void;
-    /**
-     * Inserts this part after the `ref` part.
-     *
-     * This part must be empty, as its contents are not automatically moved.
-     */
-    insertAfterPart(ref: NodePart): void;
-    setValue(value: unknown): void;
-    commit(): void;
-    private __insert;
-    private __commitNode;
-    private __commitText;
-    private __commitTemplateResult;
-    private __commitIterable;
-    clear(startNode?: Node): void;
+export interface AttributePartInfo {
+    readonly type: typeof PartType.ATTRIBUTE | typeof PartType.PROPERTY | typeof PartType.BOOLEAN_ATTRIBUTE | typeof PartType.EVENT;
+    readonly strings?: ReadonlyArray<string>;
+    readonly name: string;
+    readonly tagName: string;
 }
-export interface TemplateProcessor {
-    /**
-     * Create parts for an attribute-position binding, given the element,
-     * attribute name, and string literals.
-     *
-     * @param element The element containing the binding
-     * @param name  The attribute name, including a possible prefix. The name may
-     *   be prefixed by `.` (for a property binding), `@` (for an event binding)
-     * or
-     *   `?` (for a boolean attribute binding).
-     * @param strings The array of literal strings that form the static part of
-     *     the
-     *   attribute value. There are always at least two strings,
-     *   even for fully-controlled bindings with a single expression. For example,
-     *   for the binding `attr='${e1}-${e2}'`, the `strings` array includes three
-     *   strings (`['', '-', '']`)—the text _before_ the first expression (the
-     * empty string), the text between the two expressions (`'-'`), and the text
-     * after the last expression (another empty string).
-     */
-    handleAttributeExpressions(element: Element, name: string, strings: ReadonlyArray<string>, options: RenderOptions): ReadonlyArray<Part>;
-    /**
-     * Create parts for a text-position binding.
-     * @param partOptions
-     */
-    handleTextExpression(options: RenderOptions): NodePart;
+export interface ElementPartInfo {
+    readonly type: typeof PartType.ELEMENT;
 }
 /**
- * The return type of `html`, which holds a Template and the values from
- * interpolated expressions.
+ * Information about the part a directive is bound to.
+ *
+ * This is useful for checking that a directive is attached to a valid part,
+ * such as with directive that can only be used on attribute bindings.
  */
-export declare class TemplateResult {
-    readonly strings: TemplateStringsArray;
-    readonly values: readonly unknown[];
-    readonly type: string;
-    readonly processor: TemplateProcessor;
-    constructor(strings: TemplateStringsArray, values: readonly unknown[], type: string, processor: TemplateProcessor);
-    /**
-     * Returns a string of HTML used to create a `<template>` element.
-     */
-    getHTML(): string;
-    getTemplateElement(): HTMLTemplateElement;
+export declare type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
+/**
+ * Creates a user-facing directive function from a Directive class. This
+ * function has the same parameters as the directive's render() method.
+ */
+export declare const directive: <C extends DirectiveClass>(c: C) => (...values: Parameters<InstanceType<C>['render']>) => DirectiveResult<C>;
+/**
+ * Base class for creating custom directives. Users should extend this class,
+ * implement `render` and/or `update`, and then pass their subclass to
+ * `directive`.
+ */
+export declare abstract class Directive implements Disconnectable {
+    constructor(_partInfo: PartInfo);
+    get _$isConnected(): boolean;
+    abstract render(...props: Array<unknown>): unknown;
+    update(_part: Part, props: Array<unknown>): unknown;
 }
 /**
- * A TemplateResult for SVG fragments.
+ * Used to sanitize any value before it is written into the DOM. This can be
+ * used to implement a security policy of allowed and disallowed values in
+ * order to prevent XSS attacks.
  *
- * This class wraps HTML in an `<svg>` tag in order to parse its contents in the
- * SVG namespace, then modifies the template to remove the `<svg>` tag so that
- * clones only container the original fragment.
+ * One way of using this callback would be to check attributes and properties
+ * against a list of high risk fields, and require that values written to such
+ * fields be instances of a class which is safe by construction. Closure's Safe
+ * HTML Types is one implementation of this technique (
+ * https://github.com/google/safe-html-types/blob/master/doc/safehtml-types.md).
+ * The TrustedTypes polyfill in API-only mode could also be used as a basis
+ * for this technique (https://github.com/WICG/trusted-types).
+ *
+ * @param node The HTML node (usually either a #text node or an Element) that
+ *     is being written to. Note that this is just an exemplar node, the write
+ *     may take place against another instance of the same class of node.
+ * @param name The name of an attribute or property (for example, 'href').
+ * @param type Indicates whether the write that's about to be performed will
+ *     be to a property or a node.
+ * @return A function that will sanitize this class of writes.
  */
-export declare class SVGTemplateResult extends TemplateResult {
-    getHTML(): string;
-    getTemplateElement(): HTMLTemplateElement;
-}
-export declare type DirectiveFactory = (...args: any[]) => object;
-export declare type DirectiveFn = (part: Part) => void;
+export declare type SanitizerFactory = (node: Node, name: string, type: 'property' | 'attribute') => ValueSanitizer;
 /**
- * Brands a function as a directive factory function so that lit-html will call
- * the function during template rendering, rather than passing as a value.
+ * A function which can sanitize values that will be written to a specific kind
+ * of DOM sink.
  *
- * A _directive_ is a function that takes a Part as an argument. It has the
- * signature: `(part: Part) => void`.
+ * See SanitizerFactory.
  *
- * A directive _factory_ is a function that takes arguments for data and
- * configuration and returns a directive. Users of directive usually refer to
- * the directive factory as the directive. For example, 'The repeat directive'.
- *
- * Usually a template author will invoke a directive factory in their template
- * with relevant arguments, which will then return a directive function.
- *
- * Here's an example of using the `repeat()` directive factory that takes an
- * array and a function to render an item:
- *
- * ```js
- * html`<ul><${repeat(items, (item) => html`<li>${item}</li>`)}</ul>`
- * ```
- *
- * When `repeat` is invoked, it returns a directive function that closes over
- * `items` and the template function. When the outer template is rendered, the
- * return directive function is called with the Part for the expression.
- * `repeat` then performs it's custom logic to render multiple items.
- *
- * @param f The directive factory function. Must be a function that returns a
- * function of the signature `(part: Part) => void`. The returned function will
- * be called with the part object.
- *
- * @example
- *
- * import {directive, html} from 'lit-html';
- *
- * const immutable = directive((v) => (part) => {
- *   if (part.value !== v) {
- *     part.setValue(v)
- *   }
- * });
+ * @param value The value to sanitize. Will be the actual value passed into
+ *     the lit-html template literal, so this could be of any type.
+ * @return The value to write to the DOM. Usually the same as the input value,
+ *     unless sanitization is needed.
  */
-export declare const directive: <F extends DirectiveFactory>(f: F) => F;
-export declare const parts: WeakMap<Node, NodePart>;
+export declare type ValueSanitizer = (value: unknown) => unknown;
+declare const HTML_RESULT = 1;
+declare const SVG_RESULT = 2;
+export declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
 /**
- * Renders a template result or other value to a container.
- *
- * To update a container with new values, reevaluate the template literal and
- * call `render` with the new result.
- *
- * @param result Any value renderable by NodePart - typically a TemplateResult
- *     created by evaluating a template tag like `html` or `svg`.
- * @param container A DOM parent to render to. The entire contents are either
- *     replaced, or efficiently updated if the same result type was previous
- *     rendered there.
- * @param options RenderOptions for the entire render tree rendered to this
- *     container. Render options must *not* change between renders to the same
- *     container, as those changes will not effect previously rendered DOM.
+ * The return type of the template tag functions.
  */
-export declare const render: (result: unknown, container: Element | DocumentFragment, options?: Partial<RenderOptions> | undefined) => void;
+export declare type TemplateResult<T extends ResultType = ResultType> = {
+    ['_$litType$']: T;
+    strings: TemplateStringsArray;
+    values: unknown[];
+};
+export declare type HTMLTemplateResult = TemplateResult<typeof HTML_RESULT>;
+export declare type SVGTemplateResult = TemplateResult<typeof SVG_RESULT>;
 /**
  * Interprets a template literal as an HTML template that can efficiently
  * render to and update a container.
+ *
+ * ```ts
+ * const header = (title: string) => html`<h1>${title}</h1>`;
+ * ```
+ *
+ * The `html` tag returns a description of the DOM to render as a value. It is
+ * lazy, meaning no work is done until the template is rendered. When rendering,
+ * if a template comes from the same expression as a previously rendered result,
+ * it's efficiently updated instead of replaced.
  */
-export declare const html: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult;
+export declare const html: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<1>;
 /**
  * Interprets a template literal as an SVG template that can efficiently
  * render to and update a container.
  */
-export declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => SVGTemplateResult;
+export declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<2>;
+/**
+ * A sentinel value that signals that a value was handled by a directive and
+ * should not be written to the DOM.
+ */
+export declare const noChange: unique symbol;
+/**
+ * A sentinel value that signals a ChildPart to fully clear its content.
+ *
+ * ```ts
+ * const button = html`${
+ *  user.isAdmin
+ *    ? html`<button>DELETE</button>`
+ *    : nothing
+ * }`;
+ * ```
+ *
+ * Prefer using `nothing` over other falsy values as it provides a consistent
+ * behavior between various expression binding contexts.
+ *
+ * In child expressions, `undefined`, `null`, `''`, and `nothing` all behave the
+ * same and render no nodes. In attribute expressions, `nothing` _removes_ the
+ * attribute, while `undefined` and `null` will render an empty string. In
+ * property expressions `nothing` becomes `undefined`.
+ */
+export declare const nothing: unique symbol;
+/**
+ * Object specifying options for controlling lit-html rendering. Note that
+ * while `render` may be called multiple times on the same `container` (and
+ * `renderBefore` reference node) to efficiently update the rendered content,
+ * only the options passed in during the first render are respected during
+ * the lifetime of renders to that unique `container` + `renderBefore`
+ * combination.
+ */
+export interface RenderOptions {
+    /**
+     * An object to use as the `this` value for event listeners. It's often
+     * useful to set this to the host component rendering a template.
+     */
+    host?: object;
+    /**
+     * A DOM node before which to render content in the container.
+     */
+    renderBefore?: ChildNode | null;
+    /**
+     * Node used for cloning the template (`importNode` will be called on this
+     * node). This controls the `ownerDocument` of the rendered DOM, along with
+     * any inherited context. Defaults to the global `document`.
+     */
+    creationScope?: {
+        importNode(node: Node, deep?: boolean): Node;
+    };
+    /**
+     * The initial connected state for the top-level part being rendered. If no
+     * `isConnected` option is set, `AsyncDirective`s will be connected by
+     * default. Set to `false` if the initial render occurs in a disconnected tree
+     * and `AsyncDirective`s should see `isConnected === false` for their initial
+     * render. The `part.setConnected()` method must be used subsequent to initial
+     * render to change the connected state of the part.
+     */
+    isConnected?: boolean;
+}
+/**
+ * Renders a value, usually a lit-html TemplateResult, to the container.
+ * @param value
+ * @param container
+ * @param options
+ */
+export declare const render: {
+    (value: unknown, container: HTMLElement | DocumentFragment, options?: RenderOptions | undefined): RootPart;
+    setSanitizer: (newSanitizer: SanitizerFactory) => void;
+    createSanitizer: SanitizerFactory;
+    _testOnlyClearSanitizerFactoryDoNotCallOrElse: () => void;
+};
+export interface DirectiveParent {
+    _$parent?: DirectiveParent;
+    _$isConnected: boolean;
+    __directive?: Directive;
+    __directives?: Array<Directive | undefined>;
+}
+declare class Template {
+    constructor({ strings, ['_$litType$']: type }: TemplateResult, options?: RenderOptions);
+    /** @nocollapse */
+    static createElement(html: HTMLElement, _options?: RenderOptions): HTMLTemplateElement;
+}
+export interface Disconnectable {
+    _$parent?: Disconnectable;
+    _$disconnectableChildren?: Set<Disconnectable>;
+    _$isConnected: boolean;
+}
+declare class TemplateInstance implements Disconnectable {
+    constructor(template: Template, parent: ChildPart);
+    get parentNode(): Node;
+    get _$isConnected(): boolean;
+    _clone(options: RenderOptions | undefined): Node;
+    _update(values: Array<unknown>): void;
+}
+export declare type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
+declare class ChildPart implements Disconnectable {
+    readonly type = 2;
+    readonly options: RenderOptions | undefined;
+    _$committedValue: unknown;
+    private _textSanitizer;
+    get _$isConnected(): boolean;
+    constructor(startNode: ChildNode, endNode: ChildNode | null, parent: TemplateInstance | ChildPart | undefined, options: RenderOptions | undefined);
+    /**
+     * The parent node into which the part renders its content.
+     *
+     * A ChildPart's content consists of a range of adjacent child nodes of
+     * `.parentNode`, possibly bordered by 'marker nodes' (`.startNode` and
+     * `.endNode`).
+     *
+     * - If both `.startNode` and `.endNode` are non-null, then the part's content
+     * consists of all siblings between `.startNode` and `.endNode`, exclusively.
+     *
+     * - If `.startNode` is non-null but `.endNode` is null, then the part's
+     * content consists of all siblings following `.startNode`, up to and
+     * including the last child of `.parentNode`. If `.endNode` is non-null, then
+     * `.startNode` will always be non-null.
+     *
+     * - If both `.endNode` and `.startNode` are null, then the part's content
+     * consists of all child nodes of `.parentNode`.
+     */
+    get parentNode(): Node;
+    /**
+     * The part's leading marker node, if any. See `.parentNode` for more
+     * information.
+     */
+    get startNode(): Node | null;
+    /**
+     * The part's trailing marker node, if any. See `.parentNode` for more
+     * information.
+     */
+    get endNode(): Node | null;
+    _$setValue(value: unknown, directiveParent?: DirectiveParent): void;
+    private _insert;
+    private _commitNode;
+    private _commitText;
+    private _commitTemplateResult;
+    private _commitIterable;
+}
+/**
+ * A top-level `ChildPart` returned from `render` that manages the connected
+ * state of `AsyncDirective`s created throughout the tree below it.
+ */
+export interface RootPart extends ChildPart {
+    /**
+     * Sets the connection state for `AsyncDirective`s contained within this root
+     * ChildPart.
+     *
+     * lit-html does not automatically monitor the connectedness of DOM rendered;
+     * as such, it is the responsibility of the caller to `render` to ensure that
+     * `part.setConnected(false)` is called before the part object is potentially
+     * discarded, to ensure that `AsyncDirective`s have a chance to dispose of
+     * any resources being held. If a `RootPart` that was prevously
+     * disconnected is subsequently re-connected (and its `AsyncDirective`s should
+     * re-connect), `setConnected(true)` should be called.
+     *
+     * @param isConnected Whether directives within this tree should be connected
+     * or not
+     */
+    setConnected(isConnected: boolean): void;
+}
+declare class AttributePart implements Disconnectable {
+    readonly type: 1 | 3 | 4 | 5;
+    readonly element: HTMLElement;
+    readonly name: string;
+    readonly options: RenderOptions | undefined;
+    /**
+     * If this attribute part represents an interpolation, this contains the
+     * static strings of the interpolation. For single-value, complete bindings,
+     * this is undefined.
+     */
+    readonly strings?: ReadonlyArray<string>;
+    protected _sanitizer: ValueSanitizer | undefined;
+    get tagName(): string;
+    get _$isConnected(): boolean;
+    constructor(element: HTMLElement, name: string, strings: ReadonlyArray<string>, parent: Disconnectable, options: RenderOptions | undefined);
+}
+declare class PropertyPart extends AttributePart {
+    readonly type = 3;
+}
+declare class BooleanAttributePart extends AttributePart {
+    readonly type = 4;
+}
+declare class EventPart extends AttributePart {
+    readonly type = 5;
+    constructor(element: HTMLElement, name: string, strings: ReadonlyArray<string>, parent: Disconnectable, options: RenderOptions | undefined);
+    handleEvent(event: Event): void;
+}
+declare class ElementPart implements Disconnectable {
+    element: Element;
+    readonly type = 6;
+    _$committedValue: undefined;
+    options: RenderOptions | undefined;
+    constructor(element: Element, parent: Disconnectable, options: RenderOptions | undefined);
+    get _$isConnected(): boolean;
+    _$setValue(value: unknown): void;
+}
+/**
+ * An abstract `Directive` base class whose `disconnected` method will be
+ * called when the part containing the directive is cleared as a result of
+ * re-rendering, or when the user calls `part.setConnected(false)` on
+ * a part that was previously rendered containing the directive (as happens
+ * when e.g. a LitElement disconnects from the DOM).
+ *
+ * If `part.setConnected(true)` is subsequently called on a
+ * containing part, the directive's `reconnected` method will be called prior
+ * to its next `update`/`render` callbacks. When implementing `disconnected`,
+ * `reconnected` should also be implemented to be compatible with reconnection.
+ *
+ * Note that updates may occur while the directive is disconnected. As such,
+ * directives should generally check the `this.isConnected` flag during
+ * render/update to determine whether it is safe to subscribe to resources
+ * that may prevent garbage collection.
+ */
+export declare abstract class AsyncDirective extends Directive {
+    /**
+     * The connection state for this Directive.
+     */
+    isConnected: boolean;
+    /**
+     * Initialize the part with internal fields
+     * @param part
+     * @param parent
+     * @param attributeIndex
+     */
+    _$initialize(part: Part, parent: Disconnectable, attributeIndex: number | undefined): void;
+    /**
+     * Sets the value of the directive's Part outside the normal `update`/`render`
+     * lifecycle of a directive.
+     *
+     * This method should not be called synchronously from a directive's `update`
+     * or `render`.
+     *
+     * @param directive The directive to update
+     * @param value The value to set
+     */
+    setValue(value: unknown): void;
+    /**
+     * User callbacks for implementing logic to release any resources/subscriptions
+     * that may have been retained by this directive. Since directives may also be
+     * re-connected, `reconnected` should also be implemented to restore the
+     * working state of the directive prior to the next render.
+     */
+    protected disconnected(): void;
+    protected reconnected(): void;
+}
+export declare type Mapper<T> = (v: T, index?: number) => unknown;
+declare class AsyncReplaceDirective extends AsyncDirective {
+    private __value?;
+    private __weakThis;
+    private __pauser;
+    render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
+    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
+    protected commitValue(value: unknown, _index: number): void;
+    disconnected(): void;
+    reconnected(): void;
+}
+declare const asyncReplace: (value: AsyncIterable<unknown>, _mapper?: Mapper<unknown> | undefined) => DirectiveResult;
+declare class AsyncAppendDirective extends AsyncReplaceDirective {
+    private __childPart;
+    constructor(partInfo: PartInfo);
+    update(part: ChildPart, params: DirectiveParameters<this>): typeof noChange | undefined;
+    protected commitValue(value: unknown, index: number): void;
+}
+declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => DirectiveResult;
+declare class CacheDirective extends Directive {
+    private _templateCache;
+    private _value?;
+    constructor(partInfo: PartInfo);
+    render(v: unknown): unknown[];
+    update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
+}
+declare const cache: (v: unknown) => DirectiveResult;
+/**
+ * A key-value set of class names to truthy values.
+ */
 export interface ClassInfo {
     readonly [name: string]: string | boolean | number;
 }
+declare class ClassMapDirective extends Directive {
+    /**
+     * Stores the ClassInfo object applied to a given AttributePart.
+     * Used to unset existing values when a new ClassInfo object is applied.
+     */
+    private _previousClasses?;
+    private _staticClasses?;
+    constructor(partInfo: PartInfo);
+    render(classInfo: ClassInfo): string;
+    update(part: AttributePart, [classInfo]: DirectiveParameters<this>): string | typeof noChange;
+}
+declare const classMap: (classInfo: ClassInfo) => DirectiveResult;
+declare class GuardDirective extends Directive {
+    private _previousValue;
+    render(_value: unknown, f: () => unknown): unknown;
+    update(_part: Part, [value, f]: DirectiveParameters<this>): unknown;
+}
+declare const guard: (_value: unknown, f: () => unknown) => DirectiveResult;
+declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
+declare class LiveDirective extends Directive {
+    constructor(partInfo: PartInfo);
+    render(value: unknown): unknown;
+    update(part: AttributePart, [value]: DirectiveParameters<this>): unknown;
+}
+declare const live: (value: unknown) => DirectiveResult;
+/**
+ * Creates a new Ref object, which is container for a reference to an element.
+ */
+export declare const createRef: <T = Element>() => Ref<T>;
+/**
+ * An object that holds a ref value.
+ */
+export declare class Ref<T = Element> {
+    /**
+     * The current Element value of the ref, or else `undefined` if the ref is no
+     * longer rendered.
+     */
+    readonly value?: T;
+}
+export declare type RefOrCallback = Ref | ((el: Element | undefined) => void);
+declare class RefDirective extends AsyncDirective {
+    private _element?;
+    private _ref?;
+    private _context;
+    render(_ref: RefOrCallback): symbol;
+    update(part: ElementPart, [ref]: Parameters<this['render']>): symbol;
+    private _updateRefValue;
+    private get _lastElementForRef();
+    disconnected(): void;
+    reconnected(): void;
+}
+declare const ref: (_ref: RefOrCallback) => DirectiveResult;
 export declare type KeyFn<T> = (item: T, index: number) => unknown;
 export declare type ItemTemplate<T> = (item: T, index: number) => unknown;
-export interface StyleInfo {
-    readonly [name: string]: string;
+export interface RepeatDirectiveFn {
+    <T>(items: Iterable<T>, keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>, template?: ItemTemplate<T>): unknown;
+    <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
+    <T>(items: Iterable<T>, keyFn: KeyFn<T> | ItemTemplate<T>, template: ItemTemplate<T>): unknown;
 }
+declare const repeat: RepeatDirectiveFn;
+/**
+ * A key-value set of CSS properties and values.
+ *
+ * The key should be either a valid CSS property name string, like
+ * `'background-color'`, or a valid JavaScript camel case property name
+ * for CSSStyleDeclaration like `backgroundColor`.
+ */
+export interface StyleInfo {
+    readonly [name: string]: string | undefined | null;
+}
+declare class StyleMapDirective extends Directive {
+    _previousStyleProperties?: Set<string>;
+    constructor(partInfo: PartInfo);
+    render(styleInfo: StyleInfo): string;
+    update(part: AttributePart, [styleInfo]: DirectiveParameters<this>): string | typeof noChange;
+}
+declare const styleMap: (styleInfo: StyleInfo) => DirectiveResult;
+declare class TemplateContentDirective extends Directive {
+    private _previousTemplate?;
+    constructor(partInfo: PartInfo);
+    render(template: HTMLTemplateElement): typeof noChange | DocumentFragment;
+}
+declare const templateContent: (template: HTMLTemplateElement) => DirectiveResult;
+declare class UnsafeHTMLDirective extends Directive {
+    static directiveName: string;
+    static resultType: number;
+    private _value;
+    private _templateResult?;
+    constructor(partInfo: PartInfo);
+    render(value: string | typeof nothing | typeof noChange | undefined | null): typeof noChange | typeof nothing | TemplateResult<1 | 2> | null | undefined;
+}
+declare const unsafeHTML: (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
+declare class UnsafeSVGDirective extends UnsafeHTMLDirective {
+    static directiveName: string;
+    static resultType: number;
+}
+declare const unsafeSVG: (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
+declare class UntilDirective extends AsyncDirective {
+    private __lastRenderedIndex;
+    private __values;
+    private __weakThis;
+    private __pauser;
+    render(...args: Array<unknown>): unknown;
+    update(_part: Part, args: Array<unknown>): unknown;
+    disconnected(): void;
+    reconnected(): void;
+}
+declare const until: (...values: unknown[]) => DirectiveResult;
+export declare const _Σ: {
+    AttributePart: AttributePart;
+    PropertyPart: PropertyPart;
+    BooleanAttributePart: BooleanAttributePart;
+    EventPart: EventPart;
+    ElementPart: ElementPart;
+};
 export interface TemplateDirectives {
-    asyncAppend: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
-    asyncReplace: (value: AsyncIterable<unknown>, mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => (part: Part) => Promise<void>;
-    cache: (value: unknown) => (part: Part) => void;
-    classMap: (classInfo: ClassInfo) => (part: Part) => void;
-    guard: (value: unknown, f: () => unknown) => (part: Part) => void;
-    ifDefined: (value: unknown) => (part: Part) => void;
-    repeat: <T>(items: Iterable<T>, keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>, template?: ItemTemplate<T> | undefined) => DirectiveFn;
-    styleMap: (styleInfo: StyleInfo) => (part: Part) => void;
-    unsafeHTML: (value: unknown) => (part: Part) => void;
-    until: (...args: unknown[]) => (part: Part) => void;
+    asyncAppend: typeof asyncAppend;
+    asyncReplace: typeof asyncReplace;
+    cache: typeof cache;
+    classMap: typeof classMap;
+    guard: typeof guard;
+    ifDefined: typeof ifDefined;
+    live: typeof live;
+    ref: typeof ref;
+    repeat: typeof repeat;
+    styleMap: typeof styleMap;
+    templateContent: typeof templateContent;
+    unsafeHTML: typeof unsafeHTML;
+    unsafeSVG: typeof unsafeSVG;
+    until: typeof until;
 }
 export declare const directives: TemplateDirectives;
 /**
@@ -1253,8 +1507,8 @@ export declare const directives: TemplateDirectives;
 export declare const toTemplateStringsArray: (src: string) => TemplateStringsArray;
 
 export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult | SVGTemplateResult;
-export type UnsafeHTMLDirective = (value: unknown) => (part: Part) => void;
 export type TemplateTransformer = (mustache: string) => (view?: Record<string, unknown>) => TemplateResult | SVGTemplateResult;
+export type TransformDirective = (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
 export type TransformTester = (input: string, config: TransformConfig) => boolean;
 export type TransformExecutor = (input: string, config: TransformConfig) => TemplateResult | SVGTemplateResult | undefined;
 export type TransformeContext = {
@@ -1270,11 +1524,11 @@ export interface TransformConfig {
     };
     transformers?: Record<string, TransformeContext>;
 }
-export declare function createTransformFactory(html: TemplateTag, unsafeHTML: UnsafeHTMLDirective): TemplateTransformer;
+export declare function createTransformFactory(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
 export declare function createTransformFactory(config: TransformConfig): TemplateTransformer;
 export declare const transformer: {
     variable: TransformExecutor;
-    unsafeVariable: (unsafeHTML: UnsafeHTMLDirective) => TransformeContext;
+    unsafeVariable: (unsafeHTML: TransformDirective) => TransformeContext;
     section: () => TransformeContext;
     invertedSection: () => TransformeContext;
     comment: () => TransformeContext;
@@ -6017,6 +6271,24 @@ export declare function resetSessionHistory<T = PlainObject>(instance: IHistory<
  *  - `ja` `SessionHistory` インスタンスを指定
  */
 export declare function disposeSessionHistory<T = PlainObject>(instance: IHistory<T>): void;
+/**
+ * @en The event definition fired in [[IRouter]].
+ * @ja [[IRouter]] 内から発行されるイベント定義
+ */
+export interface RouterEvent {
+    'will-change': [
+        void
+    ];
+    'changed': [
+        void
+    ];
+}
+/**
+ * @en Router common interface.
+ * @ja Router 共通インターフェイス
+ */
+export interface IRouter<Event extends RouterEvent> extends Subscribable<Event> {
+}
 export declare const STATUS = 'TODO';
 declare namespace i18n {
     /**
