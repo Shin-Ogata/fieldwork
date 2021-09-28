@@ -15,7 +15,7 @@ function patch(index, code, includes) {
     includes.length = 0;
     includes.push('@cdp/extension-i18n');
     includes.push('@cdp/extension-template');
-    includes.push('@cdp/extension-template-transformer');
+    includes.push('@cdp/extension-template-bridge');
     includes.push('@cdp/core-utils');
     includes.push('@cdp/result');
     includes.push('@cdp/events');

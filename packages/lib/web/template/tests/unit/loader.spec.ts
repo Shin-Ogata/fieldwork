@@ -58,8 +58,50 @@ describe('loader spec', () => {
 
     it('check getTemplate() w/ engine', async () => {
         _$dom = $('#d1');
-
         const template = await getTemplate('#test-mustache', {
+            url: '../../.temp/res/template/test.tpl',
+        });
+        _$dom.append(template(params));
+
+        const $families = _$dom.children().children();
+        expect($families.length).toBe(2);
+
+        {
+            const $Jones = $($families[0]);
+            expect($Jones.find('.surname').text()).toBe('Jones');
+
+            const $names = $Jones.find('.given');
+            expect($names.length).toBe(3);
+            expect($names[0].textContent).toBe('Jim');
+            expect($names[1].textContent).toBe('John');
+            expect($names[2].textContent).toBe('Jill');
+
+            const $ages = $Jones.find('.age');
+            expect($ages.length).toBe(3);
+            expect($ages[0].textContent).toBe('44');
+            expect($ages[1].textContent).toBe('34');
+            expect($ages[2].textContent).toBe('24');
+        }
+
+        {
+            const $Smith = $($families[1]);
+            expect($Smith.find('.surname').text()).toBe('Smith');
+
+            const $names = $Smith.find('.given');
+            expect($names.length).toBe(2);
+            expect($names[0].textContent).toBe('Steve');
+            expect($names[1].textContent).toBe('Sally');
+
+            const $ages = $Smith.find('.age');
+            expect($ages.length).toBe(2);
+            expect($ages[0].textContent).toBe('34');
+            expect($ages[1].textContent).toBe('33');
+        }
+    });
+
+    it('check getTemplate() w/ engine & template', async () => {
+        _$dom = $('#d1');
+        const template = await getTemplate('#test-mustache-template', {
             url: '../../.temp/res/template/test.tpl',
         });
         _$dom.append(template(params));

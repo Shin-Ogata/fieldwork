@@ -13,7 +13,7 @@ module.exports = {
     testem: config.testem({
         external: {
             '@cdp/extension-template': 'node_modules/@cdp/extension-template/dist/extension-template',
-            '@cdp/extension-template-transformer': 'node_modules/@cdp/extension-template-transformer/dist/extension-template-transformer',
+            '@cdp/extension-template-bridge': 'node_modules/@cdp/extension-template-bridge/dist/extension-template-bridge',
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
             '@cdp/core-template': 'node_modules/@cdp/core-template/dist/core-template',
             '@cdp/ajax': 'node_modules/@cdp/ajax/dist/ajax',

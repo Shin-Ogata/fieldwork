@@ -4,11 +4,18 @@ import {
     html,
     directives,
 } from '@cdp/extension-template';
-import { TemplateTransformer, createTransformFactory } from '@cdp/extension-template-transformer';
+import {
+    TemplateTransformer,
+    createMustacheTransformer,
+    createStampinoTransformer,
+} from '@cdp/extension-template-bridge';
 import { PlainObject } from '@cdp/core-utils';
 
-/** @internal default transformer for mustache. */
-const mustache = createTransformFactory(html, directives.unsafeHTML);
+/** @internal builtin transformers (default: mustache). */
+const _builtins = {
+    mustache: createMustacheTransformer(html, directives.unsafeHTML),
+    stampino: createStampinoTransformer(),
+};
 
 /**
  * @en Compiled JavaScript template interface
@@ -46,7 +53,7 @@ export interface TemplateBridgeCompileOptions {
  */
 export class TemplateBridge {
     /** @internal */
-    private static _transformer = mustache;
+    private static _transformer = _builtins.mustache;
 
 ///////////////////////////////////////////////////////////////////////
 // public static methods:
@@ -56,19 +63,19 @@ export class TemplateBridge {
      * @ja テンプレート文字列から [[CompiledTemplate]] を取得
      *
      * @param template
-     *  - `en` template source string
-     *  - `ja` テンプレート文字列
+     *  - `en` template source string / template element
+     *  - `ja` テンプレート文字列 / テンプレートエレメント
      * @param options
      *  - `en` compile options
      *  - `ja` コンパイルオプション
      */
-    public static compile(template: string, options?: TemplateBridgeCompileOptions): CompiledTemplate {
+    public static compile(template: HTMLTemplateElement | string, options?: TemplateBridgeCompileOptions): CompiledTemplate {
         const { transformer } = Object.assign({ transformer: TemplateBridge._transformer }, options);
         const engine = transformer(template);
         const jst = (view?: PlainObject): TemplateResult | SVGTemplateResult => {
             return engine(view);
         };
-        jst.source = template;
+        jst.source = template instanceof HTMLTemplateElement ? template.innerHTML : template;
         return jst;
     }
 
@@ -87,5 +94,32 @@ export class TemplateBridge {
         const oldTransformer = TemplateBridge._transformer;
         TemplateBridge._transformer = newTransformer;
         return oldTransformer;
+    }
+
+    /**
+     * @en Get built-in transformer name list.
+     * @ja 組み込みの変換オブジェクトの名称一覧を取得
+     *
+     * @returns
+     *  - `en` name list.
+     *  - `ja` 名称一覧を返却
+     */
+    static get builtins(): string[] {
+        return Object.keys(_builtins);
+    }
+
+    /**
+     * @en Get built-in transformer object.
+     * @ja 組み込みの変換オブジェクトを取得
+     *
+     * @param name
+     *  - `en` transformer object name.
+     *  - `ja` 変換オブジェクトの名前を指定.
+     * @returns
+     *  - `en` transformer object.
+     *  - `ja` 変換オブジェクトを返却
+     */
+    public static getBuitinTransformer(name: string): TemplateTransformer | undefined {
+        return _builtins[name];
     }
 }

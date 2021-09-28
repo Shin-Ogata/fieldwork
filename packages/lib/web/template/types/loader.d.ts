@@ -1,5 +1,5 @@
-import { JST } from '@cdp/core-template';
-import { CompiledTemplate } from './bridge';
+import { JST, TemplateCompileOptions } from '@cdp/core-template';
+import { CompiledTemplate, TemplateBridgeCompileOptions } from './bridge';
 /**
  * @en Template query type list.
  * @ja テンプレート取得時に指定可能な型一覧
@@ -17,7 +17,7 @@ export declare type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @en Template query options.
  * @ja テンプレート取得オプション
  */
-export interface TemplateQueryOptions<T extends TemplateQueryTypes> {
+export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends TemplateCompileOptions, TemplateBridgeCompileOptions {
     type?: T;
     url?: string;
     cache?: boolean;

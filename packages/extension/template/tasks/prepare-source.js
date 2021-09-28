@@ -14,6 +14,7 @@ const chalk = require('chalk');
 
 const MODULE_ROOT = resolve(__dirname, '..', 'node_modules/lit-html/development');
 const SOURCE_ROOT = resolve(__dirname, '..', 'node_modules/lit-html/src');
+const cwd = process.cwd();
 
 async function makeMapFileList() {
     return (await glob(`${MODULE_ROOT}/**/*.js.map`, { nodir: true })).map(p => relative(MODULE_ROOT, p));
@@ -25,15 +26,18 @@ async function createSourceFiles(list) {
         for (let i = 0, n = json.sources.length; i < n; i++) {
             const srcPath = join(SOURCE_ROOT, dirname(map), basename(json.sources[i]));
             await outputFile(srcPath, json.sourcesContent[i]);
-            console.log(chalk.gray(`  create: ${relative(process.cwd(), srcPath)}`));
+            console.log(chalk.gray(`  created: ${relative(cwd, srcPath)}`));
         }
     }
 }
 
 async function main() {
     try {
-        const info = await makeMapFileList();
-        await createSourceFiles(info);
+        // skip setup from dependency
+        if (cwd.includes('node_modules')) {
+            return;
+        }
+        await createSourceFiles(await makeMapFileList());
     } catch (e) {
         console.error(chalk.red(`${e}`));
     }

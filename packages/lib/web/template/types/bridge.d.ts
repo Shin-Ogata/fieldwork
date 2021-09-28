@@ -1,5 +1,5 @@
 import { TemplateResult, SVGTemplateResult } from '@cdp/extension-template';
-import { TemplateTransformer } from '@cdp/extension-template-transformer';
+import { TemplateTransformer } from '@cdp/extension-template-bridge';
 import { PlainObject } from '@cdp/core-utils';
 /**
  * @en Compiled JavaScript template interface
@@ -38,13 +38,13 @@ export declare class TemplateBridge {
      * @ja テンプレート文字列から [[CompiledTemplate]] を取得
      *
      * @param template
-     *  - `en` template source string
-     *  - `ja` テンプレート文字列
+     *  - `en` template source string / template element
+     *  - `ja` テンプレート文字列 / テンプレートエレメント
      * @param options
      *  - `en` compile options
      *  - `ja` コンパイルオプション
      */
-    static compile(template: string, options?: TemplateBridgeCompileOptions): CompiledTemplate;
+    static compile(template: HTMLTemplateElement | string, options?: TemplateBridgeCompileOptions): CompiledTemplate;
     /**
      * @en Update default transformer object.
      * @ja 既定の変換オブジェクトの更新
@@ -57,4 +57,25 @@ export declare class TemplateBridge {
      *  - `ja` 以前の変換オブジェクトを返却
      */
     static setTransformer(newTransformer: TemplateTransformer): TemplateTransformer;
+    /**
+     * @en Get built-in transformer name list.
+     * @ja 組み込みの変換オブジェクトの名称一覧を取得
+     *
+     * @returns
+     *  - `en` name list.
+     *  - `ja` 名称一覧を返却
+     */
+    static get builtins(): string[];
+    /**
+     * @en Get built-in transformer object.
+     * @ja 組み込みの変換オブジェクトを取得
+     *
+     * @param name
+     *  - `en` transformer object name.
+     *  - `ja` 変換オブジェクトの名前を指定.
+     * @returns
+     *  - `en` transformer object.
+     *  - `ja` 変換オブジェクトを返却
+     */
+    static getBuitinTransformer(name: string): TemplateTransformer | undefined;
 }

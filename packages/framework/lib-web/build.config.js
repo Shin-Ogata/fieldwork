@@ -14,7 +14,7 @@ function patch(index, code, includes) {
 
     includes.push('@cdp/extension-i18n');
     includes.push('@cdp/extension-template');
-    includes.push('@cdp/extension-template-transformer');
+    includes.push('@cdp/extension-template-bridge');
     includes.push('@cdp/dom');
     includes.sort();
 
@@ -31,7 +31,7 @@ function patch(index, code, includes) {
         let prepend = '';
         prepend += read(resolve('../../extension/i18n/dist/extension-i18n.d.ts'));
         prepend += read(resolve('../../extension/template/dist/extension-template.d.ts'));
-        prepend += read(resolve('../../extension/template-transformer/dist/extension-template-transformer.d.ts'));
+        prepend += read(resolve('../../extension/template-bridge/dist/extension-template-bridge.d.ts'));
 
         const enumerate = (stuff) => {
             return stuff.split(',').map(s => s.trim()).filter(s => !!s).sort().join(', ');

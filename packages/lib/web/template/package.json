@@ -11,7 +11,7 @@
     "@cdp/core-template": "file:../../core/template",
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/extension-template": "file:../../../extension/template",
-    "@cdp/extension-template-transformer": "file:../../../extension/template-transformer"
+    "@cdp/extension-template-bridge": "file:../../../extension/template-bridge"
   },
   "devDependencies": {
     "@cdp/dom": "file:../dom"

@@ -9,7 +9,7 @@
  *     - @cdp/environment
  *     - @cdp/extension-i18n
  *     - @cdp/extension-template
- *     - @cdp/extension-template-transformer
+ *     - @cdp/extension-template-bridge
  *     - @cdp/i18n
  *     - @cdp/model
  *     - @cdp/router
@@ -1506,8 +1506,10 @@ export declare const directives: TemplateDirectives;
  */
 export declare const toTemplateStringsArray: (src: string) => TemplateStringsArray;
 
+export type TemplateBridgeArg = Record<string, {} | null | undefined>;
+export type TemplateBridgeEndine = (view?: TemplateBridgeArg) => TemplateResult | SVGTemplateResult;
+export type TemplateTransformer = (template: HTMLTemplateElement | string) => TemplateBridgeEndine;
 export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult | SVGTemplateResult;
-export type TemplateTransformer = (mustache: string) => (view?: Record<string, unknown>) => TemplateResult | SVGTemplateResult;
 export type TransformDirective = (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
 export type TransformTester = (input: string, config: TransformConfig) => boolean;
 export type TransformExecutor = (input: string, config: TransformConfig) => TemplateResult | SVGTemplateResult | undefined;
@@ -1524,8 +1526,8 @@ export interface TransformConfig {
     };
     transformers?: Record<string, TransformeContext>;
 }
-export declare function createTransformFactory(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
-export declare function createTransformFactory(config: TransformConfig): TemplateTransformer;
+export declare function createMustacheTransformer(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
+export declare function createMustacheTransformer(config: TransformConfig): TemplateTransformer;
 export declare const transformer: {
     variable: TransformExecutor;
     unsafeVariable: (unsafeHTML: TransformDirective) => TransformeContext;
@@ -1534,6 +1536,47 @@ export declare const transformer: {
     comment: () => TransformeContext;
     customDelimiter: () => TransformeContext;
 };
+/**
+ * A TemplateRenderer is responsible for rendering a block call, like
+ * <template name='foo'>
+ */
+export interface TemplateRenderer {
+    (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers): unknown;
+}
+export interface TemplateRenderers {
+    [name: string]: TemplateRenderer;
+}
+/**
+ * A TemplateHandlers is responsible for rendering control flow like
+ * <template type='if' if='{{x}}'>
+ */
+export declare type TemplateHandler = (template: HTMLTemplateElement, view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
+export interface TemplateHandlers {
+    [name: string]: TemplateHandler;
+}
+/**
+ * @returns {Function} a template function of the form (view) => TemplateResult
+ */
+export declare const prepareTemplate: (template: HTMLTemplateElement, handlers?: TemplateHandlers, renderers?: TemplateRenderers, superTemplate?: HTMLTemplateElement | undefined) => TemplateBridgeEndine;
+export interface EvaluateTemplateResult {
+    values: unknown[];
+}
+/**
+ * Evaluates the given template and returns its result
+ *
+ * @param template
+ * @param view
+ * @param handlers
+ * @param renderers
+ * @returns
+ */
+export declare const evaluateTemplate: (template: HTMLTemplateElement, view: object, handlers?: TemplateHandlers, renderers?: TemplateRenderers) => EvaluateTemplateResult;
+export interface CreateStampinoTemplateOptions {
+    handlers?: TemplateHandlers;
+    renderers?: TemplateRenderers;
+    superTemplate?: HTMLTemplateElement | undefined;
+}
+export declare function createStampinoTransformer(options?: CreateStampinoTemplateOptions): TemplateTransformer;
 import { $cdp, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, Nil, NonFunctionPropertyNames, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownObject } from '@cdp/lib-core';
 export { ITemplateEngine, JST, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter };
 import { AjaxOptions, AjaxRequestOptions, Serializable } from '@cdp/lib-worker';
@@ -6064,13 +6107,13 @@ export declare class TemplateBridge {
      * @ja テンプレート文字列から [[CompiledTemplate]] を取得
      *
      * @param template
-     *  - `en` template source string
-     *  - `ja` テンプレート文字列
+     *  - `en` template source string / template element
+     *  - `ja` テンプレート文字列 / テンプレートエレメント
      * @param options
      *  - `en` compile options
      *  - `ja` コンパイルオプション
      */
-    static compile(template: string, options?: TemplateBridgeCompileOptions): CompiledTemplate;
+    static compile(template: HTMLTemplateElement | string, options?: TemplateBridgeCompileOptions): CompiledTemplate;
     /**
      * @en Update default transformer object.
      * @ja 既定の変換オブジェクトの更新
@@ -6083,6 +6126,27 @@ export declare class TemplateBridge {
      *  - `ja` 以前の変換オブジェクトを返却
      */
     static setTransformer(newTransformer: TemplateTransformer): TemplateTransformer;
+    /**
+     * @en Get built-in transformer name list.
+     * @ja 組み込みの変換オブジェクトの名称一覧を取得
+     *
+     * @returns
+     *  - `en` name list.
+     *  - `ja` 名称一覧を返却
+     */
+    static get builtins(): string[];
+    /**
+     * @en Get built-in transformer object.
+     * @ja 組み込みの変換オブジェクトを取得
+     *
+     * @param name
+     *  - `en` transformer object name.
+     *  - `ja` 変換オブジェクトの名前を指定.
+     * @returns
+     *  - `en` transformer object.
+     *  - `ja` 変換オブジェクトを返却
+     */
+    static getBuitinTransformer(name: string): TemplateTransformer | undefined;
 }
 /**
  * @en Template query type list.
@@ -6101,7 +6165,7 @@ export declare type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @en Template query options.
  * @ja テンプレート取得オプション
  */
-export interface TemplateQueryOptions<T extends TemplateQueryTypes> {
+export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends TemplateCompileOptions, TemplateBridgeCompileOptions {
     type?: T;
     url?: string;
     cache?: boolean;
