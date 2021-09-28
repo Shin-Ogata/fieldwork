@@ -34,7 +34,7 @@ lit-html
 lit-transformer
 --------------------------------------------------------------------------------
 
- - lit-transformer stuff including ./dist/extension-template-transformer.{js/mjs}
+ - lit-transformer stuff including ./dist/extension-template-bridge.{js/mjs}
     https://github.com/shaman-apprentice/lit-transformer
 
 

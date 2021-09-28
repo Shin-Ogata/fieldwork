@@ -1,48 +1,65 @@
-import { JST, TemplateEngine } from '@cdp/core-template';
+import { unescapeHTML } from '@cdp/core-utils';
+import {
+    JST,
+    TemplateCompileOptions,
+    TemplateEngine,
+} from '@cdp/core-template';
 import { request } from '@cdp/ajax';
 import { document } from './ssr';
-import { CompiledTemplate, TemplateBridge } from './bridge';
+import {
+    CompiledTemplate,
+    TemplateBridgeCompileOptions,
+    TemplateBridge,
+} from './bridge';
 
 /** @internal */
-interface TemplateElementMap {
-    [url: string]: Element;
+interface TemplateProvider {
+    fragment: DocumentFragment;
+    html: string;
+}
+
+/** @internal */
+interface TemplateProviderMap {
+    [url: string]: TemplateProvider;
 }
 
 /** @internal */
 interface TemplateSourceMap {
-    [key: string]: string;
+    [key: string]: string | HTMLTemplateElement;
 }
 
-/** @internal */ let _mapElement: TemplateElementMap = {};
+/** @internal */ let _mapProvider: TemplateProviderMap = {};
 /** @internal */ let _mapSource: TemplateSourceMap = {};
 
 /** @internal */
-function queryTemplateSource(selector: string, el: Element | null, cache: boolean): string | undefined {
-    const key = `${selector}${el ? `::${el.innerHTML.replace(/\s/gm, '')}` : ''}`;
+function queryTemplateSource(selector: string, provider: TemplateProvider | null, cache: boolean): string | HTMLTemplateElement | undefined {
+    const { fragment, html } = provider || {};
+    const key = `${selector}${html ? `::${html}` : ''}`;
     if (_mapSource[key]) {
         return _mapSource[key];
     }
-    const context = el || document;
+    const context = fragment || document;
     const target = context.querySelector(selector);
-    const source = target?.innerHTML;
+    const source = target instanceof HTMLTemplateElement ? target : target?.innerHTML;
     cache && source && (_mapSource[key] = source);
     return source;
 }
 
 /** @internal */
-async function queryTemplateElement(url: string | undefined, cache: boolean): Promise<Element | null> {
+async function queryTemplateProvider(url: string | undefined, cache: boolean): Promise<TemplateProvider | null> {
     if (!url) {
         return null;
     }
-    if (_mapElement[url]) {
-        return _mapElement[url];
+    if (_mapProvider[url]) {
+        return _mapProvider[url];
     } else {
         const html = await request.text(url);
         const template = document.createElement('template');
         template.innerHTML = html;
-        const el = template.content.firstElementChild;
-        cache && el && (_mapElement[url] = el);
-        return el;
+        const fragment = template.content;
+        const provider = { fragment, html: html.replace(/\s/gm, '') };
+        cache && fragment && (_mapProvider[url] = provider);
+        return provider;
     }
 }
 
@@ -67,7 +84,7 @@ export type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @en Template query options.
  * @ja テンプレート取得オプション
  */
-export interface TemplateQueryOptions<T extends TemplateQueryTypes> {
+export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends TemplateCompileOptions, TemplateBridgeCompileOptions {
     type?: T;
     url?: string;
     cache?: boolean;
@@ -78,8 +95,8 @@ export interface TemplateQueryOptions<T extends TemplateQueryTypes> {
  * @ja テンプレートリソースキャッシュの削除
  */
 export function clearTemplateCache(): void {
-    _mapElement = {};
-    _mapSource  = {};
+    _mapProvider = {};
+    _mapSource   = {};
 }
 
 /**
@@ -97,16 +114,16 @@ export async function getTemplate<T extends TemplateQueryTypes = 'engine'>(
     selector: string, options?: TemplateQueryOptions<T>
 ): Promise<TemplateQueryTypeList[T]> {
     const { type, url, cache } = Object.assign({ type: 'engine', cache: true }, options);
-    const el  = await queryTemplateElement(url, cache);
-    const src = queryTemplateSource(selector, el, cache);
+    const provider = await queryTemplateProvider(url, cache);
+    const src = queryTemplateSource(selector, provider, cache);
     if (!src) {
         throw new URIError(`cannot specified template resource. { selector: ${selector},  url: ${url} }`);
     }
     switch (type) {
         case 'engine':
-            return TemplateEngine.compile(src) as TemplateQueryTypeList[T];
+            return TemplateEngine.compile(src instanceof HTMLTemplateElement ? unescapeHTML(src.innerHTML) : src, options) as TemplateQueryTypeList[T];
         case 'bridge':
-            return TemplateBridge.compile(src) as TemplateQueryTypeList[T];
+            return TemplateBridge.compile(src, options) as TemplateQueryTypeList[T];
         default:
             throw new TypeError(`[type: ${type}] is unknown.`);
     }

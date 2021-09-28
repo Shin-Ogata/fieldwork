@@ -6,13 +6,17 @@ import {
     html,
     directives,
     transformer,
-    createTransformFactory,
+    createMustacheTransformer,
 } from '@cdp/template';
 import {
     DOM,
     dom as $,
 } from '@cdp/dom';
-import { prepare, cleanup } from './tools';
+import {
+    prepare,
+    cleanup,
+    innerHTML,
+} from './tools';
 
 describe('template/bridge spec', () => {
     let _$dom: DOM;
@@ -115,6 +119,21 @@ describe('template/bridge spec', () => {
         }
     });
 
+    it('check builtin access', () => {
+        expect(TemplateBridge.builtins).toEqual(['mustache', 'stampino']);
+        expect(TemplateBridge.getBuitinTransformer('mustache')).toBeDefined();
+        expect(TemplateBridge.getBuitinTransformer('stampino')).toBeDefined();
+        expect(TemplateBridge.getBuitinTransformer('invalid')).not.toBeDefined();
+    });
+
+    it('check from HTMLTemplateElement', () => {
+        const el = document.createElement('template');
+        el.innerHTML = '{{#bool}}Show{{/bool}}';
+        const template = TemplateBridge.compile(el);
+        render(template({ bool: true }), _$dom[0]);
+        expect(_$dom.text()).toBe('Show');
+    });
+
     describe('custom transformer', () => {
         const {
             variable,
@@ -125,7 +144,7 @@ describe('template/bridge spec', () => {
             customDelimiter,
         } = transformer;
 
-        const customTransformer = createTransformFactory({
+        const customTransformer = createMustacheTransformer({
             html,
             transformVariable: variable,
             transformers: {
@@ -196,6 +215,25 @@ describe('template/bridge spec', () => {
                 expect($ages[0].textContent).toBe('34');
                 expect($ages[1].textContent).toBe('33');
             }
+        });
+    });
+
+    describe('stampino transformer', () => {
+        const stampino = TemplateBridge.getBuitinTransformer('stampino') as TemplateTransformer; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+        let oldTransformer: TemplateTransformer;
+
+        beforeEach(() => {
+            oldTransformer = TemplateBridge.setTransformer(stampino);
+        });
+
+        afterEach(() => {
+            TemplateBridge.setTransformer(oldTransformer);
+        });
+
+        it('repeat template', () => {
+            const template = TemplateBridge.compile('<template type="repeat" repeat="{{ items }}"><p>{{ item }}{{ x }}</p></template>');
+            render(template({ items: [4, 5, 6], x: 'X' }), _$dom[0]);
+            expect(innerHTML(_$dom)).toBe('<p>4X</p><p>5X</p><p>6X</p>');
         });
     });
 });
