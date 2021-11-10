@@ -94,7 +94,9 @@ async function exec(options) {
                 console.log(chalk.magenta(`    command: ${delegateCommand}`));
             }
 
-            const prefix = preset ? `-C ${target} ` : 'run ';
+            // npm v7.x: `--prefix` 指定では `npm install` 時に自身の link を張ってしまう. chdir 前提のため削除.
+//          const prefix = preset ? `-C ${target} ` : 'run ';
+            const prefix = preset ? `` : 'run ';
             process.chdir(target);
             await command('npm', `${prefix}${delegateCommand}`);
         }
