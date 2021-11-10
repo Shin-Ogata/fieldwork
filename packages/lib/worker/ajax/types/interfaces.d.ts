@@ -14,7 +14,7 @@ export interface AjaxDataStream {
  * @en Ajax data type list.
  * @ja Ajax で使用できる型定義リスト
  */
-export interface AjaxDataTypeList<T extends unknown = PlainObject> {
+export interface AjaxDataTypeList<T = PlainObject> {
     arrayBuffer: ArrayBuffer;
     blob: Blob;
     formData: FormData;
