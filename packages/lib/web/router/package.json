@@ -53,7 +53,7 @@
     "compile": "run-s compile:src compile:test compile:dev",
     "compile:dev": "run-p compile:dev:*",
     "compile:dev:scss": "run-s compile:dev:scss:*",
-    "compile:dev:scss:compile": "node-sass --output-style expanded --source-map-embed --source-map-contents -o .temp/dev/scss tests/dev/scss",
+    "compile:dev:scss:compile": "sass --style=expanded --source-map --embed-source-map tests/dev/scss:.temp/dev/scss",
     "compile:dev:scss:prefix": "postcss .temp/dev/scss/**/*.css --use autoprefixer -d .temp/dev/scss",
     "compile:dev:ts": "tsc -p ./tests/dev/tsconfig.json",
     "compile:src": "tsc -p ./tsconfig.json",
