@@ -14,7 +14,7 @@ const {
     basename,
     dirname,
 } = require('path');
-const chalk          = require('chalk');
+const colors         = require('../colors');
 const command        = require('../command');
 const { pkg, dir }   = require('../config');
 const banner         = require('../banner');
@@ -120,7 +120,7 @@ function setupUnitTests(cwd, silent) {
     for (const target of targets) {
         linkTestUnit(cwd, target);
         if (!silent) {
-            console.log(chalk.gray(`  depends: ${target.module}`));
+            console.log(colors.gray(`  depends: ${target.module}`));
         }
     }
 }
@@ -182,7 +182,7 @@ async function bundleDTS(cwd, silent, config, validate) {
     try {
         await command('dts-bundle-generator', `--config ${tempConfigPath}`);
     } catch (e) {
-        console.log(chalk.cyan.underline(`↑  "dts-bundle-generator" validate faild. You should fix it manually.`));
+        console.log(colors.cyan.underline(`↑  "dts-bundle-generator" validate faild. You should fix it manually.`));
     }
 
     const tsVersion = await queryTSVersion();
@@ -204,7 +204,7 @@ async function bundleDTS(cwd, silent, config, validate) {
         }
         writeFileSync(entry.outFile, code);
         if (!silent) {
-            console.log(chalk.gray(`  generated: ${basename(entry.outFile)}`));
+            console.log(colors.gray(`  generated: ${basename(entry.outFile)}`));
         }
     }
 }
@@ -249,7 +249,7 @@ function onImportedHTML(cwd, silent, options, text = '') {
     writeFileSync(resolve(cwd, output), formatXML(text, { bom: false, step }));
 
     if (!silent) {
-        console.log(chalk.gray(`  imported:  ${output} <- ${input}`));
+        console.log(colors.gray(`  imported:  ${output} <- ${input}`));
     }
 }
 

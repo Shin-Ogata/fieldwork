@@ -1,6 +1,6 @@
 'use strict';
 
-const chalk    = require('chalk');
+const colors   = require('../colors');
 const { copy } = require('./misc');
 
 const COMMAND = 'copy';
@@ -45,7 +45,7 @@ async function exec(options) {
 
     const { cwd, silent, globs, dest } = options;
     !silent && console.log(`globs: ${JSON.stringify(globs)}`);
-    const callback = silent ? null : (dst) => { console.log(chalk.gray(`  ${dst}`)); };
+    const callback = silent ? null : (dst) => { console.log(colors.gray(`  ${dst}`)); };
     !silent && console.log('copied:');
     copy(globs, dest, { cwd, callback });
 }

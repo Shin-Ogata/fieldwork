@@ -1,9 +1,9 @@
 'use strict';
 
 const { resolve, relative } = require('path');
-const fs    = require('fs-extra');
-const del   = require('del');
-const chalk = require('chalk');
+const fs     = require('fs-extra');
+const del    = require('del');
+const colors = require('../colors');
 const {
     dist,
     built,
@@ -92,12 +92,12 @@ async function exec(options) {
     const info = (path) => {
         if (!silent) {
             const target = relative(cwd, path);
-            console.log(chalk.gray(`  ${target}`));
+            console.log(colors.gray(`  ${target}`));
         }
     };
 
     if (!silent) {
-        console.log(chalk.cyan(`clean: ${rootName}`));
+        console.log(colors.cyan(`clean: ${rootName}`));
     }
 
     if (options.all || options.temp) {

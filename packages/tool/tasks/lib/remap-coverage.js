@@ -2,8 +2,8 @@
 
 const path      = require('path');
 const fs        = require('fs-extra');
-const chalk     = require('chalk');
 const nyc       = ((ctor) => new ctor({}))(require('nyc'));
+const colors    = require('../colors');
 const config    = require('../config');
 const srcmap    = require('./source-map-utils');
 const {
@@ -16,7 +16,7 @@ const {
 function detectMap(src) {
     const map = srcmap.detectSourceMap(src);
     if (!map) {
-        console.log(chalk.yellow(`    SKIPPED: cannot remap for ${path.basename(src)}.`));
+        console.log(colors.yellow(`    SKIPPED: cannot remap for ${path.basename(src)}.`));
     }
     return map;
 }
@@ -40,7 +40,7 @@ async function remapCoverage(cov, options) {
     const rebuild = {};
     for (const file of Object.keys(cov)) {
         if (!silent) {
-            console.log(chalk.gray(`  source-map detecting... : ${path.basename(file)}`));
+            console.log(colors.gray(`  source-map detecting... : ${path.basename(file)}`));
         }
         const absPath = toAbosolute(file, options);
         rebuild[absPath] = cov[file];
@@ -76,8 +76,8 @@ function resolveSourcePath(cov, options) {
         const name = path.relative(root, file).replace(/\\/g, '/').replace(/^[\w-]+:\//, '');
         const absPath = resolvePath(name);
         if (!silent) {
-            console.log(chalk.gray(`  source : ${name}`));
-            console.log(chalk.gray(`  ... resolved : ${absPath}`));
+            console.log(colors.gray(`  source : ${name}`));
+            console.log(colors.gray(`  ... resolved : ${absPath}`));
         }
         if (null != absPath) {
             rebuild[name] = cov[file];

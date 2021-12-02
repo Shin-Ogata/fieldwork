@@ -1,18 +1,29 @@
 'use strict';
 
-const { resolve, basename } = require('path');
+const {
+    resolve,
+    join,
+    basename,
+    dirname,
+    sep,
+} = require('path');
 const { copySync, writeFileSync } = require('fs-extra');
 const config = require('../config');
 
 const DIR_TESTEM     = 'testem';
 const DIR_PLUGINS    = 'plugins';
 const DIR_RUNNER     = 'res/test';
-const DIR_FRAMEWORK  = 'node_modules/jasmine-core/lib/jasmine-core';
+
+function queryFrameWorkDir(name) {
+    const dirs = dirname(require.resolve(name)).split(sep);
+    dirs.splice(dirs.lastIndexOf(name) + 1);
+    return join(...dirs);
+}
 
 function setup(options) {
     const { cwd, mode, runner, res } = options;
     const dstRoot = resolve(cwd, config.dir.temp, DIR_TESTEM);
-    const srcFrameworkRoot = resolve(__dirname, '..', DIR_FRAMEWORK);
+    const srcFrameworkRoot = resolve(queryFrameWorkDir('jasmine-core'), 'lib/jasmine-core');
 
     { // jasmine-core
         copySync(resolve(srcFrameworkRoot, 'jasmine.css'), resolve(dstRoot, 'framework/jasmine.css'));
@@ -22,7 +33,7 @@ function setup(options) {
     }
 
     // requirejs
-    copySync(resolve(__dirname, '..', 'node_modules/requirejs/require.js'), resolve(dstRoot, 'framework/require.js'));
+    copySync(resolve(queryFrameWorkDir('requirejs'), 'require.js'), resolve(dstRoot, 'framework/require.js'));
 
     { // testem runner settings
         copySync(resolve(__dirname, '..', DIR_RUNNER, 'testem.index.mustache'), resolve(dstRoot, 'testem.index.mustache'));

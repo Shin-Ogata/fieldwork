@@ -1,11 +1,11 @@
 'use strict';
 
 const { format } = require('util');
-const chalk      = require('chalk');
 const command    = require('./command');
 const config     = require('./config');
 const banner     = require('./banner');
 const utils      = require('./utils');
+const colors     = require('./colors');
 const cli        = require('./lib/cli-command-parser');
 const {
     merge,
@@ -26,7 +26,7 @@ async function main() {
 }
 
 function onError(err) {
-    console.error(chalk.red(`${format(err)}`));
+    console.error(colors.red(`${format(err)}`));
     process.exit(1);
 }
 

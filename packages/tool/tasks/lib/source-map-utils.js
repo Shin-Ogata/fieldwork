@@ -1,9 +1,9 @@
 'use strict';
 
-const path      = require('path');
-const fs        = require('fs-extra');
-const chalk     = require('chalk');
-const convert   = require('convert-source-map');
+const path    = require('path');
+const fs      = require('fs-extra');
+const convert = require('convert-source-map');
+const colors  = require('../colors');
 
 function detectSourceMap(src) {
     try {
@@ -17,7 +17,7 @@ function detectSourceMap(src) {
             return convert.fromMapFileComment(code, path.dirname(src)).toObject();
         }
     } catch (error) {
-        console.log(chalk.red(`    ERROR: cannot detect source-map for ${src}.`));
+        console.log(colors.red(`    ERROR: cannot detect source-map for ${src}.`));
     }
 }
 
@@ -26,7 +26,7 @@ function dropSourceMap(src) {
         const code = src.includes('\n') ? src : fs.readFileSync(src).toString();
         return convert.removeMapFileComments(convert.removeComments(code));
     } catch (error) {
-        console.log(chalk.red(`    ERROR: cannot drop source-map for ${src}.`));
+        console.log(colors.red(`    ERROR: cannot drop source-map for ${src}.`));
     }
 }
 

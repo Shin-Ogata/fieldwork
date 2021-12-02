@@ -1,7 +1,7 @@
 'use strict';
 
 const { resolve, relative } = require('path');
-const chalk     = require('chalk');
+const colors    = require('../colors');
 const command   = require('../command');
 const resolver  = require('./resolve-dependency');
 
@@ -89,9 +89,9 @@ async function exec(options) {
             const pkg = relative(root, target);
 
             if (!silent) {
-                console.log(chalk.magenta('delegate:'));
-                console.log(chalk.magenta(`    target:  ${pkg}`));
-                console.log(chalk.magenta(`    command: ${delegateCommand}`));
+                console.log(colors.magenta('delegate:'));
+                console.log(colors.magenta(`    target:  ${pkg}`));
+                console.log(colors.magenta(`    command: ${delegateCommand}`));
             }
 
             // npm v7.x: `--prefix` 指定では `npm install` 時に自身の link を張ってしまう. chdir 前提のため削除.

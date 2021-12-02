@@ -3,7 +3,7 @@
 const { resolve } = require('path');
 const { readdirSync } = require('fs-extra');
 const { program } = require('commander');
-const chalk = require('chalk');
+const colors = require('../colors');
 
 function loadPlugins() {
     const plugins = {};
@@ -41,14 +41,14 @@ function parseCommand() {
     program
         .command('*', { noHelp: true })
         .action((c) => {
-            console.log(chalk.red.underline(`  unsupported command: "${c}"`));
+            console.log(colors.red.underline(`  unsupported command: "${c}"`));
             program.help();
         });
 
     program.on('--help', () => {
         console.log('\nExamples:');
         for (const ex of examples) {
-            console.log(chalk.gray(ex));
+            console.log(colors.gray(ex));
         }
     });
 

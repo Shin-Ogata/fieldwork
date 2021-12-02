@@ -1,5 +1,5 @@
 /*!
- * @cdp/core-storage 0.9.9
+ * @cdp/core-storage 0.9.10
  *   core storage utility module
  */
 

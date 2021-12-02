@@ -10,7 +10,7 @@ const {
 const { promisify } = require('util');
 const { readJSON, outputFile } = require('fs-extra');
 const glob = promisify(require('glob'));
-const chalk = require('chalk');
+const colors = require('@cdp/tasks/colors');
 
 const MODULE_ROOT = resolve(__dirname, '..', 'node_modules/lit-html/development');
 const SOURCE_ROOT = resolve(__dirname, '..', 'node_modules/lit-html/src');
@@ -26,7 +26,7 @@ async function createSourceFiles(list) {
         for (let i = 0, n = json.sources.length; i < n; i++) {
             const srcPath = join(SOURCE_ROOT, dirname(map), basename(json.sources[i]));
             await outputFile(srcPath, json.sourcesContent[i]);
-            console.log(chalk.gray(`  created: ${relative(cwd, srcPath)}`));
+            console.log(colors.gray(`  created: ${relative(cwd, srcPath)}`));
         }
     }
 }
@@ -39,7 +39,7 @@ async function main() {
         }
         await createSourceFiles(await makeMapFileList());
     } catch (e) {
-        console.error(chalk.red(`${e}`));
+        console.error(colors.red(`${e}`));
     }
 }
 
