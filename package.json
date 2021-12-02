@@ -25,7 +25,7 @@
     "cross-conf-env": "1.2.1",
     "del": "6.0.0",
     "dts-bundle-generator": "6.1.0",
-    "es6-plato": "1.2.3",
+    "es6-plato": "git+https://github.com/the-simian/es6-plato.git",
     "eslint": "8.3.0",
     "fs-extra": "10.0.0",
     "glob": "7.2.0",
