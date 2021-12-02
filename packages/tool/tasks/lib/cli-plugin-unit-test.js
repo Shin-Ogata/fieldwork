@@ -6,7 +6,7 @@ const {
     removeSync,
     readdirSync,
 } = require('fs-extra');
-const chalk     = require('chalk');
+const colors    = require('../colors');
 const command   = require('../command');
 const setup     = require('./setup-test-runner');
 const remap     = require('./remap-coverage');
@@ -27,9 +27,9 @@ function defineCommands(commander, cmd, isDefault) {
         .action((mode, options) => {
             const { config, origin, runner, res, info } = options;
             if ((!mode || 'ci' === mode) && !config) {
-                console.log(chalk.red.underline('for running unit-test, config-file is required.'));
+                console.log(colors.red.underline('for running unit-test, config-file is required.'));
                 console.log('\nExamples:');
-                console.log(`  $ cdp-task unit-test ${mode || ''}`, chalk.cyan('--config=./test.config.js'));
+                console.log(`  $ cdp-task unit-test ${mode || ''}`, colors.cyan('--config=./test.config.js'));
                 process.exit(0);
             }
 

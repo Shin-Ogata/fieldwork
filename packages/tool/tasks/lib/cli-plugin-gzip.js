@@ -2,7 +2,7 @@
 
 const { basename, dirname } = require('path');
 const { ensureDirSync }     = require('fs-extra');
-const chalk                 = require('chalk');
+const colors                = require('../colors');
 const { gzip }              = require('./misc');
 
 const COMMAND = 'gzip';
@@ -55,8 +55,8 @@ async function exec(options) {
     await gzip(file, directory, cwd);
 
     if (!silent) {
-        console.log(chalk.gray('created:'));
-        console.log(chalk.green(`  ${basename(file)}`));
+        console.log(colors.gray('created:'));
+        console.log(colors.green(`  ${basename(file)}`));
     }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "@cdp/view",
   "description": "generic view scheme",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"
@@ -59,7 +59,7 @@
     "compile:dev:ts": "tsc -p ./tests/dev/tsconfig.json",
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
-    "copy:dev:framework": "cdp-task copy require.js ../../../../lib/web/view/.temp/dev/ts/framework -w ../../../tool/tasks/node_modules/requirejs -s",
+    "copy:dev:framework": "cdp-task copy require.js ../../packages/lib/web/view/.temp/dev/ts/framework -w ../../../../node_modules/requirejs -s",
     "debug": "npm run compile && run-p unit-test watch",
     "lint": "eslint src tests/unit tests/dev/ts -c ../../../../config/lint/tslint.js --ext .ts",
     "metrics": "run-s -l metrics:*",

@@ -1,14 +1,10 @@
 {
   "name": "@cdp/tasks",
   "description": "provide for development task scripts and commands",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "author": "Shin Ogata",
   "bin": {
     "cdp-task": "bin/index.js"
-  },
-  "dependencies": {
-    "jasmine-core": "3.10.1",
-    "requirejs": "2.3.6"
   },
   "keywords": [
     "javascript"
@@ -16,7 +12,6 @@
   "license": "UNLICENSED",
   "main": "index",
   "peerDependencies": {
-    "chalk": "*",
     "commander": "*",
     "convert-source-map": "*",
     "del": "*",
@@ -24,8 +19,10 @@
     "fs-extra": "*",
     "glob": "*",
     "https-proxy-agent": "*",
+    "jasmine-core": "*",
     "lodash": "*",
     "nyc": "*",
+    "requirejs": "*",
     "semver": "*",
     "tar": "*",
     "terser": "*",

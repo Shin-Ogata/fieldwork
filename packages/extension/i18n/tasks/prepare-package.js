@@ -2,7 +2,7 @@
 
 const { existsSync, ensureDirSync } = require('fs-extra');
 const { resolve } = require('path');
-const chalk       = require('chalk');
+const colors      = require('@cdp/tasks/colors');
 const download    = require('@cdp/tasks/downloader');
 const libVersion  = require('./query-version');
 
@@ -14,13 +14,13 @@ async function main() {
             return;
         }
 
-        console.log(chalk.cyan('preparing i18next tarball...'));
+        console.log(colors.cyan('preparing i18next tarball...'));
         ensureDirSync(directory);
         const url = `https://github.com/i18next/i18next/archive/v${libVersion}.tar.gz`;
         await download(url, tarball);
-        console.log(chalk.green('done.'));
+        console.log(colors.green('done.'));
     } catch (e) {
-        console.error(chalk.red(`${e}`));
+        console.error(colors.red(`${e}`));
     }
 }
 

@@ -60,6 +60,7 @@ module.exports = {
         },
     }),
     dts: bundle_dts({
+        inlinedLibraries: ['i18next'],
         excludeLibraries: [/^@cdp/],
         postProcess: patch,
     }),

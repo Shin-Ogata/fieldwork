@@ -1,14 +1,14 @@
 'use strict';
 
+const sember  = require('semver');
+const command = require('@cdp/tasks/command');
 const {
     underline: u,
     red,
     yellow,
     green: g,
     magenta: m,
-} = require('chalk');
-const sember  = require('semver');
-const command = require('@cdp/tasks/command');
+} = require('@cdp/tasks/colors');
 const current = require('./query-version');
 
 function queryLatest() {

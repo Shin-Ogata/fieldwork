@@ -1,7 +1,7 @@
 {
   "name": "@cdp/web-storage",
   "description": "web storage utility module",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/binary": "file:../../worker/binary",

@@ -2,7 +2,7 @@
 
 const { readFileSync, outputFileSync } = require('fs-extra');
 const { resolve, basename }            = require('path');
-const chalk                            = require('chalk');
+const colors                           = require('../colors');
 
 const COMMAND = 'minify';
 
@@ -17,9 +17,9 @@ function defineCommands(commander, cmd, isDefault) {
             const { cwd, silent } = commander.opts();
             const { config, verbose } = options;
             if (!config) {
-                console.log(chalk.red.underline('for running minify, config-file is required.'));
+                console.log(colors.red.underline('for running minify, config-file is required.'));
                 console.log('\nExamples:');
-                console.log(`  $ cdp-task minify ${type}`, chalk.cyan('--config=./minify.config.js'));
+                console.log(`  $ cdp-task minify ${type}`, colors.cyan('--config=./minify.config.js'));
                 process.exit(0);
             }
             cmd[COMMAND] = isDefault ? defaultOptions() : {
@@ -60,22 +60,22 @@ async function minifyJavaScript(options) {
     const { src, out, map, terser } = settings;
     const result = await minify(readFileSync(src).toString(), terser);
     if (result.error) {
-        console.log(chalk.red.underline(`terser error: ${result.error}`));
+        console.log(colors.red.underline(`terser error: ${result.error}`));
         throw new Error(result.error);
     }
 
     // min.js
     outputFileSync(out, result.code);
     if (!silent) {
-        console.log(chalk.gray(`  input:      ${basename(src)}`));
-        console.log(chalk.gray(`  minified:   ${basename(out)}`));
+        console.log(colors.gray(`  input:      ${basename(src)}`));
+        console.log(colors.gray(`  minified:   ${basename(out)}`));
     }
 
     // min.map
     if (result.map) {
         outputFileSync(map, result.map);
         if (!silent) {
-            console.log(chalk.gray(`  source-map: ${basename(map)}`));
+            console.log(colors.gray(`  source-map: ${basename(map)}`));
         }
     }
 }

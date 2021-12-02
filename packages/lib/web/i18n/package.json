@@ -1,7 +1,7 @@
 {
   "name": "@cdp/i18n",
   "description": "internationalization module",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/ajax": "file:../../worker/ajax",

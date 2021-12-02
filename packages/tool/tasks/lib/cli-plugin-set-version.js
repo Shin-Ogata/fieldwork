@@ -3,7 +3,7 @@
 const { resolve, basename } = require('path');
 const { existsSync, writeFileSync } = require('fs-extra');
 const { valid, lte } = require('semver');
-const chalk = require('chalk');
+const colors = require('../colors');
 
 const COMMAND = 'set-version';
 
@@ -71,19 +71,19 @@ async function exec(options) {
         if (existsSync(t)) {
             const pkg = require(t);
             if (typeof pkg !== 'object') {
-                console.log(chalk.red(`error:   ${t} is not package.json.`));
+                console.log(colors.red(`error:   ${t} is not package.json.`));
                 continue;
             }
 
             if (pkg.version === version) {
-                console.log(chalk.gray(`skipped: ${pkg.name}`));
-                console.log(chalk.gray(`  ${pkg.version} (no update)`));
+                console.log(colors.gray(`skipped: ${pkg.name}`));
+                console.log(colors.gray(`  ${pkg.version} (no update)`));
                 continue;
             }
 
             if (!force && !lte(pkg.version, version)) {
-                console.log(chalk.yellow(`skipped: ${pkg.name}`));
-                console.log(chalk.yellow(`  invalid version setup. [from: ${pkg.version}, to: ${version}]`));
+                console.log(colors.yellow(`skipped: ${pkg.name}`));
+                console.log(colors.yellow(`  invalid version setup. [from: ${pkg.version}, to: ${version}]`));
                 continue;
             }
 
@@ -91,11 +91,11 @@ async function exec(options) {
             pkg.version = version;
             writeFileSync(t, JSON.stringify(pkg, null, 2).replace(/[\n\s]*$/, '\n')/* final line feed */);
             if (!silent) {
-                console.log(chalk.gray(`info: ${pkg.name}`));
-                console.log(chalk.gray(`  ${from} → ${version}`));
+                console.log(colors.gray(`info: ${pkg.name}`));
+                console.log(colors.gray(`  ${from} → ${version}`));
             }
         } else if ('package-lock.json' !== basename(t)) {
-            console.log(chalk.yellow(`warn:    ${t} not found.`));
+            console.log(colors.yellow(`warn:    ${t} not found.`));
         }
     }
 }

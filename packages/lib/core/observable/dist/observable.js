@@ -1,5 +1,5 @@
 /*!
- * @cdp/observable 0.9.9
+ * @cdp/observable 0.9.10
  *   observable utility module
  */
 

@@ -5,7 +5,7 @@ const { parse: parseURL } = require('url');
 const http   = require('http');
 const https  = require('https');
 const Agent  = require('https-proxy-agent');
-const chalk  = require('chalk');
+const colors = require('./colors');
 const comand = require('./command');
 
 function queryProtocol(url, options) {
@@ -71,7 +71,7 @@ function request(stream, connection, options) {
             } else if (300 <= statusCode && statusCode < 400) {
                 redirect = response.headers.location;
                 response.on('data', () => {
-                    console.log(chalk.gray(`  detect redirect url: ${redirect}`));
+                    console.log(colors.gray(`  detect redirect url: ${redirect}`));
                 });
             }
             response.on('close', () => {

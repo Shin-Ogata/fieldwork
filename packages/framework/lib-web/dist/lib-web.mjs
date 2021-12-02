@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.9
+ * @cdp/lib-web 0.9.10
  *   web api library collection
  */
 
@@ -8,7 +8,7 @@ export { TemplateEngine } from '@cdp/lib-core';
 import { request, deserialize, serialize, ajax } from '@cdp/lib-worker';
 
 /*!
- * @cdp/dom 0.9.9
+ * @cdp/dom 0.9.10
  *   dom utility module
  */
 
@@ -3432,7 +3432,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.9
+ * @cdp/environment 0.9.10
  *   environment resolver module
  */
 
@@ -3648,7 +3648,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.9
+ * @cdp/extension-i18n 0.9.10
  *   extension for internationalization
  */
 
@@ -6210,7 +6210,7 @@ instance.loadLanguages;
 const i18n = instance;
 
 /*!
- * @cdp/i18n 0.9.9
+ * @cdp/i18n 0.9.10
  *   internationalization module
  */
 
@@ -6510,7 +6510,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.9
+ * @cdp/web-storage 0.9.10
  *   web storage utility module
  */
 
@@ -6640,7 +6640,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.9
+ * @cdp/data-sync 0.9.10
  *   web storage utility module
  */
 
@@ -7017,7 +7017,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.9
+ * @cdp/model 0.9.10
  *   generic model scheme
  */
 
@@ -7707,7 +7707,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.9
+ * @cdp/collection 0.9.10
  *   generic collection scheme
  */
 
@@ -9826,7 +9826,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.9
+ * @cdp/view 0.9.10
  *   generic view scheme
  */
 
@@ -10083,7 +10083,7 @@ class View extends EventSource {
 }
 
 /*!
- * @cdp/extension-template 0.9.9
+ * @cdp/extension-template 0.9.10
  *   extension for template engine
  */
 
@@ -13057,7 +13057,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-bridge 0.9.9
+ * @cdp/extension-template-bridge 0.9.10
  *   extension for HTML templates bridge.
  */
 
@@ -14412,7 +14412,7 @@ function createStampinoTransformer(options) {
 }
 
 /*!
- * @cdp/template 0.9.9
+ * @cdp/template 0.9.10
  *   HTML template library
  */
 
@@ -14565,7 +14565,7 @@ async function getTemplate(selector, options) {
 }
 
 /*!
- * @cdp/router 0.9.9
+ * @cdp/router 0.9.10
  *   generic router scheme
  */
 

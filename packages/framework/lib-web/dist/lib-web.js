@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.9
+ * @cdp/lib-web 0.9.10
  *   web api library collection
  */
 
@@ -10,7 +10,7 @@
 })(this, (function (exports, libCore, libWorker) { 'use strict';
 
     /*!
-     * @cdp/dom 0.9.9
+     * @cdp/dom 0.9.10
      *   dom utility module
      */
 
@@ -3434,7 +3434,7 @@
     setup(DOMClass.prototype, DOMClass.create);
 
     /*!
-     * @cdp/environment 0.9.9
+     * @cdp/environment 0.9.10
      *   environment resolver module
      */
 
@@ -3650,7 +3650,7 @@
     const platform = queryPlatform();
 
     /*!
-     * @cdp/extension-i18n 0.9.9
+     * @cdp/extension-i18n 0.9.10
      *   extension for internationalization
      */
 
@@ -6212,7 +6212,7 @@
     const i18n = instance;
 
     /*!
-     * @cdp/i18n 0.9.9
+     * @cdp/i18n 0.9.10
      *   internationalization module
      */
 
@@ -6512,7 +6512,7 @@
     };
 
     /*!
-     * @cdp/web-storage 0.9.9
+     * @cdp/web-storage 0.9.10
      *   web storage utility module
      */
 
@@ -6642,7 +6642,7 @@
     const webStorage = new WebStorage(localStorage);
 
     /*!
-     * @cdp/data-sync 0.9.9
+     * @cdp/data-sync 0.9.10
      *   web storage utility module
      */
 
@@ -7019,7 +7019,7 @@
     }
 
     /*!
-     * @cdp/model 0.9.9
+     * @cdp/model 0.9.10
      *   generic model scheme
      */
 
@@ -7709,7 +7709,7 @@
     }
 
     /*!
-     * @cdp/collection 0.9.9
+     * @cdp/collection 0.9.10
      *   generic collection scheme
      */
 
@@ -9828,7 +9828,7 @@
     }
 
     /*!
-     * @cdp/view 0.9.9
+     * @cdp/view 0.9.10
      *   generic view scheme
      */
 
@@ -10085,7 +10085,7 @@
     }
 
     /*!
-     * @cdp/extension-template 0.9.9
+     * @cdp/extension-template 0.9.10
      *   extension for template engine
      */
 
@@ -13059,7 +13059,7 @@
     };
 
     /*!
-     * @cdp/extension-template-bridge 0.9.9
+     * @cdp/extension-template-bridge 0.9.10
      *   extension for HTML templates bridge.
      */
 
@@ -14414,7 +14414,7 @@
     }
 
     /*!
-     * @cdp/template 0.9.9
+     * @cdp/template 0.9.10
      *   HTML template library
      */
 
@@ -14567,7 +14567,7 @@
     }
 
     /*!
-     * @cdp/router 0.9.9
+     * @cdp/router 0.9.10
      *   generic router scheme
      */
 
