@@ -13,10 +13,11 @@ function defineCommands(commander, cmd, isDefault) {
         .description('delegate npm-script-command to sub packages')
         .option('-p, --preset',             'if preset command [eg: install, test] calling the options is required')
         .option('-l, --layer <package>',    'specified <mono-repo-root>/<packages>/<layer>')
+        .option('-e, --exists',             `to avoid exiting with a non-zero exit code when the script is undefined. it's similar to pnpm's "--if-present" flag.`)
         .action((command, options) => {
             cmd.action = COMMAND;
             const { cwd, silent, target } = commander.opts();
-            const { preset, layer } = options;
+            const { preset, layer, exists } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),
                 silent,
@@ -24,17 +25,18 @@ function defineCommands(commander, cmd, isDefault) {
                 command: command + queryDelegateArgv(),
                 preset,
                 layer: layer && layer.split(','),
+                exists,
             };
         })
         .on('--help', () => {
             console.log(
 `
 Examples:
-  $ cdp-task delegate list -- --depth=1   delegate '$ npm list --depth=1'
-  $ npm run set-version 0.9.0 -- -- -f    from mono-repo root
-                                          scripts: {
-                                            "set-version": "cdp-task delegate set-version --layer=framework -- "
-                                          }
+  $ cdp-task delegate list -p -- --depth=1   delegate '$ npm list --depth=1'
+  $ npm run set-version:to 0.9.0 -- -- -f    from mono-repo root
+                                             scripts: {
+                                               "set-version": "cdp-task delegate set-version --layer=framework -- "
+                                             }
 `
             );
         });
@@ -50,6 +52,7 @@ function defaultOptions() {
         command: 'list --depth=1',
         preset: false,
         layer: null,
+        exists: false,
     };
 }
 
@@ -77,6 +80,7 @@ async function exec(options) {
         target: targetPackages,
         command: delegateCommand,
         preset,
+        exists,
         silent,
     } = options || defaultOptions();
     const { packages } = require('../config').dir;
@@ -86,18 +90,25 @@ async function exec(options) {
 
     try {
         for (const target of targets) {
-            const pkg = relative(root, target);
+            // npm v7+: `--prefix` 指定では `npm install` 時に自身の link を張ってしまう. chdir 前提のため削除.
+//          const prefix = preset ? `-C ${target} ` : 'run ';
+            const prefix = preset ? `` : 'run ';
+            process.chdir(target);
+
+            if (!preset && exists) {
+                const scripts = require(resolve(target, 'package.json')).scripts;
+                if (null == scripts[delegateCommand]) {
+                    continue;
+                }
+            }
 
             if (!silent) {
+                const pkg = relative(root, target);
                 console.log(colors.magenta('delegate:'));
                 console.log(colors.magenta(`    target:  ${pkg}`));
                 console.log(colors.magenta(`    command: ${delegateCommand}`));
             }
 
-            // npm v7.x: `--prefix` 指定では `npm install` 時に自身の link を張ってしまう. chdir 前提のため削除.
-//          const prefix = preset ? `-C ${target} ` : 'run ';
-            const prefix = preset ? `` : 'run ';
-            process.chdir(target);
             await command('npm', `${prefix}${delegateCommand}`);
         }
     } finally {

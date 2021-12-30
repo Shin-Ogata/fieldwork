@@ -36,6 +36,7 @@ module.exports = {
         },
     }),
     testem: config.testem({
+        random: false,
         external: {
             '@cdp/lib-core': 'node_modules/@cdp/lib-core/dist/lib-core',
             '@cdp/lib-worker': 'node_modules/@cdp/lib-worker/dist/lib-worker',

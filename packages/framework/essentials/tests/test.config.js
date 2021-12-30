@@ -39,6 +39,7 @@ module.exports = {
         replace,
     }),
     testem: config.testem({
+        random: false,
         requirejs: {
             map: {
                 specs: {

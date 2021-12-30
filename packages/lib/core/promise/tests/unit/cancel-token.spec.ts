@@ -3,18 +3,12 @@
  */
 
 import { noop, post } from '@cdp/core-utils';
-import { CancelToken } from '@cdp/promise';
+import { CancelToken, Deferred } from '@cdp/promise';
 
 describe('promise/cancel-token spec', () => {
 
-    function defereed(): { resolve: () => void; reject: (val: any) => void; } & Promise<void> {
-        let resolve: any;
-        let reject: any;
-        const promise = new Promise<void>((_resolve, _reject) => {
-            resolve = _resolve;
-            reject = _reject;
-        });
-        return Object.assign({ resolve, reject }, promise);
+    function defereed(): Deferred<void> {
+        return new Deferred();
     }
 
     const error = new Error('abort');
@@ -64,12 +58,8 @@ describe('promise/cancel-token spec', () => {
 
         expect(token.cancelable).toBeFalsy();
         expect(token.requested).toBeTruthy();
-        expect(token.closed).toBeFalsy();
-        expect(token.reason).toBe(error);
-
-        await post(noop);
-
         expect(token.closed).toBeTruthy();
+        expect(token.reason).toBe(error);
     });
 
     it('check CancelTokenSource#close', async () => {
