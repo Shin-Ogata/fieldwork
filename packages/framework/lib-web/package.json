@@ -41,7 +41,6 @@
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
-    "check-update": "exit 0",
     "ci": "run-s -l clean:all build:src build:test lint unit-test:ci typedoc",
     "clean": "cdp-task clean",
     "clean:all": "cdp-task clean -a",

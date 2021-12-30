@@ -1,7 +1,7 @@
 'use strict';
 
 const { resolve } = require('path');
-const { readdirSync } = require('fs-extra');
+const { readdirSync } = require('fs');
 const { program } = require('commander');
 const colors = require('../colors');
 

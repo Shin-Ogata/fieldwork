@@ -2228,6 +2228,32 @@ export declare function wait(promises: Promise<unknown>[]): Promise<unknown[]>;
  */
 export declare function checkCanceled(token: CancelToken | undefined): Promise<void>;
 /**
+ * @en `Deferred` object class that can operate `reject` and` resolve` from the outside.
+ * @ja `reject`, ` resolve` を外部より操作可能な `Deferred` オブジェクトクラス
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const df = new Deferred();
+ * df.resolve();
+ * df.reject('reason');
+ *
+ * await df;
+ * ```
+ */
+export declare class Deferred<T = void> extends CancelablePromise<T> {
+    readonly resolve: (arg: T | PromiseLike<T>) => void;
+    readonly reject: (reason?: unknown) => void;
+    /**
+     * constructor
+     *
+     * @param cancelToken
+     *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
+     *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
+     */
+    constructor(cancelToken?: CancelToken | null);
+}
+/**
  * @en The class manages lumping multiple `Promise` objects. <br>
  *     It's possible to make them cancel more than one `Promise` which handles different [[CancelToken]] by lumping.
  * @ja 複数 `Promise` オブジェクトを一括管理するクラス <br>

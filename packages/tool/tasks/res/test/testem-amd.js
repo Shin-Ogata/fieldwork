@@ -38,7 +38,7 @@ const testem = {
             ],
         },
     },
-    test_page: `${config.dir.temp}/testem/testem.index.mustache`,
+    test_page: `${config.dir.temp}/testem/testem.index.mustache${settings.query_string}`,
     require_config: JSON.stringify(settings.requirejs_config),
 
 // server settings

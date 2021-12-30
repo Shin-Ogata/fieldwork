@@ -101,7 +101,7 @@ function getDefault(testeeConfig, options) {
 }
 
 function getTestem(options) {
-    const { external, requirejs } = options || {};
+    const { external, requirejs, random } = Object.assign({ random: true }, options);
     const requirejs_config = Object.assign({}, requirejs, {
         baseUrl: '../../',
         paths: Object.assign({
@@ -114,6 +114,7 @@ function getTestem(options) {
     return {
         external,
         requirejs_config,
+        query_string: random ? '' : '?random=false',
         src_files: [
             `${TEMP}/${OUTNAME}.js`,
             `${TEMP}/${OUTNAME}-spec.js`,
