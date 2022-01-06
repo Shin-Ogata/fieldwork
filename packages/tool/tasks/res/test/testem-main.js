@@ -27,7 +27,7 @@
     }
 
     function setupJasmine(callback) {
-        require(['boot'], () => {
+        require(['boot1'], () => {
             require(['testem'], () => {
                 setupTestem();
                 callback(onload);

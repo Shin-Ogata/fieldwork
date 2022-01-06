@@ -868,6 +868,22 @@ ${templateContent(templateEl)}`;
             const raw = '<p>Hello Raw String</p>';
             render(html(bridge(raw)), $dom[0]);
             expect($dom.find('p').text()).toBe('Hello Raw String');
+
+            const strings = bridge(['a', 'b', 'c']);
+            expect(strings.raw.length).toBe(3);
+            expect(strings.raw[0]).toBe('a');
+            expect(strings.raw[1]).toBe('b');
+            expect(strings.raw[2]).toBe('c');
+
+            const tag = (strings: TemplateStringsArray, ...values: unknown[]): TemplateStringsArray => {
+                return strings;
+            };
+
+            const val = '完了';
+            const template = bridge(tag`<span>${val}</span>`);
+            expect(template.raw.length).toBe(2);
+            expect(template.raw[0]).toBe('<span>');
+            expect(template.raw[1]).toBe('</span>');
         });
     });
 });

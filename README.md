@@ -88,7 +88,7 @@ $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ## License
 
-Copyright 2021 Sony Group Corporation  
+Copyright 2021, 2022 Sony Group Corporation  
 Copyright 2016, 2019, 2020 Sony Corporation  
 Copyright 2017, 2018 Sony Network Communications Inc.  
 

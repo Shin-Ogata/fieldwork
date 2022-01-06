@@ -1,3 +1,4 @@
+import { toTemplateStringsArray } from '@cdp/extension-template';
 import type { TemplateBridgeEndine, TemplateTransformer } from '@bridge/interfaces';
 import type {
     MustacheTransformer,
@@ -25,17 +26,32 @@ const xform = (mustache: MustacheTransformer): TemplateTransformer => {
     };
 };
 
+/*
+ * lit-html v2.1.0+
+ * TemplateStringsArray を厳密にチェックするようになったため patch をあてる
+ * https://github.com/lit/lit/pull/2307
+ *
+ * 将来 `Array.isTemplateObject()` を使用される場合, 本対応も見直す必要あり
+ * https://tc39.es/proposal-array-is-template-object/
+ */
+const patch = (html: TemplateTag): TemplateTag => {
+    return (template: TemplateStringsArray, ...values: unknown[]) => {
+        return html(toTemplateStringsArray(template), ...values);
+    };
+};
+
 function createMustacheTransformer(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
 function createMustacheTransformer(config: TransformConfig): TemplateTransformer;
 function createMustacheTransformer(arg1: unknown, arg2?: unknown): TemplateTransformer {
     if ('function' === typeof arg1) {
-        return xform(createDefault(arg1 as TemplateTag, arg2 as TransformDirective));
+        return xform(createDefault(patch(arg1 as TemplateTag), arg2 as TransformDirective));
     } else {
+        const { html } = arg1 as { html: TemplateTag; };
         return xform(
             createCustom(Object.assign({
                 delimiter: { start: '{{', end: '}}' },
                 transformers: {},
-            }, arg1) as TransformConfig)
+            }, arg1, { html: patch(html) }) as TransformConfig)
         );
     }
 }

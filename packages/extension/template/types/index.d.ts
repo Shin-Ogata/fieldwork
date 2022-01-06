@@ -57,7 +57,7 @@ export declare const directives: TemplateDirectives;
  * ```
  *
  * @param src
- *  - `en` plain string. ex) [[JST]] returned value.
- *  - `ja` プレーン文字列. ex) [[JST]] の戻り値などを想定
+ *  - `en` plain string / string array. ex) [[JST]] returned value.
+ *  - `ja` プレーン文字列 / 文字列配列. ex) [[JST]] の戻り値などを想定
  */
-export declare const toTemplateStringsArray: (src: string) => TemplateStringsArray;
+export declare const toTemplateStringsArray: (src: string | string[] | TemplateStringsArray) => TemplateStringsArray;
