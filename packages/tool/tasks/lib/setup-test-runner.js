@@ -29,7 +29,8 @@ function setup(options) {
         copySync(resolve(srcFrameworkRoot, 'jasmine.css'), resolve(dstRoot, 'framework/jasmine.css'));
         copySync(resolve(srcFrameworkRoot, 'jasmine.js'), resolve(dstRoot, 'framework/jasmine.js'));
         copySync(resolve(srcFrameworkRoot, 'jasmine-html.js'), resolve(dstRoot, 'framework/jasmine-html.js'));
-        copySync(resolve(srcFrameworkRoot, 'boot.js'), resolve(dstRoot, 'framework/boot.js'));
+        copySync(resolve(srcFrameworkRoot, 'boot0.js'), resolve(dstRoot, 'framework/boot0.js'));
+        copySync(resolve(srcFrameworkRoot, 'boot1.js'), resolve(dstRoot, 'framework/boot1.js'));
     }
 
     // requirejs

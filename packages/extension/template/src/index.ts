@@ -102,11 +102,13 @@ export const directives: TemplateDirectives = {
  * ```
  *
  * @param src
- *  - `en` plain string. ex) [[JST]] returned value.
- *  - `ja` プレーン文字列. ex) [[JST]] の戻り値などを想定
+ *  - `en` plain string / string array. ex) [[JST]] returned value.
+ *  - `ja` プレーン文字列 / 文字列配列. ex) [[JST]] の戻り値などを想定
  */
-export const toTemplateStringsArray = (src: string): TemplateStringsArray => {
-    const ta = [src] as { raw?: string[]; };
-    ta.raw = [src];
-    return ta as unknown as TemplateStringsArray;
+export const toTemplateStringsArray = (src: string | string[] | TemplateStringsArray): TemplateStringsArray => {
+    const strings = Array.isArray(src) ? src : [src];
+    if (!Object.prototype.hasOwnProperty.call(strings, 'raw')) {
+        Object.defineProperty(strings, 'raw', { value: strings });
+    }
+    return strings as unknown as TemplateStringsArray;
 };
