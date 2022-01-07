@@ -333,7 +333,7 @@ describe('bridge-stampino spec', () => {
                 }
             );
             render(templateFn(), _$dom[0]);
-            expect(innerHTML(_$dom)).toBe('<h1>Do I head an echo?</h1> Yes, I hear an echo!  Yes, I hear an echo! ');
+            expect(innerHTML(_$dom)).toBe('<h1>Do I head an echo?</h1> Yes, I hear an echo!  Yes, I hear an echo!');
         });
 
         it('createTemplateFunction(string)', () => {

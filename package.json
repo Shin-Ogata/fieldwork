@@ -40,7 +40,7 @@
     "postcss-cli": "9.1.0",
     "requirejs": "2.3.6",
     "rollup": "2.63.0",
-    "sass": "1.45.2",
+    "sass": "1.46.0",
     "semver": "7.3.5",
     "tar": "6.1.11",
     "terser": "5.10.0",
