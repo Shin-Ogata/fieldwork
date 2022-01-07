@@ -9,11 +9,32 @@ function patch(index, code) {
         return code;
     }
 
+    // 一般的すぎる directive 名は宣言個所でリネーム
+    const renames = [
+        'cache',
+        'choose',
+        'guard',
+        'join',
+        'live',
+        'map',
+        'range',
+        'ref',
+        'repeat',
+        'until',
+        'when'
+    ];
+
+    const regex_declare = new RegExp(`(declare) (const|function) (${renames.join('|')})([^\n]+)\n`, 'g');
+    const regex_typeof  = new RegExp(`(typeof) (${renames.join('|')});`, 'g');
+
     code = code
         // trim `import("xxx").`
         .replace(/import\("[\S]+"\)\./g, '')
         // replace `TrustedHTML` -> `HTMLElement`
         .replace(/TrustedHTML/g, 'HTMLElement')
+        // rename list
+        .replace(regex_declare, '$1 $2 directive_$3$4\n')
+        .replace(regex_typeof, '$1 directive_$2;')
     ;
 
     return code;
@@ -84,10 +105,15 @@ module.exports = {
                 'lit-html/directives/async-append',
                 'lit-html/directives/async-replace',
                 'lit-html/directives/cache',
+                'lit-html/directives/choose',
                 'lit-html/directives/class-map',
                 'lit-html/directives/guard',
                 'lit-html/directives/if-defined',
+                'lit-html/directives/join',
+                'lit-html/directives/keyed',
                 'lit-html/directives/live',
+                'lit-html/directives/map',
+                'lit-html/directives/range',
                 'lit-html/directives/ref',
                 'lit-html/directives/repeat',
                 'lit-html/directives/style-map',
@@ -95,6 +121,7 @@ module.exports = {
                 'lit-html/directives/unsafe-html',
                 'lit-html/directives/unsafe-svg',
                 'lit-html/directives/until',
+                'lit-html/directives/when',
                 'lit-html/private-ssr-support',
                 'lit-html/directive',
                 'lit-html/async-directive',

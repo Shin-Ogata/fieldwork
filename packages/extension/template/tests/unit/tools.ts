@@ -60,3 +60,6 @@ export function cleanupTestElements(): void {
         body.removeChild(div);
     }
 }
+
+const stripExpressionMarkers = (html: string): string => html.replace(/<!--\?lit\$[0-9]+\$-->|<!--\??-->|lit\$[0-9]+\$/g, '');
+export const innerHTML = (dom: DOM): string => stripExpressionMarkers(dom[0].innerHTML).trim();

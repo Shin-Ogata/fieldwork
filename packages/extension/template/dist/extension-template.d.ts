@@ -376,64 +376,6 @@ export declare abstract class AsyncDirective extends Directive {
     protected disconnected(): void;
     protected reconnected(): void;
 }
-export declare type Mapper<T> = (v: T, index?: number) => unknown;
-declare class AsyncReplaceDirective extends AsyncDirective {
-    private __value?;
-    private __weakThis;
-    private __pauser;
-    render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
-    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
-    protected commitValue(value: unknown, _index: number): void;
-    disconnected(): void;
-    reconnected(): void;
-}
-declare const asyncReplace: (value: AsyncIterable<unknown>, _mapper?: Mapper<unknown> | undefined) => DirectiveResult<typeof AsyncReplaceDirective>;
-declare class AsyncAppendDirective extends AsyncReplaceDirective {
-    private __childPart;
-    constructor(partInfo: PartInfo);
-    update(part: ChildPart, params: DirectiveParameters<this>): typeof noChange | undefined;
-    protected commitValue(value: unknown, index: number): void;
-}
-declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => DirectiveResult<typeof AsyncAppendDirective>;
-declare class CacheDirective extends Directive {
-    private _templateCache;
-    private _value?;
-    constructor(partInfo: PartInfo);
-    render(v: unknown): unknown[];
-    update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
-}
-declare const cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
-/**
- * A key-value set of class names to truthy values.
- */
-export interface ClassInfo {
-    readonly [name: string]: string | boolean | number;
-}
-declare class ClassMapDirective extends Directive {
-    /**
-     * Stores the ClassInfo object applied to a given AttributePart.
-     * Used to unset existing values when a new ClassInfo object is applied.
-     */
-    private _previousClasses?;
-    private _staticClasses?;
-    constructor(partInfo: PartInfo);
-    render(classInfo: ClassInfo): string;
-    update(part: AttributePart, [classInfo]: DirectiveParameters<this>): string | typeof noChange;
-}
-declare const classMap: (classInfo: ClassInfo) => DirectiveResult<typeof ClassMapDirective>;
-declare class GuardDirective extends Directive {
-    private _previousValue;
-    render(_value: unknown, f: () => unknown): unknown;
-    update(_part: Part, [value, f]: DirectiveParameters<this>): unknown;
-}
-declare const guard: (_value: unknown, f: () => unknown) => DirectiveResult<typeof GuardDirective>;
-declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
-declare class LiveDirective extends Directive {
-    constructor(partInfo: PartInfo);
-    render(value: unknown): unknown;
-    update(part: AttributePart, [value]: DirectiveParameters<this>): unknown;
-}
-declare const live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
 /**
  * Creates a new Ref object, which is container for a reference to an element.
  */
@@ -460,7 +402,80 @@ declare class RefDirective extends AsyncDirective {
     disconnected(): void;
     reconnected(): void;
 }
-declare const ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+declare const directive_ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+export declare type Mapper<T> = (v: T, index?: number) => unknown;
+declare class AsyncReplaceDirective extends AsyncDirective {
+    private __value?;
+    private __weakThis;
+    private __pauser;
+    render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
+    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
+    protected commitValue(value: unknown, _index: number): void;
+    disconnected(): void;
+    reconnected(): void;
+}
+declare const asyncReplace: (value: AsyncIterable<unknown>, _mapper?: Mapper<unknown> | undefined) => DirectiveResult<typeof AsyncReplaceDirective>;
+declare class AsyncAppendDirective extends AsyncReplaceDirective {
+    private __childPart;
+    constructor(partInfo: PartInfo);
+    update(part: ChildPart, params: DirectiveParameters<this>): typeof noChange | undefined;
+    protected commitValue(value: unknown, index: number): void;
+}
+declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => DirectiveResult<typeof AsyncAppendDirective>;
+declare class CacheDirective extends Directive {
+    private _templateCache;
+    private _value?;
+    constructor(partInfo: PartInfo);
+    render(v: unknown): unknown[];
+    update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
+}
+declare const directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
+declare const directive_choose: <T, V>(value: T, cases: [
+    T,
+    () => V
+][], defaultCase?: (() => V) | undefined) => V | undefined;
+/**
+ * A key-value set of class names to truthy values.
+ */
+export interface ClassInfo {
+    readonly [name: string]: string | boolean | number;
+}
+declare class ClassMapDirective extends Directive {
+    /**
+     * Stores the ClassInfo object applied to a given AttributePart.
+     * Used to unset existing values when a new ClassInfo object is applied.
+     */
+    private _previousClasses?;
+    private _staticClasses?;
+    constructor(partInfo: PartInfo);
+    render(classInfo: ClassInfo): string;
+    update(part: AttributePart, [classInfo]: DirectiveParameters<this>): string | typeof noChange;
+}
+declare const classMap: (classInfo: ClassInfo) => DirectiveResult<typeof ClassMapDirective>;
+declare class GuardDirective extends Directive {
+    private _previousValue;
+    render(_value: unknown, f: () => unknown): unknown;
+    update(_part: Part, [value, f]: DirectiveParameters<this>): unknown;
+}
+declare const directive_guard: (_value: unknown, f: () => unknown) => DirectiveResult<typeof GuardDirective>;
+declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
+declare function directive_join<I, J>(items: Iterable<I> | undefined, joiner: (index: number) => J): Iterable<I | J>;
+declare function directive_join<I, J>(items: Iterable<I> | undefined, joiner: J): Iterable<I | J>;
+declare class Keyed extends Directive {
+    key: unknown;
+    render(k: unknown, v: unknown): unknown;
+    update(part: ChildPart, [k, v]: DirectiveParameters<this>): unknown;
+}
+declare const keyed: (k: unknown, v: unknown) => DirectiveResult<typeof Keyed>;
+declare class LiveDirective extends Directive {
+    constructor(partInfo: PartInfo);
+    render(value: unknown): unknown;
+    update(part: AttributePart, [value]: DirectiveParameters<this>): unknown;
+}
+declare const directive_live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
+declare function directive_map<T>(items: Iterable<T> | undefined, f: (value: T, index: number) => unknown): Generator<unknown, void, unknown>;
+declare function directive_range(end: number): Iterable<number>;
+declare function directive_range(start: number, end: number, step?: number): Iterable<number>;
 export declare type KeyFn<T> = (item: T, index: number) => unknown;
 export declare type ItemTemplate<T> = (item: T, index: number) => unknown;
 export interface RepeatDirectiveFn {
@@ -468,7 +483,7 @@ export interface RepeatDirectiveFn {
     <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
     <T>(items: Iterable<T>, keyFn: KeyFn<T> | ItemTemplate<T>, template: ItemTemplate<T>): unknown;
 }
-declare const repeat: RepeatDirectiveFn;
+declare const directive_repeat: RepeatDirectiveFn;
 /**
  * A key-value set of CSS properties and values.
  *
@@ -516,7 +531,10 @@ declare class UntilDirective extends AsyncDirective {
     disconnected(): void;
     reconnected(): void;
 }
-declare const until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
+declare const directive_until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
+declare function directive_when<T, F>(condition: true, trueCase: () => T, falseCase?: () => F): T;
+declare function directive_when<T, F = undefined>(condition: false, trueCase: () => T, falseCase?: () => F): F;
+declare function directive_when<T, F = undefined>(condition: unknown, trueCase: () => T, falseCase?: () => F): T | F;
 export declare const _Σ: {
     AttributePart: AttributePart;
     PropertyPart: PropertyPart;
@@ -524,21 +542,49 @@ export declare const _Σ: {
     EventPart: EventPart;
     ElementPart: ElementPart;
 };
+export declare namespace directives {
+    type asyncAppend = typeof asyncAppend;
+    type asyncReplace = typeof asyncReplace;
+    type cache = typeof directive_cache;
+    type choose = typeof directive_choose;
+    type classMap = typeof classMap;
+    type guard = typeof directive_guard;
+    type ifDefined = typeof ifDefined;
+    type join = typeof directive_join;
+    type keyed = typeof keyed;
+    type live = typeof directive_live;
+    type map = typeof directive_map;
+    type range = typeof directive_range;
+    type ref = typeof directive_ref;
+    type repeat = typeof directive_repeat;
+    type styleMap = typeof styleMap;
+    type templateContent = typeof templateContent;
+    type unsafeHTML = typeof unsafeHTML;
+    type unsafeSVG = typeof unsafeSVG;
+    type until = typeof directive_until;
+    type when = typeof directive_when;
+}
 export interface TemplateDirectives {
-    asyncAppend: typeof asyncAppend;
-    asyncReplace: typeof asyncReplace;
-    cache: typeof cache;
-    classMap: typeof classMap;
-    guard: typeof guard;
-    ifDefined: typeof ifDefined;
-    live: typeof live;
-    ref: typeof ref;
-    repeat: typeof repeat;
-    styleMap: typeof styleMap;
-    templateContent: typeof templateContent;
-    unsafeHTML: typeof unsafeHTML;
-    unsafeSVG: typeof unsafeSVG;
-    until: typeof until;
+    asyncAppend: directives.asyncAppend;
+    asyncReplace: directives.asyncReplace;
+    cache: directives.cache;
+    choose: directives.choose;
+    classMap: directives.classMap;
+    guard: directives.guard;
+    ifDefined: directives.ifDefined;
+    join: directives.join;
+    keyed: directives.keyed;
+    live: directives.live;
+    map: directives.map;
+    range: directives.range;
+    ref: directives.ref;
+    repeat: directives.repeat;
+    styleMap: directives.styleMap;
+    templateContent: directives.templateContent;
+    unsafeHTML: directives.unsafeHTML;
+    unsafeSVG: directives.unsafeSVG;
+    until: directives.until;
+    when: directives.when;
 }
 export declare const directives: TemplateDirectives;
 /**

@@ -5,6 +5,8 @@
     @typescript-eslint/unbound-method,
     @typescript-eslint/no-unused-vars,
     @typescript-eslint/indent,
+    @typescript-eslint/restrict-plus-operands,
+    @typescript-eslint/explicit-function-return-type,
  */
 
 import {
@@ -33,11 +35,12 @@ import {
     _Σ,
     toTemplateStringsArray as bridge,
 } from '@cdp/extension-template';
-import $ from '@cdp/dom';
+import $, { DOM } from '@cdp/dom';
 import {
     TestListCustomElement,
     prepareTestElements,
     cleanupTestElements,
+    innerHTML,
 } from './tools';
 
 describe('extention-template spec', () => {
@@ -53,10 +56,15 @@ describe('extention-template spec', () => {
         asyncAppend,
         asyncReplace,
         cache,
+        choose,
         classMap,
         guard,
         ifDefined,
+        join,
+        keyed,
         live,
+        map,
+        range,
         ref,
         repeat,
         styleMap,
@@ -64,6 +72,7 @@ describe('extention-template spec', () => {
         unsafeHTML,
         unsafeSVG,
         until,
+        when,
     } = directives;
 
     const evClick = (() => {
@@ -112,10 +121,15 @@ describe('extention-template spec', () => {
             expect(asyncAppend).toBeDefined();
             expect(asyncReplace).toBeDefined();
             expect(cache).toBeDefined();
+            expect(choose).toBeDefined();
             expect(classMap).toBeDefined();
             expect(guard).toBeDefined();
             expect(ifDefined).toBeDefined();
+            expect(join).toBeDefined();
+            expect(keyed).toBeDefined();
             expect(live).toBeDefined();
+            expect(map).toBeDefined();
+            expect(range).toBeDefined();
             expect(ref).toBeDefined();
             expect(repeat).toBeDefined();
             expect(styleMap).toBeDefined();
@@ -123,6 +137,7 @@ describe('extention-template spec', () => {
             expect(unsafeHTML).toBeDefined();
             expect(unsafeSVG).toBeDefined();
             expect(until).toBeDefined();
+            expect(when).toBeDefined();
         });
 
         it('check render static HTML', () => {
@@ -696,6 +711,92 @@ ${templateContent(templateEl)}`;
         });
     });
 
+    describe('Loops and conditionals (v2.0.0+):', () => {
+        it('check when', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = (data?: { user?: { username: string; }; }): TemplateResult => html`
+                ${when(data?.user, () => html`User: ${data?.user?.username}`, () => html`Sign In...`)}
+            `;
+
+            render(template({ user: { username: 'lit-html' } }), $dom[0]);
+            expect($dom.text()).toBe('User: lit-html');
+
+            render(template({}), $dom[0]);
+            expect($dom.text()).toBe('Sign In...');
+        });
+
+        it('check choose', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = (data: { section: string; }): TemplateResult => html`
+                ${choose(data.section, [
+                    ['home', () => html`<h1>Home</h1>`],
+                    ['about', () => html`<h1>About</h1>`]
+                ],
+                () => html`<h1>Error</h1>`)}
+            `;
+
+            render(template({ section: 'home' }), $dom[0]);
+            expect($dom.find('h1').text()).toBe('Home');
+
+            render(template({ section: 'about' }), $dom[0]);
+            expect($dom.find('h1').text()).toBe('About');
+
+            render(template({ section: 'error' }), $dom[0]);
+            expect($dom.find('h1').text()).toBe('Error');
+        });
+
+        it('check map', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = (items?: string[]): TemplateResult => html`
+                <ul>
+                ${map(items, (i) => html`<li>${i}</li>`)}
+                </ul>
+            `;
+
+            render(template(['a', 'b', 'c']), $dom[0]);
+            expect($dom.find('li').length).toBe(3);
+            expect($dom.find('li')[0].textContent).toBe('a');
+            expect($dom.find('li')[1].textContent).toBe('b');
+            expect($dom.find('li')[2].textContent).toBe('c');
+
+            render(template(), $dom[0]);
+            expect($dom.find('li').length).toBe(0);
+        });
+
+        it('check join', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = (menuItems: { href: string; label: string; }[]): TemplateResult => html`
+                ${join(
+                    map(menuItems, (i) => html`<a href=${i.href}>${i.label}</a>`),
+                    html`<span class="separator">|</span>`
+                )}
+            `;
+
+            render(template([{ href: 'aaa.html', label: 'AAA' }, { href: 'bbb.html', label: 'BBB' }]), $dom[0]);
+            expect(innerHTML($dom)).toBe('<a href="aaa.html">AAA</a><span class="separator">|</span><a href="bbb.html">BBB</a>');
+        });
+
+        it('check range', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const template = (): TemplateResult => html`
+                ${map(range(8), (i) => html`${i + 1}`)}
+            `;
+
+            render(template(), $dom[0]);
+            expect($dom.text()).toBe('12345678');
+        });
+    });
+
     describe('Referencing the rendered DOM:', () => {
         it('check ref', () => {
             prepareTestElements();
@@ -707,6 +808,33 @@ ${templateContent(templateEl)}`;
             render(template, $dom[0]);
             $dom.find('input').val('hogehoge');
             expect(inputRef.value?.value).toBe('hogehoge');
+        });
+
+        it('check keyed', () => {
+            prepareTestElements();
+            const $dom = $('#d1');
+
+            const go = (k: any) =>
+                render(keyed(k, html`<div .foo=${k}></div>`), $dom[0]);
+
+            const div = (dom: DOM) => dom[0].firstElementChild as { foo?: number; };
+
+            go(1);
+            const div1 = div($dom);
+            expect(innerHTML($dom)).toBe('<div></div>');
+            expect(div1.foo).toBe(1);
+
+            go(1);
+            const div2 = div($dom);
+            expect(innerHTML($dom)).toBe('<div></div>');
+            expect(div2.foo).toBe(1);
+            expect(div2 === div1).toBe(true);
+
+            go(2);
+            const div3 = div($dom);
+            expect(innerHTML($dom)).toBe('<div></div>');
+            expect(div3.foo).toBe(2);
+            expect(div1 === div3).toBe(false);
         });
     });
 

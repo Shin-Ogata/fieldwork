@@ -61,4 +61,4 @@ export function cleanup(): void {
 }
 
 export const stripExpressionMarkers = (html: string): string => html.replace(/<!--\?lit\$[0-9]+\$-->|<!--\??-->|lit\$[0-9]+\$/g, '');
-export const innerHTML = (dom: DOM): string => stripExpressionMarkers(dom[0].innerHTML);
+export const innerHTML = (dom: DOM): string => stripExpressionMarkers(dom[0].innerHTML).trim();
