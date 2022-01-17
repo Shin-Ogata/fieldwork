@@ -6,9 +6,6 @@ module.exports = {
     __esModule: true,
     default: config({
         external: {
-            'util': null,
-            'path': null,
-            'fs': null,
             '@cdp/core-utils': null,
             '@cdp/events': null,
             '@cdp/promise': null,

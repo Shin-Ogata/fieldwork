@@ -1,12 +1,13 @@
 'use strict';
 
-const { nodeResolve }   = require('@rollup/plugin-node-resolve');
-const commonjs          = require('@rollup/plugin-commonjs');
-const alias             = require('@rollup/plugin-alias');
-const replacer          = require('@rollup/plugin-replace');
-const sourcemapDetect   = require('@cdp/tasks/rollup-plugin/source-map-detect');
-const sourcemapRoot     = require('@cdp/tasks/rollup-plugin/source-map-root');
-const postProcesser     = require('@cdp/tasks/rollup-plugin/post-process');
+const { builtinModules } = require('module');
+const { nodeResolve }    = require('@rollup/plugin-node-resolve');
+const commonjs           = require('@rollup/plugin-commonjs');
+const alias              = require('@rollup/plugin-alias');
+const replacer           = require('@rollup/plugin-replace');
+const sourcemapDetect    = require('@cdp/tasks/rollup-plugin/source-map-detect');
+const sourcemapRoot      = require('@cdp/tasks/rollup-plugin/source-map-root');
+const postProcesser      = require('@cdp/tasks/rollup-plugin/post-process');
 const {
     config,
     banner,
@@ -44,7 +45,8 @@ function getConfig(options) {
         domain,
         onwarn,
     } = opts;
-    const external = globals && Object.keys(globals);
+    const external = builtinModules.slice();
+    globals && external.push(...Object.keys(globals));
 
     const umd = 'umd' === format;
     const cjs = 'cjs' === format;
