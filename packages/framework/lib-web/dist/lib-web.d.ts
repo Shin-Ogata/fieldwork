@@ -1476,7 +1476,7 @@ declare const styleMap: (styleInfo: StyleInfo) => DirectiveResult<typeof StyleMa
 declare class TemplateContentDirective extends Directive {
     private _previousTemplate?;
     constructor(partInfo: PartInfo);
-    render(template: HTMLTemplateElement): typeof noChange | DocumentFragment;
+    render(template: HTMLTemplateElement): DocumentFragment | typeof noChange;
 }
 declare const templateContent: (template: HTMLTemplateElement) => DirectiveResult<typeof TemplateContentDirective>;
 declare class UnsafeHTMLDirective extends Directive {
