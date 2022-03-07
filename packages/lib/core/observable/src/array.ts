@@ -307,7 +307,7 @@ export class ObservableArray<T = unknown> extends Array<T> implements IObservabl
                 const oldValue = old[i];
                 const newValue = this[i];
                 if (newValue !== oldValue) {
-                    this[_stockChange](ArrayChangeType.UPDATE, i, newValue, oldValue as T);
+                    this[_stockChange](ArrayChangeType.UPDATE, i, newValue, oldValue);
                 }
             }
         }
