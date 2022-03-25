@@ -39,6 +39,16 @@
     <Content Include="dist\router.mjs" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="tests\dev\dev.config.js" />
+    <Content Include="tests\dev\index.html" />
+    <Content Include="tests\dev\scss\dev.scss" />
+    <Content Include="tests\dev\scss\_base.scss" />
+    <Content Include="tests\dev\scss\_credits.scss" />
+    <Content Include="tests\dev\scss\_utils.scss" />
+    <Content Include="tests\dev\tpl\scripts.html" />
+    <Content Include="tests\dev\tpl\stylesheets.html" />
+    <Content Include="tests\dev\tpl\templates.html" />
+    <Content Include="tests\dev\tsconfig.json" />
     <Content Include="tests\res\router\index.html" />
     <Content Include="tests\tsconfig.json" />
     <Content Include="tsconfig.json" />
@@ -51,12 +61,18 @@
     <Folder Include="dist\" />
     <Folder Include="src\" />
     <Folder Include="src\history\" />
+    <Folder Include="src\router\" />
     <Folder Include="tests\" />
+    <Folder Include="tests\dev\" />
+    <Folder Include="tests\dev\scss\" />
+    <Folder Include="tests\dev\tpl\" />
+    <Folder Include="tests\dev\ts\" />
     <Folder Include="tests\res\" />
     <Folder Include="tests\res\router\" />
     <Folder Include="tests\unit\" />
     <Folder Include="types\" />
     <Folder Include="types\history\" />
+    <Folder Include="types\router\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\history\index.ts" />
@@ -65,6 +81,10 @@
     <TypeScriptCompile Include="src\history\ssr.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\result-code-defs.ts" />
+    <TypeScriptCompile Include="src\router\index.ts" />
+    <TypeScriptCompile Include="src\router\interfaces.ts" />
+    <TypeScriptCompile Include="tests\dev\ts\index.ts" />
+    <TypeScriptCompile Include="tests\dev\ts\_testee.d.ts" />
     <TypeScriptCompile Include="tests\unit\history.spec.ts" />
     <TypeScriptCompile Include="tests\unit\router.spec.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
@@ -77,6 +97,8 @@
     <TypeScriptCompile Include="types\history\ssr.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\result-code-defs.d.ts" />
+    <TypeScriptCompile Include="types\router\index.d.ts" />
+    <TypeScriptCompile Include="types\router\interfaces.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

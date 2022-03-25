@@ -54,6 +54,7 @@
     <Folder Include="dist\" />
     <Folder Include="src\" />
     <Folder Include="src\%40types\" />
+    <Folder Include="src\%40types\%40bridge\" />
     <Folder Include="src\%40types\lit-transformer\" />
     <Folder Include="src\%40types\lit-transformer\src\" />
     <Folder Include="src\%40types\lit-transformer\src\transformers\" />
@@ -64,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="dist\extension-template-bridge.d.ts" />
+    <TypeScriptCompile Include="src\%40types\%40bridge\interfaces.d.ts" />
     <TypeScriptCompile Include="src\%40types\lit-transformer\index.d.ts" />
     <TypeScriptCompile Include="src\%40types\lit-transformer\src\interfaces.d.ts" />
     <TypeScriptCompile Include="src\%40types\lit-transformer\src\lit-transformer.d.ts" />
@@ -74,16 +76,16 @@
     <TypeScriptCompile Include="src\%40types\lit-transformer\src\transformers\unsafeVariable.d.ts" />
     <TypeScriptCompile Include="src\%40types\lit-transformer\src\transformers\variableTransformer.d.ts" />
     <TypeScriptCompile Include="src\%40types\stampino\index.d.ts" />
-    <TypeScriptCompile Include="src\bridge-lit-html.ts" />
     <TypeScriptCompile Include="src\bridge-mustache.ts" />
+    <TypeScriptCompile Include="src\bridge-stampino.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="tests\unit\mustache.spec.ts" />
     <TypeScriptCompile Include="tests\unit\tools.ts" />
     <TypeScriptCompile Include="tests\unit\_export.d.ts" />
     <TypeScriptCompile Include="tests\unit\_module.d.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
-    <TypeScriptCompile Include="types\bridge-lit-html.d.ts" />
     <TypeScriptCompile Include="types\bridge-mustache.d.ts" />
+    <TypeScriptCompile Include="types\bridge-stampino.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

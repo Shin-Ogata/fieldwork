@@ -71,7 +71,7 @@ $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 | [ajax](./packages/lib/worker/ajax/README.md)                   | ajax utility                 |
 | [inline-worker](./packages/lib/worker/inline-worker/README.md) | inline-worker utility        |
 
-- Window/DOM
+- Web/DOM
 
 | module                                                     | description                                |
 |:-----------------------------------------------------------|:-------------------------------------------|

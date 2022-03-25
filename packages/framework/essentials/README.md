@@ -1,3 +1,0 @@
-# @cdp/essentials
-
-[description]

@@ -56,7 +56,7 @@
     <Folder Include="types\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="dist\essentials.d.ts" />
+    <TypeScriptCompile Include="dist\runtime.d.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
@@ -64,10 +64,10 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include=".npmrc" />
-    <Content Include="dist\essentials.js" />
-    <Content Include="dist\essentials.min.js" />
-    <Content Include="dist\essentials.min.map" />
-    <Content Include="dist\essentials.mjs" />
+    <Content Include="dist\runtime.js" />
+    <Content Include="dist\runtime.min.js" />
+    <Content Include="dist\runtime.min.map" />
+    <Content Include="dist\runtime.mjs" />
     <Content Include="docs\typedoc\index.html" />
     <Content Include="NOTICE" />
     <Content Include="package.json" />

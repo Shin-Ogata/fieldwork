@@ -1,6 +1,6 @@
 {
-  "name": "@cdp/essentials",
-  "description": "web essentilas framework",
+  "name": "@cdp/runtime",
+  "description": "runtime core framework",
   "version": "0.9.10",
   "author": "Shin Ogata",
   "devDependencies": {
@@ -14,8 +14,8 @@
     "javascript"
   ],
   "license": "UNLICENSED",
-  "main": "dist/essentials",
-  "module": "dist/essentials.mjs",
+  "main": "dist/runtime",
+  "module": "dist/runtime.mjs",
   "private": true,
   "repository": {
     "type": "git",
@@ -51,11 +51,11 @@
     "set-version": "cdp-task set-version",
     "setup": "cdp-task bundle setup-ut",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc dist/essentials.d.ts --options ../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc dist/runtime.d.ts --options ../../../config/doc/typedoc.js --excludeExternals",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
     "ut": "npm run unit-test",
     "ut:ci": "npm run unit-test:ci"
   },
-  "types": "dist/essentials.d.ts"
+  "types": "dist/runtime.d.ts"
 }
