@@ -91,7 +91,7 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
             previous = now;
         }
         const remaining = elapse - (now - previous);
-        // eslint-disable-next-line no-invalid-this
+        // eslint-disable-next-line no-invalid-this, @typescript-eslint/no-this-alias
         context = this;
         args = [...arg];
         if (remaining <= 0 || remaining > elapse) {

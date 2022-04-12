@@ -10,6 +10,7 @@ const {
 const glob  = promisify(require('glob'));
 const plato = require('es6-plato');
 const { dropSourceMap } = require('./source-map-utils');
+const { toPOSIX } = require('./misc');
 const colors = require('../colors');
 const config = require('../config');
 
@@ -68,16 +69,16 @@ async function queryTargets(options) {
         const { dir, ignore } = (() => {
             switch (resolution) {
                 case 'file':
-                    return { dir: pkgConfig.dir.built, ignore: pkgConfig.metrics.ignore };
+                    return { dir: toPOSIX(pkgConfig.dir.built), ignore: pkgConfig.metrics.ignore };
                 case 'module':
-                    return { dir: pkgConfig.dir.dist, ignore: pkgConfig.metrics.ignore };
+                    return { dir: toPOSIX(pkgConfig.dir.dist), ignore: pkgConfig.metrics.ignore };
                 default:
                     throw `unknown resolution: ${resolution}`;
             }
         })();
 
         return (await glob(`${dir}/**/*.js`, {
-            cwd: pkgDir,
+            cwd: toPOSIX(pkgDir),
             nodir: true,
             ignore,
         })).map(f => resolve(pkgDir, f));

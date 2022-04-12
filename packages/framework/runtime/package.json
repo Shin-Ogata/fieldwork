@@ -1,7 +1,7 @@
 {
   "name": "@cdp/runtime",
   "description": "runtime core framework",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "author": "Shin Ogata",
   "devDependencies": {
     "@cdp/lib-core": "file:../lib-core",
