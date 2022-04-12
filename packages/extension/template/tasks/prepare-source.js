@@ -10,6 +10,7 @@ const {
 const { promisify } = require('util');
 const { readJSON, outputFile } = require('fs-extra');
 const glob = promisify(require('glob'));
+const { toPOSIX } = require('@cdp/tasks/utils');
 const colors = require('@cdp/tasks/colors');
 
 const MODULE_ROOT = resolve(__dirname, '..', 'node_modules/lit-html/development');
@@ -17,7 +18,7 @@ const SOURCE_ROOT = resolve(__dirname, '..', 'node_modules/lit-html/src');
 const cwd = process.cwd();
 
 async function makeMapFileList() {
-    return (await glob(`${MODULE_ROOT}/**/*.js.map`, { nodir: true })).map(p => relative(MODULE_ROOT, p));
+    return (await glob(toPOSIX(`${MODULE_ROOT}/**/*.js.map`), { nodir: true })).map(p => relative(MODULE_ROOT, p));
 }
 
 async function createSourceFiles(list) {

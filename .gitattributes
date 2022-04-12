@@ -1,3 +1,20 @@
+# All Text Files
+*                    text=auto
+
+# Source Files
+*.js                 text eol=lf
+*.mjs                text eol=lf
+*.ts                 text eol=lf
+*.json               text eol=lf
+*.css                text eol=lf
+*.scss               text eol=lf
+*.html               text eol=lf
+*.htm                text eol=lf
+*.tpl                text eol=lf
+*.mustache           text eol=lf
+*.sh                 text eol=lf
+*.npmrc              text eol=lf
+
 # Visual Studio Project Files
 *.sln                text eol=crlf
 *.vcxproj            text eol=crlf
@@ -5,3 +22,5 @@
 *.csproj             text eol=crlf
 *.njsproj            text eol=crlf
 *.manifest           text eol=crlf
+*.bat                text eol=crlf
+*.cmd                text eol=crlf

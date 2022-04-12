@@ -284,13 +284,13 @@ export abstract class Collection<
                 if ('@destroy' === event) {
                     // model event arguments adjustment.
                     options = (collection as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-                    collection = this;
+                    collection = this;             // eslint-disable-line @typescript-eslint/no-this-alias
                     this.remove(model, options);
                 }
                 if (event.startsWith('@change')) {
                     // model event arguments adjustment.
                     options = {};
-                    collection = this;
+                    collection = this;             // eslint-disable-line @typescript-eslint/no-this-alias
                     if ('@change' === event) {
                         const ids = getChangedIds(model, modelConstructor(this));
                         if (ids) {

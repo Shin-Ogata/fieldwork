@@ -3,12 +3,13 @@
 const path = require('path');
 const { promisify } = require('util');
 const glob = promisify(require('glob'));
+const { toPOSIX } = require('./misc');
 
 async function searchLocations(layers) {
     layers = layers || [''];
     const results = [];
     for (const layer of layers) {
-        const cwd = path.join(process.cwd(), 'packages', layer);
+        const cwd = toPOSIX(path.join(process.cwd(), 'packages', layer));
         results.push(...(await glob(`${cwd}/**/package.json`, {
             cwd,
             nodir: true,

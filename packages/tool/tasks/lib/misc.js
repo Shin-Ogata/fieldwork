@@ -6,9 +6,13 @@ const glob                 = require('glob');
 const { merge }            = require('lodash');
 const tar                  = require('tar');
 
+function toPOSIX(path) {
+    return path.replace(/\\/g, '/');
+}
+
 function cleanEmptyDir(target) {
     const list = glob.sync('**', {
-        cwd: target,
+        cwd: toPOSIX(target),
         nodir: false,
     });
     for (let i = list.length - 1; i >= 0; i--) {
@@ -36,9 +40,9 @@ function parseGlobs(globs) {
 
     for (const g of globs) {
         if ('!' === g[0]) {
-            ignore.push(g.substring(1));
+            ignore.push(toPOSIX(g.substring(1)));
         } else {
-            source.push(g);
+            source.push(toPOSIX(g));
         }
     }
 
@@ -47,7 +51,7 @@ function parseGlobs(globs) {
 
 function copy(globs, dest, options) {
     const opts = options || {};
-    const cwd  = opts.cwd || process.cwd();
+    const cwd  = toPOSIX(opts.cwd || process.cwd());
 
     const { source, ignore } = parseGlobs(globs);
     const dstRoot = resolve(cwd, dest);
@@ -164,6 +168,7 @@ function formatXML(src, options) {
 }
 
 module.exports = {
+    toPOSIX,
     cleanEmptyDir,
     merge,
     includes,

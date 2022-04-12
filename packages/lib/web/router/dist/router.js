@@ -1,5 +1,5 @@
 /*!
- * @cdp/router 0.9.10
+ * @cdp/router 0.9.11
  *   generic router scheme
  */
 
