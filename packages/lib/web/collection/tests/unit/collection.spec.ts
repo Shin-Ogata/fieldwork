@@ -1532,7 +1532,6 @@ describe('collection/base spec', () => {
             };
 
             expect(stub.onCallback).toHaveBeenCalledWith(added[0], playlist, receiveOpts); // @add
-            expect(stub.onCallback).toHaveBeenCalledWith(added[1], playlist, receiveOpts); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(added[2], playlist, receiveOpts); // @add
             expect(stub.onCallback).toHaveBeenCalledWith(src[0], playlist, removeOpts);    // @remove
             expect(stub.onCallback).toHaveBeenCalledWith(src[2], playlist, removeOpts);    // @remove

@@ -12,7 +12,7 @@ module.exports = {
             '@cdp/promise': 'CDP',
             '@cdp/result': 'CDP',
             '@cdp/ajax': 'CDP',
-            '@cdp/environment': 'CDP',
+            '@cdp/web-utils': 'CDP',
             '@cdp/dom': 'CDP',
         },
         replace,

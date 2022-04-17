@@ -7,11 +7,11 @@
     "defaults"
   ],
   "dependencies": {
-    "@cdp/ajax": "file:../../worker/ajax",
     "@cdp/core-template": "file:../../core/template",
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/extension-template": "file:../../../extension/template",
-    "@cdp/extension-template-bridge": "file:../../../extension/template-bridge"
+    "@cdp/extension-template-bridge": "file:../../../extension/template-bridge",
+    "@cdp/web-utils": "file:../utils"
   },
   "devDependencies": {
     "@cdp/dom": "file:../dom"

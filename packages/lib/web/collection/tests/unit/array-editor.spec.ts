@@ -59,7 +59,7 @@ describe('utils/array-editor spec', () => {
         expect(ret[0].newValue).toBe('E');
         expect(ret[1].index).toBe(6);
         expect(ret[1].newValue).toBe('F');
-        expect(observable).toEqual(['A', 'B', 'C', 'D', 'E', 'E', 'F']);
+        expect([...observable]).toEqual(['A', 'B', 'C', 'D', 'E', 'E', 'F']);
 
         ret = await appendArray(observable, []);
         expect(ret.length).toBe(0);
@@ -85,7 +85,7 @@ describe('utils/array-editor spec', () => {
         expect(ret[0].newValue).toBe('E');
         expect(ret[1].index).toBe(4);
         expect(ret[1].newValue).toBe('F');
-        expect(observable).toEqual(['A', 'B', 'C', 'E', 'F', 'D', 'E']);
+        expect([...observable]).toEqual(['A', 'B', 'C', 'E', 'F', 'D', 'E']);
 
         ret = await insertArray(array, 2, []);
         expect(ret.length).toBe(0);
@@ -111,7 +111,7 @@ describe('utils/array-editor spec', () => {
 
         expect(observable.length).toBe(5);
         expect(ret.length).toBe(4);
-        expect(observable).toEqual(['A', 'D', 'B', 'E', 'C']);
+        expect([...observable]).toEqual(['A', 'D', 'B', 'E', 'C']);
 
         ret = await reorderArray(array, 2, []);
         expect(ret.length).toBe(0);
@@ -141,7 +141,7 @@ describe('utils/array-editor spec', () => {
         expect(ret.length).toBe(3);
         expect(ret[0].newValue).toBeFalsy();
         expect(ret[1].newValue).toBeFalsy();
-        expect(observable).toEqual(['A', 'E']);
+        expect([...observable]).toEqual(['A', 'E']);
 
         ret = await removeArray(array, []);
         expect(ret.length).toBe(0);

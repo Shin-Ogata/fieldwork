@@ -22,9 +22,9 @@ export const getWebDirectory = (url: string): string => {
 export const webRoot: string = getWebDirectory(location.href);
 
 /**
- * @en Converter from relative path to absolute url string. <br>
+ * @en Convert to an absolute url string if given a relative path. <br>
  *     If you want to access to Assets and in spite of the script location, the function is available.
- * @ja 相対 path を絶対 URL に変換 <br>
+ * @ja 相対パスが指定されている場合は、絶対URL文字列に変換 <br>
  *     js の配置に依存することなく `assets` アクセスしたいときに使用する.
  *
  * @see https://stackoverflow.com/questions/2188218/relative-paths-in-javascript-in-an-external-file
@@ -36,13 +36,15 @@ export const webRoot: string = getWebDirectory(location.href);
  *  // "http://localhost:8080/app/res/data/collection.json"
  * ```
  *
- * @param path
+ * @param seed
  *  - `en` set relative path from [[webRoot]].
  *  - `ja` [[webRoot]] からの相対パスを指定
  */
-export const toUrl = (path: string): string => {
-    if (null != path && null != path[0]) {
-        return ('/' === path[0]) ? webRoot + path.slice(1) : webRoot + path;
+export const toUrl = (seed: string): string => {
+    if (seed?.includes('://')) {
+        return seed;
+    } else if (null != seed?.[0]) {
+        return ('/' === seed[0]) ? webRoot + seed.slice(1) : webRoot + seed;
     } else {
         return webRoot;
     }

@@ -16,6 +16,7 @@
  *     - @cdp/template
  *     - @cdp/view
  *     - @cdp/web-storage
+ *     - @cdp/web-utils
  */
 
 declare const i18n: i18n.i18n;
@@ -3314,9 +3315,9 @@ export declare const getWebDirectory: (url: string) => string;
  */
 export declare const webRoot: string;
 /**
- * @en Converter from relative path to absolute url string. <br>
+ * @en Convert to an absolute url string if given a relative path. <br>
  *     If you want to access to Assets and in spite of the script location, the function is available.
- * @ja 相対 path を絶対 URL に変換 <br>
+ * @ja 相対パスが指定されている場合は、絶対URL文字列に変換 <br>
  *     js の配置に依存することなく `assets` アクセスしたいときに使用する.
  *
  * @see https://stackoverflow.com/questions/2188218/relative-paths-in-javascript-in-an-external-file
@@ -3328,11 +3329,36 @@ export declare const webRoot: string;
  *  // 'http://localhost:8080/app/res/data/collection.json'
  * ```
  *
- * @param path
+ * @param seed
  *  - `en` set relative path from [[webRoot]].
  *  - `ja` [[webRoot]] からの相対パスを指定
  */
-export declare const toUrl: (path: string) => string;
+export declare const toUrl: (seed: string) => string;
+/**
+ * @en Load template options.
+ * @ja ロードテンプレートオプション
+ */
+export interface LoadTemplateOptions {
+    url?: string;
+    cache?: boolean;
+}
+/**
+ * @en Clear template's resources.
+ * @ja テンプレートリソースキャッシュの削除
+ */
+export declare function clearTemplateCache(): void;
+/**
+ * @en Load template source.
+ * @ja テンプレートソースのロード
+ *
+ * @param selector
+ *  - `en` The selector string of DOM.
+ *  - `ja` DOM セレクタ文字列
+ * @param options
+ *  - `en` load options
+ *  - `ja` ロードオプション
+ */
+export declare function loadTemplateSource(selector: string, options?: LoadTemplateOptions): Promise<string | HTMLTemplateElement | undefined>;
 /**
  * @en Platform information.
  * @ja プラットフォーム情報
@@ -6239,16 +6265,9 @@ export declare type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @en Template query options.
  * @ja テンプレート取得オプション
  */
-export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends TemplateCompileOptions, TemplateBridgeCompileOptions {
+export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends LoadTemplateOptions, TemplateCompileOptions, TemplateBridgeCompileOptions {
     type?: T;
-    url?: string;
-    cache?: boolean;
 }
-/**
- * @en Clear template's resources.
- * @ja テンプレートリソースキャッシュの削除
- */
-export declare function clearTemplateCache(): void;
 /**
  * @en Get compiled JavaScript template.
  * @ja コンパイル済み JavaScript テンプレート取得

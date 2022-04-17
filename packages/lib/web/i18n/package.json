@@ -7,10 +7,10 @@
     "@cdp/ajax": "file:../../worker/ajax",
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/dom": "file:../dom",
-    "@cdp/environment": "file:../environment",
     "@cdp/extension-i18n": "file:../../../extension/i18n",
     "@cdp/promise": "file:../../core/promise",
-    "@cdp/result": "file:../../core/result"
+    "@cdp/result": "file:../../core/result",
+    "@cdp/web-utils": "file:../utils"
   },
   "keywords": [
     "CDP",

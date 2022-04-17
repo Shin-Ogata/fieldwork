@@ -10,7 +10,7 @@ module.exports = {
             '@cdp/extension-template-bridge': 'CDP.Exension',
             '@cdp/core-utils': 'CDP',
             '@cdp/core-template': 'CDP',
-            '@cdp/ajax': 'CDP',
+            '@cdp/web-utils': 'CDP',
         },
     }),
 };

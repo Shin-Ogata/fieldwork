@@ -232,7 +232,7 @@ describe('model/model spec', () => {
         const clone = content.clone();
         expect(clone instanceof Content).toBe(true);
         expect(clone === content).toBe(false);
-        expect(clone).toEqual(content);
+        expect(clone.toJSON()).toEqual(content.toJSON());
     });
 
     it('check Model#hasListener()', () => {

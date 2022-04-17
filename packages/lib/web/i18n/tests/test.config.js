@@ -18,7 +18,7 @@ module.exports = {
             '@cdp/promise': 'node_modules/@cdp/promise/dist/promise',
             '@cdp/result': 'node_modules/@cdp/result/dist/result',
             '@cdp/ajax': 'node_modules/@cdp/ajax/dist/ajax',
-            '@cdp/environment': 'node_modules/@cdp/environment/dist/environment',
+            '@cdp/web-utils': 'node_modules/@cdp/web-utils/dist/web-utils',
             '@cdp/dom': 'node_modules/@cdp/dom/dist/dom',
             '@cdp/events': 'node_modules/@cdp/promise/node_modules/@cdp/events/dist/events',
             '@cdp/binary': 'node_modules/@cdp/ajax/node_modules/@cdp/binary/dist/binary',

@@ -23,6 +23,8 @@ module.exports = {
             '@cdp/dom': 'node_modules/@cdp/i18n/node_modules/@cdp/dom/dist/dom',
             '@cdp/core-storage': 'node_modules/@cdp/data-sync/node_modules/@cdp/core-storage/dist/core-storage',
             '@cdp/web-storage': 'node_modules/@cdp/data-sync/node_modules/@cdp/web-storage/dist/web-storage',
+            // i18n
+            '@cdp/web-utils': 'node_modules/@cdp/i18n/node_modules/@cdp/web-utils/dist/web-utils',
         },
     }),
 };

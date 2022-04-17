@@ -223,7 +223,7 @@ describe('router/history spec', () => {
         let index = instance.back();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, [$cdp]: 'four' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, [$cdp]: 'four' }, { index: 4, [$cdp]: 'five' });
         expect(index).toBe(3);
         expect(instance.id).toBe('four');
@@ -233,7 +233,7 @@ describe('router/history spec', () => {
         index = instance.back();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, [$cdp]: 'three' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, [$cdp]: 'three' }, { index: 3, [$cdp]: 'four' });
         expect(index).toBe(2);
         expect(instance.id).toBe('three');
@@ -243,7 +243,7 @@ describe('router/history spec', () => {
         index = instance.back();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, [$cdp]: 'two' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, [$cdp]: 'two' }, { index: 2, [$cdp]: 'three' });
         expect(index).toBe(1);
         expect(instance.id).toBe('two');
@@ -253,7 +253,7 @@ describe('router/history spec', () => {
         index = instance.back();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, [$cdp]: 'one' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 0 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, [$cdp]: 'one' }, { index: 1, [$cdp]: 'two' });
         expect(index).toBe(0);
         expect(instance.id).toBe('one');
@@ -287,7 +287,7 @@ describe('router/history spec', () => {
         let index = instance.forward();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, [$cdp]: 'two' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, [$cdp]: 'two' }, { index: 0, [$cdp]: 'one' });
         expect(index).toBe(1);
         expect(instance.id).toBe('two');
@@ -297,7 +297,7 @@ describe('router/history spec', () => {
         index = instance.forward();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, [$cdp]: 'three' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, [$cdp]: 'three' }, { index: 1, [$cdp]: 'two' });
         expect(index).toBe(2);
         expect(instance.id).toBe('three');
@@ -307,7 +307,7 @@ describe('router/history spec', () => {
         index = instance.forward();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, [$cdp]: 'four' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, [$cdp]: 'four' }, { index: 2, [$cdp]: 'three' });
         expect(index).toBe(3);
         expect(instance.id).toBe('four');
@@ -317,7 +317,7 @@ describe('router/history spec', () => {
         index = instance.forward();
         await promise;
 
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, [$cdp]: 'five' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 4 });
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, [$cdp]: 'five' }, { index: 3, [$cdp]: 'four' });
         expect(index).toBe(4);
         expect(instance.id).toBe('five');
@@ -403,19 +403,19 @@ describe('router/history spec', () => {
         expect(result.index).toBe(0);
         expect(result.direction).toBe('back');
         expect(result.state?.[$cdp]).toBe('origin');
-        expect(result.state).toEqual({ index: 0 } as any);
+        expect(result.state?.index).toBe(0);
 
         result = instance.direct('target');
         expect(result.index).toBe(1);
         expect(result.direction).toBe('back');
         expect(result.state?.[$cdp]).toBe('target');
-        expect(result.state).toEqual({ index: 1 } as any);
+        expect(result.state?.index).toBe(1);
 
         result = instance.direct('base1');
         expect(result.index).toBe(2);
         expect(result.direction).toBe('none');
         expect(result.state?.[$cdp]).toBe('base1');
-        expect(result.state).toEqual({ index: 2 } as any);
+        expect(result.state?.index).toBe(2);
 
         promise = waitFor('hashchange');
         instance.forward();
@@ -426,13 +426,13 @@ describe('router/history spec', () => {
         expect(result.index).toBe(4);
         expect(result.direction).toBe('forward');
         expect(result.state?.[$cdp]).toBe('target');
-        expect(result.state).toEqual({ index: 4 } as any);
+        expect(result.state?.index).toBe(4);
 
         result = instance.direct('origin');
         expect(result.index).toBe(0);
         expect(result.direction).toBe('back'); // back 優先
         expect(result.state?.[$cdp]).toBe('origin');
-        expect(result.state).toEqual({ index: 0 } as any);
+        expect(result.state?.index).toBe(0);
 
         result = instance.direct('invalid');
         expect(result.index).toBeUndefined();

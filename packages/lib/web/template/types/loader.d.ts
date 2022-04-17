@@ -1,4 +1,6 @@
 import { JST, TemplateCompileOptions } from '@cdp/core-template';
+import { LoadTemplateOptions } from '@cdp/web-utils';
+export { clearTemplateCache } from '@cdp/web-utils';
 import { CompiledTemplate, TemplateBridgeCompileOptions } from './bridge';
 /**
  * @en Template query type list.
@@ -17,16 +19,9 @@ export declare type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @en Template query options.
  * @ja テンプレート取得オプション
  */
-export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends TemplateCompileOptions, TemplateBridgeCompileOptions {
+export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends LoadTemplateOptions, TemplateCompileOptions, TemplateBridgeCompileOptions {
     type?: T;
-    url?: string;
-    cache?: boolean;
 }
-/**
- * @en Clear template's resources.
- * @ja テンプレートリソースキャッシュの削除
- */
-export declare function clearTemplateCache(): void;
 /**
  * @en Get compiled JavaScript template.
  * @ja コンパイル済み JavaScript テンプレート取得
