@@ -6,7 +6,7 @@ import { i18n } from '@cdp/extension-i18n';
 import { isFunction } from '@cdp/core-utils';
 import { RESULT_CODE, toResult } from '@cdp/result';
 import { request } from '@cdp/ajax';
-import { toUrl } from '@cdp/environment';
+import { toUrl } from '@cdp/web-utils';
 import { I18NOptions } from '../interfaces';
 
 /** @internal */

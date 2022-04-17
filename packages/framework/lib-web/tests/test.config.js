@@ -23,6 +23,7 @@ module.exports = {
             '@cdp/ajax': 'CDP',
             '@cdp/binary': 'CDP',
             '@cdp/inline-worker': 'CDP',
+            '@cdp/web-utils': 'CDP',
             '@cdp/dom': 'CDP',
             '@cdp/environment': 'CDP',
             '@cdp/i18n': 'CDP',
@@ -55,6 +56,7 @@ module.exports = {
                     '@cdp/ajax': '@cdp/lib-worker',
                     '@cdp/binary': '@cdp/lib-worker',
                     '@cdp/inline-worker': '@cdp/lib-worker',
+                    '@cdp/web-utils': '@cdp/lib-web',
                     '@cdp/dom': '@cdp/lib-web',
                     '@cdp/environment': '@cdp/lib-web',
                     '@cdp/i18n': '@cdp/lib-web',
@@ -79,6 +81,7 @@ module.exports = {
         }
     },
     depends: [
+        { module: '@cdp/web-utils', resource: 'res' },
         { module: '@cdp/i18n', resource: 'res' },
         { module: '@cdp/data-sync', server: 'server' },
         { module: '@cdp/template', resource: 'res' },

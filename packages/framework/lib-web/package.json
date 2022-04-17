@@ -17,7 +17,8 @@
     "@cdp/router": "file:../../lib/web/router",
     "@cdp/template": "file:../../lib/web/template",
     "@cdp/view": "file:../../lib/web/view",
-    "@cdp/web-storage": "file:../../lib/web/storage"
+    "@cdp/web-storage": "file:../../lib/web/storage",
+    "@cdp/web-utils": "file:../../lib/web/utils"
   },
   "keywords": [
     "CDP",

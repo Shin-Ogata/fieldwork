@@ -75,6 +75,7 @@ $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 | module                                                     | description                                |
 |:-----------------------------------------------------------|:-------------------------------------------|
+| [web-utils](./packages/lib/web/utils/README.md)            | web  utility                               |
 | [dom](./packages/lib/web/dom/README.md)                    | dom manipulation library                   |
 | [environment](./packages/lib/web/environment/README.md)    | judge for environment                      |
 | [i18n](./packages/lib/web/i18n/README.md)                  | wrapper of `i18next`                       |

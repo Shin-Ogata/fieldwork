@@ -1,3 +1,4 @@
+export * from '@cdp/web-utils';
 export * from '@cdp/dom';
 export * from '@cdp/environment';
 export * from '@cdp/i18n';

@@ -26,6 +26,7 @@ function patch(index, code, includes) {
     includes.push('@cdp/ajax');
     includes.push('@cdp/binary');
     includes.push('@cdp/inline-worker');
+    includes.push('@cdp/web-utils');
     includes.push('@cdp/dom');
     includes.push('@cdp/environment');
     includes.push('@cdp/i18n');

@@ -11,7 +11,7 @@
 
     /*!
      * @cdp/core-utils 0.9.11
-     *   core framework utilities
+     *   core domain utilities
      */
 
     /**

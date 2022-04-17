@@ -16,14 +16,16 @@ module.exports = {
             '@cdp/extension-template-bridge': 'node_modules/@cdp/extension-template-bridge/dist/extension-template-bridge',
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
             '@cdp/core-template': 'node_modules/@cdp/core-template/dist/core-template',
-            '@cdp/ajax': 'node_modules/@cdp/ajax/dist/ajax',
+            '@cdp/web-utils': 'node_modules/@cdp/web-utils/dist/web-utils',
             '@cdp/dom': 'node_modules/@cdp/dom/dist/dom',
+            // web-utils
+            '@cdp/ajax': 'node_modules/@cdp/web-utils/node_modules/@cdp/ajax/dist/ajax',
             // ajax
-            '@cdp/promise': 'node_modules/@cdp/ajax/node_modules/@cdp/promise/dist/promise',
-            '@cdp/result': 'node_modules/@cdp/ajax/node_modules/@cdp/result/dist/result',
-            '@cdp/binary': 'node_modules/@cdp/ajax/node_modules/@cdp/binary/dist/binary',
+            '@cdp/promise': 'node_modules/@cdp/web-utils/node_modules/@cdp/ajax/node_modules/@cdp/promise/dist/promise',
+            '@cdp/result': 'node_modules/@cdp/web-utils/node_modules/@cdp/ajax/node_modules/@cdp/result/dist/result',
+            '@cdp/binary': 'node_modules/@cdp/web-utils/node_modules/@cdp/ajax/node_modules/@cdp/binary/dist/binary',
             // promise
-            '@cdp/events': 'node_modules/@cdp/ajax/node_modules/@cdp/promise/node_modules/@cdp/events/dist/events',
+            '@cdp/events': 'node_modules/@cdp/web-utils/node_modules/@cdp/ajax/node_modules/@cdp/promise/node_modules/@cdp/events/dist/events',
         },
     }),
 };

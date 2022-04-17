@@ -18,6 +18,7 @@
       "@cdp/ajax": [ "../../../lib/worker/ajax" ],
       "@cdp/binary": [ "../../../lib/worker/binary" ],
       "@cdp/inline-worker": [ "../../../lib/worker/inline-worker" ],
+      "@cdp/web-utils": [ "../../../lib/web/utils" ],
       "@cdp/dom": [ "../../../lib/web/dom" ],
       "@cdp/environment": [ "../../../lib/web/environment" ],
       "@cdp/i18n": [ "../../../lib/web/i18n" ],
