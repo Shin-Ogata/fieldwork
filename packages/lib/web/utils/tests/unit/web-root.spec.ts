@@ -33,5 +33,4 @@ describe('web-root spec', () => {
         expect(toUrl('http://hogehoge.com/app/index.html#L80')).toBe('http://hogehoge.com/app/index.html#L80');
         expect(toUrl(null as any)).toBe(`${webRoot}`);
     });
-
 });

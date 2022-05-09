@@ -49,8 +49,8 @@ export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends Load
 export async function getTemplate<T extends TemplateQueryTypes = 'engine'>(
     selector: string, options?: TemplateQueryOptions<T>
 ): Promise<TemplateQueryTypeList[T]> {
-    const { type, url, cache } = Object.assign({ type: 'engine', cache: true }, options);
-    const src = await loadTemplateSource(selector, { url, cache });
+    const { type, url, noCache } = Object.assign({ type: 'engine', noCache: false }, options);
+    const src = await loadTemplateSource(selector, { url, noCache });
     if (!src) {
         throw new URIError(`cannot specified template resource. { selector: ${selector},  url: ${url} }`);
     }

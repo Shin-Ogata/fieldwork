@@ -47,3 +47,24 @@ export function wait(promises: Promise<unknown>[]): Promise<unknown[]> {
 export function checkCanceled(token: CancelToken | undefined): Promise<void> {
     return Promise.resolve(undefined, token);
 }
+
+/**
+ * @en Check the status of the promise instance. <br>
+ *     It's practicable by `async function`.
+ * @ja Promise インスタンスの状態を確認 <br>
+ *     `async function` で使用可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * ```
+ *
+ * @param promise
+ *  - `en` Promise instance
+ *  - `ja` Promise インスタンスを指定
+ */
+export function checkStatus(promise: Promise<unknown>): Promise<'pending' | 'fulfilled' | 'rejected'> {
+    const pending = {};
+    return Promise.race([promise, pending])
+        .then(v => (v === pending) ? 'pending' : 'fulfilled', () => 'rejected');
+}

@@ -1,11 +1,12 @@
 import {
     PlainObject,
     isObject,
-    at,
-    sort,
+    noop,
     $cdp,
 } from '@cdp/core-utils';
-import { EventPublisher } from '@cdp/events';
+import { Silenceable, EventPublisher } from '@cdp/events';
+import { Deferred, CancelToken } from '@cdp/promise';
+import { toUrl, webRoot } from '@cdp/web-utils';
 import {
     IHistory,
     HistoryEvent,
@@ -13,37 +14,57 @@ import {
     HistorySetStateOptions,
     HistoryDirectReturnType,
 } from './interfaces';
+import {
+    normalizeId,
+    createData,
+    createUncancellableDeferred,
+    HistoryStack,
+} from './internal';
 import { window } from './ssr';
 
-/** @internal extends definition */
-interface SessionHistorySetStateOptions extends HistorySetStateOptions {
-    origin?: boolean;
+/** @internal dispatch additional information */
+interface DispatchInfo<T> {
+    df: Deferred;
+    newId: string;
+    oldId: string;
+    postproc: 'noop' | 'push' | 'replace' | 'seek';
+    prevState?: HistoryState<T>;
 }
 
-/** @internal remove "#", "/" */
-const cleanHash = (src: string): string => {
-    return src.replace(/^[#/]|\s+$/g, '');
-};
+/** @internal constant */
+enum Const {
+    HASH_PREFIX = '#/',
+}
+
+//__________________________________________________________________________________________________//
 
 /** @internal remove url path section */
 const toHash = (url: string): string => {
-    const hash = /#.*$/.exec(url)?.[0];
-    return hash ? cleanHash(hash) : url;
+    const id = /#.*$/.exec(url)?.[0];
+    return id ? normalizeId(id) : url;
+};
+
+/** @internal remove url path section */
+const toPath = (url: string): string => {
+    const id = url.substring(webRoot.length);
+    return id ? normalizeId(id) : url;
 };
 
 /** @internal */
-const { abs } = Math;
-
-/** @internal */
-const treatOriginMark = <T>(state: T, options: SessionHistorySetStateOptions): T => {
-    isObject(state) && options.origin && (state['@origin'] = true);
+const setDispatchInfo = <T>(state: T, additional: DispatchInfo<T>): T => {
+    state[$cdp] = additional;
     return state;
 };
 
 /** @internal */
-const dropOriginMark = <T>(state: T): T => {
-    isObject(state) && delete state['@origin'];
-    return state;
+const parseDispatchInfo = <T>(state: T): [T, DispatchInfo<T>?] => {
+    if (isObject(state) && state[$cdp]) {
+        const additional = state[$cdp];
+        delete state[$cdp];
+        return [state, additional];
+    } else {
+        return [state];
+    }
 };
 
 /** @internal instance signature */
@@ -57,27 +78,25 @@ const $signature = Symbol('SessionHistory#signature');
  */
 class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> implements IHistory<T> {
     private readonly _window: Window;
-    private readonly _popStateHandler: typeof SessionHistory.prototype.onPopState;
-    private readonly _hashChangeHandler: typeof SessionHistory.prototype.onHashChange;
-    private _stack: HistoryState<T>[] = [];
-    private _index = 0;
-    private _cache?: HistoryState<T>;
+    private readonly _mode: 'hash' | 'history';
+    private readonly _popStateHandler: (ev: PopStateEvent) => void;
+    private readonly _stack = new HistoryStack<T>();
+    private _dfGo?: Deferred;
 
     /**
      * constructor
      */
-    constructor(windowContxt: Window, id: string, state?: T) {
+    constructor(windowContxt: Window, mode: 'hash' | 'history', id: string, state?: T) {
         super();
         this[$signature] = true;
         this._window = windowContxt;
+        this._mode = mode;
 
-        this._popStateHandler   = this.onPopState.bind(this);
-        this._hashChangeHandler = this.onHashChange.bind(this);
+        this._popStateHandler = this.onPopState.bind(this);
         this._window.addEventListener('popstate', this._popStateHandler);
-        this._window.addEventListener('hashchange', this._hashChangeHandler);
 
         // initialize
-        this.replace(id, state, { origin: true });
+        void this.replace(id, state, { silent: true });
     }
 
     /**
@@ -85,29 +104,39 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      */
     dispose(): void {
         this._window.removeEventListener('popstate', this._popStateHandler);
-        this._window.removeEventListener('hashchange', this._hashChangeHandler);
-        this._stack.length = 0;
-        this._index = NaN;
+        this._stack.dispose();
+        this.off();
+        delete this[$signature];
     }
 
     /**
      * reset history
      */
-    async reset(options?: HistorySetStateOptions): Promise<void> {
-        if (Number.isNaN(this._index) || 1 === this._stack.length) {
+    async reset(options?: Silenceable): Promise<void> {
+        if (Number.isNaN(this.index) || this._stack.length <= 1) {
             return;
         }
+
         const { silent } = options || {};
-        this._prevState = this._stack[this._index];
+        const { location } = this._window;
+        const prevState = this._stack.state;
         const oldURL = location.href;
 
-        this._index = 0;
+        this.setIndex(0);
         this.clearForward();
         await this.backToSesssionOrigin();
 
         const newURL = location.href;
+
         if (!silent) {
-            this.dispatchChangeInfo(this.state, newURL, oldURL);
+            const additional: DispatchInfo<T> = {
+                df: createUncancellableDeferred('SessionHistory#reset() is uncancellable method.'),
+                newId: this.toId(newURL),
+                oldId: this.toId(oldURL),
+                postproc: 'noop',
+                prevState,
+            };
+            await this.dispatchChangeInfo(this.state, additional);
         }
     }
 
@@ -121,53 +150,61 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
     /** current state */
     get state(): HistoryState<T> {
-        return this.seek(0);
+        return this._stack.state;
     }
 
     /** current id */
     get id(): string {
-        return this.state[$cdp];
+        return this._stack.id;
     }
 
     /** current index */
     get index(): number {
-        return this._index;
+        return this._stack.index;
     }
 
     /** stack pool */
     get stack(): readonly HistoryState<T>[] {
-        return this._stack;
+        return this._stack.array;
     }
 
     /** get data by index. */
     at(index: number): HistoryState<T> {
-        return at(this._stack, index);
+        return this._stack.at(index);
     }
 
     /** To move backward through history. */
-    back(): number {
+    back(): Promise<number> {
         return this.go(-1);
     }
 
     /** To move forward through history. */
-    forward(): number {
+    forward(): Promise<number> {
         return this.go(1);
     }
 
     /** To move a specific point in history. */
-    go(delta?: number): number {
+    async go(delta?: number): Promise<number> {
+        // if already called or given 0, no reaction (not reload).
+        if (this._dfGo || !delta) {
+            return this.index;
+        }
+
+        const oldIndex = this.index;
+
         try {
-            // if given 0, no reaction (not reload).
-            if (!delta) {
-                return this._index;
-            }
-            this.seek(delta);
+            this._dfGo = new Deferred();
+            this._stack.distance(delta);
             this._window.history.go(delta);
-            return this._index + delta;
+            await this._dfGo;
         } catch (e) {
             console.warn(e);
-            return this._index;
+            this.setIndex(oldIndex);
+        } finally {
+            this._dfGo = undefined;
         }
+
+        return this.index;
     }
 
     /**
@@ -184,9 +221,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      *  - `en` State management options
      *  - `ja` 状態管理用オプションを指定
      */
-    push(id: string, state?: T, options?: HistorySetStateOptions): number {
-        const { id: cleanId, data } = this.pushStack(id, state);
-        return this.updateState('pushState', cleanId, data, options || {});
+    push(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
+        return this.updateState('push', id, state, options || {});
     }
 
     /**
@@ -203,12 +239,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      *  - `en` State management options
      *  - `ja` 状態管理用オプションを指定
      */
-    replace(id: string, state?: T, options?: SessionHistorySetStateOptions): number {
-        id = cleanHash(id);
-        const data = Object.assign({ [$cdp]: id }, state);
-        this._prevState = this._stack[this._index];
-        this._stack[this._index] = data;
-        return this.updateState('replaceState', id, data, options || {});
+    async replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
+        return this.updateState('replace', id, state, options || {});
     }
 
     /**
@@ -216,7 +248,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      * @ja 現在の履歴のインデックスより前方の履歴を削除
      */
     clearForward(): void {
-        this._stack = this._stack.slice(0, this._index + 1);
+        this._stack.clearForward();
     }
 
     /**
@@ -224,14 +256,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      * @ja 指定された ID から最も近い index を返却
      */
     closest(id: string): number | undefined {
-        id = cleanHash(id);
-        const { _index: base } = this;
-        const candidates = this._stack
-            .map((s, index) => { return { index, distance: abs(base - index), ...s }; })
-            .filter(s => s[$cdp] === id)
-        ;
-        sort(candidates, (l, r) => (l.distance > r.distance ? 1 : -1), true);
-        return candidates[0]?.index;
+        return this._stack.closest(id);
     }
 
     /**
@@ -239,132 +264,169 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      * @ja 指定された ID から最も近いスタック情報を返却
      */
     direct(id: string): HistoryDirectReturnType<T> {
-        const index = this.closest(id);
-        if (null == index) {
-            return { direction: 'missing' };
-        } else {
-            const delta = index - this._index;
-            const direction = 0 === delta
-                ? 'none'
-                : delta < 0 ? 'back' : 'forward';
-            return { direction, index, state: this._stack[index] };
-        }
+        return this._stack.direct(id);
     }
 
 ///////////////////////////////////////////////////////////////////////
 // private methods:
 
-    /** @internal previous state cache */
-    private set _prevState(val: HistoryState<T> | undefined) {
-        this._cache = val;
+    /** @internal set index */
+    private setIndex(idx: number): void {
+        this._stack.index = idx;
     }
 
-    /** @internal previous state access */
-    private get _prevState(): HistoryState<T> | undefined {
-        const retval = this._cache;
-        delete this._cache;
-        return retval;
+    /** @internal convert to ID */
+    private toId(src: string): string {
+        return 'hash' === this._mode ? toHash(src) : toPath(src);
     }
 
-    /** @internal get active data from current index origin */
-    private seek(delta: number): HistoryState<T> {
-        const pos = this._index + delta;
-        if (pos < 0) {
-            throw new RangeError(`invalid array index. [length: ${this.length}, given: ${pos}]`);
-        }
-        return this.at(pos);
-    }
-
-    /** @internal push stack */
-    private pushStack(id: string, state?: T): { id: string; data: HistoryState<T>; } {
-        id = cleanHash(id);
-        const data = Object.assign({ [$cdp]: id }, state);
-        this._prevState = this._stack[this._index];
-        this._stack[++this._index] = data;
-        return { id, data };
+    /** @internal convert to URL */
+    private toUrl(id: string): string {
+        return id ? (('hash' === this._mode) ? `${Const.HASH_PREFIX}${id}` : toUrl(id)) : '';
     }
 
     /** @internal update */
-    private updateState(method: 'pushState' | 'replaceState', id: string, state: T | null, options: SessionHistorySetStateOptions): number {
-        const { silent, title } = options;
-        const { document, history, location } = this._window;
-        const unused = null != title ? title : document.title;
+    private async updateState(method: 'push' | 'replace', id: string, state: T | undefined, options: HistorySetStateOptions): Promise<number> {
+        const { silent, cancel } = options;
+        const { location, history } = this._window;
+
+        const data = createData(id, state);
+        id = data['@id'];
+        if ('replace' === method && 0 === this.index) {
+            data['@origin'] = true;
+        }
 
         const oldURL = location.href;
-        history[method](treatOriginMark(state, options), unused, id ? `#${id}` : '');
+        history[`${method}State`](data, '', this.toUrl(id));
         const newURL = location.href;
 
         if (!silent) {
-            this.dispatchChangeInfo(state, newURL, oldURL);
-        }
-
-        return this._index;
-    }
-
-    /** @internal dispatch `popstate` and `hashchange` events */
-    private dispatchChangeInfo(state: T | null, newURL: string, oldURL: string): void {
-        this._window.dispatchEvent(new PopStateEvent('popstate', { state }));
-        if (newURL !== oldURL) {
-            this._window.dispatchEvent(new HashChangeEvent('hashchange', { newURL, oldURL }));
-        }
-    }
-
-    /** @internal receive `popstate` events */
-    private onPopState(ev: PopStateEvent): void {
-        this.publish('update', dropOriginMark(ev.state));
-    }
-
-    /** @internal receive `hasuchange` events */
-    private onHashChange(ev: HashChangeEvent): void {
-        const newId = toHash(ev.newURL);
-        const oldId = toHash(ev.oldURL);
-        const next  = this.closest(newId);
-        if (null == next) {
-            this.pushStack(newId, undefined);
+            const additional: DispatchInfo<T> = {
+                df: new Deferred(cancel),
+                newId: this.toId(newURL),
+                oldId: this.toId(oldURL),
+                postproc: method,
+            };
+            await this.dispatchChangeInfo(data, additional);
         } else {
-            this._index = next;
+            this._stack[`${method}Stack`](data);
         }
-        if (newId !== oldId) {
-            const oldData = this._prevState || this.direct(oldId).state;
-            const newData = this.state;
-            this.publish('change', newData, oldData);
-        }
+
+        return this.index;
     }
 
-    /** @internal follow the session history until `origin` (in silent) */
-    private async backToSesssionOrigin(): Promise<void> {
+    /** @internal dispatch `popstate` events */
+    private async dispatchChangeInfo(newState: T | undefined, additional: DispatchInfo<T>): Promise<void> {
+        const state = setDispatchInfo(newState, additional);
+        this._window.dispatchEvent(new PopStateEvent('popstate', { state }));
+        await additional.df;
+    }
+
+    /** @internal silent popstate event listner scope */
+    private async suppressEventListenerScope(executor: (wait: () => Promise<unknown>) => Promise<void>): Promise<void> {
         try {
             this._window.removeEventListener('popstate', this._popStateHandler);
-            this._window.removeEventListener('hashchange', this._hashChangeHandler);
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const waitPopState = (): Promise<any> => {
+            const waitPopState = (): Promise<unknown> => {
                 return new Promise(resolve => {
                     this._window.addEventListener('popstate', (ev: PopStateEvent) => {
                         resolve(ev.state);
                     });
                 });
             };
+            await executor(waitPopState);
+        } finally {
+            this._window.addEventListener('popstate', this._popStateHandler);
+        }
+    }
 
+    /** @internal rollback history */
+    private async rollbackHistory(method: string, newId: string): Promise<void> {
+        const { history } = this._window;
+        switch (method) {
+            case 'replace':
+                history.replaceState(this.state, '', this.toUrl(this.id));
+                break;
+            case 'push':
+                await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
+                    const promise = wait();
+                    history.go(-1);
+                    await promise;
+                });
+                break;
+            default:
+                await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
+                    const delta = this.index - (this.closest(newId) as number);
+                    if (0 !== delta) {
+                        const promise = wait();
+                        delta && history.go(delta);
+                        await promise;
+                    }
+                });
+                break;
+        }
+    }
+
+    /** @internal receive `popstate` events */
+    private async onPopState(ev: PopStateEvent): Promise<void> {
+        const { location } = this._window;
+        const [newState, additional] = parseDispatchInfo(ev.state);
+        const newId   = additional?.newId || this.toId(location.href);
+        const method  = additional?.postproc || 'seek';
+        const df      = additional?.df || this._dfGo || new Deferred();
+        const oldData = additional?.prevState || this.state;
+        const newData = createData(newId, newState);
+        const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
+
+        try {
+            // for fail safe
+            df.catch(noop);
+
+            this.publish('update', newData, cancel);
+
+            if (token.requested) {
+                throw token.reason;
+            }
+
+            this._stack[`${method}Stack`](newData);
+            this.publish('change', newData, oldData);
+
+            df.resolve();
+        } catch (e) {
+            // history を元に戻す
+            await this.rollbackHistory(method, newId);
+            df.reject(e);
+        }
+    }
+
+    /** @internal follow the session history until `origin` (in silent) */
+    private async backToSesssionOrigin(): Promise<void> {
+        await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
             const isOrigin = (st: unknown): boolean => {
                 return st && (st as object)['@origin'];
             };
 
-            let state = this._window.history.state;
+            const { history } = this._window;
+            let state = history.state;
             while (!isOrigin(state)) {
-                const promise = waitPopState();
-                this._window.history.back();
+                const promise = wait();
+                history.back();
                 state = await promise;
-                console.log(`state: ${JSON.stringify(state, null, 4)}`);
             }
-        } finally {
-            this._window.addEventListener('popstate', this._popStateHandler);
-            this._window.addEventListener('hashchange', this._hashChangeHandler);
-        }
+        });
     }
 }
 
 //__________________________________________________________________________________________________//
+
+/**
+ * @en [[createSessionHistory]]() options.
+ * @ja [[createSessionHistory]]() に渡すオプション
+ * 
+ */
+export interface SessionHistoryCreateOptions {
+    context?: Window;
+    mode?: 'hash' | 'history';
+}
 
 /**
  * @en Create browser session history management object.
@@ -376,12 +438,13 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
  * @param state
  *  - `en` State object associated with the stack
  *  - `ja` スタック に紐づく状態オブジェクト
- * @param windowContxt
- *  - `en` History owner window object
- *  - `ja` 履歴を所有しているウィンドウオブジェクト
+ * @param options
+ *  - `en` [[SessionHistoryCreateOptions]] object
+ *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
  */
-export function createSessionHistory<T = PlainObject>(id: string, state?: T, windowContxt: Window = window): IHistory<T> {
-    return new SessionHistory(windowContxt, id, state);
+export function createSessionHistory<T = PlainObject>(id: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T> {
+    const { context, mode } = Object.assign({ context: window, mode: 'hash' }, options);
+    return new SessionHistory(context, mode, id, state);
 }
 
 /**

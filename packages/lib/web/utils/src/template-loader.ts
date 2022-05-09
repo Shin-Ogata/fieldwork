@@ -1,4 +1,4 @@
-import { request } from '@cdp/ajax';
+import { AjaxGetRequestShortcutOptions, request } from '@cdp/ajax';
 import { document } from './ssr';
 
 /** @internal */
@@ -21,7 +21,7 @@ interface TemplateSourceMap {
 /** @internal */ let _mapSource: TemplateSourceMap = {};
 
 /** @internal */
-function queryTemplateSource(selector: string, provider: TemplateProvider | null, cache: boolean): string | HTMLTemplateElement | undefined {
+function queryTemplateSource(selector: string, provider: TemplateProvider | null, noCache: boolean): string | HTMLTemplateElement | undefined {
     const { fragment, html } = provider || {};
     const key = `${selector}${html ? `::${html}` : ''}`;
     if (_mapSource[key]) {
@@ -30,12 +30,12 @@ function queryTemplateSource(selector: string, provider: TemplateProvider | null
     const context = fragment || document;
     const target = context.querySelector(selector);
     const source = target instanceof HTMLTemplateElement ? target : target?.innerHTML;
-    cache && source && (_mapSource[key] = source);
+    !noCache && source && (_mapSource[key] = source);
     return source;
 }
 
 /** @internal */
-async function queryTemplateProvider(url: string | undefined, cache: boolean): Promise<TemplateProvider | null> {
+async function queryTemplateProvider(url: string | undefined, noCache: boolean): Promise<TemplateProvider | null> {
     if (!url) {
         return null;
     }
@@ -47,7 +47,7 @@ async function queryTemplateProvider(url: string | undefined, cache: boolean): P
         template.innerHTML = html;
         const fragment = template.content;
         const provider = { fragment, html: html.replace(/\s/gm, '') };
-        cache && fragment && (_mapProvider[url] = provider);
+        !noCache && fragment && (_mapProvider[url] = provider);
         return provider;
     }
 }
@@ -58,9 +58,17 @@ async function queryTemplateProvider(url: string | undefined, cache: boolean): P
  * @en Load template options.
  * @ja ロードテンプレートオプション
  */
-export interface LoadTemplateOptions {
+export interface LoadTemplateOptions extends AjaxGetRequestShortcutOptions {
+    /**
+     * @en The template acquisition URL. if not specified the template will be searched from `document`.
+     * @ja テンプレート取得先 URL. 指定がない場合は `document` から検索
+     */
     url?: string;
-    cache?: boolean;
+    /**
+     * @en If you don't want to cache the template in memory, given `true`.
+     * @ja テンプレートをメモリにキャッシュしない場合は `true` を指定
+     */
+    noCache?: boolean;
 }
 
 /**
@@ -84,7 +92,7 @@ export function clearTemplateCache(): void {
  *  - `ja` ロードオプション
  */
 export async function loadTemplateSource(selector: string, options?: LoadTemplateOptions): Promise<string | HTMLTemplateElement | undefined> {
-    const { url, cache } = Object.assign({ cache: true }, options);
-    const provider = await queryTemplateProvider(url, cache);
-    return queryTemplateSource(selector, provider, cache);
+    const { url, noCache } = Object.assign({ noCache: false }, options);
+    const provider = await queryTemplateProvider(url, noCache);
+    return queryTemplateSource(selector, provider, noCache);
 }

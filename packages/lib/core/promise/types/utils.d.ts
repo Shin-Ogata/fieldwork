@@ -37,3 +37,19 @@ export declare function wait(promises: Promise<unknown>[]): Promise<unknown[]>;
  *  - `ja` [[CancelToken]] を指定 (undefined 可)
  */
 export declare function checkCanceled(token: CancelToken | undefined): Promise<void>;
+/**
+ * @en Check the status of the promise instance. <br>
+ *     It's practicable by `async function`.
+ * @ja Promise インスタンスの状態を確認 <br>
+ *     `async function` で使用可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * ```
+ *
+ * @param promise
+ *  - `en` Promise instance
+ *  - `ja` Promise インスタンスを指定
+ */
+export declare function checkStatus(promise: Promise<unknown>): Promise<'pending' | 'fulfilled' | 'rejected'>;

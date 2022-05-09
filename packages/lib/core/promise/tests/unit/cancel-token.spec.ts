@@ -121,7 +121,7 @@ describe('promise/cancel-token spec', () => {
         expect(s1.token.reason).toBe(error);
         expect(s2.token.reason).toBe(error);
         expect(s1.token.requested).toBeTruthy();
-        expect(s1.token.requested).toBeTruthy();
+        expect(s2.token.requested).toBeTruthy();
     });
 
     it('check LinkedToken#[[cancel]] 2', async () => {
@@ -133,7 +133,7 @@ describe('promise/cancel-token spec', () => {
         expect(s1.token.reason).toBe(error);
         expect(s2.token.reason).toBe(error);
         expect(s1.token.requested).toBeTruthy();
-        expect(s1.token.requested).toBeTruthy();
+        expect(s2.token.requested).toBeTruthy();
     });
 
     it('check CancelToken#register', done => {

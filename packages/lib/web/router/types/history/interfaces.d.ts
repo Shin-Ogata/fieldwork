@@ -1,19 +1,21 @@
-import { PlainObject, $cdp } from '@cdp/core-utils';
+import { PlainObject } from '@cdp/core-utils';
 import { Subscribable, Silenceable } from '@cdp/events';
+import { Cancelable } from '@cdp/promise';
 /**
  * @en History state object.
  * @ja 履歴状態オブジェクト
  */
 export declare type HistoryState<T = PlainObject> = T & {
-    [$cdp]: string;
+    '@id': string;
+    '@origin'?: boolean;
 };
 /**
  * @en The event definition fired in [[IHistory]].
  * @ja [[IHistory]] 内から発行されるイベント定義
  */
 export interface HistoryEvent<T = PlainObject> {
-    /** @args [nextState] */
-    'update': [HistoryState<T>];
+    /** @args [nextState, cancel] */
+    'update': [HistoryState<T>, (reason?: unknown) => void];
     /** @args [newData, oldData] */
     'change': [HistoryState<T>, HistoryState<T>];
 }
@@ -21,10 +23,7 @@ export interface HistoryEvent<T = PlainObject> {
  * @en History state management options
  * @ja 履歴状態管理用オプション
  */
-export interface HistorySetStateOptions extends Silenceable {
-    /** reserved */
-    title?: string;
-}
+export declare type HistorySetStateOptions = Silenceable & Cancelable;
 /**
  * @en Definition of [[IHistory.direct]]`()` return type.
  * @ja [[IHistory.direct]]`()` の返却する型
@@ -52,11 +51,11 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
     /** get data by index. */
     at(index: number): HistoryState<T>;
     /** To move backward through history. */
-    back(): number;
+    back(): Promise<number>;
     /** To move forward through history. */
-    forward(): number;
+    forward(): Promise<number>;
     /** To move a specific point in history. */
-    go(delta?: number): number;
+    go(delta?: number): Promise<number>;
     /**
      * @en Register new history.
      * @ja 新規履歴の登録
@@ -71,7 +70,7 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
      *  - `en` State management options
      *  - `ja` 状態管理用オプションを指定
      */
-    push(id: string, state?: T, options?: HistorySetStateOptions): number;
+    push(id: string, state?: T, options?: HistorySetStateOptions): Promise<number>;
     /**
      * @en Replace current history.
      * @ja 現在の履歴の置換
@@ -86,7 +85,7 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
      *  - `en` State management options
      *  - `ja` 状態管理用オプションを指定
      */
-    replace(id: string, state?: T, options?: HistorySetStateOptions): number;
+    replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number>;
     /**
      * @en Clear forward history from current index.
      * @ja 現在の履歴のインデックスより前方の履歴を削除

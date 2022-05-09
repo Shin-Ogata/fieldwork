@@ -1,6 +1,15 @@
 import { PlainObject } from '@cdp/core-utils';
 import { IHistory, HistorySetStateOptions } from './interfaces';
 /**
+ * @en [[createSessionHistory]]() options.
+ * @ja [[createSessionHistory]]() に渡すオプション
+ *
+ */
+export interface SessionHistoryCreateOptions {
+    context?: Window;
+    mode?: 'hash' | 'history';
+}
+/**
  * @en Create browser session history management object.
  * @ja ブラウザセッション管理オブジェクトを構築
  *
@@ -10,11 +19,11 @@ import { IHistory, HistorySetStateOptions } from './interfaces';
  * @param state
  *  - `en` State object associated with the stack
  *  - `ja` スタック に紐づく状態オブジェクト
- * @param windowContxt
- *  - `en` History owner window object
- *  - `ja` 履歴を所有しているウィンドウオブジェクト
+ * @param options
+ *  - `en` [[SessionHistoryCreateOptions]] object
+ *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
  */
-export declare function createSessionHistory<T = PlainObject>(id: string, state?: T, windowContxt?: Window): IHistory<T>;
+export declare function createSessionHistory<T = PlainObject>(id: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
 /**
  * @en Reset browser session history.
  * @ja ブラウザセッション履歴のリセット

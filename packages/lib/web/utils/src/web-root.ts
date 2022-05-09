@@ -1,4 +1,4 @@
-import { location } from './ssr';
+import { location, document } from './ssr';
 
 /**
  * @en Get the directory to which `url` belongs.
@@ -19,7 +19,7 @@ export const getWebDirectory = (url: string): string => {
  * @ja Web root location へのアクセス <br>
  *     index.html の配置場所となり、ブラウザ環境のみ有効となる.
  */
-export const webRoot: string = getWebDirectory(location.href);
+export const webRoot: string = getWebDirectory(document.querySelector('base')?.getAttribute('href') || location.href);
 
 /**
  * @en Convert to an absolute url string if given a relative path. <br>

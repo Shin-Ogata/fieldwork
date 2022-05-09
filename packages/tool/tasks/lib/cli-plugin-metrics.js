@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve }   = require('path');
+const { resolve, dirname } = require('path');
 const { promisify } = require('util');
 const {
     existsSync,
@@ -86,11 +86,11 @@ async function queryTargets(options) {
 
     const { cwd, target, resolution, layer } = options;
 
-    const tgtPackages = await (async () => {
+    const tgtPackages = (() => {
         if (target) {
             return Array.isArray(target) ? target : [target];
         } else if (layer) {
-            return require('./resolve-dependency')(options);
+            return require('./resolve-dependency')(options).map(p => dirname(p.path));
         } else {
             return [cwd];
         }
