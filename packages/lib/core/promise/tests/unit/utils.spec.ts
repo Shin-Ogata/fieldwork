@@ -1,6 +1,8 @@
+import { noop } from '@cdp/core-utils';
 import {
     wait,
     checkCanceled,
+    checkStatus,
     CancelToken,
 } from '@cdp/promise';
 import {
@@ -48,5 +50,19 @@ describe('promise/utils spec', () => {
         } catch (e) {
             expect(e).toBe(error);
         }
+    });
+
+    it('check checkStatus', async () => {
+        const p1 = Promise.resolve();
+        const s1 = await checkStatus(p1);
+        expect(s1).toBe('fulfilled');
+
+        const p2 = Promise.reject();
+        const s2 = await checkStatus(p2);
+        expect(s2).toBe('rejected');
+
+        const p3 = new Promise(noop);
+        const s3 = await checkStatus(p3);
+        expect(s3).toBe('pending');
     });
 });

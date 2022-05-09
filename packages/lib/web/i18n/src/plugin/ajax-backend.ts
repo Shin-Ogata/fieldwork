@@ -57,7 +57,7 @@ export class AjaxBackend implements i18n.BackendModule<i18n.AjaxBackendOptions> 
     private loadUrl(url: string, callback: (err: i18n.CallbackError | string, data: i18n.ResourceKey | boolean) => void): void {
         void (async () => {
             try {
-                const json = await request.json(url, undefined, this._options);
+                const json = await request.json(url, this._options);
                 callback(null, json);
             } catch (e) {
                 const result = toResult(e);

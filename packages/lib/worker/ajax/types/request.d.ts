@@ -1,5 +1,5 @@
 import { PlainObject } from '@cdp/core-utils';
-import { AjaxDataTypes, AjaxRequestOptions, AjaxResult } from './interfaces';
+import { AjaxDataTypes, AjaxRequestOptions, AjaxGetRequestShortcutOptions, AjaxResult } from './interfaces';
 /**
  * @en `GET` request shortcut.
  * @ja `GET` リクエストショートカット
@@ -25,14 +25,11 @@ export declare function get<T extends AjaxDataTypes | object = 'json'>(url: stri
  * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
- * @param data
- *  - `en` Data to be sent to the server.
- *  - `ja` サーバーに送信されるデータ.
  * @param options
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export declare function text(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<'text'>>;
+export declare function text(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'text'>>;
 /**
  * @en `GET` JSON request shortcut.
  * @ja `GET` JSON リクエストショートカット
@@ -40,14 +37,11 @@ export declare function text(url: string, data?: PlainObject, options?: AjaxRequ
  * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
- * @param data
- *  - `en` Data to be sent to the server.
- *  - `ja` サーバーに送信されるデータ.
  * @param options
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export declare function json<T extends 'json' | object = 'json'>(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<T>>;
+export declare function json<T extends 'json' | object = 'json'>(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<T>>;
 /**
  * @en `GET` Blob request shortcut.
  * @ja `GET` Blob リクエストショートカット
@@ -55,14 +49,11 @@ export declare function json<T extends 'json' | object = 'json'>(url: string, da
  * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
- * @param data
- *  - `en` Data to be sent to the server.
- *  - `ja` サーバーに送信されるデータ.
  * @param options
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export declare function blob(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<'blob'>>;
+export declare function blob(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'blob'>>;
 /**
  * @en `POST` request shortcut.
  * @ja `POST` リクエストショートカット

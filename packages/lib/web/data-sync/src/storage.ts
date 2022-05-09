@@ -24,7 +24,7 @@ import { resolveURL } from './internal';
 
 /** @internal */
 const enum Const {
-    Separator = '::',
+    SEPARATOR = '::',
 }
 
 /**
@@ -127,7 +127,7 @@ class StorageDataSync implements IStorageDataSync {
      */
     constructor(storage: IStorage, options?: StorageDataSyncConstructionOptions) {
         this._storage = storage;
-        this._separator = options?.separator || Const.Separator;
+        this._separator = options?.separator || Const.SEPARATOR;
     }
 
     ///////////////////////////////////////////////////////////////////////

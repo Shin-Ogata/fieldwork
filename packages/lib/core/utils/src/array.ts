@@ -4,10 +4,6 @@
 
 import { randomInt } from './misc';
 
-const {
-    /** @internal */ random
-} = Math;
-
 /**
  * @en Execute shuffle of an array elements.
  * @ja 配列要素のシャッフル
@@ -23,7 +19,7 @@ export function shuffle<T>(array: T[], destructive = false): T[] {
     const source = destructive ? array : array.slice();
     const len = source.length;
     for (let i = len > 0 ? len >>> 0 : 0; i > 1;) {
-        const j = i * random() >>> 0;
+        const j = i * Math.random() >>> 0;
         const swap = source[--i];
         source[i] = source[j];
         source[j] = swap;

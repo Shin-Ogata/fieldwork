@@ -2,24 +2,53 @@
 
 const { resolve }      = require('path');
 const { readFileSync } = require('fs-extra');
+const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
 const minify_js  = require('../../../config/minify/terser');
 
-function patch(index, code) {
+// '@cdp/lib-core' modules
+const coreModules = Object.keys(require('../lib-core/package.json').devDependencies);
+
+function patch(index, code, includes) {
     if (0 !== index) {
         return code;
     }
 
-    // import type from '@cdp/lib-core'
-    const importTypes = `import { Cancelable, Keys, PlainObject, UnknownFunction, Types, TypeToKey } from '@cdp/lib-core';`;
-    code = `${importTypes}\n${code}`;
+    {// includes info
+        // dependencies info
+        const packages = resolveDepends({
+            layer: ['lib'],
+            cwd: resolve(__dirname, '../../../'),
+            dev: false,
+        });
+
+        const modules = includes.slice();
+        includes.length = 0;
+        includes.push(...packages.filter(pkg => modules.includes(pkg.name)).map(pkg => pkg.name));
+    }
+
+    // '@cdp/lib-core' modules
+    const regexCoreModules = new RegExp(`(${coreModules.join('|')})`, 'gm');
+
+    code = code
+        // from '@cdp/lib-core'
+        .replace(regexCoreModules, '@cdp/lib-core')
+    ;
 
     // global namespace: `@cdp/ajax result-code-defs.d.ts`
     code += readFileSync(resolve(__dirname, 'node_modules/@cdp/ajax/types/result-code-defs.d.ts')).toString();
 
     return code;
+}
+
+function replaceModuleValues(modules, target) {
+    const values = {};
+    for (const key of modules) {
+        values[key] = target;
+    }
+    return values;
 }
 
 module.exports = {
@@ -31,11 +60,7 @@ module.exports = {
         replace: {
             preventAssignment: true,
             delimiters: ['', ''],
-            values: {
-                '@cdp/core-utils': '@cdp/lib-core',
-                '@cdp/promise': '@cdp/lib-core',
-                '@cdp/result': '@cdp/lib-core',
-            },
+            values: replaceModuleValues(coreModules, '@cdp/lib-core'),
         },
     }),
     dts: bundle_dts({

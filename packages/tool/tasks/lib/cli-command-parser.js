@@ -28,7 +28,7 @@ function parseCommand() {
         .option('-s, --silent',             'no output console')
         .option('-t, --target <path(s)>',   'specify target path')
         .option('-a, --all',                'preset target all')
-        .option('-@, --debug',              'dump input command')
+        .option('-@, --debug',              'dump input command. (dry run)')
         .version(pkg.version);
 
     // setup subtask options

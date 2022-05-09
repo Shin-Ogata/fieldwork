@@ -2,29 +2,46 @@
 
 const { resolve }      = require('path');
 const { readFileSync } = require('fs-extra');
+const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
 const minify_js  = require('../../../config/minify/terser');
+
+// '@cdp/lib-core' modules
+const coreModules = Object.keys(require('../lib-core/package.json').devDependencies);
+// '@cdp/lib-worker' modules
+const workerModules = Object.keys(require('../lib-worker/package.json').devDependencies);
 
 function patch(index, code, includes) {
     if (0 !== index) {
         return code;
     }
 
-    includes.push('@cdp/extension-i18n');
-    includes.push('@cdp/extension-template');
-    includes.push('@cdp/extension-template-bridge');
-    includes.push('@cdp/dom');
-    includes.sort();
+    const manualEditModules = [
+        '@cdp/extension-i18n',
+        '@cdp/extension-template',
+        '@cdp/extension-template-bridge',
+        '@cdp/dom',
+    ];
+
+    {// includes info
+        // dependencies info
+        const packages = resolveDepends({
+            layer: ['lib'],
+            cwd: resolve(__dirname, '../../../'),
+            dev: false,
+        });
+
+        const modules = includes.slice();
+        includes.length = 0;
+        includes.push(...manualEditModules);
+        includes.push(...packages.filter(pkg => modules.includes(pkg.name)).map(pkg => pkg.name));
+    }
 
     const read = (dts) => {
         // trim banner
         return readFileSync(dts).toString().replace(/\/\*\![\s\S]*?\*\/\n/, '');
-    };
-
-    const regexImport = (moduleName) => {
-        return new RegExp(`^(import {)([^\\n]*?)(} from '${moduleName}';\\n)`, 'gm');
     };
 
     {// prepend
@@ -91,6 +108,7 @@ function patch(index, code, includes) {
         const workerStuff = `
             AjaxOptions,
             AjaxRequestOptions,
+            AjaxGetRequestShortcutOptions,
             Serializable,
         `;
 
@@ -104,15 +122,23 @@ function patch(index, code, includes) {
     }
 
     {// trim
+        const regexImport = (moduleName) => {
+            return new RegExp(`^(import {)([^\\n]*?)(} from '${moduleName}';\\n)`, 'gm');
+        };
+
+        const dropModules = manualEditModules.slice();
+        dropModules.push(...coreModules, ...workerModules);
+
+        for (const drop of dropModules) {
+            code = code.replace(regexImport(drop), '');
+        }
+
         code = code
-            .replace(regexImport('@cdp/core-utils'), '')
-            .replace(regexImport('@cdp/extension-template'), '')
             // drop 'export * from '@cdp/dom';'
             .replace(`export * from '@cdp/dom';\n`, '')
             // dynamic import: import('@cdp/core-utils') → import('@cdp/lib-core')
             .replace(/import\('@cdp\/core-utils'\)/g, `import('@cdp/lib-core')`)
         ;
-
     }
 
     {// module-extends
@@ -134,6 +160,14 @@ function patch(index, code, includes) {
     return code;
 }
 
+function replaceModuleValues(modules, target) {
+    const values = {};
+    for (const key of modules) {
+        values[key] = target;
+    }
+    return values;
+}
+
 module.exports = {
     __esModule: true,
     default: bundle_src({
@@ -144,22 +178,14 @@ module.exports = {
         replace: {
             preventAssignment: true,
             delimiters: ['', ''],
-            values: {
-                '@cdp/core-utils': '@cdp/lib-core',
-                '@cdp/events': '@cdp/lib-core',
-                '@cdp/promise': '@cdp/lib-core',
-                '@cdp/observable': '@cdp/lib-core',
-                '@cdp/result': '@cdp/lib-core',
-                '@cdp/core-storage': '@cdp/lib-core',
-                '@cdp/core-template': '@cdp/lib-core',
-                '@cdp/ajax': '@cdp/lib-worker',
-                '@cdp/binary': '@cdp/lib-worker',
-                '@cdp/inline-worker': '@cdp/lib-worker',
-            },
+            values: Object.assign(
+                replaceModuleValues(coreModules, '@cdp/lib-core'),
+                replaceModuleValues(workerModules, '@cdp/lib-worker'),
+            ),
         },
     }),
     dts: bundle_dts({
-        excludeLibraries: ['@cdp/dom'],
+        excludeLibraries: ['@cdp/dom'], // special treat
         postProcess: patch,
     }),
     minify: {

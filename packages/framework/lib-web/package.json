@@ -28,6 +28,11 @@
   "license": "UNLICENSED",
   "main": "dist/lib-web",
   "module": "dist/lib-web.mjs",
+  "optionalDependencies": {
+    "@cdp/extension-i18n": "file:*",
+    "@cdp/extension-template": "file:*",
+    "@cdp/extension-template-bridge": "file:*"
+  },
   "private": true,
   "repository": {
     "type": "git",

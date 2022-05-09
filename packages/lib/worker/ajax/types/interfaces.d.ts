@@ -74,6 +74,11 @@ export interface AjaxOptions<T extends AjaxDataTypes | object = 'response'> exte
  */
 export declare type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'method' | 'data' | 'dataType'>>;
 /**
+ * @en `GET request` shortcut utility method options.
+ * @ja `GET request` ショートカットに指定可能なオプション
+ */
+export declare type AjaxGetRequestShortcutOptions = AjaxRequestOptions & Pick<AjaxOptions, 'data'>;
+/**
  * @en Result of [[ajax]]() returns value.
  * @ja [[ajax]]() が返却する結果
  */

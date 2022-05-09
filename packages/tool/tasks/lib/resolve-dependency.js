@@ -1,28 +1,28 @@
 'use strict';
 
 const path = require('path');
-const { promisify } = require('util');
-const glob = promisify(require('glob'));
+const glob = require('glob');
+const colors = require('../colors');
 const { toPOSIX } = require('./misc');
 
-async function searchLocations(layers) {
+function searchLocations(layers, root) {
     layers = layers || [''];
     const results = [];
     for (const layer of layers) {
-        const cwd = toPOSIX(path.join(process.cwd(), 'packages', layer));
-        results.push(...(await glob(`${cwd}/**/package.json`, {
+        const cwd = toPOSIX(path.join(root, 'packages', layer));
+        results.push(...glob.sync(`${cwd}/**/package.json`, {
             cwd,
             nodir: true,
             ignore: [
                 '**/node_modules/**/package.json',
             ],
-        })));
+        }));
     }
     return results;
 }
 
-function createPackages(locations) {
-    const root = path.join(process.cwd(), 'packages');
+function createPackages(locations, cwd, dev) {
+    const root = path.join(cwd, 'packages');
 
     const setDepends = (depends, prop) => {
         if (!prop) {
@@ -41,7 +41,7 @@ function createPackages(locations) {
         const pkg = require(location);
         const depends = new Set();
         setDepends(depends, pkg.dependencies);
-        setDepends(depends, pkg.devDependencies);
+        dev && setDepends(depends, pkg.devDependencies);
         const info = {
             name: pkg.name,
             depends,
@@ -82,25 +82,30 @@ function calcDepth(packages) {
     }
 }
 
-async function resolve(options) {
-    options = options || {};
-    const locations = await searchLocations(options.layer);
-    const packages = createPackages(locations);
+function resolve(options) {
+    const { layer, dryRun, dev, silent, cwd } = options || {};
+    const locations = searchLocations(layer, cwd);
+    const packages = createPackages(locations, cwd, dev);
 
     calcDepth(packages);
-/*
+    packages.sort((lhs, rhs) => (lhs.depth < rhs.depth) ? -1 : 1);
+
     // checker
-    for (const pkg of packages) {
-        console.log(`path: ${pkg.path}`);
-        console.log(`layer: ${pkg.layer}`);
-        const names = [...pkg.depends].map(m => m.name);
-        console.log(`  package: ${pkg.name}, depends: ${JSON.stringify(names)}`);
-        console.log(`  depth: ${pkg.depth}`);
+    if (dryRun) {
+        for (const pkg of packages) {
+            if (!silent) {
+                console.log(`path: ${pkg.path}`);
+                console.log(`layer: ${pkg.layer}`);
+            }
+            const names = [...pkg.depends].map(m => m.name);
+            console.log(`  ${pkg.name}`);
+            console.log(colors.gray(`    depth: ${pkg.depth}`));
+            console.log(colors.gray(`    depends: ${JSON.stringify(names)}`));
+        }
+        console.log(`  Listed ${colors.yellow(`${packages.length}`)} packages`);
     }
-*/
-    return packages
-        .sort((lhs, rhs) => (lhs.depth < rhs.depth) ? -1 : 1)
-        .map(p => path.dirname(p.path));
+
+    return packages;
 }
 
 module.exports = resolve;

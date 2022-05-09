@@ -1,6 +1,10 @@
 'use strict';
 
-const { resolve, relative } = require('path');
+const {
+    resolve,
+    relative,
+    dirname,
+} = require('path');
 const colors    = require('../colors');
 const command   = require('../command');
 const resolver  = require('./resolve-dependency');
@@ -14,10 +18,12 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-p, --preset',             'if preset command [eg: install, test] calling the options is required')
         .option('-l, --layer <package>',    'specified <mono-repo-root>/<packages>/<layer>')
         .option('-e, --exists',             `to avoid exiting with a non-zero exit code when the script is undefined. it's similar to pnpm's "--if-present" flag.`)
+        .option('-d, --dry-run',            `dry run mode. you can check dependencies and command support status.`)
+        .option('--no-dev',                 `exclude devDependencies.`)
         .action((command, options) => {
             cmd.action = COMMAND;
             const { cwd, silent, target } = commander.opts();
-            const { preset, layer, exists } = options;
+            const { preset, layer, exists, dryRun, dev } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),
                 silent,
@@ -26,6 +32,8 @@ function defineCommands(commander, cmd, isDefault) {
                 preset,
                 layer: layer && layer.split(','),
                 exists,
+                dryRun,
+                dev,
             };
         })
         .on('--help', () => {
@@ -53,6 +61,8 @@ function defaultOptions() {
         preset: false,
         layer: null,
         exists: false,
+        dryRun: false,
+        dev: true,
     };
 }
 
@@ -81,12 +91,13 @@ async function exec(options) {
         command: delegateCommand,
         preset,
         exists,
+        dryRun,
         silent,
     } = options || defaultOptions();
     const { packages } = require('../config').dir;
 
     const root = resolve(cwdBackup, `${packages}`);
-    const targets = (targetPackages && targetPackages.map(t => resolve(root, t))) || await resolver(options);
+    const targets = (targetPackages && targetPackages.map(t => resolve(root, t))) || resolver(options).map(p => dirname(p.path));
 
     try {
         for (const target of targets) {
@@ -109,7 +120,9 @@ async function exec(options) {
                 console.log(colors.magenta(`    command: ${delegateCommand}`));
             }
 
-            await command('npm', `${prefix}${delegateCommand}`);
+            if (!dryRun) {
+                await command('npm', `${prefix}${delegateCommand}`);
+            }
         }
     } finally {
         process.chdir(cwdBackup);

@@ -11,7 +11,7 @@ module.exports = {
             '@cdp/events': 'CDP',
             '@cdp/promise': 'CDP',
             '@cdp/result': 'CDP',
-            '@cdp/ajax': 'CDP',
+            '@cdp/web-utils': 'CDP',
         },
         replace,
     }),

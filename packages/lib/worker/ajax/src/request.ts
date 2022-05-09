@@ -4,6 +4,7 @@ import {
     AjaxDataTypes,
     AjaxOptions,
     AjaxRequestOptions,
+    AjaxGetRequestShortcutOptions,
     AjaxResult,
 } from './interfaces';
 import {
@@ -51,15 +52,12 @@ export function get<T extends AjaxDataTypes | object = 'json'>(
  * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
- * @param data
- *  - `en` Data to be sent to the server.
- *  - `ja` サーバーに送信されるデータ.
  * @param options
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function text(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<'text'>> {
-    return get(url, data, 'text', options);
+export function text(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'text'>> {
+    return get(url, undefined, 'text', options);
 }
 
 /**
@@ -69,15 +67,12 @@ export function text(url: string, data?: PlainObject, options?: AjaxRequestOptio
  * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
- * @param data
- *  - `en` Data to be sent to the server.
- *  - `ja` サーバーに送信されるデータ.
  * @param options
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function json<T extends 'json' | object = 'json'>(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<T>> {
-    return get<T>(url, data, ('json' as T extends AjaxDataTypes ? T : 'json'), options);
+export function json<T extends 'json' | object = 'json'>(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<T>> {
+    return get<T>(url, undefined, ('json' as T extends AjaxDataTypes ? T : 'json'), options);
 }
 
 /**
@@ -87,15 +82,12 @@ export function json<T extends 'json' | object = 'json'>(url: string, data?: Pla
  * @param url
  *  - `en` A string containing the URL to which the request is sent.
  *  - `ja` Ajaxリクエストを送信するURLを指定
- * @param data
- *  - `en` Data to be sent to the server.
- *  - `ja` サーバーに送信されるデータ.
  * @param options
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function blob(url: string, data?: PlainObject, options?: AjaxRequestOptions): Promise<AjaxResult<'blob'>> {
-    return get(url, data, 'blob', options);
+export function blob(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'blob'>> {
+    return get(url, undefined, 'blob', options);
 }
 
 /**

@@ -2,6 +2,7 @@
 
 const { resolve }      = require('path');
 const { readFileSync } = require('fs-extra');
+const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
@@ -12,36 +13,40 @@ function patch(index, code, includes) {
         return code;
     }
 
-    includes.length = 0;
-    includes.push('@cdp/extension-i18n');
-    includes.push('@cdp/extension-template');
-    includes.push('@cdp/extension-template-bridge');
-    includes.push('@cdp/core-utils');
-    includes.push('@cdp/result');
-    includes.push('@cdp/events');
-    includes.push('@cdp/promise');
-    includes.push('@cdp/observable');
-    includes.push('@cdp/core-storage');
-    includes.push('@cdp/core-template');
-    includes.push('@cdp/ajax');
-    includes.push('@cdp/binary');
-    includes.push('@cdp/inline-worker');
-    includes.push('@cdp/web-utils');
-    includes.push('@cdp/dom');
-    includes.push('@cdp/environment');
-    includes.push('@cdp/i18n');
-    includes.push('@cdp/web-storage');
-    includes.push('@cdp/data-sync');
-    includes.push('@cdp/model');
-    includes.push('@cdp/collection');
-    includes.push('@cdp/view');
-    includes.push('@cdp/template');
-    includes.push('@cdp/router');
+    {// includes info
+        // dependencies info
+        const packages = resolveDepends({
+            layer: ['extension', 'lib'],
+            cwd: resolve(__dirname, '../../../'),
+            dev: false,
+        });
 
-    const read = (dts) => {
-        // trim banner
-        return readFileSync(dts).toString().replace(/\/\*\![\s\S]*?\*\/\n/, '');
-    };
+        const corePkg   = require('../lib-core/package.json');
+        const workerPkg = require('../lib-worker/package.json');
+        const webPkg    = require('../lib-web/package.json');
+
+        // '@cdp/extension-*' modules
+        const extModules = [];
+        corePkg.optionalDependencies   && extModules.push(...Object.keys(corePkg.optionalDependencies));
+        workerPkg.optionalDependencies && extModules.push(...Object.keys(workerPkg.optionalDependencies));
+        webPkg.optionalDependencies    && extModules.push(...Object.keys(webPkg.optionalDependencies));
+        // '@cdp/lib-core' modules
+        const coreModules = Object.keys(corePkg.devDependencies);
+        // '@cdp/lib-worker' modules
+        const workerModules = Object.keys(workerPkg.devDependencies);
+        // '@cdp/lib-web' modules
+        const webModules = Object.keys(webPkg.devDependencies);
+
+        const sortDeps = (targets) => {
+            return packages.filter(pkg => targets.includes(pkg.name)).map(pkg => pkg.name);
+        };
+
+        includes.length = 0;
+        includes.push(...sortDeps(extModules));
+        includes.push(...sortDeps(coreModules));
+        includes.push(...sortDeps(workerModules));
+        includes.push(...sortDeps(webModules));
+    }
 
     {// remove
         code = code
@@ -54,6 +59,11 @@ function patch(index, code, includes) {
     }
 
     {// result-code-defs.d.ts
+        const read = (dts) => {
+            // trim banner
+            return readFileSync(dts).toString().replace(/\/\*\![\s\S]*?\*\/\n/, '');
+        };
+    
         // global namespace: `@cdp/result result-code-defs.d.ts`
         code += read(resolve('../../lib/core/result/types/result-code-defs.d.ts'));
 

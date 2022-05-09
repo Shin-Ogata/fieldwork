@@ -7,11 +7,11 @@
     "defaults"
   ],
   "dependencies": {
-    "@cdp/ajax": "file:../../worker/ajax",
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/events": "file:../../core/events",
     "@cdp/promise": "file:../../core/promise",
-    "@cdp/result": "file:../../core/result"
+    "@cdp/result": "file:../../core/result",
+    "@cdp/web-utils": "file:../utils"
   },
   "devDependencies": {
     "@cdp/dom": "file:../dom"
