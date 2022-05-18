@@ -9,6 +9,8 @@
 - [Barba.js life cycle event](https://barba.js.org/docs/getstarted/lifecycle/)
 - [Barba.js css](https://barba.js.org/docs/plugins/css/)
 - [Vue3 transition class](https://v3.ja.vuejs.org/guide/transitions-enterleave.html)
+- [Vue3 lifecycle hook](https://v3.ja.vuejs.org/api/options-lifecycle-hooks.html#%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%83%95%E3%83%83%E3%82%AF)
+- [Vue3 lifecycle diaglam](https://v3.ja.vuejs.org/guide/instance.html#%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%82%BF%E3%82%99%E3%82%A4%E3%82%A2%E3%82%AF%E3%82%99%E3%83%A9%E3%83%A0)
 - [Onsen UI (swipable)](https://onsen.io/v2/api/js/ons-navigator.html#events-summary)
 - [jQuery Mobile Page Events](https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/)
 
@@ -33,20 +35,6 @@
     - `hashchange` はハッシュがなくなるときには発火しない
   - `popstate` は `history.go()` だけであればリロードされない
 
-```ts
-const onPopState = (ev: PopStateEvent): void => {
-    console.log(ev.type);
-//    history.pushState(null, '', null);
-};
-window.addEventListener('popstate', onPopState);
-
-const onHashChange = (ev: HashChangeEvent): void => {
-    console.log(ev.type);
-//    history.pushState(null, '', null);
-};
-window.addEventListener('hashchange', onHashChange);
-```
-
 - vue に習い, `hash` と `history` は選択できたほうが良いかもしれない. そのためには `webRoot` を調査する
   - [Different History modes](https://router.vuejs.org/guide/essentials/history-mode.html)
   - [vue-routerのhashモードとhistoryモードの違いをざっくり理解する](https://qiita.com/kozzzz/items/af9ad63fa70d4724cc2a)
@@ -58,6 +46,28 @@ window.addEventListener('hashchange', onHashChange);
 
   - root は `/@id` からはじめる. hash prefixは `#/` とすることで `#/@id`にする. history 内部の id は `/` はつかない
   - path は `vue` を参考にする
+
+####
+
+- will-change
+
+- (load)
+
+- before-leave
+- leave
+- after-leave
+
+- mounted
+
+- before-enter
+- enter
+- after-enter
+
+- unmounted
+
+- (unload)
+
+- changed
 
 #### memo
 

@@ -6,7 +6,7 @@
                 <ul>
                     {{#members}}
                     <li><span class="given">{{given}}</span></li>
-                    <li><span class="age">{{&age}}</span></li>
+                    <li><span class="age">{{age}}</span></li>
                     {{/members}}
                 </ul>
             </li>
@@ -20,7 +20,7 @@
                 <ul>
                     {{#members}}
                     <li><span class="given">{{given}}</span></li>
-                    <li><span class="age">{{&age}}</span></li>
+                    <li><span class="age">{{age}}</span></li>
                     {{/members}}
                 </ul>
             </li>

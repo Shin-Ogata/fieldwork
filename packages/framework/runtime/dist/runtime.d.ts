@@ -3596,11 +3596,9 @@ export declare class TemplateEngine implements ITemplateEngine {
  * @en Stream data type result interface
  * @ja ストリームデータ型定義
  */
-export interface AjaxDataStream {
+export interface AjaxDataStream extends ReadableStream<Uint8Array> {
     /** `content-length` */
     readonly length: number;
-    /** `ReadableStream` interface */
-    readonly stream: ReadableStream<Uint8Array>;
 }
 /**
  * @en Ajax data type list.
@@ -4521,10 +4519,15 @@ export declare namespace i18n {
          */
         fallbackNS?: false | string | readonly string[];
         /**
-         * Calls save missing key function on backend if key not found
+         * Calls save missing key function on backend if key not found.
          * @default false
          */
         saveMissing?: boolean;
+        /**
+         * Calls save missing key function on backend if key not found also for plural forms.
+         * @default false
+         */
+        saveMissingPlurals?: boolean;
         /**
          * Experimental: enable to update default values using the saveMissing
          * (Works only if defaultValue different from translated value.
@@ -5890,7 +5893,7 @@ export declare const transformer: {
 };
 /**
  * A TemplateRenderer is responsible for rendering a block call, like
- * <template name='foo'>
+ * `<template name='foo'>`
  */
 export interface TemplateRenderer {
     (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers): unknown;
@@ -5900,7 +5903,7 @@ export interface TemplateRenderers {
 }
 /**
  * A TemplateHandlers is responsible for rendering control flow like
- * <template type='if' if='{{x}}'>
+ * `<template type='if' if='{{x}}'>`
  */
 export declare type TemplateHandler = (template: HTMLTemplateElement, view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
 export interface TemplateHandlers {
@@ -7662,6 +7665,24 @@ export declare function clearTemplateCache(): void;
  *  - `ja` ロードオプション
  */
 export declare function loadTemplateSource(selector: string, options?: LoadTemplateOptions): Promise<string | HTMLTemplateElement | undefined>;
+/**
+ * @en Forced conversion to HTML string.
+ * @ja HTML 文字列に強制変換
+ *
+ * @param src
+ *  - `en` `HTMLTemplateElement` instance or HTML string
+ *  - `ja` `HTMLTemplateElement` インスタンスまたは HTML 文字列
+ */
+export declare function toTemplateString(src: string | HTMLTemplateElement | undefined): string | undefined;
+/**
+ * @en Forced conversion to `HTMLTemplateElement`.
+ * @ja `HTMLTemplateElement` に強制変換
+ *
+ * @param src
+ *  - `en` `HTMLTemplateElement` instance or HTML string
+ *  - `ja` `HTMLTemplateElement` インスタンスまたは HTML 文字列
+ */
+export declare function toTemplateElement(src: string | HTMLTemplateElement | undefined): HTMLTemplateElement | undefined;
 /**
  * @en Platform information.
  * @ja プラットフォーム情報
