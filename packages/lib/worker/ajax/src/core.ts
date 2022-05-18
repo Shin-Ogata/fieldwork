@@ -171,8 +171,13 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
         return response as AjaxResult<T>;
     } else if (!response.ok) {
         throw makeResult(RESULT_CODE.ERROR_AJAX_RESPONSE, response.statusText, response);
+    } else if ('stream' === dataType) {
+        const length = Number(response.headers.get('content-length'));
+        const stream = response.body as ReadableStream<Uint8Array>;
+        stream['length'] = length;
+        return stream as AjaxResult<T>;
     } else {
-        return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response'>](), token);
+        return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response' | 'stream'>](), token);
     }
 }
 

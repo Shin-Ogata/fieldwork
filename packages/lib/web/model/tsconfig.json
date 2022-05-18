@@ -1,6 +1,7 @@
 {
   "extends": "../../../../config/tsconfig/web",
   "compilerOptions": {
+    "target": "es2021",
     "declaration": true,
     "declarationDir": "types",
     "inlineSources": true,

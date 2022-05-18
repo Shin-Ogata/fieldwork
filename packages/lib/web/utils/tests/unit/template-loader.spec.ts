@@ -2,11 +2,19 @@
  eslint-disable
     max-len,
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-non-null-assertion,
+    @typescript-eslint/no-non-null-asserted-optional-chain,
  */
 
-import { loadTemplateSource, clearTemplateCache } from '@cdp/web-utils';
+import {
+    loadTemplateSource,
+    clearTemplateCache,
+    toTemplateString,
+    toTemplateElement,
+} from '@cdp/web-utils';
 
 const stripWhiteSpace = (html: string): string => html.replace(/\s/g, '');
+const validator = '<ul>{{#families}}<li><spanclass="surname">{{surname}}</span><ul>{{#members}}<li><spanclass="given">{{given}}</span></li><li><spanclass="age">{{age}}</span></li>{{/members}}</ul></li>{{/families}}</ul>';
 
 describe('template-loader spec', () => {
 
@@ -23,12 +31,12 @@ describe('template-loader spec', () => {
         const src = await loadTemplateSource('#test-mustache', {
             url: '../../.temp/res/web-utils/test.tpl',
         });
-        expect(stripWhiteSpace(src as string)).toBe('<ul>{{#families}}<li><spanclass="surname">{{surname}}</span><ul>{{#members}}<li><spanclass="given">{{given}}</span></li><li><spanclass="age">{{&age}}</span></li>{{/members}}</ul></li>{{/families}}</ul>');
+        expect(stripWhiteSpace(src as string)).toBe(validator);
 
         const tpl = await loadTemplateSource('#test-mustache-template', {
             url: '../../.temp/res/web-utils/test.tpl',
         });
-        expect(stripWhiteSpace((tpl as HTMLTemplateElement).innerHTML)).toBe('<ul>{{#families}}<li><spanclass="surname">{{surname}}</span><ul>{{#members}}<li><spanclass="given">{{given}}</span></li><li><spanclass="age">{{&amp;age}}</span></li>{{/members}}</ul></li>{{/families}}</ul>');
+        expect(stripWhiteSpace((tpl as HTMLTemplateElement).innerHTML)).toBe(validator);
 
         // from cache
         const tpl2 = await loadTemplateSource('#test-mustache-template', {
@@ -58,6 +66,17 @@ describe('template-loader spec', () => {
         // invalid
         const invalid = await loadTemplateSource('#test-mustache-invalid');
         expect(invalid).toBeUndefined();
+    });
+
+    it('check toTemplateString / toTemplateElement', async () => {
+        const src = await loadTemplateSource('#test-mustache', { url: '../../.temp/res/web-utils/test.tpl' });
+        const tpl = await loadTemplateSource('#test-mustache-template', { url: '../../.temp/res/web-utils/test.tpl' });
+
+        expect(stripWhiteSpace(toTemplateString(src)!)).toBe(validator);
+        expect(stripWhiteSpace(toTemplateString(tpl)!)).toBe(validator);
+
+        expect(stripWhiteSpace(toTemplateElement(src)?.innerHTML!)).toBe(validator);
+        expect(stripWhiteSpace(toTemplateElement(tpl)?.innerHTML!)).toBe(validator);
     });
 
 });

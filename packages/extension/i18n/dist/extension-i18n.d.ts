@@ -280,10 +280,15 @@ declare namespace i18n {
          */
         fallbackNS?: false | string | readonly string[];
         /**
-         * Calls save missing key function on backend if key not found
+         * Calls save missing key function on backend if key not found.
          * @default false
          */
         saveMissing?: boolean;
+        /**
+         * Calls save missing key function on backend if key not found also for plural forms.
+         * @default false
+         */
+        saveMissingPlurals?: boolean;
         /**
          * Experimental: enable to update default values using the saveMissing
          * (Works only if defaultValue different from translated value.

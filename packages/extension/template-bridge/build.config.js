@@ -12,6 +12,9 @@ function patch(index, code) {
     code = code
         // trim `import("xxx").`
         .replace(/import\("[\S]+"\)\./g, '')
+        // stampino comments
+        .replace(`<template name='foo'>`, "`<template name='foo'>`")
+        .replace(`<template type='if' if='{{x}}'>`, "`<template type='if' if='{{x}}'>`")
     ;
 
     return code;

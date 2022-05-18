@@ -32,3 +32,21 @@ export declare function clearTemplateCache(): void;
  *  - `ja` ロードオプション
  */
 export declare function loadTemplateSource(selector: string, options?: LoadTemplateOptions): Promise<string | HTMLTemplateElement | undefined>;
+/**
+ * @en Forced conversion to HTML string.
+ * @ja HTML 文字列に強制変換
+ *
+ * @param src
+ *  - `en` `HTMLTemplateElement` instance or HTML string
+ *  - `ja` `HTMLTemplateElement` インスタンスまたは HTML 文字列
+ */
+export declare function toTemplateString(src: string | HTMLTemplateElement | undefined): string | undefined;
+/**
+ * @en Forced conversion to `HTMLTemplateElement`.
+ * @ja `HTMLTemplateElement` に強制変換
+ *
+ * @param src
+ *  - `en` `HTMLTemplateElement` instance or HTML string
+ *  - `ja` `HTMLTemplateElement` インスタンスまたは HTML 文字列
+ */
+export declare function toTemplateElement(src: string | HTMLTemplateElement | undefined): HTMLTemplateElement | undefined;

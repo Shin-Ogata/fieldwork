@@ -96,3 +96,34 @@ export async function loadTemplateSource(selector: string, options?: LoadTemplat
     const provider = await queryTemplateProvider(url, noCache);
     return queryTemplateSource(selector, provider, noCache);
 }
+
+//__________________________________________________________________________________________________//
+
+/**
+ * @en Forced conversion to HTML string.
+ * @ja HTML 文字列に強制変換
+ *
+ * @param src
+ *  - `en` `HTMLTemplateElement` instance or HTML string
+ *  - `ja` `HTMLTemplateElement` インスタンスまたは HTML 文字列
+ */
+export function toTemplateString(src: string | HTMLTemplateElement | undefined): string | undefined {
+    return src instanceof HTMLTemplateElement ? src.innerHTML : src;
+}
+
+/**
+ * @en Forced conversion to `HTMLTemplateElement`.
+ * @ja `HTMLTemplateElement` に強制変換
+ *
+ * @param src
+ *  - `en` `HTMLTemplateElement` instance or HTML string
+ *  - `ja` `HTMLTemplateElement` インスタンスまたは HTML 文字列
+ */
+export function toTemplateElement(src: string | HTMLTemplateElement | undefined): HTMLTemplateElement | undefined {
+    const from = (str: string): HTMLTemplateElement => {
+        const template = document.createElement('template');
+        template.innerHTML = str;
+        return template;
+    };
+    return 'string' === typeof src ? from(src) : src;
+}

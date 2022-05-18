@@ -83,6 +83,28 @@ describe('ajax/core spec', () => {
         expect(blob.type).toBe('image/jpeg');
     });
 
+    it('check ajax() get stream', async () => {
+        const stream = await ajax('../../.temp/res/ajax/image.jpg', { dataType: 'stream' });
+        expect(stream).toBeDefined();
+        expect(stream.length).toBe(10980);
+
+        const reader = stream.getReader();
+        expect(reader).toBeDefined();
+
+        // progress example
+        let chunk = 0;
+        let result: ReadableStreamDefaultReadResult<Uint8Array> | undefined;
+        while (!result || !result.done) {
+            result = await reader.read();
+            if (!result.done) {
+                chunk += result.value?.length as number;
+                console.log(`received: ${chunk}(${Math.round(chunk / stream.length * 100)} %)`);
+            }
+        }
+
+        expect(chunk).toBe(10980);
+    });
+
     it('check ajax() get response', async () => {
         const response = await ajax('../../.temp/res/ajax/data.json');
         expect(response).toBeDefined();

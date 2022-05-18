@@ -3,6 +3,7 @@
 const path = require('path');
 const { spawn } = require('child_process');
 
+// https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
 function exec(command, args, options) {
     if (!(Array.isArray(args))) {
         if (args) {
@@ -12,12 +13,17 @@ function exec(command, args, options) {
         }
     }
 
+    const { shell, trimArgs } = Object.assign({ trimArgs: true }, options);
+
     // trim quotation
-    args = args.map((arg) => {
-        return arg
-            .replace(/^'+|'+$/g, '')
-            .replace(/^"+|"+$/g, '');
-    });
+    // https://stackoverflow.com/questions/48014957/quotes-in-node-js-spawn-arguments
+    if (trimArgs && !shell) {
+        args = args.map((arg) => {
+            return arg
+                .replace(/^'+|'+$/g, '')
+                .replace(/^"+|"+$/g, '');
+        });
+    }
 
     return new Promise((resolve, reject) => {
         const opt = Object.assign({}, {
@@ -26,8 +32,8 @@ function exec(command, args, options) {
             stderr: (data) => { /* noop */ },
         }, options);
 
-        const ext = path.extname(command);
-        const resolveCmd = (ext || process.platform !== 'win32') ? command : `${command}.cmd`;
+        const exe = path.extname(command) || opt.exe;
+        const resolveCmd = (exe || process.platform !== 'win32') ? command : `${command}.cmd`;
 
         const child = spawn(resolveCmd, args, opt)
             .on('error', (msg) => {

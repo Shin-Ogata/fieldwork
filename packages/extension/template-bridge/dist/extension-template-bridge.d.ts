@@ -37,7 +37,7 @@ export declare const transformer: {
 };
 /**
  * A TemplateRenderer is responsible for rendering a block call, like
- * <template name='foo'>
+ * `<template name='foo'>`
  */
 export interface TemplateRenderer {
     (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers): unknown;
@@ -47,7 +47,7 @@ export interface TemplateRenderers {
 }
 /**
  * A TemplateHandlers is responsible for rendering control flow like
- * <template type='if' if='{{x}}'>
+ * `<template type='if' if='{{x}}'>`
  */
 export declare type TemplateHandler = (template: HTMLTemplateElement, view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
 export interface TemplateHandlers {

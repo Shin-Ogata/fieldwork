@@ -14,11 +14,9 @@ import { Cancelable } from '@cdp/lib-core';
  * @en Stream data type result interface
  * @ja ストリームデータ型定義
  */
-export interface AjaxDataStream {
+export interface AjaxDataStream extends ReadableStream<Uint8Array> {
     /** `content-length` */
     readonly length: number;
-    /** `ReadableStream` interface */
-    readonly stream: ReadableStream<Uint8Array>;
 }
 /**
  * @en Ajax data type list.
