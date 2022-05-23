@@ -16,7 +16,7 @@ export declare type HistoryState<T = PlainObject> = T & {
 export interface HistoryEvent<T = PlainObject> {
     /** @args [nextState, cancel] */
     'update': [HistoryState<T>, (reason?: unknown) => void];
-    /** @args [newData, oldData] */
+    /** @args [newState, oldState] */
     'change': [HistoryState<T>, HistoryState<T>];
 }
 /**

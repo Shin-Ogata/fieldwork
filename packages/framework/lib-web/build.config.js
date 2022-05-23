@@ -22,6 +22,7 @@ function patch(index, code, includes) {
         '@cdp/extension-i18n',
         '@cdp/extension-template',
         '@cdp/extension-template-bridge',
+        '@cdp/extension-path2regexp',
         '@cdp/dom',
     ];
 
@@ -49,6 +50,7 @@ function patch(index, code, includes) {
         prepend += read(resolve('../../extension/i18n/dist/extension-i18n.d.ts'));
         prepend += read(resolve('../../extension/template/dist/extension-template.d.ts'));
         prepend += read(resolve('../../extension/template-bridge/dist/extension-template-bridge.d.ts'));
+        prepend += read(resolve('../../extension/path2regexp/dist/extension-path2regexp.d.ts'));
 
         const enumerate = (stuff) => {
             return stuff.split(',').map(s => s.trim()).filter(s => !!s).sort().join(', ');
@@ -57,6 +59,7 @@ function patch(index, code, includes) {
         const coreStuff = `
             Nil,
             UnknownObject,
+            UnknownFunction,
             PlainObject,
             AnyObject,
             Constructor,

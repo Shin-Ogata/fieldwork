@@ -31,7 +31,8 @@
   "optionalDependencies": {
     "@cdp/extension-i18n": "file:*",
     "@cdp/extension-template": "file:*",
-    "@cdp/extension-template-bridge": "file:*"
+    "@cdp/extension-template-bridge": "file:*",
+    "@cdp/extension-path2regexp": "file:*"
   },
   "private": true,
   "repository": {
