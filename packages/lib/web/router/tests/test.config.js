@@ -7,12 +7,12 @@ module.exports = {
     __esModule: true,
     default: config.default(testee, {
         external: {
-            '@cdp/dom': 'CDP',
         },
     }),
     testem: config.testem({
         random: false,
         external: {
+            '@cdp/extension-path2regexp': 'node_modules/@cdp/extension-path2regexp/dist/extension-path2regexp',
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
             '@cdp/events': 'node_modules/@cdp/events/dist/events',
             '@cdp/promise': 'node_modules/@cdp/promise/dist/promise',

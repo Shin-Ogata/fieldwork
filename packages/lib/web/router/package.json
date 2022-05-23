@@ -8,13 +8,12 @@
   ],
   "dependencies": {
     "@cdp/core-utils": "file:../../core/utils",
+    "@cdp/dom": "file:../dom",
     "@cdp/events": "file:../../core/events",
+    "@cdp/extension-path2regexp": "file:../../../extension/path2regexp",
     "@cdp/promise": "file:../../core/promise",
     "@cdp/result": "file:../../core/result",
     "@cdp/web-utils": "file:../utils"
-  },
-  "devDependencies": {
-    "@cdp/dom": "file:../dom"
   },
   "keywords": [
     "CDP",

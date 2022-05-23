@@ -7,6 +7,7 @@ import {
 import { Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
 import { toUrl, webRoot } from '@cdp/web-utils';
+import { window } from '../ssr';
 import {
     IHistory,
     HistoryEvent,
@@ -20,7 +21,6 @@ import {
     createUncancellableDeferred,
     HistoryStack,
 } from './internal';
-import { window } from './ssr';
 
 /** @internal dispatch additional information */
 interface DispatchInfo<T> {
@@ -28,6 +28,7 @@ interface DispatchInfo<T> {
     newId: string;
     oldId: string;
     postproc: 'noop' | 'push' | 'replace' | 'seek';
+    nextState?: HistoryState<T>;
     prevState?: HistoryState<T>;
 }
 
@@ -306,6 +307,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
                 newId: this.toId(newURL),
                 oldId: this.toId(oldURL),
                 postproc: method,
+                nextState: data,
             };
             await this.dispatchChangeInfo(data, additional);
         } else {
@@ -316,7 +318,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     }
 
     /** @internal dispatch `popstate` events */
-    private async dispatchChangeInfo(newState: T | undefined, additional: DispatchInfo<T>): Promise<void> {
+    private async dispatchChangeInfo(newState: T, additional: DispatchInfo<T>): Promise<void> {
         const state = setDispatchInfo(newState, additional);
         this._window.dispatchEvent(new PopStateEvent('popstate', { state }));
         await additional.df;
@@ -366,6 +368,26 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         }
     }
 
+    /** @internal follow the session history until `origin` (in silent) */
+    private async backToSesssionOrigin(): Promise<void> {
+        await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
+            const isOrigin = (st: unknown): boolean => {
+                return st && (st as object)['@origin'];
+            };
+
+            const { history } = this._window;
+            let state = history.state;
+            while (!isOrigin(state)) {
+                const promise = wait();
+                history.back();
+                state = await promise;
+            }
+        });
+    }
+
+///////////////////////////////////////////////////////////////////////
+// event handlers:
+
     /** @internal receive `popstate` events */
     private async onPopState(ev: PopStateEvent): Promise<void> {
         const { location } = this._window;
@@ -374,7 +396,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         const method  = additional?.postproc || 'seek';
         const df      = additional?.df || this._dfGo || new Deferred();
         const oldData = additional?.prevState || this.state;
-        const newData = createData(newId, newState);
+        const newData = additional?.nextState || this.direct(newId).state || createData(newId, newState);
         const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
 
         try {
@@ -396,23 +418,6 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
             await this.rollbackHistory(method, newId);
             df.reject(e);
         }
-    }
-
-    /** @internal follow the session history until `origin` (in silent) */
-    private async backToSesssionOrigin(): Promise<void> {
-        await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
-            const isOrigin = (st: unknown): boolean => {
-                return st && (st as object)['@origin'];
-            };
-
-            const { history } = this._window;
-            let state = history.state;
-            while (!isOrigin(state)) {
-                const promise = wait();
-                history.back();
-                state = await promise;
-            }
-        });
     }
 }
 

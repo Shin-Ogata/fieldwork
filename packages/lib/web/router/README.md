@@ -4,6 +4,7 @@
 
 ## 調査
 
+- [Framework7 Router](https://framework7.jp/docs/routes.html)
 - [Framework7 Router Events](https://framework7.io/docs/view.html#router-events)
 - [Framework7 View](https://framework7.jp/docs/view.html)
 - [Barba.js life cycle event](https://barba.js.org/docs/getstarted/lifecycle/)
@@ -13,6 +14,8 @@
 - [Vue3 lifecycle diaglam](https://v3.ja.vuejs.org/guide/instance.html#%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%82%BF%E3%82%99%E3%82%A4%E3%82%A2%E3%82%AF%E3%82%99%E3%83%A9%E3%83%A0)
 - [Onsen UI (swipable)](https://onsen.io/v2/api/js/ons-navigator.html#events-summary)
 - [jQuery Mobile Page Events](https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/)
+- [Backbone qiita](https://qiita.com/yuku_t/items/13f3d1f71d31f3e78123)
+- [Backbone blog](https://yutapon.hatenablog.com/entry/2014/03/02/003937)
 
 ----
 
@@ -26,6 +29,15 @@
 - https://qiita.com/miwashutaro0611/items/bc4cf66bef3a825ace1c
 
 #### TODO
+
+- IHistory#root について方針を出す (backbone)
+  - 今のところ root 切り替えは不要
+  - backbone#fragment は IHisotry#id
+
+<p><details>
+<summary>Done</summary>
+
+- RouteParameters の flatten 化
 
 - cancel 可能なように IHistory から見直し
   - https://ninhlv.dev/disable-browserback/
@@ -47,7 +59,10 @@
   - root は `/@id` からはじめる. hash prefixは `#/` とすることで `#/@id`にする. history 内部の id は `/` はつかない
   - path は `vue` を参考にする
 
-####
+</details></p>
+
+
+#### Event
 
 - will-change
 
@@ -69,6 +84,29 @@
 
 - changed
 
+#### CSS
+
+- jquery-mobile viewport
+```
+'ui-mobile-viewport'
+'ui-mobile-viewport ui-overlay-cdp'
+'ui-mobile-viewport ui-overlay-cdp ui-mobile-viewport-transitioning'
+'ui-mobile-viewport ui-overlay-cdp ui-mobile-viewport-transitioning viewport-floatup'
+'ui-mobile-viewport ui-overlay-cdp viewport-floatup'
+'ui-mobile-viewport ui-overlay-cdp'
+```
+
+- jquery-mobile page
+```
+'ui-page ui-page-theme-cdp ui-page-header-fixed ui-page-active ui-page-pre-in'
+'ui-page ui-page-theme-cdp ui-page-header-fixed ui-page-active'
+'ui-page ui-page-theme-cdp ui-page-header-fixed ui-page-active floatup in'
+'ui-page ui-page-theme-cdp ui-page-header-fixed ui-page-active'
+
+'ui-page ui-page-theme-cdp ui-page-header-fixed ui-page-active floatup out reverse'
+'ui-page ui-page-theme-cdp ui-page-header-fixed'
+```
+
 #### memo
 
 - `@cdp/template` には依存しない
@@ -76,15 +114,29 @@
   - ローカライズは必要?
     -  router の外で行う (beforecreate?, beforeEnter?)
 
-- `:param` は必要
+- `:param` は必要. params, query 両対応
   - framework7 相当 (backbone は正規表現そのもの?)
     - [View のパラメータ](https://framework7.jp/docs/view.html#anchor-4)
   - [path matcher](https://github.com/pillarjs/path-to-regexp/tree/v1.7.0)
+  - [Vue dynamic matching](https://v3.router.vuejs.org/ja/guide/essentials/dynamic-matching.html)
 
-- `@cdp/dom` はまだ我慢. でも使うかも.
+```
+// framework7 back.js
+    navigateUrl = router.generateUrl({ name, params, query });
+    query: parseUrlQuery(previousUrl),
+    router.parseRouteUrl(newUrl);
+    findMatchingRoute()
+```
+
+- `@cdp/dom` は~~まだ我慢. でも使うかも~~ 使う.
+  - keepAlive で detach() を使いそう
+  - https://framework7.jp/docs/routes.html#anchor-15
 
 - 2page 間で `navigate()` を呼んでからのイベントフローを書いてみる
   - cancel も考慮してみる
+
+- `intent` と `hisory.state` と協調? view 間でわたるので違うかも → できない
+- `Route` と `hisory.state` と協調? → シリアライズできないものは格納できない? → SessionHisotry で対応
 
 - `beforeRouteChange`は`beforeHide` or `beforeLeave`で賄える?
   - `will-change` を受けた後キャンセルできるか考える
@@ -93,3 +145,21 @@
   - [ナビゲーションガード](https://v3.router.vuejs.org/ja/guide/advanced/navigation-guards.html)
 
 - スクロール位置の記憶する/しない
+
+- マスター・ディーテイルレイアウト
+  - https://framework7.io/docs/view#master-detail
+
+- 非 Promise 関数も await 可 (new も可)
+```ts
+async function check(arg) {
+  const ret = await new arg();
+  console.log('number' === typeof ret);
+}
+const func = function() { return 1; }
+
+check(func); // true
+```
+
+- DOM が document に接続されているか否か
+  - Node.isConnected
+  - https://developer.mozilla.org/ja/docs/Web/API/Node/isConnected

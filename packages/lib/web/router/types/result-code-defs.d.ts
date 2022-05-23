@@ -5,6 +5,6 @@ declare namespace CDP_DECLARE {
      */
     enum RESULT_CODE {
         MVC_ROUTER_DECLARE = 9007199254740991,
-        ERROR_MVC_ROUTER_ERROR
+        ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND
     }
 }

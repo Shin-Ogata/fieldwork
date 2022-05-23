@@ -356,6 +356,9 @@ describe('dom/manipulation spec', () => {
         let $requery = $('.test-dom');
         expect($requery.length).toBe(2);
 
+        const $detached = $dom.filter('#d3').detach();
+        $detached.prependTo('.test-dom');
+
         $dom.detach();
         expect($dom.length).toBe(3);
         $requery = $('.test-dom');

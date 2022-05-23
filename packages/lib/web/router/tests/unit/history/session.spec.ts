@@ -4,7 +4,6 @@
  */
 
 import { UnknownFunction, post } from '@cdp/core-utils';
-import { prepareIFrameElements, cleanupTestElements } from '../tools';
 import { webRoot, waitFrame } from '@cdp/web-utils';
 import {
     IHistory,
@@ -12,6 +11,7 @@ import {
     resetSessionHistory,
     disposeSessionHistory,
 } from '@cdp/router';
+import { prepareIFrameElements, cleanupTestElements } from '../tools';
 
 // history をリセット
 const resetHistory = async (root: Window = window): Promise<void> => {

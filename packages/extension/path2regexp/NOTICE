@@ -1,0 +1,17 @@
+@cdp/extension-path2regexp
+Copyright 2022 Sony Group Corporation.
+
+This product includes software developed at Sony Group Corporation.
+
+This product also includes the following third-party components.
+
+--------------------------------------------------------------------------------
+path-to-regexp
+--------------------------------------------------------------------------------
+
+ - path-to-regexp stuff including ./dist/extension-path2regexp.{js/mjs/.d.ts}
+    https://github.com/pillarjs/path-to-regexp
+
+
+    Released under the MIT Licenses.
+    https://github.com/pillarjs/path-to-regexp/blob/master/LICENSE

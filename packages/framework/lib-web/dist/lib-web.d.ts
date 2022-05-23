@@ -6,6 +6,7 @@
  *     - @cdp/extension-i18n
  *     - @cdp/extension-template
  *     - @cdp/extension-template-bridge
+ *     - @cdp/extension-path2regexp
  *     - @cdp/dom
  *     - @cdp/environment
  *     - @cdp/view
@@ -1709,7 +1710,116 @@ export interface CreateStampinoTemplateOptions {
     superTemplate?: HTMLTemplateElement | undefined;
 }
 export declare function createStampinoTransformer(options?: CreateStampinoTemplateOptions): TemplateTransformer;
-import { $cdp, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, Nil, NonFunctionPropertyNames, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownObject } from '@cdp/lib-core';
+
+declare namespace path2regexp {
+
+export interface ParseOptions {
+    /**
+     * Set the default delimiter for repeat parameters. (default: `'/'`)
+     */
+    delimiter?: string;
+    /**
+     * List of characters to automatically consider prefixes when parsing.
+     */
+    prefixes?: string;
+}
+export function parse(str: string, options?: ParseOptions): Token[];
+export interface TokensToFunctionOptions {
+    /**
+     * When `true` the regexp will be case sensitive. (default: `false`)
+     */
+    sensitive?: boolean;
+    /**
+     * Function for encoding input strings for output.
+     */
+    encode?: (value: string, token: Key) => string;
+    /**
+     * When `false` the function can produce an invalid (unmatched) path. (default: `true`)
+     */
+    validate?: boolean;
+}
+export function compile<P extends object = object>(str: string, options?: ParseOptions & TokensToFunctionOptions): PathFunction<P>;
+export type PathFunction<P extends object = object> = (data?: P) => string;
+export function tokensToFunction<P extends object = object>(tokens: Token[], options?: TokensToFunctionOptions): PathFunction<P>;
+export interface RegexpToFunctionOptions {
+    /**
+     * Function for decoding strings for params.
+     */
+    decode?: (value: string, token: Key) => string;
+}
+/**
+ * A match result contains data about the path match.
+ */
+export interface MatchResult<P extends object = object> {
+    path: string;
+    index: number;
+    params: P;
+}
+/**
+ * A match is either `false` (no match) or a match result.
+ */
+export type Match<P extends object = object> = false | MatchResult<P>;
+/**
+ * The match function takes a string and returns whether it matched the path.
+ */
+export type MatchFunction<P extends object = object> = (path: string) => Match<P>;
+export function match<P extends object = object>(str: Path, options?: ParseOptions & TokensToRegexpOptions & RegexpToFunctionOptions): MatchFunction<P>;
+export function regexpToFunction<P extends object = object>(re: RegExp, keys: Key[], options?: RegexpToFunctionOptions): MatchFunction<P>;
+/**
+ * Metadata about a key.
+ */
+export interface Key {
+    name: string | number;
+    prefix: string;
+    suffix: string;
+    pattern: string;
+    modifier: string;
+}
+/**
+ * A token is a string (nothing special) or key metadata (capture group).
+ */
+export type Token = string | Key;
+export interface TokensToRegexpOptions {
+    /**
+     * When `true` the regexp will be case sensitive. (default: `false`)
+     */
+    sensitive?: boolean;
+    /**
+     * When `true` the regexp won't allow an optional trailing delimiter to match. (default: `false`)
+     */
+    strict?: boolean;
+    /**
+     * When `true` the regexp will match to the end of the string. (default: `true`)
+     */
+    end?: boolean;
+    /**
+     * When `true` the regexp will match from the beginning of the string. (default: `true`)
+     */
+    start?: boolean;
+    /**
+     * Sets the final character for non-ending optimistic matches. (default: `/`)
+     */
+    delimiter?: string;
+    /**
+     * List of characters that can also be 'end' characters.
+     */
+    endsWith?: string;
+    /**
+     * Encode path tokens for use in the `RegExp`.
+     */
+    encode?: (value: string) => string;
+}
+export function tokensToRegexp(tokens: Token[], keys?: Key[], options?: TokensToRegexpOptions): RegExp;
+/**
+ * Supported `path-to-regexp` input types.
+ */
+export type Path = string | RegExp | Array<string | RegExp>;
+export function pathToRegexp(path: Path, keys?: Key[], options?: TokensToRegexpOptions & ParseOptions): RegExp;
+
+}
+
+export { path2regexp };
+import { $cdp, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, Nil, NonFunctionPropertyNames, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
 export { ITemplateEngine, JST, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter };
 import { AjaxGetRequestShortcutOptions, AjaxOptions, AjaxRequestOptions, Serializable } from '@cdp/lib-worker';
 
@@ -6409,7 +6519,7 @@ export interface HistoryEvent<T = PlainObject> {
         HistoryState<T>,
         (reason?: unknown) => void
     ];
-    /** @args [newData, oldData] */
+    /** @args [newState, oldState] */
     'change': [
         HistoryState<T>,
         HistoryState<T>
@@ -6578,24 +6688,230 @@ export declare function resetMemoryHistory<T = PlainObject>(instance: IHistory<T
  */
 export declare function disposeMemoryHistory<T = PlainObject>(instance: IHistory<T>): void;
 /**
- * @en The event definition fired in [[IRouter]].
- * @ja [[IRouter]] 内から発行されるイベント定義
+ * @en Argument given to the router event callback.
+ * @ja ルーターイベントに渡される引数
+ */
+export interface RouterEventArg {
+    /** router instance */
+    readonly router: Router;
+    /** from state */
+    readonly from: Route;
+    /** to state */
+    readonly to: Route;
+    /** navigate direction */
+    readonly direction: 'back' | 'forward' | 'none' | 'missing';
+    /** extension property for user land */
+    intent?: unknown;
+}
+/**
+ * @en The event definition fired in [[Router]].
+ * @ja [[Router]] 内から発行されるイベント定義
  */
 export interface RouterEvent {
+    /**
+     * @en Before route change notification. <br>
+     *     It is the only timing when you can cancel the route change.
+     * @ja ルート変更前通知 <br>
+     *     ルート変更をキャンセルできる唯一のタイミング
+     * @args [event, cancel]
+     */
     'will-change': [
-        void
+        RouterEventArg,
+        (reason?: unknown) => void
     ];
+    /**
+     * @en New DOM content loaded notification.
+     * @ja 新しいDOM コンテンツのロード通知
+     * @args [event]
+     */
+    'loaded': [
+        RouterEventArg
+    ];
+    /**
+     * @en Next page just inserted to DOM notification.
+     * @ja 次のページの DOM 挿入通知
+     * @args [event]
+     */
+    'mounted': [
+        RouterEventArg
+    ];
+    /**
+     * @en Before transition notification.
+     * @ja トランジション開始通知
+     * @args [event]
+     */
+    'before-transition': [
+        RouterEventArg
+    ];
+    /**
+     * @en transitioning notification.
+     * @ja トランジション中通知
+     * @args [event]
+     */
+    'transition': [
+        RouterEventArg
+    ];
+    /**
+     * @en After transition notification.
+     * @ja トランジション終了通知
+     * @args [event]
+     */
+    'after-transition': [
+        RouterEventArg
+    ];
+    /**
+     * @en Previous page just detached from DOM notification.
+     * @ja 前のページの DOM 切除通知
+     * @args [event]
+     */
+    'unmounted': [
+        RouterEventArg
+    ];
+    /**
+     * @en Old DOM content unloaded notification.
+     * @ja 古い DOM コンテンツの破棄通知
+     * @args [event]
+     */
+    'unloaded': [
+        RouterEventArg
+    ];
+    /**
+     * @en Route changed notification.
+     * @ja ルート変更完了通知
+     * @args [event]
+     */
     'changed': [
-        void
+        RouterEventArg
+    ];
+    /**
+     * @en Notified when an error is occured.
+     * @ja エラーが発生したときに発行
+     *
+     * @args [error]
+     */
+    'error': [
+        Error
     ];
 }
 /**
- * @en Router common interface.
- * @ja Router 共通インターフェイス
+ * @en Route parameters interface. It is also a construction option.
+ * @ja ルートパラメータ. 構築オプションとしても使用.
  */
-export interface IRouter<Event extends RouterEvent> extends Subscribable<Event> {
+export interface RouteParameters {
+    /**
+     * @en Root path. Dynamic segments are represented using a colon `:`.
+     * @ja ルートのパス. 動的セグメントはコロン `:` を使って表される.
+     */
+    path: string;
+    /**
+     * @en Array with nested routes
+     * @ja ネストされたルート
+     */
+    routes?: RouteParameters[];
+    /**
+     * @en Specify the constructor or built object of the View component. <br>
+     *     In case of functional type, [[Router]] instance is passed as an argument.
+     * @ja View コンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
+     *     関数型の場合は引数に [[Router]] インスタンスが渡される
+     */
+    component?: Class | UnknownFunction | UnknownObject;
 }
-export declare const STATUS = 'TODO';
+/**
+ * @en Route navigation options definition.
+ * @ja ルートナビゲーションオプション定義
+ */
+export interface RouteNavigationOptions {
+    /** extension property for user land */
+    intent?: unknown;
+}
+/**
+ * @en Route context property definition.
+ * @ja ルートコンテキストプロパティ定義
+ */
+export declare type Route = Pick<RouteParameters, 'path' | 'component'> & {
+    /**
+     * object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{ id: '5', foo: 'bar' }`
+     */
+    query: {
+        [queryParameter: string]: string | undefined;
+    };
+    /**
+     * route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{ userId: '55', postId: '12' }`
+     */
+    params: {
+        [routeParameter: string]: string | undefined;
+    };
+};
+/**
+ * @en Router construction option definition.
+ * @ja ルーター構築オプション定義
+ */
+export interface RouterConstructionOptions {
+    /**
+     * @en Route construction parameters.
+     * @ja ルート構築パラメータ
+     */
+    routes?: RouteParameters[];
+    /**
+     * @en Specify the [IHistory] instance or mode to use with the router. The default is to use the `hash` mode in the browser history.
+     * @ja ルーターで使用する [[IHistory]] インスタンスまたはモードを指定. 既定は ブラウザ履歴の `hash` モードを使用.
+     */
+    history?: 'hash' | 'history' | 'memory' | IHistory;
+    /**
+     * @en Read the router element from the passed QueryContext.
+     * @ja 渡された QueryContext から ルーターエレメントを読み込む.
+     */
+    el?: QueryContext | null;
+    /**
+     * @en Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+     * @ja 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+     */
+    document?: Document | null;
+}
+/**
+ * @en Router common interface.
+ * @ja ルーター共通インターフェイス
+ */
+export interface Router extends Subscribable<RouterEvent> {
+    /**
+     * @en Router's view HTML element
+     * @ja ルーターのビュー HTML 要素
+     */
+    readonly el: HTMLElement;
+    /**
+     * @en `DOM` instance with router's view HTML element
+     * @ja ルーターのビュー HTML 要素を持つ `DOM` インスタンス
+     */
+    readonly $el: DOM;
+    /**
+     * @en Object with current route data
+     * @ja 現在のルートデータを持つオブジェクト
+     */
+    readonly currentRoute: Route;
+    /**
+     * @en Route registration
+     * @jp ルートの登録
+     */
+    register(routes: RouteParameters | RouteParameters[]): this;
+    /** To move backward through history. */
+    back(): this;
+    /** To move forward through history. */
+    forward(): this;
+    /** To move a specific point in history. */
+    go(delta?: number): this;
+}
+/**
+ * @en Create [[Router]] object.
+ * @ja [[Router]] オブジェクトを構築
+ *
+ * @param selector
+ *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
+ *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+ * @param options
+ *  - `en` [[RouterConstructionOptions]] object
+ *  - `ja` [[RouterConstructionOptions]] オブジェクト
+ */
+export declare function createRouter(selector: string, options?: RouterConstructionOptions): Router;
 declare namespace i18n {
     /**
      * @en [[AjaxBackend]] options interface.
@@ -6686,6 +7002,6 @@ declare namespace CDP_DECLARE {
      */
     enum RESULT_CODE {
         MVC_ROUTER_DECLARE = 9007199254740991,
-        ERROR_MVC_ROUTER_ERROR
+        ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND
     }
 }
