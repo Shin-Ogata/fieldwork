@@ -1,7 +1,7 @@
 {
   "name": "@cdp/events",
   "description": "pub/sub framework",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../utils"

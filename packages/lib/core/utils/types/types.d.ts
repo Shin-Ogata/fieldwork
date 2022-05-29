@@ -322,6 +322,15 @@ export declare function isEmptyObject(x: unknown): x is object;
  */
 export declare function isFunction(x: unknown): x is TypeList['function'];
 /**
+ * @en Check the value can be convert to a number.
+ * @ja 数値に変換可能か判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isNumeric(x: unknown): x is number;
+/**
  * @en Check the value-type is input.
  * @ja 指定した型であるか判定
  *

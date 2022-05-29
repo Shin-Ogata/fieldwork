@@ -7,11 +7,8 @@ import {
     AjaxGetRequestShortcutOptions,
     AjaxResult,
 } from './interfaces';
-import {
-    ajax,
-    toQueryStrings,
-    setupHeaders,
-} from './core';
+import { ajax, setupHeaders } from './core';
+import { toQueryStrings } from './params';
 import { XMLHttpRequest } from './ssr';
 
 /** @internal */

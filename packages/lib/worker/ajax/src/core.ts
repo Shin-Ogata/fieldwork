@@ -1,4 +1,3 @@
-import { PlainObject, isFunction } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import { Base64 } from '@cdp/binary';
@@ -14,10 +13,23 @@ import {
     URLSearchParams,
     fetch,
 } from './ssr';
+import { toQueryStrings, toAjaxParams } from './params';
 import { settings } from './settings';
 
 /** @internal */
 export type AjaxHeaderOptions = Pick<AjaxOptions<AjaxDataTypes>, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
+
+/**
+ * @internal
+ * ts4.7 patch
+ * https://github.com/microsoft/TypeScript/issues/47505
+ */
+declare global {
+    interface AbortController {
+        /** Invoking this method will set this object's AbortSignal's aborted flag and signal to any observers that the associated activity is to be aborted. */
+        abort(reason?: unknown): void;
+    }
+}
 
 /** @internal */
 const _acceptHeaderMap = {
@@ -69,42 +81,6 @@ export function setupHeaders(options: AjaxHeaderOptions): Headers {
     }
 
     return headers;
-}
-
-/** @internal ensure string value */
-function ensureParamValue(prop: unknown): string {
-    const value = isFunction(prop) ? prop() : prop;
-    return undefined !== value ? String(value) : '';
-}
-
-/**
- * @en Convert `PlainObject` to query strings.
- * @ja `PlainObject` をクエリストリングに変換
- */
-export function toQueryStrings(data: PlainObject): string {
-    const params: string[] = [];
-    for (const key of Object.keys(data)) {
-        const value = ensureParamValue(data[key]);
-        if (value) {
-            params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-        }
-    }
-    return params.join('&');
-}
-
-/**
- * @en Convert `PlainObject` to Ajax parameters object.
- * @ja `PlainObject` を Ajax パラメータオブジェクトに変換
- */
-export function toAjaxParams(data: PlainObject): Record<string, string> {
-    const params: Record<string, string> = {};
-    for (const key of Object.keys(data)) {
-        const value = ensureParamValue(data[key]);
-        if (value) {
-            params[key] = value;
-        }
-    }
-    return params;
 }
 
 /**

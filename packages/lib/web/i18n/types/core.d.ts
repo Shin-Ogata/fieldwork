@@ -15,7 +15,7 @@ export declare const t: i18n.TFunction;
  *  - `en` init options
  *  - `ja` 初期化オプションを指定
  */
-export declare const initializeI18N: (options?: I18NOptions | undefined) => Promise<i18n.TFunction>;
+export declare const initializeI18N: (options?: I18NOptions) => Promise<i18n.TFunction>;
 /**
  * @en Get the current detected or set language.
  * @ja 現在設定されている言語を取得
@@ -35,7 +35,7 @@ export declare const getLanguageList: () => readonly string[];
  * @en Changes the language.
  * @ja 言語の切り替え
  */
-export declare const changeLanguage: (lng: string, options?: I18NDetectErrorBehaviour | undefined) => Promise<i18n.TFunction>;
+export declare const changeLanguage: (lng: string, options?: I18NDetectErrorBehaviour) => Promise<i18n.TFunction>;
 /**
  * @en DOM localizer method.
  * @ja DOM ローカライズ
@@ -47,4 +47,4 @@ export declare const changeLanguage: (lng: string, options?: I18NDetectErrorBeha
  *  - `en` translation options.
  *  - `ja` 翻訳オプション
  */
-export declare const localize: <T extends string | Node>(selector: DOMSelector<T>, options?: i18n.TOptions<i18n.StringMap> | undefined) => DOMResult<T>;
+export declare const localize: <T extends string | Node>(selector: DOMSelector<T>, options?: i18n.TOptions) => DOMResult<T>;

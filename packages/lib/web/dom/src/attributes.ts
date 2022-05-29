@@ -48,7 +48,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
 
     readonly [n: number]: TElement;
     readonly length!: number;
-    [Symbol.iterator]: () => Iterator<TElement>;
+    [Symbol.iterator]!: () => Iterator<TElement>;
     entries!: () => IterableIterator<[number, TElement]>;
 
 ///////////////////////////////////////////////////////////////////////

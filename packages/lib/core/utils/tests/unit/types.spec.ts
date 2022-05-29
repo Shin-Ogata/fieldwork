@@ -25,6 +25,7 @@ import {
     isPlainObject,
     isEmptyObject,
     isFunction,
+    isNumeric,
     typeOf,
     isIterable,
     isTypedArray,
@@ -333,6 +334,28 @@ describe('utils/types spec', (): void => {
         expect(isFunction(_bigint)).toBeFalsy();
         expect(isFunction(TypeClass)).toBeTruthy();
         expect(isFunction(_classInst)).toBeFalsy();
+    });
+
+    it('check isNumeric()', (): void => {
+        expect(isNumeric(undefined)).toBeFalsy();
+        expect(isNumeric(null)).toBeFalsy();
+        expect(isNumeric('')).toBeFalsy();
+        expect(isNumeric('hoge')).toBeFalsy();
+        expect(isNumeric('100')).toBeTruthy();
+        expect(isNumeric('100px')).toBeFalsy();
+        expect(isNumeric(true)).toBeFalsy();
+        expect(isNumeric(false)).toBeFalsy();
+        expect(isNumeric(0)).toBeTruthy();
+        expect(isNumeric(1)).toBeTruthy();
+        expect(isNumeric(Infinity)).toBeTruthy();
+        expect(isNumeric(NaN)).toBeFalsy();
+        expect(isNumeric({})).toBeFalsy();
+        expect(isNumeric([])).toBeFalsy();
+        expect(isNumeric(() => { return 1; })).toBeFalsy();
+        expect(isNumeric(_symbol)).toBeFalsy();
+        expect(isNumeric(_bigint)).toBeTruthy();
+        expect(isNumeric(TypeClass)).toBeFalsy();
+        expect(isNumeric(_classInst)).toBeFalsy();
     });
 
     it('check typeOf()', (): void => {

@@ -12,6 +12,7 @@
 - [Vue3 transition class](https://v3.ja.vuejs.org/guide/transitions-enterleave.html)
 - [Vue3 lifecycle hook](https://v3.ja.vuejs.org/api/options-lifecycle-hooks.html#%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%83%95%E3%83%83%E3%82%AF)
 - [Vue3 lifecycle diaglam](https://v3.ja.vuejs.org/guide/instance.html#%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%82%BF%E3%82%99%E3%82%A4%E3%82%A2%E3%82%AF%E3%82%99%E3%83%A9%E3%83%A0)
+- [Vue Router](https://v3.router.vuejs.org/ja/)
 - [Onsen UI (swipable)](https://onsen.io/v2/api/js/ons-navigator.html#events-summary)
 - [jQuery Mobile Page Events](https://jqmtricks.wordpress.com/2014/03/26/jquery-mobile-page-events/)
 - [Backbone qiita](https://qiita.com/yuku_t/items/13f3d1f71d31f3e78123)
@@ -30,12 +31,34 @@
 
 #### TODO
 
-- IHistory#root について方針を出す (backbone)
-  - 今のところ root 切り替えは不要
-  - backbone#fragment は IHisotry#id
+- Route から url を見えるかするか?
+  - する
+- params, query の parse
+- 同じ url に対する navigate
+
+```ts
+        it('should throw when it does not match the pattern', () => {
+            const toPath = path2regexp.compile('/:foo(\\d+)');
+            expect(() => {
+                toPath({ foo: 'abc' });
+            }).toThrow(
+                new TypeError('Expected "foo" to match "\\d+", but got "abc"')
+            );
+        });
+```
 
 <p><details>
 <summary>Done</summary>
+
+- `Route` interface について見直し
+  - `transition` を公開するかいなか
+    - → navOptions やめる
+  - `RouteContext` 専用プロパティに `@` をつけるかいなか
+    - → つけない. `$template` があること. `@` は HistoryState
+
+- IHistory#root について方針を出す (backbone)
+  - 今のところ root 切り替えは不要
+  - backbone#fragment は IHisotry#id
 
 - RouteParameters の flatten 化
 
@@ -56,8 +79,9 @@
     - createCurrentLocation
     - pauseListeners
 
-  - root は `/@id` からはじめる. hash prefixは `#/` とすることで `#/@id`にする. history 内部の id は `/` はつかない
+  - route は `/@id` からはじめる. history hash prefixは `#/` とすることで `#/@id`にする. history 内部の id は `/` はつかない
   - path は `vue` を参考にする
+ 
 
 </details></p>
 
@@ -112,13 +136,16 @@
 - `@cdp/template` には依存しない
   - page のベース html だけが欲しいので mustache compile は基本させない
   - ローカライズは必要?
-    -  router の外で行う (beforecreate?, beforeEnter?)
+    -  router の外で行う? (beforecreate?, beforeEnter?)
 
 - `:param` は必要. params, query 両対応
   - framework7 相当 (backbone は正規表現そのもの?)
     - [View のパラメータ](https://framework7.jp/docs/view.html#anchor-4)
   - [path matcher](https://github.com/pillarjs/path-to-regexp/tree/v1.7.0)
   - [Vue dynamic matching](https://v3.router.vuejs.org/ja/guide/essentials/dynamic-matching.html)
+
+- <a>リンクを shift 同時押下で別タブ開きたい
+  - https://stackoverflow.com/questions/56892748/how-to-handle-intention-to-open-link-in-new-page-in-a-spa-application
 
 ```
 // framework7 back.js

@@ -105,7 +105,7 @@ export type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyName
  */
 export abstract class ObservableObject implements IObservable {
     /** @internal */
-    private readonly [_internal]: InternalProps;
+    private readonly [_internal]!: InternalProps;
 
     /**
      * constructor

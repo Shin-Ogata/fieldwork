@@ -84,7 +84,7 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
 
     readonly [n: number]: TElement;
     readonly length!: number;
-    [Symbol.iterator]: () => Iterator<TElement>;
+    [Symbol.iterator]!: () => Iterator<TElement>;
     entries!: () => IterableIterator<[number, TElement]>;
 
 ///////////////////////////////////////////////////////////////////////

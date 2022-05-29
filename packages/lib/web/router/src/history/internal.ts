@@ -10,8 +10,8 @@ import { HistoryState, HistoryDirectReturnType } from './interfaces';
 
 /** @internal normalzie id string */
 export const normalizeId = (src: string): string => {
-    // remove head of "#", "/", "#/"
-    return src.replace(/^[#/]|^(#\/)|\s+$/, '');
+    // remove head of "#", "/", "#/" and tail of "/"
+    return src.replace(/^(#\/)|^[#/]|\s+$/, '').replace(/^\s+$|(\/$)/, '');
 };
 
 /** @internal create stack */

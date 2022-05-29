@@ -117,8 +117,9 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
 
     /** To move a specific point in history. */
     async go(delta?: number): Promise<number> {
-        // if given 0, no reaction (not reload).
+        // if given 0, trigger `refresh`.
         if (!delta) {
+            this.publish('refresh', this.state);
             return this.index;
         }
 
@@ -212,7 +213,6 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
     private async updateState(method: 'push' | 'replace', id: string, state: T | undefined, options: HistorySetStateOptions): Promise<number> {
         const { silent, cancel } = options;
 
-        const oldState = this._stack.length ? this.state : undefined;
         const newState = createData(id, state);
         if ('replace' === method && 0 === this.index) {
             newState['@origin'] = true;
@@ -221,7 +221,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         if (!silent) {
             const df = new Deferred(cancel);
             void post(() => {
-                this.onChangeState(method, df, newState, oldState as HistoryState<T>);
+                this.onChangeState(method, df, newState, this.state);
             });
             await df;
         } else {
@@ -236,14 +236,14 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
 
         try {
-            this.publish('update', newState, cancel);
+            this.publish('changing', newState, cancel);
 
             if (token.requested) {
                 throw token.reason;
             }
 
             this._stack[`${method}Stack`](newState);
-            this.publish('change', newState, oldState);
+            this.publish('refresh', newState, oldState);
 
             df.resolve();
         } catch (e) {

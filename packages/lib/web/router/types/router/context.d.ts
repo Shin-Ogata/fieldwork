@@ -1,4 +1,3 @@
-export * from '@cdp/extension-path2regexp';
 import type { RouterConstructionOptions, Router } from './interfaces';
 /**
  * @en Create [[Router]] object.

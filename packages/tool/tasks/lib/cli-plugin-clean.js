@@ -138,9 +138,9 @@ async function exec(options) {
     }
     if (options.target) {
         const targets = Array.isArray(options.target) ? options.target : [options.target];
-        for (const t of targets) {
-            fs.removeSync(resolve(cwd, t));
-            info(t);
+        const deleted = del.sync(targets);
+        for (const d of deleted) {
+            info(d);
         }
     }
 }

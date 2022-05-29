@@ -12,6 +12,7 @@ import {
     ajax,
     toQueryStrings,
     toAjaxParams,
+    parseUrlQuery,
 } from '@cdp/ajax';
 
 /* compile check
@@ -59,6 +60,28 @@ describe('ajax/core spec', () => {
         expect(params.func).toBe('10');
         expect(params.nil1).toBeUndefined();
         expect(params.nil2).toBe('null');
+    });
+
+    it('check parseUrlQuery()', () => {
+        expect(parseUrlQuery('/path/aaa/bbb?hoge=100&fuga=string&baz=true&func=10px&nil2=null&bool=false')).toEqual({
+            hoge: 100,
+            fuga: 'string',
+            baz: true,
+            func: '10px',
+            nil2: null,
+            bool: false,
+        });
+
+        type Schema = { id: number; foo: string; };
+        const ret1 = parseUrlQuery<Schema>('/page/?id=5&foo=bar');
+        expect(ret1).toBeDefined();
+        expect(ret1.id).toBe(5);
+        expect(ret1.foo).toBe('bar');
+
+        const ret2 = parseUrlQuery<Schema>('id=7&foo=hoge');
+        expect(ret2).toBeDefined();
+        expect(ret2.id).toBe(7);
+        expect(ret2.foo).toBe('hoge');
     });
 
     it('check ajax() get json', async () => {
