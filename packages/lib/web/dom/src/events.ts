@@ -362,7 +362,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 
     readonly [n: number]: TElement;
     readonly length!: number;
-    [Symbol.iterator]: () => Iterator<TElement>;
+    [Symbol.iterator]!: () => Iterator<TElement>;
     entries!: () => IterableIterator<[number, TElement]>;
 
 ///////////////////////////////////////////////////////////////////////

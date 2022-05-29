@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-template-bridge",
   "description": "extension for HTML templates bridge.",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {

@@ -404,6 +404,18 @@ export function isFunction(x: unknown): x is TypeList['function'] {
 }
 
 /**
+ * @en Check the value can be convert to a number.
+ * @ja 数値に変換可能か判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isNumeric(x: unknown): x is number {
+    return !isNil(x) && !isBoolean(x) && !isArray(x) && !isSymbol(x) && ('' !== x) && !Number.isNaN(Number(x));
+}
+
+/**
  * @en Check the value-type is input.
  * @ja 指定した型であるか判定
  *

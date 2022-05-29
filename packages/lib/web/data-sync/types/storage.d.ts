@@ -51,5 +51,5 @@ export declare type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
  *  - `en` construction options
  *  - `ja` 構築オプション
  */
-export declare const createStorageDataSync: (storage: IStorage, options?: StorageDataSyncConstructionOptions | undefined) => IStorageDataSync;
+export declare const createStorageDataSync: (storage: IStorage, options?: StorageDataSyncConstructionOptions) => IStorageDataSync;
 export declare const dataSyncSTORAGE: IStorageDataSync<import("@cdp/core-utils").AnyObject>;

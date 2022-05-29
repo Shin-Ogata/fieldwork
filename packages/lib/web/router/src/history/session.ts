@@ -186,8 +186,10 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
     /** To move a specific point in history. */
     async go(delta?: number): Promise<number> {
-        // if already called or given 0, no reaction (not reload).
+        // if already called, no reaction.
         if (this._dfGo || !delta) {
+            // if given 0, trigger `refresh`.
+            !delta && this.publish('refresh', this.state);
             return this.index;
         }
 
@@ -403,14 +405,14 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
             // for fail safe
             df.catch(noop);
 
-            this.publish('update', newData, cancel);
+            this.publish('changing', newData, cancel);
 
             if (token.requested) {
                 throw token.reason;
             }
 
             this._stack[`${method}Stack`](newData);
-            this.publish('change', newData, oldData);
+            this.publish('refresh', newData, oldData);
 
             df.resolve();
         } catch (e) {

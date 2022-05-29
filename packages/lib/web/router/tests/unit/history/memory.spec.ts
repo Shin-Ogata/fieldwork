@@ -27,8 +27,8 @@ describe('router/history/memory spec', () => {
 
         if (stub) {
             spyOn(stub, 'onCallback').and.callThrough();
-            instance.on('update', stub.onCallback);
-            instance.on('change', stub.onCallback);
+            instance.on('changing', stub.onCallback);
+            instance.on('refresh', stub.onCallback);
         }
 
         return instance;
@@ -71,8 +71,8 @@ describe('router/history/memory spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         await instance.push('two', { from: 'push' });
         expect(stub.onCallback).toHaveBeenCalledWith({ from: 'push', '@id': 'two' }, jasmine.any(Function));
@@ -100,8 +100,8 @@ describe('router/history/memory spec', () => {
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         await instance.replace('two', { from: 'replace' });
         expect(stub.onCallback).toHaveBeenCalledWith({ from: 'replace', '@id': 'two', '@origin': true }, jasmine.any(Function));
@@ -224,8 +224,8 @@ describe('router/history/memory spec', () => {
         await instance.go(-4);
 
         spyOn(stub, 'onCallback').and.callThrough();
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
@@ -382,8 +382,8 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('three');
 
         spyOn(stub, 'onCallback').and.callThrough();
-        instance.on('update', cancelCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', cancelCallback);
+        instance.on('refresh', stub.onCallback);
 
         await instance.back();
         expect(instance.id).toBe('three');

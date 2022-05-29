@@ -194,7 +194,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *
      * @internal
      */
-    private readonly [_properties]: Property<T>;
+    private readonly [_properties]!: Property<T>;
 
     /**
      * constructor
@@ -315,7 +315,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
         if (null == this[_properties].changedAttrs) {
             this[_properties].changedAttrs = diff(this._baseAttrs, this._attrs as unknown as Partial<T>);
         }
-        return this[_properties].changedAttrs as Partial<T>;
+        return this[_properties].changedAttrs as Partial<T>; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
     }
 
     /**

@@ -3,8 +3,12 @@
     @typescript-eslint/no-explicit-any
  */
 
-import { UnknownFunction, post } from '@cdp/core-utils';
-import { webRoot, waitFrame } from '@cdp/web-utils';
+import {
+    PlainObject,
+    UnknownFunction,
+    post,
+} from '@cdp/core-utils';
+import { webRoot } from '@cdp/web-utils';
 import {
     IHistory,
     createSessionHistory,
@@ -13,13 +17,27 @@ import {
 } from '@cdp/router';
 import { prepareIFrameElements, cleanupTestElements } from '../tools';
 
+// window 取得
+const getWindow = (instance: IHistory): Window => {
+    return (instance as any)._window as Window;
+};
+
+const waitFrame = async (instance: IHistory, frameCount = 1): Promise<void> => {
+    const { requestAnimationFrame } = getWindow(instance); // eslint-disable-line @typescript-eslint/unbound-method
+    while (frameCount-- > 0) {
+        await new Promise<void>(requestAnimationFrame as UnknownFunction);
+    }
+};
+
+const WAIT_FRAME_MARGINE = 5;
+
 // history をリセット
-const resetHistory = async (root: Window = window): Promise<void> => {
-    const { history, location } = root;
+const resetHistory = async (instance: IHistory): Promise<void> => {
+    const { history, location } = getWindow(instance);
     let backCount = history.length - 1;
     while (0 <= backCount--) {
         history.back();
-        await waitFrame();
+        await waitFrame(instance);
     }
     const { origin, pathname, search } = location;
     history.replaceState({ baseOrigin: true }, '', `${origin}${pathname}${search}`);
@@ -32,8 +50,16 @@ describe('router/history/session spec', () => {
 //      console.log(`received: ${JSON.stringify([...args])} \n`);
     };
 
-    const preparePackedHistory = (stub?: { onCallback: UnknownFunction; }): IHistory => {
-        const instance = createSessionHistory('one', { index: 0 });
+    const preparePackedHistory = async (stub?: { onCallback: UnknownFunction; }, type: 'iframe' | 'window' = 'iframe'): Promise<IHistory> => {
+        let context: Window = window;
+        if ('iframe' === type) {
+            const iframe = await prepareIFrameElements();
+            const { history } = iframe.contentWindow as Window;
+            history.replaceState(null, '', webRoot);
+            context = iframe.contentWindow as Window;
+        }
+
+        const instance = createSessionHistory('one', { index: 0 }, { context });
         void instance.push('two',    { index: 1 }, { silent: true });
         void instance.push('three',  { index: 2 }, { silent: true });
         void instance.push('four',   { index: 3 }, { silent: true });
@@ -41,8 +67,8 @@ describe('router/history/session spec', () => {
 
         if (stub) {
             spyOn(stub, 'onCallback').and.callThrough();
-            instance.on('update', stub.onCallback);
-            instance.on('change', stub.onCallback);
+            instance.on('changing', stub.onCallback);
+            instance.on('refresh', stub.onCallback);
         }
 
         return instance;
@@ -52,12 +78,11 @@ describe('router/history/session spec', () => {
         count = 0;
     });
 
-    afterEach(async () => {
+    afterEach(() => {
         cleanupTestElements();
-        await resetHistory();
     });
 
-    it('check instance', () => {
+    it('check instance', async () => {
         const instance = createSessionHistory('one');
         expect(instance).toBeDefined();
         expect(instance.length).toBe(1);
@@ -66,10 +91,15 @@ describe('router/history/session spec', () => {
         expect(instance.state['@id']).toBe('one');
         expect(instance.stack).toBeDefined();
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check no hash', async () => {
-        const instance = createSessionHistory('');
+        const iframe = await prepareIFrameElements();
+        const { history } = iframe.contentWindow as Window;
+        history.replaceState(null, '', webRoot);
+        const instance = createSessionHistory<PlainObject>('', undefined, { context: iframe.contentWindow as Window });
+
         expect(instance).toBeDefined();
         expect(instance.length).toBe(1);
         expect(instance.index).toBe(0);
@@ -83,6 +113,7 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ from: 'replace', '@id': '', '@origin': true });
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check other window', async () => {
@@ -94,16 +125,21 @@ describe('router/history/session spec', () => {
         expect(instance.id).toBe('iframe');
         expect(instance.state).toEqual({ from: 'iframe',  '@id': 'iframe', '@origin': true });
         disposeSessionHistory(instance);
-        await resetHistory(iframe.contentWindow as Window);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#push()', async () => {
-        const instance = createSessionHistory('/one'); // auto remove '/'
+        const iframe = await prepareIFrameElements();
+        const { history } = iframe.contentWindow as Window;
+        history.replaceState(null, '', webRoot);
+        // auto remove '/'
+        const instance = createSessionHistory<PlainObject>('/one/', undefined, { context: iframe.contentWindow as Window });
+
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         await instance.push('two', { from: 'push' });
         expect(stub.onCallback).toHaveBeenCalledWith({ from: 'push', '@id': 'two' }, jasmine.any(Function));
@@ -124,15 +160,21 @@ describe('router/history/session spec', () => {
         expect(count).toBe(4);
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#replace()', async () => {
-        const instance = createSessionHistory('#one');  // auto remove '#'
+        const iframe = await prepareIFrameElements();
+        const { history } = iframe.contentWindow as Window;
+        history.replaceState(null, '', webRoot);
+        // auto remove '#'
+        const instance = createSessionHistory<PlainObject>('#one', undefined, { context: iframe.contentWindow as Window });
+
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
 
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         await instance.replace('two', { from: 'replace' });
         expect(stub.onCallback).toHaveBeenCalledWith({ from: 'replace', '@id': 'two', '@origin': true }, jasmine.any(Function));
@@ -153,11 +195,13 @@ describe('router/history/session spec', () => {
         expect(count).toBe(4);
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check resetSessionHistory()', async () => {
         const stub = { onCallback };
-        const instance = preparePackedHistory(stub);
+
+        const instance = await preparePackedHistory(stub);
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
@@ -170,11 +214,12 @@ describe('router/history/session spec', () => {
         expect(async () => await resetSessionHistory(instance)).not.toThrow();
         disposeSessionHistory(instance);
         expect(async () => await resetSessionHistory(instance)).not.toThrow();
+        await resetHistory(instance);
     });
 
     it('check resetSessionHistory(silent)', async () => {
         const stub = { onCallback };
-        const instance = preparePackedHistory(stub);
+        const instance = await preparePackedHistory(stub);
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
@@ -187,10 +232,11 @@ describe('router/history/session spec', () => {
         expect(async () => await resetSessionHistory(instance)).not.toThrow();
         disposeSessionHistory(instance);
         expect(async () => await resetSessionHistory(instance)).not.toThrow();
+        await resetHistory(instance);
     });
 
-    it('check SessionHistory#at()', () => {
-        const instance = preparePackedHistory();
+    it('check SessionHistory#at()', async () => {
+        const instance = await preparePackedHistory();
 
         expect(instance.at(4)).toEqual({ index: 4, '@id': 'five' });
         expect(instance.at(3)).toEqual({ index: 3, '@id': 'four' });
@@ -203,11 +249,13 @@ describe('router/history/session spec', () => {
         expect(() => instance.at(5)).toThrow(new RangeError('invalid array index. [length: 5, given: 5]'));
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#back()', async () => {
         const stub = { onCallback };
-        const instance = preparePackedHistory(stub);
+        const instance = await preparePackedHistory(stub);
+        const { history } = getWindow(instance);
 
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
@@ -220,7 +268,7 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 3, '@id': 'four' });
 
         history.back();
-        await waitFrame();
+        await waitFrame(instance, WAIT_FRAME_MARGINE);
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 3, '@id': 'four' });
         expect(instance.index).toBe(2);
@@ -235,7 +283,7 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 1, '@id': 'two' });
 
         history.back();
-        await waitFrame();
+        await waitFrame(instance, WAIT_FRAME_MARGINE);
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 1, '@id': 'two' });
         expect(instance.index).toBe(0);
@@ -248,17 +296,19 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#forward()', async () => {
         const stub = { onCallback };
-        const instance = preparePackedHistory();
+        const instance = await preparePackedHistory();
+        const { history } = getWindow(instance);
 
         await instance.go(-4);
 
         spyOn(stub, 'onCallback').and.callThrough();
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
@@ -271,7 +321,7 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 1, '@id': 'two' });
 
         history.forward();
-        await waitFrame();
+        await waitFrame(instance, WAIT_FRAME_MARGINE);
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 1, '@id': 'two' });
         expect(instance.index).toBe(2);
@@ -286,7 +336,7 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 3, '@id': 'four' });
 
         history.forward();
-        await waitFrame();
+        await waitFrame(instance, WAIT_FRAME_MARGINE);
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, { index: 3, '@id': 'four' });
         expect(instance.index).toBe(4);
@@ -294,17 +344,18 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
         index = await instance.forward();
-        await waitFrame();
+        await waitFrame(instance, WAIT_FRAME_MARGINE);
         expect(index).toBe(4);
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#go(0)', async () => {
         const stub = { onCallback };
-        const instance = preparePackedHistory(stub);
+        const instance = await preparePackedHistory(stub);
 
         const index = await instance.go();
         expect(stub.onCallback).not.toHaveBeenCalledWith({ index: 4 });
@@ -313,10 +364,11 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#clearForward()', async () => {
-        const instance = preparePackedHistory();
+        const instance = await preparePackedHistory();
         await instance.go(-2);
 
         expect(instance.length).toBe(5);
@@ -330,10 +382,11 @@ describe('router/history/session spec', () => {
         expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
-    it('check SessionHistory#closest()', () => {
-        const instance = preparePackedHistory();
+    it('check SessionHistory#closest()', async () => {
+        const instance = await preparePackedHistory();
 
         let index = instance.closest('one');
         expect(index).toBe(0);
@@ -350,10 +403,15 @@ describe('router/history/session spec', () => {
         expect(index).toBeUndefined();
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check SessionHistory#direct()', async () => {
-        const instance = createSessionHistory('origin', { index: 0 });
+        const iframe = await prepareIFrameElements();
+        const { history } = iframe.contentWindow as Window;
+        history.replaceState(null, '', webRoot);
+
+        const instance = createSessionHistory<PlainObject>('origin', { index: 0 }, { context: iframe.contentWindow as Window });
         void instance.push('target', { index: 1 }, { silent: true });
         void instance.push('base1',  { index: 2 }, { silent: true });
         void instance.push('base2',  { index: 3 }, { silent: true });
@@ -403,6 +461,7 @@ describe('router/history/session spec', () => {
         expect(result.state).toBeUndefined();
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check cancellation', async () => {
@@ -413,13 +472,13 @@ describe('router/history/session spec', () => {
 
         const stub = { onCallback };
 
-        const instance = preparePackedHistory();
+        const instance = await preparePackedHistory();
         await instance.go(-2);
         expect(instance.id).toBe('three');
 
         spyOn(stub, 'onCallback').and.callThrough();
-        instance.on('update', cancelCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', cancelCallback);
+        instance.on('refresh', stub.onCallback);
 
         await instance.back();
         expect(instance.id).toBe('three');
@@ -448,22 +507,24 @@ describe('router/history/session spec', () => {
         expect(stub.onCallback).not.toHaveBeenCalled();
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check illegal hash change', async () => {
+        const stub = { onCallback };
+        const instance = await preparePackedHistory(stub, 'window');
+        const wnd = getWindow(instance);
+
         const waitForHashChange = (): Promise<void> => {
             return new Promise(resolve => {
-                addEventListener('hashchange', () => {
+                wnd.addEventListener('hashchange', () => {
                     void post(resolve);
                 });
             });
         };
 
-        const stub = { onCallback };
-        const instance = preparePackedHistory(stub);
-
         let promise = waitForHashChange();
-        location.hash = 'illegal';
+        wnd.location.hash = 'illegal';
         await promise;
 
         expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'illegal' }, jasmine.any(Function));
@@ -473,13 +534,14 @@ describe('router/history/session spec', () => {
         expect(instance.length).toBe(6);
 
         promise = waitForHashChange();
-        const { href } = location;
+        const { href } = wnd.location;
         dispatchEvent(new HashChangeEvent('hashchange', { newURL: href, oldURL: href }));
         await promise;
 
         expect(count).toBe(2);
 
         disposeSessionHistory(instance);
+        await resetHistory(instance);
     });
 
     it('check history mode', async () => {
@@ -491,8 +553,8 @@ describe('router/history/session spec', () => {
         history.replaceState(null, '', webRoot);
 
         const instance = createSessionHistory('', { from: 'iframe' }, { context: iframe.contentWindow as Window, mode: 'history' });
-        instance.on('update', stub.onCallback);
-        instance.on('change', stub.onCallback);
+        instance.on('changing', stub.onCallback);
+        instance.on('refresh', stub.onCallback);
 
         expect(location.href).toBe(webRoot);
 
@@ -515,6 +577,6 @@ describe('router/history/session spec', () => {
         expect(location.href).toBe(`${webRoot}history/two`);
 
         disposeSessionHistory(instance);
-        await resetHistory(iframe.contentWindow as Window);
+        await resetHistory(instance);
     });
 });

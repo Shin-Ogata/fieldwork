@@ -1,12 +1,13 @@
 {
   "name": "@cdp/router",
   "description": "generic router scheme",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"
   ],
   "dependencies": {
+    "@cdp/ajax": "file:../../worker/ajax",
     "@cdp/core-utils": "file:../../core/utils",
     "@cdp/dom": "file:../dom",
     "@cdp/events": "file:../../core/events",

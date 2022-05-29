@@ -1,5 +1,5 @@
 /*!
- * @cdp/extension-path2regexp 0.9.11
+ * @cdp/extension-path2regexp 0.9.12
  *   extension for conversion path to regexp library
  */
 

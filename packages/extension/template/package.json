@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-template",
   "description": "extension for template engine",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {
@@ -12,7 +12,7 @@
     "@cdp/core-template": "file:../../lib/core/template",
     "@cdp/core-utils": "file:../../lib/core/utils",
     "@cdp/dom": "file:../../lib/web/dom",
-    "lit-html": "2.2.4"
+    "lit-html": "2.2.5"
   },
   "keywords": [
     "CDP",

@@ -188,7 +188,7 @@ function findRelatedChangeIndex<T>(records: MutableChangeRecord<T>[], type: Arra
  */
 export class ObservableArray<T = unknown> extends Array<T> implements IObservable {
     /** @internal */
-    private readonly [_internal]: InternalProps<T>;
+    private readonly [_internal]!: InternalProps<T>;
 
     /** @final constructor */
     private constructor() {

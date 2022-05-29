@@ -4,7 +4,11 @@ import {
     UnknownObject,
 } from '@cdp/core-utils';
 import { Subscribable } from '@cdp/events';
-import { DOM, QueryContext } from '@cdp/dom';
+import {
+    DOM,
+    ElementifySeed,
+    QueryContext,
+} from '@cdp/dom';
 import type { IHistory } from '../history';
 
 /**
@@ -121,37 +125,55 @@ export interface RouteParameters {
     routes?: RouteParameters[];
 
     /**
+     * @en Creates dynamic page from specified content string
+     * @ja DOM コンテント構築のシードパラメータ
+     */
+    content?: { url: string; selector?: string; } | ElementifySeed;
+
+    /**
      * @en Specify the constructor or built object of the View component. <br>
      *     In case of functional type, [[Router]] instance is passed as an argument.
      * @ja View コンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
      *     関数型の場合は引数に [[Router]] インスタンスが渡される
+     *
+     * @reserved `string` type: load pages as a component via Ajax
      */
-    component?: Class | UnknownFunction | UnknownObject;
+    component?: Class | UnknownFunction | UnknownObject | string;
 }
 
 /**
- * @en Route navigation options definition.
- * @ja ルートナビゲーションオプション定義
+ * @en The type for the route parameter
+ * @ja ルートパラメータに指定する型
  */
-export interface RouteNavigationOptions {
-    /** extension property for user land */
-    intent?: unknown;
-}
+export type RoutePathParams = Record<string, string | number | boolean | null | undefined>;
 
 /**
  * @en Route context property definition.
  * @ja ルートコンテキストプロパティ定義
  */
-export type Route = Pick<RouteParameters, 'path' | 'component'> & {
+export type Route = Readonly<Pick<RouteParameters, 'path' | 'component'> & {
     /**
-     * object with route query. If the url is `/page/?id=5&foo=bar` then it will contain the following object `{ id: '5', foo: 'bar' }`
+     * @en View's URL.
+     * @ja ビューの URL
      */
-    query: { [queryParameter: string]: string | undefined; };
+    url: string;
+
     /**
-     * route params. If we have matching route with `/page/user/:userId/post/:postId/` path and url of the page is `/page/user/55/post/12/` then it will be the following object `{ userId: '55', postId: '12' }`
+     * @en Object with route query. <br>
+     *     If the url is `/page/?id=5&foo=bar` then it will contain the following object `{ id: 5, foo: 'bar' }`
+     * @ja ルートクエリに含まれたパラメータ <br>
+     *     URL が `/page/?id=5&foo=bar`の場合, 次のオブジェクトが含まれる `{ id: 5, foo: 'bar' }`
      */
-    params: { [routeParameter: string]: string | undefined; };
-};
+    query: RoutePathParams;
+
+    /**
+     * @en Route params. <br>
+     *     If we have matching route with `/page/user/:userId/post/:postId` path and url of the page is `/page/user/55/post/12` then it will be the following object `{ userId: 55, postId: 12 }`
+     * @ja ルートパラメータ <br>
+     *     `/page/user/:userId/post/:postId` パスと一致するルートがあり, ページの URL が /page/user/55/post/12` の場合, 次のオブジェクトが含まれる `{ userId: 55, postId: 12 }`
+     */
+    params: RoutePathParams;
+}>;
 
 /**
  * @en Router construction option definition.
@@ -165,10 +187,22 @@ export interface RouterConstructionOptions {
     routes?: RouteParameters[];
 
     /**
+     * @en Specify `true` when executing route detection at construction time. default: `true`
+     * @ja 構築時にルート検知実行する場合に `true` を指定. default: `true`
+     */
+    start?: boolean;
+
+    /**
      * @en Specify the [IHistory] instance or mode to use with the router. The default is to use the `hash` mode in the browser history.
      * @ja ルーターで使用する [[IHistory]] インスタンスまたはモードを指定. 既定は ブラウザ履歴の `hash` モードを使用.
      */
     history?: 'hash' | 'history' | 'memory' | IHistory;
+
+    /**
+     * @en Initialization route path. If [[IHistory]] object given to `history` property, this parameter is ignored.
+     * @ja 初期ルートパス. `history` に [[IHistory]] が指定された場合は無視される
+     */
+    initialPath?: string;
 
     /**
      * @en Read the router element from the passed QueryContext.
@@ -177,10 +211,44 @@ export interface RouterConstructionOptions {
     el?: QueryContext | null;
 
     /**
-     * @en Set using `Document` context. When being un-designating, a fixed value of the environment is used.
-     * @ja 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+     * @en Set using `Window` context. When being un-designating, a fixed value of the environment is used.
+     * @ja 使用する `Window` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
      */
-    document?: Document | null;
+    window?: Window | null;
+}
+
+/**
+ * @en Route navigation options definition.
+ * @ja ルートナビゲーションオプション定義
+ */
+export interface RouteNavigationOptions {
+    /**
+     * @en Custom page transition name
+     * @ja カスタムページトランジション名
+     */
+    transition?: string;
+
+    /**
+     * @en Route query params. <br>
+     *     If the url is `/page/?id=5&foo=bar` then it will contain the following object `{ id: 5, foo: 'bar' }`
+     * @ja ルートクエリパラメータ <br>
+     *     URL が `/page/?id=5&foo=bar`の場合, 次のオブジェクトを指定 `{ id: 5, foo: 'bar' }`
+     */
+    query?: RoutePathParams;
+
+    /**
+     * @en Route params. <br>
+     *     If we have matching route with `/page/user/:userId/post/:postId` path and url of the page is `/page/user/55/post/12` then it will be the following object `{ userId: 55, postId: 12 }`
+     * @ja ルートパラメータ <br>
+     *     `/page/user/:userId/post/:postId` パスと一致するルートがあり, ページの URL が /page/user/55/post/12` の場合, 次のオブジェクトを指定 `{ userId: 55, postId: 12 }`
+     */
+    params?: RoutePathParams;
+
+    /**
+     * @en Extension property for user land
+     * @ja ユーザー定義可能な拡張プロパティ
+     */
+    intent?: unknown;
 }
 
 /**
@@ -207,15 +275,58 @@ export interface Router extends Subscribable<RouterEvent> {
     readonly currentRoute: Route;
 
     /**
-     * @en Route registration
+     * @en Route registration.
      * @jp ルートの登録
+     *
+     * @param routes
+     *  - `en` Specify [[RouteParameters]]
+     *  - `ja` [[RouteParameters]] を指定
+     * @param refersh
+     *  - `en` Specify `true` to reload after registration. default: `false`
+     *  - `ja` 登録後, 再読み込みを行う場合は `true` を指定. default: `false`
      */
-    register(routes: RouteParameters | RouteParameters[]): this;
+    register(routes: RouteParameters | RouteParameters[], refersh?: boolean): this;
 
-    /** To move backward through history. */
-    back(): this;
-    /** To move forward through history. */
-    forward(): this;
-    /** To move a specific point in history. */
-    go(delta?: number): this;
+    /**
+     * @en Navigate to new view.
+     * @ja 新たなビューに移動
+     *
+     * @param to
+     *  - `en` Set a navigate destination (url / path)
+     *  - `ja` ナビゲート先の設定（url / path）
+     * @param options
+     *  - `en` Specify [[RouteNavigationOptions]]
+     *  - `ja` [[RouteNavigationOptions]] を指定
+     */
+    navigate(to: string, options?: RouteNavigationOptions): Promise<this>;
+
+    /**
+     * @en To move backward through history.
+     * @ja 履歴の前のページに戻る
+     */
+    back(): Promise<this>;
+
+    /**
+     * @en To move forward through history.
+     * @ja 履歴の次のページへ進む
+     */
+    forward(): Promise<this>;
+
+    /**
+     * @en To move a specific point in history.
+     * @ja 履歴内の特定のポイントを移動
+     *
+     * @param delta
+     *  - `en` The position to move in the history, relative to the current page. <br>
+     *         If omitted or 0 is specified, reload will be performed.
+     *  - `ja` 履歴の中を移動したい先の位置で、現在のページからの相対位置 <br>
+     *         省略または 0 が指定された場合は, 再読み込みを実行
+     */
+    go(delta?: number): Promise<this>;
 }
+
+/**
+ * @en View definition to be routed.
+ * @ja ルーティング対象のビューインターフェイス定義
+ */
+export interface RouterView {} // eslint-disable-line @typescript-eslint/no-empty-interface

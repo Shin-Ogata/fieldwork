@@ -1,3 +1,3 @@
-# @cdp/extension-i18n
+# @cdp/extension-path2regexp
 
 [description]
