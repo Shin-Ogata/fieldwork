@@ -156,6 +156,7 @@
 ```
 
 - `@cdp/dom` は~~まだ我慢. でも使うかも~~ 使う.
+  - ただし I/F に染み出させない (意味はないかも?)
   - keepAlive で detach() を使いそう
   - https://framework7.jp/docs/routes.html#anchor-15
 
@@ -175,6 +176,8 @@
 
 - マスター・ディーテイルレイアウト
   - https://framework7.io/docs/view#master-detail
+
+- prev は専用キャッシュで実装
 
 - 非 Promise 関数も await 可 (new も可)
 ```ts

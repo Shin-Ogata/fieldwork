@@ -1,6 +1,6 @@
-import { Class, UnknownFunction, UnknownObject } from '@cdp/core-utils';
+import { Constructor } from '@cdp/core-utils';
 import { Subscribable } from '@cdp/events';
-import { DOM, ElementifySeed, QueryContext } from '@cdp/dom';
+import type { Result } from '@cdp/result';
 import type { IHistory } from '../history';
 /**
  * @en Argument given to the router event callback.
@@ -10,7 +10,7 @@ export interface RouterEventArg {
     /** router instance */
     readonly router: Router;
     /** from state */
-    readonly from: Route;
+    readonly from?: Route;
     /** to state */
     readonly to: Route;
     /** navigate direction */
@@ -85,8 +85,19 @@ export interface RouterEvent {
      *
      * @args [error]
      */
-    'error': [Error];
+    'error': [Result];
 }
+/**
+ * @en View definition to be routed.
+ * @ja ルーティング対象のビューインターフェイス定義
+ */
+export interface RouterView {
+}
+/**
+ * @en [[RouterView]] factory function.
+ * @ja [[RouterView]] 構築関数
+ */
+export declare type ComponentFactory = (route: Route) => RouterView | Promise<RouterView>;
 /**
  * @en Route parameters interface. It is also a construction option.
  * @ja ルートパラメータ. 構築オプションとしても使用.
@@ -107,18 +118,18 @@ export interface RouteParameters {
      * @ja DOM コンテント構築のシードパラメータ
      */
     content?: {
-        url: string;
-        selector?: string;
-    } | ElementifySeed;
+        selector: string;
+        url?: string;
+    } | HTMLElement | string;
     /**
      * @en Specify the constructor or built object of the View component. <br>
-     *     In case of functional type, [[Router]] instance is passed as an argument.
+     *     In case of functional type, [[Route]] instance is passed as an argument.
      * @ja View コンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
-     *     関数型の場合は引数に [[Router]] インスタンスが渡される
+     *     関数型の場合は引数に [[Route]] インスタンスが渡される
      *
      * @reserved `string` type: load pages as a component via Ajax
      */
-    component?: Class | UnknownFunction | UnknownObject | string;
+    component?: Constructor<RouterView> | ComponentFactory | RouterView | string;
 }
 /**
  * @en The type for the route parameter
@@ -129,27 +140,42 @@ export declare type RoutePathParams = Record<string, string | number | boolean |
  * @en Route context property definition.
  * @ja ルートコンテキストプロパティ定義
  */
-export declare type Route = Readonly<Pick<RouteParameters, 'path' | 'component'> & {
+export interface Route {
     /**
      * @en View's URL.
      * @ja ビューの URL
      */
-    url: string;
+    readonly url: string;
+    /**
+     * @en Root path. Dynamic segments are represented using a colon `:`.
+     * @ja ルートのパス. 動的セグメントはコロン `:` を使って表される.
+     */
+    readonly path: string;
     /**
      * @en Object with route query. <br>
      *     If the url is `/page/?id=5&foo=bar` then it will contain the following object `{ id: 5, foo: 'bar' }`
      * @ja ルートクエリに含まれたパラメータ <br>
      *     URL が `/page/?id=5&foo=bar`の場合, 次のオブジェクトが含まれる `{ id: 5, foo: 'bar' }`
      */
-    query: RoutePathParams;
+    readonly query: RoutePathParams;
     /**
      * @en Route params. <br>
      *     If we have matching route with `/page/user/:userId/post/:postId` path and url of the page is `/page/user/55/post/12` then it will be the following object `{ userId: 55, postId: 12 }`
      * @ja ルートパラメータ <br>
      *     `/page/user/:userId/post/:postId` パスと一致するルートがあり, ページの URL が /page/user/55/post/12` の場合, 次のオブジェクトが含まれる `{ userId: 55, postId: 12 }`
      */
-    params: RoutePathParams;
-}>;
+    readonly params: RoutePathParams;
+    /**
+     * @en Router instance
+     * @ja ルーターインスタンス
+     */
+    readonly router: Router;
+    /**
+     * @en View main HTML element
+     * @ja ビューの主要 HTML 要素
+     */
+    readonly el: HTMLElement;
+}
 /**
  * @en Router construction option definition.
  * @ja ルーター構築オプション定義
@@ -176,10 +202,10 @@ export interface RouterConstructionOptions {
      */
     initialPath?: string;
     /**
-     * @en Read the router element from the passed QueryContext.
-     * @ja 渡された QueryContext から ルーターエレメントを読み込む.
+     * @en Read the router element from the passed parent node.
+     * @ja 渡された親ノードから ルーターエレメントを読み込む.
      */
-    el?: QueryContext | null;
+    el?: ParentNode & NonElementParentNode | null;
     /**
      * @en Set using `Window` context. When being un-designating, a fixed value of the environment is used.
      * @ja 使用する `Window` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
@@ -226,11 +252,6 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja ルーターのビュー HTML 要素
      */
     readonly el: HTMLElement;
-    /**
-     * @en `DOM` instance with router's view HTML element
-     * @ja ルーターのビュー HTML 要素を持つ `DOM` インスタンス
-     */
-    readonly $el: DOM;
     /**
      * @en Object with current route data
      * @ja 現在のルートデータを持つオブジェクト
@@ -281,10 +302,4 @@ export interface Router extends Subscribable<RouterEvent> {
      *         省略または 0 が指定された場合は, 再読み込みを実行
      */
     go(delta?: number): Promise<this>;
-}
-/**
- * @en View definition to be routed.
- * @ja ルーティング対象のビューインターフェイス定義
- */
-export interface RouterView {
 }

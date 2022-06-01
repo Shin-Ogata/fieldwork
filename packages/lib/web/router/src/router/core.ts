@@ -1,11 +1,11 @@
 import { path2regexp } from '@cdp/extension-path2regexp';
-import {
-    isString,
-    isArray,
-    pick,
-} from '@cdp/core-utils';
+import { isString } from '@cdp/core-utils';
 import { EventPublisher } from '@cdp/events';
-import { RESULT_CODE, makeResult } from '@cdp/result';
+import {
+    RESULT_CODE,
+    isResult,
+    makeResult,
+} from '@cdp/result';
 import {
     DOM,
     dom as $,
@@ -26,55 +26,21 @@ import {
 import type {
     RouterEventArg,
     RouterEvent,
+    RouterView,
     RouteParameters,
     Route,
     RouterConstructionOptions,
     RouteNavigationOptions,
     Router,
-    RouterView,
 } from './interfaces';
-
-/** @internal flat RouteParameters */
-type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
-    /** regexp from path */
-    regexp: RegExp;
-    /** keys of params */
-    paramKeys: string[];
-    /** DOM template instance with View element */
-    $template?: DOM<HTMLTemplateElement>;
-    /** router view instance from `component` property */
-    instance?: RouterView;
-};
-
-/** @internal RouteContext */
-type RouteContext
-    = Route
-    & Pick<RouteContextParameters, 'instance'>
-    & RouteNavigationOptions;
-
-//__________________________________________________________________________________________________//
-
-/** @internal */
-const { pathToRegexp } = path2regexp;
-
-/** @internal RouteContextParameters to RouteContext */
-const toRouteContext = (url: string, params: RouteContextParameters, navOptions?: RouteNavigationOptions): RouteContext => {
-    return Object.assign({
-        url,
-        query: {},
-        params: {},
-    },
-    navOptions,
-    pick(
-        params,
-        // RouteParameters
-        'path',
-        'content',
-        'component',
-        // RouteContextParameters
-        'instance',
-    ));
-};
+import {
+    RouteContextParameters,
+    RouteContext,
+    toRouteContextParameters,
+    toRouteContext,
+    ensureRouterViewTemplate,
+    ensureRouterViewInstance,
+} from './internal';
 
 /** @internal prepare IHistory object */
 const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 'hash', initialPath?: string, context?: Window): IHistory<RouteContext> => {
@@ -82,29 +48,6 @@ const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 'hash',
         ? 'memory' === seed ? createMemoryHistory(initialPath || '') : createSessionHistory(initialPath || '', undefined, { mode: seed, context })
         : seed
     ) as IHistory<RouteContext>;
-};
-
-/** @internal convert context params */
-const toRouteContextParameters = (routes: RouteParameters | RouteParameters[] | undefined): RouteContextParameters[] => {
-    const flatten = (parentPath: string, nested: RouteParameters[]): RouteParameters[] => {
-        const retval: RouteParameters[] = [];
-        for (const n of nested) {
-            n.path = `${parentPath.replace(/\/$/, '')}/${normalizeId(n.path)}`;
-            retval.push(n);
-            if (n.routes) {
-                retval.push(...flatten(n.path, n.routes));
-            }
-        }
-        return retval;
-    };
-
-    return flatten('', isArray(routes) ? routes : routes ? [routes] : [])
-        .map((seed: RouteContextParameters) => {
-            const keys: path2regexp.Key[] = [];
-            seed.regexp = pathToRegexp(seed.path, keys);
-            seed.paramKeys = keys.filter(k => isString(k.name)).map(k => k.name as string);
-            return seed;
-        });
 };
 
 /** @internal */
@@ -127,12 +70,12 @@ const buildNavigateUrl = (path: string, options: RouteNavigationOptions): string
 };
 
 /** @internal */
-const parseUrlParams = (ctxparams: RouteContextParameters, route: RouteContext): void => {
+const parseUrlParams = (route: RouteContext): void => {
     const { url } = route;
     route.query  = url.includes('?') ? parseUrlQuery(normalizeId(url)) : {};
     route.params = {};
 
-    const { regexp, paramKeys } = ctxparams;
+    const { regexp, paramKeys } = route['@params'];
     if (paramKeys.length) {
         const params = regexp.exec(url)?.map((value, index) => { return { value, key: paramKeys[index - 1] }; });
         for (const param of params!) { // eslint-disable-line @typescript-eslint/no-non-null-assertion
@@ -156,6 +99,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private readonly _$document: DOM<Document>;
     private readonly _historyChangingHandler: typeof RouterContext.prototype.onHistoryChanging;
     private readonly _historyRefreshHandler: typeof RouterContext.prototype.onHistoryRefresh;
+    private readonly _errorHandler: typeof RouterContext.prototype.onHandleError;
 
     /**
      * constructor
@@ -172,20 +116,22 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             initialPath,
         } = options;
 
-        const { document: doc } = window || {};
-
+        this._$document = $(window?.document || document);
         this._$el = $(selector, el);
-        this._$document = $(doc as Document || document);
         if (!this._$el.length) {
             throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND, `Router element not found. [selector: ${selector}]`);
         }
 
         this._history = prepareHistory(history, initialPath, window as Window);
-        this._historyChangingHandler  = this.onHistoryChanging.bind(this);
-        this._historyRefreshHandler = this.onHistoryRefresh.bind(this);
+        this._historyChangingHandler = this.onHistoryChanging.bind(this);
+        this._historyRefreshHandler  = this.onHistoryRefresh.bind(this);
+        this._errorHandler           = this.onHandleError.bind(this);
 
         this._history.on('changing', this._historyChangingHandler);
         this._history.on('refresh', this._historyRefreshHandler);
+        this._history.on('error', this._errorHandler);
+
+        // TODO: follow anchor
 
         this.register(routes as RouteParameters[], start);
     }
@@ -196,11 +142,6 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** Router's view HTML element */
     get el(): HTMLElement {
         return this._$el[0];
-    }
-
-    /** `DOM` instance with router's view HTML element */
-    get $el(): DOM {
-        return this._$el;
     }
 
     /** Object with current route data */
@@ -219,18 +160,29 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
     /** @en Navigate to new view. */
     async navigate(to: string, options?: RouteNavigationOptions): Promise<this> {
-        const seed = this.findRouteContextParameter(to);
-        if (!seed) {
-            throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, `Route not found. [to: ${to}]`);
+        try {
+            const seed = this.findRouteContextParameter(to);
+            if (!seed) {
+                throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, `Route not found. [to: ${to}]`);
+            }
+
+            // TODO: default transition
+            const opts  = Object.assign({ transition: undefined, intent: undefined }, options);
+            const url   = buildNavigateUrl(to, opts);
+            const route = toRouteContext(url, this, seed, opts);
+
+            // TODO: subflow
+
+            try {
+                // exec navigate
+                await this._history.push(url, route);
+            } catch {
+                // noop
+            }
+        } catch (e) {
+            this.onHandleError(e);
         }
 
-        const url  = buildNavigateUrl(to, options || {} as RouteNavigationOptions);
-        const route = toRouteContext(url, seed, options);
-
-        // TODO: subflow
-
-        // exec navigate
-        await this._history.push(url, route);
         return this;
     }
 
@@ -254,10 +206,10 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 // private methods:
 
     /** @internal common `RouterEventArg` maker */
-    private makeRouterEventArg(newState: HistoryState<RouteContext>, oldState?: HistoryState<RouteContext>): RouterEventArg {
+    private makeRouterEventArg(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouterEventArg {
         return {
             router: this,
-            from: oldState || this.currentRoute,
+            from: oldState,
             to: newState,
             direction: this._history.direct(newState['@id']).direction,
         };
@@ -275,11 +227,46 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** @internal change content main procedure */
-    private changeConetnt(params: RouteContextParameters, newRoute: HistoryState<RouteContext>, oldRoute?: HistoryState<RouteContext>): void {
-        parseUrlParams(params, newRoute);
+    private async changeConetnt(nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined): Promise<void> {
+        parseUrlParams(nextRoute);
+
+        const [
+            viewNext, $elNext,
+            viewPrev, $elPrev,
+        ] = await this.prepareChangeContext(nextRoute, prevRoute);
+
         // TODO:
-        console.log(`[new: ${JSON.stringify(newRoute)}, old: ${null == oldRoute ? 'undefined' : JSON.stringify(oldRoute)}]`);
     }
+
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+
+    /** @internal */
+    private async prepareChangeContext(
+        nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined
+    ): Promise<[RouterView, DOM, RouterView, DOM]> {
+        const { '@params': params } = nextRoute;
+
+        // view $template
+        if (await ensureRouterViewTemplate(params)) {
+            this.publish('loaded', this.makeRouterEventArg(nextRoute, prevRoute));
+        }
+
+        // view instance
+        await ensureRouterViewInstance(nextRoute);
+
+        // view $el
+        if (!nextRoute.el) {
+            // TODO: prevRoute から構築する方法も検討
+            nextRoute.el = params.$template!.clone()[0];
+        }
+
+        return [
+            nextRoute['@params'].instance!, $(nextRoute.el),            // next
+            prevRoute?.['@params'].instance || {}, $(prevRoute?.el),    // prev
+        ];
+    }
+
+    /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
 ///////////////////////////////////////////////////////////////////////
 // event handlers:
@@ -292,32 +279,41 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             cancel(reason);
         };
 
-        this.publish('will-change', this.makeRouterEventArg(nextState), callback);
+        this.publish('will-change', this.makeRouterEventArg(nextState, undefined), callback);
 
         return handled;
     }
 
     /** @internal `history` `refresh` handler */
-    private onHistoryRefresh(newState: HistoryState<Partial<RouteContext>>, oldState: HistoryState<RouteContext> | undefined): void {
-        // `RouteContext` を保証する
-        const find = (state: HistoryState<Partial<RouteContext>>): { params: RouteContextParameters; route: HistoryState<RouteContext>; } => {
+    private onHistoryRefresh(newState: HistoryState<Partial<RouteContext>>, oldState: HistoryState<RouteContext> | undefined, promises: Promise<unknown>[]): void {
+        const ensure = (state: HistoryState<Partial<RouteContext>>): HistoryState<RouteContext> => {
             const url  = `/${state['@id']}`;
             const params = this.findRouteContextParameter(url);
             if (null == params) {
                 throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [url: ${url}]`, state);
             }
-            if (null == state.path) {
-                Object.assign(state, toRouteContext(url, params));
+            if (null == state['@params']) {
+                // RouteContextParameter を assign
+                Object.assign(state, toRouteContext(url, this, params));
             }
-            return { params, route: state as HistoryState<RouteContext> };
+            return state as HistoryState<RouteContext>;
         };
 
         try {
-            const { params, route } = find(newState);
-            this.changeConetnt(params, route, oldState);
+            // scheduling `refresh` done.
+            promises.push(this.changeConetnt(ensure(newState), oldState));
         } catch (e) {
-            this.publish('error', e);
+            this.onHandleError(e);
         }
+    }
+
+    /** @internal error handler */
+    private onHandleError(error: unknown): void {
+        this.publish(
+            'error',
+            isResult(error) ? error : makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, 'Route navigate failed.', error)
+        );
+        console.error(error);
     }
 }
 

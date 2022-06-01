@@ -16,8 +16,10 @@ export declare type HistoryState<T = PlainObject> = T & {
 export interface HistoryEvent<T = PlainObject> {
     /** @args [nextState, cancel] */
     'changing': [HistoryState<T>, (reason?: unknown) => void];
-    /** @args [newState, oldState] */
-    'refresh': [HistoryState<T>, HistoryState<T> | undefined];
+    /** @args [newState, oldState, promises[]] */
+    'refresh': [HistoryState<T>, HistoryState<T> | undefined, Promise<unknown>[]];
+    /** @args [error] */
+    'error': [Error];
 }
 /**
  * @en History state management options

@@ -187,9 +187,13 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     /** To move a specific point in history. */
     async go(delta?: number): Promise<number> {
         // if already called, no reaction.
-        if (this._dfGo || !delta) {
-            // if given 0, trigger `refresh`.
-            !delta && this.publish('refresh', this.state);
+        if (this._dfGo) {
+            return this.index;
+        }
+
+        // if given 0, just reload.
+        if (!delta) {
+            await this.triggerRefresh(this.state, undefined);
             return this.index;
         }
 
@@ -286,6 +290,13 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     /** @internal convert to URL */
     private toUrl(id: string): string {
         return id ? (('hash' === this._mode) ? `${Const.HASH_PREFIX}${id}` : toUrl(id)) : '';
+    }
+
+    /** @internal trigger event `refresh` */
+    private async triggerRefresh(newState: HistoryState<T>, oldState: HistoryState<T> | undefined): Promise<void> {
+        const promises: Promise<unknown>[] = [];
+        this.publish('refresh', newState, oldState, promises);
+        await Promise.all(promises);
     }
 
     /** @internal update */
@@ -412,12 +423,13 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
             }
 
             this._stack[`${method}Stack`](newData);
-            this.publish('refresh', newData, oldData);
+            await this.triggerRefresh(newData, oldData);
 
             df.resolve();
         } catch (e) {
             // history を元に戻す
             await this.rollbackHistory(method, newId);
+            this.publish('error', e);
             df.reject(e);
         }
     }

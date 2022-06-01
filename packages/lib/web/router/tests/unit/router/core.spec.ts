@@ -5,8 +5,14 @@
 
 import { UnknownFunction } from '@cdp/core-utils';
 import { RESULT_CODE } from '@cdp/result';
+import { webRoot, clearTemplateCache } from '@cdp/web-utils';
+import {
+    DOM,
+    dom as $,
+} from '@cdp/dom';
 import {
     RouterEventArg,
+    RouterView,
     Route,
     RouterConstructionOptions,
     Router,
@@ -17,10 +23,11 @@ import { prepareIFrameElements, cleanupTestElements } from '../tools';
 
 describe('router/context spec', () => {
 
-    let count: number;
+    const callbackArgs: any[] = [];
 
     beforeEach(() => {
-        count = 0;
+        callbackArgs.length = 0;
+        clearTemplateCache();
     });
 
     afterEach(() => {
@@ -28,7 +35,8 @@ describe('router/context spec', () => {
     });
 
     const onCallback = (...args: any[]): void => { // eslint-disable-line @typescript-eslint/no-unused-vars
-        count++;
+        callbackArgs.length = 0;
+        callbackArgs.push(...args);
 //      console.log(`received: ${JSON.stringify([...args])} \n`);
     };
 
@@ -47,6 +55,8 @@ describe('router/context spec', () => {
 
     const prepareQueryContext = async (): Promise<{ el: Document | null; window: Window | null; }> => {
         const iframe = await prepareIFrameElements();
+        const { history } = iframe.contentWindow as Window;
+        history.replaceState(null, '', webRoot);
         return { el: iframe.contentDocument, window: iframe.contentWindow };
     };
 
@@ -60,8 +70,6 @@ describe('router/context spec', () => {
             expect(createRouter).toBeDefined();
             const router = await createRouterWrap();
             expect(router).toBeDefined();
-            expect(router.$el).toBeDefined();
-            expect(router.$el.length).toBe(1);
             expect(router.el).toBeDefined();
         });
 
@@ -70,11 +78,11 @@ describe('router/context spec', () => {
             const router = await createRouterWrap({ history });
 
             expect(router).toBeDefined();
-            expect(router.$el).toBeDefined();
+            expect(router.el).toBeDefined();
 
             const router2 = await createRouterWrap({ history: 'memory' });
             expect(router2).toBeDefined();
-            expect(router2.$el).toBeDefined();
+            expect(router2.el).toBeDefined();
         });
 
         it('check creation error: ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND', () => {
@@ -120,14 +128,14 @@ describe('router/context spec', () => {
 
             await waitFrame(router);
 
-            expect(router.currentRoute).toEqual({
+            expect(router.currentRoute).toEqual(jasmine.objectContaining({
                 url: '/',
                 path: '/',
                 query: {},
                 params: {},
                 '@id': '',
                 '@origin': true,
-            } as Route);
+            } as unknown as Route));
         });
 
         it('Router#currentRoute no entry', async () => {
@@ -143,19 +151,20 @@ describe('router/context spec', () => {
             router.register({ path: '/', });
             await router.go();
 
-            expect(router.currentRoute).toEqual({
+            expect(router.currentRoute).toEqual(jasmine.objectContaining({
                 url: '/',
                 path: '/',
                 query: {},
                 params: {},
                 '@id': '',
                 '@origin': true,
-            } as Route);
+            } as unknown as Route));
         });
     });
 
     describe('simple navigate method', () => {
         it('Router#currentRoute', async () => {
+            const stub = { onCallback };
             const router = await createRouterWrap({
                 routes: [
                     { path: '/' },
@@ -163,6 +172,7 @@ describe('router/context spec', () => {
                     { path: '/two' }
                 ],
             });
+            router.on('error', stub.onCallback);
 
             await waitFrame(router);
             expect(router.currentRoute.path).toBe('/');
@@ -173,12 +183,13 @@ describe('router/context spec', () => {
             await router.navigate('/two');
             expect(router.currentRoute.path).toBe('/two');
 
-            try {
-                await router.navigate('/three');
-                fail();
-            } catch (e) {
-                expect(e.message).toBe('Route not found. [to: /three]');
-            }
+            await router.navigate('/three');
+            expect(router.currentRoute.path).toBe('/two');
+
+            const e = callbackArgs[0];
+
+            expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED);
+            expect(e.message).toBe('Route not found. [to: /three]');
         });
 
         it('Router#forward and Router#back', async () => {
@@ -299,27 +310,28 @@ describe('router/context spec', () => {
         });
 
         it('illegal path params', async () => {
+            const stub = { onCallback };
             const router = await createRouterWrap({
                 routes: [
                     { path: '/' },
                     { path: '/params/user/:userId/post/:postId' },
                 ],
             });
+            router.on('error', stub.onCallback);
 
             await waitFrame(router);
 
-            try {
-                await router.navigate('/params/user/:userId/post/:postId', {
-                    params: {
-                        postId: 12,
-                    }
-                });
-                fail();
-            } catch (e) {
-                expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED);
-                expect(e.message).toBe('Construct route destination failed. [path: /params/user/:userId/post/:postId, detail: TypeError: Expected "userId" to be a string]');
-                expect(e.cause.message).toBe('Expected "userId" to be a string');
-            }
+            await router.navigate('/params/user/:userId/post/:postId', {
+                params: {
+                    postId: 12,
+                }
+            });
+
+            const e = callbackArgs[0];
+
+            expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED);
+            expect(e.message).toBe('Construct route destination failed. [path: /params/user/:userId/post/:postId, detail: TypeError: Expected "userId" to be a string]');
+            expect(e.cause.message).toBe('Expected "userId" to be a string');
         });
 
         it('navigation cancellation', async () => {
@@ -352,7 +364,159 @@ describe('router/context spec', () => {
             expect(router.currentRoute.path).toBe('/');
 
             expect(stub.onCallback).not.toHaveBeenCalled();
-            expect(count).toBe(0);
+        });
+
+        it('check RouteParameters.content creation', async () => {
+            const stub = { onCallback };
+            const router = await createRouterWrap({
+                initialPath: '/string',
+                routes: [
+                    {
+                        path: '/string',
+                        content: '<div class="router-view">template from string</div>',
+                    },
+                    {
+                        path: '/ajax',
+                        content: {
+                            selector: '#test-content-creation',
+                            url: '../../.temp/res/router/test.tpl',
+                        },
+                    },
+                    {
+                        path: '/ajax/miss-selector',
+                        content: {
+                            selector: '#test-miss-selector',
+                            url: '../../.temp/res/router/test.tpl',
+                        },
+                    },
+                    {
+                        path: '/ajax/miss-url',
+                        content: {
+                            selector: '#test-content-creation',
+                            url: '../../.temp/res/router/miss.tpl',
+                        },
+                    },
+                ],
+            });
+            router.on('error', stub.onCallback);
+
+            await waitFrame(router);
+
+            let $template: DOM = (router.currentRoute as any)['@params'].$template;
+            let $el = $(router.currentRoute.el);
+
+            expect($template).toBeDefined();
+            expect($template.length).toBe(1);
+            expect($template.text()).toBe('template from string');
+            expect($el).toBeDefined();
+            expect($el.length).toBe(1);
+            expect($el.text()).toBe('template from string');
+            expect($el !== $template).toBe(true);
+
+            await router.navigate('/ajax');
+
+            $template = (router.currentRoute as any)['@params'].$template;
+            $el = $(router.currentRoute.el);
+
+            expect($template).toBeDefined();
+            expect($template.length).toBe(1);
+            expect($template.text()).toBe('template from ajax');
+            expect($el).toBeDefined();
+            expect($el.length).toBe(1);
+            expect($el.text()).toBe('template from ajax');
+            expect($el !== $template).toBe(true);
+
+            await router.navigate('/ajax/miss-selector');
+
+            expect(callbackArgs[0]).toEqual(jasmine.objectContaining({
+                message: 'Route navigate failed.',
+                code: RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED,
+                cause: jasmine.objectContaining({
+                    message: 'template load failed. [selector: #test-miss-selector, url: ../../.temp/res/router/test.tpl]',
+                }),
+            }));
+
+            await router.navigate('/ajax/miss-url');
+
+            const e = callbackArgs[0];
+            expect(e.message).toBe('Not Found');
+            expect(e.code).toBe(RESULT_CODE.ERROR_AJAX_RESPONSE);
+            expect(e.cause.url.includes('res/router/miss.tpl')).toBe(true);
+            expect(e.cause.status).toBe(404);
+        });
+
+        it('check RouteParameters.component creation', async () => {
+            class Page implements RouterView {
+                '@route': Route;
+                constructor(route: Route) { this['@route'] = route; }
+                get name(): string { return 'I was born from an class.'; }
+            }
+
+            const syncFactory = (route: Route): RouterView => {
+                return {
+                    name: 'I was born from an sync-factory.',
+                    '@route': route,
+                };
+            };
+
+            const asyncFactory = async (route: Route): Promise<RouterView> => { // eslint-disable-line @typescript-eslint/require-await
+                return {
+                    name: 'I was born from an async-factory.',
+                    '@route': route,
+                };
+            };
+
+            const stub = { onCallback };
+            const router = await createRouterWrap({
+                initialPath: '/object',
+                routes: [
+                    {
+                        path: '/object',
+                        component: { name: 'I was born from an object.' },
+                    },
+                    {
+                        path: '/class',
+                        component: Page,
+                    },
+                    {
+                        path: '/sync-factory',
+                        component: syncFactory,
+                    },
+                    {
+                        path: '/async-factory',
+                        component: asyncFactory,
+                    },
+                ],
+            });
+            router.on('error', stub.onCallback);
+
+            await waitFrame(router);
+
+            let view: RouterView & { name: string; } = (router.currentRoute as any)['@params'].instance;
+            expect(view).toBeDefined();
+            expect(view.name).toBe('I was born from an object.');
+            expect(view['@route']).toBeDefined();
+
+            await router.navigate('/class');
+
+            view = (router.currentRoute as any)['@params'].instance;
+            expect(view).toBeDefined();
+            expect(view.name).toBe('I was born from an class.');
+            expect(view['@route']).toBeDefined();
+
+            await router.navigate('/sync-factory');
+
+            view = (router.currentRoute as any)['@params'].instance;
+            expect(view).toBeDefined();
+            expect(view.name).toBe('I was born from an sync-factory.');
+            expect(view['@route']).toBeDefined();
+
+            await router.navigate('/async-factory');
+
+            view = (router.currentRoute as any)['@params'].instance;
+            expect(view).toBeDefined();
+            expect(view.name).toBe('I was born from an async-factory.');
+            expect(view['@route']).toBeDefined();
         });
     });
 });
