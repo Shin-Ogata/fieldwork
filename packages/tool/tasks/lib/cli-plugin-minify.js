@@ -58,7 +58,7 @@ async function minifyJavaScript(options) {
     }
 
     const { src, out, map, terser } = settings;
-    const result = await minify(readFileSync(src).toString(), terser);
+    const result = await minify(readFileSync(src, 'utf8').toString(), terser);
     if (result.error) {
         console.log(colors.red.underline(`terser error: ${result.error}`));
         throw new Error(result.error);

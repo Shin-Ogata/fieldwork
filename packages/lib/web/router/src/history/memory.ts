@@ -66,7 +66,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         if (!silent) {
             const df = createUncancellableDeferred('MemoryHistory#reset() is uncancellable method.');
             void post(() => {
-                this.onChangeState('noop', df, newState, oldState);
+                void this.onChangeState('noop', df, newState, oldState);
             });
             await df;
         }
@@ -117,20 +117,15 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
 
     /** To move a specific point in history. */
     async go(delta?: number): Promise<number> {
-        // if given 0, trigger `refresh`.
-        if (!delta) {
-            this.publish('refresh', this.state);
-            return this.index;
-        }
-
         const oldIndex = this.index;
 
         try {
-            const oldState = this.state;
-            const newState = this._stack.distance(delta);
+            // if given 0, just reload.
+            const oldState = delta ? this.state : undefined;
+            const newState = this._stack.distance(delta || 0);
             const df = new Deferred();
             void post(() => {
-                this.onChangeState('seek', df, newState, oldState);
+                void this.onChangeState('seek', df, newState, oldState);
             });
             await df;
         } catch (e) {
@@ -221,7 +216,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         if (!silent) {
             const df = new Deferred(cancel);
             void post(() => {
-                this.onChangeState(method, df, newState, this.state);
+                void this.onChangeState(method, df, newState, this.state);
             });
             await df;
         } else {
@@ -232,7 +227,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
     }
 
     /** @internal change state handler */
-    private onChangeState(method: 'noop' | 'push' | 'replace' | 'seek', df: Deferred, newState: HistoryState<T>, oldState: HistoryState<T>): void {
+    private async onChangeState(method: 'noop' | 'push' | 'replace' | 'seek', df: Deferred, newState: HistoryState<T>, oldState: HistoryState<T> | undefined): Promise<void> {
         const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
 
         try {
@@ -242,11 +237,15 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
                 throw token.reason;
             }
 
+            const promises: Promise<unknown>[] = [];
             this._stack[`${method}Stack`](newState);
-            this.publish('refresh', newState, oldState);
+            this.publish('refresh', newState, oldState, promises);
+
+            await Promise.all(promises);
 
             df.resolve();
         } catch (e) {
+            this.publish('error', e);
             df.reject(e);
         }
     }

@@ -4,6 +4,7 @@
  */
 
 import { UnknownFunction } from '@cdp/core-utils';
+import { Deferred } from '@cdp/promise';
 import {
     IHistory,
     createMemoryHistory,
@@ -76,11 +77,11 @@ describe('router/history/memory spec', () => {
 
         await instance.push('two', { from: 'push' });
         expect(stub.onCallback).toHaveBeenCalledWith({ from: 'push', '@id': 'two' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ from: 'push', '@id': 'two' }, { '@id': 'one', '@origin': true });
+        expect(stub.onCallback).toHaveBeenCalledWith({ from: 'push', '@id': 'two' }, { '@id': 'one', '@origin': true }, []);
 
         await instance.push('three');
         expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'three' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'three' }, { from: 'push', '@id': 'two' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'three' }, { from: 'push', '@id': 'two' }, []);
 
         await instance.push('three', { from: 'push(update)' }, { silent: true });
         expect(stub.onCallback).not.toHaveBeenCalledWith({ from: 'push(uqpdate)', '@id': 'three' });
@@ -105,11 +106,11 @@ describe('router/history/memory spec', () => {
 
         await instance.replace('two', { from: 'replace' });
         expect(stub.onCallback).toHaveBeenCalledWith({ from: 'replace', '@id': 'two', '@origin': true }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ from: 'replace', '@id': 'two', '@origin': true }, { '@id': 'one', '@origin': true });
+        expect(stub.onCallback).toHaveBeenCalledWith({ from: 'replace', '@id': 'two', '@origin': true }, { '@id': 'one', '@origin': true }, []);
 
         await instance.replace('three');
         expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'three', '@origin': true }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'three', '@origin': true }, { from: 'replace', '@id': 'two', '@origin': true });
+        expect(stub.onCallback).toHaveBeenCalledWith({ '@id': 'three', '@origin': true }, { from: 'replace', '@id': 'two', '@origin': true }, []);
 
         await instance.replace('three', { from: 'replace(update)' }, { silent: true });
         expect(stub.onCallback).not.toHaveBeenCalledWith({ from: 'replace(update)', '@id': 'three', '@origin': true }, jasmine.any(Function));
@@ -131,7 +132,7 @@ describe('router/history/memory spec', () => {
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
         await resetMemoryHistory(instance);
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 4, '@id': 'five' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 4, '@id': 'five' }, []);
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
         expect(instance.length).toBe(1);
@@ -148,7 +149,7 @@ describe('router/history/memory spec', () => {
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
         await resetMemoryHistory(instance, { silent: true });
-        expect(stub.onCallback).not.toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 4, '@id': 'five' });
+        expect(stub.onCallback).not.toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 4, '@id': 'five' }, []);
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
         expect(instance.length).toBe(1);
@@ -183,28 +184,28 @@ describe('router/history/memory spec', () => {
 
         let index = await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, { index: 4, '@id': 'five' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, { index: 4, '@id': 'five' }, []);
         expect(index).toBe(3);
         expect(instance.id).toBe('four');
         expect(instance.state).toEqual({ index: 3, '@id': 'four' });
 
         await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 3, '@id': 'four' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 3, '@id': 'four' }, []);
         expect(instance.index).toBe(2);
         expect(instance.id).toBe('three');
         expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
         index = await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, { index: 2, '@id': 'three' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, { index: 2, '@id': 'three' }, []);
         expect(index).toBe(1);
         expect(instance.id).toBe('two');
         expect(instance.state).toEqual({ index: 1, '@id': 'two' });
 
         await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 1, '@id': 'two' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 1, '@id': 'two' }, []);
         expect(instance.index).toBe(0);
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
@@ -232,28 +233,28 @@ describe('router/history/memory spec', () => {
 
         let index = await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, { index: 0, '@id': 'one', '@origin': true });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, { index: 0, '@id': 'one', '@origin': true }, []);
         expect(index).toBe(1);
         expect(instance.id).toBe('two');
         expect(instance.state).toEqual({ index: 1, '@id': 'two' });
 
         await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 1, '@id': 'two' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 1, '@id': 'two' }, []);
         expect(instance.index).toBe(2);
         expect(instance.id).toBe('three');
         expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
         index = await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, { index: 2, '@id': 'three' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, { index: 2, '@id': 'three' }, []);
         expect(index).toBe(3);
         expect(instance.id).toBe('four');
         expect(instance.state).toEqual({ index: 3, '@id': 'four' });
 
         await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, jasmine.any(Function));
-        expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, { index: 3, '@id': 'four' });
+        expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, { index: 3, '@id': 'four' }, []);
         expect(instance.index).toBe(4);
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
@@ -410,6 +411,29 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('one');
 
         expect(stub.onCallback).not.toHaveBeenCalled();
+
+        disposeMemoryHistory(instance);
+    });
+
+    it('check wait for client in refresh event', async () => {
+        const df = new Deferred();
+        const refreshCallback = (nextState: any, oldState: any, promises: Promise<unknown>[]): void => {
+            promises.push(df);
+        };
+
+        const instance = await preparePackedHistory();
+        await instance.go(-2);
+        expect(instance.id).toBe('three');
+
+        instance.on('refresh', refreshCallback);
+
+        const promise = instance.back();
+        expect(instance.id).toBe('three');
+
+        df.resolve();
+        await promise;
+
+        expect(instance.id).toBe('two');
 
         disposeMemoryHistory(instance);
     });

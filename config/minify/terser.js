@@ -11,8 +11,9 @@ const cwd = process.cwd();
 
 // default terser options
 // https://github.com/terser/terser#minify-options-structure
+// https://terser.org/docs/api-reference
 const terser = {
-    ecma: 8,
+    ecma: 2022,
     warnings: true,
     compress: {
         collapse_vars: false,
@@ -22,7 +23,7 @@ const terser = {
         keep_infinity: true,
         side_effects: false
     },
-    output: {
+    format: {
         comments: `/^![\\w\\W]+${PACKAGE.replace('/', '\\/')}[\\w\\W]+/`,
     },
     sourceMap: {
