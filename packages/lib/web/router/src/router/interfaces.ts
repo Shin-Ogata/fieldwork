@@ -7,7 +7,7 @@ import type { IHistory } from '../history';
  * @en Argument given to the router event callback.
  * @ja ルーターイベントに渡される引数
  */
-export interface RouterEventArg {
+export interface RouteChangeInfo {
     /** router instance */
     readonly router: Router;
     /** from state */
@@ -32,63 +32,63 @@ export interface RouterEvent {
      *     ルート変更をキャンセルできる唯一のタイミング
      * @args [event, cancel]
      */
-    'will-change': [RouterEventArg, (reason?: unknown) => void];
+    'will-change': [RouteChangeInfo, (reason?: unknown) => void];
 
     /**
      * @en New DOM content loaded notification.
      * @ja 新しいDOM コンテンツのロード通知
      * @args [event]
      */
-    'loaded': [RouterEventArg];
+    'loaded': [RouteChangeInfo];
 
     /**
      * @en Next page just inserted to DOM notification.
      * @ja 次のページの DOM 挿入通知
      * @args [event]
      */
-    'mounted': [RouterEventArg];
+    'mounted': [RouteChangeInfo];
 
     /**
      * @en Before transition notification.
      * @ja トランジション開始通知
      * @args [event]
      */
-    'before-transition': [RouterEventArg];
+    'before-transition': [RouteChangeInfo];
 
     /**
      * @en transitioning notification.
      * @ja トランジション中通知
      * @args [event]
      */
-    'transition': [RouterEventArg];
+    'transition': [RouteChangeInfo];
 
     /**
      * @en After transition notification.
      * @ja トランジション終了通知
      * @args [event]
      */
-    'after-transition': [RouterEventArg];
+    'after-transition': [RouteChangeInfo];
 
     /**
      * @en Previous page just detached from DOM notification.
      * @ja 前のページの DOM 切除通知
      * @args [event]
      */
-    'unmounted': [RouterEventArg];
+    'unmounted': [RouteChangeInfo];
 
     /**
      * @en Old DOM content unloaded notification.
      * @ja 古い DOM コンテンツの破棄通知
      * @args [event]
      */
-    'unloaded': [RouterEventArg];
+    'unloaded': [RouteChangeInfo];
 
     /**
      * @en Route changed notification.
      * @ja ルート変更完了通知
      * @args [event]
      */
-    'changed': [RouterEventArg];
+    'changed': [RouteChangeInfo];
 
     /**
      * @en Notified when an error is occured.
@@ -102,16 +102,66 @@ export interface RouterEvent {
 //__________________________________________________________________________________________________//
 
 /**
- * @en View definition to be routed.
- * @ja ルーティング対象のビューインターフェイス定義
+ * @en Page definition to be routed.
+ * @ja ルーティング対象のページインターフェイス定義
  */
-export interface RouterView {} // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface Page {
+    /**
+     * @en Triggered when the page's HTMLElement is newly constructed by router.
+     * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
+     */
+    pageInit?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
+     * @ja ページの HTMLElement が DOM に挿入された直後に発火
+     */
+    pageMounted?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered when the page is ready to be activated after initialization.
+     * @ja 初期化後, ページがアクティベート可能な状態になると発火
+     */
+    pageBeforeEnter?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered when the page is fully displayed.
+     * @ja ページが完全に表示されると発火
+     */
+    pageAfterEnter?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered just before the page goes hidden.
+     * @ja ページが非表示に移行する直前に発火
+     */
+    pageBeforeLeave?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered immediately after the page is hidden.
+     * @ja ページが非表示になった直後に発火
+     */
+    pageAfterLeave?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
+     * @ja ページの HTMLElement が DOM から切り離された直後に発火
+     */
+    pageUnmounted?(info: RouteChangeInfo): void;
+
+    /**
+     * @en Triggered when the page's HTMLElement is destroyed by the router.
+     * @ja ページの HTMLElement がルーターによって破棄されたときに発火
+     */
+    pageRemoved?(info: RouteChangeInfo): void;
+}
 
 /**
- * @en [[RouterView]] factory function.
- * @ja [[RouterView]] 構築関数
+ * @en [[Page]] factory function.
+ * @ja [[Page]] 構築関数
  */
-export type ComponentFactory = (route: Route) => RouterView | Promise<RouterView>;
+export type PageFactory = (route: Route) => Page | Promise<Page>;
+
+//__________________________________________________________________________________________________//
 
 /**
  * @en Route parameters interface. It is also a construction option.
@@ -131,20 +181,20 @@ export interface RouteParameters {
     routes?: RouteParameters[];
 
     /**
-     * @en Creates dynamic page from specified content string
-     * @ja DOM コンテント構築のシードパラメータ
-     */
-    content?: { selector: string; url?: string; } | HTMLElement | string;
-
-    /**
-     * @en Specify the constructor or built object of the View component. <br>
+     * @en Specify the constructor or built object of the page component. <br>
      *     In case of functional type, [[Route]] instance is passed as an argument.
-     * @ja View コンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
+     * @ja ページコンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
      *     関数型の場合は引数に [[Route]] インスタンスが渡される
      *
      * @reserved `string` type: load pages as a component via Ajax
      */
-    component?: Constructor<RouterView> | ComponentFactory | RouterView | string;
+    component?: Constructor<Page> | PageFactory | Page | string;
+
+    /**
+     * @en Creates dynamic page from specified content string
+     * @ja DOM コンテント構築のシードパラメータ
+     */
+    content?: { selector: string; url?: string; } | HTMLElement | string;
 }
 
 //__________________________________________________________________________________________________//
@@ -161,8 +211,8 @@ export type RoutePathParams = Record<string, string | number | boolean | null | 
  */
 export interface Route {
     /**
-     * @en View's URL.
-     * @ja ビューの URL
+     * @en Page's URL.
+     * @ja ページの URL
      */
     readonly url: string;
 
@@ -195,8 +245,8 @@ export interface Route {
     readonly router: Router;
 
     /**
-     * @en View main HTML element
-     * @ja ビューの主要 HTML 要素
+     * @en Page main HTML element
+     * @ja ページの主要 HTML 要素
      */
     readonly el: HTMLElement;
 }
@@ -308,8 +358,8 @@ export interface Router extends Subscribable<RouterEvent> {
     register(routes: RouteParameters | RouteParameters[], refersh?: boolean): this;
 
     /**
-     * @en Navigate to new view.
-     * @ja 新たなビューに移動
+     * @en Navigate to new page.
+     * @ja 新たなページに移動
      *
      * @param to
      *  - `en` Set a navigate destination (url / path)

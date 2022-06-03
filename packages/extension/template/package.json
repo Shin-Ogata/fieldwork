@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-template",
   "description": "extension for template engine",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {

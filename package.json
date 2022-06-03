@@ -1,7 +1,7 @@
 {
   "name": "fieldwork",
   "description": "feasibility study",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "author": "Shin Ogata",
   "bugs": {
     "url": "https://github.com/Shin-Ogata/fieldwork/issues"
@@ -23,8 +23,7 @@
     "commander": "9.3.0",
     "convert-source-map": "1.8.0",
     "cross-conf-env": "1.2.1",
-    "del": "6.1.1",
-    "dts-bundle-generator": "6.9.0",
+    "dts-bundle-generator": "6.10.0",
     "es6-plato": "git+https://github.com/the-simian/es6-plato.git",
     "eslint": "8.16.0",
     "fs-extra": "10.1.0",
@@ -39,13 +38,13 @@
     "postcss": "8.4.14",
     "postcss-cli": "9.1.0",
     "requirejs": "2.3.6",
-    "rollup": "2.75.4",
-    "sass": "1.52.1",
+    "rollup": "2.75.5",
+    "sass": "1.52.2",
     "semver": "7.3.7",
     "tar": "6.1.11",
     "terser": "5.14.0",
     "testem": "3.7.0",
-    "typedoc": "0.22.16",
+    "typedoc": "0.22.17",
     "typescript": "4.7.2"
   },
   "homepage": "https://github.com/Shin-Ogata/fieldwork#readme",
@@ -63,7 +62,6 @@
   },
   "scripts": {
     "check-update": "cdp-task delegate check-update --exists && npm outdated || exit 0",
-    "ci": "run-s packages:ci metrics",
     "clean:doc": "cdp-task clean -d",
     "clean:doc:a": "cdp-task clean -t ./docs/typedoc",
     "clean:doc:c": "cdp-task clean -t ./docs/reports/coverage",
@@ -79,6 +77,6 @@
     "packages:depends": "cdp-task delegate ls --preset --dry-run --silent",
     "set-version": "cross-conf-env cdp-task delegate set-version -l tool,lib,framework,extension -- npm_package_version",
     "set-version:to": "cdp-task delegate set-version -l tool,lib,framework,extension --",
-    "test": "npm run ci"
+    "test": "run-s packages:ci metrics"
   }
 }

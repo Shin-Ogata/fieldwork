@@ -1,7 +1,7 @@
 {
   "name": "@cdp/view",
   "description": "generic view scheme",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"

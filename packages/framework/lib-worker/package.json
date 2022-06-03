@@ -1,7 +1,7 @@
 {
   "name": "@cdp/lib-worker",
   "description": "worker library collection",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/lib-core": "file:../lib-core"

@@ -11,8 +11,8 @@ import {
     dom as $,
 } from '@cdp/dom';
 import {
-    RouterEventArg,
-    RouterView,
+    RouteChangeInfo,
+    Page,
     Route,
     RouterConstructionOptions,
     Router,
@@ -335,7 +335,7 @@ describe('router/context spec', () => {
         });
 
         it('navigation cancellation', async () => {
-            const cancelCallback = (event: RouterEventArg, cancel: (reason?: unknown) => void): boolean => {
+            const cancelCallback = (event: RouteChangeInfo, cancel: (reason?: unknown) => void): boolean => {
                 cancel('[test] changing not allowed');
                 return true;
             };
@@ -373,7 +373,7 @@ describe('router/context spec', () => {
                 routes: [
                     {
                         path: '/string',
-                        content: '<div class="router-view">template from string</div>',
+                        content: '<div class="router-page">template from string</div>',
                     },
                     {
                         path: '/ajax',
@@ -446,24 +446,25 @@ describe('router/context spec', () => {
         });
 
         it('check RouteParameters.component creation', async () => {
-            class Page implements RouterView {
+            class RouterPage implements Page {
                 '@route': Route;
                 constructor(route: Route) { this['@route'] = route; }
                 get name(): string { return 'I was born from an class.'; }
+                pageInit: undefined;
             }
 
-            const syncFactory = (route: Route): RouterView => {
+            const syncFactory = (route: Route): RouterPage => {
                 return {
                     name: 'I was born from an sync-factory.',
                     '@route': route,
-                };
+                } as RouterPage;
             };
 
-            const asyncFactory = async (route: Route): Promise<RouterView> => { // eslint-disable-line @typescript-eslint/require-await
+            const asyncFactory = async (route: Route): Promise<RouterPage> => { // eslint-disable-line @typescript-eslint/require-await
                 return {
                     name: 'I was born from an async-factory.',
                     '@route': route,
-                };
+                } as RouterPage;
             };
 
             const stub = { onCallback };
@@ -472,11 +473,11 @@ describe('router/context spec', () => {
                 routes: [
                     {
                         path: '/object',
-                        component: { name: 'I was born from an object.' },
+                        component: { name: 'I was born from an object.' } as Page,
                     },
                     {
                         path: '/class',
-                        component: Page,
+                        component: RouterPage,
                     },
                     {
                         path: '/sync-factory',
@@ -492,31 +493,31 @@ describe('router/context spec', () => {
 
             await waitFrame(router);
 
-            let view: RouterView & { name: string; } = (router.currentRoute as any)['@params'].instance;
-            expect(view).toBeDefined();
-            expect(view.name).toBe('I was born from an object.');
-            expect(view['@route']).toBeDefined();
+            let page: Page & { name: string; } = (router.currentRoute as any)['@params'].page;
+            expect(page).toBeDefined();
+            expect(page.name).toBe('I was born from an object.');
+            expect(page['@route']).toBeDefined();
 
             await router.navigate('/class');
 
-            view = (router.currentRoute as any)['@params'].instance;
-            expect(view).toBeDefined();
-            expect(view.name).toBe('I was born from an class.');
-            expect(view['@route']).toBeDefined();
+            page = (router.currentRoute as any)['@params'].page;
+            expect(page).toBeDefined();
+            expect(page.name).toBe('I was born from an class.');
+            expect(page['@route']).toBeDefined();
 
             await router.navigate('/sync-factory');
 
-            view = (router.currentRoute as any)['@params'].instance;
-            expect(view).toBeDefined();
-            expect(view.name).toBe('I was born from an sync-factory.');
-            expect(view['@route']).toBeDefined();
+            page = (router.currentRoute as any)['@params'].page;
+            expect(page).toBeDefined();
+            expect(page.name).toBe('I was born from an sync-factory.');
+            expect(page['@route']).toBeDefined();
 
             await router.navigate('/async-factory');
 
-            view = (router.currentRoute as any)['@params'].instance;
-            expect(view).toBeDefined();
-            expect(view.name).toBe('I was born from an async-factory.');
-            expect(view['@route']).toBeDefined();
+            page = (router.currentRoute as any)['@params'].page;
+            expect(page).toBeDefined();
+            expect(page.name).toBe('I was born from an async-factory.');
+            expect(page['@route']).toBeDefined();
         });
     });
 });

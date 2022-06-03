@@ -24,9 +24,9 @@ import {
     createMemoryHistory,
 } from '../history';
 import type {
-    RouterEventArg,
+    RouteChangeInfo,
     RouterEvent,
-    RouterView,
+    Page,
     RouteParameters,
     Route,
     RouterConstructionOptions,
@@ -38,8 +38,8 @@ import {
     RouteContext,
     toRouteContextParameters,
     toRouteContext,
-    ensureRouterViewTemplate,
-    ensureRouterViewInstance,
+    ensureRouterPageInstance,
+    ensureRouterPageTemplate,
 } from './internal';
 
 /** @internal prepare IHistory object */
@@ -158,7 +158,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return this;
     }
 
-    /** @en Navigate to new view. */
+    /** @en Navigate to new page. */
     async navigate(to: string, options?: RouteNavigationOptions): Promise<this> {
         try {
             const seed = this.findRouteContextParameter(to);
@@ -206,7 +206,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 // private methods:
 
     /** @internal common `RouterEventArg` maker */
-    private makeRouterEventArg(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouterEventArg {
+    private makeRouteChangeInfo(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouteChangeInfo {
         return {
             router: this,
             from: oldState,
@@ -231,8 +231,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         parseUrlParams(nextRoute);
 
         const [
-            viewNext, $elNext,
-            viewPrev, $elPrev,
+            pageNext, $elNext,
+            pagePrev, $elPrev,
         ] = await this.prepareChangeContext(nextRoute, prevRoute);
 
         // TODO:
@@ -243,26 +243,25 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** @internal */
     private async prepareChangeContext(
         nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined
-    ): Promise<[RouterView, DOM, RouterView, DOM]> {
+    ): Promise<[Page, DOM, Page, DOM]> {
         const { '@params': params } = nextRoute;
 
-        // view $template
-        if (await ensureRouterViewTemplate(params)) {
-            this.publish('loaded', this.makeRouterEventArg(nextRoute, prevRoute));
-        }
+        // page instance
+        await ensureRouterPageInstance(nextRoute);
+        // page $template
+        await ensureRouterPageTemplate(params);
 
-        // view instance
-        await ensureRouterViewInstance(nextRoute);
-
-        // view $el
+        // page $el
         if (!nextRoute.el) {
             // TODO: prevRoute から構築する方法も検討
             nextRoute.el = params.$template!.clone()[0];
+            this.publish('loaded', this.makeRouteChangeInfo(nextRoute, prevRoute));
+            // TODO: trigger
         }
 
         return [
-            nextRoute['@params'].instance!, $(nextRoute.el),            // next
-            prevRoute?.['@params'].instance || {}, $(prevRoute?.el),    // prev
+            nextRoute['@params'].page!, $(nextRoute.el),            // next
+            prevRoute?.['@params'].page || {}, $(prevRoute?.el),    // prev
         ];
     }
 
@@ -279,7 +278,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             cancel(reason);
         };
 
-        this.publish('will-change', this.makeRouterEventArg(nextState, undefined), callback);
+        this.publish('will-change', this.makeRouteChangeInfo(nextState, undefined), callback);
 
         return handled;
     }

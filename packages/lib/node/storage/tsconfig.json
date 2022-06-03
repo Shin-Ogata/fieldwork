@@ -7,7 +7,6 @@
     "inlineSourceMap": true,
     "outDir": "built",
     "rootDir": "src",
-    "esModuleInterop": true,
     "types": [
       "node"
     ],

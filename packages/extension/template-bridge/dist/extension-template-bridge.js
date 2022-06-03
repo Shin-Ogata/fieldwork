@@ -1,5 +1,5 @@
 /*!
- * @cdp/extension-template-bridge 0.9.12
+ * @cdp/extension-template-bridge 0.9.13
  *   extension for HTML templates bridge.
  */
 
