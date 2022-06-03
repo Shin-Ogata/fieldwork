@@ -2,13 +2,13 @@
   "extends": "../../../../config/tsconfig/web",
   "compilerOptions": {
     "target": "es2021",
+    "useDefineForClassFields": false,
     "declaration": true,
     "declarationDir": "types",
     "inlineSources": true,
     "inlineSourceMap": true,
     "outDir": "built",
     "rootDir": "src",
-    "esModuleInterop": true,
     "typeRoots": [
       "./node_modules/@types"
     ]

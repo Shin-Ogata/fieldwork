@@ -31,21 +31,36 @@
 
 #### TODO
 
-- Route から url を見えるかするか?
-  - する
-- params, query の parse
-- 同じ url に対する navigate
+- View Instance が備えるべきコールバックインターフェイス設計
+```js
+  f7.on('pageMounted', onPageMounted);
+  f7.on('pageInit', onPageInit);
+  f7.on('pageReinit', onPageReinit);
+  f7.on('pageBeforeIn', onPageBeforeIn);
+  f7.on('pageBeforeOut', onPageBeforeOut);
+  f7.on('pageAfterOut', onPageAfterOut);
+  f7.on('pageAfterIn', onPageAfterIn);
+  f7.on('pageBeforeRemove', onPageBeforeRemove);
+  f7.on('pageBeforeUnmount', onPageBeforeUnmount);
 
-```ts
-        it('should throw when it does not match the pattern', () => {
-            const toPath = path2regexp.compile('/:foo(\\d+)');
-            expect(() => {
-                toPath({ foo: 'abc' });
-            }).toThrow(
-                new TypeError('Expected "foo" to match "\\d+", but got "abc"')
-            );
-        });
+  /** Event will be triggered when new page just inserted to DOM. As an argument event receives Page Data */
+  pageMounted(page: Page): void;
+  /** Event will be triggered after Router initialize required page's components and navbar. As an argument event receives Page Data */
+  pageInit(page: Page): void;
+  /** This event will be triggered in case of navigating to the page that was already initialized. As an argument event receives Page Data */
+  pageReinit(page: Page): void;
+  /** Event will be triggered when everything initialized and page is ready to be transitioned into view (into active/current position). As an argument event receives Page Data */
+  pageBeforeIn(page: Page): void;
+  /** Event will be triggered after page transitioned into view. As an argument event receives Page Data */
+  pageAfterIn(page: Page): void;
+  /** Event will be triggered right before page is going to be transitioned out of view. As an argument event receives Page Data */
+  pageBeforeOut(page: Page): void;
+  /** Event will be triggered after page transitioned out of view. As an argument event receives Page Data */
+  pageAfterOut(page: Page): void;
+  /** Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives Page Data */
+  pageBeforeRemove(page: Page): void;
 ```
+- transition 管理の確認
 
 <p><details>
 <summary>Done</summary>
@@ -81,7 +96,12 @@
 
   - route は `/@id` からはじめる. history hash prefixは `#/` とすることで `#/@id`にする. history 内部の id は `/` はつかない
   - path は `vue` を参考にする
- 
+
+- Route から url を見えるかするか?
+  - する
+- params, query の parse
+- 同じ url に対する navigate
+  - History にあわせて許容する
 
 </details></p>
 
@@ -193,3 +213,17 @@ check(func); // true
 - DOM が document に接続されているか否か
   - Node.isConnected
   - https://developer.mozilla.org/ja/docs/Web/API/Node/isConnected
+
+- html2canvas は何をやっているのか?
+  - https://qiita.com/youwht/items/8b681a856f59aa82d671
+    - ゴリゴリ解釈してる...
+
+  - DOM オブジェクトを Canvas に描画する
+    - https://developer.mozilla.org.cach3.com/ja/docs/Web/HTML/Canvas/Drawing_DOM_objects_into_a_canvas
+    - https://bom-shibuya.hatenablog.com/entry/2018/05/15/203446
+    - https://web.archive.org/web/20160625111122/https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
+
+  - 評価するならこっち(ただ完璧な再現は期待できない)
+    - html-to-image
+      - https://github.com/bubkoo/html-to-image#readme
+      - https://marmooo.blogspot.com/2021/04/html-to-image-html.html

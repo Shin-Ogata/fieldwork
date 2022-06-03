@@ -730,7 +730,7 @@ describe('model/model spec', () => {
             expect(e).toEqual(errorInvalidData);
         }
 
-        expect(stub.onCallback).toHaveBeenCalledWith(content, { uri: 'aaa.html', size: 11, cookie: undefined }, errorInvalidData);
+        expect(stub.onCallback).toHaveBeenCalledWith(content, jasmine.objectContaining({ uri: 'aaa.html', size: 11, cookie: undefined }), errorInvalidData);
     });
 
     it('check Model#setAttribute({ validate: true, noThrow: true, silent })', async () => {

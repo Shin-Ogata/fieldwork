@@ -15,11 +15,11 @@ import {
 import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
 import { normalizeId } from '../history/internal';
 import type {
+    Page,
     RouteParameters,
     Route,
     RouteNavigationOptions,
     Router,
-    RouterView,
 } from './interfaces';
 
 /** @internal flat RouteParameters */
@@ -28,10 +28,10 @@ export type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
     regexp: RegExp;
     /** keys of params */
     paramKeys: string[];
-    /** DOM template instance with View element */
+    /** DOM template instance with Page element */
     $template?: DOM;
-    /** router view instance from `component` property */
-    instance?: RouterView;
+    /** router page instance from `component` property */
+    page?: Page;
 };
 
 /** @internal RouteContext */
@@ -86,8 +86,33 @@ export const toRouteContextParameters = (routes: RouteParameters | RouteParamete
         });
 };
 
+/** @internal ensure RouteContextParameters#instance */
+export const ensureRouterPageInstance = async (route: RouteContext): Promise<boolean> => {
+    const { '@params': params } = route;
+
+    if (params.page) {
+        return false; // already created
+    }
+
+    const { component } = params;
+    if (isFunction(component)) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/await-thenable
+            params.page = await new (component as unknown as Class)(route);
+        } catch {
+            params.page = await component(route);
+        }
+    } else if (isObject(component)) {
+        params.page = Object.assign({ '@route': route }, component) as Page;
+    } else {
+        params.page = { '@route': route } as Page;
+    }
+
+    return true; // newly created
+};
+
 /** @internal ensure RouteContextParameters#$template */
-export const ensureRouterViewTemplate = async (params: RouteContextParameters): Promise<boolean> => {
+export const ensureRouterPageTemplate = async (params: RouteContextParameters): Promise<boolean> => {
     if (params.$template) {
         return false; // already created
     }
@@ -106,31 +131,6 @@ export const ensureRouterViewTemplate = async (params: RouteContextParameters): 
         params.$template = $([...template.content.children]) as DOM;
     } else {
         params.$template = $(content as HTMLElement);
-    }
-
-    return true; // newly created
-};
-
-/** @internal ensure RouteContextParameters#instance */
-export const ensureRouterViewInstance = async (route: RouteContext): Promise<boolean> => {
-    const { '@params': params } = route;
-
-    if (params.instance) {
-        return false; // already created
-    }
-
-    const { component } = params;
-    if (isFunction(component)) {
-        try {
-            // eslint-disable-next-line @typescript-eslint/await-thenable
-            params.instance = await new (component as unknown as Class)(route);
-        } catch {
-            params.instance = await component(route);
-        }
-    } else if (isObject(component)) {
-        params.instance = Object.assign({ '@route': route }, component);
-    } else {
-        params.instance = { '@route': route };
     }
 
     return true; // newly created

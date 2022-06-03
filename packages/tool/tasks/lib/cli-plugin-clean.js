@@ -2,7 +2,6 @@
 
 const { resolve, relative } = require('path');
 const fs     = require('fs-extra');
-const del    = require('del');
 const colors = require('../colors');
 const {
     dist,
@@ -15,7 +14,7 @@ const {
     type,
     temp,
 } = require('../config').dir;
-const { cleanEmptyDir } = require('./misc');
+const { cleanEmptyDir, del } = require('./misc');
 
 const COMMAND = 'clean';
 
@@ -126,19 +125,19 @@ async function exec(options) {
     }
     if (options.all || options.dist) {
         const distDir = resolve(cwd, dist);
-        del.sync(['**/*'], { cwd: distDir });
+        del(['**/*'], { cwd: distDir });
         info(distDir);
         cleanEmptyDir(distDir);
     }
     if (options.all || options.type) {
         const typeDir = resolve(cwd, type);
-        del.sync(['**/*.d.ts', '!**/_*.d.ts'], { cwd: typeDir });
+        del(['**/*.d.ts', '!**/_*.d.ts'], { cwd: typeDir });
         info(typeDir);
         cleanEmptyDir(typeDir);
     }
     if (options.target) {
         const targets = Array.isArray(options.target) ? options.target : [options.target];
-        const deleted = del.sync(targets);
+        const deleted = del(targets);
         for (const d of deleted) {
             info(d);
         }

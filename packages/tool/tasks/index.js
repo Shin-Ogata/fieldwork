@@ -11,6 +11,7 @@ const {
     merge,
     includes,
     copy,
+    del,
 } = require('./lib/misc');
 
 const plugins = cli.loadPlugins();
@@ -39,4 +40,5 @@ module.exports = {
     merge,
     includes,
     copy,
+    del,
 };

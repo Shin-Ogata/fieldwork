@@ -56,6 +56,7 @@ function copy(globs, dest, options) {
     const { source, ignore } = parseGlobs(globs);
     const dstRoot = resolve(cwd, dest);
 
+    const retval = [];
     for (const s of source) {
         const files = glob.sync(s, {
             cwd,
@@ -67,11 +68,37 @@ function copy(globs, dest, options) {
             const dst = resolve(dstRoot, f);
             fs.ensureDirSync(dirname(dst));
             fs.copyFileSync(src, dst);
+            retval.push(dst);
             if ('function' === typeof opts.callback) {
                 opts.callback(dst);
             }
         }
     }
+    return retval;
+}
+
+function del(globs, options) {
+    const opts = options || {};
+    const cwd  = toPOSIX(opts.cwd || process.cwd());
+
+    const { source, ignore } = parseGlobs(globs);
+
+    const retval = [];
+    for (const s of source) {
+        const files = glob.sync(s, {
+            cwd,
+            ignore,
+        });
+        for (const f of files) {
+            const src = resolve(cwd, f);
+            fs.removeSync(src);
+            retval.push(src);
+            if ('function' === typeof opts.callback) {
+                opts.callback(src);
+            }
+        }
+    }
+    return retval;
 }
 
 function gzip(file, dir, cwd) {
@@ -173,6 +200,7 @@ module.exports = {
     merge,
     includes,
     copy,
+    del,
     gzip,
     normalizeText,
     formatXML,
