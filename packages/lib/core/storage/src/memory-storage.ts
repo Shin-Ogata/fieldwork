@@ -2,6 +2,7 @@ import {
     Keys,
     Types,
     KeyToType,
+    assignValue,
     deepEqual,
     isEmptyObject,
     fromTypedData,
@@ -15,7 +16,6 @@ import {
 } from '@cdp/promise';
 import {
     StorageData,
-    StorageDataTypes,
     StorageDataTypeList,
     StorageInputDataTypeList,
     IStorageOptions,
@@ -142,7 +142,7 @@ export class MemoryStorage implements IStorage {
         const newVal = dropUndefined(value, true);         // `null` or `undefined` → 'null' or 'undefined'
         const oldVal = dropUndefined(this._storage[key]);  // `undefined` → `null`
         if (!deepEqual(oldVal, newVal)) {
-            this._storage[key] = newVal as StorageDataTypes;
+            assignValue(this._storage, key, newVal);
             !options.silent && this._broker.trigger('@', key, newVal, oldVal);
         }
     }

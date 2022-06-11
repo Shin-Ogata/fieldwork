@@ -5,7 +5,11 @@ import {
     writeFile,
     unlinkSync,
 } from 'fs';
-import { Keys, dropUndefined } from '@cdp/core-utils';
+import {
+    Keys,
+    dropUndefined,
+    assignValue,
+} from '@cdp/core-utils';
 import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import {
@@ -65,7 +69,7 @@ export class FsStorage implements IStorage {
             const data = JSON.parse(readFileSync(this._location).toString());
             const ref = this._storage.context;
             for (const key of Object.keys(data)) {
-                ref[key] = dropUndefined(data[key], true);
+                assignValue(ref, key, dropUndefined(data[key], true));
             }
         }
     }

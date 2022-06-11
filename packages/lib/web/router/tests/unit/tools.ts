@@ -8,11 +8,14 @@ import { dom } from '@cdp/dom';
 const body = document.body;
 
 export function createTestElementsFromTemplate(): HTMLElement[] {
+    const style = ` style="visibility: hidden;"`;
+//  const style = '';
+
     // set same origin for controlling from parent.
     const divs = dom.utils.elementify(
 `
 <div id="d1" class="test-dom">
-    <iframe id="test-frame" src="../res/router/index.html" style="visibility: hidden;"></iframe>
+    <iframe id="test-frame" src="../res/router/index.html"${style}></iframe>
 </div>
 `
     );

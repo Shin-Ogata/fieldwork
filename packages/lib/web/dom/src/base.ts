@@ -42,6 +42,23 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
         this.length = elements.length;
     }
 
+    /**
+     * @en Check target is `Node` and connected to` Document` or `ShadowRoot`.
+     * @ja 対象が `Node` でありかつ `Document` または `ShadowRoot` に接続されているか判定
+     *
+     * @param el
+     *  - `en` [[ElementBase]] instance
+     *  - `ja` [[ElementBase]] インスタンス
+     */
+    get isConnected(): boolean {
+        for (const el of this) {
+            if (isNode(el) && el.isConnected) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // implements: Iterable<T>
 

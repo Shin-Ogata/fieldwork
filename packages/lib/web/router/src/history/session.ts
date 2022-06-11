@@ -33,7 +33,7 @@ interface DispatchInfo<T> {
 }
 
 /** @internal constant */
-enum Const {
+const enum Const {
     HASH_PREFIX = '#/',
 }
 
@@ -246,7 +246,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      *  - `en` State management options
      *  - `ja` 状態管理用オプションを指定
      */
-    async replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
+    replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
         return this.updateState('replace', id, state, options || {});
     }
 
@@ -462,8 +462,8 @@ export interface SessionHistoryCreateOptions {
  *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
  */
 export function createSessionHistory<T = PlainObject>(id: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T> {
-    const { context, mode } = Object.assign({ context: window, mode: 'hash' }, options);
-    return new SessionHistory(context, mode, id, state);
+    const { context, mode } = Object.assign({ mode: 'hash' }, options);
+    return new SessionHistory(context || window, mode, id, state);
 }
 
 /**

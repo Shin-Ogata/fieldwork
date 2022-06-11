@@ -14,10 +14,13 @@ import { requestAnimationFrame, requestIdleCallback } from './ssr';
  * @param frameCount
  *  - `en` wait frame count.
  *  - `ja` 処理待ちを行うフレーム数
+ * @param executor
+ *  - `en` wait frame executor.
+ *  - `ja` 処理待ちを行う実行関数
  */
-export async function waitFrame(frameCount = 1): Promise<void> {
+export async function waitFrame(frameCount = 1, executor: UnknownFunction = requestAnimationFrame): Promise<void> {
     while (frameCount-- > 0) {
-        await new Promise<void>(requestAnimationFrame as UnknownFunction);
+        await new Promise<void>(executor);
     }
 }
 

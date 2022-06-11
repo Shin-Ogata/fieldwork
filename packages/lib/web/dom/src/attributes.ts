@@ -3,6 +3,7 @@
  */
 
 import {
+    UnknownObject,
     PlainObject,
     NonFunctionPropertyNames,
     TypedData,
@@ -10,6 +11,7 @@ import {
     isArray,
     toTypedData,
     fromTypedData,
+    assignValue,
     camelize,
     setMixClassAttribute,
 } from '@cdp/core-utils';
@@ -205,12 +207,12 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             for (const el of this) {
                 if (null != value) {
                     // single
-                    el[key as string] = value;
+                    assignValue(el as unknown as UnknownObject, key as string, value);
                 } else {
                     // multiple
                     for (const name of Object.keys(key)) {
                         if (name in el) {
-                            el[name] = key[name];
+                            assignValue(el as unknown as UnknownObject, name, key[name]);
                         }
                     }
                 }
@@ -419,7 +421,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
                 // get all data
                 const data: DOMData = {};
                 for (const prop of Object.keys(dataset)) {
-                    data[prop] = toTypedData(dataset[prop]) as TypedData;
+                    assignValue(data, prop, toTypedData(dataset[prop]));
                 }
                 return data;
             } else {
@@ -432,7 +434,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             if (prop) {
                 for (const el of this) {
                     if (isNodeHTMLOrSVGElement(el)) {
-                        el.dataset[prop] = fromTypedData(value);
+                        assignValue(el.dataset as unknown as UnknownObject, prop, fromTypedData(value));
                     }
                 }
             }

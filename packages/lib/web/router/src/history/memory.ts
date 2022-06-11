@@ -1,7 +1,4 @@
-import {
-    PlainObject,
-    post,
-} from '@cdp/core-utils';
+import { PlainObject, post } from '@cdp/core-utils';
 import { Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
 import {
@@ -168,7 +165,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
      *  - `en` State management options
      *  - `ja` 状態管理用オプションを指定
      */
-    async replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
+    replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
         return this.updateState('replace', id, state, options || {});
     }
 

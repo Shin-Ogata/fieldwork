@@ -1,5 +1,8 @@
-import { path2regexp } from '@cdp/extension-path2regexp';
-import { isString } from '@cdp/core-utils';
+import {
+    UnknownFunction,
+    isFunction,
+    camelize,
+} from '@cdp/core-utils';
 import { EventPublisher } from '@cdp/events';
 import {
     RESULT_CODE,
@@ -10,81 +13,37 @@ import {
     DOM,
     dom as $,
 } from '@cdp/dom';
-import {
-    toQueryStrings,
-    parseUrlQuery,
-    convertUrlParamType,
-} from '@cdp/ajax';
-import { document } from '../ssr';
+import { waitFrame } from '@cdp/web-utils';
+import { window } from '../ssr';
 import { normalizeId } from '../history/internal';
-import {
-    IHistory,
-    HistoryState,
-    createSessionHistory,
-    createMemoryHistory,
-} from '../history';
+import type { IHistory, HistoryState } from '../history';
 import type {
     RouteChangeInfo,
     RouterEvent,
     Page,
     RouteParameters,
     Route,
+    TransitionSettings,
     RouterConstructionOptions,
     RouteNavigationOptions,
     Router,
 } from './interfaces';
 import {
+    CssName,
+    DomCache,
+    LinkData,
+    PageEvent,
     RouteContextParameters,
     RouteContext,
     toRouteContextParameters,
     toRouteContext,
+    prepareHistory,
+    buildNavigateUrl,
+    parseUrlParams,
     ensureRouterPageInstance,
     ensureRouterPageTemplate,
+    processPageTransition,
 } from './internal';
-
-/** @internal prepare IHistory object */
-const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 'hash', initialPath?: string, context?: Window): IHistory<RouteContext> => {
-    return (isString(seed)
-        ? 'memory' === seed ? createMemoryHistory(initialPath || '') : createSessionHistory(initialPath || '', undefined, { mode: seed, context })
-        : seed
-    ) as IHistory<RouteContext>;
-};
-
-/** @internal */
-const buildNavigateUrl = (path: string, options: RouteNavigationOptions): string => {
-    try {
-        path = `/${normalizeId(path)}`;
-        const { query, params } = options;
-        let url = path2regexp.compile(path)(params || {});
-        if (query) {
-            url += `?${toQueryStrings(query)}`;
-        }
-        return url;
-    } catch (error) {
-        throw makeResult(
-            RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED,
-            `Construct route destination failed. [path: ${path}, detail: ${error.toString()}]`,
-            error,
-        );
-    }
-};
-
-/** @internal */
-const parseUrlParams = (route: RouteContext): void => {
-    const { url } = route;
-    route.query  = url.includes('?') ? parseUrlQuery(normalizeId(url)) : {};
-    route.params = {};
-
-    const { regexp, paramKeys } = route['@params'];
-    if (paramKeys.length) {
-        const params = regexp.exec(url)?.map((value, index) => { return { value, key: paramKeys[index - 1] }; });
-        for (const param of params!) { // eslint-disable-line @typescript-eslint/no-non-null-assertion
-            if (null != param.key) {
-                route.params[param.key] = convertUrlParamType(param.value);
-            }
-        }
-    }
-};
 
 //__________________________________________________________________________________________________//
 
@@ -96,10 +55,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private readonly _routes: Record<string, RouteContextParameters> = {};
     private readonly _history: IHistory<RouteContext>;
     private readonly _$el: DOM;
-    private readonly _$document: DOM<Document>;
+    private readonly _raf: UnknownFunction;
     private readonly _historyChangingHandler: typeof RouterContext.prototype.onHistoryChanging;
     private readonly _historyRefreshHandler: typeof RouterContext.prototype.onHistoryRefresh;
     private readonly _errorHandler: typeof RouterContext.prototype.onHandleError;
+    private readonly _cssPrefix: string;
+    private _transitionSettings: TransitionSettings;
+    private _prevRoute?: RouteContext;
 
     /**
      * constructor
@@ -111,27 +73,35 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             routes,
             start,
             el,
-            window,
+            window: context,
             history,
             initialPath,
+            cssPrefix,
+            transition,
         } = options;
 
-        this._$document = $(window?.document || document);
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        this._raf = context?.requestAnimationFrame || window.requestAnimationFrame;
+
         this._$el = $(selector, el);
         if (!this._$el.length) {
             throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND, `Router element not found. [selector: ${selector}]`);
         }
 
-        this._history = prepareHistory(history, initialPath, window as Window);
+        this._history = prepareHistory(history, initialPath, context as Window);
         this._historyChangingHandler = this.onHistoryChanging.bind(this);
         this._historyRefreshHandler  = this.onHistoryRefresh.bind(this);
         this._errorHandler           = this.onHandleError.bind(this);
 
         this._history.on('changing', this._historyChangingHandler);
-        this._history.on('refresh', this._historyRefreshHandler);
-        this._history.on('error', this._errorHandler);
+        this._history.on('refresh',  this._historyRefreshHandler);
+        this._history.on('error',    this._errorHandler);
 
-        // TODO: follow anchor
+        // follow anchor
+        this._$el.on('click', '[href]', this.onAnchorClicked.bind(this));
+
+        this._cssPrefix = cssPrefix || CssName.DEFAULT_PREFIX;
+        this._transitionSettings = Object.assign({ default: 'none' }, transition);
 
         this.register(routes as RouteParameters[], start);
     }
@@ -158,7 +128,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return this;
     }
 
-    /** @en Navigate to new page. */
+    /** Navigate to new page. */
     async navigate(to: string, options?: RouteNavigationOptions): Promise<this> {
         try {
             const seed = this.findRouteContextParameter(to);
@@ -166,8 +136,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, `Route not found. [to: ${to}]`);
             }
 
-            // TODO: default transition
-            const opts  = Object.assign({ transition: undefined, intent: undefined }, options);
+            const opts  = Object.assign({ transition: this._transitionSettings.default, intent: undefined }, options);
             const url   = buildNavigateUrl(to, opts);
             const route = toRouteContext(url, this, seed, opts);
 
@@ -202,6 +171,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return this;
     }
 
+    /** Set common transition settnigs. */
+    setTransitionSettings(newSettings: TransitionSettings): TransitionSettings {
+        const oldSettings = this._transitionSettings;
+        this._transitionSettings = { ...newSettings };
+        return oldSettings;
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // private methods:
 
@@ -226,24 +202,43 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         }
     }
 
-    /** @internal change content main procedure */
-    private async changeConetnt(nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined): Promise<void> {
+    /** @internal trigger page event */
+    private triggerPageCallback(event: PageEvent, target: Page | undefined, arg: Route | RouteChangeInfo): void {
+        const method = camelize(`page-${event}`);
+        isFunction(target?.[method]) && target?.[method](arg);
+    }
+
+    /** @internal wait frame */
+    private waitFrame(): Promise<void> {
+        return waitFrame(1, this._raf);
+    }
+
+    /** @internal change page main procedure */
+    private async changePage(nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined): Promise<void> {
         parseUrlParams(nextRoute);
+
+        const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
 
         const [
             pageNext, $elNext,
             pagePrev, $elPrev,
-        ] = await this.prepareChangeContext(nextRoute, prevRoute);
+        ] = await this.prepareChangeContext(changeInfo);
 
-        // TODO:
+        // transition core
+        await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
+
+        this.updateChangeContext($elNext, $elPrev, prevRoute);
+
+        this.publish('changed', changeInfo);
     }
 
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
     /** @internal */
-    private async prepareChangeContext(
-        nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined
-    ): Promise<[Page, DOM, Page, DOM]> {
+    private async prepareChangeContext(changeInfo: RouteChangeInfo): Promise<[Page, DOM, Page, DOM]> {
+        const nextRoute = changeInfo.to as HistoryState<RouteContext>;
+        const prevRoute = changeInfo.from as HistoryState<RouteContext> | undefined;
+
         const { '@params': params } = nextRoute;
 
         // page instance
@@ -253,19 +248,145 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         // page $el
         if (!nextRoute.el) {
-            // TODO: prevRoute から構築する方法も検討
             nextRoute.el = params.$template!.clone()[0];
-            this.publish('loaded', this.makeRouteChangeInfo(nextRoute, prevRoute));
-            // TODO: trigger
+            this.publish('loaded', changeInfo);
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            this.triggerPageCallback('init', nextRoute['@params'].page!, changeInfo);
+        }
+
+        const $elNext = $(nextRoute.el);
+        const pageNext = nextRoute['@params'].page!;
+
+        // mount
+        if (!$elNext.isConnected) {
+            $elNext.attr('aria-hidden', true);
+            this._$el.append($elNext);
+            this.publish('mounted', changeInfo);
+            this.triggerPageCallback('mounted', pageNext, changeInfo);
         }
 
         return [
-            nextRoute['@params'].page!, $(nextRoute.el),            // next
+            pageNext, $elNext,                                      // next
             prevRoute?.['@params'].page || {}, $(prevRoute?.el),    // prev
         ];
     }
 
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
+
+    /** @internal */
+    private async transitionPage(
+        pageNext: Page, $elNext: DOM,
+        pagePrev: Page, $elPrev: DOM,
+        changeInfo: RouteChangeInfo,
+    ): Promise<void> {
+        const transition = (changeInfo.to as RouteContext).transition || 'none';
+
+        const {
+            'enter-from-class': customEnterFromClass,
+            'enter-active-class': customEnterActiveClass,
+            'enter-to-class': customEnterToClass,
+            'leave-from-class': customLeaveFromClass,
+            'leave-active-class': customLeaveActiveClass,
+            'leave-to-class': customLeaveToClass,
+        } = this._transitionSettings;
+
+        // enter-css-class
+        const enterFromClass   = customEnterFromClass   || `${transition}${CssName.SUFFIX_ENTER_FROM}`;
+        const enterActiveClass = customEnterActiveClass || `${transition}${CssName.SUFFIX_ENTER_ACTIVE}`;
+        const enterToClass     = customEnterToClass     || `${transition}${CssName.SUFFIX_ENTER_TO}`;
+
+        // leave-css-class
+        const leaveFromClass   = customLeaveFromClass   || `${transition}${CssName.SUFFIX_LEAVE_FROM}`;
+        const leaveActiveClass = customLeaveActiveClass || `${transition}${CssName.SUFFIX_LEAVE_ACTIVE}`;
+        const leaveToClass     = customLeaveToClass     || `${transition}${CssName.SUFFIX_LEAVE_TO}`;
+
+        this.beginTransition(
+            pageNext, $elNext, enterFromClass, enterActiveClass,
+            pagePrev, $elPrev, leaveFromClass, leaveActiveClass,
+            changeInfo,
+        );
+
+        await this.waitFrame();
+
+        // transision execution
+        await Promise.all([
+            processPageTransition($elNext, enterFromClass, enterActiveClass, enterToClass),
+            processPageTransition($elPrev, leaveFromClass, leaveActiveClass, leaveToClass),
+        ]);
+
+        await this.waitFrame();
+
+        this.endTransition(
+            pageNext, $elNext, enterToClass,
+            pagePrev, $elPrev, leaveToClass,
+            changeInfo,
+        );
+    }
+
+    /** @internal transition proc : begin */
+    private beginTransition(
+        pageNext: Page, $elNext: DOM, enterFromClass: string, enterActiveClass: string,
+        pagePrev: Page, $elPrev: DOM, leaveFromClass: string, leaveActiveClass: string,
+        changeInfo: RouteChangeInfo,
+    ): void {
+        this._$el.addClass([
+            `${this._cssPrefix}${CssName.TRANSITION_RUNNING}`,
+            `${this._cssPrefix}${CssName.TRANSITION_DIRECTION}${changeInfo.direction}`,
+        ]);
+        $elNext.removeAttr('aria-hidden');
+        $elNext.addClass([enterFromClass, enterActiveClass]);
+        $elPrev.addClass([leaveFromClass, leaveActiveClass]);
+
+        this.publish('before-transition', changeInfo);
+        this.triggerPageCallback('before-enter', pageNext, changeInfo);
+        this.triggerPageCallback('before-leave', pagePrev, changeInfo);
+    }
+
+    /** @internal transition proc : end */
+    private endTransition(
+        pageNext: Page, $elNext: DOM, enterToClass: string,
+        pagePrev: Page, $elPrev: DOM, leaveToClass: string,
+        changeInfo: RouteChangeInfo,
+    ): void {
+        $elNext.removeClass(enterToClass);
+        $elPrev.removeClass(leaveToClass);
+        $elPrev.attr('aria-hidden', true);
+
+        this._$el.removeClass([
+            `${this._cssPrefix}${CssName.TRANSITION_RUNNING}`,
+            `${this._cssPrefix}${CssName.TRANSITION_DIRECTION}${changeInfo.direction}`,
+        ]);
+
+        this.publish('after-transition', changeInfo);
+        this.triggerPageCallback('after-enter', pageNext, changeInfo);
+        this.triggerPageCallback('after-leave', pagePrev, changeInfo);
+    }
+
+    /** @internal update page status after transition */
+    private updateChangeContext($elNext: DOM, $elPrev: DOM, prevRoute: RouteContext | undefined): void {
+        // update class
+        $elPrev.removeClass(`${this._cssPrefix}${CssName.PAGE_CURRENT}`);
+        $elNext.addClass(`${this._cssPrefix}${CssName.PAGE_CURRENT}`);
+        $elPrev.addClass(`${this._cssPrefix}${CssName.PAGE_PREVIOUS}`);
+
+        if (this._prevRoute) {
+            const $el = $(this._prevRoute.el);
+            $el.removeClass(`${this._cssPrefix}${CssName.PAGE_PREVIOUS}`);
+            const cacheLv = $el.data(DomCache.DATA_NAME);
+            if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
+                $el.detach();
+                const page = this._prevRoute['@params'].page;
+                this.publish('unmounted', this._prevRoute);
+                this.triggerPageCallback('unmounted', page, this._prevRoute);
+                if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
+                    this._prevRoute.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                    this.publish('unloaded', this._prevRoute);
+                    this.triggerPageCallback('removed', page, this._prevRoute);
+                }
+            }
+        }
+        this._prevRoute = prevRoute;
+    }
 
 ///////////////////////////////////////////////////////////////////////
 // event handlers:
@@ -300,7 +421,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         try {
             // scheduling `refresh` done.
-            promises.push(this.changeConetnt(ensure(newState), oldState));
+            promises.push(this.changePage(ensure(newState), oldState));
         } catch (e) {
             this.onHandleError(e);
         }
@@ -313,6 +434,25 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             isResult(error) ? error : makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, 'Route navigate failed.', error)
         );
         console.error(error);
+    }
+
+    /** @internal anchor click handler */
+    private onAnchorClicked(event: MouseEvent): void {
+        const $target = $(event.target as Element).closest('[href]');
+        if ($target.data(LinkData.PREVENT_ROUTER)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const url        = $target.attr('href');
+        const transition = $target.data(LinkData.TRANSITION) as string;
+
+        if ('#' === url) {
+            void this.back();
+        } else {
+            void this.navigate(url as string, { transition });
+        }
     }
 }
 

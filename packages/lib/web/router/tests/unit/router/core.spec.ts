@@ -3,9 +3,12 @@
     @typescript-eslint/no-explicit-any
  */
 
-import { UnknownFunction } from '@cdp/core-utils';
 import { RESULT_CODE } from '@cdp/result';
-import { webRoot, clearTemplateCache } from '@cdp/web-utils';
+import {
+    webRoot,
+    clearTemplateCache,
+    waitFrame as _waitFrame,
+} from '@cdp/web-utils';
 import {
     DOM,
     dom as $,
@@ -46,12 +49,12 @@ describe('router/context spec', () => {
 
     const waitFrame = async (instance: Router, frameCount = 1): Promise<void> => {
         const { requestAnimationFrame } = getWindow(instance); // eslint-disable-line @typescript-eslint/unbound-method
-        while (frameCount-- > 0) {
-            await new Promise<void>(requestAnimationFrame as UnknownFunction);
-        }
+        await _waitFrame(frameCount, requestAnimationFrame);
     };
 
     const WAIT_FRAME_MARGINE = 5;
+
+    const evClick = new Event('click', { cancelable: true, bubbles: true });
 
     const prepareQueryContext = async (): Promise<{ el: Document | null; window: Window | null; }> => {
         const iframe = await prepareIFrameElements();
@@ -117,6 +120,29 @@ describe('router/context spec', () => {
 
             await waitFrame(router);
             expect(router.currentRoute.path).toBe('/initial');
+        });
+
+        it('transition settings', async () => {
+            const router = await createRouterWrap({
+                routes: [{ path: '/' }],
+                transition: {
+                    default: 'fade',
+                    'enter-active-class': 'animate__animated animate__tada',
+                    'leave-active-class': 'animate__animated animate__bounceOutRight',
+                },
+            });
+
+            await waitFrame(router);
+
+            const old = router.setTransitionSettings({});
+            expect(old).toEqual({
+                default: 'fade',
+                'enter-active-class': 'animate__animated animate__tada',
+                'leave-active-class': 'animate__animated animate__bounceOutRight',
+            });
+
+            const old2 = router.setTransitionSettings(old);
+            expect(old2).toEqual({});
         });
     });
 
@@ -341,6 +367,7 @@ describe('router/context spec', () => {
             };
 
             const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
 
             const router = await createRouterWrap({
                 routes: [
@@ -349,20 +376,14 @@ describe('router/context spec', () => {
                 ],
             });
 
-            spyOn(stub, 'onCallback').and.callThrough();
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
             router.on('will-change', cancelCallback);
             router.on('changed', stub.onCallback);
 
-            await waitFrame(router);
-
-            try {
-                await router.navigate('/one');
-            } catch (e) {
-                expect(e).toBe('[test] changing not allowed');
-            }
+            await router.navigate('/one');
 
             expect(router.currentRoute.path).toBe('/');
-
             expect(stub.onCallback).not.toHaveBeenCalled();
         });
 
@@ -373,7 +394,7 @@ describe('router/context spec', () => {
                 routes: [
                     {
                         path: '/string',
-                        content: '<div class="router-page">template from string</div>',
+                        content: '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from string</div>',
                     },
                     {
                         path: '/ajax',
@@ -446,18 +467,24 @@ describe('router/context spec', () => {
         });
 
         it('check RouteParameters.component creation', async () => {
+            const changes: RouteChangeInfo[] = [];
             class RouterPage implements Page {
                 '@route': Route;
                 constructor(route: Route) { this['@route'] = route; }
                 get name(): string { return 'I was born from an class.'; }
-                pageInit: undefined;
+                pageInit(info: RouteChangeInfo): void {
+                    changes.push(info);
+                }
             }
 
             const syncFactory = (route: Route): RouterPage => {
                 return {
                     name: 'I was born from an sync-factory.',
                     '@route': route,
-                } as RouterPage;
+                    pageInit(info: RouteChangeInfo) {
+                        changes.push(info);
+                    }
+                };
             };
 
             const asyncFactory = async (route: Route): Promise<RouterPage> => { // eslint-disable-line @typescript-eslint/require-await
@@ -473,7 +500,7 @@ describe('router/context spec', () => {
                 routes: [
                     {
                         path: '/object',
-                        component: { name: 'I was born from an object.' } as Page,
+                        component: { name: 'I was born from an object.', pageInit(info: RouteChangeInfo) { changes.push(info); } },
                     },
                     {
                         path: '/class',
@@ -497,6 +524,7 @@ describe('router/context spec', () => {
             expect(page).toBeDefined();
             expect(page.name).toBe('I was born from an object.');
             expect(page['@route']).toBeDefined();
+            expect(changes.length).toBe(1);
 
             await router.navigate('/class');
 
@@ -504,6 +532,7 @@ describe('router/context spec', () => {
             expect(page).toBeDefined();
             expect(page.name).toBe('I was born from an class.');
             expect(page['@route']).toBeDefined();
+            expect(changes.length).toBe(2);
 
             await router.navigate('/sync-factory');
 
@@ -511,6 +540,7 @@ describe('router/context spec', () => {
             expect(page).toBeDefined();
             expect(page.name).toBe('I was born from an sync-factory.');
             expect(page['@route']).toBeDefined();
+            expect(changes.length).toBe(3);
 
             await router.navigate('/async-factory');
 
@@ -518,6 +548,212 @@ describe('router/context spec', () => {
             expect(page).toBeDefined();
             expect(page.name).toBe('I was born from an async-factory.');
             expect(page['@route']).toBeDefined();
+            expect(changes.length).toBe(3);
+        });
+    });
+
+    describe('navigate transition', () => {
+        it('check animation', async () => {
+            const styleText = `
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.fade-leave-active {
+    opacity: 0;
+    animation-duration: 500ms;
+    animation-name: fadeout;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    animation-duration: 500ms;
+    animation-name: fadein;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}`;
+
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: '<div class="router-page">first page</div>',
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+            router.on(['before-transition', 'after-transition'], stub.onCallback);
+
+            const win = getWindow(router);
+            const style = win.document.createElement('style');
+            style.textContent = styleText;
+            win.document.head.append(style);
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            await router.navigate('/next', { transition: 'fade' });
+
+            expect(stub.onCallback).toHaveBeenCalled();
+        });
+
+        it('check transition', async () => {
+            const styleText = `
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}`;
+
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: '<div class="router-page">first page</div>',
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+            router.on(['before-transition', 'after-transition'], stub.onCallback);
+
+            const win = getWindow(router);
+            const style = win.document.createElement('style');
+            style.textContent = styleText;
+            win.document.head.append(style);
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            await router.navigate('/next', { transition: 'fade' });
+
+            expect(stub.onCallback).toHaveBeenCalled();
+        });
+    });
+
+    describe('anchor handling', () => {
+        it('check anchor navigate', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="/next" id="to-next">Next Page</a>
+</div>`,
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            const $button = $(router.el).find('#to-next');
+            expect($button.length).toBe(1);
+
+            $button[0].dispatchEvent(evClick);
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            expect(router.currentRoute.path).toBe('/next');
+        });
+
+        it('check anchor navigate back', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [
+                    {
+                        path: '/first',
+                        content: '<div class="router-page">first page</div>',
+                    },
+                    {
+                        path: '/second',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="#" id="to-back">Second Page</a>
+</div>`,
+                    },
+                ],
+            });
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await router.navigate('/second');
+
+            const $button = $(router.el).find('#to-back');
+            expect($button.length).toBe(1);
+
+            $button[0].dispatchEvent(evClick);
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            expect(router.currentRoute.path).toBe('/first');
+        });
+
+        it('check anchor navigate no handle', async () => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="https://example.com" id="to-outside" data-prevent-router="true">Outside Page</a>
+</div>`,
+                    },
+                ],
+            });
+
+            router.on('error', stub.onCallback);
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            const $preventRouter = $(router.el).find('#to-outside');
+            expect($preventRouter.length).toBe(1);
+
+            $preventRouter[0].dispatchEvent(evClick);
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            expect(stub.onCallback).not.toHaveBeenCalled();
         });
     });
 });

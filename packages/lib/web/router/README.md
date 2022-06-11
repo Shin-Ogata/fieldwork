@@ -31,36 +31,8 @@
 
 #### TODO
 
-- View Instance が備えるべきコールバックインターフェイス設計
-```js
-  f7.on('pageMounted', onPageMounted);
-  f7.on('pageInit', onPageInit);
-  f7.on('pageReinit', onPageReinit);
-  f7.on('pageBeforeIn', onPageBeforeIn);
-  f7.on('pageBeforeOut', onPageBeforeOut);
-  f7.on('pageAfterOut', onPageAfterOut);
-  f7.on('pageAfterIn', onPageAfterIn);
-  f7.on('pageBeforeRemove', onPageBeforeRemove);
-  f7.on('pageBeforeUnmount', onPageBeforeUnmount);
-
-  /** Event will be triggered when new page just inserted to DOM. As an argument event receives Page Data */
-  pageMounted(page: Page): void;
-  /** Event will be triggered after Router initialize required page's components and navbar. As an argument event receives Page Data */
-  pageInit(page: Page): void;
-  /** This event will be triggered in case of navigating to the page that was already initialized. As an argument event receives Page Data */
-  pageReinit(page: Page): void;
-  /** Event will be triggered when everything initialized and page is ready to be transitioned into view (into active/current position). As an argument event receives Page Data */
-  pageBeforeIn(page: Page): void;
-  /** Event will be triggered after page transitioned into view. As an argument event receives Page Data */
-  pageAfterIn(page: Page): void;
-  /** Event will be triggered right before page is going to be transitioned out of view. As an argument event receives Page Data */
-  pageBeforeOut(page: Page): void;
-  /** Event will be triggered after page transitioned out of view. As an argument event receives Page Data */
-  pageAfterOut(page: Page): void;
-  /** Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives Page Data */
-  pageBeforeRemove(page: Page): void;
-```
-- transition 管理の確認
+- subflow
+  - back-destination (anchor も)
 
 <p><details>
 <summary>Done</summary>
@@ -99,36 +71,27 @@
 
 - Route から url を見えるかするか?
   - する
+
 - params, query の parse
+
 - 同じ url に対する navigate
   - History にあわせて許容する
 
-</details></p>
+- `:param` は必要. params, query 両対応
+  - framework7 相当 (backbone は正規表現そのもの?)
+    - [View のパラメータ](https://framework7.jp/docs/view.html#anchor-4)
+  - [path matcher](https://github.com/pillarjs/path-to-regexp/tree/v1.7.0)
+  - [Vue dynamic matching](https://v3.router.vuejs.org/ja/guide/essentials/dynamic-matching.html)
 
-
-#### Event
-
-- will-change
-
-- (load)
-
-- before-leave
-- leave
-- after-leave
-
-- mounted
-
-- before-enter
-- enter
-- after-enter
-
-- unmounted
-
-- (unload)
-
-- changed
-
-#### CSS
+- css
+  - barba css next が参考になる transitionend の判定とかも
+    - animation-duration の確認必要
+  - reverse はとりあえずなし?!. subflow も履歴管理を先に行えばできればいけるか?
+    - router-transition-reverse は必要
+    - router-transition-running も入れとく?
+  - z-index は css のみで操作
+  - visibility: hidden or display: none はどうするか?
+    - alia-hidden のみ
 
 - jquery-mobile viewport
 ```
@@ -151,68 +114,30 @@
 'ui-page ui-page-theme-cdp ui-page-header-fixed'
 ```
 
-#### memo
+- prev は専用キャッシュで実装
 
-- `@cdp/template` には依存しない
-  - page のベース html だけが欲しいので mustache compile は基本させない
-  - ローカライズは必要?
-    -  router の外で行う? (beforecreate?, beforeEnter?)
+- anchor
+  - https://framework7.jp/docs/view.html#anchor-8
 
-- `:param` は必要. params, query 両対応
-  - framework7 相当 (backbone は正規表現そのもの?)
-    - [View のパラメータ](https://framework7.jp/docs/view.html#anchor-4)
-  - [path matcher](https://github.com/pillarjs/path-to-regexp/tree/v1.7.0)
-  - [Vue dynamic matching](https://v3.router.vuejs.org/ja/guide/essentials/dynamic-matching.html)
+</details></p>
+
+#### memo & future work
+
+- スクロール位置の記憶する/しない
+  - → app/PageView クラスで対応
+
+- swipe back
+
+- マスター・ディーテイルレイアウト
+  - https://framework7.io/docs/view#master-detail
+  - https://framework7.jp/docs/view.html#anchor-12
 
 - <a>リンクを shift 同時押下で別タブ開きたい
   - https://stackoverflow.com/questions/56892748/how-to-handle-intention-to-open-link-in-new-page-in-a-spa-application
 
-```
-// framework7 back.js
-    navigateUrl = router.generateUrl({ name, params, query });
-    query: parseUrlQuery(previousUrl),
-    router.parseRouteUrl(newUrl);
-    findMatchingRoute()
-```
-
-- `@cdp/dom` は~~まだ我慢. でも使うかも~~ 使う.
-  - ただし I/F に染み出させない (意味はないかも?)
-  - keepAlive で detach() を使いそう
-  - https://framework7.jp/docs/routes.html#anchor-15
-
-- 2page 間で `navigate()` を呼んでからのイベントフローを書いてみる
-  - cancel も考慮してみる
-
-- `intent` と `hisory.state` と協調? view 間でわたるので違うかも → できない
-- `Route` と `hisory.state` と協調? → シリアライズできないものは格納できない? → SessionHisotry で対応
-
-- `beforeRouteChange`は`beforeHide` or `beforeLeave`で賄える?
-  - `will-change` を受けた後キャンセルできるか考える
-
 - vue ナビゲーションガード(callback i/f)を理解する
   - [ナビゲーションガード](https://v3.router.vuejs.org/ja/guide/advanced/navigation-guards.html)
 
-- スクロール位置の記憶する/しない
-
-- マスター・ディーテイルレイアウト
-  - https://framework7.io/docs/view#master-detail
-
-- prev は専用キャッシュで実装
-
-- 非 Promise 関数も await 可 (new も可)
-```ts
-async function check(arg) {
-  const ret = await new arg();
-  console.log('number' === typeof ret);
-}
-const func = function() { return 1; }
-
-check(func); // true
-```
-
-- DOM が document に接続されているか否か
-  - Node.isConnected
-  - https://developer.mozilla.org/ja/docs/Web/API/Node/isConnected
 
 - html2canvas は何をやっているのか?
   - https://qiita.com/youwht/items/8b681a856f59aa82d671
@@ -227,3 +152,5 @@ check(func); // true
     - html-to-image
       - https://github.com/bubkoo/html-to-image#readme
       - https://marmooo.blogspot.com/2021/04/html-to-image-html.html
+
+

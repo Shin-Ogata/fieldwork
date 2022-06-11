@@ -3,6 +3,7 @@ import {
     isString,
     isNumber,
     isArray,
+    assignValue,
     classify,
     dasherize,
     setMixClassAttribute,
@@ -25,7 +26,7 @@ import { window } from './ssr';
 function ensureChainCaseProperies(props: PlainObject<string | null>): PlainObject<string | null> {
     const retval = {};
     for (const key in props) {
-        retval[dasherize(key)] = props[key];
+        assignValue(retval, dasherize(key), props[key]);
     }
     return retval;
 }
@@ -216,8 +217,8 @@ function getOffsetPosition(el: Element): { top: number; left: number; } {
     const rect = el.getBoundingClientRect();
     const view = getDefaultView(el);
     return {
-        top: rect.top + view.pageYOffset,
-        left: rect.left + view.pageXOffset
+        top: rect.top + view.scrollY,
+        left: rect.left + view.scrollX,
     };
 }
 

@@ -24,6 +24,15 @@ export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Ite
      */
     constructor(elements: T[]);
     /**
+     * @en Check target is `Node` and connected to` Document` or `ShadowRoot`.
+     * @ja 対象が `Node` でありかつ `Document` または `ShadowRoot` に接続されているか判定
+     *
+     * @param el
+     *  - `en` [[ElementBase]] instance
+     *  - `ja` [[ElementBase]] インスタンス
+     */
+    get isConnected(): boolean;
+    /**
      * @en Iterator of [[ElementBase]] values in the array.
      * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
      */
