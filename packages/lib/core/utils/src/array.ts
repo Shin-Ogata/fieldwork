@@ -2,6 +2,7 @@
     no-invalid-this,
  */
 
+import { assignValue } from './deep-circuit';
 import { randomInt } from './misc';
 
 /**
@@ -202,7 +203,7 @@ export function groupBy<
         // init keys
         if (!(_key in res)) {
             const keyList = keys.reduce((h, k: string) => {
-                h[k] = data[k];
+                assignValue(h, k, data[k]);
                 return h;
             }, {});
 

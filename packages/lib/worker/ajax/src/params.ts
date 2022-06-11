@@ -2,6 +2,7 @@ import {
     PlainObject,
     isFunction,
     isNumeric,
+    assignValue,
 } from '@cdp/core-utils';
 import { URLSearchParams } from './ssr';
 
@@ -35,7 +36,7 @@ export const toAjaxParams = (data: PlainObject): Record<string, string> => {
     for (const key of Object.keys(data)) {
         const value = ensureParamValue(data[key]);
         if (value) {
-            params[key] = value;
+            assignValue(params, key, value);
         }
     }
     return params;

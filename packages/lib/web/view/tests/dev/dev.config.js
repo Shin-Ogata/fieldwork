@@ -32,6 +32,7 @@ module.exports = config(rollup[1], {
             '@cdp/i18n': 'node_modules/@cdp/collection/node_modules/@cdp/i18n/dist/i18n',
             // i18n
             '@cdp/extension-i18n': 'node_modules/@cdp/collection/node_modules/@cdp/i18n/node_modules/@cdp/extension-i18n/dist/extension-i18n',
+            '@cdp/web-utils': 'node_modules/@cdp/collection/node_modules/@cdp/i18n/node_modules/@cdp/web-utils/dist/web-utils',
             '@cdp/environment': 'node_modules/@cdp/collection/node_modules/@cdp/i18n/node_modules/@cdp/environment/dist/environment',
         }),
     },

@@ -7,12 +7,24 @@ import {
     isArray,
     isObject,
     isFunction,
+    assignValue,
 } from '@cdp/core-utils';
+import { RESULT_CODE, makeResult } from '@cdp/result';
+import {
+    toQueryStrings,
+    parseUrlQuery,
+    convertUrlParamType,
+} from '@cdp/ajax';
 import {
     DOM,
     dom as $,
 } from '@cdp/dom';
 import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
+import {
+    IHistory,
+    createSessionHistory,
+    createMemoryHistory,
+} from '../history';
 import { normalizeId } from '../history/internal';
 import type {
     Page,
@@ -21,6 +33,39 @@ import type {
     RouteNavigationOptions,
     Router,
 } from './interfaces';
+
+/** @internal */
+export const enum CssName {
+    DEFAULT_PREFIX       = 'cdp',
+    TRANSITION_DIRECTION = '-transition-direction-',
+    TRANSITION_RUNNING   = '-transition-running',
+    PAGE_CURRENT         = '-page-current',
+    PAGE_PREVIOUS        = '-page-previous',
+    SUFFIX_ENTER_FROM    = '-enter-from',
+    SUFFIX_ENTER_ACTIVE  = '-enter-active',
+    SUFFIX_ENTER_TO      = '-enter-to',
+    SUFFIX_LEAVE_FROM    = '-leave-from',
+    SUFFIX_LEAVE_ACTIVE  = '-leave-active',
+    SUFFIX_LEAVE_TO      = '-leave-to',
+}
+
+/** @internal */
+export const enum DomCache {
+    DATA_NAME           = 'dom-cache',
+    CACHE_LEVEL_MEMORY  = 'memory',
+    CACHE_LEVEL_CONNECT = 'connect',
+}
+
+/** @internal */
+export const enum LinkData {
+    TRANSITION      = 'transition',
+    PREVENT_ROUTER  = 'prevent-router',
+}
+
+/** @internal */
+export type PageEvent = 'init' | 'mounted' | 'before-enter' | 'after-enter' | 'before-leave' | 'after-leave' | 'unmounted' | 'removed';
+
+//__________________________________________________________________________________________________//
 
 /** @internal flat RouteParameters */
 export type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
@@ -86,6 +131,54 @@ export const toRouteContextParameters = (routes: RouteParameters | RouteParamete
         });
 };
 
+//__________________________________________________________________________________________________//
+
+/** @internal prepare IHistory object */
+export const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 'hash', initialPath?: string, context?: Window): IHistory<RouteContext> => {
+    return (isString(seed)
+        ? 'memory' === seed ? createMemoryHistory(initialPath || '') : createSessionHistory(initialPath || '', undefined, { mode: seed, context })
+        : seed
+    ) as IHistory<RouteContext>;
+};
+
+/** @internal */
+export const buildNavigateUrl = (path: string, options: RouteNavigationOptions): string => {
+    try {
+        path = `/${normalizeId(path)}`;
+        const { query, params } = options;
+        let url = path2regexp.compile(path)(params || {});
+        if (query) {
+            url += `?${toQueryStrings(query)}`;
+        }
+        return url;
+    } catch (error) {
+        throw makeResult(
+            RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED,
+            `Construct route destination failed. [path: ${path}, detail: ${error.toString()}]`,
+            error,
+        );
+    }
+};
+
+/** @internal */
+export const parseUrlParams = (route: RouteContext): void => {
+    const { url } = route;
+    route.query  = url.includes('?') ? parseUrlQuery(normalizeId(url)) : {};
+    route.params = {};
+
+    const { regexp, paramKeys } = route['@params'];
+    if (paramKeys.length) {
+        const params = regexp.exec(url)?.map((value, index) => { return { value, key: paramKeys[index - 1] }; });
+        for (const param of params!) { // eslint-disable-line @typescript-eslint/no-non-null-assertion
+            if (null != param.key) {
+                assignValue(route.params, param.key, convertUrlParamType(param.value));
+            }
+        }
+    }
+};
+
+//__________________________________________________________________________________________________//
+
 /** @internal ensure RouteContextParameters#instance */
 export const ensureRouterPageInstance = async (route: RouteContext): Promise<boolean> => {
     const { '@params': params } = route;
@@ -134,4 +227,39 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
     }
 
     return true; // newly created
+};
+
+/** @internal check animation property */
+const hasAnimation = ($el: DOM): boolean => {
+    try {
+        return getComputedStyle($el[0]).animationDuration !== '0s';
+    } catch {
+        return false;
+    }
+};
+
+/** @internal check transition property */
+const hasTransition = ($el: DOM): boolean => {
+    try {
+        return getComputedStyle($el[0]).transitionDuration !== '0s';
+    } catch {
+        return false;
+    }
+};
+
+/** @internal */
+const waitForEffect = ($el: DOM, method: 'animationEnd' | 'transitionEnd'): Promise<Event> => {
+    return new Promise(resolve => $el[method](resolve));
+};
+
+/** @internal transition execution */
+export const processPageTransition = async($el: DOM, fromClass: string, activeClass: string, toClass: string): Promise<void> => {
+    $el.removeClass(fromClass);
+    $el.addClass(toClass);
+    if (hasAnimation($el)) {
+        await waitForEffect($el, 'animationEnd');
+    } else if (hasTransition($el)) {
+        await waitForEffect($el, 'transitionEnd');
+    }
+    $el.removeClass(activeClass);
 };

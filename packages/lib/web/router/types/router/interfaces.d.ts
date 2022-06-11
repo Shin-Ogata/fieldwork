@@ -34,45 +34,39 @@ export interface RouterEvent {
     /**
      * @en New DOM content loaded notification.
      * @ja 新しいDOM コンテンツのロード通知
-     * @args [event]
+     * @args [[RouteChangeInfo]]
      */
     'loaded': [RouteChangeInfo];
     /**
      * @en Next page just inserted to DOM notification.
      * @ja 次のページの DOM 挿入通知
-     * @args [event]
+     * @args [[RouteChangeInfo]]
      */
     'mounted': [RouteChangeInfo];
     /**
      * @en Before transition notification.
      * @ja トランジション開始通知
-     * @args [event]
+     * @args [[RouteChangeInfo]]
      */
     'before-transition': [RouteChangeInfo];
     /**
-     * @en transitioning notification.
-     * @ja トランジション中通知
-     * @args [event]
-     */
-    'transition': [RouteChangeInfo];
-    /**
      * @en After transition notification.
      * @ja トランジション終了通知
-     * @args [event]
+     * @args [[RouteChangeInfo]]
      */
     'after-transition': [RouteChangeInfo];
     /**
      * @en Previous page just detached from DOM notification.
      * @ja 前のページの DOM 切除通知
-     * @args [event]
+     * @args [[Route]]
      */
-    'unmounted': [RouteChangeInfo];
+    'unmounted': [Route];
     /**
      * @en Old DOM content unloaded notification.
      * @ja 古い DOM コンテンツの破棄通知
-     * @args [event]
+     * @args [Route]
      */
-    'unloaded': [RouteChangeInfo];
+    'unloaded': [Route];
     /**
      * @en Route changed notification.
      * @ja ルート変更完了通知
@@ -126,12 +120,12 @@ export interface Page {
      * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
      * @ja ページの HTMLElement が DOM から切り離された直後に発火
      */
-    pageUnmounted?(info: RouteChangeInfo): void;
+    pageUnmounted?(info: Route): void;
     /**
      * @en Triggered when the page's HTMLElement is destroyed by the router.
      * @ja ページの HTMLElement がルーターによって破棄されたときに発火
      */
-    pageRemoved?(info: RouteChangeInfo): void;
+    pageRemoved?(info: Route): void;
 }
 /**
  * @en [[Page]] factory function.
@@ -217,6 +211,26 @@ export interface Route {
     readonly el: HTMLElement;
 }
 /**
+ * @en Global transition settings.
+ * @ja グローバルトランジション設定
+ */
+export interface TransitionSettings {
+    /** default transition name */
+    default?: string;
+    /** custom enter-from css class name */
+    'enter-from-class'?: string;
+    /** custom enter-active css class name */
+    'enter-active-class'?: string;
+    /** custom enter-to css class name */
+    'enter-to-class'?: string;
+    /** custom leave-from css class name */
+    'leave-from-class'?: string;
+    /** custom leave-active css class name */
+    'leave-active-class'?: string;
+    /** custom leave-to css class name */
+    'leave-to-class'?: string;
+}
+/**
  * @en Router construction option definition.
  * @ja ルーター構築オプション定義
  */
@@ -251,6 +265,16 @@ export interface RouterConstructionOptions {
      * @ja 使用する `Window` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
      */
     window?: Window | null;
+    /**
+     * @en CSS class prefix to use. default: `cdp`.
+     * @ja 使用する CSS クラスプリフィックス. default: `cdp`
+     */
+    cssPrefix?: string;
+    /**
+     * @en Common transition settings.
+     * @ja 共通トランジション設定
+     */
+    transition?: TransitionSettings;
 }
 /**
  * @en Route navigation options definition.
@@ -342,4 +366,16 @@ export interface Router extends Subscribable<RouterEvent> {
      *         省略または 0 が指定された場合は, 再読み込みを実行
      */
     go(delta?: number): Promise<this>;
+    /**
+     * @en Set common transition settnigs.
+     * @ja 共通トランジション設定
+     *
+     * @param newSettings
+     *  - `en` new settings object
+     *  - `ja` 新規の設定オブジェクト
+     * @returns
+     *  - `en` previous settings object
+     *  - `ja` 以前の設定オブジェクト
+     */
+    setTransitionSettings(newSettings: TransitionSettings): TransitionSettings;
 }

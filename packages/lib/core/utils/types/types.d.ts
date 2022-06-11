@@ -22,7 +22,7 @@ export declare type UnknownFunction = (...args: unknown[]) => unknown;
  * @en Avoid the `Object` and `{}` types, as they mean "any non-nullish value".
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
  */
-export declare type UnknownObject = Record<string, unknown>;
+export declare type UnknownObject = Record<string | number | symbol, unknown>;
 /**
  * @en Non-nullish value.
  * @ja 非 Null 値

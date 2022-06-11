@@ -4,6 +4,7 @@
 
 import {
     Nil,
+    UnknownObject,
     Constructor,
     Class,
     Arguments,
@@ -11,6 +12,7 @@ import {
     isEmptyObject,
     luid,
     escapeHTML,
+    assignValue,
     deepCopy,
     deepEqual,
     diff,
@@ -85,7 +87,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
         attrs = key;
         options = value;
     } else {
-        (attrs = {})[key] = value;
+        assignValue(attrs = {}, key, value);
     }
 
     if (options && options.data) {
@@ -245,8 +247,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                 this[_properties].prevAttrs = { ...attrs } as T;
             }
             delete this[_properties].changedAttrs;
-            this._prevAttrs[name] = attrs[name];
-            attrs[name] = val;
+            assignValue(this._prevAttrs as UnknownObject, name, attrs[name]);
+            assignValue(attrs as unknown as UnknownObject, name, val);
         }
     }
 

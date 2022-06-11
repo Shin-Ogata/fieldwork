@@ -6,6 +6,7 @@
  */
 
 import {
+    assignValue,
     deepEqual,
     deepMerge,
     deepCopy,
@@ -167,5 +168,9 @@ describe('utils/deep-circuit spec', () => {
 
         deepMerge(Number, JSON.parse(maliciousPayload));
         expect((Number as any).vulnerable).toBeUndefined();
+
+        const obj = { aaa: 'aaa' };
+        assignValue(obj, '__proto__', { vulnerable: 'Polluted' });
+        expect(obj).toEqual({ aaa: 'aaa' });
     });
 });

@@ -1,4 +1,4 @@
-import { deepEqual } from './deep-circuit';
+import { assignValue, deepEqual } from './deep-circuit';
 import {
     Nil,
     Writable,
@@ -32,7 +32,7 @@ export function has(src: unknown, propName: string): boolean {
 export function pick<T extends object, K extends keyof T>(target: T, ...pickKeys: K[]): Writable<Pick<T, K>> {
     verify('typeOf', 'object', target);
     return pickKeys.reduce((obj, key) => {
-        key in target && (obj[key] = target[key]);
+        key in target && assignValue(obj, key, target[key]);
         return obj;
     }, {} as Writable<Pick<T, K>>);
 }
@@ -52,7 +52,7 @@ export function omit<T extends object, K extends keyof T>(target: T, ...omitKeys
     verify('typeOf', 'object', target);
     const obj = {} as Writable<Omit<T, K>>;
     for (const key of Object.keys(target)) {
-        !omitKeys.includes(key as K) && (obj[key] = target[key]);
+        !omitKeys.includes(key as K) && assignValue(obj, key, target[key]);
     }
     return obj;
 }
@@ -68,7 +68,7 @@ export function omit<T extends object, K extends keyof T>(target: T, ...omitKeys
 export function invert<T extends object = object>(target: object): T {
     const result = {};
     for (const key of Object.keys(target)) {
-        result[target[key]] = key;
+        assignValue(result, target[key], key);
     }
     return result as T;
 }
@@ -92,7 +92,7 @@ export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
 
     for (const key of Object.keys(src)) {
         if (!deepEqual(base[key], src[key])) {
-            retval[key] = src[key];
+            assignValue(retval, key, src[key]);
         }
     }
 

@@ -1,3 +1,9 @@
+import { UnknownObject } from './types';
+/**
+ * @en Set by specifying key and value for the object. (prototype pollution countermeasure)
+ * @ja オブジェクトに key, value を指定して設定 (プロトタイプ汚染対策)
+ */
+export declare function assignValue(target: UnknownObject, key: string | number | symbol, value: unknown): void;
 /**
  * @en Performs a deep comparison between two values to determine if they are equivalent.
  * @ja 2値の詳細比較をし, 等しいかどうか判定

@@ -208,6 +208,7 @@ describe('dom/base spec', () => {
             const $dom6 = $($children[2]);
             expect($dom6).toBeDefined();
             expect($dom6.length).toBe(1);
+            expect($dom6.isConnected).toBe(true);
             expect($dom6[0]).toEqual($children[2]);
         }
 
@@ -215,11 +216,13 @@ describe('dom/base spec', () => {
             const $dom1 = $(document);
             expect($dom1).toBeDefined();
             expect($dom1.length).toBe(1);
+            expect($dom1.isConnected).toBe(true);
             expect($dom1[0]).toEqual(document);
 
             const $dom2 = $(body);
             expect($dom2).toBeDefined();
             expect($dom2.length).toBe(1);
+            expect($dom2.isConnected).toBe(true);
             expect($dom2[0]).toEqual(body);
         }
 
@@ -227,6 +230,7 @@ describe('dom/base spec', () => {
             const $dom1 = $(window);
             expect($dom1).toBeDefined();
             expect($dom1.length).toBe(1);
+            expect($dom1.isConnected).toBe(false);
             expect($dom1[0]).toEqual(window);
         }
     });

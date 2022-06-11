@@ -1,4 +1,5 @@
 import {
+    UnknownObject,
     TypedArray,
     TypedArrayConstructor,
     isFunction,
@@ -65,6 +66,16 @@ function bufferEqual(lhs: SharedArrayBuffer | ArrayBuffer, rhs: SharedArrayBuffe
         pos += 1;
     }
     return pos === size;
+}
+
+/**
+ * @en Set by specifying key and value for the object. (prototype pollution countermeasure)
+ * @ja オブジェクトに key, value を指定して設定 (プロトタイプ汚染対策)
+ */
+export function assignValue(target: UnknownObject, key: string | number | symbol, value: unknown): void {
+    if ('__proto__' !== key) {
+        target[key] = value;
+    }
 }
 
 /**
@@ -227,6 +238,15 @@ function mergeMap(target: Map<unknown, unknown>, source: Map<unknown, unknown>):
     return target;
 }
 
+/** @internal merge object property */
+function mergeObjectProperty(target: UnknownObject, source: UnknownObject, key: string | number | symbol): void {
+    if ('__proto__' !== key) {
+        const oldValue = target[key];
+        const newValue = merge(oldValue, source[key]);
+        !needUpdate(oldValue, newValue, true) || (target[key] = newValue);
+    }
+}
+
 /** @internal helper for deepMerge() */
 function merge(target: unknown, source: unknown): unknown {
     if (undefined === source || target === source) {
@@ -267,19 +287,11 @@ function merge(target: unknown, source: unknown): unknown {
     const obj = isObject(target) ? target : {};
     if (sameClass(target, source)) {
         for (const key of Object.keys(source)) {
-            if ('__proto__' !== key) {
-                const oldValue = obj[key];
-                const newValue = merge(oldValue, source[key]);
-                !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
-            }
+            mergeObjectProperty(obj as UnknownObject, source as UnknownObject, key);
         }
     } else {
         for (const key in source) {
-            if ('__proto__' !== key) {
-                const oldValue = obj[key];
-                const newValue = merge(oldValue, source[key]);
-                !needUpdate(oldValue, newValue, true) || (obj[key] = newValue);
-            }
+            mergeObjectProperty(obj as UnknownObject, source as UnknownObject, key);
         }
     }
     return obj;
