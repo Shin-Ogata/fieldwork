@@ -15,7 +15,7 @@ export function createTestElementsFromTemplate(): HTMLElement[] {
     const divs = dom.utils.elementify(
 `
 <div id="d1" class="test-dom">
-    <iframe id="test-frame" src="../res/router/index.html"${style}></iframe>
+    <iframe id="test-frame" src="../res/router/index.html?bust=${Date.now()}"${style}></iframe>
 </div>
 `
     );

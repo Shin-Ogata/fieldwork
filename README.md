@@ -3,6 +3,10 @@ feasibility study
 
 ## How to setup
 
+<details>
+
+<summary>npm v6 以下を使用時</summary>
+
 ### shell environment / 開発ツールにパスを通す
 
 共通で利用する開発ツールは root の `node_modules/` 以下にインストールされるので、これらを CLI から利用するためにパスを通しておく。  
@@ -41,6 +45,12 @@ $ENV:Path
 ※ 署名なしローカルスクリプトを実行するためにポリシーの変更が必要
 ```ps
 $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+</details>
+
+```sh
+npm run install:all
 ```
 
 ## library compornent
@@ -86,6 +96,7 @@ $ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 | [view](./packages/lib/web/view/README.md)                  | abstract view class                        |
 | [template](./packages/lib/web/template/README.md)          | template library collection                |
 | [router](./packages/lib/web/router/README.md)              | router class                               |
+| [app](./packages/lib/web/app/README.md)                    | application context                        |
 
 ## License
 

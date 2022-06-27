@@ -660,6 +660,55 @@ describe('router/context spec', () => {
 
             expect(stub.onCallback).toHaveBeenCalled();
         });
+
+        it('check transition reverse', async () => {
+            const styleText = `
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 500ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}`;
+
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [
+                    {
+                        path: '/first',
+                        content: '<div class="router-page">first page</div>',
+                    },
+                    {
+                        path: '/second',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+            const win = getWindow(router);
+            const style = win.document.createElement('style');
+            style.textContent = styleText;
+            win.document.head.append(style);
+
+            await waitFrame(router, WAIT_FRAME_MARGINE);
+
+            router.on('before-transition', () => {
+                expect(router.el.classList.contains('cdp-transition-running')).toBe(true);
+                expect(router.el.classList.contains('cdp-transition-direction-back')).toBe(true);
+            });
+
+            await router.navigate('/second', { transition: 'fade', reverse: true });
+
+            router.off();
+
+            router.on('before-transition', () => {
+                expect(router.el.classList.contains('cdp-transition-running')).toBe(true);
+                expect(router.el.classList.contains('cdp-transition-direction-forward')).toBe(true);
+            });
+
+            await router.back();
+        });
     });
 
     describe('anchor handling', () => {
@@ -754,6 +803,365 @@ describe('router/context spec', () => {
             await waitFrame(router, WAIT_FRAME_MARGINE);
 
             expect(stub.onCallback).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('dom-cache management', () => {
+        it('Lv: memory', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [
+                    {
+                        path: '/first',
+                        content: '<div class="router-page">first page</div>',
+                    },
+                    {
+                        path: '/second',
+                        content: '<div class="router-page" data-dom-cache="memory">second page</div>',
+                    },
+                    {
+                        path: '/third',
+                        content: '<div class="router-page">third page</div>',
+                    },
+                    {
+                        path: '/fourth',
+                        content: '<div class="router-page">fourth page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            await router.navigate('/second');
+            await router.navigate('/third');
+            await router.navigate('/fourth');
+            expect(router.currentRoute.path).toBe('/fourth');
+
+            let stack = (router as any)._history.stack;
+
+            expect(stack[0].el).toBeFalsy();
+            expect(stack[1].el).toBeTruthy();
+            expect(stack[1].el.isConnected).toBe(false);
+            expect(stack[2].el).toBeTruthy();
+            expect(stack[2].el.isConnected).toBe(true);
+            expect(stack[3].el).toBeTruthy();
+            expect(stack[3].el.isConnected).toBe(true);
+
+            await router.back();
+            await router.back();
+            await router.back();
+            expect(router.currentRoute.path).toBe('/first');
+
+            stack = (router as any)._history.stack;
+
+            expect(stack[0].el).toBeTruthy();
+            expect(stack[0].el.isConnected).toBe(true);
+            expect(stack[1].el).toBeTruthy();
+            expect(stack[1].el.isConnected).toBe(true);
+            expect(stack[2].el).toBeFalsy();
+            expect(stack[3].el).toBeFalsy();
+        });
+
+        it('Lv: connect', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [
+                    {
+                        path: '/first',
+                        content: '<div class="router-page">first page</div>',
+                    },
+                    {
+                        path: '/second',
+                        content: '<div class="router-page" data-dom-cache="connect">second page</div>',
+                    },
+                    {
+                        path: '/third',
+                        content: '<div class="router-page">third page</div>',
+                    },
+                    {
+                        path: '/fourth',
+                        content: '<div class="router-page">fourth page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            await router.navigate('/second');
+            await router.navigate('/third');
+            await router.navigate('/fourth');
+            expect(router.currentRoute.path).toBe('/fourth');
+
+            let stack = (router as any)._history.stack;
+
+            expect(stack[0].el).toBeFalsy();
+            expect(stack[1].el).toBeTruthy();
+            expect(stack[1].el.isConnected).toBe(true);
+            expect(stack[2].el).toBeTruthy();
+            expect(stack[2].el.isConnected).toBe(true);
+            expect(stack[3].el).toBeTruthy();
+            expect(stack[3].el.isConnected).toBe(true);
+
+            await router.back();
+            await router.back();
+            await router.back();
+            expect(router.currentRoute.path).toBe('/first');
+
+            stack = (router as any)._history.stack;
+
+            expect(stack[0].el).toBeTruthy();
+            expect(stack[0].el.isConnected).toBe(true);
+            expect(stack[1].el).toBeTruthy();
+            expect(stack[1].el.isConnected).toBe(true);
+            expect(stack[2].el).toBeFalsy();
+            expect(stack[3].el).toBeFalsy();
+        });
+    });
+
+    describe('page stack management', () => {
+        it('standard', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [{ path: '/' }],
+                start: false,
+            });
+
+            await router.pushPageStack([
+                {
+                    url: '/one',
+                    route: { path: '/one' }
+                },
+                {
+                    url: '/two/user/100',
+                    route: { path: '/two/user/:userId' },
+                    transition: 'fade',
+                },
+                {
+                    url: '/three',
+                    route: { path: '/three' }
+                },
+            ]);
+
+            expect(router.currentRoute.path).toBe('/three');
+
+            await router.back();
+            expect(router.currentRoute.url).toBe('/two/user/100');
+
+            router.on('before-transition', (changeInfo: RouteChangeInfo) => {
+                expect(changeInfo.transition).toBe('fade');
+                expect(changeInfo.reverse).toBeUndefined();
+            });
+
+            await router.back();
+
+            expect((router as any)._history.stack.length).toBe(4);
+        });
+
+        it('noNavigate', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [{ path: '/first' }],
+            });
+
+            await router.pushPageStack({
+                url: '/next',
+                route: { path: '/next' }
+            }, true);
+
+            expect(router.currentRoute.path).toBe('/first');
+            expect((router as any)._history.stack.length).toBe(2);
+        });
+
+        it('miss route', async () => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [
+                    { path: '/first' },
+                    { path: '/second' },
+                ],
+                start: false,
+            });
+            router.on('error', stub.onCallback);
+
+            await router.pushPageStack({ url: '/next' });
+
+            expect(stub.onCallback).toHaveBeenCalled();
+            const e = callbackArgs[0];
+            expect(e.message).toBe('Route cannot be resolved. [url: /next]');
+            expect(e.cause).toEqual({ url: '/next' });
+        });
+    });
+
+    describe('sub-flow management', () => {
+        it('standard usecase', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/main/A',
+                routes: [
+                    { path: '/main/A' },
+                    { path: '/main/B' },
+                    { path: '/sub/a' },
+                    { path: '/sub/b' },
+                ],
+            });
+
+            await waitFrame(router);
+            expect(router.currentRoute.path).toBe('/main/A');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.navigate('/main/B');
+            expect(router.currentRoute.path).toBe('/main/B');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.beginSubFlow('/sub/a');
+            expect(router.currentRoute.path).toBe('/sub/a');
+            expect(router.isInSubFlow).toBe(true);
+
+            await router.navigate('/sub/b');
+            expect(router.currentRoute.path).toBe('/sub/b');
+            expect(router.isInSubFlow).toBe(true);
+
+            await router.commitSubFlow();
+            expect(router.currentRoute.path).toBe('/main/B');
+            expect(router.isInSubFlow).toBe(false);
+            expect((router as any)._history.stack.length).toBe(2);
+        });
+
+        it('standard usecase w/ base & additional stack', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/main/A',
+                routes: [
+                    { path: '/main/A' },
+                    { path: '/main/B' },
+                    { path: '/sub/a' },
+                    { path: '/sub/b' },
+                ],
+            });
+
+            await waitFrame(router);
+            expect(router.currentRoute.path).toBe('/main/A');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.navigate('/main/B');
+            expect(router.currentRoute.path).toBe('/main/B');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.beginSubFlow('/sub/a', {
+                base: '/main/A',
+                additinalStacks: [
+                    {
+                        url: 'add/one',
+                        route: { path: 'add/one' }
+                    },
+                    {
+                        url: 'add/two',
+                        route: { path: 'add/two' }
+                    },
+                ],
+            });
+            expect(router.currentRoute.path).toBe('/sub/a');
+            expect(router.isInSubFlow).toBe(true);
+
+            await router.navigate('/sub/b');
+            expect(router.currentRoute.path).toBe('/sub/b');
+            expect(router.isInSubFlow).toBe(true);
+
+            await router.commitSubFlow();
+            expect(router.currentRoute.path).toBe('/add/two');
+            expect(router.isInSubFlow).toBe(false);
+            expect((router as any)._history.stack.length).toBe(3);
+
+            await router.back();
+            expect(router.currentRoute.path).toBe('/add/one');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.back();
+            expect(router.currentRoute.path).toBe('/main/A');
+            expect(router.isInSubFlow).toBe(false);
+        });
+
+        it('cancel sub-flow', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/main/A',
+                routes: [
+                    { path: '/main/A' },
+                    { path: '/main/B' },
+                    { path: '/sub/a' },
+                    { path: '/sub/b' },
+                ],
+            });
+
+            await waitFrame(router);
+            expect(router.currentRoute.path).toBe('/main/A');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.navigate('/main/B');
+            expect(router.currentRoute.path).toBe('/main/B');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.beginSubFlow('/sub/a', {
+                base: '/main/A',
+                additinalStacks: [
+                    {
+                        url: 'add/one',
+                        route: { path: 'add/one' }
+                    },
+                    {
+                        url: 'add/two',
+                        route: { path: 'add/two' }
+                    },
+                ],
+            });
+            expect(router.currentRoute.path).toBe('/sub/a');
+            expect(router.isInSubFlow).toBe(true);
+
+            await router.navigate('/sub/b');
+            expect(router.currentRoute.path).toBe('/sub/b');
+            expect(router.isInSubFlow).toBe(true);
+
+            await router.cancelSubFlow();
+            expect(router.currentRoute.path).toBe('/main/B');
+            expect(router.isInSubFlow).toBe(false);
+            expect((router as any)._history.stack.length).toBe(2);
+        });
+
+        it('unusual case', async () => {
+            const stub = { onCallback };
+            const router = await createRouterWrap({
+                initialPath: '/main/A',
+                routes: [
+                    { path: '/main/A' },
+                    { path: '/main/B' },
+                ],
+            });
+            router.on('error', stub.onCallback);
+
+            await waitFrame(router);
+
+            try {
+                await router.commitSubFlow();
+            } catch {
+                fail();
+            }
+
+            try {
+                await router.cancelSubFlow();
+            } catch {
+                fail();
+            }
+
+            try {
+                await router.beginSubFlow('/sub/a', { base: 'invalid' });
+            } catch {
+                fail();
+            }
+
+            const e = callbackArgs[0];
+
+            expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_INVALID_SUBFLOW_BASE_URL);
+            expect(e.message).toBe('Invalid sub-flow base url. [url: invalid]');
         });
     });
 });

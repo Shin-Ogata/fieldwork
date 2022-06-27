@@ -12,7 +12,7 @@ namespace CDP_DECLARE {
 
     /**
      * @en Extends error code definitions.
-     * @ja 拡張通エラーコード定義
+     * @ja 拡張エラーコード定義
      */
     export enum RESULT_CODE {
         MVC_COLLECTION_DECLARE = RESULT_CODE_BASE.DECLARE,

@@ -28,7 +28,8 @@
       "@cdp/view": [ "../../../lib/web/view" ],
       "@cdp/template": [ "../../../lib/web/template" ],
       "@cdp/router": [ "../../../lib/web/router" ],
-      "@cdp/web-storage": [ "../../../lib/web/storage" ]
+      "@cdp/web-storage": [ "../../../lib/web/storage" ],
+      "@cdp/app": [ "../../../lib/web/app" ]
     }
   },
   "include": [

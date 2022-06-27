@@ -267,11 +267,11 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     }
 
     /**
-     * @en Return closet stack information by ID.
-     * @ja 指定された ID から最も近いスタック情報を返却
+     * @en Return destination stack information by `start` and `end` ID.
+     * @ja 起点, 終点の ID から終点のスタック情報を返却
      */
-    direct(id: string): HistoryDirectReturnType<T> {
-        return this._stack.direct(id);
+    direct(toId: string, fromId?: string): HistoryDirectReturnType<T> {
+        return this._stack.direct(toId, fromId as string);
     }
 
 ///////////////////////////////////////////////////////////////////////

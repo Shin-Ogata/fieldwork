@@ -1,5 +1,6 @@
 import {
     UnknownFunction,
+    isArray,
     isFunction,
     camelize,
 } from '@cdp/core-utils';
@@ -18,13 +19,16 @@ import { window } from '../ssr';
 import { normalizeId } from '../history/internal';
 import type { IHistory, HistoryState } from '../history';
 import type {
+    PageTransitionParams,
     RouteChangeInfo,
     RouterEvent,
     Page,
     RouteParameters,
     Route,
     TransitionSettings,
+    PageStack,
     RouterConstructionOptions,
+    RouteSubFlowParams,
     RouteNavigationOptions,
     Router,
 } from './interfaces';
@@ -42,6 +46,7 @@ import {
     parseUrlParams,
     ensureRouterPageInstance,
     ensureRouterPageTemplate,
+    decideTransitionDirection,
     processPageTransition,
 } from './internal';
 
@@ -61,7 +66,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private readonly _errorHandler: typeof RouterContext.prototype.onHandleError;
     private readonly _cssPrefix: string;
     private _transitionSettings: TransitionSettings;
+    private _lastRoute?: RouteContext;
     private _prevRoute?: RouteContext;
+    private _tempTransitionParams?: PageTransitionParams;
 
     /**
      * constructor
@@ -119,6 +126,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return this._history.state;
     }
 
+    /** Check state is in sub-flow */
+    get isInSubFlow(): boolean {
+        return !!this.findSubFlowParams(false);
+    }
+
     /** Route registration */
     register(routes: RouteParameters | RouteParameters[], refresh = false): this {
         for (const context of toRouteContextParameters(routes)) {
@@ -136,17 +148,56 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, `Route not found. [to: ${to}]`);
             }
 
-            const opts  = Object.assign({ transition: this._transitionSettings.default, intent: undefined }, options);
+            const opts  = Object.assign({ intent: undefined }, options);
             const url   = buildNavigateUrl(to, opts);
             const route = toRouteContext(url, this, seed, opts);
-
-            // TODO: subflow
 
             try {
                 // exec navigate
                 await this._history.push(url, route);
             } catch {
                 // noop
+            }
+        } catch (e) {
+            this.onHandleError(e);
+        }
+
+        return this;
+    }
+
+    /** Add page stack starting from the current history. */
+    async pushPageStack(stack: PageStack | PageStack[], noNavigate?: boolean): Promise<this> {
+        try {
+            const stacks = isArray(stack) ? stack : [stack];
+            const routes = stacks.filter(s => !!s.route).map(s => s.route as RouteParameters);
+
+            // ensrue Route
+            this.register(routes, false);
+
+            await this.suppressEventListenerScope(async () => {
+                // push history
+                for (const page of stacks) {
+                    const { url, transition, reverse } = page;
+                    const params = this.findRouteContextParameter(url);
+                    if (null == params) {
+                        throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [url: ${url}]`, page);
+                    }
+                    // silent registry
+                    const route = toRouteContext(url, this, params, { intent: undefined });
+                    route.transition = transition;
+                    route.reverse    = reverse;
+                    void this._history.push(url, route, { silent: true });
+                }
+
+                await this.waitFrame();
+
+                if (noNavigate) {
+                    await this._history.go(-1 * stacks.length);
+                }
+            });
+
+            if (!noNavigate) {
+                await this.go();
             }
         } catch (e) {
             this.onHandleError(e);
@@ -171,6 +222,57 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return this;
     }
 
+    /** Begin sub-flow transaction. */
+    async beginSubFlow(to: string, subflow?: RouteSubFlowParams, options?: RouteNavigationOptions): Promise<this> {
+        try {
+            const params = Object.assign({}, subflow || {});
+            this.evaluationSubFlowParams(params);
+            (this.currentRoute as RouteContext).subflow = params;
+            await this.navigate(to, options);
+        } catch (e) {
+            this.onHandleError(e);
+        }
+        return this;
+    }
+
+    /** Commit sub-flow transaction. */
+    async commitSubFlow(params?: PageTransitionParams): Promise<this> {
+        const subflow = this.findSubFlowParams(true);
+        if (!subflow) {
+            return this;
+        }
+
+        // `reverse`: 履歴上は `back` 方向になるため, I/F 指定方向と反転するように調整
+        this._tempTransitionParams = Object.assign({}, params, { reverse: !params?.reverse });
+        const { additionalDistance, additinalStacks } = subflow.params;
+        const distance = subflow.distance + additionalDistance;
+
+        if (additinalStacks?.length) {
+            await this.suppressEventListenerScope(() => this.go(-1 * distance));
+            await this.pushPageStack(additinalStacks);
+        } else {
+            await this.go(-1 * distance);
+        }
+        this._history.clearForward();
+
+        return this;
+    }
+
+    /** Cancel sub-flow transaction. */
+    async cancelSubFlow(params?: PageTransitionParams): Promise<this> {
+        const subflow = this.findSubFlowParams(true);
+        if (!subflow) {
+            return this;
+        }
+
+        // `reverse`: 履歴上は `back` 方向になるため, I/F 指定方向と反転するように調整. default: true
+        this._tempTransitionParams = Object.assign({}, params, { reverse: !Object.assign({ reverse: true }, params).reverse });
+        await this.go(-1 * subflow.distance);
+        this._history.clearForward();
+
+        return this;
+    }
+
     /** Set common transition settnigs. */
     setTransitionSettings(newSettings: TransitionSettings): TransitionSettings {
         const oldSettings = this._transitionSettings;
@@ -179,15 +281,65 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
 ///////////////////////////////////////////////////////////////////////
-// private methods:
+// private methods: sub-flow
+
+    /** @internal evaluation sub-flow parameters */
+    private evaluationSubFlowParams(subflow: RouteSubFlowParams): void {
+        let additionalDistance = 0;
+
+        if (subflow.base) {
+            const baseId = normalizeId(subflow.base);
+            let found = false;
+            const { index, stack } = this._history;
+            for (let i = index; i >= 0; i--, additionalDistance++) {
+                if (stack[i]['@id'] === baseId) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_INVALID_SUBFLOW_BASE_URL, `Invalid sub-flow base url. [url: ${subflow.base}]`);
+            }
+        } else {
+            subflow.base = this.currentRoute.url;
+        }
+
+        Object.assign(subflow, { additionalDistance });
+    }
+
+    /** @internal find sub-flow parameters */
+    private findSubFlowParams(detach: boolean): { distance: number; params: RouteSubFlowParams & { additionalDistance: number; }; } | void {
+        const stack = this._history.stack;
+        for (let i = stack.length - 1, distance = 0; i >= 0; i--, distance++) {
+            if (stack[i].subflow) {
+                const params = stack[i].subflow as RouteSubFlowParams & { additionalDistance: number; };
+                detach && delete stack[i].subflow;
+                return { distance, params };
+            }
+        }
+    }
+
+///////////////////////////////////////////////////////////////////////
+// private methods: transition
 
     /** @internal common `RouterEventArg` maker */
     private makeRouteChangeInfo(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouteChangeInfo {
+        const intent = newState.intent;
+        delete newState.intent; // navigate 時に指定された intent は one time のみ有効にする
+
+        const from = oldState || this._lastRoute;
+        const direction = this._history.direct(newState['@id'], from?.['@id']).direction;
+        const { transition, reverse } = this._tempTransitionParams || ('back' !== direction ? newState : from as RouteContext);
+        this._tempTransitionParams = undefined;
+
         return {
             router: this,
-            from: oldState,
+            from,
             to: newState,
-            direction: this._history.direct(newState['@id']).direction,
+            direction,
+            transition,
+            reverse,
+            intent,
         };
     }
 
@@ -227,7 +379,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         // transition core
         await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
 
-        this.updateChangeContext($elNext, $elPrev, prevRoute);
+        this.updateChangeContext($elNext, $elPrev, changeInfo.from as RouteContext);
 
         this.publish('changed', changeInfo);
     }
@@ -267,7 +419,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         return [
             pageNext, $elNext,                                      // next
-            prevRoute?.['@params'].page || {}, $(prevRoute?.el),    // prev
+            prevRoute?.['@params']?.page || {}, $(prevRoute?.el),   // prev
         ];
     }
 
@@ -279,7 +431,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         pagePrev: Page, $elPrev: DOM,
         changeInfo: RouteChangeInfo,
     ): Promise<void> {
-        const transition = (changeInfo.to as RouteContext).transition || 'none';
+        const transition = changeInfo.transition || this._transitionSettings.default;
 
         const {
             'enter-from-class': customEnterFromClass,
@@ -291,14 +443,14 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         } = this._transitionSettings;
 
         // enter-css-class
-        const enterFromClass   = customEnterFromClass   || `${transition}${CssName.SUFFIX_ENTER_FROM}`;
-        const enterActiveClass = customEnterActiveClass || `${transition}${CssName.SUFFIX_ENTER_ACTIVE}`;
-        const enterToClass     = customEnterToClass     || `${transition}${CssName.SUFFIX_ENTER_TO}`;
+        const enterFromClass   = customEnterFromClass   || `${transition}-${CssName.ENTER_FROM_CLASS}`;
+        const enterActiveClass = customEnterActiveClass || `${transition}-${CssName.ENTER_ACTIVE_CLASS}`;
+        const enterToClass     = customEnterToClass     || `${transition}-${CssName.ENTER_TO_CLASS}`;
 
         // leave-css-class
-        const leaveFromClass   = customLeaveFromClass   || `${transition}${CssName.SUFFIX_LEAVE_FROM}`;
-        const leaveActiveClass = customLeaveActiveClass || `${transition}${CssName.SUFFIX_LEAVE_ACTIVE}`;
-        const leaveToClass     = customLeaveToClass     || `${transition}${CssName.SUFFIX_LEAVE_TO}`;
+        const leaveFromClass   = customLeaveFromClass   || `${transition}-${CssName.LEAVE_FROM_CLASS}`;
+        const leaveActiveClass = customLeaveActiveClass || `${transition}-${CssName.LEAVE_ACTIVE_CLASS}`;
+        const leaveToClass     = customLeaveToClass     || `${transition}-${CssName.LEAVE_TO_CLASS}`;
 
         this.beginTransition(
             pageNext, $elNext, enterFromClass, enterActiveClass,
@@ -330,8 +482,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         changeInfo: RouteChangeInfo,
     ): void {
         this._$el.addClass([
-            `${this._cssPrefix}${CssName.TRANSITION_RUNNING}`,
-            `${this._cssPrefix}${CssName.TRANSITION_DIRECTION}${changeInfo.direction}`,
+            `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`,
+            `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${decideTransitionDirection(changeInfo)}`,
         ]);
         $elNext.removeAttr('aria-hidden');
         $elNext.addClass([enterFromClass, enterActiveClass]);
@@ -353,8 +505,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         $elPrev.attr('aria-hidden', true);
 
         this._$el.removeClass([
-            `${this._cssPrefix}${CssName.TRANSITION_RUNNING}`,
-            `${this._cssPrefix}${CssName.TRANSITION_DIRECTION}${changeInfo.direction}`,
+            `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`,
+            `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${changeInfo.direction}`,
         ]);
 
         this.publish('after-transition', changeInfo);
@@ -365,13 +517,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** @internal update page status after transition */
     private updateChangeContext($elNext: DOM, $elPrev: DOM, prevRoute: RouteContext | undefined): void {
         // update class
-        $elPrev.removeClass(`${this._cssPrefix}${CssName.PAGE_CURRENT}`);
-        $elNext.addClass(`${this._cssPrefix}${CssName.PAGE_CURRENT}`);
-        $elPrev.addClass(`${this._cssPrefix}${CssName.PAGE_PREVIOUS}`);
+        $elPrev.removeClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
+        $elNext.addClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
+        $elPrev.addClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
 
         if (this._prevRoute) {
             const $el = $(this._prevRoute.el);
-            $el.removeClass(`${this._cssPrefix}${CssName.PAGE_PREVIOUS}`);
+            $el.removeClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
             const cacheLv = $el.data(DomCache.DATA_NAME);
             if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
                 $el.detach();
@@ -385,6 +537,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 }
             }
         }
+
+        this._lastRoute = this.currentRoute as RouteContext;
         this._prevRoute = prevRoute;
     }
 
@@ -452,6 +606,20 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             void this.back();
         } else {
             void this.navigate(url as string, { transition });
+        }
+    }
+
+    /** @internal silent event listner scope */
+    private async suppressEventListenerScope(executor: () => Promise<unknown>): Promise<unknown> {
+        try {
+            this._history.off('changing', this._historyChangingHandler);
+            this._history.off('refresh',  this._historyRefreshHandler);
+            this._history.off('error',    this._errorHandler);
+            return await executor();
+        } finally {
+            this._history.on('changing', this._historyChangingHandler);
+            this._history.on('refresh',  this._historyRefreshHandler);
+            this._history.on('error',    this._errorHandler);
         }
     }
 }

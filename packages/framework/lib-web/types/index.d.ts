@@ -9,3 +9,4 @@ export * from '@cdp/collection';
 export * from '@cdp/view';
 export * from '@cdp/template';
 export * from '@cdp/router';
+export * from '@cdp/app';
