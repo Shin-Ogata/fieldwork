@@ -90,17 +90,18 @@ export class HistoryStack<T = PlainObject> {
         return candidates[0]?.index;
     }
 
-    /** return closet stack information by ID. */
-    public direct(id: string): HistoryDirectReturnType<T> {
-        const index = this.closest(id);
-        if (null == index) {
+    /** return closet stack information by to ID and from ID. */
+    public direct(toId: string, fromId?: string): HistoryDirectReturnType<T> {
+        const toIndex   = this.closest(toId);
+        const fromIndex = null == fromId ? this._index : this.closest(fromId);
+        if (null == fromIndex || null == toIndex) {
             return { direction: 'missing' };
         } else {
-            const delta = index - this._index;
+            const delta = toIndex - fromIndex;
             const direction = 0 === delta
                 ? 'none'
                 : delta < 0 ? 'back' : 'forward';
-            return { direction, index, state: this._stack[index] };
+            return { direction, index: toIndex, state: this._stack[toIndex] };
         }
     }
 

@@ -15,7 +15,7 @@ namespace CDP_DECLARE {
     }
 
     /**
-     * 拡張通エラーコード定義
+     * 拡張エラーコード定義
      */
     export enum RESULT_CODE {
         TEST_DECLARE         = RESULT_CODE_BASE.DECLARE,

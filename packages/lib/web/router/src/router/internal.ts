@@ -8,6 +8,7 @@ import {
     isObject,
     isFunction,
     assignValue,
+    sleep,
 } from '@cdp/core-utils';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import {
@@ -21,15 +22,18 @@ import {
 } from '@cdp/dom';
 import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
 import {
+    HistoryDirection,
     IHistory,
     createSessionHistory,
     createMemoryHistory,
 } from '../history';
 import { normalizeId } from '../history/internal';
 import type {
+    RouteChangeInfo,
     Page,
     RouteParameters,
     Route,
+    RouteSubFlowParams,
     RouteNavigationOptions,
     Router,
 } from './interfaces';
@@ -37,16 +41,16 @@ import type {
 /** @internal */
 export const enum CssName {
     DEFAULT_PREFIX       = 'cdp',
-    TRANSITION_DIRECTION = '-transition-direction-',
-    TRANSITION_RUNNING   = '-transition-running',
-    PAGE_CURRENT         = '-page-current',
-    PAGE_PREVIOUS        = '-page-previous',
-    SUFFIX_ENTER_FROM    = '-enter-from',
-    SUFFIX_ENTER_ACTIVE  = '-enter-active',
-    SUFFIX_ENTER_TO      = '-enter-to',
-    SUFFIX_LEAVE_FROM    = '-leave-from',
-    SUFFIX_LEAVE_ACTIVE  = '-leave-active',
-    SUFFIX_LEAVE_TO      = '-leave-to',
+    TRANSITION_DIRECTION = 'transition-direction',
+    TRANSITION_RUNNING   = 'transition-running',
+    PAGE_CURRENT         = 'page-current',
+    PAGE_PREVIOUS        = 'page-previous',
+    ENTER_FROM_CLASS     = 'enter-from',
+    ENTER_ACTIVE_CLASS   = 'enter-active',
+    ENTER_TO_CLASS       = 'enter-to',
+    LEAVE_FROM_CLASS     = 'leave-from',
+    LEAVE_ACTIVE_CLASS   = 'leave-active',
+    LEAVE_TO_CLASS       = 'leave-to',
 }
 
 /** @internal */
@@ -58,8 +62,13 @@ export const enum DomCache {
 
 /** @internal */
 export const enum LinkData {
-    TRANSITION      = 'transition',
-    PREVENT_ROUTER  = 'prevent-router',
+    TRANSITION     = 'transition',
+    PREVENT_ROUTER = 'prevent-router',
+}
+
+/** @internal */
+export const enum Const {
+    WAIT_TRANSITION_MARGIN = 100, // msec
 }
 
 /** @internal */
@@ -82,6 +91,7 @@ export type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
 /** @internal RouteContext */
 export type RouteContext = Writable<Route> & RouteNavigationOptions & {
     '@params': RouteContextParameters;
+    subflow?: RouteSubFlowParams;
 };
 
 //__________________________________________________________________________________________________//
@@ -229,37 +239,60 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
     return true; // newly created
 };
 
+/** @internal decide transition direction */
+export const decideTransitionDirection = (changeInfo: RouteChangeInfo): HistoryDirection => {
+    if (changeInfo.reverse) {
+        switch (changeInfo.direction) {
+            case 'back':
+                return 'forward';
+            case 'forward':
+                return 'back';
+            default:
+                break;
+        }
+    }
+    return changeInfo.direction;
+};
+
 /** @internal check animation property */
-const hasAnimation = ($el: DOM): boolean => {
+const getAnimationSec = ($el: DOM): number => {
     try {
-        return getComputedStyle($el[0]).animationDuration !== '0s';
+        return parseFloat(getComputedStyle($el[0]).animationDuration);
     } catch {
-        return false;
+        return 0;
     }
 };
 
 /** @internal check transition property */
-const hasTransition = ($el: DOM): boolean => {
+const getTransitionSec = ($el: DOM): number => {
     try {
-        return getComputedStyle($el[0]).transitionDuration !== '0s';
+        return parseFloat(getComputedStyle($el[0]).transitionDuration);
     } catch {
-        return false;
+        return 0;
     }
 };
 
 /** @internal */
-const waitForEffect = ($el: DOM, method: 'animationEnd' | 'transitionEnd'): Promise<Event> => {
-    return new Promise(resolve => $el[method](resolve));
+const waitForEffect = ($el: DOM, method: 'animationEnd' | 'transitionEnd', durationSec: number): Promise<unknown> => {
+    return Promise.race([
+        new Promise(resolve => $el[method](resolve)),
+        sleep(durationSec * 1000 + Const.WAIT_TRANSITION_MARGIN),
+    ]);
 };
 
 /** @internal transition execution */
 export const processPageTransition = async($el: DOM, fromClass: string, activeClass: string, toClass: string): Promise<void> => {
     $el.removeClass(fromClass);
     $el.addClass(toClass);
-    if (hasAnimation($el)) {
-        await waitForEffect($el, 'animationEnd');
-    } else if (hasTransition($el)) {
-        await waitForEffect($el, 'transitionEnd');
+
+    /* eslint-disable no-cond-assign */
+    let duration: number;
+    if (duration = getAnimationSec($el)) {
+        await waitForEffect($el, 'animationEnd', duration);
+    } else if (duration = getTransitionSec($el)) {
+        await waitForEffect($el, 'transitionEnd', duration);
     }
+    /* eslint-enable no-cond-assign */
+
     $el.removeClass(activeClass);
 };

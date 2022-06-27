@@ -31,11 +31,17 @@ export interface HistoryEvent<T = PlainObject> {
 export type HistorySetStateOptions = Silenceable & Cancelable;
 
 /**
+ * @en History direction definition
+ * @ja 履歴の方向定義
+ */
+export type HistoryDirection = 'back' | 'forward' | 'none' | 'missing';
+
+/**
  * @en Definition of [[IHistory.direct]]`()` return type.
  * @ja [[IHistory.direct]]`()` の返却する型
  */
 export interface HistoryDirectReturnType<T = PlainObject> {
-    direction: 'back' | 'forward' | 'none' | 'missing';
+    direction: HistoryDirection;
     index?: number;
     state?: HistoryState<T>;
 }
@@ -139,8 +145,15 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
     closest(id: string): number | undefined;
 
     /**
-     * @en Return closet stack information by ID.
-     * @ja 指定された ID から最も近いスタック情報を返却
+     * @en Return destination stack information by `start` and `end` ID.
+     * @ja 起点, 終点の ID から終点のスタック情報を返却
+     *
+     * @param toId
+     *  - `en` Specified destination stack ID
+     *  - `ja` 終点のスタックIDを指定
+     * @param fromId
+     *  - `en` Specified origin stack ID. If not specified, using current id.
+     *  - `ja` 起点のスタックIDを指定. 指定しない場合は、現在のIDを使用
      */
-    direct(id: string): HistoryDirectReturnType<T>;
+    direct(toId: string, fromId?: string): HistoryDirectReturnType<T>;
 }

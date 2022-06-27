@@ -37,6 +37,7 @@
     <Content Include="bin\env.cmd" />
     <Content Include="config\bundle\dev-env.js" />
     <Content Include="config\bundle\rollup-override.js" />
+    <Content Include="LICENSE" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />

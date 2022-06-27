@@ -31,67 +31,26 @@
 
 #### TODO
 
-- subflow
-  - back-destination (anchor も)
+- 同一URL, 同一ページインスタンスへの遷移のケア?
+  - push() に stack は紐づくので el を共有することはない. page instance の共有をどこまでケアするか?
+  - 基本現実装でいけそう. 実験して試す -> 評価は `@cdp/app` にて
 
-<p><details>
-<summary>Done</summary>
+#### memo & future work
 
-- `Route` interface について見直し
-  - `transition` を公開するかいなか
-    - → navOptions やめる
-  - `RouteContext` 専用プロパティに `@` をつけるかいなか
-    - → つけない. `$template` があること. `@` は HistoryState
+- スクロール位置の記憶する/しない
+  - → app/PageView クラスで対応
 
-- IHistory#root について方針を出す (backbone)
-  - 今のところ root 切り替えは不要
-  - backbone#fragment は IHisotry#id
+- swipe back
 
-- RouteParameters の flatten 化
+- マスター・ディーテイルレイアウト
+  - https://framework7.io/docs/view#master-detail
+  - https://framework7.jp/docs/view.html#anchor-12
 
-- cancel 可能なように IHistory から見直し
-  - https://ninhlv.dev/disable-browserback/
-  - https://localcoder.org/stop-firing-popstate-on-hashchange
+- <a>リンクを shift 同時押下で別タブ開きたい
+  - https://stackoverflow.com/questions/56892748/how-to-handle-intention-to-open-link-in-new-page-in-a-spa-application
 
-  - `hashchange` はハンドリングしないほうがいいかも
-    - `hashchange` はハッシュがなくなるときには発火しない
-  - `popstate` は `history.go()` だけであればリロードされない
-
-- vue に習い, `hash` と `history` は選択できたほうが良いかもしれない. そのためには `webRoot` を調査する
-  - [Different History modes](https://router.vuejs.org/guide/essentials/history-mode.html)
-  - [vue-routerのhashモードとhistoryモードの違いをざっくり理解する](https://qiita.com/kozzzz/items/af9ad63fa70d4724cc2a)
-
-  - html5
-    - changeLocation
-    - createCurrentLocation
-    - pauseListeners
-
-  - route は `/@id` からはじめる. history hash prefixは `#/` とすることで `#/@id`にする. history 内部の id は `/` はつかない
-  - path は `vue` を参考にする
-
-- Route から url を見えるかするか?
-  - する
-
-- params, query の parse
-
-- 同じ url に対する navigate
-  - History にあわせて許容する
-
-- `:param` は必要. params, query 両対応
-  - framework7 相当 (backbone は正規表現そのもの?)
-    - [View のパラメータ](https://framework7.jp/docs/view.html#anchor-4)
-  - [path matcher](https://github.com/pillarjs/path-to-regexp/tree/v1.7.0)
-  - [Vue dynamic matching](https://v3.router.vuejs.org/ja/guide/essentials/dynamic-matching.html)
-
-- css
-  - barba css next が参考になる transitionend の判定とかも
-    - animation-duration の確認必要
-  - reverse はとりあえずなし?!. subflow も履歴管理を先に行えばできればいけるか?
-    - router-transition-reverse は必要
-    - router-transition-running も入れとく?
-  - z-index は css のみで操作
-  - visibility: hidden or display: none はどうするか?
-    - alia-hidden のみ
+- vue ナビゲーションガード(callback i/f)を理解する
+  - [ナビゲーションガード](https://v3.router.vuejs.org/ja/guide/advanced/navigation-guards.html)
 
 - jquery-mobile viewport
 ```
@@ -114,43 +73,7 @@
 'ui-page ui-page-theme-cdp ui-page-header-fixed'
 ```
 
-- prev は専用キャッシュで実装
-
-- anchor
-  - https://framework7.jp/docs/view.html#anchor-8
-
-</details></p>
-
-#### memo & future work
-
-- スクロール位置の記憶する/しない
-  - → app/PageView クラスで対応
-
-- swipe back
-
-- マスター・ディーテイルレイアウト
-  - https://framework7.io/docs/view#master-detail
-  - https://framework7.jp/docs/view.html#anchor-12
-
-- <a>リンクを shift 同時押下で別タブ開きたい
-  - https://stackoverflow.com/questions/56892748/how-to-handle-intention-to-open-link-in-new-page-in-a-spa-application
-
-- vue ナビゲーションガード(callback i/f)を理解する
-  - [ナビゲーションガード](https://v3.router.vuejs.org/ja/guide/advanced/navigation-guards.html)
-
-
-- html2canvas は何をやっているのか?
-  - https://qiita.com/youwht/items/8b681a856f59aa82d671
-    - ゴリゴリ解釈してる...
-
-  - DOM オブジェクトを Canvas に描画する
-    - https://developer.mozilla.org.cach3.com/ja/docs/Web/HTML/Canvas/Drawing_DOM_objects_into_a_canvas
-    - https://bom-shibuya.hatenablog.com/entry/2018/05/15/203446
-    - https://web.archive.org/web/20160625111122/https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
-
-  - 評価するならこっち(ただ完璧な再現は期待できない)
-    - html-to-image
-      - https://github.com/bubkoo/html-to-image#readme
-      - https://marmooo.blogspot.com/2021/04/html-to-image-html.html
-
-
+- HTML を Image へ変換 (ただ完璧な再現は期待できない)
+  - html-to-image
+    - https://github.com/bubkoo/html-to-image#readme
+    - https://marmooo.blogspot.com/2021/04/html-to-image-html.html

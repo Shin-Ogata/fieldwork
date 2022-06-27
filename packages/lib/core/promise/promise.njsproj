@@ -56,8 +56,10 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\cancel-token.ts" />
     <TypeScriptCompile Include="src\cancelable-promise.ts" />
+    <TypeScriptCompile Include="src\deferred.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\internal.ts" />
+    <TypeScriptCompile Include="src\promise-manager.ts" />
     <TypeScriptCompile Include="src\utils.ts" />
     <TypeScriptCompile Include="tests\unit\cancel-token.spec.ts" />
     <TypeScriptCompile Include="tests\unit\cancelable-promise.spec.ts" />
@@ -67,8 +69,10 @@
     <TypeScriptCompile Include="tests\unit\_testee.d.ts" />
     <TypeScriptCompile Include="types\cancel-token.d.ts" />
     <TypeScriptCompile Include="types\cancelable-promise.d.ts" />
+    <TypeScriptCompile Include="types\deferred.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\internal.d.ts" />
+    <TypeScriptCompile Include="types\promise-manager.d.ts" />
     <TypeScriptCompile Include="types\utils.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

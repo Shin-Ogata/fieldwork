@@ -64,6 +64,7 @@
     <TypeScriptCompile Include="src\core.ts" />
     <TypeScriptCompile Include="src\index.ts" />
     <TypeScriptCompile Include="src\interfaces.ts" />
+    <TypeScriptCompile Include="src\params.ts" />
     <TypeScriptCompile Include="src\request.ts" />
     <TypeScriptCompile Include="src\result-code-defs.ts" />
     <TypeScriptCompile Include="src\settings.ts" />
@@ -76,6 +77,7 @@
     <TypeScriptCompile Include="types\core.d.ts" />
     <TypeScriptCompile Include="types\index.d.ts" />
     <TypeScriptCompile Include="types\interfaces.d.ts" />
+    <TypeScriptCompile Include="types\params.d.ts" />
     <TypeScriptCompile Include="types\request.d.ts" />
     <TypeScriptCompile Include="types\result-code-defs.d.ts" />
     <TypeScriptCompile Include="types\settings.d.ts" />

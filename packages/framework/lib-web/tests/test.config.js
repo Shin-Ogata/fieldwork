@@ -34,6 +34,7 @@ module.exports = {
             '@cdp/view': 'CDP',
             '@cdp/template': 'CDP',
             '@cdp/router': 'CDP',
+            '@cdp/app': 'CDP',
         },
     }),
     testem: config.testem({
@@ -67,6 +68,7 @@ module.exports = {
                     '@cdp/view': '@cdp/lib-web',
                     '@cdp/template': '@cdp/lib-web',
                     '@cdp/router': '@cdp/lib-web',
+                    '@cdp/app': '@cdp/lib-web',
                 },
             },
         },
@@ -86,5 +88,6 @@ module.exports = {
         { module: '@cdp/data-sync', server: 'server' },
         { module: '@cdp/template', resource: 'res' },
         { module: '@cdp/router', resource: 'res' },
+        { module: '@cdp/app', resource: 'res' },
     ],
 };

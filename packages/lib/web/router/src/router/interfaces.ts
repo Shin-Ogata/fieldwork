@@ -1,21 +1,39 @@
 import { Constructor } from '@cdp/core-utils';
 import { Subscribable } from '@cdp/events';
 import type { Result } from '@cdp/result';
-import type { IHistory } from '../history';
+import type { IHistory, HistoryDirection } from '../history';
+
+/**
+ * @en Page transition parameters definition.
+ * @ja ページトランジションに指定するパラメータ定義
+ */
+export interface PageTransitionParams {
+    /**
+     * @en Custom page transition name
+     * @ja カスタムページトランジション名
+     */
+    transition?: string;
+
+    /**
+     * @en If specify true, the transition direction set to the reverse.
+     * @ja トランジションを逆方向に指定したい場合にtrueを指定
+     */
+    reverse?: boolean;
+}
 
 /**
  * @en Argument given to the router event callback.
  * @ja ルーターイベントに渡される引数
  */
-export interface RouteChangeInfo {
+export interface RouteChangeInfo extends Readonly<PageTransitionParams> {
     /** router instance */
     readonly router: Router;
     /** from state */
     readonly from?: Route;
     /** to state */
     readonly to: Route;
-    /** navigate direction */
-    readonly direction: 'back' | 'forward' | 'none' | 'missing';
+    /** navigate history direction */
+    readonly direction: HistoryDirection;
     /** extension property for user land */
     intent?: unknown;
 }
@@ -162,7 +180,7 @@ export type PageFactory = (route: Route) => Page | Promise<Page>;
  */
 export interface RouteParameters {
     /**
-     * @en Root path. Dynamic segments are represented using a colon `:`.
+     * @en Route path. Dynamic segments are represented using a colon `:`.
      * @ja ルートのパス. 動的セグメントはコロン `:` を使って表される.
      */
     path: string;
@@ -210,7 +228,7 @@ export interface Route {
     readonly url: string;
 
     /**
-     * @en Root path. Dynamic segments are represented using a colon `:`.
+     * @en Route path. Dynamic segments are represented using a colon `:`.
      * @ja ルートのパス. 動的セグメントはコロン `:` を使って表される.
      */
     readonly path: string;
@@ -320,16 +338,48 @@ export interface RouterConstructionOptions {
 }
 
 /**
+ * @en Interface to specify for page stack operations.
+ * @ja ページスタック操作に指定するインターフェイス
+ */
+export interface PageStack extends PageTransitionParams {
+    /**
+     * @en Page's URL.
+     * @ja ページの URL
+     */
+    url: string;
+
+    /**
+     * @en The route parameter used when registering a new route.
+     * @ja 新規ルート登録を行うときに使用するルートパラメータ.
+     */
+    route?: RouteParameters;
+}
+
+/**
+ * @en Router's sub-flow parameters.
+ * @ja ルーターの sub-flow に指定するパラメータ
+ */
+export interface RouteSubFlowParams {
+    /**
+     * @en Specify the page root path that is the base point of sub-flow. <br>
+     *     If not specified, the path of the starting point of sub-flow is assigned.
+     * @ja sub-flow の基点となるページルートパスを指定 <br>
+     *     指定がない場合は sub-flow を開始地点の path がアサインされる。
+     */
+    base?: string;
+
+    /**
+     * @en Specify [[PageStack]] to add from `base` that transitions at the end of sub-flow. If not specified, transition to `base`.
+     * @ja sub-flow 終了時に遷移する `base` からの追加 [[PageStack]] を指定。指定がない場合は、`base` に遷移する。
+     */
+    additinalStacks?: PageStack[];
+}
+
+/**
  * @en Route navigation options definition.
  * @ja ルートナビゲーションオプション定義
  */
-export interface RouteNavigationOptions {
-    /**
-     * @en Custom page transition name
-     * @ja カスタムページトランジション名
-     */
-    transition?: string;
-
+export interface RouteNavigationOptions extends PageTransitionParams {
     /**
      * @en Route query params. <br>
      *     If the url is `/page/?id=5&foo=bar` then it will contain the following object `{ id: 5, foo: 'bar' }`
@@ -371,6 +421,12 @@ export interface Router extends Subscribable<RouterEvent> {
     readonly currentRoute: Route;
 
     /**
+     * @en Check state is in sub-flow
+     * @ja sub-flow 中であるか判定
+     */
+    readonly isInSubFlow: boolean;
+
+    /**
      * @en Route registration.
      * @jp ルートの登録
      *
@@ -397,6 +453,19 @@ export interface Router extends Subscribable<RouterEvent> {
     navigate(to: string, options?: RouteNavigationOptions): Promise<this>;
 
     /**
+     * @en Add page stack starting from the current history.
+     * @ja 現在の履歴を起点にページスタックを追加
+     *
+     * @param stack
+     *  - `en` Specify [[PageStack]] object / object array
+     *  - `ja` [[PageStack]] オブジェクト / オブジェクト配列を指定
+     * @param noNavigate
+     *  - `en` Specify [[RouteNavigationOptions]]
+     *  - `ja` false: `default` スタック登録後, 最後のスタックに対してページ遷移する / true: スタック登録のみ行いページ遷移しない.
+     */
+    pushPageStack(stack: PageStack | PageStack[], noNavigate?: boolean): Promise<this>;
+
+    /**
      * @en To move backward through history.
      * @ja 履歴の前のページに戻る
      */
@@ -419,6 +488,44 @@ export interface Router extends Subscribable<RouterEvent> {
      *         省略または 0 が指定された場合は, 再読み込みを実行
      */
     go(delta?: number): Promise<this>;
+
+    /**
+     * @en Begin sub-flow transaction. <br>
+     *     Syntactic sugar for `navigate ()`.
+     * @ja sub-flow トランザクションの開始 <br>
+     *     `navigate()` の糖衣構文
+     *
+     * @param to
+     *  - `en` Set a navigate destination (url / path)
+     *  - `ja` ナビゲート先の設定（url / path）
+     * @param params
+     *  - `en` Specify [[RouteSubFlowParam]]
+     *  - `ja` [[RouteSubFlowParam]] を指定
+     * @param options
+     *  - `en` Specify [[RouteSubFlowParams]]
+     *  - `ja` [[RouteSubFlowParams]] を指定
+     */
+    beginSubFlow(to: string, subflow?: RouteSubFlowParams, options?: RouteNavigationOptions): Promise<this>;
+
+    /**
+     * @en Commit sub-flow transaction.
+     * @ja sub-flow トランザクションの終了
+     *
+     * @param params
+     *  - `en` Specify [[PageTransitionParams]]. default: { reverse: false }
+     *  - `ja` [[PageTransitionParams]] を指定. default: { reverse: false }
+     */
+    commitSubFlow(params?: PageTransitionParams): Promise<this>;
+
+    /**
+     * @en Cancel sub-flow transaction.
+     * @ja sub-flow トランザクションのキャンセル
+     *
+     * @param params
+     *  - `en` Specify [[PageTransitionParams]]. default: { reverse: true }
+     *  - `ja` [[PageTransitionParams]] を指定. default: { reverse: true }
+     */
+    cancelSubFlow(params?: PageTransitionParams): Promise<this>;
 
     /**
      * @en Set common transition settnigs.

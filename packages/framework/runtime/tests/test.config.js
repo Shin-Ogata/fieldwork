@@ -35,6 +35,7 @@ module.exports = {
             '@cdp/view': 'CDP',
             '@cdp/template': 'CDP',
             '@cdp/router': 'CDP',
+            '@cdp/app': 'CDP',
         },
         // for result tests
         replace,
@@ -66,6 +67,7 @@ module.exports = {
                     '@cdp/view': '@cdp/runtime',
                     '@cdp/template': '@cdp/runtime',
                     '@cdp/router': '@cdp/runtime',
+                    '@cdp/app': '@cdp/runtime',
                 },
             },
         },
@@ -86,5 +88,6 @@ module.exports = {
         { module: '../../../lib/web/data-sync', server: 'server' },
         { module: '../../../lib/web/template', resource: 'res' },
         { module: '../../../lib/web/router', resource: 'res' },
+        { module: '../../../lib/web/app', resource: 'res' },
     ],
 };

@@ -8,6 +8,7 @@
     "@cdp/lib-worker": "file:../lib-worker"
   },
   "devDependencies": {
+    "@cdp/app": "file:../../lib/web/app",
     "@cdp/collection": "file:../../lib/web/collection",
     "@cdp/data-sync": "file:../../lib/web/data-sync",
     "@cdp/dom": "file:../../lib/web/dom",
