@@ -182,6 +182,11 @@ declare namespace i18n {
          * @default undefined
          */
         keyPrefix?: string;
+        /**
+         * Unescape function
+         * by default it unescapes some basic html entities
+         */
+        unescape?(str: string): string;
     }
     /**
      * This interface can be augmented by users to add types to `i18next` default PluginOptions.

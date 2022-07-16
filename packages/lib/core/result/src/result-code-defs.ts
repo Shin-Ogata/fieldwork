@@ -99,8 +99,10 @@ namespace CDP_DECLARE {
         AJAX = 1,
         /** `@cdp/i18n` */
         I18N = 2,
-        /** `@cdp/data-sync`, `@cdp/model` */
+        /** `@cdp/data-sync`, `@cdp/model`, `@cdp/collection`, `@cdp/view`, `@cdp/router` */
         MVC  = 3,
+        /** `@cdp/app` */
+        APP  = 4,
         /** offset for unknown module */
         OFFSET,
     }

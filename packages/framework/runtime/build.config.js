@@ -55,7 +55,6 @@ function patch(index, code, includes) {
             // export declare namespace CDP_DECLARE { {...}' → ''
             .replace(/^export declare namespace CDP_DECLARE {[\s\S]*?^\}\n/gm, '')
         ;
-
     }
 
     {// result-code-defs.d.ts
@@ -73,6 +72,7 @@ function patch(index, code, includes) {
         code += read(resolve('../../lib/web/model/types/result-code-defs.d.ts'));
         code += read(resolve('../../lib/web/collection/types/result-code-defs.d.ts'));
         code += read(resolve('../../lib/web/router/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/app/types/result-code-defs.d.ts'));
 
         // re-export global constant
         const globalConstant = read(resolve('../../lib/core/result/types/result-code.d.ts'));

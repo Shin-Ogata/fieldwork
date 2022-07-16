@@ -170,9 +170,12 @@ export interface Page {
  * @en [[Page]] factory function.
  * @ja [[Page]] 構築関数
  */
-export type PageFactory = (route: Route) => Page | Promise<Page>;
+export type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
 
 //__________________________________________________________________________________________________//
+
+export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string;
+export type RouteContentSeed   = { selector: string; url?: string; } | HTMLElement | string;
 
 /**
  * @en Route parameters interface. It is also a construction option.
@@ -199,13 +202,21 @@ export interface RouteParameters {
      *
      * @reserved `string` type: load pages as a component via Ajax
      */
-    component?: Constructor<Page> | PageFactory | Page | string;
+    component?: RouteComponentSeed;
+
+    /**
+     * @en Options passed to the page component constructor. <br>
+     *     In case of functional type, it is passed to the second argument.
+     * @ja ページコンポーネントのコンストラクタに渡されるオプション <br>
+     *     関数型の場合は第2引数に渡される
+     */
+    componentOptions?: unknown;
 
     /**
      * @en Creates dynamic page from specified content string
      * @ja DOM コンテント構築のシードパラメータ
      */
-    content?: { selector: string; url?: string; } | HTMLElement | string;
+    content?: RouteContentSeed;
 }
 
 //__________________________________________________________________________________________________//

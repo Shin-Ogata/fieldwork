@@ -7,8 +7,7 @@ const {
     writeFileSync,
     moveSync,
 } = require('fs-extra');
-const glob  = promisify(require('glob'));
-const plato = require('es6-plato');
+const glob = promisify(require('glob'));
 const { dropSourceMap } = require('./source-map-utils');
 const { toPOSIX } = require('./misc');
 const colors = require('../colors');
@@ -117,6 +116,7 @@ function patch(src) {
 }
 
 async function runPlato(options) {
+    const plato = require('es6-plato');
     const targets = await queryTargets(options);
 
     const backup = targets.map((tgt) => {
