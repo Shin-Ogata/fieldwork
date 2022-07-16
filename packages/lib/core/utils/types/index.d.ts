@@ -8,4 +8,5 @@ export * from './object';
 export * from './date';
 export * from './safe';
 export * from './timer';
+export * from './status';
 export * from './misc';

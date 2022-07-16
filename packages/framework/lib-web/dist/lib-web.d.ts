@@ -197,6 +197,11 @@ declare namespace i18n {
          * @default undefined
          */
         keyPrefix?: string;
+        /**
+         * Unescape function
+         * by default it unescapes some basic html entities
+         */
+        unescape?(str: string): string;
     }
     /**
      * This interface can be augmented by users to add types to `i18next` default PluginOptions.
@@ -6937,7 +6942,12 @@ export interface Page {
  * @en [[Page]] factory function.
  * @ja [[Page]] 構築関数
  */
-export declare type PageFactory = (route: Route) => Page | Promise<Page>;
+export declare type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
+export declare type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string;
+export declare type RouteContentSeed = {
+    selector: string;
+    url?: string;
+} | HTMLElement | string;
 /**
  * @en Route parameters interface. It is also a construction option.
  * @ja ルートパラメータ. 構築オプションとしても使用.
@@ -6961,15 +6971,19 @@ export interface RouteParameters {
      *
      * @reserved `string` type: load pages as a component via Ajax
      */
-    component?: Constructor<Page> | PageFactory | Page | string;
+    component?: RouteComponentSeed;
+    /**
+     * @en Options passed to the page component constructor. <br>
+     *     In case of functional type, it is passed to the second argument.
+     * @ja ページコンポーネントのコンストラクタに渡されるオプション <br>
+     *     関数型の場合は第2引数に渡される
+     */
+    componentOptions?: unknown;
     /**
      * @en Creates dynamic page from specified content string
      * @ja DOM コンテント構築のシードパラメータ
      */
-    content?: {
-        selector: string;
-        url?: string;
-    } | HTMLElement | string;
+    content?: RouteContentSeed;
 }
 /**
  * @en The type for the route parameter
@@ -7271,14 +7285,206 @@ export interface Router extends Subscribable<RouterEvent> {
  * @ja [[Router]] オブジェクトを構築
  *
  * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+ *  - `en` An object or the selector string which becomes origin of [[DOM]].
+ *  - `ja` [[DOM]] のもとになるインスタンスまたはセレクタ文字列
  * @param options
  *  - `en` [[RouterConstructionOptions]] object
  *  - `ja` [[RouterConstructionOptions]] オブジェクト
  */
-export declare function createRouter(selector: string, options?: RouterConstructionOptions): Router;
-export declare const STATUS = 'TODO';
+export declare function createRouter(selector: DOMSelector<string | HTMLElement>, options?: RouterConstructionOptions): Router;
+/**
+ * @en The event definition fired in [[AppContext]].
+ * @ja [[AppContext]] 内から発行されるイベント定義
+ */
+export interface AppContextEvent {
+    /**
+     * @en Application ready notification.
+     * @ja アプリケーション準備完了通知
+     * @args [context]
+     */
+    'ready': [
+        AppContext
+    ];
+}
+/**
+ * @en [[AppContext]] create options.
+ * @ja [[AppContext]] 構築オプション
+ */
+export interface AppContextOptions extends RouterConstructionOptions {
+    /**
+     * @en An object or the selector string which becomes origin of [[DOM]] for main router.
+     * @ja メインルーターの [[DOM]] のもとになるインスタンスまたはセレクタ文字列
+     */
+    main: DOMSelector<string | HTMLElement>;
+    /**
+     * @en An object or the selector string which becomes origin of [[DOM]] assigned to the splash screen. <br>
+     *     It will be removed just before appliaction ready.
+     * @ja スプラッシュスクリーンに割り当てられている [[DOM]] のもとになるインスタンスまたはセレクタ文字列 <br>
+     *     準備完了直前に削除される
+     */
+    splash?: DOMSelector<string | HTMLElement>;
+    /**
+     * @en Localization module options.
+     * @ja ローカライズモジュールオプション
+     */
+    i18n?: I18NOptions;
+}
+/**
+ * @en Application context interface
+ * @ja アプリケーションコンテキスト
+ */
+export interface AppContext extends Subscribable<AppContextEvent> {
+    /**
+     * @en main router interface
+     * @ja メインルーター
+     */
+    router: Router;
+}
+/**
+ * @en Register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
+ *     If constructor needs arguments, `options.componentOptions` is available.
+ * @ja Page 具象化クラスの登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
+ *     constructor を指定する引数がある場合は, `options.componentOptions` を利用可能
+ *
+ * @param path
+ *  - `en` route path
+ *  - `ja` ルートのパス
+ * @param component
+ *  - `en` specify the constructor or built object of the page component
+ *  - `ja` ページコンポーネントのコンストラクタもしくは構築済みオブジェクト
+ * @param options
+ *  - `en` route parameters
+ *  - `ja` ルートパラメータ
+ */
+export declare const registerPage: (path: string, component: RouteComponentSeed, options?: RouteParameters) => void;
+/**
+ * @en Application context class
+ * @ja アプリケーションコンテキストクラス
+ *
+ * @example <br>
+ *
+ * ```ts
+ * TODO:
+ * ```
+ */
+export declare const AppContext: (options?: AppContextOptions) => AppContext;
+/**
+ * @en Base class definition of [[View]] that can be specified in as [[Page]] of [[Router]].
+ * @ja [[Router]] の [[Page]] に指定可能な [[View]] の基底クラス定義
+ */
+export declare abstract class PageView<TElement extends Element = HTMLElement, TEvent extends object = object> extends View<TElement, TEvent> implements Page {
+    private readonly _router;
+    private _route?;
+    /**
+     * constructor
+     *
+     * @param router
+     *  - `en` router instance
+     *  - `ja` ルーターインスタンス
+     * @param options
+     *  - `en` [[View]] construction options.
+     *  - `ja` [[View]] 構築オプション
+     */
+    constructor(router: Router, options?: ViewConstructionOptions<TElement>);
+    /**
+     * @en Check the page is active.
+     * @ja ページがアクティブであるか判定
+     */
+    get active(): boolean;
+    /**
+     * @en Route data associated with the page.
+     * @ja ページに紐づくルートデータ
+     */
+    get route(): Route | undefined;
+    /**
+     * @overridable
+     * @en Triggered when the page's HTMLElement is newly constructed by router.
+     * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
+     */
+    onPageInit(thisPage: Route): void;
+    /**
+     * @overridable
+     * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
+     * @ja ページの HTMLElement が DOM に挿入された直後に発火
+     */
+    onPageMounted(thisPage: Route): void;
+    /**
+     * @overridable
+     * @en Triggered when the page is ready to be activated after initialization.
+     * @ja 初期化後, ページがアクティベート可能な状態になると発火
+     */
+    onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
+    /**
+     * @overridable
+     * @en Triggered when the page is fully displayed.
+     * @ja ページが完全に表示されると発火
+     */
+    onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
+    /**
+     * @overridable
+     * @en Triggered just before the page goes hidden.
+     * @ja ページが非表示に移行する直前に発火
+     */
+    onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
+    /**
+     * @overridable
+     * @en Triggered immediately after the page is hidden.
+     * @ja ページが非表示になった直後に発火
+     */
+    onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
+    /**
+     * @overridable
+     * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
+     * @ja ページの HTMLElement が DOM から切り離された直後に発火
+     */
+    onPageUnmounted(thisPage: Route): void;
+    /**
+     * @overridable
+     * @en Triggered when the page's HTMLElement is destroyed by the router.
+     * @ja ページの HTMLElement がルーターによって破棄されたときに発火
+     */
+    onPageRemoved(thisPage: Route): void;
+    /**
+     * @en Triggered when the page's HTMLElement is newly constructed by router.
+     * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
+     */
+    pageInit(info: RouteChangeInfo): void;
+    /**
+     * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
+     * @ja ページの HTMLElement が DOM に挿入された直後に発火
+     */
+    pageMounted(info: RouteChangeInfo): void;
+    /**
+     * @en Triggered when the page is ready to be activated after initialization.
+     * @ja 初期化後, ページがアクティベート可能な状態になると発火
+     */
+    pageBeforeEnter(info: RouteChangeInfo): void;
+    /**
+     * @en Triggered when the page is fully displayed.
+     * @ja ページが完全に表示されると発火
+     */
+    pageAfterEnter(info: RouteChangeInfo): void;
+    /**
+     * @en Triggered just before the page goes hidden.
+     * @ja ページが非表示に移行する直前に発火
+     */
+    pageBeforeLeave(info: RouteChangeInfo): void;
+    /**
+     * @en Triggered immediately after the page is hidden.
+     * @ja ページが非表示になった直後に発火
+     */
+    pageAfterLeave(info: RouteChangeInfo): void;
+    /**
+     * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
+     * @ja ページの HTMLElement が DOM から切り離された直後に発火
+     */
+    pageUnmounted(info: Route): void;
+    /**
+     * @en Triggered when the page's HTMLElement is destroyed by the router.
+     * @ja ページの HTMLElement がルーターによって破棄されたときに発火
+     */
+    pageRemoved(info: Route): void;
+}
 declare namespace i18n {
     /**
      * @en [[AjaxBackend]] options interface.
@@ -7373,5 +7579,15 @@ declare namespace CDP_DECLARE {
         ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED,
         ERROR_MVC_ROUTER_NAVIGATE_FAILED,
         ERROR_MVC_ROUTER_INVALID_SUBFLOW_BASE_URL
+    }
+}
+declare namespace CDP_DECLARE {
+    /**
+     * @en Extends error code definitions.
+     * @ja 拡張エラーコード定義
+     */
+    enum RESULT_CODE {
+        APP_DECLARE = 9007199254740991,
+        ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED
     }
 }

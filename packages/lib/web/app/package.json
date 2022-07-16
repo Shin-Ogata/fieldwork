@@ -8,7 +8,11 @@
   ],
   "dependencies": {
     "@cdp/core-utils": "file:../../core/utils",
+    "@cdp/dom": "file:../dom",
+    "@cdp/events": "file:../../core/events",
     "@cdp/i18n": "file:../i18n",
+    "@cdp/promise": "file:../../core/promise",
+    "@cdp/result": "file:../../core/result",
     "@cdp/router": "file:../router",
     "@cdp/view": "file:../view"
   },

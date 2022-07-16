@@ -470,6 +470,7 @@ describe('router/context spec', () => {
             const changes: RouteChangeInfo[] = [];
             class RouterPage implements Page {
                 '@route': Route;
+                '@options'?: unknown;
                 constructor(route: Route) { this['@route'] = route; }
                 get name(): string { return 'I was born from an class.'; }
                 pageInit(info: RouteChangeInfo): void {
@@ -487,10 +488,11 @@ describe('router/context spec', () => {
                 };
             };
 
-            const asyncFactory = async (route: Route): Promise<RouterPage> => { // eslint-disable-line @typescript-eslint/require-await
+            const asyncFactory = async (route: Route, options?: unknown): Promise<RouterPage> => { // eslint-disable-line @typescript-eslint/require-await
                 return {
                     name: 'I was born from an async-factory.',
                     '@route': route,
+                    '@options': options,
                 } as RouterPage;
             };
 
@@ -513,6 +515,7 @@ describe('router/context spec', () => {
                     {
                         path: '/async-factory',
                         component: asyncFactory,
+                        componentOptions: { className: 'test' },
                     },
                 ],
             });
@@ -548,6 +551,7 @@ describe('router/context spec', () => {
             expect(page).toBeDefined();
             expect(page.name).toBe('I was born from an async-factory.');
             expect(page['@route']).toBeDefined();
+            expect(page['@options']).toEqual({ className: 'test' });
             expect(changes.length).toBe(3);
         });
     });

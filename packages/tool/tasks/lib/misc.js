@@ -4,7 +4,6 @@ const { resolve, dirname } = require('path');
 const fs                   = require('fs-extra');
 const glob                 = require('glob');
 const { merge }            = require('lodash');
-const tar                  = require('tar');
 
 function toPOSIX(path) {
     return path.replace(/\\/g, '/');
@@ -102,6 +101,7 @@ function del(globs, options) {
 }
 
 function gzip(file, dir, cwd) {
+    const tar = require('tar');
     return tar.c({
         gzip: true,
         cwd,

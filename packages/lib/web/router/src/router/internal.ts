@@ -197,18 +197,18 @@ export const ensureRouterPageInstance = async (route: RouteContext): Promise<boo
         return false; // already created
     }
 
-    const { component } = params;
+    const { component, componentOptions } = params;
     if (isFunction(component)) {
         try {
             // eslint-disable-next-line @typescript-eslint/await-thenable
-            params.page = await new (component as unknown as Class)(route);
+            params.page = await new (component as unknown as Class)(route, componentOptions);
         } catch {
-            params.page = await component(route);
+            params.page = await component(route, componentOptions);
         }
     } else if (isObject(component)) {
-        params.page = Object.assign({ '@route': route }, component) as Page;
+        params.page = Object.assign({ '@route': route, '@options': componentOptions }, component) as Page;
     } else {
-        params.page = { '@route': route } as Page;
+        params.page = { '@route': route, '@options': componentOptions } as Page;
     }
 
     return true; // newly created

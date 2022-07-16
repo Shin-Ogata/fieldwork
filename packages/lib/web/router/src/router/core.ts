@@ -13,6 +13,7 @@ import {
 import {
     DOM,
     dom as $,
+    DOMSelector,
 } from '@cdp/dom';
 import { waitFrame } from '@cdp/web-utils';
 import { window } from '../ssr';
@@ -73,7 +74,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /**
      * constructor
      */
-    constructor(selector: string, options: RouterConstructionOptions) {
+    constructor(selector: DOMSelector<string | HTMLElement>, options: RouterConstructionOptions) {
         super();
 
         const {
@@ -92,7 +93,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         this._$el = $(selector, el);
         if (!this._$el.length) {
-            throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND, `Router element not found. [selector: ${selector}]`);
+            throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND, `Router element not found. [selector: ${selector as string}]`);
         }
 
         this._history = prepareHistory(history, initialPath, context as Window);
@@ -631,13 +632,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
  * @ja [[Router]] オブジェクトを構築
  *
  * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+ *  - `en` An object or the selector string which becomes origin of [[DOM]].
+ *  - `ja` [[DOM]] のもとになるインスタンスまたはセレクタ文字列
  * @param options
  *  - `en` [[RouterConstructionOptions]] object
  *  - `ja` [[RouterConstructionOptions]] オブジェクト
  */
-export function createRouter(selector: string, options?: RouterConstructionOptions): Router {
+export function createRouter(selector: DOMSelector<string | HTMLElement>, options?: RouterConstructionOptions): Router {
     return new RouterContext(selector, Object.assign({
         start: true,
     }, options));

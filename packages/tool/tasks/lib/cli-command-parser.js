@@ -2,7 +2,6 @@
 
 const { resolve } = require('path');
 const { readdirSync } = require('fs');
-const { program } = require('commander');
 const colors = require('../colors');
 
 function loadPlugins() {
@@ -16,6 +15,8 @@ function loadPlugins() {
 }
 
 function parseCommand() {
+    const { program } = require('commander');
+
     const argv = process.argv;
     const pkg = require('../package.json');
 

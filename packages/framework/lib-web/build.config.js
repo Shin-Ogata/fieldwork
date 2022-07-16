@@ -158,6 +158,7 @@ function patch(index, code, includes) {
         code += read(resolve('../../lib/web/model/types/result-code-defs.d.ts'));
         code += read(resolve('../../lib/web/collection/types/result-code-defs.d.ts'));
         code += read(resolve('../../lib/web/router/types/result-code-defs.d.ts'));
+        code += read(resolve('../../lib/web/app/types/result-code-defs.d.ts'));
     }
 
     return code;
