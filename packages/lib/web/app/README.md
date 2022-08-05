@@ -12,7 +12,13 @@
 - ☆ global error handle
 - ☆ config
 - App?
-  - activePage
+  - ☆ activePage
+  - ☆ onOrientationChanged
+  - ☆ onHardwareBackButton
+  - ☆ getOrientation
+  - ☆ custom document ready
+- environment
+  - prefers-color-scheme
 
 ## 参考
 

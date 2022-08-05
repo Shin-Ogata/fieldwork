@@ -5,6 +5,15 @@ export declare type SelectorBase = Node | Window | string | Nil;
 export declare type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export declare type QueryContext = ParentNode & Partial<NonElementParentNode>;
 /**
+ * @en Check the value-type is Window.
+ * @ja Window 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export declare function isWindowContext(x: unknown): x is Window;
+/**
  * @en Create Element array from seed arg.
  * @ja 指定された Seed から Element 配列を作成
  *

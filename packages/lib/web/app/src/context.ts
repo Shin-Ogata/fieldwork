@@ -1,7 +1,11 @@
 import { Subscribable, EventPublisher } from '@cdp/events';
 import { Deferred } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
-import { DOMSelector } from '@cdp/dom';
+import { waitFrame } from '@cdp/web-utils';
+import {
+    DOMSelector,
+    dom as $,
+} from '@cdp/dom';
 import {
     I18NOptions,
     initializeI18N,
@@ -21,7 +25,17 @@ import {
     clearI18NSettings,
     getAppConfig,
     waitDomContentLoaded,
+    waitDocumentEventReady,
 } from './internal';
+
+/**
+ * @en `orientation` identifier
+ * @ja `orientation` 識別子
+ */
+export const enum Orientation {
+    PORTRAIT  = 'portrait',
+    LANDSCAPE = 'landscape',
+}
 
 /**
  * @en The event definition fired in [[AppContext]].
@@ -34,6 +48,21 @@ export interface AppContextEvent {
      * @args [context]
      */
     'ready': [AppContext];
+
+    /**
+     * @en Hardware back button press notification.
+     * @ja ハードウェアバックボタンの押下通知
+     * @args [Event]
+     */
+    'backbutton': [Event];
+
+    /**
+     * @en Device orientation change notification.
+     * @ja デバイスオリエンテーション変更通知
+     * https://developer.mozilla.org/ja/docs/Web/API/Window/orientationchange_event
+     * @args [Orientaion, angle]
+     */
+    'orientationchange': [Orientation, number];
 }
 
 /**
@@ -66,7 +95,19 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @en Custom stand-by function for application ready state.
      * @ja アプリケーション準備完了のための待ち受け関数
      */
-    waitForReady?: () => Promise<void>;
+    waitForReady?: Promise<void>;
+
+    /**
+     * @en Custom `document` event for application ready state.
+     * @ja アプリケーション準備完了のためのカスタム `document` イベント
+     */
+    documentEventReady?: string;
+
+    /**
+     * @en Custom `document` event for hardware back button. default: `backbutton`
+     * @ja ハードウェアバックボタンのためのカスタム `document` イベント. 既定値 `backbutton`
+     */
+    documentEventBackButton?: string;
 
     /**
      * @internal
@@ -100,6 +141,12 @@ export interface AppContext extends Subscribable<AppContextEvent> {
     readonly activePage: Page;
 
     /**
+     * @en Current [[Orientation]] id.
+     * @ja 現在の [[Orientation]] を取得
+     */
+    readonly orientation: Orientation;
+
+    /**
      * @en User-definable extended property.
      * @ja ユーザー定義可能な拡張プロパティ
      */
@@ -111,10 +158,32 @@ export interface AppContext extends Subscribable<AppContextEvent> {
 const _initialPages: RouteParameters[] = [];
 
 /**
- * @en Register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
+ * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
- * @ja Page 具象化クラスの登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
+ * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
  *     constructor を指定する引数がある場合は, `options.componentOptions` を利用可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import {
+ *     Page,
+ *     Router,
+ *     AppContext,
+ *     registerPage,
+ * } from '@cdp/runtime';
+ *
+ * const pageFactory = (router: Router, ...args: any[]): Page => {
+ *   :
+ * };
+ * 
+ * // pre-registration
+ * registerPage('page-path', pageFactory);
+ *
+ * // initial access
+ * const app = AppContext({ main: '#app' });
+ * :
+ * ```
  *
  * @param path
  *  - `en` route path
@@ -125,16 +194,8 @@ const _initialPages: RouteParameters[] = [];
  * @param options
  *  - `en` route parameters
  *  - `ja` ルートパラメータ
- *
- * @example <br>
- *
- * ```ts
- * import { registerPage } from '@cdp/runtime';
- *
- * // TODO:
- * ```
  */
-export const registerPage = (path: string, component: RouteComponentSeed, options?: RouteParameters): void => {
+export const registerPage = (path: string, component: RouteComponentSeed, options?: Omit<RouteParameters, 'path'>): void => {
     _initialPages.push(Object.assign({}, options, { path, component }));
 };
 
@@ -145,7 +206,6 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
     private readonly _window: Window;
     private readonly _router: Router;
     private readonly _ready = new Deferred();
-    private _activePage?: Page;
     private _extension: unknown;
 
     constructor(options: AppContextOptions) {
@@ -168,7 +228,12 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
     }
 
     get activePage(): Page {
-        return this._router.currentRoute['@params'].page || {};
+        return this._router.currentRoute['@params']?.page || {};
+    }
+
+    get orientation(): Orientation {
+        const $window = $(this._window);
+        return ($window.width() < $window.height()) ? Orientation.PORTRAIT : Orientation.LANDSCAPE;
     }
 
     get extension(): unknown {
@@ -183,19 +248,27 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
 // private methods:
 
     private async initialize(options: AppContextOptions): Promise<void> {
-        const { i18n, waitForReady } = getAppConfig(options);
+        const { splash, i18n, waitForReady, documentEventReady, documentEventBackButton } = options;
+        const { _window } = this;
 
-        this._window.addEventListener('error', this.onGlobalError.bind(this));
-        this._window.addEventListener('unhandledrejection', this.onGlobalUnhandledRejection.bind(this));
+        _window.addEventListener('error', this.onGlobalError.bind(this));
+        _window.addEventListener('unhandledrejection', this.onGlobalUnhandledRejection.bind(this));
 
+        await waitDomContentLoaded(_window.document);
         await Promise.all([
-            waitDomContentLoaded(this._window.document),
             initializeI18N(i18n),
             waitForReady,
+            waitDocumentEventReady(_window.document, documentEventReady),
         ]);
+
+        _window.document.addEventListener(documentEventBackButton as string, this.onHandleBackKey.bind(this));
+        _window.addEventListener('orientationchange', this.onHandleOrientationChanged.bind(this));
 
         this._router.on('loaded', this.onPageLoaded.bind(this));
         this._router.register(_initialPages, true);
+
+        // remove splash screen
+        $(splash, _window.document).remove();
 
         this._ready.resolve();
         this.publish('ready', this);
@@ -215,6 +288,16 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
     private onGlobalUnhandledRejection(event: PromiseRejectionEvent): void {
         console.error(`[Global Unhandled Rejection] ${event.reason}`);
     }
+
+    private onHandleBackKey(event: Event): void {
+        this.publish('backbutton', event);
+    }
+
+    private async onHandleOrientationChanged(/*event: Event*/): Promise<void> {
+        const { requestAnimationFrame, screen } = this._window; // eslint-disable-line @typescript-eslint/unbound-method
+        await waitFrame(1, requestAnimationFrame);
+        this.publish('orientationchange', this.orientation, screen.orientation.angle);
+    }
 }
 
 /** context cache */
@@ -224,26 +307,46 @@ let _appContext: AppContext | undefined;
  * @en Application context access
  * @ja アプリケーションコンテキスト取得
  *
- * @param options
- *  - `en` init options
- *  - `ja` 初期化オプション
- *
  * @example <br>
  *
  * ```ts
  * import { AppContext } from '@cdp/runtime';
- *
- * // first access
- * const app = AppContext({ main: '#app' });
- * // TODO:
  * ```
+ *
+ * - initial access
+ *
+ * ```ts
+ * const app = AppContext({
+ *     main: '#app',
+ *     routes: [
+ *         { path: '/' },
+ *         { path: '/one' },
+ *         { path: '/two' }
+ *     ],
+ * });
+ * :
+ * ```
+ *
+ * - from the second time onwards
+ *
+ * ```ts
+ * const app = AppContext();
+ * :
+ * ```
+ *
+ * @param options
+ *  - `en` init options
+ *  - `ja` 初期化オプション
  */
 export const AppContext = (options?: AppContextOptions): AppContext => {
-    if (null == options && null == _appContext) {
+    const opts = getAppConfig(Object.assign({
+        start: false,
+        documentEventBackButton: 'backbutton',
+    }, options) as AppContextOptions);
+
+    if (null == opts.main && null == _appContext) {
         throw makeResult(RESULT_CODE.ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED, 'AppContext should be initialized with options at least once.');
     }
-
-    const opts = Object.assign({ main: '#app', start: false }, options);
 
     if (opts.reset) {
         _appContext = undefined;

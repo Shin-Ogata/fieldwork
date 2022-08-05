@@ -3,6 +3,14 @@ import { DOMSelector } from '@cdp/dom';
 import { I18NOptions } from '@cdp/i18n';
 import { RouteComponentSeed, RouteParameters, RouterConstructionOptions, Router, Page } from '@cdp/router';
 /**
+ * @en `orientation` identifier
+ * @ja `orientation` 識別子
+ */
+export declare const enum Orientation {
+    PORTRAIT = "portrait",
+    LANDSCAPE = "landscape"
+}
+/**
  * @en The event definition fired in [[AppContext]].
  * @ja [[AppContext]] 内から発行されるイベント定義
  */
@@ -13,6 +21,19 @@ export interface AppContextEvent {
      * @args [context]
      */
     'ready': [AppContext];
+    /**
+     * @en Hardware back button press notification.
+     * @ja ハードウェアバックボタンの押下通知
+     * @args [Event]
+     */
+    'backbutton': [Event];
+    /**
+     * @en Device orientation change notification.
+     * @ja デバイスオリエンテーション変更通知
+     * https://developer.mozilla.org/ja/docs/Web/API/Window/orientationchange_event
+     * @args [Orientaion, angle]
+     */
+    'orientationchange': [Orientation, number];
 }
 /**
  * @en [[AppContext]] create options.
@@ -41,7 +62,17 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @en Custom stand-by function for application ready state.
      * @ja アプリケーション準備完了のための待ち受け関数
      */
-    waitForReady?: () => Promise<void>;
+    waitForReady?: Promise<void>;
+    /**
+     * @en Custom `document` event for application ready state.
+     * @ja アプリケーション準備完了のためのカスタム `document` イベント
+     */
+    documentEventReady?: string;
+    /**
+     * @en Custom `document` event for hardware back button. default: `backbutton`
+     * @ja ハードウェアバックボタンのためのカスタム `document` イベント. 既定値 `backbutton`
+     */
+    documentEventBackButton?: string;
 }
 /**
  * @en Application context interface
@@ -64,16 +95,43 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      */
     readonly activePage: Page;
     /**
+     * @en Current [[Orientation]] id.
+     * @ja 現在の [[Orientation]] を取得
+     */
+    readonly orientation: Orientation;
+    /**
      * @en User-definable extended property.
      * @ja ユーザー定義可能な拡張プロパティ
      */
     extension: unknown;
 }
 /**
- * @en Register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
+ * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
- * @ja Page 具象化クラスの登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
+ * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
  *     constructor を指定する引数がある場合は, `options.componentOptions` を利用可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import {
+ *     Page,
+ *     Router,
+ *     AppContext,
+ *     registerPage,
+ * } from '@cdp/runtime';
+ *
+ * const pageFactory = (router: Router, ...args: any[]): Page => {
+ *   :
+ * };
+ *
+ * // pre-registration
+ * registerPage('page-path', pageFactory);
+ *
+ * // initial access
+ * const app = AppContext({ main: '#app' });
+ * :
+ * ```
  *
  * @param path
  *  - `en` route path
@@ -84,32 +142,41 @@ export interface AppContext extends Subscribable<AppContextEvent> {
  * @param options
  *  - `en` route parameters
  *  - `ja` ルートパラメータ
- *
- * @example <br>
- *
- * ```ts
- * import { registerPage } from '@cdp/runtime';
- *
- * // TODO:
- * ```
  */
-export declare const registerPage: (path: string, component: RouteComponentSeed, options?: RouteParameters) => void;
+export declare const registerPage: (path: string, component: RouteComponentSeed, options?: Omit<RouteParameters, 'path'>) => void;
 /**
  * @en Application context access
  * @ja アプリケーションコンテキスト取得
- *
- * @param options
- *  - `en` init options
- *  - `ja` 初期化オプション
  *
  * @example <br>
  *
  * ```ts
  * import { AppContext } from '@cdp/runtime';
- *
- * // first access
- * const app = AppContext({ main: '#app' });
- * // TODO:
  * ```
+ *
+ * - initial access
+ *
+ * ```ts
+ * const app = AppContext({
+ *     main: '#app',
+ *     routes: [
+ *         { path: '/' },
+ *         { path: '/one' },
+ *         { path: '/two' }
+ *     ],
+ * });
+ * :
+ * ```
+ *
+ * - from the second time onwards
+ *
+ * ```ts
+ * const app = AppContext();
+ * :
+ * ```
+ *
+ * @param options
+ *  - `en` init options
+ *  - `ja` 初期化オプション
  */
 export declare const AppContext: (options?: AppContextOptions) => AppContext;

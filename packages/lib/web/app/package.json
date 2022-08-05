@@ -14,7 +14,8 @@
     "@cdp/promise": "file:../../core/promise",
     "@cdp/result": "file:../../core/result",
     "@cdp/router": "file:../router",
-    "@cdp/view": "file:../view"
+    "@cdp/view": "file:../view",
+    "@cdp/web-utils": "file:../utils"
   },
   "keywords": [
     "CDP",

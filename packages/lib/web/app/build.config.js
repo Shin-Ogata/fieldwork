@@ -11,6 +11,7 @@ module.exports = {
             '@cdp/events': 'CDP',
             '@cdp/promise': 'CDP',
             '@cdp/result': 'CDP',
+            '@cdp/web-utils': 'CDP',
             '@cdp/dom': 'CDP',
             '@cdp/i18n': 'CDP',
             '@cdp/router': 'CDP',

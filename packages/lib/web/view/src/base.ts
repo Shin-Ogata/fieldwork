@@ -156,7 +156,7 @@ export abstract class View<TElement extends Node = HTMLElement, TEvent extends o
      * @en Get element.
      * @ja 要素を取得
      */
-    get el(): TElement | undefined {
+    get el(): TElement {
         return this[_properties].$el[0];
     }
 

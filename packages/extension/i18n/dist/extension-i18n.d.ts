@@ -856,7 +856,7 @@ declare namespace i18n {
          * Returns a resource data by language.
          */
         getDataByLanguage(lng: string): {
-            translation: {
+            [key: string]: {
                 [key: string]: string;
             };
         } | undefined;

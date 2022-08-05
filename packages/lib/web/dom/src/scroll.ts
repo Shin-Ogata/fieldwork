@@ -6,6 +6,7 @@ import {
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
+    isWindowContext,
     ensurePositiveNumber,
     swing,
 } from './utils';
@@ -17,10 +18,7 @@ import {
     isNodeDocument,
 } from './base';
 import { getOffsetSize } from './styles';
-import {
-    window,
-    requestAnimationFrame,
-} from './ssr';
+import { requestAnimationFrame } from './ssr';
 
 /**
  * @en [[DOM]]`.scrollTo()` options definition.
@@ -66,8 +64,8 @@ function queryTargetElement(el: ElementBase | Nil): Element | null {
         return el;
     } else if (isNodeDocument(el)) {
         return el.documentElement;
-    } else if (window === el) {
-        return window.document.documentElement;
+    } else if (isWindowContext(el)) {
+        return el.document.documentElement;
     } else {
         return null;
     }

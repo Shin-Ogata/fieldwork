@@ -3,7 +3,7 @@
  *   generic model scheme
  */
 
-import { setMixClassAttribute, luid, diff, deepEqual, assignValue, isObject, escapeHTML, deepCopy, isEmptyObject } from '@cdp/core-utils';
+import { setMixClassAttribute, luid, diff, deepEqual, assignValue, escapeHTML, deepCopy, isEmptyObject, isObject } from '@cdp/core-utils';
 import { EventReceiver } from '@cdp/events';
 import { checkCanceled } from '@cdp/promise';
 import { ObservableObject } from '@cdp/observable';

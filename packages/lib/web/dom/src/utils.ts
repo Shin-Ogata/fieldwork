@@ -18,6 +18,18 @@ export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extend
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 
 /**
+ * @en Check the value-type is Window.
+ * @ja Window 型であるか判定
+ *
+ * @param x
+ *  - `en` evaluated value
+ *  - `ja` 評価する値
+ */
+export function isWindowContext(x: unknown): x is Window {
+    return (x as Window)?.parent instanceof Window;
+}
+
+/**
  * @en Create Element array from seed arg.
  * @ja 指定された Seed から Element 配列を作成
  *
@@ -60,10 +72,10 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
                     elements.push(...context.querySelectorAll(selector));
                 }
             }
-        } else if ((seed as Node).nodeType || window === seed as Window) {
+        } else if ((seed as Node).nodeType || isWindowContext(seed)) {
             // Node/element, Window
             elements.push(seed as Node as Element);
-        } else if (0 < (seed as T[]).length && (seed[0].nodeType || window === seed[0])) {
+        } else if (0 < (seed as T[]).length && (seed[0].nodeType || isWindowContext(seed[0]))) {
             // array of elements or collection of DOM
             elements.push(...(seed as Node[] as Element[]));
         }
