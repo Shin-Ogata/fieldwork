@@ -2321,6 +2321,13 @@ export declare function checkCanceled(token: CancelToken | undefined): Promise<v
  * @example <br>
  *
  * ```ts
+ * import { checkStatus } from '@cdp/promise';
+ *
+ * let promise: Promise<unknown>; // some promise instance
+ * :
+ * const status = await checkStatus(promise);
+ * console.log(status);
+ * // 'pending' or 'fulfilled' or 'rejected'
  * ```
  *
  * @param promise
@@ -5183,7 +5190,7 @@ export declare namespace i18n {
          * Returns a resource data by language.
          */
         getDataByLanguage(lng: string): {
-            translation: {
+            [key: string]: {
                 [key: string]: string;
             };
         } | undefined;
@@ -5580,7 +5587,7 @@ export interface RenderOptions {
  * {@link https://lit.dev/docs/libraries/standalone-templates/#rendering-lit-html-templates| Rendering Lit HTML Templates}
  */
 export declare const render: {
-    (value: unknown, container: HTMLElement | DocumentFragment, options?: RenderOptions | undefined): RootPart;
+    (value: unknown, container: HTMLElement | DocumentFragment, options?: RenderOptions): RootPart;
     setSanitizer: (newSanitizer: SanitizerFactory) => void;
     createSanitizer: SanitizerFactory;
     _testOnlyClearSanitizerFactoryDoNotCallOrElse: () => void;
@@ -6170,6 +6177,7 @@ export declare type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export declare type SelectorBase = Node | Window | string | Nil;
 export declare type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export declare type QueryContext = ParentNode & Partial<NonElementParentNode>;
+declare function isWindowContext(x: unknown): x is Window;
 declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
 /**
  * @en [[evaluate]]() options.
@@ -7807,6 +7815,7 @@ export declare namespace dom {
 export declare function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
 export declare namespace dom {
     var utils: {
+        isWindowContext: typeof isWindowContext;
         elementify: typeof elementify;
         evaluate: typeof evaluate;
     };
@@ -10574,7 +10583,7 @@ export declare abstract class View<TElement extends Node = HTMLElement, TEvent e
      * @en Get element.
      * @ja 要素を取得
      */
-    get el(): TElement | undefined;
+    get el(): TElement;
     /**
      * @en Get [[DOM]] object.
      * @ja [[DOM]] オブジェクトを取得
@@ -11192,6 +11201,16 @@ export interface RouterEvent {
  */
 export interface Page {
     /**
+     * @en Route data associated with the page.
+     * @ja ページに紐づくルートデータ
+     */
+    '@route'?: Route;
+    /**
+     * @en Construction options
+     * @ja コンストラクションオプション
+     */
+    '@options'?: unknown;
+    /**
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
@@ -11587,6 +11606,14 @@ export interface Router extends Subscribable<RouterEvent> {
  */
 export declare function createRouter(selector: DOMSelector<string | HTMLElement>, options?: RouterConstructionOptions): Router;
 /**
+ * @en `orientation` identifier
+ * @ja `orientation` 識別子
+ */
+export declare const enum Orientation {
+    PORTRAIT = 'portrait',
+    LANDSCAPE = 'landscape'
+}
+/**
  * @en The event definition fired in [[AppContext]].
  * @ja [[AppContext]] 内から発行されるイベント定義
  */
@@ -11599,6 +11626,24 @@ export interface AppContextEvent {
     'ready': [
         AppContext
     ];
+    /**
+     * @en Hardware back button press notification.
+     * @ja ハードウェアバックボタンの押下通知
+     * @args [Event]
+     */
+    'backbutton': [
+        Event
+    ];
+    /**
+     * @en Device orientation change notification.
+     * @ja デバイスオリエンテーション変更通知
+     * https://developer.mozilla.org/ja/docs/Web/API/Window/orientationchange_event
+     * @args [Orientaion, angle]
+     */
+    'orientationchange': [
+        Orientation,
+        number
+    ];
 }
 /**
  * @en [[AppContext]] create options.
@@ -11608,8 +11653,9 @@ export interface AppContextOptions extends RouterConstructionOptions {
     /**
      * @en An object or the selector string which becomes origin of [[DOM]] for main router.
      * @ja メインルーターの [[DOM]] のもとになるインスタンスまたはセレクタ文字列
+     * @default `#app`
      */
-    main: DOMSelector<string | HTMLElement>;
+    main?: DOMSelector<string | HTMLElement>;
     /**
      * @en An object or the selector string which becomes origin of [[DOM]] assigned to the splash screen. <br>
      *     It will be removed just before appliaction ready.
@@ -11622,6 +11668,21 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @ja ローカライズモジュールオプション
      */
     i18n?: I18NOptions;
+    /**
+     * @en Custom stand-by function for application ready state.
+     * @ja アプリケーション準備完了のための待ち受け関数
+     */
+    waitForReady?: Promise<void>;
+    /**
+     * @en Custom `document` event for application ready state.
+     * @ja アプリケーション準備完了のためのカスタム `document` イベント
+     */
+    documentEventReady?: string;
+    /**
+     * @en Custom `document` event for hardware back button. default: `backbutton`
+     * @ja ハードウェアバックボタンのためのカスタム `document` イベント. 既定値 `backbutton`
+     */
+    documentEventBackButton?: string;
 }
 /**
  * @en Application context interface
@@ -11632,13 +11693,55 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      * @en main router interface
      * @ja メインルーター
      */
-    router: Router;
+    readonly router: Router;
+    /**
+     * @en `Promise` for ready state.
+     * @ja 準備完了確認用 `Promise` オブジェクト
+     */
+    readonly ready: Promise<void>;
+    /**
+     * @en Current active page instance.
+     * @ja 現在アクティブなページインスタンス
+     */
+    readonly activePage: Page;
+    /**
+     * @en Current [[Orientation]] id.
+     * @ja 現在の [[Orientation]] を取得
+     */
+    readonly orientation: Orientation;
+    /**
+     * @en User-definable extended property.
+     * @ja ユーザー定義可能な拡張プロパティ
+     */
+    extension: unknown;
 }
 /**
- * @en Register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
+ * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
- * @ja Page 具象化クラスの登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
+ * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
  *     constructor を指定する引数がある場合は, `options.componentOptions` を利用可能
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import {
+ *     Page,
+ *     Router,
+ *     AppContext,
+ *     registerPage,
+ * } from '@cdp/runtime';
+ *
+ * const pageFactory = (router: Router, ...args: any[]): Page => {
+ *   :
+ * };
+ *
+ * // pre-registration
+ * registerPage('page-path', pageFactory);
+ *
+ * // initial access
+ * const app = AppContext({ main: '#app' });
+ * :
+ * ```
  *
  * @param path
  *  - `en` route path
@@ -11650,16 +11753,41 @@ export interface AppContext extends Subscribable<AppContextEvent> {
  *  - `en` route parameters
  *  - `ja` ルートパラメータ
  */
-export declare const registerPage: (path: string, component: RouteComponentSeed, options?: RouteParameters) => void;
+export declare const registerPage: (path: string, component: RouteComponentSeed, options?: Omit<RouteParameters, 'path'>) => void;
 /**
- * @en Application context class
- * @ja アプリケーションコンテキストクラス
+ * @en Application context access
+ * @ja アプリケーションコンテキスト取得
  *
  * @example <br>
  *
  * ```ts
- * TODO:
+ * import { AppContext } from '@cdp/runtime';
  * ```
+ *
+ * - initial access
+ *
+ * ```ts
+ * const app = AppContext({
+ *     main: '#app',
+ *     routes: [
+ *         { path: '/' },
+ *         { path: '/one' },
+ *         { path: '/two' }
+ *     ],
+ * });
+ * :
+ * ```
+ *
+ * - from the second time onwards
+ *
+ * ```ts
+ * const app = AppContext();
+ * :
+ * ```
+ *
+ * @param options
+ *  - `en` init options
+ *  - `ja` 初期化オプション
  */
 export declare const AppContext: (options?: AppContextOptions) => AppContext;
 /**
@@ -11667,117 +11795,85 @@ export declare const AppContext: (options?: AppContextOptions) => AppContext;
  * @ja [[Router]] の [[Page]] に指定可能な [[View]] の基底クラス定義
  */
 export declare abstract class PageView<TElement extends Element = HTMLElement, TEvent extends object = object> extends View<TElement, TEvent> implements Page {
-    private readonly _router;
-    private _route?;
     /**
      * constructor
      *
-     * @param router
-     *  - `en` router instance
-     *  - `ja` ルーターインスタンス
+     * @param route
+     *  - `en` route context
+     *  - `ja` ルートコンテキスト
      * @param options
      *  - `en` [[View]] construction options.
      *  - `ja` [[View]] 構築オプション
      */
-    constructor(router: Router, options?: ViewConstructionOptions<TElement>);
+    constructor(route?: Route, options?: ViewConstructionOptions<TElement>);
     /**
      * @en Check the page is active.
      * @ja ページがアクティブであるか判定
      */
     get active(): boolean;
     /**
-     * @en Route data associated with the page.
-     * @ja ページに紐づくルートデータ
+     * @en Route data associated with the page (public).
+     * @ja ページに紐づくルートデータ (公開用)
      */
-    get route(): Route | undefined;
+    get ['@route'](): Route | undefined;
+    /**
+     * @en [[Router]] instance
+     * @ja [[Router]] インスタンス
+     */
+    protected get _route(): Route | undefined;
+    /**
+     * @en [[Router]] instance
+     * @ja [[Router]] インスタンス
+     */
+    protected get _router(): Router | undefined;
     /**
      * @overridable
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
-    onPageInit(thisPage: Route): void;
+    protected onPageInit(thisPage: Route): void;
     /**
      * @overridable
      * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
      * @ja ページの HTMLElement が DOM に挿入された直後に発火
      */
-    onPageMounted(thisPage: Route): void;
+    protected onPageMounted(thisPage: Route): void;
     /**
      * @overridable
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
-    onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
     /**
      * @overridable
      * @en Triggered when the page is fully displayed.
      * @ja ページが完全に表示されると発火
      */
-    onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
     /**
      * @overridable
      * @en Triggered just before the page goes hidden.
      * @ja ページが非表示に移行する直前に発火
      */
-    onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
     /**
      * @overridable
      * @en Triggered immediately after the page is hidden.
      * @ja ページが非表示になった直後に発火
      */
-    onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
     /**
      * @overridable
      * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
      * @ja ページの HTMLElement が DOM から切り離された直後に発火
      */
-    onPageUnmounted(thisPage: Route): void;
+    protected onPageUnmounted(thisPage: Route): void;
     /**
      * @overridable
      * @en Triggered when the page's HTMLElement is destroyed by the router.
      * @ja ページの HTMLElement がルーターによって破棄されたときに発火
      */
-    onPageRemoved(thisPage: Route): void;
-    /**
-     * @en Triggered when the page's HTMLElement is newly constructed by router.
-     * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
-     */
-    pageInit(info: RouteChangeInfo): void;
-    /**
-     * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
-     * @ja ページの HTMLElement が DOM に挿入された直後に発火
-     */
-    pageMounted(info: RouteChangeInfo): void;
-    /**
-     * @en Triggered when the page is ready to be activated after initialization.
-     * @ja 初期化後, ページがアクティベート可能な状態になると発火
-     */
-    pageBeforeEnter(info: RouteChangeInfo): void;
-    /**
-     * @en Triggered when the page is fully displayed.
-     * @ja ページが完全に表示されると発火
-     */
-    pageAfterEnter(info: RouteChangeInfo): void;
-    /**
-     * @en Triggered just before the page goes hidden.
-     * @ja ページが非表示に移行する直前に発火
-     */
-    pageBeforeLeave(info: RouteChangeInfo): void;
-    /**
-     * @en Triggered immediately after the page is hidden.
-     * @ja ページが非表示になった直後に発火
-     */
-    pageAfterLeave(info: RouteChangeInfo): void;
-    /**
-     * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
-     * @ja ページの HTMLElement が DOM から切り離された直後に発火
-     */
-    pageUnmounted(info: Route): void;
-    /**
-     * @en Triggered when the page's HTMLElement is destroyed by the router.
-     * @ja ページの HTMLElement がルーターによって破棄されたときに発火
-     */
-    pageRemoved(info: Route): void;
+    protected onPageRemoved(thisPage: Route): void;
 }
 export declare namespace i18n {
     /**

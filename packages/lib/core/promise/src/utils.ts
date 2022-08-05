@@ -57,6 +57,13 @@ export function checkCanceled(token: CancelToken | undefined): Promise<void> {
  * @example <br>
  *
  * ```ts
+ * import { checkStatus } from '@cdp/promise';
+ *
+ * let promise: Promise<unknown>; // some promise instance
+ * :
+ * const status = await checkStatus(promise);
+ * console.log(status);
+ * // 'pending' or 'fulfilled' or 'rejected'
  * ```
  *
  * @param promise

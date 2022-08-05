@@ -1,5 +1,5 @@
 import { Nil } from '@cdp/core-utils';
-import { window, document } from './ssr';
+import { isWindowContext } from './utils';
 import {
     ElementBase,
     SelectorBase,
@@ -261,7 +261,7 @@ export function isTypeHTMLOrSVGElement(dom: DOMIterable<ElementBase>): dom is DO
  *  - `ja` [[DOMIterable]] インスタンス
  */
 export function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DOMIterable<Document> {
-    return document === dom[0];
+    return dom[0] instanceof Document;
 }
 
 /**
@@ -273,7 +273,7 @@ export function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DOMIterabl
  *  - `ja` [[DOMIterable]] インスタンス
  */
 export function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<Window> {
-    return window === dom[0];
+    return isWindowContext(dom[0]);
 }
 
 //__________________________________________________________________________________________________//
@@ -335,7 +335,7 @@ export function isElementSelector<T extends SelectorBase>(selector: DOMSelector<
  *  - `ja` 評価する値
  */
 export function isDocumentSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Document> {
-    return document === selector as Node as Document;
+    return selector instanceof Document;
 }
 
 /**
@@ -347,7 +347,7 @@ export function isDocumentSelector<T extends SelectorBase>(selector: DOMSelector
  *  - `ja` 評価する値
  */
 export function isWindowSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Window> {
-    return window === selector as Window;
+    return isWindowContext(selector);
 }
 
 /**

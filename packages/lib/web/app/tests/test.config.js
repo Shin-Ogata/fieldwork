@@ -20,11 +20,11 @@ module.exports = {
             '@cdp/i18n': 'node_modules/@cdp/i18n/dist/i18n',
             '@cdp/router': 'node_modules/@cdp/router/dist/router',
             '@cdp/view': 'node_modules/@cdp/view/dist/view',
+            '@cdp/web-utils': 'node_modules/@cdp/web-utils/dist/web-utils',
 
             // i18n
             '@cdp/extension-i18n': 'node_modules/@cdp/i18n/node_modules/@cdp/extension-i18n/dist/extension-i18n',
             '@cdp/ajax': 'node_modules/@cdp/i18n/node_modules/@cdp/ajax/dist/ajax',
-            '@cdp/web-utils': 'node_modules/@cdp/i18n/node_modules/@cdp/web-utils/dist/web-utils',
         
             // router
             '@cdp/extension-path2regexp': 'node_modules/@cdp/router/node_modules/@cdp/extension-path2regexp/dist/extension-path2regexp',

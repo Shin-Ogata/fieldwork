@@ -118,6 +118,18 @@ export interface RouterEvent {
  */
 export interface Page {
     /**
+     * @en Route data associated with the page.
+     * @ja ページに紐づくルートデータ
+     */
+    '@route'?: Route;
+
+    /**
+     * @en Construction options
+     * @ja コンストラクションオプション
+     */
+    '@options'?: unknown;
+
+    /**
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */

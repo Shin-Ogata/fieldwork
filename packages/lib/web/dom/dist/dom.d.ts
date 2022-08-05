@@ -10,6 +10,7 @@ export declare type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export declare type SelectorBase = Node | Window | string | Nil;
 export declare type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export declare type QueryContext = ParentNode & Partial<NonElementParentNode>;
+declare function isWindowContext(x: unknown): x is Window;
 declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
 /**
  * @en [[evaluate]]() options.
@@ -1647,6 +1648,7 @@ declare namespace dom {
 declare function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
 declare namespace dom {
     var utils: {
+        isWindowContext: typeof isWindowContext;
         elementify: typeof elementify;
         evaluate: typeof evaluate;
     };

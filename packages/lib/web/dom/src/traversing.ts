@@ -8,7 +8,8 @@ import {
     noop,
     setMixClassAttribute,
 } from '@cdp/core-utils';
-import { window, document } from './ssr';
+import { document } from './ssr';
+import { isWindowContext } from './utils';
 import {
     ElementBase,
     SelectorBase,
@@ -65,7 +66,7 @@ function winnow<T extends SelectorBase, U extends ElementBase>(
                 }
             }
         } else if (isWindowSelector(selector)) {
-            if (window === el as Window) {
+            if (isWindowContext(el)) {
                 retval = validCallback(el);
                 if (undefined !== retval) {
                     return retval;

@@ -76,7 +76,7 @@ export declare abstract class View<TElement extends Node = HTMLElement, TEvent e
      * @en Get element.
      * @ja 要素を取得
      */
-    get el(): TElement | undefined;
+    get el(): TElement;
     /**
      * @en Get [[DOM]] object.
      * @ja [[DOM]] オブジェクトを取得

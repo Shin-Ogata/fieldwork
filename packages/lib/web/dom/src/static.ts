@@ -7,6 +7,7 @@ import {
     SelectorBase,
     QueryContext,
     EvalOptions,
+    isWindowContext,
     elementify,
     evaluate,
 } from './utils';
@@ -44,6 +45,7 @@ function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryC
 }
 
 dom.utils = {
+    isWindowContext,
     elementify,
     evaluate,
 };
