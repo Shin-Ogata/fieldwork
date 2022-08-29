@@ -21,7 +21,7 @@ export type AjaxHeaderOptions = Pick<AjaxOptions<AjaxDataTypes>, 'headers' | 'me
 
 /**
  * @internal
- * ts4.7 patch
+ * ts4.7+ patch
  * https://github.com/microsoft/TypeScript/issues/47505
  */
 declare global {
@@ -153,6 +153,7 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
         stream['length'] = length;
         return stream as AjaxResult<T>;
     } else {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response' | 'stream'>](), token);
     }
 }

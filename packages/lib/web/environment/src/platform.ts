@@ -1,7 +1,7 @@
 import { Writable, getGlobal } from '@cdp/core-utils';
 import { context as globalContext } from './ssr';
 
-/** @internal ts4.7 patch */
+/** @internal ts4.7+ patch */
 const { navigator, screen, devicePixelRatio } = globalContext;
 
 /** @internal */
