@@ -71,14 +71,14 @@ export declare const queryPlatform: (context?: {
     navigator?: {
         userAgent: string;
         platform: string;
-        standalone?: boolean | undefined;
-    } | undefined;
+        standalone?: boolean;
+    };
     screen?: {
         width: number;
         height: number;
-    } | undefined;
-    devicePixelRatio?: number | undefined;
-} | undefined) => Platform;
+    };
+    devicePixelRatio?: number;
+}) => Platform;
 /**
  * @en Platform information on runtime.
  * @ja ランタイムのプラットフォーム情報

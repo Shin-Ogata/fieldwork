@@ -116,7 +116,7 @@ describe('ajax/core spec', () => {
 
         // progress example
         let chunk = 0;
-        let result: ReadableStreamDefaultReadResult<Uint8Array> | undefined;
+        let result: ReadableStreamReadResult<Uint8Array> | undefined;
         while (!result || !result.done) {
             result = await reader.read();
             if (!result.done) {

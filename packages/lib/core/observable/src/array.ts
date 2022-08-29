@@ -101,7 +101,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
                     for (let i = oldLength; --i >= newLength;) {
                         target[_stockChange](ArrayChangeType.REMOVE, i, undefined, scrap[i - newLength]);
                     }
-                } else {            // oldLength < newLength
+                } else {     // oldLength < newLength
                     for (let i = oldLength; i < newLength; i++) {
                         target[_stockChange](ArrayChangeType.INSERT, i /*, undefined, undefined */);
                     }
