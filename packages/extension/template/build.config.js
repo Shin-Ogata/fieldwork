@@ -29,7 +29,7 @@ function patch(index, code) {
 
     code = code
         // trim `import("xxx").`
-        .replace(/import\("[\S]+"\)\./g, '')
+        .replace(/import\('[\S]+'\)\./g, '')
         // replace `TrustedHTML` -> `HTMLElement`
         .replace(/TrustedHTML/g, 'HTMLElement')
         // rename list

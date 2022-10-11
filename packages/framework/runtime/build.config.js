@@ -54,6 +54,8 @@ function patch(index, code, includes) {
             .replace(/import\('@cdp\/lib-core'\)\./g, '')
             // export declare namespace CDP_DECLARE { {...}' → ''
             .replace(/^export declare namespace CDP_DECLARE {[\s\S]*?^\}\n/gm, '')
+            //'/*!...*/ → ''
+            .replace(/^\/\*\![\s\S]*?\*\/\n/gm, '')
         ;
     }
 
