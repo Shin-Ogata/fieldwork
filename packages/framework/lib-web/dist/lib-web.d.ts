@@ -770,6 +770,7 @@ declare namespace i18n {
         formatter?: FormatterModule;
         external: ThirdPartyModule[];
     }
+    // helper to identify interface https://stackoverflow.com/a/45983481/2363935
     export interface Newable<T> {
         new (...args: any[]): T;
     }
