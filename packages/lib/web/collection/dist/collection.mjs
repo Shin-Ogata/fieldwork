@@ -1,5 +1,5 @@
 /*!
- * @cdp/collection 0.9.13
+ * @cdp/collection 0.9.14
  *   generic collection scheme
  */
 

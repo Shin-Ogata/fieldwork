@@ -4,6 +4,7 @@
     @typescript-eslint/no-empty-function,
  */
 
+import { noop } from '@cdp/core-utils';
 import {
     EventAll,
     EventPublisher,
@@ -395,6 +396,9 @@ describe('events/publisher spec', () => {
     });
 
     it('check advanced', async () => {
+        const oldHandler = window.onunhandledrejection;
+        window.onunhandledrejection = noop;
+
         const publisher = new TestPublisher();
         const error = new Error('error');
         const stub = {
@@ -405,6 +409,9 @@ describe('events/publisher spec', () => {
         };
         spyOn(stub, 'onCallback').and.callThrough();
 
+        // unhandled rejection の抑止
+        spyOn(Promise, 'reject').and.callFake(e => Promise.resolve(e));
+
         publisher.on('message', stub.onCallback);
 
         expect(async () => await publisher.trigger('message', 'hello')).not.toThrow();
@@ -413,5 +420,8 @@ describe('events/publisher spec', () => {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect(() => publisher.on(null as any, stub.onCallback)).toThrow(new TypeError('Type of Null is not a valid channel.'));
+
+        window.onunhandledrejection = oldHandler;
     });
+
 });

@@ -24,13 +24,18 @@ function detectSourceMap(src) {
 function dropSourceMap(src) {
     try {
         const code = src.includes('\n') ? src : fs.readFileSync(src).toString();
-        return convert.removeMapFileComments(convert.removeComments(code));
+        return convert.removeMapFileComments(convert.removeComments(code)).replace(/[\n\s]*$/, '\n');
     } catch (error) {
         console.log(colors.red(`    ERROR: cannot drop source-map for ${src}.`));
     }
 }
 
+function appendInlineSourceMap(src, map) {
+    return dropSourceMap(src) + convert.fromObject(map).toComment();
+}
+
 module.exports = {
     detectSourceMap,
     dropSourceMap,
+    appendInlineSourceMap,
 };

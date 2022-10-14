@@ -87,7 +87,11 @@ function getDefault(testeeConfig, options) {
                         testeeOutput.globals,
                         globals,
                     ) : undefined,
-                    preferConst: true,
+                    generatedCode: {
+                        constBindings: true,
+                        objectShorthand: true,
+                        symbols: true,
+                    },
                     sourcemap: 'inline',
                 },
             ],

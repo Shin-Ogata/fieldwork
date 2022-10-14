@@ -1,7 +1,7 @@
 {
   "name": "@cdp/router",
   "description": "generic router scheme",
-  "version": "0.9.13",
+  "version": "0.9.14",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"

@@ -1,7 +1,7 @@
 {
   "name": "@cdp/ajax",
   "description": "ajax utility module",
-  "version": "0.9.13",
+  "version": "0.9.14",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/binary": "file:../binary",

@@ -1,5 +1,5 @@
 /*!
- * @cdp/binary 0.9.13
+ * @cdp/binary 0.9.14
  *   binary utility module
  */
 

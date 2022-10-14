@@ -1,11 +1,11 @@
 /*!
- * @cdp/fs-storage 0.9.13
+ * @cdp/fs-storage 0.9.14
  *   file-system storage utility module
  */
 
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 
 const util = require('util');
 const fs = require('fs');
