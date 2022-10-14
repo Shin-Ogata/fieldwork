@@ -35,7 +35,9 @@ import {
     _Σ,
     toTemplateStringsArray as bridge,
 } from '@cdp/extension-template';
-import $, { DOM } from '@cdp/dom';
+// rollup v3+:  multi import w/ default
+import { dom as $, DOM } from '@cdp/dom';
+// import $, { DOM } from '@cdp/dom';
 import {
     TestListCustomElement,
     prepareTestElements,

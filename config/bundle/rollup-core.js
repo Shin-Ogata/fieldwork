@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolve, dirname } = require('path');
 const { builtinModules } = require('module');
 const { nodeResolve }    = require('@rollup/plugin-node-resolve');
 const commonjs           = require('@rollup/plugin-commonjs');
@@ -71,7 +72,11 @@ function getConfig(options) {
                 banner: banner(),
                 file: `${DIST}/${OUTNAME}.mjs`,
                 format: 'es',
-                preferConst: true,
+                generatedCode: {
+                    constBindings: true,
+                    objectShorthand: true,
+                    symbols: true,
+                },
                 sourcemap,
             },
             {
@@ -80,7 +85,11 @@ function getConfig(options) {
                 format,
                 name: umd ? `${GLOBAL}` : undefined,
                 extend: true,
-                preferConst: true,
+                generatedCode: {
+                    constBindings: true,
+                    objectShorthand: true,
+                    symbols: true,
+                },
                 sourcemap,
                 globals: umd ? globals : undefined,
                 exports,

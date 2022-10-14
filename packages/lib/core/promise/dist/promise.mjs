@@ -1,5 +1,5 @@
 /*!
- * @cdp/promise 0.9.13
+ * @cdp/promise 0.9.14
  *   promise utility module
  */
 

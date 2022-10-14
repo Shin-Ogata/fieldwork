@@ -1,5 +1,5 @@
 /*!
- * @cdp/fs-storage 0.9.13
+ * @cdp/fs-storage 0.9.14
  *   file-system storage utility module
  */
 
