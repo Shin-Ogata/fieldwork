@@ -9,15 +9,104 @@
 declare const i18n: i18n.i18n;
 
 declare namespace i18n {
-    export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+    // Helpers
     export type MergeBy<T, K> = Omit<T, keyof K> & K;
-    export interface FallbackLngObjList {
-        [language: string]: readonly string[];
-    }
-    export type FallbackLng = string | readonly string[] | FallbackLngObjList | ((code: string) => string | readonly string[] | FallbackLngObjList);
-    export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & {
+    export type StringMap = {
         [key: string]: any;
-    }) => string;
+    };
+    export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+    export type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends () => infer R ? R : never;
+    /**
+     * This interface can be augmented by users to add types to `i18next` default TypeOptions.
+     */
+    export interface CustomTypeOptions {
+    }
+    /**
+     * This interface can be augmented by users to add types to `i18next` default PluginOptions.
+     *
+     * Usage:
+     * ```ts
+     * // react-i18next.d.ts
+     * import 'react-i18next';
+     * export module 'react-i18next' {
+     *   interface CustomTypeOptions {
+     *     defaultNS: 'custom';
+     *     returnNull: false;
+     *     returnEmptyString: false;
+     *     nsSeparator: ':';
+     *     keySeparator: '.';
+     *     jsonFormat: 'v4';
+     *     allowObjectInHTMLChildren: false;
+     *     resources: {
+     *       custom: {
+     *         foo: 'foo';
+     *       };
+     *     };
+     *   }
+     * }
+     * ```
+     */
+    export interface CustomPluginOptions {
+    }
+    export type TypeOptions = MergeBy<{
+        /**
+         * Allows null values as valid translation
+         */
+        returnNull: true;
+        /**
+         * Allows empty string as valid translation
+         */
+        returnEmptyString: true;
+        /**
+         * Char to separate keys
+         */
+        keySeparator: '.';
+        /**
+         * Char to split namespace from key
+         */
+        nsSeparator: ':';
+        /**
+         * Default namespace used if not passed to translation function
+         */
+        defaultNS: 'translation';
+        /**
+         * Json Format Version - V4 allows plural suffixes
+         */
+        jsonFormat: 'v4';
+        /**
+         * Resources to initialize with
+         */
+        resources: object;
+        /**
+         * Flag that allows HTML elements to receive objects. This is only useful for React applications
+         * where you pass objects to HTML elements so they can be replaced to their respective interpolation
+         * values (mostly with Trans component)
+         */
+        allowObjectInHTMLChildren: false;
+    }, CustomTypeOptions>;
+    export type PluginOptions = MergeBy<{
+        /**
+         * Options for language detection - check documentation of plugin
+         * @default undefined
+         */
+        detection?: object;
+        /**
+         * Options for backend - check documentation of plugin
+         * @default undefined
+         */
+        backend?: object;
+        /**
+         * Options for cache layer - check documentation of plugin
+         * @default undefined
+         */
+        cache?: object;
+        /**
+         * Options for i18n message format - check documentation of plugin
+         * @default undefined
+         */
+        i18nFormat?: object;
+    }, CustomPluginOptions>;
+    export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & StringMap) => string;
     export interface InterpolationOptions {
         /**
          * Format function see formatting for details
@@ -122,6 +211,10 @@ declare namespace i18n {
          */
         skipOnVariables?: boolean;
     }
+    export interface FallbackLngObjList {
+        [language: string]: readonly string[];
+    }
+    export type FallbackLng = string | readonly string[] | FallbackLngObjList | ((code: string) => string | readonly string[] | FallbackLngObjList);
     export interface ReactOptions {
         /**
          * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
@@ -188,34 +281,7 @@ declare namespace i18n {
          */
         unescape?(str: string): string;
     }
-    /**
-     * This interface can be augmented by users to add types to `i18next` default PluginOptions.
-     */
-    export interface PluginOptions {
-    }
-    export interface DefaultPluginOptions {
-        /**
-         * Options for language detection - check documentation of plugin
-         * @default undefined
-         */
-        detection?: object;
-        /**
-         * Options for backend - check documentation of plugin
-         * @default undefined
-         */
-        backend?: object;
-        /**
-         * Options for cache layer - check documentation of plugin
-         * @default undefined
-         */
-        cache?: object;
-        /**
-         * Options for i18n message format - check documentation of plugin
-         * @default undefined
-         */
-        i18nFormat?: object;
-    }
-    export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions> {
+    export interface InitOptions extends PluginOptions {
         /**
          * Logs info level to console output. Helps finding issues with loading not working.
          * @default false
@@ -559,29 +625,34 @@ declare namespace i18n {
         interpolation?: InterpolationOptions;
     }
     /**
-     * indexer that is open to any value
-     */
-    export type StringMap = {
-        [key: string]: any;
-    };
-    /**
      * Options that allow open ended values for interpolation unless type is provided.
      */
     export type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
-    export type Callback = (error: any, t: TFunction) => void;
-    /**
-     * Uses similar args as the t function and returns true if a key exists.
-     */
-    export interface ExistsFunction<TKeys extends string = string, TInterpolationMap extends object = StringMap> {
-        (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
-    }
-    export interface WithT {
+    export type FallbackOrNS<F, T = keyof Resources> = [
+        T
+    ] extends [
+        never
+    ] ? F : T;
+    export type Resources = TypeOptions['resources'];
+    export type DefaultNamespace = TypeOptions['defaultNS'];
+    export type Namespace<T = FallbackOrNS<string>> = T | T[];
+    export type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
+    export type WithOrWithoutPlural<K> = TypeOptions['jsonFormat'] extends 'v4' ? K extends `${infer B}_${PluralSuffix}` ? B | K : K : K;
+    // Normalize single namespace
+    export type KeysWithSeparator<K1, K2, S extends string = TypeOptions['keySeparator']> = `${K1 & string}${S}${K2 & string}`;
+    export type KeysWithSeparator2<K1, K2> = KeysWithSeparator<K1, Exclude<K2, keyof any[]>>;
+    export type Normalize2<T, K = keyof T> = K extends keyof T ? T[K] extends StringMap ? T[K] extends readonly any[] ? KeysWithSeparator2<K, WithOrWithoutPlural<keyof T[K]>> | KeysWithSeparator2<K, Normalize2<T[K]>> : KeysWithSeparator<K, WithOrWithoutPlural<keyof T[K]>> | KeysWithSeparator<K, Normalize2<T[K]>> : never : never;
+    export type Normalize<T> = WithOrWithoutPlural<keyof T> | Normalize2<T>;
+    // Normalize multiple namespaces
+    export type KeyWithNSSeparator<N, K, S extends string = TypeOptions['nsSeparator']> = `${N & string}${S}${K & string}`;
+    export type NormalizeMulti<T, U extends keyof T, L = LastOf<U>> = L extends U ? KeyWithNSSeparator<L, Normalize<T[L]>> | NormalizeMulti<T, Exclude<U, L>> : never;
+    // Normalize single namespace with key prefix
+    export type NormalizeWithKeyPrefix<T, K, S extends string = TypeOptions['keySeparator']> = K extends `${infer K1}${S}${infer K2}` ? K1 extends keyof T ? NormalizeWithKeyPrefix<T[K1], K2> : never : K extends keyof T ? T[K] extends string ? never : Normalize<T[K]> : never;
+    export type TFuncKey<N extends Namespace = DefaultNamespace, TKPrefix = undefined, T = Resources> = N extends (keyof T)[] | Readonly<(keyof T)[]> ? NormalizeMulti<T, N[number]> : N extends keyof T ? TKPrefix extends undefined ? Normalize<T[N]> : NormalizeWithKeyPrefix<T[N], TKPrefix> : string;
+    export interface WithT<N extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
-        t: TFunction;
+        t: TFunction<N>;
     }
-    /**
-     * Object returned from t() function when passed returnDetails: true option.
-     */
     export type TFunctionDetailedResult<T = string> = {
         /**
          * The plain used key
@@ -604,24 +675,34 @@ declare namespace i18n {
          */
         usedNS: string;
     };
-    export type TFunctionResult = string | object | TFunctionDetailedResult | Array<string | object> | undefined | null;
-    export type TFunctionKeys = string | TemplateStringsArray;
-    export interface TFunction {
-        // basic usage
-        <TResult extends TFunctionResult = string, TKeys extends TFunctionKeys = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[]): TResult;
-        <TResult extends TFunctionResult = TFunctionDetailedResult<object>, TKeys extends TFunctionKeys = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
+    export type TypeOptionsFallback<TranslationValue, Option, MatchingValue> = Option extends false ? TranslationValue extends MatchingValue ? string : TranslationValue : TranslationValue;
+    /**
+     * Checks if user has enabled `returnEmptyString` and `returnNull` options to retrieve correct values.
+     */
+    export interface CustomTypeParameters {
+        returnNull?: boolean;
+        returnEmptyString?: boolean;
+    }
+    export type NormalizeByTypeOptions<TranslationValue, Options extends CustomTypeParameters = TypeOptions, R = TypeOptionsFallback<TranslationValue, Options['returnEmptyString'], ''>> = TypeOptionsFallback<R, Options['returnNull'], null>;
+    export type StringIfPlural<T> = TypeOptions['jsonFormat'] extends 'v4' ? T extends `${string}_${PluralSuffix}` ? string : never : never;
+    export type NormalizeReturn<T, V, S extends string | false = TypeOptions['keySeparator']> = V extends keyof T ? NormalizeByTypeOptions<T[V]> : S extends false ? V : V extends `${infer K}${S}${infer R}` ? K extends keyof T ? NormalizeReturn<T[K], R> : never : StringIfPlural<keyof T>;
+    export type NormalizeMultiReturn<T, V> = V extends `${infer N}:${infer R}` ? N extends keyof T ? NormalizeReturn<T[N], R> : never : never;
+    export type DefaultTFuncReturn = string | object | TFunctionDetailedResult | Array<string | object> | undefined | null;
+    export type TFuncReturn<N, TKeys, TDefaultResult, TKPrefix = undefined, T = Resources> = N extends (keyof T)[] ? NormalizeMultiReturn<T, TKeys> : N extends keyof T ? TKPrefix extends undefined ? NormalizeReturn<T[N], TKeys> : NormalizeReturn<T[N], KeysWithSeparator<TKPrefix, TKeys>> : TDefaultResult;
+    export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = undefined> {
+        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[]): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
+        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = object, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
             returnDetails: true;
             returnObjects: true;
-        }): TResult;
-        <TResult extends TFunctionResult = TFunctionDetailedResult, TKeys extends TFunctionKeys = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
+        }): TFunctionDetailedResult<TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>>;
+        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
             returnDetails: true;
-        }): TResult;
-        <TResult extends TFunctionResult = object, TKeys extends TFunctionKeys = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
+        }): TFunctionDetailedResult<TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>>;
+        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = object, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
             returnObjects: true;
-        }): TResult;
-        <TResult extends TFunctionResult = string, TKeys extends TFunctionKeys = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> | string): TResult;
-        // overloaded usage
-        <TResult extends TFunctionResult = string, TKeys extends TFunctionKeys = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], defaultValue?: string, options?: TOptions<TInterpolationMap> | string): TResult;
+        }): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
+        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
+        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], defaultValue?: string, options?: TOptions<TInterpolationMap> | string): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
     }
     export interface Resource {
         [language: string]: ResourceLanguage;
@@ -762,9 +843,16 @@ declare namespace i18n {
     export interface NewableModule<T extends Module> extends Newable<T> {
         type: T['type'];
     }
+    export type Callback = (error: any, t: TFunction) => void;
+    /**
+     * Uses similar args as the t function and returns true if a key exists.
+     */
+    export interface ExistsFunction<TKeys extends string = string, TInterpolationMap extends object = StringMap> {
+        (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
+    }
     export interface i18n {
         // Expose parameterized t in the i18next interface hierarchy
-        t: TFunction;
+        t: TFunction<FallbackOrNS<string>[]>;
         /**
          * The default of the i18next module is an i18next instance ready to be initialized by calling init.
          * You can create additional instances using the createInstance function.
