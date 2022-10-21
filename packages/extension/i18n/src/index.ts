@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-namespace,
+    @typescript-eslint/no-explicit-any,
  */
 
 import {
@@ -7,18 +8,13 @@ import {
     i18n as i18nextInstance,
     FallbackLngObjList as i18nextFallbackLngObjList,
     FallbackLng as i18nextFallbackLng,
-    FormatFunction as i18nextFormatFunction,
     InterpolationOptions as i18nextInterpolationOptions,
     ReactOptions as i18nextReactOptions,
     InitOptions as i18nextInitOptions,
     TOptionsBase as i18nextTOptionsBase,
-    StringMap as i18nextStringMap,
     TOptions as i18nextTOptions,
-    Callback as i18nextCallback,
     ExistsFunction as i18nextExistsFunction,
     WithT as i18nextWithT,
-    TFunctionResult as i18nextTFunctionResult,
-    TFunctionKeys as i18nextTFunctionKeys,
     TFunction as i18nextTFunction,
     Resource as i18nextResource,
     ResourceLanguage as i18nextResourceLanguage,
@@ -47,18 +43,13 @@ declare namespace i18n {
     export type i18n = i18nextInstance;
     export type FallbackLngObjList = i18nextFallbackLngObjList;
     export type FallbackLng = i18nextFallbackLng;
-    export type FormatFunction = i18nextFormatFunction;
     export type InterpolationOptions = i18nextInterpolationOptions;
     export type ReactOptions = i18nextReactOptions;
     export type InitOptions = i18nextInitOptions;
     export type TOptionsBase = i18nextTOptionsBase;
-    export type StringMap = i18nextStringMap;
-    export type TOptions<T extends Record<string, unknown> = StringMap> = i18nextTOptions<T>;
-    export type Callback = i18nextCallback;
-    export type ExistsFunction<K extends string = string, T extends Record<string, unknown> = StringMap> = i18nextExistsFunction<K, T>;
+    export type TOptions<T extends Record<string, unknown> = { [key: string]: any; }> = i18nextTOptions<T>;
+    export type ExistsFunction<K extends string = string, T extends Record<string, unknown> = { [key: string]: any; }> = i18nextExistsFunction<K, T>;
     export type WithT = i18nextWithT;
-    export type TFunctionResult = i18nextTFunctionResult;
-    export type TFunctionKeys = i18nextTFunctionKeys;
     export type TFunction = i18nextTFunction;
     export type Resource = i18nextResource;
     export type ResourceLanguage = i18nextResourceLanguage;

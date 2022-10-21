@@ -14,7 +14,11 @@ function detectSourceMap(src) {
         }
         // retry from map file
         if (convert.mapFileCommentRegex.test(code)) {
-            return convert.fromMapFileComment(code, path.dirname(src)).toObject();
+            // convert-source-map v2.+
+            // https://github.com/thlorenz/convert-source-map/pull/76/files
+            return convert.fromMapFileComment(code, (file) => {
+                return fs.readFileSync(path.resolve(path.dirname(src), file), 'utf-8');
+            }).toObject();
         }
     } catch (error) {
         console.log(colors.red(`    ERROR: cannot detect source-map for ${src}.`));
