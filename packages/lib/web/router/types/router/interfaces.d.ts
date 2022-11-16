@@ -157,9 +157,9 @@ export interface Page {
  * @en [[Page]] factory function.
  * @ja [[Page]] 構築関数
  */
-export declare type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
-export declare type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string;
-export declare type RouteContentSeed = {
+export type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
+export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string;
+export type RouteContentSeed = {
     selector: string;
     url?: string;
 } | HTMLElement | string;
@@ -204,7 +204,7 @@ export interface RouteParameters {
  * @en The type for the route parameter
  * @ja ルートパラメータに指定する型
  */
-export declare type RoutePathParams = Record<string, string | number | boolean | null | undefined>;
+export type RoutePathParams = Record<string, string | number | boolean | null | undefined>;
 /**
  * @en Route context property definition.
  * @ja ルートコンテキストプロパティ定義

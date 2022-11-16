@@ -1,5 +1,5 @@
 /*!
- * @cdp/result 0.9.14
+ * @cdp/result 0.9.15
  *   result utility module
  */
 

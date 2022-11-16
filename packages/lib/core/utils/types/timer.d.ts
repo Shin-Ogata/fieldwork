@@ -9,12 +9,12 @@ export interface TimerHandle {
  * @en Type of timer start functions.
  * @ja タイマー開始関数の型
  */
-export declare type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
+export type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
 /**
  * @en Type of timer stop functions.
  * @ja タイマー停止関数の型
  */
-export declare type TimerStopFunction = (handle: TimerHandle) => void;
+export type TimerStopFunction = (handle: TimerHandle) => void;
 declare const setTimeout: TimerStartFunction;
 declare const clearTimeout: TimerStopFunction;
 declare const setInterval: TimerStartFunction;

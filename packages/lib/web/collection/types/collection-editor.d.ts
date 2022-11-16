@@ -4,7 +4,7 @@ import type { Collection } from './base';
  * @en Edited collection type definition.
  * @ja 被編集 Collection の型定義
  */
-export declare type CollectionEditee<M extends object> = Collection<M, any, any>;
+export type CollectionEditee<M extends object> = Collection<M, any, any>;
 /**
  * @en Clear all elements of [[Collection]].
  * @ja [[Collection]] 要素の全削除

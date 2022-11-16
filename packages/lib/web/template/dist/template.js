@@ -1,5 +1,5 @@
 /*!
- * @cdp/template 0.9.14
+ * @cdp/template 0.9.15
  *   HTML template library
  */
 

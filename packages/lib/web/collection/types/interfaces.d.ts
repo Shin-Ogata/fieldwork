@@ -22,17 +22,17 @@ export declare const enum SortOrder {
  * @en Callback type for using `sort()` function.
  * @ja `sort()` に指定されるコールバック関数
  */
-export declare type SortCallback<T> = (lhs: T, rhs: T) => number;
+export type SortCallback<T> = (lhs: T, rhs: T) => number;
 /**
  * @en Callback type for using `filter()` function.
  * @ja `filter()` に指定されるコールバック関数
  */
-export declare type FilterCallback<T> = (target: T) => boolean;
+export type FilterCallback<T> = (target: T) => boolean;
 /**
  * @en Sort key type definition.
  * @ja ソートキーの型定義
  */
-export declare type SortKeyType = 'string' | 'number' | 'date' | 'boolean';
+export type SortKeyType = 'string' | 'number' | 'date' | 'boolean';
 /**
  * @en Generic sort key interface definition.
  * @ja 汎用のソートキー定義
@@ -287,7 +287,7 @@ export interface CollectionFetchOptions<TItem extends object> extends Cancelable
  * @en Argument value type for [[CollectionFetchProgress]].
  * @ja [[CollectionFetchProgress]] に渡される引数
  */
-export declare type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
+export type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
     total: number;
     items: TItem[];
     options?: CollectionItemQueryOptions<TItem>;
@@ -298,7 +298,7 @@ export declare type CollectionItemQueryResult<TItem extends object, TSumKey exte
  * @ja [[CollectionFetchOptions]]`.auto` が指定された場合に使用する進捗取得用コールバック関数 <br>
  *     最終進捗 の items は Promise.resolve() に渡るものと同等
  */
-export declare type CollectionFetchProgress<TItem extends object> = (progress: CollectionItemQueryResult<TItem>) => void;
+export type CollectionFetchProgress<TItem extends object> = (progress: CollectionItemQueryResult<TItem>) => void;
 /**
  * @en Standard query options for `queryItems()`.
  * @ja `queryItems()` の標準のクエリオプション
@@ -334,7 +334,7 @@ export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TIt
  * @en [[Collection]] items provider function type.
  * @ja [[Collection]] の Item を供給する関数の型
  */
-export declare type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionItemQueryOptions<TItem, TKey>) => Promise<CollectionItemQueryResult<TItem>>;
+export type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionItemQueryOptions<TItem, TKey>) => Promise<CollectionItemQueryResult<TItem>>;
 /**
  * @en [[Collection]] construction options.
  * @ja [[Collection]] 構築に指定するオプション
@@ -353,7 +353,7 @@ export interface CollectionConstructionOptions<T extends object, K extends Keys<
  * @en Base options for collection operation.
  * @ja Collection 操作の基底オプション定義
  */
-export declare type CollectionOperationOptions = Silenceable & Parseable;
+export type CollectionOperationOptions = Silenceable & Parseable;
 /**
  * @en Add item to [[Collection]] options.
  * @ja [[Collection]] への追加オプション
@@ -376,17 +376,17 @@ export interface CollectionSetOptions extends CollectionAddOptions {
  * @en [[Collection]] re-sort options.
  * @ja [[Collection]] 再ソートオプション
  */
-export declare type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = Validable & CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
+export type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = Validable & CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
 /**
  * @en [[Collection]] after-filter options.
  * @ja [[Collection]] 絞り込みフィルタオプション
  */
-export declare type CollectionAfterFilterOptions<TItem extends object> = CollectionFilterOptions<TItem> & Silenceable;
+export type CollectionAfterFilterOptions<TItem extends object> = CollectionFilterOptions<TItem> & Silenceable;
 /**
  * @en [[Collection]] update options.
  * @ja [[Collection]] 更新時のオプション
  */
-export declare type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & CollectionSetOptions & {
+export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & CollectionSetOptions & {
     index?: number;
     changes: {
         added: TItem[];
@@ -395,7 +395,7 @@ export declare type CollectionUpdateOptions<TItem extends object> = ModelSaveOpt
     };
 };
 /** re-exports */
-export declare type CollectionDataSyncOptions = RestDataSyncOptions;
+export type CollectionDataSyncOptions = RestDataSyncOptions;
 /**
  * @en [[Collection]]`#fetch()` options.
  * @ja [[Collection]]`#fetch()` のオプション
@@ -416,24 +416,24 @@ export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<
  * @en [[Collection]]`#requery()` options.
  * @ja [[Collection]]`#requery()` のオプション
  */
-export declare type CollectionRequeryOptions = Silenceable & Cancelable;
+export type CollectionRequeryOptions = Silenceable & Cancelable;
 /**
  * @en Model attribute change event definition.
  * @ja Model 属性変更イベント定義
  */
-export declare type CollectionModelAttributeChangeEvent<T extends object> = {
+export type CollectionModelAttributeChangeEvent<T extends object> = {
     [K in ChangedAttributeEvent<T>]: K extends `@change:${string}` ? [T, Collection<T>, CollectionOperationOptions] : never;
 };
 /**
  * @en Default [[Collection]] seed type.
  * @ja 既定の [[Collection]] シードデータ型
  */
-export declare type CollectionSeed = AnyObject;
+export type CollectionSeed = AnyObject;
 /**
  * @en Default [[Collection]] event definition.
  * @ja 既定の [[Collection]] イベント定義
  */
-export declare type CollectionEvent<TItem extends object> = EventAll & SyncEvent<Collection<TItem>> & CollectionModelAttributeChangeEvent<TItem> & {
+export type CollectionEvent<TItem extends object> = EventAll & SyncEvent<Collection<TItem>> & CollectionModelAttributeChangeEvent<TItem> & {
     /**
      * @en when a model is added to a collection.
      * @ja Model が Collection に追加されたときに発行
@@ -518,7 +518,7 @@ export declare type CollectionEvent<TItem extends object> = EventAll & SyncEvent
  * @en Base options for editing list operation.
  * @ja 編集可能リスト用基底オプション
  */
-export declare type ListEditOptions = Silenceable & Cancelable;
+export type ListEditOptions = Silenceable & Cancelable;
 /**
  * @en Editable list changed information.
  * @ja 編集可能リスト用変更情報

@@ -5,7 +5,7 @@ import { ObservableState, IObservable } from './common';
  * @en Observable key type definition.
  * @ja 購読可能なキーの型定義
  */
-export declare type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
+export type ObservableKeys<T extends ObservableObject> = NonFunctionPropertyNames<T>;
 /**
  * @en The object class which change can be observed.
  * @ja オブジェクトの変更を監視できるオブジェクトクラス

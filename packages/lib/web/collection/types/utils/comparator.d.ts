@@ -3,7 +3,7 @@ import { SortOrder, SortCallback, SortKey } from '../interfaces';
  * @en `Intl.Collator` factory function type definition.
  * @ja `Intl.Collator` を返却する関数型定義
  */
-export declare type CollatorProvider = () => Intl.Collator;
+export type CollatorProvider = () => Intl.Collator;
 /**
  * @ja 既定の Intl.Collator を設定
  *

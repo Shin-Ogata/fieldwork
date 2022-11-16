@@ -29,23 +29,23 @@ export interface Waitable {
  * @en Default [[Model]] seed type.
  * @ja 既定の [[Model]] シードデータ型
  */
-export declare type ModelSeed = PlainObject;
+export type ModelSeed = PlainObject;
 /** helper for [[ModelAttributeChangeEvent]] */
-export declare type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
+export type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
 /** helper for [[ModelAttributeChangeEvent]] */
-export declare type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ? A extends keyof T ? [Model<T>, T[A], T[A], A] : never : never;
+export type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ? A extends keyof T ? [Model<T>, T[A], T[A], A] : never : never;
 /**
  * @en [[Model]] attribute change event definition.
  * @ja [[Model]] 属性変更イベント定義
  */
-export declare type ModelAttributeChangeEvent<T extends object> = {
+export type ModelAttributeChangeEvent<T extends object> = {
     [K in ChangedAttributeEvent<T>]: MakeEventArg<T, K>;
 };
 /**
  * @en Default [[Model]] event definition.
  * @ja 既定の [[Model]] イベント定義
  */
-export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttributeChangeEvent<T> & {
+export type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttributeChangeEvent<T> & {
     /**
      * @en when a model is added to a collection.
      * @ja Model が  Collection に追加されたときに発行
@@ -100,7 +100,7 @@ export declare type ModelEvent<T extends object> = EventAll & SyncEvent<T> & Mod
  * @en [[Model]] attributes definition.
  * @ja [[Model]] が持つ属性の定義
  */
-export declare type ModelAttributes<T extends object> = {
+export type ModelAttributes<T extends object> = {
     [P in keyof T]: T[P];
 };
 /**
@@ -115,7 +115,7 @@ export interface ModelConstructor<C extends object, T extends object> {
  * @en [[Model]]'s `EventSource` definition from attributes.
  * @ja 属性から [[Model]] の `EventSource` 定義抽出
  */
-export declare type ModelEventSource<T extends object> = Subscribable<ModelEvent<T>>;
+export type ModelEventSource<T extends object> = Subscribable<ModelEvent<T>>;
 /**
  * @en [[Model]] validate options.
  * @ja [[Model]] 検証オプション
@@ -127,7 +127,7 @@ export interface ModelValidateAttributeOptions extends Silenceable {
  * @en [[Model]] attributes argument type.
  * @ja [[Model]] 属性引数の型
  */
-export declare type ModelAttributeInput<T> = Partial<T> & SyncObject;
+export type ModelAttributeInput<T> = Partial<T> & SyncObject;
 /**
  * @en [[Model]] attributes setup options.
  * @ja [[Model]] 属性設定時に指定するオプション
@@ -139,16 +139,16 @@ export interface ModelSetOptions extends Validable, ModelValidateAttributeOption
  * @en [[Model]] construction options.
  * @ja [[Model]] 構築に指定するオプション
  */
-export declare type ModelConstructionOptions = ModelSetOptions & Parseable;
+export type ModelConstructionOptions = ModelSetOptions & Parseable;
 /** re-exports */
-export declare type ModelSyncMethods = SyncMethods;
-export declare type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
-export declare type ModelDataSyncOptions = RestDataSyncOptions;
+export type ModelSyncMethods = SyncMethods;
+export type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
+export type ModelDataSyncOptions = RestDataSyncOptions;
 /**
  * @en [[Model]] fetch options.
  * @ja [[Model]] fetch に指定するオプション
  */
-export declare type ModelFetchOptions = ModelDataSyncOptions & Omit<ModelSetOptions, 'noThrow'> & Parseable;
+export type ModelFetchOptions = ModelDataSyncOptions & Omit<ModelSetOptions, 'noThrow'> & Parseable;
 /**
  * @en [[Model]] save options.
  * @ja [[Model]] save に指定するオプション
@@ -160,4 +160,4 @@ export interface ModelSaveOptions extends ModelFetchOptions, Waitable {
  * @en [[Model]] destroy options.
  * @ja [[Model]] destroy に指定するオプション
  */
-export declare type ModelDestroyOptions = ModelDataSyncOptions & Waitable;
+export type ModelDestroyOptions = ModelDataSyncOptions & Waitable;

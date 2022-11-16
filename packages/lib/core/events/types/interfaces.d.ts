@@ -93,7 +93,7 @@ export interface Subscribable<Event extends object = any> {
  * @en Extract event schema from [[Subscribable]] type.
  * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
  */
-export declare type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
+export type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
 /**
  * @en Common interface for notification restraint.
  * @ja 通知抑止に使用する共通インターフェイス

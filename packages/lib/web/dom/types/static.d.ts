@@ -3,7 +3,7 @@ import { DOM, DOMPlugin, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } 
 declare namespace dom {
     let fn: DOMClass;
 }
-export declare type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
+export type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
 /**
  * @en Create [[DOM]] instance from `selector` arg.
  * @ja 指定された `selector` [[DOM]] インスタンスを作成

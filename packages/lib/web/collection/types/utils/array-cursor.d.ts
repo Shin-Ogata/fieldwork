@@ -10,7 +10,7 @@ export declare const enum CursorPos {
  * @en Seek expression function type.
  * @ja シーク式関数定義
  */
-export declare type SeekExp<T> = (value: T, index?: number, obj?: T[]) => boolean;
+export type SeekExp<T> = (value: T, index?: number, obj?: T[]) => boolean;
 /**
  * @en The class provides cursor interface for Array. <br>
  *     It is different from Iterator interface of es2015, and that provides interface which is similar to DB recordset's one.

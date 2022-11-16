@@ -3,17 +3,17 @@ import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import { IStorage, IStorageOptions, StorageDataTypeList, MemoryStorageOptions, MemoryStorageResult, MemoryStorageDataTypes, MemoryStorageReturnType, MemoryStorageInputDataTypes, MemoryStorageEventCallback } from '@cdp/core-storage';
 /** FsStorage I/O options */
-export declare type FsStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
+export type FsStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
 /** FsStorage return value */
-export declare type FsStorageResult<K extends Keys<StorageDataTypeList>> = MemoryStorageResult<K>;
+export type FsStorageResult<K extends Keys<StorageDataTypeList>> = MemoryStorageResult<K>;
 /** FsStorage data type */
-export declare type FsStorageDataTypes = MemoryStorageDataTypes;
+export type FsStorageDataTypes = MemoryStorageDataTypes;
 /** FsStorage return type */
-export declare type FsStorageReturnType<D extends FsStorageDataTypes> = MemoryStorageReturnType<D>;
+export type FsStorageReturnType<D extends FsStorageDataTypes> = MemoryStorageReturnType<D>;
 /** FsStorage input data type */
-export declare type FsStorageInputDataTypes = MemoryStorageInputDataTypes;
+export type FsStorageInputDataTypes = MemoryStorageInputDataTypes;
 /** FsStorage event callback */
-export declare type FsStorageEventCallback = MemoryStorageEventCallback;
+export type FsStorageEventCallback = MemoryStorageEventCallback;
 /**
  * @en File System (node fs) storage class.
  * @ja ファイルシステムストレージクラス

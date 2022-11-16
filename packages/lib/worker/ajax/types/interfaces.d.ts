@@ -25,7 +25,7 @@ export interface AjaxDataTypeList<T = PlainObject> {
  * @en Ajax data type definitions.
  * @ja Ajax で使用できる型指定子
  */
-export declare type AjaxDataTypes = keyof AjaxDataTypeList;
+export type AjaxDataTypes = keyof AjaxDataTypeList;
 /**
  * @en [[ajax]]() method options.
  * @ja [[ajax]]() に指定可能なオプション
@@ -70,14 +70,14 @@ export interface AjaxOptions<T extends AjaxDataTypes | object = 'response'> exte
  * @en `request` shortcut utility method options.
  * @ja `request` ショートカットに指定可能なオプション
  */
-export declare type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'method' | 'data' | 'dataType'>>;
+export type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'method' | 'data' | 'dataType'>>;
 /**
  * @en `GET request` shortcut utility method options.
  * @ja `GET request` ショートカットに指定可能なオプション
  */
-export declare type AjaxGetRequestShortcutOptions = AjaxRequestOptions & Pick<AjaxOptions, 'data'>;
+export type AjaxGetRequestShortcutOptions = AjaxRequestOptions & Pick<AjaxOptions, 'data'>;
 /**
  * @en Result of [[ajax]]() returns value.
  * @ja [[ajax]]() が返却する結果
  */
-export declare type AjaxResult<T extends AjaxDataTypes | object> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];
+export type AjaxResult<T extends AjaxDataTypes | object> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];

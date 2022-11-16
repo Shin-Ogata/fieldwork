@@ -4,12 +4,12 @@ import { DOMIterable } from './base';
  * @en [[DOM]] effect parameter.
  * @ja [[DOM]] エフェクト効果のパラメータ
  */
-export declare type DOMEffectParameters = Keyframe[] | PropertyIndexedKeyframes | null;
+export type DOMEffectParameters = Keyframe[] | PropertyIndexedKeyframes | null;
 /**
  * @en [[DOM]] effect options.
  * @ja [[DOM]] エフェクト効果のオプション
  */
-export declare type DOMEffectOptions = number | KeyframeAnimationOptions;
+export type DOMEffectOptions = number | KeyframeAnimationOptions;
 /**
  * @en [[DOM]] effect context object.
  * @ja [[DOM]] のエフェクト効果のコンテキストオブジェクト

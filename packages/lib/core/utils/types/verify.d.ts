@@ -139,7 +139,7 @@ interface Verifier {
  * @en List of method for type verify.
  * @ja 型検証が提供するメソッド一覧
  */
-export declare type VerifyMethod = keyof Verifier;
+export type VerifyMethod = keyof Verifier;
 /**
  * @en Verify method.
  * @ja 検証メソッド

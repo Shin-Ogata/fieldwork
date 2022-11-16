@@ -19,18 +19,6 @@ import { settings } from './settings';
 /** @internal */
 export type AjaxHeaderOptions = Pick<AjaxOptions<AjaxDataTypes>, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
 
-/**
- * @internal
- * ts4.7+ patch
- * https://github.com/microsoft/TypeScript/issues/47505
- */
-declare global {
-    interface AbortController {
-        /** Invoking this method will set this object's AbortSignal's aborted flag and signal to any observers that the associated activity is to be aborted. */
-        abort(reason?: unknown): void;
-    }
-}
-
 /** @internal */
 const _acceptHeaderMap = {
     text: 'text/plain, text/html, application/xml; q=0.8, text/xml; q=0.8, */*; q=0.01',

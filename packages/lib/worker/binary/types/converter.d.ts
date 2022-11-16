@@ -343,12 +343,12 @@ export interface Serializable {
     binary: Uint8Array;
     blob: Blob;
 }
-export declare type SerializableDataTypes = Types<Serializable>;
-export declare type SerializableInputDataTypes = SerializableDataTypes | null | undefined;
-export declare type SerializableKeys = Keys<Serializable>;
-export declare type SerializableCastable = Omit<Serializable, 'buffer' | 'binary' | 'blob'>;
-export declare type SerializableCastableTypes = Types<SerializableCastable>;
-export declare type SerializableReturnType<T extends SerializableCastableTypes> = TypeToKey<SerializableCastable, T> extends never ? never : T | null | undefined;
+export type SerializableDataTypes = Types<Serializable>;
+export type SerializableInputDataTypes = SerializableDataTypes | null | undefined;
+export type SerializableKeys = Keys<Serializable>;
+export type SerializableCastable = Omit<Serializable, 'buffer' | 'binary' | 'blob'>;
+export type SerializableCastableTypes = Types<SerializableCastable>;
+export type SerializableReturnType<T extends SerializableCastableTypes> = TypeToKey<SerializableCastable, T> extends never ? never : T | null | undefined;
 /**
  * @en Deserializable options interface.
  * @ja デシリアライズに使用するオプション

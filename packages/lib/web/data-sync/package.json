@@ -1,7 +1,7 @@
 {
   "name": "@cdp/data-sync",
   "description": "web storage utility module",
-  "version": "0.9.14",
+  "version": "0.9.15",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/ajax": "file:../../worker/ajax",

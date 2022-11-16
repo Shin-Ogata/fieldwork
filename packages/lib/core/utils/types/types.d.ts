@@ -2,32 +2,32 @@
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
  */
-export declare type Primitive = string | number | boolean | symbol | bigint | null | undefined;
+export type Primitive = string | number | boolean | symbol | bigint | null | undefined;
 /**
  * @en The general null type.
  * @ja 空を示す型定義
  */
-export declare type Nil = void | null | undefined;
+export type Nil = void | null | undefined;
 /**
  * @en The type of object or [[Nil]].
  * @ja [[Nil]] になりえるオブジェクト型定義
  */
-export declare type Nillable<T extends object> = T | Nil;
+export type Nillable<T extends object> = T | Nil;
 /**
  * @en Avoid the `Function`types.
  * @ja 汎用関数型
  */
-export declare type UnknownFunction = (...args: unknown[]) => unknown;
+export type UnknownFunction = (...args: unknown[]) => unknown;
 /**
  * @en Avoid the `Object` and `{}` types, as they mean "any non-nullish value".
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
  */
-export declare type UnknownObject = Record<string | number | symbol, unknown>;
+export type UnknownObject = Record<string | number | symbol, unknown>;
 /**
  * @en Non-nullish value.
  * @ja 非 Null 値
  */
-export declare type NonNil = {};
+export type NonNil = {};
 /**
  * @en JavaScript type set interface.
  * @ja JavaScript の型の集合
@@ -46,7 +46,7 @@ interface TypeList {
  * @en The key list of [[TypeList]].
  * @ja [[TypeList]] キー一覧
  */
-export declare type TypeKeys = keyof TypeList;
+export type TypeKeys = keyof TypeList;
 /**
  * @en Type base definition.
  * @ja 型の規定定義
@@ -65,68 +65,68 @@ export interface Constructor<T extends object> extends Type<T> {
  * @en Type of class.
  * @ja クラス型
  */
-export declare type Class<T extends object = object> = Constructor<T>;
+export type Class<T extends object = object> = Constructor<T>;
 /**
  * @en Ensure for function parameters to tuple.
  * @ja 関数パラメータとして tuple を保証
  */
-export declare type Arguments<T> = T extends any[] ? T : [T];
+export type Arguments<T> = T extends any[] ? T : [T];
 /**
  * @en Rmove `readonly` attributes from input type.
  * @ja `readonly` 属性を解除
  */
-export declare type Writable<T> = {
+export type Writable<T> = {
     -readonly [K in keyof T]: T[K];
 };
 /**
  * @en Extract functional property names.
  * @ja 関数プロパティ名の抽出
  */
-export declare type FunctionPropertyNames<T> = {
+export type FunctionPropertyNames<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T] & string;
 /**
  * @en Extract functional properties.
  * @ja 関数プロパティの抽出
  */
-export declare type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
+export type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
 /**
  * @en Extract non-functional property names.
  * @ja 非関数プロパティ名の抽出
  */
-export declare type NonFunctionPropertyNames<T> = {
+export type NonFunctionPropertyNames<T> = {
     [K in keyof T]: T[K] extends Function ? never : K;
 }[keyof T] & string;
 /**
  * @en Extract non-functional properties.
  * @ja 非関数プロパティの抽出
  */
-export declare type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
+export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
 /**
  * @en Extract non-functional types.
  * @ja 非関数型の抽出
  */
-export declare type NonFunction<T> = T extends Function ? never : T;
+export type NonFunction<T> = T extends Function ? never : T;
 /**
  * @en Extract object key list. (ensure only 'string')
  * @ja オブジェクトのキー一覧を抽出 ('string' 型のみを保証)
  */
-export declare type Keys<T extends object> = keyof Omit<T, number | symbol>;
+export type Keys<T extends object> = keyof Omit<T, number | symbol>;
 /**
  * @en Extract object type list.
  * @ja オブジェクトの型一覧を抽出
  */
-export declare type Types<T extends object> = T[keyof T];
+export type Types<T extends object> = T[keyof T];
 /**
  * @en Convert object key to type.
  * @ja オブジェクトキーから型へ変換
  */
-export declare type KeyToType<O extends object, K extends keyof O> = K extends keyof O ? O[K] : never;
+export type KeyToType<O extends object, K extends keyof O> = K extends keyof O ? O[K] : never;
 /**
  * @en Convert object type to key.
  * @ja オブジェクト型からキーへ変換
  */
-export declare type TypeToKey<O extends object, T extends Types<O>> = {
+export type TypeToKey<O extends object, T extends Types<O>> = {
     [K in keyof O]: O[K] extends T ? K : never;
 }[keyof O];
 /**
@@ -135,7 +135,7 @@ export declare type TypeToKey<O extends object, T extends Types<O>> = {
  * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>
  *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
  */
-export declare type PlainObject<T = {} | null | undefined> = Record<string, T>;
+export type PlainObject<T = {} | null | undefined> = Record<string, T>;
 /**
  * @en Object can be guaranteed definition. Be careful not to abuse it because it does not force the cast.
  *   - Unlike [[PlainObject]], it can accept Class (built-in object), Array, Function.
@@ -146,17 +146,17 @@ export declare type PlainObject<T = {} | null | undefined> = Record<string, T>;
  *   - `object` と違い、未知のプロパティにアクセスすることができる.
  *   - `{} / Object` と違い、[[Primitive]] をはじくことができる.
  */
-export declare type AnyObject = Record<string, any>;
+export type AnyObject = Record<string, any>;
 /**
  * @en The data type list by which style compulsion is possible.
  * @ja 型強制可能なデータ型一覧
  */
-export declare type TypedData = string | number | boolean | null | object;
+export type TypedData = string | number | boolean | null | object;
 /**
  * @en The data type list of TypedArray.
  * @ja TypedArray 一覧
  */
-export declare type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array;
+export type TypedArray = Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array;
 /**
  * @en TypedArray constructor.
  * @ja TypedArray コンストラクタ定義

@@ -1,5 +1,5 @@
 /*!
- * @cdp/extension-i18n 0.9.14
+ * @cdp/extension-i18n 0.9.15
  *   extension for internationalization
  */
 
