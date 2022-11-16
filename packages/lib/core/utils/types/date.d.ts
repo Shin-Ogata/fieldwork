@@ -2,7 +2,7 @@
  * @en Date unit definitions.
  * @ja 日時オブジェクトの単位定義
  */
-export declare type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec';
+export type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec';
 /**
  * @en Calculate from the date which becomes a cardinal point before a N date time or after a N date time (by [[DateUnit]]).
  * @ja 基点となる日付から、N日後、N日前を算出

@@ -7,19 +7,19 @@ import { Serializable } from '@cdp/binary';
  * @en Web storage data type set interface.
  * @ja Web storage に格納可能な型の集合
  */
-export declare type WebStorageDataTypeList = StorageDataTypeList & Serializable;
+export type WebStorageDataTypeList = StorageDataTypeList & Serializable;
 /** WebStorage I/O options */
-export declare type WebStorageOptions<K extends Keys<WebStorageDataTypeList> = Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
+export type WebStorageOptions<K extends Keys<WebStorageDataTypeList> = Keys<WebStorageDataTypeList>> = IStorageDataOptions<WebStorageDataTypeList, K>;
 /** WebStorage return value */
-export declare type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
+export type WebStorageResult<K extends Keys<WebStorageDataTypeList>> = KeyToType<WebStorageDataTypeList, K>;
 /** WebStorage data type */
-export declare type WebStorageDataTypes = Types<WebStorageDataTypeList>;
+export type WebStorageDataTypes = Types<WebStorageDataTypeList>;
 /** MemoryStorage return type */
-export declare type WebStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
+export type WebStorageReturnType<D extends WebStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** WebStorage input data type */
-export declare type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
+export type WebStorageInputDataTypes = StorageInputDataTypeList<WebStorageDataTypeList>;
 /** WebStorage event callback */
-export declare type WebStorageEventCallback = IStorageEventCallback<WebStorageDataTypeList>;
+export type WebStorageEventCallback = IStorageEventCallback<WebStorageDataTypeList>;
 /**
  * @en Web storage class. This class implements `IStorage` interface by using `window.localStorage`.
  * @ja ウェブストレージクラス. 本クラスは `window.localStorage` を用いて `IStorage` を実装

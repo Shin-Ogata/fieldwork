@@ -1,5 +1,5 @@
 /*!
- * @cdp/view 0.9.14
+ * @cdp/view 0.9.15
  *   generic view scheme
  */
 

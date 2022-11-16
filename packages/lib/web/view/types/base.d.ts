@@ -2,7 +2,7 @@ import { Nil, PlainObject } from '@cdp/core-utils';
 import { EventSource } from '@cdp/events';
 import { DOM, DOMSelector, DOMResult, DOMEventListener, DOMEventMap, EventType, EventTypeOrNamespace } from '@cdp/dom';
 import { ViewEventsHash, ViewConstructionOptions } from './interfaces';
-export declare type ViewFindSelector = Node | string | Nil;
+export type ViewFindSelector = Node | string | Nil;
 /**
  * @en Base class definition for view that manages the layout and a DOM events.
  * @ja レイアウト管理と DOM イベントの監視を行う View の基底クラス定義

@@ -3,12 +3,12 @@ import { PlainObject, AnyObject, escapeHTML } from '@cdp/core-utils';
  * @en [[TemplateEngine]] token structure.
  * @ja [[TemplateEngine]] token 型
  */
-export declare type TemplateToken = unknown;
+export type TemplateToken = unknown;
 /**
  * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
  * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
  */
-export declare type TemplateDelimiters = [string, string];
+export type TemplateDelimiters = [string, string];
 /**
  * @en Scanner interface.
  * @ja スキャナーインターフェイス
@@ -57,9 +57,9 @@ export interface TemplateContext {
      */
     lookup(name: string): unknown;
 }
-export declare type TemplateViewParam = PlainObject | TemplateContext;
-export declare type TemplatePartialLookupFunction = (partialName?: string) => string | undefined | null;
-export declare type TemplatePartialParam = PlainObject | TemplatePartialLookupFunction;
+export type TemplateViewParam = PlainObject | TemplateContext;
+export type TemplatePartialLookupFunction = (partialName?: string) => string | undefined | null;
+export type TemplatePartialParam = PlainObject | TemplatePartialLookupFunction;
 /**
  * @en Writer interface.
  * @ja ライターインターフェイス
@@ -99,7 +99,7 @@ export interface TemplateWriter {
      */
     renderTokens(tokens: TemplateToken[], view: TemplateViewParam, partials?: TemplatePartialParam, originalTemplate?: string, tags?: TemplateDelimiters): string;
 }
-export declare type JSTParam = AnyObject;
+export type JSTParam = AnyObject;
 /**
  * @en Compiled JavaScript template interface
  * @ja コンパイル済み テンプレート格納インターフェイス
@@ -140,7 +140,7 @@ export interface JST {
  * @en Value escaper definition.
  * @ja エスケーパーの定義
  */
-export declare type TemplateEscaper = typeof escapeHTML;
+export type TemplateEscaper = typeof escapeHTML;
 /**
  * @en [[ITemplateEngine]] base type definition.
  * @ja [[ITemplateEngine]] 基底型

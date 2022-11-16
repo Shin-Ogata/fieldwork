@@ -1,7 +1,7 @@
 {
   "name": "@cdp/collection",
   "description": "generic collection scheme",
-  "version": "0.9.14",
+  "version": "0.9.15",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../../core/utils",

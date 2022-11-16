@@ -14,7 +14,7 @@ export interface TemplateQueryTypeList {
  * @en Template query type definitions.
  * @ja テンプレート取得時に指定可能な型指定子
  */
-export declare type TemplateQueryTypes = keyof TemplateQueryTypeList;
+export type TemplateQueryTypes = keyof TemplateQueryTypeList;
 /**
  * @en Template query options.
  * @ja テンプレート取得オプション

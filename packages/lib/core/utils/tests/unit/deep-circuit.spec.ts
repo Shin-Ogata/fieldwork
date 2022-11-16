@@ -172,5 +172,16 @@ describe('utils/deep-circuit spec', () => {
         const obj = { aaa: 'aaa' };
         assignValue(obj, '__proto__', { vulnerable: 'Polluted' });
         expect(obj).toEqual({ aaa: 'aaa' });
+
+        /*
+         * - Qiita (JS)絶対にDeep Mergeを自力で実装しないでください
+         *   https://qiita.com/apple502j/items/89a8c7da38932b2b3cbb
+         */
+        const maliciousObject = {
+            '__proto__': { 'isAdmin': 1 },
+            'constructor': { 'prototype': { 'isAdmin': 1 } }
+        };
+        deepMerge({}, maliciousObject);
+        expect((Object.prototype as any).isAdmin).toBeUndefined();
     });
 });

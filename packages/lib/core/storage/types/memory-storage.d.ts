@@ -3,17 +3,17 @@ import { Subscription } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
 import { StorageData, StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
 /** MemoryStorage I/O options */
-export declare type MemoryStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
+export type MemoryStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
 /** MemoryStorage return value */
-export declare type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
+export type MemoryStorageResult<K extends Keys<StorageDataTypeList>> = KeyToType<StorageDataTypeList, K>;
 /** MemoryStorage data type */
-export declare type MemoryStorageDataTypes = Types<StorageDataTypeList>;
+export type MemoryStorageDataTypes = Types<StorageDataTypeList>;
 /** MemoryStorage return type */
-export declare type MemoryStorageReturnType<D extends MemoryStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
+export type MemoryStorageReturnType<D extends MemoryStorageDataTypes> = IStorageDataReturnType<StorageDataTypeList, D>;
 /** MemoryStorage input data type */
-export declare type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
+export type MemoryStorageInputDataTypes = StorageInputDataTypeList<StorageDataTypeList>;
 /** MemoryStorage event callback */
-export declare type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeList>;
+export type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeList>;
 /**
  * @en Memory storage class. This class doesn't support permaneciation data.
  * @ja メモリーストレージクラス. 本クラスはデータの永続化をサポートしない

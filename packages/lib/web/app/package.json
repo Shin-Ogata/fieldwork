@@ -1,7 +1,7 @@
 {
   "name": "@cdp/app",
   "description": "application context",
-  "version": "0.9.14",
+  "version": "0.9.15",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"

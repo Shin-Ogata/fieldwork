@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-i18n",
   "description": "extension for internationalization",
-  "version": "0.9.14",
+  "version": "0.9.15",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {
@@ -21,7 +21,7 @@
   "main": "dist/extension-i18n",
   "module": "dist/extension-i18n.mjs",
   "peerDependencies": {
-    "i18next": "22.0.2"
+    "i18next": "22.0.5"
   },
   "private": true,
   "repository": {

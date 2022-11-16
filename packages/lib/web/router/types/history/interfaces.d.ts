@@ -5,7 +5,7 @@ import { Cancelable } from '@cdp/promise';
  * @en History state object.
  * @ja 履歴状態オブジェクト
  */
-export declare type HistoryState<T = PlainObject> = T & {
+export type HistoryState<T = PlainObject> = T & {
     '@id': string;
     '@origin'?: boolean;
 };
@@ -25,12 +25,12 @@ export interface HistoryEvent<T = PlainObject> {
  * @en History state management options
  * @ja 履歴状態管理用オプション
  */
-export declare type HistorySetStateOptions = Silenceable & Cancelable;
+export type HistorySetStateOptions = Silenceable & Cancelable;
 /**
  * @en History direction definition
  * @ja 履歴の方向定義
  */
-export declare type HistoryDirection = 'back' | 'forward' | 'none' | 'missing';
+export type HistoryDirection = 'back' | 'forward' | 'none' | 'missing';
 /**
  * @en Definition of [[IHistory.direct]]`()` return type.
  * @ja [[IHistory.direct]]`()` の返却する型

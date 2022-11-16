@@ -44,7 +44,7 @@ import { EventReceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-declare type EventSourceBase<T extends object> = EventBroker<T> & EventReceiver;
+type EventSourceBase<T extends object> = EventBroker<T> & EventReceiver;
 /**
  * @en Constructor of [[EventSource]]
  * @ja [[EventSource]] のコンストラクタ実体

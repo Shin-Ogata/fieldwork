@@ -2,7 +2,7 @@
  * @en [[InlineWorker]] source type definition.
  * @ja [[InlineWorker]] に指定可能なソース型定義
  */
-export declare type InlienWorkerSource = ((self: Worker) => unknown) | string;
+export type InlienWorkerSource = ((self: Worker) => unknown) | string;
 /**
  * @en Specified `Worker` class which doesn't require a script file.
  * @ja スクリプトファイルを必要としない `Worker` クラス

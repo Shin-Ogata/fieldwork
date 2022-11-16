@@ -1,7 +1,7 @@
 import { Arguments } from '@cdp/core-utils';
 import { Subscribable } from './interfaces';
 /** re-export */
-export declare type EventArguments<T> = Arguments<T>;
+export type EventArguments<T> = Arguments<T>;
 /**
  * @en Eventing framework object able to call `publish()` method from outside.
  * @ja 外部からの `publish()` を可能にしたイベント登録・発行クラス

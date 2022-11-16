@@ -24,22 +24,22 @@ export interface SyncMethodList<T extends object = PlainObject> {
  * @en [[IDataSync]]`#sync()` method list.
  * @ja [[IDataSync]]`#sync()` に指定するメソッド一覧
  */
-export declare type SyncMethods = keyof SyncMethodList;
+export type SyncMethods = keyof SyncMethodList;
 /**
  * @en Return type of [[IDataSync]]`#sync()`.
  * @ja [[IDataSync]]`#sync()` の戻り値の型
  */
-export declare type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
+export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
 /**
  * @en Default [[SyncContext]] type.
  * @ja [[SyncContext]] の既定型
  */
-export declare type SyncObject = AnyObject;
+export type SyncObject = AnyObject;
 /**
  * @en Context type of [[IDataSync]]`#sync()`.
  * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
  */
-export declare type SyncContext<T extends object = SyncObject> = EventBroker<SyncEvent<T>> & {
+export type SyncContext<T extends object = SyncObject> = EventBroker<SyncEvent<T>> & {
     id?: string;
     toJSON(): T;
 };

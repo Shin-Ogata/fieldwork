@@ -39,7 +39,7 @@ export interface StorageDataSyncConstructionOptions {
  * @en Options interface for [[StorageDataSync]].
  * @ja [[StorageDataSync]] に指定するオプション
  */
-export declare type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
+export type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
 /**
  * @en Create [[IStorageDataSync]] object with [[IStorage]].
  * @ja [[IStorage]] を指定して, [[IStorageDataSync]] オブジェクトを構築

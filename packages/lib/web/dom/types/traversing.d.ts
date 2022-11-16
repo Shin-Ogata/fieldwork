@@ -1,6 +1,6 @@
 import { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMResult, DOMIterateCallback } from './static';
 import { DOMIterable } from './base';
-export declare type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = (index: number, element: T) => U;
+export type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = (index: number, element: T) => U;
 /**
  * @en Mixin base class which concentrated the traversing methods.
  * @ja トラバースメソッドを集約した Mixin Base クラス

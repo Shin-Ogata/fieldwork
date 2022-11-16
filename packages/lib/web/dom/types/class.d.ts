@@ -7,7 +7,7 @@ import { DOMStyles } from './styles';
 import { DOMEvents } from './events';
 import { DOMScroll } from './scroll';
 import { DOMEffects } from './effects';
-declare type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
+type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
 /**
  * @en [[DOM]] plugin method definition.
  * @ja [[DOM]] プラグインメソッド定義
@@ -29,9 +29,9 @@ export interface DOMPlugin {
  */
 export interface DOM<T extends ElementBase = HTMLElement> extends DOMFeatures<T>, DOMPlugin {
 }
-export declare type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
-export declare type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<HTMLElement>);
-export declare type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
+export type DOMSelector<T extends SelectorBase = HTMLElement> = ElementifySeed<T> | DOM<T extends ElementBase ? T : never>;
+export type DOMResult<T extends SelectorBase> = T extends DOM<ElementBase> ? T : (T extends ElementBase ? DOM<T> : DOM<HTMLElement>);
+export type DOMIterateCallback<T extends ElementBase> = (index: number, element: T) => boolean | void;
 declare const DOMClass_base: import("@cdp/core-utils").MixinConstructor<typeof DOMBase, import("@cdp/core-utils").MixinClass & DOMBase<ElementBase> & DOMAttributes<any> & DOMTraversing<any> & DOMManipulation<any> & DOMStyles<any> & DOMEvents<any> & DOMScroll<any> & DOMEffects<any> & object>;
 /**
  * @en This class provides DOM operations like `jQuery` library.

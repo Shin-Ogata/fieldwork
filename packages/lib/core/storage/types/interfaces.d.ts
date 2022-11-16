@@ -15,22 +15,22 @@ export interface StorageDataTypeList {
  * @en Storage data object types.
  * @ja Storage に格納可能な型一覧
  */
-export declare type StorageDataTypes = Types<StorageDataTypeList>;
+export type StorageDataTypes = Types<StorageDataTypeList>;
 /**
  * @en Storage data object interface.
  * @ja Storage に格納可能な型
  */
-export declare type StorageData = Record<string, StorageDataTypes>;
+export type StorageData = Record<string, StorageDataTypes>;
 /**
  * @en The types by which designation is possible in [[setItem]]().
  * @ja [[setItem]]() に指定可能な型
  */
-export declare type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
+export type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
 /**
  * @en [[IStorage]] common option interface.
  * @ja [[IStorage]] 操作に使用する共通のオプションインターフェイス
  */
-export declare type IStorageOptions = Silenceable & Cancelable;
+export type IStorageOptions = Silenceable & Cancelable;
 /**
  * @en [[IStorage]] common format option interface.
  * @ja [[IStorage]] フォーマットに関するオプションインターフェイス
@@ -54,12 +54,12 @@ export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Ke
  * @en [[IStorage]]`#getItem<cast>()` return types.
  * @ja [[IStorage]]`#getItem<cast>()` の戻り値
  */
-export declare type IStorageDataReturnType<T extends StorageDataTypeList, D extends Types<T>> = TypeToKey<T, D> extends never ? never : D | null;
+export type IStorageDataReturnType<T extends StorageDataTypeList, D extends Types<T>> = TypeToKey<T, D> extends never ? never : D | null;
 /**
  * @en [[IStorage]] callback function definition.
  * @ja [[IStorage]] コールバック関数
  */
-export declare type IStorageEventCallback<T extends StorageDataTypeList> = (key: string | null, newValue: Types<T> | null, oldValue: Types<T> | null) => void;
+export type IStorageEventCallback<T extends StorageDataTypeList> = (key: string | null, newValue: Types<T> | null, oldValue: Types<T> | null) => void;
 /**
  * @en Async Storage interface. This interface provides the similar to Web Storage API but all methods are promisified.
  * @ja 非同期ストレージインターフェイス. Promise 化した Web Storage API の類似メソッドを提供
@@ -215,4 +215,4 @@ export interface RegistryWriteOptions extends RegistryReadOptions, IStorageForma
  * @en Registry save options.
  * @ja レジストリ保存用オプション
  */
-export declare type RegistrySaveOptions = IStorageOptions & IStorageFormatOptions;
+export type RegistrySaveOptions = IStorageOptions & IStorageFormatOptions;
