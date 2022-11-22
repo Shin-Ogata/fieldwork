@@ -756,7 +756,7 @@ declare namespace i18n {
     export interface Module {
         type: ModuleType;
     }
-    export type CallbackError = Error | null | undefined;
+    export type CallbackError = Error | string | null | undefined;
     export type ReadCallback = (err: CallbackError, data: ResourceKey | boolean | null | undefined) => void;
     export type MultiReadCallback = (err: CallbackError, data: Resource | null | undefined) => void;
     /**
