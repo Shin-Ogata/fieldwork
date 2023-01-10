@@ -13,7 +13,6 @@ import {
 } from '@cdp/i18n';
 import {
     RouteChangeInfo,
-    RouteComponentSeed,
     RouteParameters,
     RouterConstructionOptions,
     Router,
@@ -158,6 +157,12 @@ export interface AppContext extends Subscribable<AppContextEvent> {
 const _initialPages: RouteParameters[] = [];
 
 /**
+ * @en Route parameters for page registration. Need to describe `path`, `component`, `content`.
+ * @ja ページ登録用ルートパラメータ. `path`, `component`, `content` の記述が必要
+ */
+export type PageRouteParameters = Required<Pick<RouteParameters, 'component' | 'content'>> & RouteParameters;
+
+/**
  * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
  * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
@@ -178,7 +183,11 @@ const _initialPages: RouteParameters[] = [];
  * };
  * 
  * // pre-registration
- * registerPage('page-path', pageFactory);
+ * registerPage({
+ *     path: 'page-path',
+ *     conponent: pageFactory,
+ *     content: '#page-id'
+ * });
  *
  * // initial access
  * const app = AppContext({ main: '#app' });
@@ -195,8 +204,8 @@ const _initialPages: RouteParameters[] = [];
  *  - `en` route parameters
  *  - `ja` ルートパラメータ
  */
-export const registerPage = (path: string, component: RouteComponentSeed, options?: Omit<RouteParameters, 'path'>): void => {
-    _initialPages.push(Object.assign({}, options, { path, component }));
+export const registerPage = (params: PageRouteParameters): void => {
+    _initialPages.push(params);
 };
 
 //__________________________________________________________________________________________________//
@@ -340,11 +349,12 @@ let _appContext: AppContext | undefined;
  */
 export const AppContext = (options?: AppContextOptions): AppContext => {
     const opts = getAppConfig(Object.assign({
+        main: '#app',
         start: false,
         documentEventBackButton: 'backbutton',
     }, options) as AppContextOptions);
 
-    if (null == opts.main && null == _appContext) {
+    if (null == options && null == _appContext) {
         throw makeResult(RESULT_CODE.ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED, 'AppContext should be initialized with options at least once.');
     }
 

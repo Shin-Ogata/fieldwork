@@ -107,7 +107,9 @@ describe('context spec', () => {
             }
         }
 
-        registerPage('/first', RouterPage, {
+        registerPage({
+            path: '/first',
+            component: RouterPage,
             content: {
                 selector: '#test-content-creation',
                 url: '../res/app/test.tpl',
@@ -153,7 +155,7 @@ describe('context spec', () => {
             await AppContext({ reset: true } as AppContextOptions);
             fail();
         } catch (e) {
-            expect(e.message).toBe('Router element not found. [selector: undefined]');
+            expect(e.message).toBe('Router element not found. [selector: #app]');
             expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND);
         }
 

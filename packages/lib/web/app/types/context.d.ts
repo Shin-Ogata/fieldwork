@@ -1,7 +1,7 @@
 import { Subscribable } from '@cdp/events';
 import { DOMSelector } from '@cdp/dom';
 import { I18NOptions } from '@cdp/i18n';
-import { RouteComponentSeed, RouteParameters, RouterConstructionOptions, Router, Page } from '@cdp/router';
+import { RouteParameters, RouterConstructionOptions, Router, Page } from '@cdp/router';
 /**
  * @en `orientation` identifier
  * @ja `orientation` 識別子
@@ -106,6 +106,11 @@ export interface AppContext extends Subscribable<AppContextEvent> {
     extension: unknown;
 }
 /**
+ * @en Route parameters for page registration. Need to describe `path`, `component`, `content`.
+ * @ja ページ登録用ルートパラメータ. `path`, `component`, `content` の記述が必要
+ */
+export type PageRouteParameters = Required<Pick<RouteParameters, 'component' | 'content'>> & RouteParameters;
+/**
  * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
  * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
@@ -126,7 +131,11 @@ export interface AppContext extends Subscribable<AppContextEvent> {
  * };
  *
  * // pre-registration
- * registerPage('page-path', pageFactory);
+ * registerPage({
+ *     path: 'page-path',
+ *     conponent: pageFactory,
+ *     content: '#page-id'
+ * });
  *
  * // initial access
  * const app = AppContext({ main: '#app' });
@@ -143,7 +152,7 @@ export interface AppContext extends Subscribable<AppContextEvent> {
  *  - `en` route parameters
  *  - `ja` ルートパラメータ
  */
-export declare const registerPage: (path: string, component: RouteComponentSeed, options?: Omit<RouteParameters, 'path'>) => void;
+export declare const registerPage: (params: PageRouteParameters) => void;
 /**
  * @en Application context access
  * @ja アプリケーションコンテキスト取得

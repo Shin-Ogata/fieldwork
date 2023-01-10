@@ -84,7 +84,7 @@ declare namespace i18n {
          */
         allowObjectInHTMLChildren: false;
     }, CustomTypeOptions>;
-    export type PluginOptions = MergeBy<{
+    export type PluginOptions<T> = MergeBy<{
         /**
          * Options for language detection - check documentation of plugin
          * @default undefined
@@ -94,7 +94,7 @@ declare namespace i18n {
          * Options for backend - check documentation of plugin
          * @default undefined
          */
-        backend?: object;
+        backend?: T;
         /**
          * Options for cache layer - check documentation of plugin
          * @default undefined
@@ -281,7 +281,7 @@ declare namespace i18n {
          */
         unescape?(str: string): string;
     }
-    export interface InitOptions extends PluginOptions {
+    export interface InitOptions<T = object> extends PluginOptions<T> {
         /**
          * Logs info level to console output. Helps finding issues with loading not working.
          * @default false
@@ -691,20 +691,57 @@ declare namespace i18n {
     export type DefaultTFuncReturn = string | (TypeOptions['returnNull'] extends true ? null : never);
     export type DefaultTFuncReturnWithObject = DefaultTFuncReturn | object | Array<string | object>;
     export type TFuncReturn<N, TKeys, TDefaultResult, TKPrefix = undefined, T = Resources> = N extends (keyof T)[] ? NormalizeMultiReturn<T, TKeys> : N extends keyof T ? TKPrefix extends undefined ? NormalizeReturn<T[N], TKeys> : NormalizeReturn<T[N], KeysWithSeparator<TKPrefix, TKeys>> : TDefaultResult;
-    export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = undefined> {
+    export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = undefined, ActualNS extends Namespace = N extends null ? DefaultNamespace : N> {
+        // just key without options etc...
         <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[]): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
-        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturnWithObject = object, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
+        <TKeys extends TFuncKey<PassedNS, TKPrefix>, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap, PassedNS extends Namespace = N extends string ? N : N extends unknown ? DefaultNamespace : N>(key: TKeys | TKeys[]): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
+        // with returnDetails: true, returnObjects: true and ns prop in options
+        <TKeys extends TFuncKey<Namespace, TKPrefix>, TDefaultResult extends DefaultTFuncReturnWithObject = object, TInterpolationMap extends object = StringMap, PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N>(key: TKeys | TKeys[], options: TOptions<TInterpolationMap> & {
+            ns: PassedNS;
+            returnObjects: true;
+            returnDetails: true;
+        }): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
+        // with returnObjects: true and ns prop in options
+        <TKeys extends TFuncKey<Namespace, TKPrefix>, TDefaultResult extends DefaultTFuncReturnWithObject = object, TInterpolationMap extends object = StringMap, PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N>(key: TKeys | TKeys[], options: TOptions<TInterpolationMap> & {
+            ns: PassedNS;
+            returnObjects: true;
+        }): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
+        // with passed ns prop in options
+        <TKeys extends TFuncKey<PassedNS, TKPrefix>, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap, PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N>(key: TKeys | TKeys[], options: TOptions<TInterpolationMap> & {
+            ns: PassedNS;
+        }): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
+        // with returnDetails: true, returnObjects: true
+        <TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturnWithObject = object, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options: TOptions<TInterpolationMap> & {
             returnDetails: true;
             returnObjects: true;
-        }): TFunctionDetailedResult<TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>>;
-        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
+        }): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
+        // with returnDetails: true
+        <TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options: TOptions<TInterpolationMap> & {
             returnDetails: true;
-        }): TFunctionDetailedResult<TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>>;
-        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturnWithObject = object, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap> & {
+        }): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
+        // with returnObjects: true
+        <TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturnWithObject = object, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options: TOptions<TInterpolationMap> & {
             returnObjects: true;
-        }): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
-        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
-        <TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], defaultValue?: string, options?: TOptions<TInterpolationMap> | string): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
+        }): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
+        // with options
+        <TKeys extends TFuncKey<UsedNS, TKPrefix>, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap, PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N, PassedOpt extends TOptions<TInterpolationMap> = TOptions<TInterpolationMap>, UsedNS extends Namespace = Pick<PassedOpt, 'ns'> extends {
+            ns: string;
+        } ? PassedNS : ActualNS | DefaultNamespace>(key: TKeys | TKeys[], options: PassedOpt): TFuncReturn<UsedNS, TKeys, TDefaultResult, TKPrefix>;
+        // <
+        //   TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+        //   TDefaultResult extends DefaultTFuncReturn = string,
+        //   TInterpolationMap extends object = StringMap,
+        // >(
+        //   key: TKeys | TKeys[],
+        //   options: TOptions<TInterpolationMap>,
+        // ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
+        // defaultValue
+        <TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never, TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: TKeys | TKeys[], defaultValue: string, options?: TOptions<TInterpolationMap> | string): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
+        <TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: string | string[], defaultValue: string, options?: TOptions<TInterpolationMap> | string): TFuncReturn<ActualNS, string, TDefaultResult, TKPrefix>;
+        // defaultValue via options
+        <TDefaultResult extends DefaultTFuncReturn = string, TInterpolationMap extends object = StringMap>(key: string | string[], options: TOptions<TInterpolationMap> & {
+            defaultValue: string;
+        }): TFuncReturn<ActualNS, string, TDefaultResult, TKPrefix>;
     }
     export interface Resource {
         [language: string]: ResourceLanguage;
@@ -782,10 +819,10 @@ declare namespace i18n {
      */
     export interface LanguageDetectorModule extends Module {
         type: 'languageDetector';
-        init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+        init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must return detected language */
         detect(): string | readonly string[] | undefined;
-        cacheUserLanguage(lng: string): void;
+        cacheUserLanguage?(lng: string): void;
     }
     /**
      * Used to detect language in user land.
@@ -796,10 +833,10 @@ declare namespace i18n {
         type: 'languageDetector';
         /** Set to true to enable async detection */
         async: true;
-        init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
-        /** Must call callback passing detected language */
-        detect(callback: (lng: string | readonly string[] | undefined) => void): void;
-        cacheUserLanguage(lng: string): void;
+        init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+        /** Must call callback passing detected language or return a Promise*/
+        detect(callback: (lng: string | readonly string[] | undefined) => void | undefined): void | Promise<string | readonly string[] | undefined>;
+        cacheUserLanguage?(lng: string): void | Promise<void>;
     }
     /**
      * Used to extend or manipulate the translated values before returning them in `t` function.
@@ -864,7 +901,7 @@ declare namespace i18n {
          * @param callback - will be called after all translations were loaded or with an error when failed (in case of using a backend).
          */
         init(callback?: Callback): Promise<TFunction>;
-        init(options: InitOptions, callback?: Callback): Promise<TFunction>;
+        init<T>(options: InitOptions<T>, callback?: Callback): Promise<TFunction>;
         loadResources(callback?: (err: any) => void): void;
         /**
          * The use function is there to load additional plugins to i18next.
@@ -904,7 +941,7 @@ declare namespace i18n {
          *
          * Accepts optional keyPrefix that will be automatically applied to returned t function.
          */
-        getFixedT<N extends Namespace = DefaultNamespace, TKPrefix extends KeyPrefix<N> = undefined>(lng: string | readonly string[], ns?: N, keyPrefix?: TKPrefix): TFunction<N, TKPrefix>;
+        getFixedT<N extends Namespace | null, TKPrefix extends KeyPrefix<ActualNS> = undefined, ActualNS extends Namespace = N extends null ? DefaultNamespace : N>(lng: string | readonly string[], ns?: N, keyPrefix?: TKPrefix): TFunction<ActualNS, TKPrefix>;
         getFixedT<N extends Namespace | null, TKPrefix extends KeyPrefix<ActualNS>, ActualNS extends Namespace = N extends null ? DefaultNamespace : N>(lng: null, ns: N, keyPrefix?: TKPrefix): TFunction<ActualNS, TKPrefix>;
         /**
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.

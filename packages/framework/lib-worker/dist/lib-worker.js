@@ -1035,12 +1035,12 @@
 
     const request = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
         __proto__: null,
-        get,
-        text,
-        json,
         blob,
+        get,
+        json,
         post,
-        resource
+        resource,
+        text
     }, Symbol.toStringTag, { value: 'Module' }));
 
     /*!
