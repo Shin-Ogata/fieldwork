@@ -1,6 +1,4 @@
 /* eslint-disable
-    @typescript-eslint/require-await,
-    @typescript-eslint/unbound-method,
     @typescript-eslint/no-empty-function,
  */
 

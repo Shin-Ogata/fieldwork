@@ -4,6 +4,9 @@ module.exports = {
     extends: [
         'eslint:recommended',
     ],
+    plugins: [
+        'eslint-comments',
+    ],
     env: {
         es6: true,
         browser: true,
@@ -173,5 +176,6 @@ module.exports = {
         'no-extra-boolean-cast': 'off',
         'no-bitwise': 'off',
         'no-console': 'off',
-    }
+        'eslint-comments/no-unused-disable': 'warn',
+    },
 };

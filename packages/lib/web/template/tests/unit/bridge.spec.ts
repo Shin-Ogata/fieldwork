@@ -219,7 +219,7 @@ describe('template/bridge spec', () => {
     });
 
     describe('stampino transformer', () => {
-        const stampino = TemplateBridge.getBuitinTransformer('stampino') as TemplateTransformer; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+        const stampino = TemplateBridge.getBuitinTransformer('stampino') as TemplateTransformer;
         let oldTransformer: TemplateTransformer;
 
         beforeEach(() => {

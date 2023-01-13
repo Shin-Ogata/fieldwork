@@ -1,5 +1,4 @@
 /* eslint-disable
-    @typescript-eslint/no-explicit-any,
     @typescript-eslint/no-empty-function,
     @typescript-eslint/restrict-template-expressions,
     @typescript-eslint/ban-types,
@@ -639,7 +638,7 @@ obj2    = plain;
 anyval  = plain;
 primobj = plain;
 
-plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+plain   = unknown as PlainObject;
 plain   = obj as PlainObject;   // need cast
 plain   = anyobj; // ★ need NOT cast ★
 plain   = obj2 as PlainObject;   // need cast
@@ -661,12 +660,12 @@ unknown = { ccc: { check: true } };
 
 unknownProp(unknown.hoge);
 
-plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+plain   = unknown as PlainObject;
 obj     = unknown;
 anyobj  = unknown;
 obj2    = unknown;
 anyval  = unknown;
-primobj = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+primobj = unknown as PlainObject;
 
 // ~~ object ~~
 // obj = null;
@@ -784,7 +783,7 @@ anyval  = primobj;
 
 //__________________________________________________________________________________________________//
 
-plain   = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+plain   = unknown as PlainObject;
 plain   = obj as PlainObject;   // need cast
 plain   = anyobj;
 plain   = obj2 as PlainObject;   // need cast
@@ -801,7 +800,7 @@ primobj = plain;
 //__________________________________________________________________________________________________//
 
 primobj = plain;
-primobj = unknown as PlainObject; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+primobj = unknown as PlainObject;
 primobj = obj as PlainObject;
 primobj = anyobj;
 primobj = obj2 as PlainObject;

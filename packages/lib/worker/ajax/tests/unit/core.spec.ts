@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
- */
-
 import { CancelToken } from '@cdp/promise';
 import {
     Result,

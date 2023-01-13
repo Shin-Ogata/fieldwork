@@ -237,7 +237,7 @@ describe('storage/memory-storage spec', () => {
     });
 
     it('check MemoryStorage#context', () => {
-        const obj = (_storage as MemoryStorage).context; // eslint-disable-line
+        const obj = (_storage as MemoryStorage).context;
         expect(obj.str).toBe('hoge');
         expect(obj.num).toBe(100);
         expect(obj.bool).toBe(false);

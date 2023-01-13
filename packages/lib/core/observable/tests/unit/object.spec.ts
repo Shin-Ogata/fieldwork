@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/explicit-member-accessibility,
  */
 
 import {
@@ -246,7 +245,7 @@ describe('observable/object spec', () => {
     });
 
     it('IObservableEventBrokerAccess#trigger', done => {
-        const observable = new Model(1, 1) as IObservable as IObservableEventBrokerAccess<{ custom: number; }>; // eslint-disable-line
+        const observable = new Model(1, 1) as IObservable as IObservableEventBrokerAccess<{ custom: number; }>;
         setTimeout(() => {
             observable.on('custom', (value: number) => {
                 expect(value).toBe(100);

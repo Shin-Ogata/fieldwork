@@ -1,5 +1,4 @@
-/*
- eslint-disable
+/* eslint-disable
     @typescript-eslint/indent
  */
 

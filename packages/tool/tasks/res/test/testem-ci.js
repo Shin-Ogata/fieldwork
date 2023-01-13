@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 const { resolve } = require('path');
 const fs          = require('fs-extra');
 const { merge }   = require('@cdp/tasks');

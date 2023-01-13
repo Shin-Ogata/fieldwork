@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/unbound-method,
  */
 
 import {
@@ -199,7 +198,7 @@ describe('utils/object spec', () => {
         }
 
         {
-            /* eslint-disable object-shorthand,  no-invalid-this, @typescript-eslint/no-empty-function, @typescript-eslint/explicit-function-return-type */
+            /* eslint-disable object-shorthand,  no-invalid-this, @typescript-eslint/explicit-function-return-type */
             const func = function () { return 'f'; };
             const context = function (this: any) { return this; };
 

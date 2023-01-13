@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
- */
-
 import {
     i18n,
     initializeI18N,

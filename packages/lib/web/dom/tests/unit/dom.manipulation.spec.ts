@@ -1,5 +1,4 @@
 /* eslint-disable
-    block-spacing,
     @typescript-eslint/no-explicit-any,
     @typescript-eslint/no-non-null-assertion,
  */
@@ -406,7 +405,6 @@ describe('dom/manipulation spec', () => {
         let $replaced = $('.test-dom');
         expect($replaced.length).toBe(2);
 
-        // eslint-disable-next-line
         $replaced.replaceWith($() as DOM);  // 長さ 0 の場合は削除
         expect($('.test-dom').length).toBe(0);
 

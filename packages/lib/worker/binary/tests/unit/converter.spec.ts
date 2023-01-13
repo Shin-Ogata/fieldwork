@@ -253,6 +253,6 @@ describe('binary/converter spec', () => {
         const buff = fromHexString('');
         expect(buff.byteLength).toBe(0);
 
-        expect(() => dataURLToBase64(txt)).toThrow(new Error(`Invalid data-URL: ${txt}`)); // eslint-disable-line
+        expect(() => dataURLToBase64(txt)).toThrow(new Error(`Invalid data-URL: ${txt}`));
     });
 });
