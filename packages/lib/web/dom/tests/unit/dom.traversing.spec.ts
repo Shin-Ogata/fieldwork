@@ -120,7 +120,7 @@ describe('dom/traversing spec', () => {
         const divs = prepareTestElements();
 
         {// no entry
-            const $dom = $() as DOM<HTMLElement>; // eslint-disable-line
+            const $dom = $() as DOM<HTMLElement>;
             expect($dom.is('.test-dom')).toBe(false);
         }
 
@@ -200,7 +200,7 @@ describe('dom/traversing spec', () => {
 
     it('check DOM#filter()', () => {
         const divs = prepareTestElements();
-        const $empty = $() as DOM<HTMLElement>; // eslint-disable-line
+        const $empty = $() as DOM<HTMLElement>;
 
         {// no entry
             const $dom = $empty;
@@ -317,7 +317,7 @@ describe('dom/traversing spec', () => {
 
     it('check DOM#not()', () => {
         const divs = prepareTestElements();
-        const $empty = $() as DOM<HTMLElement>; // eslint-disable-line
+        const $empty = $() as DOM<HTMLElement>;
 
         {// no entry
             const $dom = $empty;
@@ -454,7 +454,7 @@ describe('dom/traversing spec', () => {
 
         {// window selector
             const $window = $(window);
-            const $result = $window.find('.test-dom') as DOM<HTMLDivElement>; // eslint-disable-line
+            const $result = $window.find('.test-dom') as DOM<HTMLDivElement>;
             expect($result.length).toBe(0);
         }
 

@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
- */
-
 import { dom } from '@cdp/dom';
 import { i18n } from '@cdp/i18n';
 

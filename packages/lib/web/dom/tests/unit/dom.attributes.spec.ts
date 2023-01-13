@@ -1,5 +1,4 @@
 /* eslint-disable
-    block-spacing,
     @typescript-eslint/no-explicit-any,
  */
 

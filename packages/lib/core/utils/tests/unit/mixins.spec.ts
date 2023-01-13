@@ -368,7 +368,7 @@ describe('utils/mixins spec', () => {
             }
         }
 
-        expect(() => new MixinCallConstructor()).not.toThrow(); // eslint-disable-line
+        expect(() => new MixinCallConstructor()).not.toThrow();
 
         const symbol = Symbol('prop');
 

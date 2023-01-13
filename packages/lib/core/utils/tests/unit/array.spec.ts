@@ -1,5 +1,4 @@
 /* eslint-disable
-    @typescript-eslint/no-explicit-any,
     @typescript-eslint/require-await,
  */
 

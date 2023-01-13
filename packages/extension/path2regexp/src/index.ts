@@ -44,7 +44,6 @@ declare namespace path2regexp {
     export type pathToRegexp = typeof pathToRegexp;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const path2regexp = {
     parse,
     compile,

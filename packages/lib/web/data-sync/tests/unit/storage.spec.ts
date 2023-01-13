@@ -137,7 +137,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check setStorage', () => {
-        const storageSync = (dataSyncSTORAGE as IStorageDataSync); // eslint-disable-line
+        const storageSync = dataSyncSTORAGE as IStorageDataSync;
         const defaultStorage = storageSync.getStorage();
         storageSync.setStorage(memoryStorage);
         expect(storageSync.getStorage()).toBe(memoryStorage);
@@ -155,7 +155,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
         const json = await storage.getItem<object>('aaa::000A');
         expect(json).toEqual({
             id: '000A',
@@ -178,7 +178,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
         const json = await storage.getItem<object>('aaa::000A');
         expect(json).toEqual({
             id: '000A',
@@ -201,7 +201,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
         const entries = await storage.getItem<object>('aaa') as PlainObject;
         const json = await storage.getItem<object>(`aaa::${entries[0]}`) as StorageDataSchema;
 
@@ -224,7 +224,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage(); // eslint-disable-line
+        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
         const entries = await storage.getItem<object>('aaa') as PlainObject;
         const json = await storage.getItem<object>(`aaa::${entries[0]}`) as StorageDataSchema;
 

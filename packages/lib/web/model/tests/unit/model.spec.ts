@@ -2,7 +2,6 @@
  eslint-disable
     @typescript-eslint/no-explicit-any
  ,  @typescript-eslint/no-empty-function
- ,  @typescript-eslint/no-unnecessary-type-assertion
  ,  @typescript-eslint/no-useless-constructor
  ,  @typescript-eslint/require-await
  ,  @typescript-eslint/await-thenable

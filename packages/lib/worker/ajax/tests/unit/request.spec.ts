@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
- */
-
 import { Result, RESULT_CODE } from '@cdp/result';
 import { request } from '@cdp/ajax';
 

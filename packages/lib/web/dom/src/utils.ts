@@ -59,7 +59,6 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
                 elements.push(...template.content.children);
             } else {
                 const selector = html;
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 if (isFunction(context.getElementById) && ('#' === selector[0]) && !/[ .<>:~]/.exec(selector)) {
                     // pure ID selector
                     const el = context.getElementById(selector.substring(1));

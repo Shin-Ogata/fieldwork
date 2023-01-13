@@ -694,7 +694,7 @@ describe('query/query spec', () => {
                 ],
             });
 
-            const result = conditionalFix(tracks.slice(), cond) as CollectionItemQueryResult<Track, 'duration'>; // eslint-disable-line
+            const result = conditionalFix(tracks.slice(), cond) as CollectionItemQueryResult<Track, 'duration'>;
 
             expect(result.total).toBe(6);
             expect(result.duration).toBe(31000);

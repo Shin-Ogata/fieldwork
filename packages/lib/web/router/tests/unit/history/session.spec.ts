@@ -1,5 +1,4 @@
-/*
- eslint-disable
+/* eslint-disable
     @typescript-eslint/no-explicit-any
  */
 

@@ -1,8 +1,3 @@
-/*
- eslint-disable
-    @typescript-eslint/no-explicit-any
- */
-
 import { path2regexp } from '@cdp/router';
 
 describe('router/utils spec', () => {

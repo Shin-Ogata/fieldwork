@@ -338,7 +338,7 @@ export function isPrimitive(x: unknown): x is Primitive {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export const isArray = Array.isArray; // eslint-disable-line @typescript-eslint/unbound-method
+export const isArray = Array.isArray;
 
 /**
  * @en Check the value-type is Object.
@@ -385,7 +385,7 @@ export function isEmptyObject(x: unknown): x is object {
     if (!isPlainObject(x)) {
         return false;
     }
-    for (const name in x) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    for (const name in x) {
         return false;
     }
     return true;
@@ -507,7 +507,7 @@ export function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unkn
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function className(x: any): string { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export function className(x: any): string {
     if (x != null) {
         const toStringTagName = x[Symbol.toStringTag];
         if (isString(toStringTagName)) {

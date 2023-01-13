@@ -1,5 +1,4 @@
-/*
- eslint-disable
+/* eslint-disable
     @typescript-eslint/no-explicit-any
  */
 
@@ -37,7 +36,7 @@ describe('router/context spec', () => {
         cleanupTestElements();
     });
 
-    const onCallback = (...args: any[]): void => { // eslint-disable-line @typescript-eslint/no-unused-vars
+    const onCallback = (...args: any[]): void => {
         callbackArgs.length = 0;
         callbackArgs.push(...args);
 //      console.log(`received: ${JSON.stringify([...args])} \n`);

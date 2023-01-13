@@ -1,5 +1,4 @@
 /* eslint-disable
-    camelcase,
     @typescript-eslint/no-explicit-any,
  */
 

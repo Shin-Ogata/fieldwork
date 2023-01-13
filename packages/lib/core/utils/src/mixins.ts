@@ -280,14 +280,12 @@ export function mixins<
 
     let _hasSourceConstructor = false;
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     class _MixinBase extends (base as unknown as Constructor<MixinClass>) {
 
         private readonly [_constructors]: Map<Constructor<object>, UnknownFunction | null>;
         private readonly [_classBase]: Constructor<object>;
 
         constructor(...args: unknown[]) {
-            // eslint-disable-next-line constructor-super
             super(...args);
 
             const constructors = new Map<Constructor<object>, UnknownFunction>();

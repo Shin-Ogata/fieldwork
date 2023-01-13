@@ -1,6 +1,5 @@
 /* eslint-disable
     block-spacing,
-    @typescript-eslint/unbound-method,
     @typescript-eslint/no-explicit-any,
  */
 

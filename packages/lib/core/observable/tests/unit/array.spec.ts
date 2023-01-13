@@ -392,7 +392,7 @@ describe('observable/array spec', () => {
                 expect(records[0]).toEqual(expected);
                 done();
             });
-            const broker = (observable as IObservable as IObservableEventBrokerAccess).getBroker(); // eslint-disable-line
+            const broker = (observable as IObservable as IObservableEventBrokerAccess).getBroker();
             broker.trigger('@', [expected]);
         }, 0);
     });

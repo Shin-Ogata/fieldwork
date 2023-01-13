@@ -1,7 +1,6 @@
 /*
  eslint-disable
     max-len,
-    @typescript-eslint/no-explicit-any,
     @typescript-eslint/no-non-null-assertion,
     @typescript-eslint/no-non-null-asserted-optional-chain,
  */
