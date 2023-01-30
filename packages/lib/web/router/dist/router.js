@@ -1421,12 +1421,12 @@
     exports.disposeSessionHistory = disposeSessionHistory;
     exports.resetMemoryHistory = resetMemoryHistory;
     exports.resetSessionHistory = resetSessionHistory;
-    for (const k in extensionPath2regexp) {
+    Object.keys(extensionPath2regexp).forEach(function (k) {
         if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
             enumerable: true,
             get: function () { return extensionPath2regexp[k]; }
         });
-    }
+    });
 
     Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 

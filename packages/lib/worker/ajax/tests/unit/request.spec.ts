@@ -73,7 +73,7 @@ describe('ajax/reauest spec', () => {
         }
 
         expect(reason.code).toBe(RESULT_CODE.ERROR_AJAX_RESPONSE);
-        expect(reason.cause.status).toBe(404);
+        expect((reason.cause as Response).status).toBe(404);
         expect(reason.message).toBe('Not Found');
     });
 });

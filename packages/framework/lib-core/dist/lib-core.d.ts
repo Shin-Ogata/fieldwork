@@ -2902,26 +2902,26 @@ export declare class Result extends Error {
      * @param message
      *  - `en` result info message
      *  - `ja` 結果情報メッセージ
-     * @param cause
-     *  - `en` low-level error information
-     *  - `ja` 下位のエラー情報
+     * @param options
+     *  - `en` error construction options
+     *  - `ja` エラー構築オプション
      */
-    constructor(code?: number, message?: string, cause?: unknown);
+    constructor(code?: number, message?: string, options?: ErrorOptions);
     /**
      * @en [[RESULT_CODE]] value.
      * @ja [[RESULT_CODE]] の値
      */
     readonly code: number;
     /**
-     * @en Stock low-level error information.
-     * @ja 下位のエラー情報を格納
-     */
-    readonly cause: any;
-    /**
      * @en Generated time information.
      * @ja 生成された時刻情報
      */
     readonly time: number;
+    /**
+     * @en Stock low-level error information.
+     * @ja 下位のエラー情報を格納
+     */
+    readonly cause?: unknown;
     /**
      * @en Judge succeeded or not.
      * @ja 成功判定

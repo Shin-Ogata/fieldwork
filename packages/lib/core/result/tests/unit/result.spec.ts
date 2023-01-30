@@ -21,7 +21,7 @@ describe('result/result spec', () => {
 
     it('check Result#cause is readonly', () => {
         const cause = new Error('cause');
-        const result = new Result(undefined, undefined, cause);
+        const result = new Result(undefined, undefined, { cause });
         expect(() => (result as any).cause = null).toThrow();
         expect(result.cause).toBe(cause);
     });
@@ -151,7 +151,7 @@ describe('result/result spec', () => {
         const target2 = toResult('error');
         expect(target2.message).toBe('error');
         expect(target2.cause instanceof Error).toBe(true);
-        expect(target2.cause.message).toBe('error');
+        expect((target2.cause as { message: string; })?.message).toBe('error');
         expect(isResult(target2)).toBe(true);
 
         const target3 = toResult(8888);
