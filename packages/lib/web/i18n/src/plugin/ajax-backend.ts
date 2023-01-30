@@ -63,7 +63,7 @@ export class AjaxBackend implements i18n.BackendModule<i18n.AjaxBackendOptions> 
                 const result = toResult(e);
                 const msg = `failed loading: ${url}, ${result.message}`;
                 if (RESULT_CODE.ERROR_AJAX_RESPONSE === result.code && result.cause) {
-                    const status: number = result.cause.status;
+                    const { status } = result.cause as { status: number; };
                     if (500 <= status && status < 600) {
                         return callback(msg, true);  // retry
                     } else if (400 <= status && status < 500) {

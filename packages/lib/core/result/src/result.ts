@@ -49,16 +49,17 @@ export class Result extends Error {
      * @param message
      *  - `en` result info message
      *  - `ja` 結果情報メッセージ
-     * @param cause
-     *  - `en` low-level error information
-     *  - `ja` 下位のエラー情報
+     * @param options
+     *  - `en` error construction options
+     *  - `ja` エラー構築オプション
      */
-    constructor(code?: number, message?: string, cause?: unknown) {
+    constructor(code?: number, message?: string, options?: ErrorOptions) {
         code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
-        super(message || toHelpString(code));
+        super(message || toHelpString(code), options);
+        const cause = options?.cause;
         let time = isError(cause) ? (cause as Result).time : undefined;
         isNumber(time as number) || (time = Date.now());
-        Object.defineProperties(this, { code: desc(code), cause: desc(cause), time: desc(time) });
+        Object.defineProperties(this, { code: desc(code), time: desc(time), cause: desc(cause) });
     }
 
     /**
@@ -68,16 +69,16 @@ export class Result extends Error {
     readonly code!: number;
 
     /**
-     * @en Stock low-level error information.
-     * @ja 下位のエラー情報を格納
-     */
-    readonly cause: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-    /**
      * @en Generated time information.
      * @ja 生成された時刻情報
      */
     readonly time!: number;
+
+    /**
+     * @en Stock low-level error information.
+     * @ja 下位のエラー情報を格納
+     */
+    readonly cause?: unknown;
 
     /**
      * @en Judge succeeded or not.
@@ -149,15 +150,15 @@ export function toResult(o: unknown): Result {
         isNumber(time) || (time = Date.now());
         // Do nothing if already defined
         Reflect.defineProperty(o, 'code',  desc(code));
-        Reflect.defineProperty(o, 'cause', desc(cause));
         Reflect.defineProperty(o, 'time',  desc(time));
+        Reflect.defineProperty(o, 'cause', desc(cause));
         return o;
     } else {
         const e = Object(o) as Result;
         const message = isString(e.message) ? e.message : isString(o) ? o : undefined;
         const code = isChancelLikeError(message) ? RESULT_CODE.ABORT : isNumber(e.code) ? e.code : o as number;
         const cause = isError(e.cause) ? e.cause : isError(o) ? o : isString(o) ? new Error(o) : o;
-        return new Result(code, message, cause);
+        return new Result(code, message, { cause });
     }
 }
 
@@ -176,7 +177,7 @@ export function toResult(o: unknown): Result {
  *  - `ja` 下位のエラー情報
  */
 export function makeResult(code: number, message?: string, cause?: unknown): Result {
-    return new Result(code, message, cause);
+    return new Result(code, message, { cause });
 }
 
 /**
@@ -191,5 +192,5 @@ export function makeResult(code: number, message?: string, cause?: unknown): Res
  *  - `ja` 下位のエラー情報
  */
 export function makeCanceledResult(message?: string, cause?: unknown): Result {
-    return new Result(RESULT_CODE.ABORT, message, cause);
+    return new Result(RESULT_CODE.ABORT, message, { cause });
 }

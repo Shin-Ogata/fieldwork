@@ -123,18 +123,18 @@
     });
     exports.TemplateBridge = TemplateBridge;
     exports.getTemplate = getTemplate;
-    for (const k in extensionTemplate) {
+    Object.keys(extensionTemplate).forEach(function (k) {
         if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
             enumerable: true,
             get: function () { return extensionTemplate[k]; }
         });
-    }
-    for (const k in extensionTemplateBridge) {
+    });
+    Object.keys(extensionTemplateBridge).forEach(function (k) {
         if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
             enumerable: true,
             get: function () { return extensionTemplateBridge[k]; }
         });
-    }
+    });
 
     Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 

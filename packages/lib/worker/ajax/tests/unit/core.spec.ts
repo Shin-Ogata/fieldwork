@@ -165,7 +165,7 @@ describe('ajax/core spec', () => {
 
         expect(reason).toBeDefined();
         expect(reason.code).toBe(RESULT_CODE.ERROR_AJAX_RESPONSE);
-        const response: Response = reason.cause;
+        const response = reason.cause as Response;
         expect(response.status).toBe(404);
         expect(response.statusText).toBe('Not Found');
 
