@@ -441,6 +441,64 @@ describe('dom/events spec', () => {
         expect(count).toBe($dom.length);
     });
 
+    it('check DOM#transitionStart(callback)', async () => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evTransitionStart = createEvent('transitionstart', 'TransitionEvent');
+
+        const $dom = $('#d1');
+
+        $dom.transitionStart(stub.onCallback);
+        await $dom.trigger(evTransitionStart);
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(count).toBe(1);
+
+        await $dom.trigger(evTransitionStart);
+        expect(count).toBe(1);
+    });
+
+    it('check DOM#transitionStart(callback, true)', async () => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evTransitionStart = createEvent('transitionstart', 'TransitionEvent');
+
+        const $dom = $('#d1');
+
+        $dom.transitionStart(stub.onCallback, true);
+        await $dom.trigger(evTransitionStart);
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(count).toBe(1);
+
+        await $dom.trigger(evTransitionStart);
+        expect(count).toBe(2);
+    });
+
+    it('check DOM#transitionStart(callback), child', async () => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evTransitionStart = createEvent('transitionstart', 'TransitionEvent');
+
+        const $dom = $('#d1');
+
+        $dom.transitionStart(stub.onCallback);
+        await $dom[0].firstElementChild!.dispatchEvent(evTransitionStart); // eslint-disable-line
+        expect(stub.onCallback).not.toHaveBeenCalled();
+        expect(count).toBe(0);
+    });
+
+    it('check DOM#transitionStart(callback), callback invalid', () => {
+        prepareTestElements();
+        const evTransitionStart = createEvent('transitionstart', 'TransitionEvent');
+
+        const $dom = $('#d1');
+
+        expect(() => $dom.transitionStart(null as any)).not.toThrow();
+        expect(() => $dom.trigger(evTransitionStart)).not.toThrow();
+    });
+
     it('check DOM#transitionEnd(callback)', async () => {
         prepareTestElements();
         const stub = { onCallback };
@@ -497,6 +555,64 @@ describe('dom/events spec', () => {
 
         expect(() => $dom.transitionEnd(null as any)).not.toThrow();
         expect(() => $dom.trigger(evTransitionEnd)).not.toThrow();
+    });
+
+    it('check DOM#animationStart(callback)', async () => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evAnimationStart = createEvent('animationstart', 'AnimationEvent');
+
+        const $dom = $('#d1');
+
+        $dom.animationStart(stub.onCallback);
+        await $dom.trigger(evAnimationStart);
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(count).toBe(1);
+
+        await $dom.trigger(evAnimationStart);
+        expect(count).toBe(1);
+    });
+
+    it('check DOM#animationStart(callback, true)', async () => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evAnimationStart = createEvent('animationstart', 'AnimationEvent');
+
+        const $dom = $('#d1');
+
+        $dom.animationStart(stub.onCallback, true);
+        await $dom.trigger(evAnimationStart);
+        expect(stub.onCallback).toHaveBeenCalled();
+        expect(count).toBe(1);
+
+        await $dom.trigger(evAnimationStart);
+        expect(count).toBe(2);
+    });
+
+    it('check DOM#animationStart(callback), child', async () => {
+        prepareTestElements();
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+        const evAnimationStart = createEvent('animationstart', 'AnimationEvent');
+
+        const $dom = $('#d1');
+
+        $dom.animationStart(stub.onCallback);
+        await $dom[0].firstElementChild!.dispatchEvent(evAnimationStart); // eslint-disable-line
+        expect(stub.onCallback).not.toHaveBeenCalled();
+        expect(count).toBe(0);
+    });
+
+    it('check DOM#animationStart(callback), callback invalid', () => {
+        prepareTestElements();
+        const evAnimationStart = createEvent('animationstart', 'AnimationEvent');
+
+        const $dom = $('#d1');
+
+        expect(() => $dom.animationStart(null as any)).not.toThrow();
+        expect(() => $dom.trigger(evAnimationStart)).not.toThrow();
     });
 
     it('check DOM#animationEnd(callback)', async () => {

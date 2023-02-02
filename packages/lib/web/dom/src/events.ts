@@ -329,6 +329,26 @@ function cloneElement(elem: Element, withEvents: boolean, deep: boolean): Elemen
     return clone;
 }
 
+/** @internal helper for self event manage */
+function handleSelfEvent<TElement extends ElementBase>(
+    self: DOMEvents<TElement>,
+    callback: (event: Event, ...args: unknown[]) => void,
+    eventName: EventTypeOrNamespace<DOMEventMap<HTMLElement | Window>>,
+    permanent: boolean,
+): DOMEvents<TElement> {
+    function fireCallBack(this: Element, e: Event): void {
+        if (e.target !== this) {
+            return;
+        }
+        callback.call(this, e);
+        if (!permanent) {
+            (self as DOMEvents<Node>).off(eventName, fireCallBack);
+        }
+    }
+    isFunction(callback) && (self as DOMEvents<Node>).on(eventName, fireCallBack);
+    return self;
+}
+
 //__________________________________________________________________________________________________//
 
 /* eslint-disable @typescript-eslint/indent */
@@ -669,6 +689,21 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 // public: Events utility
 
     /**
+     * @en Shortcut for [[once]]('transitionstart').
+     * @ja [[once]]('transitionstart') のユーティリティ
+     *
+     * @param callback
+     *  - `en` `transitionstart` handler.
+     *  - `ja` `transitionstart` ハンドラ
+     * @param permanent
+     *  - `en` if set `true`, callback keep living until elements removed.
+     *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
+     */
+    public transitionStart(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent = false): this {
+        return handleSelfEvent(this, callback, 'transitionstart', permanent) as this;
+    }
+
+    /**
      * @en Shortcut for [[once]]('transitionend').
      * @ja [[once]]('transitionend') のユーティリティ
      *
@@ -680,18 +715,22 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
      */
     public transitionEnd(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent = false): this {
-        const self = this as DOMEvents<Node> as DOMEvents<HTMLElement>;
-        function fireCallBack(this: Element, e: TransitionEvent): void {
-            if (e.target !== this) {
-                return;
-            }
-            callback.call(this, e);
-            if (!permanent) {
-                self.off('transitionend', fireCallBack);
-            }
-        }
-        isFunction(callback) && self.on('transitionend', fireCallBack);
-        return this;
+        return handleSelfEvent(this, callback, 'transitionend', permanent) as this;
+    }
+
+    /**
+     * @en Shortcut for [[once]]('animationstart').
+     * @ja [[once]]('animationstart') のユーティリティ
+     *
+     * @param callback
+     *  - `en` `animationstart` handler.
+     *  - `ja` `animationstart` ハンドラ
+     * @param permanent
+     *  - `en` if set `true`, callback keep living until elements removed.
+     *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
+     */
+    public animationStart(callback: (event: AnimationEvent, ...args: unknown[]) => void, permanent = false): this {
+        return handleSelfEvent(this, callback, 'animationstart', permanent) as this;
     }
 
     /**
@@ -706,18 +745,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
      */
     public animationEnd(callback: (event: AnimationEvent, ...args: unknown[]) => void, permanent = false): this {
-        const self = this as DOMEvents<Node> as DOMEvents<HTMLElement>;
-        function fireCallBack(this: Element, e: AnimationEvent): void {
-            if (e.target !== this) {
-                return;
-            }
-            callback.call(this, e);
-            if (!permanent) {
-                self.off('animationend', fireCallBack);
-            }
-        }
-        isFunction(callback) && self.on('animationend', fireCallBack);
-        return this;
+        return handleSelfEvent(this, callback, 'animationend', permanent) as this;
     }
 
     /**
