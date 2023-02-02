@@ -147,6 +147,18 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     trigger<TEventMap extends DOMEventMap<TElement>>(seed: EventType<TEventMap> | (EventType<TEventMap>)[] | Event | Event[] | (EventType<TEventMap> | Event)[], ...eventData: unknown[]): this;
     /**
+     * @en Shortcut for [[once]]('transitionstart').
+     * @ja [[once]]('transitionstart') のユーティリティ
+     *
+     * @param callback
+     *  - `en` `transitionstart` handler.
+     *  - `ja` `transitionstart` ハンドラ
+     * @param permanent
+     *  - `en` if set `true`, callback keep living until elements removed.
+     *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
+     */
+    transitionStart(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
+    /**
      * @en Shortcut for [[once]]('transitionend').
      * @ja [[once]]('transitionend') のユーティリティ
      *
@@ -158,6 +170,18 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
      */
     transitionEnd(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
+    /**
+     * @en Shortcut for [[once]]('animationstart').
+     * @ja [[once]]('animationstart') のユーティリティ
+     *
+     * @param callback
+     *  - `en` `animationstart` handler.
+     *  - `ja` `animationstart` ハンドラ
+     * @param permanent
+     *  - `en` if set `true`, callback keep living until elements removed.
+     *  - `ja` `true` を設定した場合, 要素が削除されるまでコールバックが有効
+     */
+    animationStart(callback: (event: AnimationEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
      * @en Shortcut for [[once]]('animationend').
      * @ja [[once]]('animationend') のユーティリティ
