@@ -9,8 +9,8 @@ module.exports = {
     testem: config.testem({
         external: {
             '@cdp/core-utils': 'node_modules/@cdp/core-utils/dist/core-utils',
+            '@cdp/events': 'node_modules/@cdp/events/dist/events',
             '@cdp/promise': 'node_modules/@cdp/promise/dist/promise',
-            '@cdp/events': 'node_modules/@cdp/promise/node_modules/@cdp/events/dist/events',
             '@cdp/result': 'node_modules/@cdp/result/dist/result',
             '@cdp/binary': 'node_modules/@cdp/binary/dist/binary',
         },

@@ -1,10 +1,53 @@
 import { PlainObject } from '@cdp/core-utils';
+import type { Subscribable } from '@cdp/events';
 import { Cancelable } from '@cdp/promise';
+/**
+ * @en Arguments passed to [[AjaxDataStreamEvent]] `progress`.
+ * @ja [[AjaxDataStreamEvent]] `progress` に渡される引数
+ */
+export interface AjaxDataStreamEventProgresArg {
+    /**
+     * @en Whether progress is measurable or not
+     * @ja 進捗を産出可能か否か
+     */
+    readonly computable: boolean;
+    /**
+     * @en amount of process already done or not
+     * @ja すでに完了した作業量
+     */
+    readonly loaded: number;
+    /**
+     * @en total amount
+     * @en 全体量
+     */
+    readonly total: number;
+    /**
+     * @en process done or not
+     * @ja 作業が完了したか否か
+     */
+    readonly done: boolean;
+    /**
+     * @en current processing chunk data
+     * @ja 現在処理中のチャンクデータ
+     */
+    readonly chunk?: Uint8Array;
+}
+/**
+ * @en [[AjaxDataStream]] event definitions.
+ * @ja [[AjaxDataStream]] イベント定義
+ */
+export interface AjaxDataStreamEvent {
+    /**
+     * @en progress event
+     * @ja 進捗イベント
+     */
+    'progress': AjaxDataStreamEventProgresArg;
+}
 /**
  * @en Stream data type result interface
  * @ja ストリームデータ型定義
  */
-export interface AjaxDataStream extends ReadableStream<Uint8Array> {
+export interface AjaxDataStream extends ReadableStream<Uint8Array>, Subscribable<AjaxDataStreamEvent> {
     /** `content-length` */
     readonly length: number;
 }

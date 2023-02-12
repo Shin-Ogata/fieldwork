@@ -6,6 +6,7 @@
   "dependencies": {
     "@cdp/binary": "file:../binary",
     "@cdp/core-utils": "file:../../core/utils",
+    "@cdp/events": "file:../../core/events",
     "@cdp/promise": "file:../../core/promise",
     "@cdp/result": "file:../../core/result"
   },

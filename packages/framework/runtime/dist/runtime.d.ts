@@ -3668,10 +3668,52 @@ export declare class TemplateEngine implements ITemplateEngine {
     static setGlobalSettings(setiings: TemplateGlobalSettings): TemplateGlobalSettings;
 }
 /**
+ * @en Arguments passed to [[AjaxDataStreamEvent]] `progress`.
+ * @ja [[AjaxDataStreamEvent]] `progress` に渡される引数
+ */
+export interface AjaxDataStreamEventProgresArg {
+    /**
+     * @en Whether progress is measurable or not
+     * @ja 進捗を産出可能か否か
+     */
+    readonly computable: boolean;
+    /**
+     * @en amount of process already done or not
+     * @ja すでに完了した作業量
+     */
+    readonly loaded: number;
+    /**
+     * @en total amount
+     * @en 全体量
+     */
+    readonly total: number;
+    /**
+     * @en process done or not
+     * @ja 作業が完了したか否か
+     */
+    readonly done: boolean;
+    /**
+     * @en current processing chunk data
+     * @ja 現在処理中のチャンクデータ
+     */
+    readonly chunk?: Uint8Array;
+}
+/**
+ * @en [[AjaxDataStream]] event definitions.
+ * @ja [[AjaxDataStream]] イベント定義
+ */
+export interface AjaxDataStreamEvent {
+    /**
+     * @en progress event
+     * @ja 進捗イベント
+     */
+    'progress': AjaxDataStreamEventProgresArg;
+}
+/**
  * @en Stream data type result interface
  * @ja ストリームデータ型定義
  */
-export interface AjaxDataStream extends ReadableStream<Uint8Array> {
+export interface AjaxDataStream extends ReadableStream<Uint8Array>, Subscribable<AjaxDataStreamEvent> {
     /** `content-length` */
     readonly length: number;
 }
@@ -3795,6 +3837,7 @@ export declare const convertUrlParamType: (value: string) => string | number | b
  * @returns { key: value } object.
  */
 export declare const parseUrlQuery: <T = Record<string, string | number | boolean | null>>(url: string) => T;
+export declare const toAjaxDataStream: (seed: Blob | ReadableStream<Uint8Array>, length?: number) => AjaxDataStream;
 /**
  * @en `base64` utility for independent charactor code.
  * @ja 文字コードに依存しない `base64` ユーティリティ

@@ -110,7 +110,7 @@ describe('ajax/core spec', () => {
         const reader = stream.getReader();
         expect(reader).toBeDefined();
 
-        // progress example
+        // simple progress example
         let chunk = 0;
         let result: ReadableStreamReadResult<Uint8Array> | undefined;
         while (!result || !result.done) {
