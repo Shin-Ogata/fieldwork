@@ -8,6 +8,7 @@ module.exports = {
     default: config({
         external: {
             '@cdp/core-utils': 'CDP',
+            '@cdp/events': 'CDP',
             '@cdp/promise': 'CDP',
             '@cdp/result': 'CDP',
             '@cdp/binary': 'CDP',

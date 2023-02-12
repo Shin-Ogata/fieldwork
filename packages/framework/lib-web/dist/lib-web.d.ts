@@ -11,8 +11,8 @@
  *     - @cdp/environment
  *     - @cdp/view
  *     - @cdp/web-utils
- *     - @cdp/template
  *     - @cdp/web-storage
+ *     - @cdp/template
  *     - @cdp/i18n
  *     - @cdp/router
  *     - @cdp/data-sync

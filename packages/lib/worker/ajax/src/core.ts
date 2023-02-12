@@ -14,6 +14,7 @@ import {
     fetch,
 } from './ssr';
 import { toQueryStrings, toAjaxParams } from './params';
+import { toAjaxDataStream } from './stream';
 import { settings } from './settings';
 
 /** @internal */
@@ -136,10 +137,10 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
     } else if (!response.ok) {
         throw makeResult(RESULT_CODE.ERROR_AJAX_RESPONSE, response.statusText, response);
     } else if ('stream' === dataType) {
-        const length = Number(response.headers.get('content-length'));
-        const stream = response.body as ReadableStream<Uint8Array>;
-        stream['length'] = length;
-        return stream as AjaxResult<T>;
+        return toAjaxDataStream(
+            response.body as ReadableStream<Uint8Array>,
+            Number(response.headers.get('content-length')),
+        ) as AjaxResult<T>;
     } else {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response' | 'stream'>](), token);
