@@ -1,8 +1,8 @@
 import {
     className,
-    isNil,
+    isNullish,
     isString,
-    isChancelLikeError,
+    isCancelLikeError,
 } from '@cdp/core-utils';
 import {
     RESULT_CODE,
@@ -54,7 +54,7 @@ export class Result extends Error {
      *  - `ja` エラー構築オプション
      */
     constructor(code?: number, message?: string, options?: ErrorOptions) {
-        code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
+        code = isNullish(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
         super(message || toHelpString(code), options);
         const cause = options?.cause;
         let time = isError(cause) ? (cause as Result).time : undefined;
@@ -146,7 +146,7 @@ export function toResult(o: unknown): Result {
     if (o instanceof Result) {
         /* eslint-disable-next-line prefer-const */
         let { code, cause, time } = o;
-        code = isNil(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
+        code = isNullish(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
         isNumber(time) || (time = Date.now());
         // Do nothing if already defined
         Reflect.defineProperty(o, 'code',  desc(code));
@@ -156,7 +156,7 @@ export function toResult(o: unknown): Result {
     } else {
         const e = Object(o) as Result;
         const message = isString(e.message) ? e.message : isString(o) ? o : undefined;
-        const code = isChancelLikeError(message) ? RESULT_CODE.ABORT : isNumber(e.code) ? e.code : o as number;
+        const code = isCancelLikeError(message) ? RESULT_CODE.ABORT : isNumber(e.code) ? e.code : o as number;
         const cause = isError(e.cause) ? e.cause : isError(o) ? o : isString(o) ? new Error(o) : o;
         return new Result(code, message, { cause });
     }

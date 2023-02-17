@@ -1,3 +1,4 @@
+import { isFunction } from '@cdp/core-utils';
 import { Subscribable, EventPublisher } from '@cdp/events';
 import { Deferred } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
@@ -94,7 +95,7 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @en Custom stand-by function for application ready state.
      * @ja アプリケーション準備完了のための待ち受け関数
      */
-    waitForReady?: Promise<void>;
+    waitForReady?: Promise<unknown> | ((context: AppContext) => Promise<unknown>);
 
     /**
      * @en Custom `document` event for application ready state.
@@ -266,7 +267,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
         await waitDomContentLoaded(_window.document);
         await Promise.all([
             initializeI18N(i18n),
-            waitForReady,
+            isFunction(waitForReady) ? waitForReady(this) : waitForReady,
             waitDocumentEventReady(_window.document, documentEventReady),
         ]);
 

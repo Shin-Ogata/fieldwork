@@ -1,4 +1,4 @@
-import { Nil, Type, Class, Constructor } from './types';
+import { Nullish, Type, Class, Constructor } from './types';
 /**
  * @en Mixin class's base interface.
  * @ja Mixin クラスの基底インターフェイス定義
@@ -64,7 +64,7 @@ export interface MixClassAttribute {
      *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
      *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
      */
-    instanceOf: ((inst: object) => boolean) | Nil;
+    instanceOf: ((inst: object) => boolean) | Nullish;
 }
 /**
  * @en Set the Mixin class attribute.

@@ -1,4 +1,4 @@
-import { Nil, Arguments } from '@cdp/core-utils';
+import { Nullish, Arguments } from '@cdp/core-utils';
 import { Subscription, Silenceable, EventReceiver, EventSource } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
@@ -365,7 +365,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
+    save<A extends T>(attributes: ModelAttributeInput<A> | Nullish, options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Destroy this [[Model]] on the server if it was already persisted.
      * @ja [[Model]] をサーバーから削除

@@ -7,7 +7,7 @@ import {
     isEmptyObject,
     fromTypedData,
     dropUndefined,
-    restoreNil,
+    restoreNullish,
 } from '@cdp/core-utils';
 import { Subscription, EventBroker } from '@cdp/events';
 import {
@@ -115,13 +115,13 @@ export class MemoryStorage implements IStorage {
             case 'string':
                 return fromTypedData(value) as string;
             case 'number':
-                return Number(restoreNil(value));
+                return Number(restoreNullish(value));
             case 'boolean':
-                return Boolean(restoreNil(value));
+                return Boolean(restoreNullish(value));
             case 'object':
-                return Object(restoreNil(value));
+                return Object(restoreNullish(value));
             default:
-                return restoreNil(value) as null;
+                return restoreNullish(value) as null;
         }
     }
 

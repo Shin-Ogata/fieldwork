@@ -6,13 +6,13 @@
  */
 
 import {
-    Nillable,
+    Nullable,
     PlainObject,
     UnknownObject,
     Primitive,
     AnyObject,
     exists,
-    isNil,
+    isNullish,
     isString,
     isNumber,
     isBoolean,
@@ -53,7 +53,7 @@ describe('utils/types spec', (): void => {
     const _classInst = new TypeClass();
 
     it('check exists()', (): void => {
-        let val: Nillable<any>;
+        let val: Nullable<any>;
         expect(exists(val)).toBeFalsy();
         val = undefined;
         expect(exists(val)).toBeFalsy();
@@ -80,32 +80,32 @@ describe('utils/types spec', (): void => {
         expect(exists(val)).toBeTruthy();
     });
 
-    it('check isNil()', (): void => {
-        let val: Nillable<any>;
-        expect(isNil(val)).toBeTruthy();
+    it('check isNullish()', (): void => {
+        let val: Nullable<any>;
+        expect(isNullish(val)).toBeTruthy();
         val = undefined;
-        expect(isNil(val)).toBeTruthy();
+        expect(isNullish(val)).toBeTruthy();
         val = null;
-        expect(isNil(val)).toBeTruthy();
+        expect(isNullish(val)).toBeTruthy();
 
         val = '';
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = false;
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = 0;
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = {};
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = [];
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = _symbol;
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = _bigint;
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = TypeClass;
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
         val = _classInst;
-        expect(isNil(val)).toBeFalsy();
+        expect(isNullish(val)).toBeFalsy();
     });
 
     it('check isString()', (): void => {

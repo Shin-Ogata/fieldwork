@@ -326,8 +326,8 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seed
-     *  - `en` Nil value.
-     *  - `ja` Nil 要素
+     *  - `en` Nullish value.
+     *  - `ja` Nullish 要素
      * @param options
      *  - `en` set options.
      *  - `ja` 設定オプション

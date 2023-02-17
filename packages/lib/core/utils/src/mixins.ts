@@ -4,7 +4,7 @@
 
 import {
     UnknownFunction,
-    Nil,
+    Nullish,
     Type,
     Class,
     Constructor,
@@ -79,7 +79,7 @@ export interface MixClassAttribute {
      *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
      *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
      */
-    instanceOf: ((inst: object) => boolean) | Nil;
+    instanceOf: ((inst: object) => boolean) | Nullish;
 }
 
 //__________________________________________________________________________________________________//
@@ -114,7 +114,7 @@ function copyProperties(target: object, source: object): void {
 }
 
 /** @internal helper for setMixClassAttribute(target, 'instanceOf') */
-function setInstanceOf<T extends object>(target: Constructor<T>, method: ((inst: object) => boolean) | Nil): void {
+function setInstanceOf<T extends object>(target: Constructor<T>, method: ((inst: object) => boolean) | Nullish): void {
     const behaviour = method || (null === method ? undefined : ((i: object) => Object.prototype.isPrototypeOf.call(target.prototype, i)));
     const applied = behaviour && Object.getOwnPropertyDescriptor(target, _override);
     if (!applied) {

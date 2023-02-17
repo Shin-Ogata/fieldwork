@@ -3,7 +3,7 @@
  */
 
 import {
-    Nil,
+    Nullish,
     UnknownObject,
     Constructor,
     Class,
@@ -729,7 +729,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    public async save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
+    public async save<A extends T>(attributes: ModelAttributeInput<A> | Nullish, options?: ModelSaveOptions): Promise<T | void>;
 
     public async save(...args: unknown[]): Promise<T | void> {
         const { attrs, options } = parseSaveArgs(...args);

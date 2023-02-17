@@ -18,6 +18,7 @@ import {
 } from '@cdp/ajax';
 import {
     DOM,
+    DOMSelector,
     dom as $,
 } from '@cdp/dom';
 import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
@@ -220,6 +221,10 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
         return false; // already created
     }
 
+    const $template = (el: HTMLElement | undefined): DOM => {
+        return el instanceof HTMLTemplateElement ? $([...el.content.children]) as DOM : $(el);
+    };
+
     const { content } = params;
     if (null == content) {
         // noop element
@@ -231,9 +236,10 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
         if (!template) {
             throw Error(`template load failed. [selector: ${selector}, url: ${url}]`);
         }
-        params.$template = $([...template.content.children]) as DOM;
+        params.$template = $template(template);
     } else {
-        params.$template = $(content as HTMLElement);
+        const $el = $(content as DOMSelector);
+        params.$template = $template($el[0]);
     }
 
     return true; // newly created

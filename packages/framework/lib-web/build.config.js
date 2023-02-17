@@ -57,7 +57,7 @@ function patch(index, code, includes) {
         };
 
         const coreStuff = `
-            Nil,
+            Nullish,
             UnknownObject,
             UnknownFunction,
             PlainObject,

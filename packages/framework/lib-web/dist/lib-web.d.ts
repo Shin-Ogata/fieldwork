@@ -1935,13 +1935,13 @@ export function pathToRegexp(path: Path, keys?: Key[], options?: TokensToRegexpO
 }
 
 export { path2regexp };
-import { $cdp, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, Nil, NonFunctionPropertyNames, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
+import { $cdp, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
 export { ITemplateEngine, JST, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter };
 import { AjaxGetRequestShortcutOptions, AjaxOptions, AjaxRequestOptions, Serializable } from '@cdp/lib-worker';
 
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
-export type SelectorBase = Node | Window | string | Nil;
+export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 declare function isWindowContext(x: unknown): x is Window;
@@ -4541,7 +4541,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
+    save<A extends T>(attributes: ModelAttributeInput<A> | Nullish, options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Destroy this [[Model]] on the server if it was already persisted.
      * @ja [[Model]] をサーバーから削除
@@ -5076,8 +5076,8 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seed
-     *  - `en` Nil value.
-     *  - `ja` Nil 要素
+     *  - `en` Nullish value.
+     *  - `ja` Nullish 要素
      * @param options
      *  - `en` set options.
      *  - `ja` 設定オプション
@@ -6306,7 +6306,7 @@ export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TF
     tagName?: string;
     attributes?: PlainObject<string | number | boolean | null>;
 }
-export type ViewFindSelector = Node | string | Nil;
+export type ViewFindSelector = Node | string | Nullish;
 /**
  * @en Base class definition for view that manages the layout and a DOM events.
  * @ja レイアウト管理と DOM イベントの監視を行う View の基底クラス定義
@@ -7057,7 +7057,7 @@ export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string
 export type RouteContentSeed = {
     selector: string;
     url?: string;
-} | HTMLElement | string;
+} | HTMLElement | HTMLTemplateElement | DOM | string;
 /**
  * @en Route parameters interface. It is also a construction option.
  * @ja ルートパラメータ. 構築オプションとしても使用.
@@ -7469,7 +7469,7 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @en Custom stand-by function for application ready state.
      * @ja アプリケーション準備完了のための待ち受け関数
      */
-    waitForReady?: Promise<void>;
+    waitForReady?: Promise<unknown> | ((context: AppContext) => Promise<unknown>);
     /**
      * @en Custom `document` event for application ready state.
      * @ja アプリケーション準備完了のためのカスタム `document` イベント

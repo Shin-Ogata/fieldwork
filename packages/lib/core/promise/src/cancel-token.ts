@@ -232,7 +232,7 @@ export class CancelToken<T = unknown> {
     /** @internal */
     private [_cancel](reason: T): void {
         const context = getContext(this);
-        verify('notNil', reason);
+        verify('notNullish', reason);
         if (!this.cancelable) {
             return;
         }

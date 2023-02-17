@@ -387,6 +387,9 @@ describe('router/context spec', () => {
         });
 
         it('check RouteParameters.content creation', async () => {
+            const elTemplate = document.createElement('template');
+            elTemplate.innerHTML = '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from template-element</div>';
+
             const stub = { onCallback };
             const router = await createRouterWrap({
                 initialPath: '/string',
@@ -394,6 +397,14 @@ describe('router/context spec', () => {
                     {
                         path: '/string',
                         content: '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from string</div>',
+                    },
+                    {
+                        path: '/dom',
+                        content: $('<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from DOM</div>'),
+                    },
+                    {
+                        path: '/template-el',
+                        content: elTemplate,
                     },
                     {
                         path: '/ajax',
@@ -431,6 +442,32 @@ describe('router/context spec', () => {
             expect($el).toBeDefined();
             expect($el.length).toBe(1);
             expect($el.text()).toBe('template from string');
+            expect($el !== $template).toBe(true);
+
+            await router.navigate('/dom');
+
+            $template = (router.currentRoute as any)['@params'].$template;
+            $el = $(router.currentRoute.el);
+
+            expect($template).toBeDefined();
+            expect($template.length).toBe(1);
+            expect($template.text()).toBe('template from DOM');
+            expect($el).toBeDefined();
+            expect($el.length).toBe(1);
+            expect($el.text()).toBe('template from DOM');
+            expect($el !== $template).toBe(true);
+
+            await router.navigate('/template-el');
+
+            $template = (router.currentRoute as any)['@params'].$template;
+            $el = $(router.currentRoute.el);
+
+            expect($template).toBeDefined();
+            expect($template.length).toBe(1);
+            expect($template.text()).toBe('template from template-element');
+            expect($el).toBeDefined();
+            expect($el.length).toBe(1);
+            expect($el.text()).toBe('template from template-element');
             expect($el !== $template).toBe(true);
 
             await router.navigate('/ajax');

@@ -3,7 +3,7 @@
     @typescript-eslint/no-non-null-assertion,
  */
 
-import { safe } from '@cdp/core-utils';
+import { safe, sleep } from '@cdp/core-utils';
 import { RESULT_CODE } from '@cdp/result';
 import {
     webRoot,
@@ -147,6 +147,19 @@ describe('context spec', () => {
         await app.ready;
         const $splash = $(window?.document.body).find('#splash');
         expect($splash.length).toBe(0);
+    });
+
+    it('check custom initialize', async () => {
+        let context!: AppContext;
+        const customInit = (ctx: AppContext): Promise<void> => {
+            context = ctx;
+            return sleep(0);
+        };
+
+        const { el, window } = await prepareQueryContext();
+        const app = AppContext({ main: '#test-app', el, window, routes: [{ path: '/' }], reset: true, waitForReady: customInit } as AppContextOptions);
+        await app.ready;
+        expect(app).toBe(context);
     });
 
     it('for coverage: error case', async () => {

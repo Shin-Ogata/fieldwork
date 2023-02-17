@@ -1,4 +1,4 @@
-import { Nil } from '@cdp/core-utils';
+import { Nullish } from '@cdp/core-utils';
 import { isWindowContext } from './utils';
 import {
     ElementBase,
@@ -186,7 +186,7 @@ export function isNode(el: unknown): el is Node {
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export function isNodeElement(el: ElementBase | Nil): el is Element {
+export function isNodeElement(el: ElementBase | Nullish): el is Element {
     return isNode(el) && (Node.ELEMENT_NODE === el.nodeType);
 }
 
@@ -198,7 +198,7 @@ export function isNodeElement(el: ElementBase | Nil): el is Element {
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTMLElement | SVGElement {
+export function isNodeHTMLOrSVGElement(el: ElementBase | Nullish): el is HTMLElement | SVGElement {
     return isNodeElement(el) && (null != (el as HTMLElement).dataset);
 }
 
@@ -210,7 +210,7 @@ export function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTMLElement
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export function isNodeQueriable(el: ElementBase | Nil): el is Element | Document {
+export function isNodeQueriable(el: ElementBase | Nullish): el is Element | Document {
     return !!(el && (el as Node as Element).querySelector);
 }
 
@@ -222,7 +222,7 @@ export function isNodeQueriable(el: ElementBase | Nil): el is Element | Document
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export function isNodeDocument(el: ElementBase | Nil): el is Document {
+export function isNodeDocument(el: ElementBase | Nullish): el is Document {
     return isNode(el) && (Node.DOCUMENT_NODE === el.nodeType);
 }
 
@@ -279,14 +279,14 @@ export function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<
 //__________________________________________________________________________________________________//
 
 /**
- * @en Check the selector type is Nil.
- * @ja Nil セレクタであるか判定
+ * @en Check the selector type is Nullish.
+ * @ja Nullish セレクタであるか判定
  *
  * @param selector
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isEmptySelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Nil> {
+export function isEmptySelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Nullish> {
     return !selector;
 }
 

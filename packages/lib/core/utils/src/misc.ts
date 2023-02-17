@@ -310,8 +310,8 @@ export function fromTypedData(data: TypedData | undefined): string | undefined {
  * @ja `Web API` 格納形式に変換 <br>
  *     `undefined` を返却しないことを保証
  */
-export function dropUndefined<T>(value: T | null | undefined, nilSerialize = false): T | 'null' | 'undefined' | null {
-    return null != value ? value : (nilSerialize ? String(value) : null) as T | 'null' | 'undefined' | null;
+export function dropUndefined<T>(value: T | null | undefined, nullishSerialize = false): T | 'null' | 'undefined' | null {
+    return null != value ? value : (nullishSerialize ? String(value) : null) as T | 'null' | 'undefined' | null;
 }
 
 /**
@@ -319,7 +319,7 @@ export function dropUndefined<T>(value: T | null | undefined, nilSerialize = fal
  *     Convert from 'null' or 'undefined' string to original type.
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
-export function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined {
+export function restoreNullish<T>(value: T | 'null' | 'undefined'): T | null | undefined {
     if ('null' === value) {
         return null;
     } else if ('undefined' === value) {
@@ -394,7 +394,7 @@ export function randomInt(min: number, max?: number): number {
  *  - `en` an error object handled in `catch` block.
  *  - `ja` `catch` 節などで補足したエラーを指定
  */
-export function isChancelLikeError(error: unknown): boolean {
+export function isCancelLikeError(error: unknown): boolean {
     if (null == error) {
         return false;
     } else if (isString(error)) {

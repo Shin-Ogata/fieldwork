@@ -1,6 +1,6 @@
 import { assignValue, deepEqual } from './deep-circuit';
 import {
-    Nil,
+    Nullish,
     Writable,
     isArray,
     isObject,
@@ -146,7 +146,7 @@ export function drop<T extends object>(base: T, ...dropValues: unknown[]): Parti
  * - `en` The value to be returned in case `property` doesn't exist or is undefined.
  * - `ja` 存在しなかった場合の fallback 値
  */
-export function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T { // eslint-disable-line @typescript-eslint/no-explicit-any
+export function result<T = any>(target: object | Nullish, property: string | string[], fallback?: T): T { // eslint-disable-line @typescript-eslint/no-explicit-any
     const props = isArray(property) ? property : [property];
     if (!props.length) {
         return isFunction(fallback) ? fallback.call(target) : fallback;
