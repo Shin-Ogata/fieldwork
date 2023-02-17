@@ -20,6 +20,14 @@
 - environment
   - prefers-color-scheme
 
+## 覚書
+
+- AppContext は main の router を管理する必要最低限のメンバを定義する
+  - そのため,　ルート `#app` の element アクセスや配下の component instance アクセスを既定では提供しない
+  - リッチなメンバアクセスがほしい場合、(panel等)はクライアント側でクラスでラップする or context インスタンスにメンバを追加(root elementアクセス等)する
+  - 専用の初期化が必要な場合は `waitForReady` を使用する
+  - ∵ パネルやアクションリスト等のコンポーネントを網羅するものではないため, 3rd と組み合わせるときの制約を減らしたいため
+
 ## dev todo
 - splash screen からの遷移
 - 各 page 実装方法の検証 (全部 register する)
@@ -30,7 +38,6 @@
 
 - 遷移アニメーション
 - 同一URL, 同一ページインスタンスへの遷移のケア?
-
 
 ## 参考
 

@@ -1,4 +1,4 @@
-import { Nil, Writable } from './types';
+import { Nullish, Writable } from './types';
 /**
  * @en Check whether input source has a property.
  * @ja 入力元がプロパティを持っているか判定
@@ -77,4 +77,4 @@ export declare function drop<T extends object>(base: T, ...dropValues: unknown[]
  * - `en` The value to be returned in case `property` doesn't exist or is undefined.
  * - `ja` 存在しなかった場合の fallback 値
  */
-export declare function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T;
+export declare function result<T = any>(target: object | Nullish, property: string | string[], fallback?: T): T;

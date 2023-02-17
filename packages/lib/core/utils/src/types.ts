@@ -13,13 +13,13 @@ export type Primitive = string | number | boolean | symbol | bigint | null | und
  * @en The general null type.
  * @ja 空を示す型定義
  */
-export type Nil = void | null | undefined;
+export type Nullish = void | null | undefined;
 
 /**
- * @en The type of object or [[Nil]].
- * @ja [[Nil]] になりえるオブジェクト型定義
+ * @en The type of object or [[Nullish]].
+ * @ja [[Nullish]] になりえるオブジェクト型定義
  */
-export type Nillable<T extends object> = T | Nil;
+export type Nullable<T extends object> = T | Nullish;
 
 /**
  * @en Avoid the `Function`types.
@@ -32,12 +32,6 @@ export type UnknownFunction = (...args: unknown[]) => unknown;
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
  */
 export type UnknownObject = Record<string | number | symbol, unknown>;
-
-/**
- * @en Non-nullish value.
- * @ja 非 Null 値
- */
-export type NonNil = {};
 
 /**
  * @en JavaScript type set interface.
@@ -242,19 +236,19 @@ export interface TypedArrayConstructor {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function exists<T>(x: T | Nil): x is T {
+export function exists<T>(x: T | Nullish): x is T {
     return null != x;
 }
 
 /**
- * @en Check the value-type is [[Nil]].
- * @ja [[Nil]] 型であるか判定
+ * @en Check the value-type is [[Nullish]].
+ * @ja [[Nullish]] 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isNil(x: unknown): x is Nil {
+export function isNullish(x: unknown): x is Nullish {
     return null == x;
 }
 
@@ -412,7 +406,7 @@ export function isFunction(x: unknown): x is TypeList['function'] {
  *  - `ja` 評価する値
  */
 export function isNumeric(x: unknown): x is number {
-    return !isNil(x) && !isBoolean(x) && !isArray(x) && !isSymbol(x) && ('' !== x) && !Number.isNaN(Number(x));
+    return !isNullish(x) && !isBoolean(x) && !isArray(x) && !isSymbol(x) && ('' !== x) && !Number.isNaN(Number(x));
 }
 
 /**
@@ -438,7 +432,7 @@ export function typeOf<K extends TypeKeys>(type: K, x: unknown): x is TypeList[K
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
+export function isIterable<T>(x: Nullable<Iterable<T>>): x is Iterable<T>;
 export function isIterable(x: unknown): x is Iterable<unknown>;
 export function isIterable(x: unknown): any {
     return Symbol.iterator in Object(x);
@@ -480,7 +474,7 @@ export function isTypedArray(x: unknown): x is TypedArray {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T {
+export function instanceOf<T extends object>(ctor: Nullable<Type<T>>, x: unknown): x is T {
     return ('function' === typeof ctor) && (x instanceof ctor);
 }
 
@@ -495,7 +489,7 @@ export function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T {
+export function ownInstanceOf<T extends object>(ctor: Nullable<Type<T>>, x: unknown): x is T {
     return (null != x) && ('function' === typeof ctor) && (Object.getPrototypeOf(x) === Object(ctor.prototype));
 }
 

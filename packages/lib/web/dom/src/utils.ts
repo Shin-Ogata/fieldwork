@@ -3,7 +3,7 @@
  */
 
 import {
-    Nil,
+    Nullish,
     isNumber,
     isFunction,
     className,
@@ -13,7 +13,7 @@ import { document } from './ssr';
 
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
-export type SelectorBase = Node | Window | string | Nil;
+export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 

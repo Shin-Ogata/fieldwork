@@ -20,17 +20,17 @@ import {
  */
 interface Verifier {
     /**
-     * @en Verification for the input value is not [[Nil]].
-     * @ja [[Nil]] でないことを検証
+     * @en Verification for the input value is not [[Nullish]].
+     * @ja [[Nullish]] でないことを検証
      *
-     * @param notNil.x
+     * @param notNullish.x
      *  - `en` evaluated value
      *  - `ja` 評価する値
-     * @param notNil.message
+     * @param notNullish.message
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    notNil: (x: unknown, message?: string | null) => void | never;
+    notNullish: (x: unknown, message?: string | null) => void | never;
 
     /**
      * @en Verification for the input is [[TypeKeys]].
@@ -168,7 +168,7 @@ export type VerifyMethod = keyof Verifier;
  * @internal
  */
 const _verifier: Verifier = {
-    notNil: (x: unknown, message?: string | null): void | never => {
+    notNullish: (x: unknown, message?: string | null): void | never => {
         if (null == x) {
             exists(message) || (message = `${className(x)} is not a valid value.`);
             throw new TypeError(message);

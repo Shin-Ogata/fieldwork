@@ -1,5 +1,5 @@
 import {
-    Nil,
+    Nullish,
     isNumber,
     isFunction,
     classify,
@@ -59,7 +59,7 @@ export interface DOMScrollOptions {
 //__________________________________________________________________________________________________//
 
 /** @internal query scroll target element */
-function queryTargetElement(el: ElementBase | Nil): Element | null {
+function queryTargetElement(el: ElementBase | Nullish): Element | null {
     if (isNodeElement(el)) {
         return el;
     } else if (isNodeDocument(el)) {

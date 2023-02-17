@@ -4,7 +4,7 @@ import {
     TypeToKey,
     toTypedData,
     fromTypedData,
-    restoreNil,
+    restoreNullish,
 } from '@cdp/core-utils';
 import {
     Cancelable,
@@ -606,7 +606,7 @@ export async function deserialize(value: string | undefined, options?: Deseriali
     const { dataType, cancel } = options || {};
     await cc(cancel);
 
-    const data = restoreNil(toTypedData(value));
+    const data = restoreNullish(toTypedData(value));
     switch (dataType) {
         case 'string':
             return fromTypedData(data);

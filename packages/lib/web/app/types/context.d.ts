@@ -62,7 +62,7 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @en Custom stand-by function for application ready state.
      * @ja アプリケーション準備完了のための待ち受け関数
      */
-    waitForReady?: Promise<void>;
+    waitForReady?: Promise<unknown> | ((context: AppContext) => Promise<unknown>);
     /**
      * @en Custom `document` event for application ready state.
      * @ja アプリケーション準備完了のためのカスタム `document` イベント

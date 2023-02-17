@@ -72,12 +72,12 @@ export type Primitive = string | number | boolean | symbol | bigint | null | und
  * @en The general null type.
  * @ja 空を示す型定義
  */
-export type Nil = void | null | undefined;
+export type Nullish = void | null | undefined;
 /**
- * @en The type of object or [[Nil]].
- * @ja [[Nil]] になりえるオブジェクト型定義
+ * @en The type of object or [[Nullish]].
+ * @ja [[Nullish]] になりえるオブジェクト型定義
  */
-export type Nillable<T extends object> = T | Nil;
+export type Nullable<T extends object> = T | Nullish;
 /**
  * @en Avoid the `Function`types.
  * @ja 汎用関数型
@@ -88,11 +88,6 @@ export type UnknownFunction = (...args: unknown[]) => unknown;
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
  */
 export type UnknownObject = Record<string | number | symbol, unknown>;
-/**
- * @en Non-nullish value.
- * @ja 非 Null 値
- */
-export type NonNil = {};
 /**
  * @en JavaScript type set interface.
  * @ja JavaScript の型の集合
@@ -279,16 +274,16 @@ export interface TypedArrayConstructor {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function exists<T>(x: T | Nil): x is T;
+export declare function exists<T>(x: T | Nullish): x is T;
 /**
- * @en Check the value-type is [[Nil]].
- * @ja [[Nil]] 型であるか判定
+ * @en Check the value-type is [[Nullish]].
+ * @ja [[Nullish]] 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isNil(x: unknown): x is Nil;
+export declare function isNullish(x: unknown): x is Nullish;
 /**
  * @en Check the value-type is String.
  * @ja String 型であるか判定
@@ -417,7 +412,7 @@ export declare function typeOf<K extends TypeKeys>(type: K, x: unknown): x is Ty
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
+export declare function isIterable<T>(x: Nullable<Iterable<T>>): x is Iterable<T>;
 export declare function isIterable(x: unknown): x is Iterable<unknown>;
 /**
  * @en Check the value is one of [[TypedArray]].
@@ -439,7 +434,7 @@ export declare function isTypedArray(x: unknown): x is TypedArray;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T;
+export declare function instanceOf<T extends object>(ctor: Nullable<Type<T>>, x: unknown): x is T;
 /**
  * @en Check the value instance of input constructor (except sub class).
  * @ja 指定コンストラクタのインスタンスであるか判定 (派生クラスは含めない)
@@ -451,7 +446,7 @@ export declare function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x:
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T;
+export declare function ownInstanceOf<T extends object>(ctor: Nullable<Type<T>>, x: unknown): x is T;
 /**
  * @en Get the value's class name.
  * @ja クラス名を取得
@@ -500,17 +495,17 @@ export declare const $cdp: unique symbol;
  */
 export interface Verifier {
     /**
-     * @en Verification for the input value is not [[Nil]].
-     * @ja [[Nil]] でないことを検証
+     * @en Verification for the input value is not [[Nullish]].
+     * @ja [[Nullish]] でないことを検証
      *
-     * @param notNil.x
+     * @param notNullish.x
      *  - `en` evaluated value
      *  - `ja` 評価する値
-     * @param notNil.message
+     * @param notNullish.message
      *  - `en` custom error message
      *  - `ja` カスタムエラーメッセージ
      */
-    notNil: (x: unknown, message?: string | null) => void | never;
+    notNullish: (x: unknown, message?: string | null) => void | never;
     /**
      * @en Verification for the input is [[TypeKeys]].
      * @ja 指定した [[TypeKeys]] であるか検証
@@ -742,7 +737,7 @@ export interface MixClassAttribute {
      *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
      *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
      */
-    instanceOf: ((inst: object) => boolean) | Nil;
+    instanceOf: ((inst: object) => boolean) | Nullish;
 }
 /**
  * @en Set the Mixin class attribute.
@@ -1301,7 +1296,7 @@ export declare function drop<T extends object>(base: T, ...dropValues: unknown[]
  * - `en` The value to be returned in case `property` doesn't exist or is undefined.
  * - `ja` 存在しなかった場合の fallback 値
  */
-export declare function result<T = any>(target: object | Nil, property: string | string[], fallback?: T): T;
+export declare function result<T = any>(target: object | Nullish, property: string | string[], fallback?: T): T;
 /**
  * @en Date unit definitions.
  * @ja 日時オブジェクトの単位定義
@@ -1552,13 +1547,13 @@ export declare function fromTypedData(data: TypedData | undefined): string | und
  * @ja `Web API` 格納形式に変換 <br>
  *     `undefined` を返却しないことを保証
  */
-export declare function dropUndefined<T>(value: T | null | undefined, nilSerialize?: boolean): T | 'null' | 'undefined' | null;
+export declare function dropUndefined<T>(value: T | null | undefined, nullishSerialize?: boolean): T | 'null' | 'undefined' | null;
 /**
  * @en Deserialize from `Web API` stocked type. <br>
  *     Convert from 'null' or 'undefined' string to original type.
  * @ja 'null' or 'undefined' をもとの型に戻す
  */
-export declare function restoreNil<T>(value: T | 'null' | 'undefined'): T | null | undefined;
+export declare function restoreNullish<T>(value: T | 'null' | 'undefined'): T | null | undefined;
 /**
  * @en Get local unique id. <br>
  *     'local unique' means guarantees unique during in script life cycle only.
@@ -1602,7 +1597,7 @@ export declare function randomInt(min: number, max: number): number;
  *  - `en` an error object handled in `catch` block.
  *  - `ja` `catch` 節などで補足したエラーを指定
  */
-export declare function isChancelLikeError(error: unknown): boolean;
+export declare function isCancelLikeError(error: unknown): boolean;
 /**
  * @en Converts first letter of the string to uppercase.
  * @ja 最初の文字を大文字に変換
@@ -6291,7 +6286,7 @@ export declare namespace path2regexp {
 }
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
-export type SelectorBase = Node | Window | string | Nil;
+export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 declare function isWindowContext(x: unknown): x is Window;
@@ -8885,7 +8880,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` save options
      *  - `ja` 保存オプション
      */
-    save<A extends T>(attributes: ModelAttributeInput<A> | Nil, options?: ModelSaveOptions): Promise<T | void>;
+    save<A extends T>(attributes: ModelAttributeInput<A> | Nullish, options?: ModelSaveOptions): Promise<T | void>;
     /**
      * @en Destroy this [[Model]] on the server if it was already persisted.
      * @ja [[Model]] をサーバーから削除
@@ -9420,8 +9415,8 @@ TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends K
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seed
-     *  - `en` Nil value.
-     *  - `ja` Nil 要素
+     *  - `en` Nullish value.
+     *  - `ja` Nullish 要素
      * @param options
      *  - `en` set options.
      *  - `ja` 設定オプション
@@ -10650,7 +10645,7 @@ export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TF
     tagName?: string;
     attributes?: PlainObject<string | number | boolean | null>;
 }
-export type ViewFindSelector = Node | string | Nil;
+export type ViewFindSelector = Node | string | Nullish;
 /**
  * @en Base class definition for view that manages the layout and a DOM events.
  * @ja レイアウト管理と DOM イベントの監視を行う View の基底クラス定義
@@ -11401,7 +11396,7 @@ export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string
 export type RouteContentSeed = {
     selector: string;
     url?: string;
-} | HTMLElement | string;
+} | HTMLElement | HTMLTemplateElement | DOM | string;
 /**
  * @en Route parameters interface. It is also a construction option.
  * @ja ルートパラメータ. 構築オプションとしても使用.
@@ -11813,7 +11808,7 @@ export interface AppContextOptions extends RouterConstructionOptions {
      * @en Custom stand-by function for application ready state.
      * @ja アプリケーション準備完了のための待ち受け関数
      */
-    waitForReady?: Promise<void>;
+    waitForReady?: Promise<unknown> | ((context: AppContext) => Promise<unknown>);
     /**
      * @en Custom `document` event for application ready state.
      * @ja アプリケーション準備完了のためのカスタム `document` イベント

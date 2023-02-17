@@ -15,10 +15,10 @@ import {
     toTypedData,
     fromTypedData,
     dropUndefined,
-    restoreNil,
+    restoreNullish,
     luid,
     randomInt,
-    isChancelLikeError,
+    isCancelLikeError,
     capitalize,
     decapitalize,
     camelize,
@@ -288,15 +288,15 @@ describe('utils/misc spec', () => {
         expect(dropUndefined(undefined, true)).toBe('undefined');
     });
 
-    it('check restoreNil()', () => {
-        expect(restoreNil('str')).toBe('str');
-        expect(restoreNil(100)).toBe(100);
-        expect(restoreNil(true)).toBe(true);
-        expect(restoreNil({ hoge: 'hoge' })).toEqual({ hoge: 'hoge' });
-        expect(restoreNil(null)).toBe(null);
-        expect(restoreNil(undefined)).toBe(undefined);
-        expect(restoreNil('null')).toBe(null);
-        expect(restoreNil('undefined')).toBe(undefined);
+    it('check restoreNullish()', () => {
+        expect(restoreNullish('str')).toBe('str');
+        expect(restoreNullish(100)).toBe(100);
+        expect(restoreNullish(true)).toBe(true);
+        expect(restoreNullish({ hoge: 'hoge' })).toEqual({ hoge: 'hoge' });
+        expect(restoreNullish(null)).toBe(null);
+        expect(restoreNullish(undefined)).toBe(undefined);
+        expect(restoreNullish('null')).toBe(null);
+        expect(restoreNullish('undefined')).toBe(undefined);
     });
 
     it('check luid()', (): void => {
@@ -320,7 +320,7 @@ describe('utils/misc spec', () => {
         expect(val2).toBeLessThanOrEqual(20);
     });
 
-    it('check isChancelLikeError', () => {
+    it('check isCancelLikeError', () => {
         const e1 = new Error('abort');
         const e2 = new Error('Abort');
         const e3 = new Error('cancel');
@@ -328,25 +328,25 @@ describe('utils/misc spec', () => {
         const e5 = new Error('ABORT operation');
         const e6 = new Error('Cancel operation');
         const e7 = new Error('operation aborted.');
-        expect(isChancelLikeError(e1)).toBeTruthy();
-        expect(isChancelLikeError(e2)).toBeTruthy();
-        expect(isChancelLikeError(e3)).toBeTruthy();
-        expect(isChancelLikeError(e4)).toBeTruthy();
-        expect(isChancelLikeError(e5)).toBeTruthy();
-        expect(isChancelLikeError(e6)).toBeTruthy();
-        expect(isChancelLikeError(e7)).toBeTruthy();
+        expect(isCancelLikeError(e1)).toBeTruthy();
+        expect(isCancelLikeError(e2)).toBeTruthy();
+        expect(isCancelLikeError(e3)).toBeTruthy();
+        expect(isCancelLikeError(e4)).toBeTruthy();
+        expect(isCancelLikeError(e5)).toBeTruthy();
+        expect(isCancelLikeError(e6)).toBeTruthy();
+        expect(isCancelLikeError(e7)).toBeTruthy();
 
-        expect(isChancelLikeError(undefined)).toBeFalsy();
-        expect(isChancelLikeError(null)).toBeFalsy();
-        expect(isChancelLikeError(-1)).toBeFalsy();
-        expect(isChancelLikeError(Symbol('hoge'))).toBeFalsy();
-        expect(isChancelLikeError([])).toBeFalsy();
-        expect(isChancelLikeError({})).toBeFalsy();
-        expect(isChancelLikeError({ message: 'abort' })).toBeTruthy();
+        expect(isCancelLikeError(undefined)).toBeFalsy();
+        expect(isCancelLikeError(null)).toBeFalsy();
+        expect(isCancelLikeError(-1)).toBeFalsy();
+        expect(isCancelLikeError(Symbol('hoge'))).toBeFalsy();
+        expect(isCancelLikeError([])).toBeFalsy();
+        expect(isCancelLikeError({})).toBeFalsy();
+        expect(isCancelLikeError({ message: 'abort' })).toBeTruthy();
 
-        expect(isChancelLikeError('abort')).toBeTruthy();
-        expect(isChancelLikeError('Cancel')).toBeTruthy();
-        expect(isChancelLikeError('error')).toBeFalsy();
+        expect(isCancelLikeError('abort')).toBeTruthy();
+        expect(isCancelLikeError('Cancel')).toBeTruthy();
+        expect(isCancelLikeError('error')).toBeFalsy();
     });
 
     it('check capitalize()', () => {

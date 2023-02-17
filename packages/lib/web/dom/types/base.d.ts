@@ -1,4 +1,4 @@
-import { Nil } from '@cdp/core-utils';
+import { Nullish } from '@cdp/core-utils';
 import { ElementBase, SelectorBase, DOM, DOMSelector } from './static';
 /**
  * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.
@@ -79,7 +79,7 @@ export declare function isNode(el: unknown): el is Node;
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export declare function isNodeElement(el: ElementBase | Nil): el is Element;
+export declare function isNodeElement(el: ElementBase | Nullish): el is Element;
 /**
  * @en Check target is `HTMLElement` or `SVGElement`.
  * @ja 対象が `HTMLElement` または `SVGElement` であるか判定
@@ -88,7 +88,7 @@ export declare function isNodeElement(el: ElementBase | Nil): el is Element;
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTMLElement | SVGElement;
+export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nullish): el is HTMLElement | SVGElement;
 /**
  * @en Check target is `Element` or `Document`.
  * @ja 対象が `Element` または `Document` であるか判定
@@ -97,7 +97,7 @@ export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nil): el is HTM
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export declare function isNodeQueriable(el: ElementBase | Nil): el is Element | Document;
+export declare function isNodeQueriable(el: ElementBase | Nullish): el is Element | Document;
 /**
  * @en Check target is `Document`.
  * @ja 対象が `Document` であるか判定
@@ -106,7 +106,7 @@ export declare function isNodeQueriable(el: ElementBase | Nil): el is Element | 
  *  - `en` [[ElementBase]] instance
  *  - `ja` [[ElementBase]] インスタンス
  */
-export declare function isNodeDocument(el: ElementBase | Nil): el is Document;
+export declare function isNodeDocument(el: ElementBase | Nullish): el is Document;
 /**
  * @en Check [[DOM]] target is `Element`.
  * @ja [[DOM]] が `Element` を対象にしているか判定
@@ -144,14 +144,14 @@ export declare function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DO
  */
 export declare function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<Window>;
 /**
- * @en Check the selector type is Nil.
- * @ja Nil セレクタであるか判定
+ * @en Check the selector type is Nullish.
+ * @ja Nullish セレクタであるか判定
  *
  * @param selector
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isEmptySelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Nil>;
+export declare function isEmptySelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, Nullish>;
 /**
  * @en Check the selector type is String.
  * @ja String セレクタであるか判定

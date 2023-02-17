@@ -1,6 +1,7 @@
 import { Constructor } from '@cdp/core-utils';
 import { Subscribable } from '@cdp/events';
 import type { Result } from '@cdp/result';
+import type { DOM } from '@cdp/dom';
 import type { IHistory, HistoryDirection } from '../history';
 /**
  * @en Page transition parameters definition.
@@ -162,7 +163,7 @@ export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string
 export type RouteContentSeed = {
     selector: string;
     url?: string;
-} | HTMLElement | string;
+} | HTMLElement | HTMLTemplateElement | DOM | string;
 /**
  * @en Route parameters interface. It is also a construction option.
  * @ja ルートパラメータ. 構築オプションとしても使用.

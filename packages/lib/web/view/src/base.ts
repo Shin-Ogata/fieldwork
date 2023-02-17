@@ -3,7 +3,7 @@
  */
 
 import {
-    Nil,
+    Nullish,
     PlainObject,
     UnknownFunction,
     isFunction,
@@ -41,7 +41,7 @@ interface Property<T extends Node> {
 
 //__________________________________________________________________________________________________//
 
-export type ViewFindSelector = Node | string | Nil;
+export type ViewFindSelector = Node | string | Nullish;
 
 /**
  * @en Base class definition for view that manages the layout and a DOM events.

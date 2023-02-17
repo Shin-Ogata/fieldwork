@@ -3,7 +3,7 @@ import {
     Class,
     UnknownObject,
     Keys,
-    isNil,
+    isNullish,
     isArray,
     isFunction,
     isString,
@@ -758,8 +758,8 @@ export abstract class Collection<
      *       - 適切な `@add`, `@remove`, `@update` イベントを発生
      *
      * @param seed
-     *  - `en` Nil value.
-     *  - `ja` Nil 要素
+     *  - `en` Nullish value.
+     *  - `ja` Nullish 要素
      * @param options
      *  - `en` set options.
      *  - `ja` 設定オプション
@@ -805,7 +805,7 @@ export abstract class Collection<
     public set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[];
 
     public set(seeds?: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel | TModel[] | void {
-        if (isNil(seeds)) {
+        if (isNullish(seeds)) {
             return;
         }
 

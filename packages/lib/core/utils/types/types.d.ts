@@ -7,12 +7,12 @@ export type Primitive = string | number | boolean | symbol | bigint | null | und
  * @en The general null type.
  * @ja 空を示す型定義
  */
-export type Nil = void | null | undefined;
+export type Nullish = void | null | undefined;
 /**
- * @en The type of object or [[Nil]].
- * @ja [[Nil]] になりえるオブジェクト型定義
+ * @en The type of object or [[Nullish]].
+ * @ja [[Nullish]] になりえるオブジェクト型定義
  */
-export type Nillable<T extends object> = T | Nil;
+export type Nullable<T extends object> = T | Nullish;
 /**
  * @en Avoid the `Function`types.
  * @ja 汎用関数型
@@ -23,11 +23,6 @@ export type UnknownFunction = (...args: unknown[]) => unknown;
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
  */
 export type UnknownObject = Record<string | number | symbol, unknown>;
-/**
- * @en Non-nullish value.
- * @ja 非 Null 値
- */
-export type NonNil = {};
 /**
  * @en JavaScript type set interface.
  * @ja JavaScript の型の集合
@@ -212,16 +207,16 @@ export interface TypedArrayConstructor {
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function exists<T>(x: T | Nil): x is T;
+export declare function exists<T>(x: T | Nullish): x is T;
 /**
- * @en Check the value-type is [[Nil]].
- * @ja [[Nil]] 型であるか判定
+ * @en Check the value-type is [[Nullish]].
+ * @ja [[Nullish]] 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isNil(x: unknown): x is Nil;
+export declare function isNullish(x: unknown): x is Nullish;
 /**
  * @en Check the value-type is String.
  * @ja String 型であるか判定
@@ -350,7 +345,7 @@ export declare function typeOf<K extends TypeKeys>(type: K, x: unknown): x is Ty
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function isIterable<T>(x: Nillable<Iterable<T>>): x is Iterable<T>;
+export declare function isIterable<T>(x: Nullable<Iterable<T>>): x is Iterable<T>;
 export declare function isIterable(x: unknown): x is Iterable<unknown>;
 /**
  * @en Check the value is one of [[TypedArray]].
@@ -372,7 +367,7 @@ export declare function isTypedArray(x: unknown): x is TypedArray;
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T;
+export declare function instanceOf<T extends object>(ctor: Nullable<Type<T>>, x: unknown): x is T;
 /**
  * @en Check the value instance of input constructor (except sub class).
  * @ja 指定コンストラクタのインスタンスであるか判定 (派生クラスは含めない)
@@ -384,7 +379,7 @@ export declare function instanceOf<T extends object>(ctor: Nillable<Type<T>>, x:
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
-export declare function ownInstanceOf<T extends object>(ctor: Nillable<Type<T>>, x: unknown): x is T;
+export declare function ownInstanceOf<T extends object>(ctor: Nullable<Type<T>>, x: unknown): x is T;
 /**
  * @en Get the value's class name.
  * @ja クラス名を取得

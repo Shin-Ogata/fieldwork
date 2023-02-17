@@ -1,7 +1,7 @@
-import { Nil } from '@cdp/core-utils';
+import { Nullish } from '@cdp/core-utils';
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
-export type SelectorBase = Node | Window | string | Nil;
+export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 /**
