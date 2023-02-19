@@ -37,6 +37,7 @@ export type HistoryDirection = 'back' | 'forward' | 'none' | 'missing';
  */
 export interface HistoryDirectReturnType<T = PlainObject> {
     direction: HistoryDirection;
+    delta?: number;
     index?: number;
     state?: HistoryState<T>;
 }
@@ -55,6 +56,10 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
     readonly index: number;
     /** stack pool */
     readonly stack: readonly HistoryState<T>[];
+    /** check it can go back in history */
+    readonly canBack: boolean;
+    /** check it can go forward in history */
+    readonly canForward: boolean;
     /** get data by index. */
     at(index: number): HistoryState<T>;
     /**
@@ -73,7 +78,7 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
     forward(): Promise<number>;
     /**
      * @en To move a specific point in history.
-     * @ja 履歴内の特定のポイントを移動
+     * @ja 履歴内の特定のポイントへ移動
      *
      * @param delta
      *  - `en` The position to move in the history, relative to the current page. <br>
@@ -83,6 +88,16 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
      * @returns index after move
      */
     go(delta?: number): Promise<number>;
+    /**
+     * @en To move a specific point in history by stack ID.
+     * @ja スタックIDを指定して履歴内の特定のポイントへ移動
+     *
+     * @param id
+     *  - `en` Specified stack ID
+     *  - `ja` スタックIDを指定
+     * @returns index after move
+     */
+    traverseTo(id: string): Promise<number>;
     /**
      * @en Register new history.
      * @ja 新規履歴の登録

@@ -1,6 +1,3 @@
-import { getConfig } from '@cdp/core-utils';
+import { entry } from '../signature';
 
-const config = getConfig();
-
-export const PAGE_CONTEXT_PAGE_VIEW = 'PAGE_CONTEXT_PAGE_VIEW';
-config['PAGE_CONTEXT_PAGE_VIEW'] = PAGE_CONTEXT_PAGE_VIEW;
+entry('PAGE_CONTEXT_PAGE_VIEW');

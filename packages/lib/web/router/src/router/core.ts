@@ -21,7 +21,6 @@ import { normalizeId } from '../history/internal';
 import type { IHistory, HistoryState } from '../history';
 import type {
     PageTransitionParams,
-    RouteChangeInfo,
     RouterEvent,
     Page,
     RouteParameters,
@@ -50,6 +49,7 @@ import {
     decideTransitionDirection,
     processPageTransition,
 } from './internal';
+import { RouteAyncProcessContext, RouteChangeInfoContext } from './async-process';
 
 //__________________________________________________________________________________________________//
 
@@ -130,6 +130,16 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** Check state is in sub-flow */
     get isInSubFlow(): boolean {
         return !!this.findSubFlowParams(false);
+    }
+
+    /** Check it can go back in history */
+    get canBack(): boolean {
+        return this._history.canBack;
+    }
+
+    /** Check it can go forward in history */
+    get canForward(): boolean {
+        return this._history.canForward;
     }
 
     /** Route registration */
@@ -220,6 +230,12 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** To move a specific point in history. */
     async go(delta?: number): Promise<this> {
         await this._history.go(delta);
+        return this;
+    }
+
+    /** To move a specific point in history by stack ID. */
+    async traverseTo(id: string): Promise<this> {
+        await this._history.traverseTo(id);
         return this;
     }
 
@@ -324,12 +340,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 // private methods: transition
 
     /** @internal common `RouterEventArg` maker */
-    private makeRouteChangeInfo(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouteChangeInfo {
+    private makeRouteChangeInfo(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouteChangeInfoContext {
         const intent = newState.intent;
         delete newState.intent; // navigate 時に指定された intent は one time のみ有効にする
 
         const from = oldState || this._lastRoute;
         const direction = this._history.direct(newState['@id'], from?.['@id']).direction;
+        const asyncProcess = new RouteAyncProcessContext();
         const { transition, reverse } = this._tempTransitionParams || ('back' !== direction ? newState : from as RouteContext);
         this._tempTransitionParams = undefined;
 
@@ -338,6 +355,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             from,
             to: newState,
             direction,
+            asyncProcess,
             transition,
             reverse,
             intent,
@@ -356,7 +374,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** @internal trigger page event */
-    private triggerPageCallback(event: PageEvent, target: Page | undefined, arg: Route | RouteChangeInfo): void {
+    private triggerPageCallback(event: PageEvent, target: Page | undefined, arg: Route | RouteChangeInfoContext): void {
         const method = camelize(`page-${event}`);
         isFunction(target?.[method]) && target?.[method](arg);
     }
@@ -388,7 +406,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
     /** @internal */
-    private async prepareChangeContext(changeInfo: RouteChangeInfo): Promise<[Page, DOM, Page, DOM]> {
+    private async prepareChangeContext(changeInfo: RouteChangeInfoContext): Promise<[Page, DOM, Page, DOM]> {
         const nextRoute = changeInfo.to as HistoryState<RouteContext>;
         const prevRoute = changeInfo.from as HistoryState<RouteContext> | undefined;
 
@@ -401,10 +419,17 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         // page $el
         if (!nextRoute.el) {
-            nextRoute.el = params.$template!.clone()[0];
-            this.publish('loaded', changeInfo);
+            if (params.$template?.isConnected) {
+                nextRoute.el     = params.$template[0];
+                params.$template = params.$template.clone();
+            } else {
+                nextRoute.el = params.$template!.clone()[0];
+                this.publish('loaded', changeInfo);
+                await changeInfo.asyncProcess.complete();
+            }
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             this.triggerPageCallback('init', nextRoute['@params'].page!, changeInfo);
+            await changeInfo.asyncProcess.complete();
         }
 
         const $elNext = $(nextRoute.el);
@@ -416,6 +441,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             this._$el.append($elNext);
             this.publish('mounted', changeInfo);
             this.triggerPageCallback('mounted', pageNext, changeInfo);
+            await changeInfo.asyncProcess.complete();
         }
 
         return [
@@ -430,7 +456,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private async transitionPage(
         pageNext: Page, $elNext: DOM,
         pagePrev: Page, $elPrev: DOM,
-        changeInfo: RouteChangeInfo,
+        changeInfo: RouteChangeInfoContext,
     ): Promise<void> {
         const transition = changeInfo.transition || this._transitionSettings.default;
 
@@ -453,7 +479,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const leaveActiveClass = customLeaveActiveClass || `${transition}-${CssName.LEAVE_ACTIVE_CLASS}`;
         const leaveToClass     = customLeaveToClass     || `${transition}-${CssName.LEAVE_TO_CLASS}`;
 
-        this.beginTransition(
+        await this.beginTransition(
             pageNext, $elNext, enterFromClass, enterActiveClass,
             pagePrev, $elPrev, leaveFromClass, leaveActiveClass,
             changeInfo,
@@ -469,7 +495,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         await this.waitFrame();
 
-        this.endTransition(
+        await this.endTransition(
             pageNext, $elNext, enterToClass,
             pagePrev, $elPrev, leaveToClass,
             changeInfo,
@@ -477,11 +503,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** @internal transition proc : begin */
-    private beginTransition(
+    private async beginTransition(
         pageNext: Page, $elNext: DOM, enterFromClass: string, enterActiveClass: string,
         pagePrev: Page, $elPrev: DOM, leaveFromClass: string, leaveActiveClass: string,
-        changeInfo: RouteChangeInfo,
-    ): void {
+        changeInfo: RouteChangeInfoContext,
+    ): Promise<void> {
         this._$el.addClass([
             `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`,
             `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${decideTransitionDirection(changeInfo)}`,
@@ -493,14 +519,15 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         this.publish('before-transition', changeInfo);
         this.triggerPageCallback('before-enter', pageNext, changeInfo);
         this.triggerPageCallback('before-leave', pagePrev, changeInfo);
+        await changeInfo.asyncProcess.complete();
     }
 
     /** @internal transition proc : end */
-    private endTransition(
+    private async endTransition(
         pageNext: Page, $elNext: DOM, enterToClass: string,
         pagePrev: Page, $elPrev: DOM, leaveToClass: string,
-        changeInfo: RouteChangeInfo,
-    ): void {
+        changeInfo: RouteChangeInfoContext,
+    ): Promise<void> {
         $elNext.removeClass(enterToClass);
         $elPrev.removeClass(leaveToClass);
         $elPrev.attr('aria-hidden', true);
@@ -513,6 +540,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         this.publish('after-transition', changeInfo);
         this.triggerPageCallback('after-enter', pageNext, changeInfo);
         this.triggerPageCallback('after-leave', pagePrev, changeInfo);
+        await changeInfo.asyncProcess.complete();
     }
 
     /** @internal update page status after transition */

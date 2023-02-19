@@ -68,6 +68,16 @@ export class HistoryStack<T = PlainObject> {
         return this._stack.slice();
     }
 
+    /** check position in stack is first or not */
+    get isFirst(): boolean {
+        return 0 === this._index;
+    }
+
+    /** check position in stack is last or not */
+    get isLast(): boolean {
+        return this._index === this._stack.length - 1;
+    }
+
     /** get data by index. */
     public at(index: number): HistoryState<T> {
         return at(this._stack, index);
@@ -101,7 +111,7 @@ export class HistoryStack<T = PlainObject> {
             const direction = 0 === delta
                 ? 'none'
                 : delta < 0 ? 'back' : 'forward';
-            return { direction, index: toIndex, state: this._stack[toIndex] };
+            return { direction, delta, index: toIndex, state: this._stack[toIndex] };
         }
     }
 

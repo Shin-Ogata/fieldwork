@@ -169,6 +169,16 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         return this._stack.array;
     }
 
+    /** check it can go back in history */
+    get canBack(): boolean {
+        return !this._stack.isFirst;
+    }
+
+    /** check it can go forward in history */
+    get canForward(): boolean {
+        return !this._stack.isLast;
+    }
+
     /** get data by index. */
     at(index: number): HistoryState<T> {
         return this._stack.at(index);
@@ -212,6 +222,16 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         }
 
         return this.index;
+    }
+
+    /** To move a specific point in history by stack ID. */
+    traverseTo(id: string): Promise<number> {
+        const { direction, delta } = this.direct(id);
+        if ('missing' === direction) {
+            console.warn(`traverseTo(${id}), returned missing.`);
+            return Promise.resolve(this.index);
+        }
+        return this.go(delta);
     }
 
     /**
