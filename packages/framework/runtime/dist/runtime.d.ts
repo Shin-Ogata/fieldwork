@@ -11007,10 +11007,11 @@ export type HistoryState<T = PlainObject> = T & {
  * @ja [[IHistory]] 内から発行されるイベント定義
  */
 export interface HistoryEvent<T = PlainObject> {
-    /** @args [nextState, cancel] */
+    /** @args [nextState, cancel, promises[]] */
     'changing': [
         HistoryState<T>,
-        (reason?: unknown) => void
+        (reason?: unknown) => void,
+        Promise<unknown>[]
     ];
     /** @args [newState, oldState, promises[]] */
     'refresh': [
@@ -11375,32 +11376,32 @@ export interface Page {
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
-    pageInit?(info: RouteChangeInfo): void;
+    pageInit?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
      * @ja ページの HTMLElement が DOM に挿入された直後に発火
      */
-    pageMounted?(info: RouteChangeInfo): void;
+    pageMounted?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
-    pageBeforeEnter?(info: RouteChangeInfo): void;
+    pageBeforeEnter?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered when the page is fully displayed.
      * @ja ページが完全に表示されると発火
      */
-    pageAfterEnter?(info: RouteChangeInfo): void;
+    pageAfterEnter?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered just before the page goes hidden.
      * @ja ページが非表示に移行する直前に発火
      */
-    pageBeforeLeave?(info: RouteChangeInfo): void;
+    pageBeforeLeave?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered immediately after the page is hidden.
      * @ja ページが非表示になった直後に発火
      */
-    pageAfterLeave?(info: RouteChangeInfo): void;
+    pageAfterLeave?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
      * @ja ページの HTMLElement が DOM から切り離された直後に発火
@@ -12020,37 +12021,37 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
-    protected onPageInit(thisPage: Route): void;
+    protected onPageInit(thisPage: Route): void | Promise<void>;
     /**
      * @overridable
      * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
      * @ja ページの HTMLElement が DOM に挿入された直後に発火
      */
-    protected onPageMounted(thisPage: Route): void;
+    protected onPageMounted(thisPage: Route): void | Promise<void>;
     /**
      * @overridable
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
-    protected onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void | Promise<void>;
     /**
      * @overridable
      * @en Triggered when the page is fully displayed.
      * @ja ページが完全に表示されると発火
      */
-    protected onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void | Promise<void>;
     /**
      * @overridable
      * @en Triggered just before the page goes hidden.
      * @ja ページが非表示に移行する直前に発火
      */
-    protected onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void | Promise<void>;
     /**
      * @overridable
      * @en Triggered immediately after the page is hidden.
      * @ja ページが非表示になった直後に発火
      */
-    protected onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void;
+    protected onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void | Promise<void>;
     /**
      * @overridable
      * @en Triggered immediately after the page's HTMLElement is detached from the DOM.

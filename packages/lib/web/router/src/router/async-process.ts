@@ -14,6 +14,10 @@ export class RouteAyncProcessContext implements RouteAyncProcess {
 ///////////////////////////////////////////////////////////////////////
 // internal methods:
 
+    get promises(): readonly Promise<unknown>[] {
+        return this._promises;
+    }
+
     public async complete(): Promise<void> {
         await Promise.all(this._promises);
         this._promises.length = 0;

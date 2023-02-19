@@ -127,32 +127,32 @@ export interface Page {
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
-    pageInit?(info: RouteChangeInfo): void;
+    pageInit?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
      * @ja ページの HTMLElement が DOM に挿入された直後に発火
      */
-    pageMounted?(info: RouteChangeInfo): void;
+    pageMounted?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
-    pageBeforeEnter?(info: RouteChangeInfo): void;
+    pageBeforeEnter?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered when the page is fully displayed.
      * @ja ページが完全に表示されると発火
      */
-    pageAfterEnter?(info: RouteChangeInfo): void;
+    pageAfterEnter?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered just before the page goes hidden.
      * @ja ページが非表示に移行する直前に発火
      */
-    pageBeforeLeave?(info: RouteChangeInfo): void;
+    pageBeforeLeave?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered immediately after the page is hidden.
      * @ja ページが非表示になった直後に発火
      */
-    pageAfterLeave?(info: RouteChangeInfo): void;
+    pageAfterLeave?(info: RouteChangeInfo): void | Promise<void>;
     /**
      * @en Triggered immediately after the page's HTMLElement is detached from the DOM.
      * @ja ページの HTMLElement が DOM から切り離された直後に発火

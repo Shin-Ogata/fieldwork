@@ -203,7 +203,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
         // if given 0, just reload.
         if (!delta) {
-            await this.triggerRefresh(this.state, undefined);
+            await this.triggerEventAndWait('refresh', this.state, undefined);
             return this.index;
         }
 
@@ -312,10 +312,14 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         return id ? (('hash' === this._mode) ? `${Const.HASH_PREFIX}${id}` : toUrl(id)) : '';
     }
 
-    /** @internal trigger event `refresh` */
-    private async triggerRefresh(newState: HistoryState<T>, oldState: HistoryState<T> | undefined): Promise<void> {
+    /** @internal trigger event & wait process */
+    private async triggerEventAndWait(
+        event: 'refresh' | 'changing',
+        arg1: HistoryState<T>,
+        arg2: HistoryState<T> | undefined | ((reason?: unknown) => void),
+    ): Promise<void> {
         const promises: Promise<unknown>[] = [];
-        this.publish('refresh', newState, oldState, promises);
+        this.publish(event, arg1, arg2 as any, promises); // eslint-disable-line @typescript-eslint/no-explicit-any
         await Promise.all(promises);
     }
 
@@ -436,14 +440,14 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
             // for fail safe
             df.catch(noop);
 
-            this.publish('changing', newData, cancel);
+            await this.triggerEventAndWait('changing', newData, cancel);
 
             if (token.requested) {
                 throw token.reason;
             }
 
             this._stack[`${method}Stack`](newData);
-            await this.triggerRefresh(newData, oldData);
+            await this.triggerEventAndWait('refresh', newData, oldData);
 
             df.resolve();
         } catch (e) {

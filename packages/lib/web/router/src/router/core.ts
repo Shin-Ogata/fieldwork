@@ -376,7 +376,12 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** @internal trigger page event */
     private triggerPageCallback(event: PageEvent, target: Page | undefined, arg: Route | RouteChangeInfoContext): void {
         const method = camelize(`page-${event}`);
-        isFunction(target?.[method]) && target?.[method](arg);
+        if (isFunction(target?.[method])) {
+            const retval = target?.[method](arg);
+            if (retval instanceof Promise && arg['asyncProcess']) {
+                (arg as RouteChangeInfoContext).asyncProcess.register(retval);
+            }
+        }
     }
 
     /** @internal wait frame */
@@ -575,16 +580,10 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 // event handlers:
 
     /** @internal `history` `changing` handler */
-    private onHistoryChanging(nextState: HistoryState<RouteContext>, cancel: (reason?: unknown) => void): boolean {
-        let handled = false;
-        const callback = (reason?: unknown): void => {
-            handled = true;
-            cancel(reason);
-        };
-
-        this.publish('will-change', this.makeRouteChangeInfo(nextState, undefined), callback);
-
-        return handled;
+    private onHistoryChanging(nextState: HistoryState<RouteContext>, cancel: (reason?: unknown) => void, promises: Promise<unknown>[]): void {
+        const changeInfo = this.makeRouteChangeInfo(nextState, undefined);
+        this.publish('will-change', changeInfo, cancel);
+        promises.push(...changeInfo.asyncProcess.promises);
     }
 
     /** @internal `history` `refresh` handler */

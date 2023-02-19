@@ -421,12 +421,21 @@ describe('router/context spec', () => {
             const router = await createRouterWrap({
                 routes: [
                     { path: '/' },
-                    { path: '/one' },
+                    {
+                        path: '/one',
+                        component: {
+                            pageInit() {
+                                // you can return the promise instance for waiting client side procedure.
+                                return Promise.resolve();
+                            }
+                        },
+                    },
                 ],
             });
 
             let processed = false;
             router.on('before-transition', (changeInfo: RouteChangeInfo) => {
+                // you can register the promise instance when using pub-sub infrasturcture
                 changeInfo.asyncProcess.register((async () => { // eslint-disable-line @typescript-eslint/require-await
                     processed = true;
                 })());
