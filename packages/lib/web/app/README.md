@@ -29,7 +29,7 @@
   - ∵ パネルやアクションリスト等のコンポーネントを網羅するものではないため, 3rd と組み合わせるときの制約を減らしたいため
 
 ## dev todo
-- splash screen からの遷移
+- ☆ splash screen からの遷移
 - 各 page 実装方法の検証 (全部 register する)
   - page-root (object. dom-cache する. `string` は非同期読み込み用 reserve)
   - page-class
@@ -37,6 +37,8 @@
   - page-view (RoutePathParams も何か試したい)
 
 - 遷移アニメーション
+- 画面遷移の拒否
+- sub-flow
 - 同一URL, 同一ページインスタンスへの遷移のケア?
 
 ## 参考

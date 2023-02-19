@@ -21,6 +21,7 @@ void (async () => {
     await AppContext({
         main: '#app > .view-main',
         initialPath: '/root',
+        splash: '#splash-screen',
         waitForReady: customInit,
     }).ready;
 

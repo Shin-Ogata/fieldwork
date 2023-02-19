@@ -181,6 +181,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
+        expect(instance.canBack).toBe(true);
         let index = await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, { index: 4, '@id': 'five' }, []);
@@ -188,6 +189,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('four');
         expect(instance.state).toEqual({ index: 3, '@id': 'four' });
 
+        expect(instance.canBack).toBe(true);
         await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 3, '@id': 'four' }, []);
@@ -195,6 +197,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('three');
         expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
+        expect(instance.canBack).toBe(true);
         index = await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, { index: 2, '@id': 'three' }, []);
@@ -202,6 +205,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('two');
         expect(instance.state).toEqual({ index: 1, '@id': 'two' });
 
+        expect(instance.canBack).toBe(true);
         await instance.back();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 0, '@id': 'one', '@origin': true }, { index: 1, '@id': 'two' }, []);
@@ -209,6 +213,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
 
+        expect(instance.canBack).toBe(false);
         index = await instance.back();
         expect(index).toBe(0);
         expect(instance.id).toBe('one');
@@ -230,6 +235,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('one');
         expect(instance.state).toEqual({ index: 0, '@id': 'one', '@origin': true });
 
+        expect(instance.canForward).toBe(true);
         let index = await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 1, '@id': 'two' }, { index: 0, '@id': 'one', '@origin': true }, []);
@@ -237,6 +243,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('two');
         expect(instance.state).toEqual({ index: 1, '@id': 'two' });
 
+        expect(instance.canForward).toBe(true);
         await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 2, '@id': 'three' }, { index: 1, '@id': 'two' }, []);
@@ -244,6 +251,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('three');
         expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
+        expect(instance.canForward).toBe(true);
         index = await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 3, '@id': 'four' }, { index: 2, '@id': 'three' }, []);
@@ -251,6 +259,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('four');
         expect(instance.state).toEqual({ index: 3, '@id': 'four' });
 
+        expect(instance.canForward).toBe(true);
         await instance.forward();
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, jasmine.any(Function));
         expect(stub.onCallback).toHaveBeenCalledWith({ index: 4, '@id': 'five' }, { index: 3, '@id': 'four' }, []);
@@ -258,6 +267,7 @@ describe('router/history/memory spec', () => {
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
 
+        expect(instance.canForward).toBe(false);
         await instance.forward();
         expect(instance.index).toBe(4);
         expect(instance.id).toBe('five');
@@ -275,6 +285,25 @@ describe('router/history/memory spec', () => {
         expect(index).toBe(4);
         expect(instance.id).toBe('five');
         expect(instance.state).toEqual({ index: 4, '@id': 'five' });
+
+        disposeMemoryHistory(instance);
+    });
+
+    it('check MemoryHistory#traverseTo()', async () => {
+        const stub = { onCallback };
+        const instance = preparePackedHistory(stub);
+
+        let index = await instance.traverseTo('three');
+        expect(stub.onCallback).not.toHaveBeenCalledWith({ index: 2 });
+        expect(index).toBe(2);
+        expect(instance.id).toBe('three');
+        expect(instance.state).toEqual({ index: 2, '@id': 'three' });
+
+        index = await instance.traverseTo('zero');
+        expect(stub.onCallback).not.toHaveBeenCalledWith({ index: 2 });
+        expect(index).toBe(2);
+        expect(instance.id).toBe('three');
+        expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
         disposeMemoryHistory(instance);
     });

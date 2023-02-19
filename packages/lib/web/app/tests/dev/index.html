@@ -8,7 +8,12 @@
 </head>
 <body>
     <div id="app">
-        <div class="view-main"></div>
+        <!-- @import tpl/splash.html -->
+        <div class="view-main">
+            <div id="page-root" class="router-page" data-dom-cache="connect">
+                Root Page
+            </div>
+        </div>
         <div id="credits">
             <br />Rewritten by: <a href="https://github.com/Shin-Ogata" data-prevent-router="true">Shin Ogata</a>.
         </div>
@@ -16,8 +21,3 @@
     <!-- @import tpl/scripts.html -->
     <!-- @import tpl/templates.html -->
 </body>
-<template id="page-root">
-    <div class="router-page">
-        Root Page
-    </div>
-</template>

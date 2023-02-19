@@ -1,6 +1,3 @@
-import { getConfig } from '@cdp/core-utils';
+import { entry } from '../signature';
 
-const config = getConfig();
-
-export const PAGE_CONTEXT_PAGE_CLASS = 'PAGE_CONTEXT_PAGE_CLASS';
-config['PAGE_CONTEXT_PAGE_CLASS'] = PAGE_CONTEXT_PAGE_CLASS;
+entry('PAGE_CONTEXT_PAGE_CLASS');

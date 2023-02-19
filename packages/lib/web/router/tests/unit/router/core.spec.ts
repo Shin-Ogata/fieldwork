@@ -231,19 +231,50 @@ describe('router/context spec', () => {
             await router.navigate('/two');
             expect(router.currentRoute.path).toBe('/two');
 
+            expect(router.canBack).toBe(true);
             await router.back();
             expect(router.currentRoute.path).toBe('/one');
+            expect(router.canBack).toBe(true);
             await router.back();
             expect(router.currentRoute.path).toBe('/');
+            expect(router.canBack).toBe(false);
             await router.back();
             expect(router.currentRoute.path).toBe('/');
 
+            expect(router.canForward).toBe(true);
             await router.forward();
+            expect(router.canForward).toBe(true);
             expect(router.currentRoute.path).toBe('/one');
+            expect(router.canForward).toBe(true);
             await router.forward();
             expect(router.currentRoute.path).toBe('/two');
+            expect(router.canForward).toBe(false);
             await router.forward();
             expect(router.currentRoute.path).toBe('/two');
+        });
+
+        it('Router#traverseTo', async () => {
+            const router = await createRouterWrap({
+                routes: [
+                    { path: '/' },
+                    { path: '/one' },
+                    { path: '/two' }
+                ],
+            });
+
+            await waitFrame(router);
+            await router.navigate('/one');
+            await router.navigate('/two');
+            expect(router.currentRoute.path).toBe('/two');
+
+            await router.traverseTo('/');
+            expect(router.currentRoute.path).toBe('/');
+
+            await router.traverseTo('/one');
+            expect(router.currentRoute.path).toBe('/one');
+
+            await router.traverseTo('/three');
+            expect(router.currentRoute.path).toBe('/one');
         });
 
         it('nested route parameter', async () => {
@@ -386,12 +417,33 @@ describe('router/context spec', () => {
             expect(stub.onCallback).not.toHaveBeenCalled();
         });
 
+        it('wait client process', async () => {
+            const router = await createRouterWrap({
+                routes: [
+                    { path: '/' },
+                    { path: '/one' },
+                ],
+            });
+
+            let processed = false;
+            router.on('before-transition', (changeInfo: RouteChangeInfo) => {
+                changeInfo.asyncProcess.register((async () => { // eslint-disable-line @typescript-eslint/require-await
+                    processed = true;
+                })());
+            });
+
+            await router.navigate('/one');
+            expect(processed).toBe(true);
+        });
+
         it('check RouteParameters.content creation', async () => {
+            const { el, window: win } = await prepareQueryContext();
+
             const elTemplate = document.createElement('template');
             elTemplate.innerHTML = '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from template-element</div>';
 
             const stub = { onCallback };
-            const router = await createRouterWrap({
+            const router = createRouter('#test-router', Object.assign({ el, win }, {
                 initialPath: '/string',
                 routes: [
                     {
@@ -405,6 +457,10 @@ describe('router/context spec', () => {
                     {
                         path: '/template-el',
                         content: elTemplate,
+                    },
+                    {
+                        path: '/dom-connected',
+                        content: $('#test-initial-page', win?.document),
                     },
                     {
                         path: '/ajax',
@@ -428,7 +484,7 @@ describe('router/context spec', () => {
                         },
                     },
                 ],
-            });
+            }));
             router.on('error', stub.onCallback);
 
             await waitFrame(router);
@@ -468,6 +524,19 @@ describe('router/context spec', () => {
             expect($el).toBeDefined();
             expect($el.length).toBe(1);
             expect($el.text()).toBe('template from template-element');
+            expect($el !== $template).toBe(true);
+
+            await router.navigate('/dom-connected');
+
+            $template = (router.currentRoute as any)['@params'].$template;
+            $el = $(router.currentRoute.el);
+
+            expect($template).toBeDefined();
+            expect($template.length).toBe(1);
+            expect($template.text()).toBe('template from connected DOM');
+            expect($el).toBeDefined();
+            expect($el.length).toBe(1);
+            expect($el.text()).toBe('template from connected DOM');
             expect($el !== $template).toBe(true);
 
             await router.navigate('/ajax');

@@ -1,19 +1,21 @@
-import { getConfig } from '@cdp/core-utils';
+import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
+import { dom as $ } from '@cdp/dom';
 import type { RouteChangeInfo } from '@cdp/router';
 import { registerPage } from '@cdp/app';
+import { entry } from '../signature';
 
-const config = getConfig();
+entry('PAGE_CONTEXT_ROOT');
 
-const PAGE_CONTEXT_ROOT = 'PAGE_CONTEXT_ROOT';
-config['PAGE_CONTEXT_ROOT'] = PAGE_CONTEXT_ROOT;
-
-// TODO: content の template の扱いを思い出す
 registerPage({
     path: '/root',
     component: {
         name: 'I was born from an object.',
         pageInit(info: RouteChangeInfo) {
             console.log(info.to.path);
+            info.asyncProcess.register((async () => {
+                const template = toTemplateElement(await loadTemplateSource('#root-content', { noCache: true })) as HTMLTemplateElement;
+                $(info.to.el).append(...template.content.children);
+            })());
         }
     },
     content: '#page-root',

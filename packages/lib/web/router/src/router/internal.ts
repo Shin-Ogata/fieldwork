@@ -1,4 +1,3 @@
-
 import { path2regexp } from '@cdp/extension-path2regexp';
 import {
     Writable,
@@ -221,7 +220,7 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
         return false; // already created
     }
 
-    const $template = (el: HTMLElement | undefined): DOM => {
+    const ensureInstance = (el: HTMLElement | undefined): DOM => {
         return el instanceof HTMLTemplateElement ? $([...el.content.children]) as DOM : $(el);
     };
 
@@ -236,10 +235,10 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
         if (!template) {
             throw Error(`template load failed. [selector: ${selector}, url: ${url}]`);
         }
-        params.$template = $template(template);
+        params.$template = ensureInstance(template);
     } else {
         const $el = $(content as DOMSelector);
-        params.$template = $template($el[0]);
+        params.$template = ensureInstance($el[0]);
     }
 
     return true; // newly created
@@ -260,28 +259,22 @@ export const decideTransitionDirection = (changeInfo: RouteChangeInfo): HistoryD
     return changeInfo.direction;
 };
 
-/** @internal check animation property */
-const getAnimationSec = ($el: DOM): number => {
-    try {
-        return parseFloat(getComputedStyle($el[0]).animationDuration);
-    } catch {
-        return 0;
-    }
-};
+/** @internal */
+type EffectType = 'animation' | 'transition';
 
-/** @internal check transition property */
-const getTransitionSec = ($el: DOM): number => {
+/** @internal retrieve effect duration property */
+const getEffectDurationSec = ($el: DOM, effect: EffectType): number => {
     try {
-        return parseFloat(getComputedStyle($el[0]).transitionDuration);
+        return parseFloat(getComputedStyle($el[0])[`${effect}Duration`]);
     } catch {
         return 0;
     }
 };
 
 /** @internal */
-const waitForEffect = ($el: DOM, method: 'animationEnd' | 'transitionEnd', durationSec: number): Promise<unknown> => {
+const waitForEffect = ($el: DOM, effect: EffectType, durationSec: number): Promise<unknown> => {
     return Promise.race([
-        new Promise(resolve => $el[method](resolve)),
+        new Promise(resolve => $el[`${effect}End`](resolve)),
         sleep(durationSec * 1000 + Const.WAIT_TRANSITION_MARGIN),
     ]);
 };
@@ -291,14 +284,12 @@ export const processPageTransition = async($el: DOM, fromClass: string, activeCl
     $el.removeClass(fromClass);
     $el.addClass(toClass);
 
-    /* eslint-disable no-cond-assign */
-    let duration: number;
-    if (duration = getAnimationSec($el)) {
-        await waitForEffect($el, 'animationEnd', duration);
-    } else if (duration = getTransitionSec($el)) {
-        await waitForEffect($el, 'transitionEnd', duration);
+    const promises: Promise<unknown>[] = [];
+    for (const effect of ['animation', 'transition'] as EffectType[]) {
+        const duration = getEffectDurationSec($el, effect);
+        duration && promises.push(waitForEffect($el, effect, duration));
     }
-    /* eslint-enable no-cond-assign */
+    await Promise.all(promises);
 
     $el.removeClass(activeClass);
 };

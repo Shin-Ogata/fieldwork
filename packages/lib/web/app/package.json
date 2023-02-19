@@ -17,6 +17,9 @@
     "@cdp/view": "file:../view",
     "@cdp/web-utils": "file:../utils"
   },
+  "devDependencies": {
+    "@cdp/template": "file:../template"
+  },
   "keywords": [
     "CDP",
     "TypeScript",
@@ -32,7 +35,7 @@
   },
   "scripts": {
     "build": "run-s -l build:src build:test build:dev",
-    "build:dev": "run-s compile:dev bundle:dev copy:dev:framework",
+    "build:dev": "run-s compile:dev bundle:dev copy:dev",
     "build:src": "run-s compile:src bundle:src",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
@@ -58,7 +61,9 @@
     "compile:dev:ts": "tsc -p ./tests/dev/tsconfig.json",
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
+    "copy:dev": "run-p copy:dev:*",
     "copy:dev:framework": "cdp-task copy require.js ../../packages/lib/web/app/.temp/dev/ts/framework -w ../../../../node_modules/requirejs -s",
+    "copy:dev:template": "cdp-task copy ./tpl/*.tpl ../../.temp/dev -w ./tests/dev",
     "debug": "npm run compile && run-p unit-test watch",
     "lint": "eslint src tests/unit tests/dev/ts -c ../../../../config/lint/tslint.js --ext .ts",
     "metrics": "run-s -l metrics:*",

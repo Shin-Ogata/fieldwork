@@ -20,6 +20,14 @@ export interface PageTransitionParams {
     reverse?: boolean;
 }
 /**
+ * @en Interface to manage asynchronous processing during router events.
+ * @ja ルーターイベント中の非同期処理を管理するインターフェイス
+ */
+export interface RouteAyncProcess {
+    /** Registering an asynchronous process */
+    register(promise: Promise<unknown>): void;
+}
+/**
  * @en Argument given to the router event callback.
  * @ja ルーターイベントに渡される引数
  */
@@ -32,6 +40,8 @@ export interface RouteChangeInfo extends Readonly<PageTransitionParams> {
     readonly to: Route;
     /** navigate history direction */
     readonly direction: HistoryDirection;
+    /** client async process */
+    readonly asyncProcess: RouteAyncProcess;
     /** extension property for user land */
     intent?: unknown;
 }
@@ -392,6 +402,16 @@ export interface Router extends Subscribable<RouterEvent> {
      */
     readonly isInSubFlow: boolean;
     /**
+     * @en Check it can go back in history
+     * @ja 履歴を戻るが可能か判定
+     */
+    readonly canBack: boolean;
+    /**
+     * @en Check it can go forward in history
+     * @ja 履歴を進むが可能か判定
+     */
+    readonly canForward: boolean;
+    /**
      * @en Route registration.
      * @jp ルートの登録
      *
@@ -448,6 +468,15 @@ export interface Router extends Subscribable<RouterEvent> {
      *         省略または 0 が指定された場合は, 再読み込みを実行
      */
     go(delta?: number): Promise<this>;
+    /**
+     * @en To move a specific point in history by stack ID.
+     * @ja スタックIDを指定して履歴内の特定のポイントへ移動
+     *
+     * @param id
+     *  - `en` Specified stack ID
+     *  - `ja` スタックIDを指定
+     */
+    traverseTo(id: string): Promise<this>;
     /**
      * @en Begin sub-flow transaction. <br>
      *     Syntactic sugar for `navigate ()`.
