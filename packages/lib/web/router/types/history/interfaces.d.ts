@@ -14,8 +14,8 @@ export type HistoryState<T = PlainObject> = T & {
  * @ja [[IHistory]] 内から発行されるイベント定義
  */
 export interface HistoryEvent<T = PlainObject> {
-    /** @args [nextState, cancel] */
-    'changing': [HistoryState<T>, (reason?: unknown) => void];
+    /** @args [nextState, cancel, promises[]] */
+    'changing': [HistoryState<T>, (reason?: unknown) => void, Promise<unknown>[]];
     /** @args [newState, oldState, promises[]] */
     'refresh': [HistoryState<T>, HistoryState<T> | undefined, Promise<unknown>[]];
     /** @args [error] */

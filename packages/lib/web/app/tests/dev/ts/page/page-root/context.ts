@@ -10,12 +10,10 @@ registerPage({
     path: '/root',
     component: {
         name: 'I was born from an object.',
-        pageInit(info: RouteChangeInfo) {
+        async pageInit(info: RouteChangeInfo) {
             console.log(info.to.path);
-            info.asyncProcess.register((async () => {
-                const template = toTemplateElement(await loadTemplateSource('#root-content', { noCache: true })) as HTMLTemplateElement;
-                $(info.to.el).append(...template.content.children);
-            })());
+            const template = toTemplateElement(await loadTemplateSource('#root-content', { noCache: true })) as HTMLTemplateElement;
+            $(info.to.el).append(...template.content.children);
         }
     },
     content: '#page-root',

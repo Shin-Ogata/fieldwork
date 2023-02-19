@@ -87,42 +87,42 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
-    protected onPageInit(thisPage: Route): void { /* overridable */ }
+    protected onPageInit(thisPage: Route): void | Promise<void> { /* overridable */ }
 
     /**
      * @overridable
      * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
      * @ja ページの HTMLElement が DOM に挿入された直後に発火
      */
-    protected onPageMounted(thisPage: Route): void { /* overridable */ }
+    protected onPageMounted(thisPage: Route): void | Promise<void> { /* overridable */ }
 
     /**
      * @overridable
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
-    protected onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void { /* overridable */ }
+    protected onPageBeforeEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void | Promise<void> { /* overridable */ }
 
     /**
      * @overridable
      * @en Triggered when the page is fully displayed.
      * @ja ページが完全に表示されると発火
      */
-    protected onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void { /* overridable */ }
+    protected onPageAfterEnter(thisPage: Route, prevPage: Route | undefined, direction: HistoryDirection, intent?: unknown): void | Promise<void> { /* overridable */ }
 
     /**
      * @overridable
      * @en Triggered just before the page goes hidden.
      * @ja ページが非表示に移行する直前に発火
      */
-    protected onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void { /* overridable */ }
+    protected onPageBeforeLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void | Promise<void> { /* overridable */ }
 
     /**
      * @overridable
      * @en Triggered immediately after the page is hidden.
      * @ja ページが非表示になった直後に発火
      */
-    protected onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void { /* overridable */ }
+    protected onPageAfterLeave(thisPage: Route, nextPage: Route, direction: HistoryDirection, intent?: unknown): void | Promise<void> { /* overridable */ }
 
     /**
      * @overridable
@@ -148,10 +148,10 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered when the page's HTMLElement is newly constructed by router.
      * @ja ページの HTMLElement がルーターによって新規に構築されたときに発火
      */
-    pageInit(info: RouteChangeInfo): void {
+    pageInit(info: RouteChangeInfo): void | Promise<void> {
         const { to } = info;
         this[_properties].route = to;
-        this.onPageInit(to);
+        return this.onPageInit(to);
     }
 
     /**
@@ -159,14 +159,14 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered immediately after the page's HTMLElement is inserted into the DOM.
      * @ja ページの HTMLElement が DOM に挿入された直後に発火
      */
-    pageMounted(info: RouteChangeInfo): void {
+    pageMounted(info: RouteChangeInfo): void | Promise<void> {
         const { to } = info;
         this[_properties].route = to;
         const { el } = to;
         if (el !== this.el as unknown) {
             this.setElement(el as unknown as TElement);
         }
-        this.onPageMounted(to);
+        return this.onPageMounted(to);
     }
 
     /**
@@ -174,10 +174,10 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
-    pageBeforeEnter(info: RouteChangeInfo): void {
+    pageBeforeEnter(info: RouteChangeInfo): void | Promise<void> {
         const { to, from, direction, intent } = info;
         this[_properties].route = to;
-        this.onPageBeforeEnter(to, from, direction, intent);
+        return this.onPageBeforeEnter(to, from, direction, intent);
     }
 
     /**
@@ -185,10 +185,10 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered when the page is fully displayed.
      * @ja ページが完全に表示されると発火
      */
-    pageAfterEnter(info: RouteChangeInfo): void {
+    pageAfterEnter(info: RouteChangeInfo): void | Promise<void> {
         const { to, from, direction, intent } = info;
         this[_properties].route = to;
-        this.onPageAfterEnter(to, from, direction, intent);
+        return this.onPageAfterEnter(to, from, direction, intent);
     }
 
     /**
@@ -196,10 +196,10 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered just before the page goes hidden.
      * @ja ページが非表示に移行する直前に発火
      */
-    pageBeforeLeave(info: RouteChangeInfo): void {
+    pageBeforeLeave(info: RouteChangeInfo): void | Promise<void> {
         const { to, from, direction, intent } = info;
         this[_properties].route = from as Route;
-        this.onPageBeforeLeave(from as Route, to, direction, intent);
+        return this.onPageBeforeLeave(from as Route, to, direction, intent);
     }
 
     /**
@@ -207,10 +207,10 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      * @en Triggered immediately after the page is hidden.
      * @ja ページが非表示になった直後に発火
      */
-    pageAfterLeave(info: RouteChangeInfo): void {
+    pageAfterLeave(info: RouteChangeInfo): void | Promise<void> {
         const { to, from, direction, intent } = info;
         this[_properties].route = from as Route;
-        this.onPageAfterLeave(from as Route, to, direction, intent);
+        return this.onPageAfterLeave(from as Route, to, direction, intent);
     }
 
     /**

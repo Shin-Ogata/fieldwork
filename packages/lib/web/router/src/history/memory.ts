@@ -221,6 +221,17 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         this._stack.index = idx;
     }
 
+    /** @internal trigger event & wait process */
+    private async triggerEventAndWait(
+        event: 'refresh' | 'changing',
+        arg1: HistoryState<T>,
+        arg2: HistoryState<T> | undefined | ((reason?: unknown) => void),
+    ): Promise<void> {
+        const promises: Promise<unknown>[] = [];
+        this.publish(event, arg1, arg2 as any, promises); // eslint-disable-line @typescript-eslint/no-explicit-any
+        await Promise.all(promises);
+    }
+
     /** @internal update */
     private async updateState(method: 'push' | 'replace', id: string, state: T | undefined, options: HistorySetStateOptions): Promise<number> {
         const { silent, cancel } = options;
@@ -248,17 +259,14 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
 
         try {
-            this.publish('changing', newState, cancel);
+            await this.triggerEventAndWait('changing', newState, cancel);
 
             if (token.requested) {
                 throw token.reason;
             }
 
-            const promises: Promise<unknown>[] = [];
             this._stack[`${method}Stack`](newState);
-            this.publish('refresh', newState, oldState, promises);
-
-            await Promise.all(promises);
+            await this.triggerEventAndWait('refresh', newState, oldState);
 
             df.resolve();
         } catch (e) {
