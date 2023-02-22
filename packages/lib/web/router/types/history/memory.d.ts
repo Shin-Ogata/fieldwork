@@ -1,5 +1,5 @@
 import { PlainObject } from '@cdp/core-utils';
-import { IHistory, HistorySetStateOptions } from './interfaces';
+import type { IHistory, HistorySetStateOptions } from './interfaces';
 /**
  * @en Create memory history management object.
  * @ja メモリ履歴管理オブジェクトを構築

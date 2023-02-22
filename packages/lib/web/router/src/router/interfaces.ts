@@ -1,5 +1,5 @@
-import { Constructor } from '@cdp/core-utils';
-import { Subscribable } from '@cdp/events';
+import type { Constructor } from '@cdp/core-utils';
+import type { Subscribable } from '@cdp/events';
 import type { Result } from '@cdp/result';
 import type { DOM } from '@cdp/dom';
 import type { IHistory, HistoryDirection } from '../history';

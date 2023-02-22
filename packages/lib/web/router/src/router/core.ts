@@ -429,9 +429,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 params.$template = params.$template.clone();
             } else {
                 nextRoute.el = params.$template!.clone()[0];
-                this.publish('loaded', changeInfo);
-                await changeInfo.asyncProcess.complete();
             }
+            this.publish('loaded', changeInfo);
+            await changeInfo.asyncProcess.complete();
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             this.triggerPageCallback('init', nextRoute['@params'].page!, changeInfo);
             await changeInfo.asyncProcess.complete();
@@ -558,16 +558,18 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         if (this._prevRoute) {
             const $el = $(this._prevRoute.el);
             $el.removeClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
-            const cacheLv = $el.data(DomCache.DATA_NAME);
-            if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
-                $el.detach();
-                const page = this._prevRoute['@params'].page;
-                this.publish('unmounted', this._prevRoute);
-                this.triggerPageCallback('unmounted', page, this._prevRoute);
-                if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
-                    this._prevRoute.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
-                    this.publish('unloaded', this._prevRoute);
-                    this.triggerPageCallback('removed', page, this._prevRoute);
+            if (this._prevRoute.el !== this.currentRoute.el) {
+                const cacheLv = $el.data(DomCache.DATA_NAME);
+                if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
+                    $el.detach();
+                    const page = this._prevRoute['@params'].page;
+                    this.publish('unmounted', this._prevRoute);
+                    this.triggerPageCallback('unmounted', page, this._prevRoute);
+                    if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
+                        this._prevRoute.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        this.publish('unloaded', this._prevRoute);
+                        this.triggerPageCallback('removed', page, this._prevRoute);
+                    }
                 }
             }
         }
@@ -597,6 +599,10 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             if (null == state['@params']) {
                 // RouteContextParameter を assign
                 Object.assign(state, toRouteContext(url, this, params));
+            }
+            if (!state.el) {
+                // id に紐づく要素がすでに存在する場合は割り当て
+                state.el = this._history.direct(state['@id'])?.state?.el;
             }
             return state as HistoryState<RouteContext>;
         };

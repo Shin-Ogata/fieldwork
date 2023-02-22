@@ -1,0 +1,22 @@
+.view-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 80px;
+}
+
+.router-page {
+    position: absolute;
+    visibility: visible;
+    &[aria-hidden=true] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+.cdp-transition-running {
+    .router-page[aria-hidden=true] {
+        visibility: visible;
+    }    
+}

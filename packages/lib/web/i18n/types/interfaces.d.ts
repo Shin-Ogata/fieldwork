@@ -1,6 +1,6 @@
-import { i18n } from '@cdp/extension-i18n';
-import { PlainObject } from '@cdp/core-utils';
-import { Cancelable } from '@cdp/promise';
+import type { i18n } from '@cdp/extension-i18n';
+import type { PlainObject } from '@cdp/core-utils';
+import type { Cancelable } from '@cdp/promise';
 import './plugin/module-extends';
 /**
  * @en The behaviour for `i18next` error detection.

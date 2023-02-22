@@ -1,7 +1,7 @@
 import { PlainObject, post } from '@cdp/core-utils';
 import { Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
-import {
+import type {
     IHistory,
     HistoryEvent,
     HistoryState,
@@ -9,9 +9,11 @@ import {
     HistoryDirectReturnType,
 } from './interfaces';
 import {
+    HistoryStack,
+    HistoryStackElement,
     createData,
     createUncancellableDeferred,
-    HistoryStack,
+    assignStateElement,
 } from './internal';
 
 /** @internal instance signature */
@@ -240,6 +242,8 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         if ('replace' === method && 0 === this.index) {
             newState['@origin'] = true;
         }
+
+        assignStateElement(newState, this._stack as HistoryStackElement);
 
         if (!silent) {
             const df = new Deferred(cancel);

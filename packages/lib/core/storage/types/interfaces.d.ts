@@ -1,6 +1,6 @@
-import { Keys, Types, KeyToType, TypeToKey } from '@cdp/core-utils';
-import { Subscription, Silenceable } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
+import type { Keys, Types, KeyToType, TypeToKey } from '@cdp/core-utils';
+import type { Subscription, Silenceable } from '@cdp/events';
+import type { Cancelable } from '@cdp/promise';
 /**
  * @en Storage data type set interface.
  * @ja Storage に格納可能な型の集合

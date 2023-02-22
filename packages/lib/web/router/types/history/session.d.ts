@@ -1,5 +1,5 @@
 import { PlainObject } from '@cdp/core-utils';
-import { IHistory, HistorySetStateOptions } from './interfaces';
+import type { IHistory, HistorySetStateOptions } from './interfaces';
 /**
  * @en [[createSessionHistory]]() options.
  * @ja [[createSessionHistory]]() に渡すオプション

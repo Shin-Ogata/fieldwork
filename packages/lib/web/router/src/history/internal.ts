@@ -153,3 +153,16 @@ export class HistoryStack<T = PlainObject> {
         this._index = NaN;
     }
 }
+
+//__________________________________________________________________________________________________//
+
+/** @internal */
+export type HistoryStateElement = HistoryState<{ el?: HTMLEmbedElement; }>;
+/** @internal */
+export type HistoryStackElement = HistoryStack<{ el?: HTMLEmbedElement; }>;
+
+/** @internal assign state element if already exists */
+export const assignStateElement = (state: HistoryStateElement, stack: HistoryStackElement): void => {
+    const el = stack.direct(state['@id'])?.state?.el;
+    (!state.el && el) && (state.el = el);
+};
