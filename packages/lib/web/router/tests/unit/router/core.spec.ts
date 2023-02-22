@@ -222,7 +222,7 @@ describe('router/context spec', () => {
                 routes: [
                     { path: '/' },
                     { path: '/one' },
-                    { path: '/two' }
+                    { path: '/two', content: '<div class="router-page"></div>' }
                 ],
             });
 
@@ -250,6 +250,11 @@ describe('router/context spec', () => {
             expect(router.currentRoute.path).toBe('/two');
             expect(router.canForward).toBe(false);
             await router.forward();
+            expect(router.currentRoute.path).toBe('/two');
+
+            // check assignStateElement()
+            await router.back();
+            await router.navigate('/two');
             expect(router.currentRoute.path).toBe('/two');
         });
 

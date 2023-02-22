@@ -1,15 +1,15 @@
-import {
+import type {
     Constructor,
     PlainObject,
     NonFunctionPropertyNames,
 } from '@cdp/core-utils';
-import {
+import type {
     Subscribable,
     EventAll,
     Silenceable,
 } from '@cdp/events';
-import { Result } from '@cdp/result';
-import {
+import type { Result } from '@cdp/result';
+import type {
     SyncObject,
     SyncEvent,
     SyncMethods,

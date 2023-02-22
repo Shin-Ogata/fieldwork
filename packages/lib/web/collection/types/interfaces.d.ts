@@ -1,10 +1,10 @@
-import { Keys, AnyObject } from '@cdp/core-utils';
-import { Silenceable, EventAll } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
-import { ArrayChangeRecord } from '@cdp/observable';
-import { Result } from '@cdp/result';
-import { SyncEvent, RestDataSyncOptions } from '@cdp/data-sync';
-import { Parseable, Validable, ModelConstructionOptions, ModelSaveOptions, ModelDestroyOptions, ChangedAttributeEvent } from '@cdp/model';
+import type { Keys, AnyObject } from '@cdp/core-utils';
+import type { Silenceable, EventAll } from '@cdp/events';
+import type { Cancelable } from '@cdp/promise';
+import type { ArrayChangeRecord } from '@cdp/observable';
+import type { Result } from '@cdp/result';
+import type { SyncEvent, RestDataSyncOptions } from '@cdp/data-sync';
+import type { Parseable, Validable, ModelConstructionOptions, ModelSaveOptions, ModelDestroyOptions, ChangedAttributeEvent } from '@cdp/model';
 import type { Collection } from './base';
 /**
  * @en Sort order const definitions.

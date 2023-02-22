@@ -8,7 +8,7 @@ import { Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
 import { toUrl, webRoot } from '@cdp/web-utils';
 import { window } from '../ssr';
-import {
+import type {
     IHistory,
     HistoryEvent,
     HistoryState,
@@ -16,10 +16,12 @@ import {
     HistoryDirectReturnType,
 } from './interfaces';
 import {
+    HistoryStack,
+    HistoryStackElement,
     normalizeId,
     createData,
     createUncancellableDeferred,
-    HistoryStack,
+    assignStateElement,
 } from './internal';
 
 /** @internal dispatch additional information */
@@ -288,7 +290,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
     /**
      * @en Return destination stack information by `start` and `end` ID.
-     * @ja 起点, 終点の ID から終点のスタック情報を返却
+     * @ja 起点, 終点の ID を指定してスタック情報を返却
      */
     direct(toId: string, fromId?: string): HistoryDirectReturnType<T> {
         return this._stack.direct(toId, fromId as string);
@@ -337,6 +339,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         const oldURL = location.href;
         history[`${method}State`](data, '', this.toUrl(id));
         const newURL = location.href;
+
+        assignStateElement(data, this._stack as HistoryStackElement);
 
         if (!silent) {
             const additional: DispatchInfo<T> = {

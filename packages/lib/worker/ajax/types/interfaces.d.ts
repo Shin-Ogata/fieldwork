@@ -1,6 +1,6 @@
-import { PlainObject } from '@cdp/core-utils';
+import type { PlainObject } from '@cdp/core-utils';
 import type { Subscribable } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
+import type { Cancelable } from '@cdp/promise';
 /**
  * @en Arguments passed to [[AjaxDataStreamEvent]] `progress`.
  * @ja [[AjaxDataStreamEvent]] `progress` に渡される引数

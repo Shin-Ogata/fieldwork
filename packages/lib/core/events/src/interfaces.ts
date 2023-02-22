@@ -2,7 +2,7 @@
     @typescript-eslint/no-explicit-any,
  */
 
-import { Arguments, $cdp } from '@cdp/core-utils';
+import type { Arguments, $cdp } from '@cdp/core-utils';
 
 /**
  * @en All event handle base interface definition.

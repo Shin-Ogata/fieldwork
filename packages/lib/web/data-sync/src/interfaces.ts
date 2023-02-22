@@ -1,10 +1,10 @@
-import {
+import type {
     PlainObject,
     AnyObject,
     KeyToType,
 } from '@cdp/core-utils';
-import { EventBroker } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
+import type { EventBroker } from '@cdp/events';
+import type { Cancelable } from '@cdp/promise';
 
 /**
  * @en The event definition fired in [[IDataSync]].

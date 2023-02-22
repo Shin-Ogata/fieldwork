@@ -1,4 +1,4 @@
-import { Arguments, $cdp } from '@cdp/core-utils';
+import type { Arguments, $cdp } from '@cdp/core-utils';
 /**
  * @en All event handle base interface definition.
  * @ja すべてのイベントをハンドル可能なの Event 基底インターフェイス

@@ -1,11 +1,11 @@
-import {
+import type {
     Keys,
     Types,
     KeyToType,
     TypeToKey,
 } from '@cdp/core-utils';
-import { Subscription, Silenceable } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
+import type { Subscription, Silenceable } from '@cdp/events';
+import type { Cancelable } from '@cdp/promise';
 
 /**
  * @en Storage data type set interface.

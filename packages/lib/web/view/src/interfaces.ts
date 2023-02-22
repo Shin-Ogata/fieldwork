@@ -1,5 +1,5 @@
-import { PlainObject } from '@cdp/core-utils';
-import { DOMSelector, DOMEventListener } from '@cdp/dom';
+import type { PlainObject } from '@cdp/core-utils';
+import type { DOMSelector, DOMEventListener } from '@cdp/dom';
 
 /**
  * @en DOM relation event map hash.

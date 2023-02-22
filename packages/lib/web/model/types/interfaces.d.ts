@@ -1,7 +1,7 @@
-import { Constructor, PlainObject, NonFunctionPropertyNames } from '@cdp/core-utils';
-import { Subscribable, EventAll, Silenceable } from '@cdp/events';
-import { Result } from '@cdp/result';
-import { SyncObject, SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
+import type { Constructor, PlainObject, NonFunctionPropertyNames } from '@cdp/core-utils';
+import type { Subscribable, EventAll, Silenceable } from '@cdp/events';
+import type { Result } from '@cdp/result';
+import type { SyncObject, SyncEvent, SyncMethods, SyncResult, RestDataSyncOptions } from '@cdp/data-sync';
 import type { Model } from './base';
 /**
  * @en Validable base interface.

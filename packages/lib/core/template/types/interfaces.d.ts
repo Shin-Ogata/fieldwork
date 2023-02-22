@@ -1,4 +1,4 @@
-import { PlainObject, AnyObject, escapeHTML } from '@cdp/core-utils';
+import type { PlainObject, AnyObject, escapeHTML } from '@cdp/core-utils';
 /**
  * @en [[TemplateEngine]] token structure.
  * @ja [[TemplateEngine]] token 型
