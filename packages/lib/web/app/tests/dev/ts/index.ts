@@ -20,7 +20,7 @@ void (async () => {
 
     await AppContext({
         main: '#app > .view-main',
-        initialPath: '/root',
+        initialPath: '/root',   // `http://localhost:8080/.temp/dev/#/other` の URL を入力しても `initialPath` に強制できる
         splash: '#splash-screen',
         waitForReady: customInit,
     }).ready;

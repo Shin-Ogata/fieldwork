@@ -17,7 +17,6 @@ import type {
 } from './interfaces';
 import {
     HistoryStack,
-    HistoryStackElement,
     normalizeId,
     createData,
     createUncancellableDeferred,
@@ -44,7 +43,7 @@ const enum Const {
 /** @internal remove url path section */
 const toHash = (url: string): string => {
     const id = /#.*$/.exec(url)?.[0];
-    return id ? normalizeId(id) : url;
+    return id ? normalizeId(id) : '';
 };
 
 /** @internal remove url path section */
@@ -89,7 +88,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     /**
      * constructor
      */
-    constructor(windowContxt: Window, mode: 'hash' | 'history', id: string, state?: T) {
+    constructor(windowContxt: Window, mode: 'hash' | 'history', id?: string, state?: T) {
         super();
         this[$signature] = true;
         this._window = windowContxt;
@@ -99,7 +98,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         this._window.addEventListener('popstate', this._popStateHandler);
 
         // initialize
-        void this.replace(id, state, { silent: true });
+        void this.replace(null != id ? id : this.toId(this._window.location.href), state, { silent: true });
     }
 
     /**
@@ -311,7 +310,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
     /** @internal convert to URL */
     private toUrl(id: string): string {
-        return id ? (('hash' === this._mode) ? `${Const.HASH_PREFIX}${id}` : toUrl(id)) : '';
+        return ('hash' === this._mode) ? `${Const.HASH_PREFIX}${id}` : toUrl(id);
     }
 
     /** @internal trigger event & wait process */
@@ -340,7 +339,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         history[`${method}State`](data, '', this.toUrl(id));
         const newURL = location.href;
 
-        assignStateElement(data, this._stack as HistoryStackElement);
+        assignStateElement(data, this._stack as HistoryStack);
 
         if (!silent) {
             const additional: DispatchInfo<T> = {
@@ -489,7 +488,7 @@ export interface SessionHistoryCreateOptions {
  *  - `en` [[SessionHistoryCreateOptions]] object
  *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
  */
-export function createSessionHistory<T = PlainObject>(id: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T> {
+export function createSessionHistory<T = PlainObject>(id?: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T> {
     const { context, mode } = Object.assign({ mode: 'hash' }, options);
     return new SessionHistory(context || window, mode, id, state);
 }

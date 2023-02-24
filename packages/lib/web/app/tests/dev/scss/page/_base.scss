@@ -9,14 +9,12 @@
 .router-page {
     position: absolute;
     visibility: visible;
+    &.cdp-transition-running {
+        pointer-events: none;
+        visibility: visible;
+    }
     &[aria-hidden=true] {
         visibility: hidden;
         pointer-events: none;
     }
-}
-
-.cdp-transition-running {
-    .router-page[aria-hidden=true] {
-        visibility: visible;
-    }    
 }

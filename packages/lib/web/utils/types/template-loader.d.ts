@@ -42,8 +42,8 @@ export declare function loadTemplateSource(selector: string, options?: LoadTempl
  */
 export declare function toTemplateString(src: string | HTMLTemplateElement | undefined): string | undefined;
 /**
- * @en Forced conversion to `HTMLTemplateElement`.
- * @ja `HTMLTemplateElement` に強制変換
+ * @en Forced conversion to `HTMLTemplateElement`. (If it is a Node, create a clone with `cloneNode(true)`)
+ * @ja `HTMLTemplateElement` に強制変換 (Nodeである場合には `cloneNode(true)` による複製を作成)
  *
  * @param src
  *  - `en` `HTMLTemplateElement` instance or HTML string

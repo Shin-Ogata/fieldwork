@@ -19,7 +19,7 @@ import { waitFrame } from '@cdp/web-utils';
 import { window } from '../ssr';
 import { normalizeId } from '../history/internal';
 import type { IHistory, HistoryState } from '../history';
-import type {
+import {
     PageTransitionParams,
     RouterEvent,
     Page,
@@ -30,6 +30,7 @@ import type {
     RouterConstructionOptions,
     RouteSubFlowParams,
     RouteNavigationOptions,
+    RouterRefreshLevel,
     Router,
 } from './interfaces';
 import {
@@ -109,7 +110,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         this._$el.on('click', '[href]', this.onAnchorClicked.bind(this));
 
         this._cssPrefix = cssPrefix || CssName.DEFAULT_PREFIX;
-        this._transitionSettings = Object.assign({ default: 'none' }, transition);
+        this._transitionSettings = Object.assign({ default: 'none', reload: 'none' }, transition);
 
         this.register(routes as RouteParameters[], start);
     }
@@ -297,6 +298,35 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return oldSettings;
     }
 
+    /** Refresh router (specify update level). */
+    async refresh(level = RouterRefreshLevel.RELOAD): Promise<this> {
+        switch (level) {
+            case RouterRefreshLevel.RELOAD:
+                return this.go();
+            case RouterRefreshLevel.DOM_CLEAR: {
+                for (const route of this._history.stack) {
+                    const $el = $(route.el);
+                    const page = route['@params'].page;
+                    if ($el.isConnected) {
+                        $el.detach();
+                        this.publish('unmounted', route);
+                        this.triggerPageCallback('unmounted', page, route);
+                    }
+                    if (route.el) {
+                        route.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        this.publish('unloaded', route);
+                        this.triggerPageCallback('removed', page, route);
+                    }
+                }
+                this._prevRoute && (this._prevRoute.el = null!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                return this.go();
+            }
+            default:
+                console.warn(`unsupported level: ${level}`); // eslint-disable-line @typescript-eslint/restrict-template-expressions
+                return this;
+        }
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // private methods: sub-flow
 
@@ -347,8 +377,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const from = oldState || this._lastRoute;
         const direction = this._history.direct(newState['@id'], from?.['@id']).direction;
         const asyncProcess = new RouteAyncProcessContext();
-        const { transition, reverse } = this._tempTransitionParams || ('back' !== direction ? newState : from as RouteContext);
-        this._tempTransitionParams = undefined;
+        const reload = newState.url === from?.url;
+        const { transition, reverse }
+            = this._tempTransitionParams || reload
+                ? { transition: this._transitionSettings.reload, reverse: false }
+                : ('back' !== direction ? newState : from as RouteContext);
 
         return {
             router: this,
@@ -356,6 +389,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             to: newState,
             direction,
             asyncProcess,
+            reload,
             transition,
             reverse,
             intent,
@@ -394,6 +428,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         parseUrlParams(nextRoute);
 
         const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
+        this._tempTransitionParams = undefined;
 
         const [
             pageNext, $elNext,
@@ -403,7 +438,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         // transition core
         await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
 
-        this.updateChangeContext($elNext, $elPrev, changeInfo.from as RouteContext);
+        this.updateChangeContext(
+            $elNext, $elPrev,
+            changeInfo.from as RouteContext,
+            !changeInfo.reload,
+        );
 
         this.publish('changed', changeInfo);
     }
@@ -518,12 +557,12 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${decideTransitionDirection(changeInfo)}`,
         ]);
         $elNext.removeAttr('aria-hidden');
-        $elNext.addClass([enterFromClass, enterActiveClass]);
-        $elPrev.addClass([leaveFromClass, leaveActiveClass]);
+        $elNext.addClass([enterFromClass, enterActiveClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
+        $elPrev.addClass([leaveFromClass, leaveActiveClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
 
         this.publish('before-transition', changeInfo);
         this.triggerPageCallback('before-enter', pageNext, changeInfo);
-        this.triggerPageCallback('before-leave', pagePrev, changeInfo);
+        !changeInfo.reload && this.triggerPageCallback('before-leave', pagePrev, changeInfo);
         await changeInfo.asyncProcess.complete();
     }
 
@@ -533,9 +572,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         pagePrev: Page, $elPrev: DOM, leaveToClass: string,
         changeInfo: RouteChangeInfoContext,
     ): Promise<void> {
-        $elNext.removeClass(enterToClass);
-        $elPrev.removeClass(leaveToClass);
-        $elPrev.attr('aria-hidden', true);
+        $elNext.removeClass([enterToClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
+        $elPrev.removeClass([leaveToClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
+        ($elNext[0] !== $elPrev[0]) && $elPrev.attr('aria-hidden', true);
 
         this._$el.removeClass([
             `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`,
@@ -544,38 +583,43 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         this.publish('after-transition', changeInfo);
         this.triggerPageCallback('after-enter', pageNext, changeInfo);
-        this.triggerPageCallback('after-leave', pagePrev, changeInfo);
+        !changeInfo.reload && this.triggerPageCallback('after-leave', pagePrev, changeInfo);
         await changeInfo.asyncProcess.complete();
     }
 
     /** @internal update page status after transition */
-    private updateChangeContext($elNext: DOM, $elPrev: DOM, prevRoute: RouteContext | undefined): void {
-        // update class
-        $elPrev.removeClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
-        $elNext.addClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
-        $elPrev.addClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
+    private updateChangeContext($elNext: DOM, $elPrev: DOM, prevRoute: RouteContext | undefined, urlChanged: boolean): void {
+        if ($elNext[0] !== $elPrev[0]) {
+            // update class
+            $elPrev.removeClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
+            $elNext.addClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
+            $elPrev.addClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
 
-        if (this._prevRoute) {
-            const $el = $(this._prevRoute.el);
-            $el.removeClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
-            if (this._prevRoute.el !== this.currentRoute.el) {
-                const cacheLv = $el.data(DomCache.DATA_NAME);
-                if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
-                    $el.detach();
-                    const page = this._prevRoute['@params'].page;
-                    this.publish('unmounted', this._prevRoute);
-                    this.triggerPageCallback('unmounted', page, this._prevRoute);
-                    if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
-                        this._prevRoute.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
-                        this.publish('unloaded', this._prevRoute);
-                        this.triggerPageCallback('removed', page, this._prevRoute);
+            if (this._prevRoute) {
+                const $el = $(this._prevRoute.el);
+                $el.removeClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
+                if (this._prevRoute.el !== this.currentRoute.el) {
+                    const cacheLv = $el.data(DomCache.DATA_NAME);
+                    if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
+                        $el.detach();
+                        const page = this._prevRoute['@params'].page;
+                        this.publish('unmounted', this._prevRoute);
+                        this.triggerPageCallback('unmounted', page, this._prevRoute);
+                        if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
+                            this._prevRoute.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                            this.publish('unloaded', this._prevRoute);
+                            this.triggerPageCallback('removed', page, this._prevRoute);
+                        }
                     }
                 }
             }
         }
 
+        if (urlChanged) {
+            this._prevRoute = prevRoute;
+        }
+
         this._lastRoute = this.currentRoute as RouteContext;
-        this._prevRoute = prevRoute;
     }
 
 ///////////////////////////////////////////////////////////////////////

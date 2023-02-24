@@ -146,7 +146,7 @@ export const toRouteContextParameters = (routes: RouteParameters | RouteParamete
 /** @internal prepare IHistory object */
 export const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 'hash', initialPath?: string, context?: Window): IHistory<RouteContext> => {
     return (isString(seed)
-        ? 'memory' === seed ? createMemoryHistory(initialPath || '') : createSessionHistory(initialPath || '', undefined, { mode: seed, context })
+        ? 'memory' === seed ? createMemoryHistory(initialPath || '') : createSessionHistory(initialPath, undefined, { mode: seed, context })
         : seed
     ) as IHistory<RouteContext>;
 };

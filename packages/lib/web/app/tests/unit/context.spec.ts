@@ -198,6 +198,9 @@ describe('context spec', () => {
 
         const promise = new Promise(resolve => {
             Object.assign(win, {
+                location: {
+                    href: 'dummy_url',
+                },
                 document: {
                     readyState: 'loading',
                     addEventListener: (event: string, callback: () => void) => {

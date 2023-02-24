@@ -1,7 +1,9 @@
+import { dom as $ } from '@cdp/dom';
 import {
     Route,
     RouteChangeInfo,
     Page,
+    RouterRefreshLevel,
 } from '@cdp/router';
 import { registerPage } from '@cdp/app';
 import { entry } from '../signature';
@@ -19,35 +21,38 @@ class RouterPage implements Page {
     get name(): string { return 'I was born from an class.'; }
 
     pageInit(info: RouteChangeInfo): void {
-        console.log(`pageInit(${info.to.path})`);
+        console.log(`pageInit("${info.to.path}")`);
+        $(info.to.el).find('#debug').on('click', () => {
+            void info.to.router.refresh(RouterRefreshLevel.DOM_CLEAR);
+        });
     }
 
     pageMounted(info: RouteChangeInfo): void {
-        console.log(`pageMounted(${info.to.path})`);
+        console.log(`pageMounted("${info.to.path}")`);
     }
 
     pageBeforeEnter(info: RouteChangeInfo): void {
-        console.log(`pageBeforeEnter(${info.to.path})`);
+        console.log(`pageBeforeEnter("${info.from?.path} → ${info.to.path}")`);
     }
 
     pageAfterEnter(info: RouteChangeInfo): void {
-        console.log(`pageAfterEnter(${info.to.path})`);
+        console.log(`pageAfterEnter("${info.from?.path} → ${info.to.path}")`);
     }
 
     pageBeforeLeave(info: RouteChangeInfo): void {
-        console.log(`pageBeforeLeave(${info.to.path})`);
+        console.log(`pageBeforeLeave("${info.from?.path} → ${info.to.path}")`);
     }
 
     pageAfterLeave(info: RouteChangeInfo): void {
-        console.log(`pageAfterLeave(${info.to.path})`);
+        console.log(`pageAfterLeave("${info.from?.path} → ${info.to.path}")`);
     }
 
     pageUnmounted(info: Route): void {
-        console.log(`pageUnmounted(${info.path})`);
+        console.log(`pageUnmounted("${info.path}")`);
     }
 
     pageRemoved(info: Route): void {
-        console.log(`pageRemoved(${info.path})`);
+        console.log(`pageRemoved("${info.path}")`);
     }
 
     static template = `
@@ -55,6 +60,7 @@ class RouterPage implements Page {
     Class Page
     <hr/>
     <button><a href="#" data-transition="fade">Back</a></button>
+    <button id="debug">Reload</button>
 </div>
 `;
 }

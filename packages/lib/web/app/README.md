@@ -35,6 +35,7 @@
   - page-class (すべてのページイベントを確認)
   - page-factory (非同期)
   - page-view (RoutePathParams で複数のパスを扱う)
+- reflesh(lv2) 多言語読み込み
 
 - 遷移アニメーション
 - 画面遷移の拒否
@@ -53,6 +54,11 @@
       - ∴ `id` = `path` は今のまま
       - ∴ `id` が同じなら DOM が再利用できる場合は再利用する
         - _stack.direct(id).state.el
+  - ☆`reload` で　`cdp-page-previous`と`cdp-page-current`の両方がつくケース
+  - ☆`reload` で　`leave` が来るのはおかしいかも
+      - `reload`を changeInfo で判別
+      - `reload`用のtransitionを設定可能に
+      - `reload`中の場合は`leave`を発行しない
 
 ## 参考
 

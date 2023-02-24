@@ -15,6 +15,7 @@ import {
 import {
     RouteChangeInfo,
     Page,
+    RouterRefreshLevel,
     Route,
     RouterConstructionOptions,
     Router,
@@ -136,6 +137,7 @@ describe('router/context spec', () => {
             const old = router.setTransitionSettings({});
             expect(old).toEqual({
                 default: 'fade',
+                reload: 'none',
                 'enter-active-class': 'animate__animated animate__tada',
                 'leave-active-class': 'animate__animated animate__bounceOutRight',
             });
@@ -1285,6 +1287,48 @@ describe('router/context spec', () => {
 
             expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_INVALID_SUBFLOW_BASE_URL);
             expect(e.message).toBe('Invalid sub-flow base url. [url: invalid]');
+        });
+    });
+
+    describe('refresh method', () => {
+        it('Router#refresh(level1)', async () => {
+            const stub = { onCallback };
+            spyOn(stub, 'onCallback').and.callThrough();
+
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    { path: '/', content: '<div class="router-page" data-dom-cache="connect"></div>' },
+                    { path: '/one', content: '<div class="router-page"></div>' },
+                    { path: '/two', content: '<div class="router-page" data-dom-cache="memory"></div>' },
+                    { path: '/three', content: '<div class="router-page"></div>' },
+                ],
+            });
+
+            await waitFrame(router);
+
+            await router.navigate('/one');
+            await router.navigate('/two');
+            await router.navigate('/three');
+            await router.back();
+            expect(router.currentRoute.path).toBe('/two');
+
+            router.on(['unmounted', 'unloaded'], stub.onCallback);
+
+            await router.refresh();
+            expect(router.currentRoute.path).toBe('/two');
+            expect(stub.onCallback).not.toHaveBeenCalled();
+
+            await router.refresh(RouterRefreshLevel.DOM_CLEAR);
+            expect(router.currentRoute.path).toBe('/two');
+            expect(stub.onCallback).toHaveBeenCalled();
+
+            try {
+                await router.refresh(3 as RouterRefreshLevel);
+                expect(router.currentRoute.path).toBe('/two');
+            } catch (e) {
+                fail(e);
+            }
         });
     });
 });

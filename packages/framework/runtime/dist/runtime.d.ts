@@ -8065,8 +8065,8 @@ export declare function loadTemplateSource(selector: string, options?: LoadTempl
  */
 export declare function toTemplateString(src: string | HTMLTemplateElement | undefined): string | undefined;
 /**
- * @en Forced conversion to `HTMLTemplateElement`.
- * @ja `HTMLTemplateElement` に強制変換
+ * @en Forced conversion to `HTMLTemplateElement`. (If it is a Node, create a clone with `cloneNode(true)`)
+ * @ja `HTMLTemplateElement` に強制変換 (Nodeである場合には `cloneNode(true)` による複製を作成)
  *
  * @param src
  *  - `en` `HTMLTemplateElement` instance or HTML string
@@ -11184,7 +11184,7 @@ export interface SessionHistoryCreateOptions {
  *  - `en` [[SessionHistoryCreateOptions]] object
  *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
  */
-export declare function createSessionHistory<T = PlainObject>(id: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
+export declare function createSessionHistory<T = PlainObject>(id?: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
 /**
  * @en Reset browser session history.
  * @ja ブラウザセッション履歴のリセット
@@ -11272,6 +11272,8 @@ export interface RouteChangeInfo extends Readonly<PageTransitionParams> {
     readonly direction: HistoryDirection;
     /** client async process */
     readonly asyncProcess: RouteAyncProcess;
+    /** process in reload or not */
+    readonly reload: boolean;
     /** extension property for user land */
     intent?: unknown;
 }
@@ -11512,6 +11514,8 @@ export interface Route {
 export interface TransitionSettings {
     /** default transition name */
     default?: string;
+    /** reload transition name */
+    reload?: string;
     /** custom enter-from css class name */
     'enter-from-class'?: string;
     /** custom enter-active css class name */
@@ -11629,6 +11633,14 @@ export interface RouteNavigationOptions extends PageTransitionParams {
      * @ja ユーザー定義可能な拡張プロパティ
      */
     intent?: unknown;
+}
+/**
+ * @en Router refresh level.
+ * @ja ルーター更新レベル
+ */
+export declare const enum RouterRefreshLevel {
+    RELOAD = 1,
+    DOM_CLEAR = 2
 }
 /**
  * @en Router common interface.
@@ -11773,6 +11785,11 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `ja` 以前の設定オブジェクト
      */
     setTransitionSettings(newSettings: TransitionSettings): TransitionSettings;
+    /**
+     * @en Refresh router (specify update level).
+     * @ja ルーターの更新(更新レベルの指定)
+     */
+    refresh(level?: RouterRefreshLevel): Promise<this>;
 }
 /**
  * @en Create [[Router]] object.
