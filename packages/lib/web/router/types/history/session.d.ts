@@ -23,7 +23,7 @@ export interface SessionHistoryCreateOptions {
  *  - `en` [[SessionHistoryCreateOptions]] object
  *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
  */
-export declare function createSessionHistory<T = PlainObject>(id: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
+export declare function createSessionHistory<T = PlainObject>(id?: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
 /**
  * @en Reset browser session history.
  * @ja ブラウザセッション履歴のリセット

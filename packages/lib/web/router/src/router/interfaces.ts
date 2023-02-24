@@ -46,6 +46,8 @@ export interface RouteChangeInfo extends Readonly<PageTransitionParams> {
     readonly direction: HistoryDirection;
     /** client async process */
     readonly asyncProcess: RouteAyncProcess;
+    /** process in reload or not */
+    readonly reload: boolean;
     /** extension property for user land */
     intent?: unknown;
 }
@@ -304,6 +306,8 @@ export interface Route {
 export interface TransitionSettings {
     /** default transition name */
     default?: string;
+    /** reload transition name */
+    reload?: string;
     /** custom enter-from css class name */
     'enter-from-class'?: string;
     /** custom enter-active css class name */
@@ -436,6 +440,15 @@ export interface RouteNavigationOptions extends PageTransitionParams {
      * @ja ユーザー定義可能な拡張プロパティ
      */
     intent?: unknown;
+}
+
+/**
+ * @en Router refresh level.
+ * @ja ルーター更新レベル
+ */
+export const enum RouterRefreshLevel {
+    RELOAD      = 1,
+    DOM_CLEAR   = 2,
 }
 
 /**
@@ -596,4 +609,10 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `ja` 以前の設定オブジェクト
      */
     setTransitionSettings(newSettings: TransitionSettings): TransitionSettings;
+
+    /**
+     * @en Refresh router (specify update level).
+     * @ja ルーターの更新(更新レベルの指定)
+     */
+    refresh(level?: RouterRefreshLevel): Promise<this>;
 }

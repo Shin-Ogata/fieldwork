@@ -10,7 +10,6 @@ import type {
 } from './interfaces';
 import {
     HistoryStack,
-    HistoryStackElement,
     createData,
     createUncancellableDeferred,
     assignStateElement,
@@ -243,7 +242,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
             newState['@origin'] = true;
         }
 
-        assignStateElement(newState, this._stack as HistoryStackElement);
+        assignStateElement(newState, this._stack as HistoryStack);
 
         if (!silent) {
             const df = new Deferred(cancel);

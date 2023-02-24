@@ -112,8 +112,8 @@ export function toTemplateString(src: string | HTMLTemplateElement | undefined):
 }
 
 /**
- * @en Forced conversion to `HTMLTemplateElement`.
- * @ja `HTMLTemplateElement` に強制変換
+ * @en Forced conversion to `HTMLTemplateElement`. (If it is a Node, create a clone with `cloneNode(true)`)
+ * @ja `HTMLTemplateElement` に強制変換 (Nodeである場合には `cloneNode(true)` による複製を作成)
  *
  * @param src
  *  - `en` `HTMLTemplateElement` instance or HTML string
@@ -125,5 +125,5 @@ export function toTemplateElement(src: string | HTMLTemplateElement | undefined)
         template.innerHTML = str;
         return template;
     };
-    return 'string' === typeof src ? from(src) : src;
+    return 'string' === typeof src ? from(src) : src?.cloneNode(true) as HTMLTemplateElement;
 }
