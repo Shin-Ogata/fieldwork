@@ -14,6 +14,7 @@ import {
     DOM,
     dom as $,
 } from '@cdp/dom';
+import { getLanguage } from '@cdp/i18n';
 import {
     Page,
     Route,
@@ -139,6 +140,45 @@ describe('context spec', () => {
         const page = app.activePage as RouterPage;
         expect(page).toBeDefined();
         expect(page.$el.text()).toBe('サポート');
+    });
+
+    it('check language change', async () => {
+        const stub = { onCallback };
+        spyOn(stub, 'onCallback').and.callThrough();
+
+        registerPage({
+            path: '/first',
+            component: {},
+            content: '<div></div>',
+        });
+
+        const { el, window } = await prepareQueryContext();
+        const app = AppContext({
+            main: '#test-app', el, window,
+            initialPath: '/first',
+            i18n: {
+                lng: 'ja',
+                fallbackLng: 'en',
+                namespace: 'messages',
+                resourcePath: '../res/app/locales/{{ns}}.{{lng}}.json',
+                fallbackResources: {
+                    'ja': 'ja-JP',
+                    'en': 'en-US',
+                },
+            },
+            reset: true,
+        } as AppContextOptions);
+
+        await app.ready;
+        app.on('languagechange', stub.onCallback);
+
+        expect(getLanguage()).toBe('ja');
+
+        const t = await app.changeLanguage('en');
+
+        expect(typeof t).toBe('function');
+        expect(getLanguage()).toBe('en');
+        expect(stub.onCallback).toHaveBeenCalledWith('en', t);
     });
 
     it('check remove splash screen', async () => {

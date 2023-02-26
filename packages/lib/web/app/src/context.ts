@@ -9,13 +9,18 @@ import {
 } from '@cdp/dom';
 import {
     I18NOptions,
+    I18NDetectErrorBehaviour,
     initializeI18N,
     localize,
+    getLanguage,
+    changeLanguage,
+    i18n,
 } from '@cdp/i18n';
 import {
     RouteChangeInfo,
     RouteParameters,
     RouterConstructionOptions,
+    RouterRefreshLevel,
     Router,
     Page,
     createRouter,
@@ -63,6 +68,13 @@ export interface AppContextEvent {
      * @args [Orientaion, angle]
      */
     'orientationchange': [Orientation, number];
+
+    /**
+     * @en Application langugate change notification.
+     * @ja アプリケーション言語変更通知
+     * @args [language, i18n.TFunction]
+     */
+    'languagechange': [string, i18n.TFunction];
 }
 
 /**
@@ -151,6 +163,19 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      * @ja ユーザー定義可能な拡張プロパティ
      */
     extension: unknown;
+
+    /**
+     * @en Changes the language.
+     * @ja 言語の切り替え
+     *
+     * @param lng
+     *  - `en` locale string ex: `en`, `en-US`
+     *  - `ja` ロケール文字 ex: `en`, `en-US`
+     * @param options
+     *  - `en` error behaviour
+     *  - `ja` エラー時の振る舞いを指定
+     */
+    changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction>;
 }
 
 //__________________________________________________________________________________________________//
@@ -252,6 +277,13 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
 
     set extension(val: unknown) {
         this._extension = val;
+    }
+
+    async changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction> {
+        const t = await changeLanguage(lng, options);
+        await this._router.refresh(RouterRefreshLevel.DOM_CLEAR);
+        this.publish('languagechange', getLanguage(), t);
+        return t;
     }
 
 ///////////////////////////////////////////////////////////////////////

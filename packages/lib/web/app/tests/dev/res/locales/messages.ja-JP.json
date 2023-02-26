@@ -1,0 +1,30 @@
+{
+  "app": {
+    "common": {
+      "back": "戻る",
+      "reload": "再読み込み"
+    },
+    "navigateTo": {
+      "class": "クラスページへ",
+      "factory": "ファクトリーページへ",
+      "pageView": "ページビューへ"
+    },
+    "pageRoot": {
+      "title": "ページ: ルート"
+    },
+    "pageClass": {
+      "title": "ページ: クラス",
+      "refresh": {
+        "title": "読み込み確認",
+        "lv1": "レベル1: リロード",
+        "lv2": "レベル2: DOM の再構築"
+      },
+      "language": {
+        "title": "言語切り替え",
+        "ja": "日本語へ",
+        "en": "英語へ"
+      }
+    }
+  },
+  "EOF": "EOF"
+}

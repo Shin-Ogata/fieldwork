@@ -126,11 +126,16 @@ function patch(index, code, includes) {
 
     {// trim
         const regexImport = (moduleName) => {
-            return new RegExp(`^(import {)([^\\n]*?)(} from '${moduleName}';\\n)`, 'gm');
+            return new RegExp(`^(import {)([^\n]*?)(} from '${moduleName}';\n)`, 'gm');
         };
 
+        // workaround
+        const patchModules = [
+            '@cdp/i18n',    // import { i18n } from '@cdp/i18n';
+        ];
+
         const dropModules = manualEditModules.slice();
-        dropModules.push(...coreModules, ...workerModules);
+        dropModules.push(...coreModules, ...workerModules, ...patchModules);
 
         for (const drop of dropModules) {
             code = code.replace(regexImport(drop), '');

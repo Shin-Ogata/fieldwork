@@ -1,0 +1,30 @@
+{
+  "app": {
+    "common": {
+      "back": "Back",
+      "reload": "Reload"
+    },
+    "navigateTo": {
+      "class": "To Page Class",
+      "factory": "To Page Factory",
+      "pageView": "To Page View"
+  },
+    "pageRoot": {
+      "title": "Page: Root"
+    },
+    "pageClass": {
+      "title": "Page: Class",
+      "refresh": {
+        "title": "Reload Confirmation",
+        "lv1": "Level 1: Reload",
+        "lv2": "Level 2: DOM reconstruction"
+      },
+      "language": {
+        "title": "Change Language",
+        "ja": "To Japanese",
+        "en": "To English"
+      }
+    }
+  },
+  "EOF": "EOF"
+}

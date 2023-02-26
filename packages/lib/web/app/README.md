@@ -31,13 +31,13 @@
 ## dev todo
 - ☆ splash screen からの遷移
 - 各 page 実装方法の検証 (全部 register する)
-  - page-root (object. dom-cache する. `string` は非同期読み込み用 reserve)
-  - page-class (すべてのページイベントを確認)
+  - ☆ page-root (object. dom-cache する. `string` は非同期読み込み用 reserve)
+  - ☆ page-class (すべてのページイベントを確認)
   - page-factory (非同期)
   - page-view (RoutePathParams で複数のパスを扱う)
-- reflesh(lv2) 多言語読み込み
+- ☆ reflesh(lv2) 多言語読み込み
+- ☆ 遷移アニメーション
 
-- 遷移アニメーション
 - 画面遷移の拒否
 - sub-flow
 
@@ -59,6 +59,11 @@
       - `reload`を changeInfo で判別
       - `reload`用のtransitionを設定可能に
       - `reload`中の場合は`leave`を発行しない
+  - ☆トランジションがまだ変
+    - ~~https://theorthodoxworks.com/web-design/css-animation-transition-bubbling/~~
+    - ~~beginTransition() の $elNext.removeAttr('aria-hidden')~~
+    - ~~slide は beginTransition() で動いているから間違い?~~ → animatiohn の場合はこの挙動
+    - ☆リフローの強制でいけるっぽい
 
 ## 参考
 

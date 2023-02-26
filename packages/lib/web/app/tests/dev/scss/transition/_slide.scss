@@ -1,0 +1,80 @@
+// keyframes for slidein from sides
+@keyframes slide-in-from-right {
+    from {
+        transform: translate3d(100%, 0, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes slide-in-from-left {
+    from {
+        transform: translate3d(-20%, 0, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+// keyframes for slideout to sides
+@keyframes slide-out-to-left {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(-20%, 0, 0);
+    }
+}
+
+@keyframes slide-out-to-right {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(100%, 0, 0);
+    }
+}
+
+.slide-enter-active, .slide-leave-active {
+    animation-timing-function: ease;
+    animation-duration: 350ms;
+}
+
+.slide-leave-active {
+    animation-name: slide-out-to-left;
+    z-index: 0;
+    &::after{
+        content:    "";
+        position:   fixed;
+        display:    block;
+        background-color: rgba(0, 0, 0, 0.4);
+        top:        0;
+        right:      0;
+        bottom:     0;
+        left:       0;
+        z-index:    10;
+    }
+}
+
+.cdp-transition-direction-back {
+    .slide-leave-active {
+        animation-name: slide-out-to-right;
+        z-index: 100;
+        &::after{
+            display: none;
+        }
+    }
+}
+
+.slide-enter-active {
+    animation-name: slide-in-from-right;
+    z-index: 100;
+}
+
+.cdp-transition-direction-back {
+    .slide-enter-active {
+        animation-name: slide-in-from-left;
+        z-index: 0;
+    }
+}

@@ -291,5 +291,5 @@ export const processPageTransition = async($el: DOM, fromClass: string, activeCl
     }
     await Promise.all(promises);
 
-    $el.removeClass(activeClass);
+    $el.removeClass([activeClass, toClass]);
 };

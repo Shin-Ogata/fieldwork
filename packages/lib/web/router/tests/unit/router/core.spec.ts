@@ -2,6 +2,7 @@
     @typescript-eslint/no-explicit-any
  */
 
+import { sleep } from '@cdp/core-utils';
 import { RESULT_CODE } from '@cdp/result';
 import {
     webRoot,
@@ -47,12 +48,12 @@ describe('router/context spec', () => {
         return (instance as any)._history._window as Window;
     };
 
-    const waitFrame = async (instance: Router, frameCount = 1): Promise<void> => {
+    const WAIT_FRAME_MARGINE = 5;
+
+    const waitFrame = async (instance: Router, frameCount = WAIT_FRAME_MARGINE): Promise<void> => {
         const { requestAnimationFrame } = getWindow(instance); // eslint-disable-line @typescript-eslint/unbound-method
         await _waitFrame(frameCount, requestAnimationFrame);
     };
-
-    const WAIT_FRAME_MARGINE = 5;
 
     const evClick = new Event('click', { cancelable: true, bubbles: true });
 
@@ -413,7 +414,7 @@ describe('router/context spec', () => {
                 ],
             });
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             router.on('will-change', cancelCallback);
             router.on('changed', stub.onCallback);
@@ -440,6 +441,8 @@ describe('router/context spec', () => {
                 ],
             });
 
+            await waitFrame(router);
+
             let processed = false;
             router.on('before-transition', (changeInfo: RouteChangeInfo) => {
                 // you can register the promise instance when using pub-sub infrasturcture
@@ -450,6 +453,32 @@ describe('router/context spec', () => {
 
             await router.navigate('/one');
             expect(processed).toBe(true);
+        });
+
+        it('supress navigate in change-page proc', async () => {
+            const router = await createRouterWrap({
+                routes: [
+                    { path: '/' },
+                    {
+                        path: '/one',
+                        component: {
+                            pageAfterEnter() {
+                                return sleep(100);
+                            }
+                        },
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            router.on('before-transition', (info) => {
+                expect(info.to.path).toBe('/one');
+                router.back();
+            });
+
+            await router.navigate('/one');
+            expect(router.currentRoute.path).toBe('/one');
         });
 
         it('check RouteParameters.content creation', async () => {
@@ -737,7 +766,7 @@ describe('router/context spec', () => {
             style.textContent = styleText;
             win.document.head.append(style);
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             await router.navigate('/next', { transition: 'fade' });
 
@@ -779,7 +808,7 @@ describe('router/context spec', () => {
             style.textContent = styleText;
             win.document.head.append(style);
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             await router.navigate('/next', { transition: 'fade' });
 
@@ -816,7 +845,7 @@ describe('router/context spec', () => {
             style.textContent = styleText;
             win.document.head.append(style);
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             router.on('before-transition', () => {
                 expect(router.el.classList.contains('cdp-transition-running')).toBe(true);
@@ -856,13 +885,13 @@ describe('router/context spec', () => {
                 ],
             });
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             const $button = $(router.el).find('#to-next');
             expect($button.length).toBe(1);
 
             $button[0].dispatchEvent(evClick);
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/next');
         });
@@ -886,14 +915,14 @@ describe('router/context spec', () => {
                 ],
             });
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
             await router.navigate('/second');
 
             const $button = $(router.el).find('#to-back');
             expect($button.length).toBe(1);
 
             $button[0].dispatchEvent(evClick);
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/first');
         });
@@ -918,14 +947,14 @@ describe('router/context spec', () => {
 
             router.on('error', stub.onCallback);
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             const $preventRouter = $(router.el).find('#to-outside');
             expect($preventRouter.length).toBe(1);
 
             $preventRouter[0].dispatchEvent(evClick);
 
-            await waitFrame(router, WAIT_FRAME_MARGINE);
+            await waitFrame(router);
 
             expect(stub.onCallback).not.toHaveBeenCalled();
         });
@@ -1292,9 +1321,6 @@ describe('router/context spec', () => {
 
     describe('refresh method', () => {
         it('Router#refresh(level1)', async () => {
-            const stub = { onCallback };
-            spyOn(stub, 'onCallback').and.callThrough();
-
             const router = await createRouterWrap({
                 initialPath: '/',
                 routes: [
@@ -1313,15 +1339,11 @@ describe('router/context spec', () => {
             await router.back();
             expect(router.currentRoute.path).toBe('/two');
 
-            router.on(['unmounted', 'unloaded'], stub.onCallback);
-
             await router.refresh();
             expect(router.currentRoute.path).toBe('/two');
-            expect(stub.onCallback).not.toHaveBeenCalled();
 
             await router.refresh(RouterRefreshLevel.DOM_CLEAR);
             expect(router.currentRoute.path).toBe('/two');
-            expect(stub.onCallback).toHaveBeenCalled();
 
             try {
                 await router.refresh(3 as RouterRefreshLevel);

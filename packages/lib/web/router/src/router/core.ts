@@ -71,6 +71,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private _lastRoute?: RouteContext;
     private _prevRoute?: RouteContext;
     private _tempTransitionParams?: PageTransitionParams;
+    private _inChangingPage = false;
 
     /**
      * constructor
@@ -425,26 +426,32 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
     /** @internal change page main procedure */
     private async changePage(nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined): Promise<void> {
-        parseUrlParams(nextRoute);
+        try {
+            this._inChangingPage = true;
 
-        const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
-        this._tempTransitionParams = undefined;
+            parseUrlParams(nextRoute);
 
-        const [
-            pageNext, $elNext,
-            pagePrev, $elPrev,
-        ] = await this.prepareChangeContext(changeInfo);
+            const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
+            this._tempTransitionParams = undefined;
 
-        // transition core
-        await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
+            const [
+                pageNext, $elNext,
+                pagePrev, $elPrev,
+            ] = await this.prepareChangeContext(changeInfo);
 
-        this.updateChangeContext(
-            $elNext, $elPrev,
-            changeInfo.from as RouteContext,
-            !changeInfo.reload,
-        );
+            // transition core
+            await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
 
-        this.publish('changed', changeInfo);
+            this.updateChangeContext(
+                $elNext, $elPrev,
+                changeInfo.from as RouteContext,
+                !changeInfo.reload,
+            );
+
+            this.publish('changed', changeInfo);
+        } finally {
+            this._inChangingPage = false;
+        }
     }
 
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -488,9 +495,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             await changeInfo.asyncProcess.complete();
         }
 
+        const { reload } = changeInfo;
+
         return [
-            pageNext, $elNext,                                      // next
-            prevRoute?.['@params']?.page || {}, $(prevRoute?.el),   // prev
+            pageNext, $elNext,                                                                              // next
+            (reload && {} || prevRoute?.['@params']?.page || {}), (reload && $(null) || $(prevRoute?.el)),  // prev
         ];
     }
 
@@ -540,8 +549,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         await this.waitFrame();
 
         await this.endTransition(
-            pageNext, $elNext, enterToClass,
-            pagePrev, $elPrev, leaveToClass,
+            pageNext, $elNext,
+            pagePrev, $elPrev,
             changeInfo,
         );
     }
@@ -556,34 +565,39 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`,
             `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${decideTransitionDirection(changeInfo)}`,
         ]);
-        $elNext.removeAttr('aria-hidden');
-        $elNext.addClass([enterFromClass, enterActiveClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
+
+        $elNext
+            .addClass([enterFromClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`])
+            .removeAttr('aria-hidden')
+            .reflow()
+            .addClass(enterActiveClass)
+        ;
         $elPrev.addClass([leaveFromClass, leaveActiveClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
 
         this.publish('before-transition', changeInfo);
         this.triggerPageCallback('before-enter', pageNext, changeInfo);
-        !changeInfo.reload && this.triggerPageCallback('before-leave', pagePrev, changeInfo);
+        this.triggerPageCallback('before-leave', pagePrev, changeInfo);
         await changeInfo.asyncProcess.complete();
     }
 
     /** @internal transition proc : end */
     private async endTransition(
-        pageNext: Page, $elNext: DOM, enterToClass: string,
-        pagePrev: Page, $elPrev: DOM, leaveToClass: string,
+        pageNext: Page, $elNext: DOM,
+        pagePrev: Page, $elPrev: DOM,
         changeInfo: RouteChangeInfoContext,
     ): Promise<void> {
-        $elNext.removeClass([enterToClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
-        $elPrev.removeClass([leaveToClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
         ($elNext[0] !== $elPrev[0]) && $elPrev.attr('aria-hidden', true);
+        $elNext.removeClass([`${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
+        $elPrev.removeClass([`${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
 
         this._$el.removeClass([
             `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`,
             `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${changeInfo.direction}`,
         ]);
 
-        this.publish('after-transition', changeInfo);
         this.triggerPageCallback('after-enter', pageNext, changeInfo);
-        !changeInfo.reload && this.triggerPageCallback('after-leave', pagePrev, changeInfo);
+        this.triggerPageCallback('after-leave', pagePrev, changeInfo);
+        this.publish('after-transition', changeInfo);
         await changeInfo.asyncProcess.complete();
     }
 
@@ -591,9 +605,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private updateChangeContext($elNext: DOM, $elPrev: DOM, prevRoute: RouteContext | undefined, urlChanged: boolean): void {
         if ($elNext[0] !== $elPrev[0]) {
             // update class
-            $elPrev.removeClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
+            $elPrev
+                .removeClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`)
+                .addClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`)
+            ;
             $elNext.addClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
-            $elPrev.addClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
 
             if (this._prevRoute) {
                 const $el = $(this._prevRoute.el);
@@ -627,6 +643,10 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
     /** @internal `history` `changing` handler */
     private onHistoryChanging(nextState: HistoryState<RouteContext>, cancel: (reason?: unknown) => void, promises: Promise<unknown>[]): void {
+        if (this._inChangingPage) {
+            cancel(makeResult(RESULT_CODE.ERROR_MVC_ROUTER_BUSY));
+            return;
+        }
         const changeInfo = this.makeRouteChangeInfo(nextState, undefined);
         this.publish('will-change', changeInfo, cancel);
         promises.push(...changeInfo.asyncProcess.promises);
