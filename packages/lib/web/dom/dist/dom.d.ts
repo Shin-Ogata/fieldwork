@@ -1608,6 +1608,16 @@ declare class DOMEffects<TElement extends ElementBase> implements DOMIterable<TE
      * @ja 現在実行しているアニメーションを終了
      */
     finish(): this;
+    /**
+     * @en Execute force reflow.
+     * @ja 強制リフローを実行
+     */
+    reflow(): this;
+    /**
+     * @en Execute force repaint.
+     * @ja 強制再描画を実行
+     */
+    repaint(): this;
 }
 export type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
 /**

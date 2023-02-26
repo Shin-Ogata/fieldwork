@@ -9,12 +9,11 @@ import './page';
 void (async () => {
     interface AppContextEx extends AppContext {
         $app: DOM;
-        config: object;
     }
 
     const customInit = (context: AppContextEx): Promise<void> => {
         context.$app   = $('#app');
-        context.config = getConfig();
+        context.extension = getConfig();
         return sleep(1000);
     };
 
@@ -23,8 +22,18 @@ void (async () => {
         initialPath: '/root',   // `http://localhost:8080/.temp/dev/#/other` の URL を入力しても `initialPath` に強制できる
         splash: '#splash-screen',
         waitForReady: customInit,
+        i18n: {
+            lng: 'ja',
+            fallbackLng: 'en',
+            namespace: 'messages',
+            resourcePath: '/res/locales/{{ns}}.{{lng}}.json',
+            fallbackResources: {
+                'ja': 'ja-JP',
+                'en': 'en-US',
+            },
+        },
     }).ready;
 
     const app = AppContext() as AppContextEx;
-    console.log(app.config);
+    console.log(app.extension);
 })();

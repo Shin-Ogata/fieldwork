@@ -7887,6 +7887,16 @@ declare class DOMEffects<TElement extends ElementBase> implements DOMIterable<TE
      * @ja 現在実行しているアニメーションを終了
      */
     finish(): this;
+    /**
+     * @en Execute force reflow.
+     * @ja 強制リフローを実行
+     */
+    reflow(): this;
+    /**
+     * @en Execute force repaint.
+     * @ja 強制再描画を実行
+     */
+    repaint(): this;
 }
 export type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
 /**
@@ -11842,6 +11852,15 @@ export interface AppContextEvent {
         Orientation,
         number
     ];
+    /**
+     * @en Application langugate change notification.
+     * @ja アプリケーション言語変更通知
+     * @args [language, i18n.TFunction]
+     */
+    'languagechange': [
+        string,
+        i18n.TFunction
+    ];
 }
 /**
  * @en [[AppContext]] create options.
@@ -11912,6 +11931,18 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      * @ja ユーザー定義可能な拡張プロパティ
      */
     extension: unknown;
+    /**
+     * @en Changes the language.
+     * @ja 言語の切り替え
+     *
+     * @param lng
+     *  - `en` locale string ex: `en`, `en-US`
+     *  - `ja` ロケール文字 ex: `en`, `en-US`
+     * @param options
+     *  - `en` error behaviour
+     *  - `ja` エラー時の振る舞いを指定
+     */
+    changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction>;
 }
 /**
  * @en Route parameters for page registration. Need to describe `path`, `component`, `content`.
@@ -12342,7 +12373,8 @@ declare namespace CDP_DECLARE {
         ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND,
         ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED,
         ERROR_MVC_ROUTER_NAVIGATE_FAILED,
-        ERROR_MVC_ROUTER_INVALID_SUBFLOW_BASE_URL
+        ERROR_MVC_ROUTER_INVALID_SUBFLOW_BASE_URL,
+        ERROR_MVC_ROUTER_BUSY
     }
 }
 declare namespace CDP_DECLARE {

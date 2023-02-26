@@ -1,4 +1,4 @@
-import { ElementBase, DOM } from './static';
+import type { ElementBase, DOM } from './static';
 import { DOMIterable } from './base';
 /**
  * @en [[DOM]] effect parameter.
@@ -55,4 +55,14 @@ export declare class DOMEffects<TElement extends ElementBase> implements DOMIter
      * @ja 現在実行しているアニメーションを終了
      */
     finish(): this;
+    /**
+     * @en Execute force reflow.
+     * @ja 強制リフローを実行
+     */
+    reflow(): this;
+    /**
+     * @en Execute force repaint.
+     * @ja 強制再描画を実行
+     */
+    repaint(): this;
 }

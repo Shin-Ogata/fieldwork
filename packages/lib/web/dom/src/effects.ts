@@ -1,5 +1,9 @@
-import { setMixClassAttribute, Writable } from '@cdp/core-utils';
-import { ElementBase, DOM } from './static';
+import {
+    Writable,
+    setMixClassAttribute,
+    noop,
+} from '@cdp/core-utils';
+import type { ElementBase, DOM } from './static';
 import {
     DOMIterable,
     isNodeElement,
@@ -63,7 +67,7 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
     entries!: () => IterableIterator<[number, TElement]>;
 
 ///////////////////////////////////////////////////////////////////////
-// public: Effects
+// public: Effects animation
 
     /**
      * @en Start animation by `Web Animation API`.
@@ -128,6 +132,37 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
                     }
                     // finish では破棄しない
                 }
+            }
+        }
+        return this;
+    }
+
+///////////////////////////////////////////////////////////////////////
+// public: Effects utility
+
+    /**
+     * @en Execute force reflow.
+     * @ja 強制リフローを実行
+     */
+    public reflow(): this {
+        if (this[0] instanceof HTMLElement) {
+            for (const el of this as unknown as DOM)  {
+                noop(el.offsetHeight);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * @en Execute force repaint.
+     * @ja 強制再描画を実行
+     */
+    public repaint(): this {
+        if (this[0] instanceof HTMLElement) {
+            for (const el of this as unknown as DOM)  {
+                const current = el.style.display;
+                el.style.display = 'none';
+                el.style.display = current;
             }
         }
         return this;

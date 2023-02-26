@@ -22,6 +22,7 @@ describe('web-root spec', () => {
         expect(getWebDirectory('http://hogehoge.com/app/')).toBe('http://hogehoge.com/app/');
         expect(getWebDirectory('http://hogehoge.com/app/index.html')).toBe('http://hogehoge.com/app/');
         expect(getWebDirectory('http://hogehoge.com/app/index.html#L80')).toBe('http://hogehoge.com/app/');
+        expect(getWebDirectory('http://localhost:8080/.temp/dev/#/root')).toBe('http://localhost:8080/.temp/dev/');
         expect(getWebDirectory('/app/index.html#L80')).toBe('/app/');
         expect(getWebDirectory('invalid')).toBe('');
         expect(getWebDirectory(undefined as any)).toBe('');

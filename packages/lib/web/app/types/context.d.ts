@@ -1,6 +1,6 @@
 import { Subscribable } from '@cdp/events';
 import { DOMSelector } from '@cdp/dom';
-import { I18NOptions } from '@cdp/i18n';
+import { I18NOptions, I18NDetectErrorBehaviour, i18n } from '@cdp/i18n';
 import { RouteParameters, RouterConstructionOptions, Router, Page } from '@cdp/router';
 /**
  * @en `orientation` identifier
@@ -34,6 +34,12 @@ export interface AppContextEvent {
      * @args [Orientaion, angle]
      */
     'orientationchange': [Orientation, number];
+    /**
+     * @en Application langugate change notification.
+     * @ja アプリケーション言語変更通知
+     * @args [language, i18n.TFunction]
+     */
+    'languagechange': [string, i18n.TFunction];
 }
 /**
  * @en [[AppContext]] create options.
@@ -104,6 +110,18 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      * @ja ユーザー定義可能な拡張プロパティ
      */
     extension: unknown;
+    /**
+     * @en Changes the language.
+     * @ja 言語の切り替え
+     *
+     * @param lng
+     *  - `en` locale string ex: `en`, `en-US`
+     *  - `ja` ロケール文字 ex: `en`, `en-US`
+     * @param options
+     *  - `en` error behaviour
+     *  - `ja` エラー時の振る舞いを指定
+     */
+    changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction>;
 }
 /**
  * @en Route parameters for page registration. Need to describe `path`, `component`, `content`.

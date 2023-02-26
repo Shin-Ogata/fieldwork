@@ -9,7 +9,7 @@ import { location, document } from './ssr';
  *  - `ja` 対象の URL
  */
 export const getWebDirectory = (url: string): string => {
-    const match = /(.+\/)([^/]*#[^/]+)?/.exec(url);
+    const match = /^(([^?#]+)\/)([\S]*)?$/.exec(url);
     return (match && match[1]) || '';
 };
 

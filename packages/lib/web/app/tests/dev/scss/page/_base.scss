@@ -6,12 +6,24 @@
     bottom: 80px;
 }
 
+// .router-page {
+//     position: absolute;
+//     overflow-y: auto;
+//     visibility: hidden;
+//     &.cdp-transition-running {
+//         visibility: visible;
+//         pointer-events: none;
+//     }
+//     &.cdp-page-current {
+//         visibility: visible;
+//     }
+// }
+
 .router-page {
     position: absolute;
-    visibility: visible;
+    overflow-y: auto;
     &.cdp-transition-running {
         pointer-events: none;
-        visibility: visible;
     }
     &[aria-hidden=true] {
         visibility: hidden;
