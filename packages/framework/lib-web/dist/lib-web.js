@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.15
+ * @cdp/lib-web 0.9.16
  *   web api library collection
  */
 
@@ -10,7 +10,7 @@
 })(this, (function (exports, libCore, libWorker) { 'use strict';
 
     /*!
-     * @cdp/web-utils 0.9.15
+     * @cdp/web-utils 0.9.16
      *   web domain utilities
      */
 
@@ -193,7 +193,7 @@
     }
 
     /*!
-     * @cdp/dom 0.9.15
+     * @cdp/dom 0.9.16
      *   dom utility module
      */
 
@@ -3691,7 +3691,7 @@
     setup(DOMClass.prototype, DOMClass.create);
 
     /*!
-     * @cdp/environment 0.9.15
+     * @cdp/environment 0.9.16
      *   environment resolver module
      */
 
@@ -3860,7 +3860,7 @@
     const platform = queryPlatform();
 
     /*!
-     * @cdp/extension-i18n 0.9.15
+     * @cdp/extension-i18n 0.9.16
      *   extension for internationalization
      */
 
@@ -6627,7 +6627,7 @@
     const i18n = instance;
 
     /*!
-     * @cdp/i18n 0.9.15
+     * @cdp/i18n 0.9.16
      *   internationalization module
      */
 
@@ -6926,7 +6926,7 @@
     };
 
     /*!
-     * @cdp/web-storage 0.9.15
+     * @cdp/web-storage 0.9.16
      *   web storage utility module
      */
 
@@ -7058,7 +7058,7 @@
     const webStorage = new WebStorage(localStorage);
 
     /*!
-     * @cdp/data-sync 0.9.15
+     * @cdp/data-sync 0.9.16
      *   web storage utility module
      */
 
@@ -7437,7 +7437,7 @@
     }
 
     /*!
-     * @cdp/model 0.9.15
+     * @cdp/model 0.9.16
      *   generic model scheme
      */
 
@@ -8134,7 +8134,7 @@
     }
 
     /*!
-     * @cdp/collection 0.9.15
+     * @cdp/collection 0.9.16
      *   generic collection scheme
      */
 
@@ -10276,7 +10276,7 @@
     }
 
     /*!
-     * @cdp/view 0.9.15
+     * @cdp/view 0.9.16
      *   generic view scheme
      */
 
@@ -10535,7 +10535,7 @@
     }
 
     /*!
-     * @cdp/extension-template 0.9.15
+     * @cdp/extension-template 0.9.16
      *   extension for template engine
      */
 
@@ -13722,7 +13722,7 @@
     };
 
     /*!
-     * @cdp/extension-template-bridge 0.9.15
+     * @cdp/extension-template-bridge 0.9.16
      *   extension for HTML templates bridge.
      */
 
@@ -15091,7 +15091,7 @@
     }
 
     /*!
-     * @cdp/template 0.9.15
+     * @cdp/template 0.9.16
      *   HTML template library
      */
 
@@ -15200,7 +15200,7 @@
     }
 
     /*!
-     * @cdp/extension-path2regexp 0.9.15
+     * @cdp/extension-path2regexp 0.9.16
      *   extension for conversion path to regexp library
      */
 
@@ -15618,7 +15618,7 @@
     };
 
     /*!
-     * @cdp/router 0.9.15
+     * @cdp/router 0.9.16
      *   generic router scheme
      */
 
@@ -17178,7 +17178,7 @@
     }
 
     /*!
-     * @cdp/app 0.9.15
+     * @cdp/app 0.9.16
      *   application context
      */
 

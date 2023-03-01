@@ -1,12 +1,12 @@
 /*!
- * @cdp/lib-worker 0.9.15
+ * @cdp/lib-worker 0.9.16
  *   worker library collection
  */
 
 import { safe, checkCanceled, fromTypedData, restoreNullish, toTypedData, verify, CancelToken, assignValue, isNumeric, EventSource, makeResult, RESULT_CODE, isFunction, isNumber, isString, className } from '@cdp/lib-core';
 
 /*!
- * @cdp/binary 0.9.15
+ * @cdp/binary 0.9.16
  *   binary utility module
  */
 
@@ -674,7 +674,7 @@ class BlobURL {
 }
 
 /*!
- * @cdp/ajax 0.9.15
+ * @cdp/ajax 0.9.16
  *   ajax utility module
  */
 
@@ -1107,7 +1107,7 @@ const request = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 }, Symbol.toStringTag, { value: 'Module' }));
 
 /*!
- * @cdp/inline-worker 0.9.15
+ * @cdp/inline-worker 0.9.16
  *   inline web worker utility module
  */
 

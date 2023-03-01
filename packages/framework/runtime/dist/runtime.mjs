@@ -1,15 +1,15 @@
 /*!
- * @cdp/runtime 0.9.15
+ * @cdp/runtime 0.9.16
  *   runtime core framework
  */
 
 /*!
- * @cdp/lib-core 0.9.15
+ * @cdp/lib-core 0.9.16
  *   core library collection
  */
 
 /*!
- * @cdp/core-utils 0.9.15
+ * @cdp/core-utils 0.9.16
  *   core domain utilities
  */
 
@@ -2326,7 +2326,7 @@ function isStatusIn(status) {
 }
 
 /*!
- * @cdp/events 0.9.15
+ * @cdp/events 0.9.16
  *   pub/sub framework
  */
 
@@ -2814,7 +2814,7 @@ class EventSource extends mixins(EventBroker, EventReceiver) {
 const EventSourceBase = EventSource;
 
 /*!
- * @cdp/promise 0.9.15
+ * @cdp/promise 0.9.16
  *   promise utility module
  */
 
@@ -3404,7 +3404,7 @@ class PromiseManager {
 }
 
 /*!
- * @cdp/observable 0.9.15
+ * @cdp/observable 0.9.16
  *   observable utility module
  */
 
@@ -4037,7 +4037,7 @@ class ObservableArray extends Array {
 }
 
 /*!
- * @cdp/result 0.9.15
+ * @cdp/result 0.9.16
  *   result utility module
  */
 
@@ -4370,7 +4370,7 @@ function makeCanceledResult(message, cause) {
 }
 
 /*!
- * @cdp/core-storage 0.9.15
+ * @cdp/core-storage 0.9.16
  *   core storage utility module
  */
 
@@ -4737,7 +4737,7 @@ class Registry extends EventPublisher {
 }
 
 /*!
- * @cdp/core-template 0.9.15
+ * @cdp/core-template 0.9.16
  *   template engine
  */
 
@@ -5460,12 +5460,12 @@ class TemplateEngine {
 }
 
 /*!
- * @cdp/lib-worker 0.9.15
+ * @cdp/lib-worker 0.9.16
  *   worker library collection
  */
 
 /*!
- * @cdp/binary 0.9.15
+ * @cdp/binary 0.9.16
  *   binary utility module
  */
 
@@ -6133,7 +6133,7 @@ class BlobURL {
 }
 
 /*!
- * @cdp/ajax 0.9.15
+ * @cdp/ajax 0.9.16
  *   ajax utility module
  */
 
@@ -6566,7 +6566,7 @@ const request = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 }, Symbol.toStringTag, { value: 'Module' }));
 
 /*!
- * @cdp/inline-worker 0.9.15
+ * @cdp/inline-worker 0.9.16
  *   inline web worker utility module
  */
 
@@ -6680,12 +6680,12 @@ function thread(executor, options) {
 }
 
 /*!
- * @cdp/lib-web 0.9.15
+ * @cdp/lib-web 0.9.16
  *   web api library collection
  */
 
 /*!
- * @cdp/web-utils 0.9.15
+ * @cdp/web-utils 0.9.16
  *   web domain utilities
  */
 
@@ -6868,7 +6868,7 @@ function toTemplateElement(src) {
 }
 
 /*!
- * @cdp/dom 0.9.15
+ * @cdp/dom 0.9.16
  *   dom utility module
  */
 
@@ -10366,7 +10366,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.15
+ * @cdp/environment 0.9.16
  *   environment resolver module
  */
 
@@ -10535,7 +10535,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.15
+ * @cdp/extension-i18n 0.9.16
  *   extension for internationalization
  */
 
@@ -13302,7 +13302,7 @@ instance.loadLanguages;
 const i18n = instance;
 
 /*!
- * @cdp/i18n 0.9.15
+ * @cdp/i18n 0.9.16
  *   internationalization module
  */
 
@@ -13601,7 +13601,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.15
+ * @cdp/web-storage 0.9.16
  *   web storage utility module
  */
 
@@ -13733,7 +13733,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.15
+ * @cdp/data-sync 0.9.16
  *   web storage utility module
  */
 
@@ -14112,7 +14112,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.15
+ * @cdp/model 0.9.16
  *   generic model scheme
  */
 
@@ -14809,7 +14809,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.15
+ * @cdp/collection 0.9.16
  *   generic collection scheme
  */
 
@@ -16951,7 +16951,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.15
+ * @cdp/view 0.9.16
  *   generic view scheme
  */
 
@@ -17210,7 +17210,7 @@ class View extends EventSourceBase {
 }
 
 /*!
- * @cdp/extension-template 0.9.15
+ * @cdp/extension-template 0.9.16
  *   extension for template engine
  */
 
@@ -20397,7 +20397,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-bridge 0.9.15
+ * @cdp/extension-template-bridge 0.9.16
  *   extension for HTML templates bridge.
  */
 
@@ -21766,7 +21766,7 @@ function createStampinoTransformer(options) {
 }
 
 /*!
- * @cdp/template 0.9.15
+ * @cdp/template 0.9.16
  *   HTML template library
  */
 
@@ -21875,7 +21875,7 @@ async function getTemplate(selector, options) {
 }
 
 /*!
- * @cdp/extension-path2regexp 0.9.15
+ * @cdp/extension-path2regexp 0.9.16
  *   extension for conversion path to regexp library
  */
 
@@ -22293,7 +22293,7 @@ const path2regexp = {
 };
 
 /*!
- * @cdp/router 0.9.15
+ * @cdp/router 0.9.16
  *   generic router scheme
  */
 
@@ -23853,7 +23853,7 @@ function createRouter(selector, options) {
 }
 
 /*!
- * @cdp/app 0.9.15
+ * @cdp/app 0.9.16
  *   application context
  */
 

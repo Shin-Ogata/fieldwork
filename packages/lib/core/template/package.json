@@ -1,7 +1,7 @@
 {
   "name": "@cdp/core-template",
   "description": "template engine",
-  "version": "0.9.15",
+  "version": "0.9.16",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-utils": "file:../utils"

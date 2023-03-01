@@ -1,7 +1,7 @@
 {
   "name": "@cdp/web-utils",
   "description": "web domain utilities",
-  "version": "0.9.15",
+  "version": "0.9.16",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/ajax": "file:../../worker/ajax",

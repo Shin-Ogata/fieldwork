@@ -7,9 +7,8 @@ const {
     dirname,
     basename,
 } = require('path');
-const { promisify } = require('util');
 const { readJSON, outputFile } = require('fs-extra');
-const glob = promisify(require('glob'));
+const { glob } = require('glob');
 const { toPOSIX } = require('@cdp/tasks/utils');
 const colors = require('@cdp/tasks/colors');
 

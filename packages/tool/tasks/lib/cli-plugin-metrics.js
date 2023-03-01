@@ -1,13 +1,12 @@
 'use strict';
 
 const { resolve, dirname } = require('path');
-const { promisify } = require('util');
 const {
     existsSync,
     writeFileSync,
     moveSync,
 } = require('fs-extra');
-const glob = promisify(require('glob'));
+const { glob } = require('glob');
 const { dropSourceMap } = require('./source-map-utils');
 const { toPOSIX } = require('./misc');
 const colors = require('../colors');
