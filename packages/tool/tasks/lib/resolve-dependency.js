@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const glob = require('glob');
+const { globSync } = require('glob');
 const colors = require('../colors');
 const { toPOSIX } = require('./misc');
 
@@ -10,7 +10,7 @@ function searchLocations(layers, root) {
     const results = [];
     for (const layer of layers) {
         const cwd = toPOSIX(path.join(root, 'packages', layer));
-        results.push(...glob.sync(`${cwd}/**/package.json`, {
+        results.push(...globSync(`${cwd}/**/package.json`, {
             cwd,
             nodir: true,
             ignore: [

@@ -1,5 +1,5 @@
 /*!
- * @cdp/web-utils 0.9.15
+ * @cdp/web-utils 0.9.16
  *   web domain utilities
  */
 

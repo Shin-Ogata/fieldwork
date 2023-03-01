@@ -2,7 +2,7 @@
 
 const { resolve, dirname } = require('path');
 const fs                   = require('fs-extra');
-const glob                 = require('glob');
+const { globSync }         = require('glob');
 const { merge }            = require('lodash');
 
 function toPOSIX(path) {
@@ -10,7 +10,7 @@ function toPOSIX(path) {
 }
 
 function cleanEmptyDir(target) {
-    const list = glob.sync('**', {
+    const list = globSync('**', {
         cwd: toPOSIX(target),
         nodir: false,
     });
@@ -57,7 +57,7 @@ function copy(globs, dest, options) {
 
     const retval = [];
     for (const s of source) {
-        const files = glob.sync(s, {
+        const files = globSync(s, {
             cwd,
             nodir: true,
             ignore,
@@ -84,7 +84,7 @@ function del(globs, options) {
 
     const retval = [];
     for (const s of source) {
-        const files = glob.sync(s, {
+        const files = globSync(s, {
             cwd,
             ignore,
         });

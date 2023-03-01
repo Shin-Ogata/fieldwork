@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.15
+ * @cdp/lib-web 0.9.16
  *   web api library collection
  */
 
@@ -8,7 +8,7 @@ export { TemplateEngine } from '@cdp/lib-core';
 import { request, deserialize, serialize, ajax, toQueryStrings, parseUrlQuery, convertUrlParamType } from '@cdp/lib-worker';
 
 /*!
- * @cdp/web-utils 0.9.15
+ * @cdp/web-utils 0.9.16
  *   web domain utilities
  */
 
@@ -191,7 +191,7 @@ function toTemplateElement(src) {
 }
 
 /*!
- * @cdp/dom 0.9.15
+ * @cdp/dom 0.9.16
  *   dom utility module
  */
 
@@ -3689,7 +3689,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.15
+ * @cdp/environment 0.9.16
  *   environment resolver module
  */
 
@@ -3858,7 +3858,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.15
+ * @cdp/extension-i18n 0.9.16
  *   extension for internationalization
  */
 
@@ -6625,7 +6625,7 @@ instance.loadLanguages;
 const i18n = instance;
 
 /*!
- * @cdp/i18n 0.9.15
+ * @cdp/i18n 0.9.16
  *   internationalization module
  */
 
@@ -6924,7 +6924,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.15
+ * @cdp/web-storage 0.9.16
  *   web storage utility module
  */
 
@@ -7056,7 +7056,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.15
+ * @cdp/data-sync 0.9.16
  *   web storage utility module
  */
 
@@ -7435,7 +7435,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.15
+ * @cdp/model 0.9.16
  *   generic model scheme
  */
 
@@ -8132,7 +8132,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.15
+ * @cdp/collection 0.9.16
  *   generic collection scheme
  */
 
@@ -10274,7 +10274,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.15
+ * @cdp/view 0.9.16
  *   generic view scheme
  */
 
@@ -10533,7 +10533,7 @@ class View extends EventSource {
 }
 
 /*!
- * @cdp/extension-template 0.9.15
+ * @cdp/extension-template 0.9.16
  *   extension for template engine
  */
 
@@ -13720,7 +13720,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-bridge 0.9.15
+ * @cdp/extension-template-bridge 0.9.16
  *   extension for HTML templates bridge.
  */
 
@@ -15089,7 +15089,7 @@ function createStampinoTransformer(options) {
 }
 
 /*!
- * @cdp/template 0.9.15
+ * @cdp/template 0.9.16
  *   HTML template library
  */
 
@@ -15198,7 +15198,7 @@ async function getTemplate(selector, options) {
 }
 
 /*!
- * @cdp/extension-path2regexp 0.9.15
+ * @cdp/extension-path2regexp 0.9.16
  *   extension for conversion path to regexp library
  */
 
@@ -15616,7 +15616,7 @@ const path2regexp = {
 };
 
 /*!
- * @cdp/router 0.9.15
+ * @cdp/router 0.9.16
  *   generic router scheme
  */
 
@@ -17176,7 +17176,7 @@ function createRouter(selector, options) {
 }
 
 /*!
- * @cdp/app 0.9.15
+ * @cdp/app 0.9.16
  *   application context
  */
 

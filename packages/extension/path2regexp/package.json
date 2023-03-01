@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-path2regexp",
   "description": "extension for conversion path to regexp library",
-  "version": "0.9.15",
+  "version": "0.9.16",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {
