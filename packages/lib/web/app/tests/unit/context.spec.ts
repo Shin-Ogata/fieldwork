@@ -205,7 +205,7 @@ describe('context spec', () => {
     it('for coverage: error case', async () => {
         try {
             await AppContext({ reset: true } as AppContextOptions);
-            fail();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.message).toBe('Router element not found. [selector: #app]');
             expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND);

@@ -6291,6 +6291,7 @@ export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extend
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 declare function isWindowContext(x: unknown): x is Window;
 declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+declare function rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
 /**
  * @en [[evaluate]]() options.
  * @ja [[evaluate]]() に渡すオプション
@@ -7963,6 +7964,7 @@ export declare namespace dom {
     var utils: {
         isWindowContext: typeof isWindowContext;
         elementify: typeof elementify;
+        rootify: typeof rootify;
         evaluate: typeof evaluate;
     };
 }
@@ -10990,7 +10992,15 @@ export type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @ja テンプレート取得オプション
  */
 export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends LoadTemplateOptions, TemplateCompileOptions, TemplateBridgeCompileOptions {
+    /**
+     * `engine` / 'bridge'
+     */
     type?: T;
+    /**
+     * @en template load callback. `bridge` mode allows localization here.
+     * @ja テンプレート読み込みコールバック. `bridge` モードではここでローカライズが可能
+     */
+    callback?: (src: string | HTMLTemplateElement) => string | HTMLTemplateElement | Promise<string | HTMLTemplateElement>;
 }
 /**
  * @en Get compiled JavaScript template.

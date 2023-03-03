@@ -20,7 +20,15 @@ export type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @ja テンプレート取得オプション
  */
 export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends LoadTemplateOptions, TemplateCompileOptions, TemplateBridgeCompileOptions {
+    /**
+     * `engine` / 'bridge'
+     */
     type?: T;
+    /**
+     * @en template load callback. `bridge` mode allows localization here.
+     * @ja テンプレート読み込みコールバック. `bridge` モードではここでローカライズが可能
+     */
+    callback?: (src: string | HTMLTemplateElement) => string | HTMLTemplateElement | Promise<string | HTMLTemplateElement>;
 }
 /**
  * @en Get compiled JavaScript template.

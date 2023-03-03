@@ -103,14 +103,16 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
     function handle(this: DOM, opts: i18n.TOptions): DOM {
         // eslint-disable-next-line no-invalid-this
         return this.each((index: number, el: HTMLElement) => {
-            const $el = $(el);
-            // localize element itself
-            localize($el, opts);
-            // localize children
-            const $children = $el.find(`[${selectorAttr}]`);
-            $children.each((index: number, el: HTMLElement) => {
-                localize($(el), opts);
-            });
+            for (const root of $.utils.rootify(el)) {
+                const $el = $(root);
+                // localize element itself
+                localize($el, opts);
+                // localize children
+                const $children = $el.find(`[${selectorAttr}]`);
+                $children.each((index: number, el: HTMLElement) => {
+                    localize($(el), opts);
+                });
+            }
         });
     }
 

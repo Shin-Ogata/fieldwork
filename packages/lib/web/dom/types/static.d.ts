@@ -1,4 +1,4 @@
-import { ElementBase, SelectorBase, QueryContext, EvalOptions, isWindowContext, elementify, evaluate } from './utils';
+import { ElementBase, SelectorBase, QueryContext, EvalOptions, isWindowContext, elementify, rootify, evaluate } from './utils';
 import { DOM, DOMPlugin, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
 declare namespace dom {
     let fn: DOMClass;
@@ -21,6 +21,7 @@ declare namespace dom {
     var utils: {
         isWindowContext: typeof isWindowContext;
         elementify: typeof elementify;
+        rootify: typeof rootify;
         evaluate: typeof evaluate;
     };
 }

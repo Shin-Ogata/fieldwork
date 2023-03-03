@@ -9,6 +9,7 @@ import {
     EvalOptions,
     isWindowContext,
     elementify,
+    rootify,
     evaluate,
 } from './utils';
 import {
@@ -47,6 +48,7 @@ function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryC
 dom.utils = {
     isWindowContext,
     elementify,
+    rootify,
     evaluate,
 };
 

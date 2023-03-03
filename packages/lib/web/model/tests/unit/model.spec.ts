@@ -746,7 +746,7 @@ describe('model/model spec', () => {
                 }, { validate: true, noThrow: true, silent: true });
             });
         } catch (e) {
-            expect('UNEXPECTED FLOW').toBe(e);
+            fail('UNEXPECTED FLOW');
         }
 
         expect(stub.onCallback).not.toHaveBeenCalled();

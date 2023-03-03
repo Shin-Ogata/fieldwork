@@ -1,4 +1,4 @@
-import { unescapeHTML } from '@cdp/core-utils';
+import { unescapeHTML, isFunction } from '@cdp/core-utils';
 import {
     JST,
     TemplateCompileOptions,
@@ -32,7 +32,15 @@ export type TemplateQueryTypes = keyof TemplateQueryTypeList;
  * @ja テンプレート取得オプション
  */
 export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends LoadTemplateOptions, TemplateCompileOptions, TemplateBridgeCompileOptions {
+    /**
+     * `engine` / 'bridge'
+     */
     type?: T;
+    /**
+     * @en template load callback. `bridge` mode allows localization here.
+     * @ja テンプレート読み込みコールバック. `bridge` モードではここでローカライズが可能
+     */
+    callback?: (src: string | HTMLTemplateElement) => string | HTMLTemplateElement | Promise<string | HTMLTemplateElement>;
 }
 
 /**
@@ -49,11 +57,16 @@ export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends Load
 export async function getTemplate<T extends TemplateQueryTypes = 'engine'>(
     selector: string, options?: TemplateQueryOptions<T>
 ): Promise<TemplateQueryTypeList[T]> {
-    const { type, url, noCache } = Object.assign({ type: 'engine', noCache: false }, options);
-    const src = await loadTemplateSource(selector, { url, noCache });
+    const { type, url, noCache, callback } = Object.assign({ type: 'engine', noCache: false }, options);
+    let src = await loadTemplateSource(selector, { url, noCache });
     if (!src) {
         throw new URIError(`cannot specified template resource. { selector: ${selector},  url: ${url} }`);
     }
+
+    if (isFunction(callback)) {
+        src = await callback(src);
+    }
+
     switch (type) {
         case 'engine':
             return TemplateEngine.compile(src instanceof HTMLTemplateElement ? unescapeHTML(src.innerHTML) : src, options) as TemplateQueryTypeList[T];

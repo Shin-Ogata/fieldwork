@@ -360,7 +360,7 @@ describe('query/query spec', () => {
                     index: 3.1,
                 };
                 await queryItems(info, provider, options);
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
                 expect(e.message).toBe('invalid index: 3.1');
@@ -371,7 +371,7 @@ describe('query/query spec', () => {
                     limit: 3.1,
                 };
                 await queryItems(info, provider, options);
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
                 expect(e.message).toBe('invalid limit: 3.1');
@@ -595,7 +595,7 @@ describe('query/query spec', () => {
                     index: 3.1,
                 };
                 await queryItems(info, provider, options);
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
                 expect(e.message).toBe('invalid index: 3.1');
@@ -606,7 +606,7 @@ describe('query/query spec', () => {
                     limit: 3.1,
                 };
                 await queryItems(info, provider, options);
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
                 expect(e.message).toBe('invalid limit: 3.1');

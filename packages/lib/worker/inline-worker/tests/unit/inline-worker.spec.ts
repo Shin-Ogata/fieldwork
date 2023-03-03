@@ -90,7 +90,7 @@ describe('inline-worker spec', () => {
         it('check thread() w/ already canceled', async () => {
             try {
                 void await thread(execAsync, { cancel: canceled });
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.message).toBe('aborted');
             }
@@ -111,7 +111,7 @@ describe('inline-worker spec', () => {
                 cancelSource.cancel(new Error('cancel'));
 
                 void await promise;
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.message).toBe('cancel');
             }
@@ -123,7 +123,7 @@ describe('inline-worker spec', () => {
                     await sleep(500);
                     return 'this is delay async exec!';
                 });
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e instanceof ErrorEvent).toBe(true);
                 expect(e.message.startsWith('Uncaught ReferenceError:')).toBe(true);

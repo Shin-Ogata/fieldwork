@@ -12,6 +12,7 @@ export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extend
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 declare function isWindowContext(x: unknown): x is Window;
 declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+declare function rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
 /**
  * @en [[evaluate]]() options.
  * @ja [[evaluate]]() に渡すオプション
@@ -1684,6 +1685,7 @@ declare namespace dom {
     var utils: {
         isWindowContext: typeof isWindowContext;
         elementify: typeof elementify;
+        rootify: typeof rootify;
         evaluate: typeof evaluate;
     };
 }

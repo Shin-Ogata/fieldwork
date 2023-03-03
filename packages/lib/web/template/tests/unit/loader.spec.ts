@@ -1,4 +1,5 @@
 import {
+    TemplateBridge,
     getTemplate,
     clearTemplateCache,
     render,
@@ -7,7 +8,16 @@ import {
     DOM,
     dom as $,
 } from '@cdp/dom';
-import { prepare, cleanup } from './tools';
+import {
+    initializeI18N,
+    changeLanguage,
+    t,
+} from '@cdp/i18n';
+import {
+    prepare,
+    cleanup,
+    ensureCleanI18N,
+} from './tools';
 
 describe('loader spec', () => {
     let _$dom: DOM;
@@ -300,7 +310,7 @@ describe('loader spec', () => {
                     type: 'bridge',
                     url: '../../.temp/res/template/test.tpl',
                 });
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e instanceof URIError).toBe(true);
                 expect(e.message).toBe('cannot specified template resource. { selector: #test-typo,  url: ../../.temp/res/template/test.tpl }');
@@ -313,11 +323,95 @@ describe('loader spec', () => {
                     type: 'typo',
                     url: '../../.temp/res/template/test.tpl',
                 } as any); // eslint-disable-line
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e instanceof TypeError).toBe(true);
                 expect(e.message).toBe('[type: typo] is unknown.');
             }
+        });
+    });
+
+    describe('localize', () => {
+        it('handle callback', async () => {
+            ensureCleanI18N();
+            await initializeI18N({
+                lng: 'ja-JP',
+                fallbackLng: 'en',
+                resources: {
+                    en: {
+                        translation: {
+                            test: {
+                                title: 'Hello World',
+                                description: 'Important Message',
+                                nest: 'Nested Message',
+                                messages: {
+                                    msg1: 'first',
+                                    msg2: 'second',
+                                }
+                            },
+                        },
+                    },
+                    ja: {
+                        translation: {
+                            test: {
+                                title: 'こんにちは、世界',
+                                description: '重要なメッセージ',
+                                nest: 'ネストされたメッセージ',
+                                messages: {
+                                    msg1: 'ひとつめ',
+                                    msg2: 'ふたつめ',
+                                }
+                            },
+                        },
+                    },
+                },
+                lowerCaseLng: true,
+            });
+
+            _$dom = $('#d1');
+
+            const templateJA = await getTemplate('#test-stampino-template', {
+                url: '../../.temp/res/template/test.tpl',
+                type: 'bridge',
+                transformer: TemplateBridge.getBuitinTransformer('stampino'),
+                callback: (src: HTMLTemplateElement) => {
+                    $(src).localize();
+                    return src;
+                },
+            });
+
+            render(templateJA({ important: true, nest: true, messages: [{ text: t('test.messages.msg1') }, { text: t('test.messages.msg2') }] }), _$dom[0]);
+            expect(_$dom.find('.title').text()).toBe('こんにちは、世界');
+            expect(_$dom.find('.important').text()).toBe('重要なメッセージ');
+            expect(_$dom.find('.message')[0].textContent).toBe('ひとつめ');
+            expect(_$dom.find('.message')[1].textContent).toBe('ふたつめ');
+            expect(_$dom.find('.nest').text()).toBe('ネストされたメッセージ');
+
+            { // 一度 DOM を完全に破棄する
+                cleanup();
+                clearTemplateCache();
+                await changeLanguage('en');
+                prepare();
+            }
+
+            _$dom = $('#d1');
+
+            const templateEN = await getTemplate('#test-stampino-template', {
+                url: '../../.temp/res/template/test.tpl',
+                type: 'bridge',
+                transformer: TemplateBridge.getBuitinTransformer('stampino'),
+                callback: (src: HTMLTemplateElement) => {
+                    $(src).localize();
+                    return src;
+                },
+            });
+
+            render(templateEN({ important: true, nest: true, messages: [{ text: t('test.messages.msg1') }, { text: t('test.messages.msg2') }] }), _$dom[0]);
+            expect(_$dom.find('.title').text()).toBe('Hello World');
+            expect(_$dom.find('.important').text()).toBe('Important Message');
+            expect(_$dom.find('.message')[0].textContent).toBe('first');
+            expect(_$dom.find('.message')[1].textContent).toBe('second');
+            expect(_$dom.find('.nest').text()).toBe('Nested Message');
         });
     });
 });
