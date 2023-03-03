@@ -1297,19 +1297,19 @@ describe('router/context spec', () => {
             try {
                 await router.commitSubFlow();
             } catch {
-                fail();
+                fail('UNEXPECTED FLOW');
             }
 
             try {
                 await router.cancelSubFlow();
             } catch {
-                fail();
+                fail('UNEXPECTED FLOW');
             }
 
             try {
                 await router.beginSubFlow('/sub/a', { base: 'invalid' });
             } catch {
-                fail();
+                fail('UNEXPECTED FLOW');
             }
 
             const e = callbackArgs[0];

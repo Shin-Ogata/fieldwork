@@ -24,7 +24,7 @@ describe('promise/deferred spec', () => {
             const df = new Deferred();
             df.reject('rejected');
             await df;
-            fail();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e).toBe('rejected');
         }
@@ -36,7 +36,7 @@ describe('promise/deferred spec', () => {
             cancel(new Error('cancel'));
             const df = new Deferred(token);
             await df;
-            fail();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.message).toBe('cancel');
         }

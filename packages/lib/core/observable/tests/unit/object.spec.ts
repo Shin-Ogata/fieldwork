@@ -46,7 +46,7 @@ describe('observable/object spec', () => {
 
     it('ObservableObject#on(NOT notify unless target is changed)', done => {
         const model = new Model(1, 1);
-        model.on('sum', () => expect('UNEXPECTED FLOW').toBeNull());
+        model.on('sum', () => fail('UNEXPECTED FLOW'));
         model.a = 2;
         model.b = 0;
         setTimeout(() => {
@@ -59,7 +59,7 @@ describe('observable/object spec', () => {
     it('ObservableObject#off', done => {
         const model = new Model(1, 1);
         const stub = {
-            onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
+            onCallback: () => { fail('UNEXPECTED FLOW'); },
         };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -76,7 +76,7 @@ describe('observable/object spec', () => {
     it('ObservableObject w/ EventSubscription#unsubscribe', done => {
         const model = new Model(1, 1);
         const stub = {
-            onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
+            onCallback: () => { fail('UNEXPECTED FLOW'); },
         };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -93,7 +93,7 @@ describe('observable/object spec', () => {
     it('ObservableObject#suspend(NOT notify during suspend)', done => {
         const model = new Model(1, 1).suspend();
         const stub = {
-            onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
+            onCallback: () => { fail('UNEXPECTED FLOW'); },
         };
         spyOn(stub, 'onCallback').and.callThrough();
 
@@ -126,7 +126,7 @@ describe('observable/object spec', () => {
     it('ObservableObject#suspend(true)', done => {
         const model = new Model(1, 1).suspend(true);
         const stub = {
-            onCallback: () => { expect('UNEXPECTED FLOW').toBeNull(); },
+            onCallback: () => { fail('UNEXPECTED FLOW'); },
         };
         spyOn(stub, 'onCallback').and.callThrough();
 

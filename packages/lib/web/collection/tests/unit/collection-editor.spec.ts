@@ -258,7 +258,7 @@ describe('collection-editor spec', () => {
 
             try {
                 await appendCollection<Track>(playlist, added);
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(toResult(e).code).toBe(RESULT_CODE.ERROR_MVC_EDIT_PERMISSION_DENIED);
             }

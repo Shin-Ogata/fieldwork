@@ -44,7 +44,7 @@ describe('promise/promise-manager spec', () => {
             expect(results[1]).toBe('resolve:50');
             expect(results[2]).toBe('resolve:0');
         } catch (e) {
-            fail();
+            fail('UNEXPECTED FLOW');
         }
 
         manager.release();
@@ -56,7 +56,7 @@ describe('promise/promise-manager spec', () => {
 
             await manager.all();
 
-            fail();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e).toBe('reject:0');
         }
@@ -85,7 +85,7 @@ describe('promise/promise-manager spec', () => {
 
             expect(result).toBe('resolve:0');
         } catch (e) {
-            fail();
+            fail('UNEXPECTED FLOW');
         }
 
         manager.release();
@@ -97,7 +97,7 @@ describe('promise/promise-manager spec', () => {
 
             await manager.race();
 
-            fail();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e).toBe('reject:0');
         }
@@ -186,7 +186,7 @@ describe('promise/promise-manager spec', () => {
             manager.add(reject0());
 
             await manager.any();
-            fail('unexpected');
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.name).toBe('AggregateError');
         }
@@ -215,14 +215,14 @@ describe('promise/promise-manager spec', () => {
 
             try {
                 await promise1;
-                fail('unexpected');
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.message).toBe('abort');
             }
 
             try {
                 await promise2;
-                fail('unexpected');
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e.message).toBe('abort');
             }
@@ -245,7 +245,7 @@ describe('promise/promise-manager spec', () => {
 
             try {
                 await promise;
-                fail('unexpected');
+                fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e).toBe('cancel');
             }

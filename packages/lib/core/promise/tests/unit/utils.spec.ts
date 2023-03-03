@@ -46,7 +46,7 @@ describe('promise/utils spec', () => {
             source.cancel(error);
             await checkCanceled(token);
 
-            fail('undexpected flow');
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e).toBe(error);
         }

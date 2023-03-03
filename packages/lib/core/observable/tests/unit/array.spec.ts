@@ -71,7 +71,7 @@ describe('observable/array spec', () => {
 
     it('ObservableArray#off()', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
-        const callback = (): void => expect('UNEXPECTED FLOW').toBeNull();
+        const callback = (): void => fail('UNEXPECTED FLOW');
         setTimeout(() => {
             observable.on(callback);
             observable.off(callback);
@@ -86,7 +86,7 @@ describe('observable/array spec', () => {
     it('ObservableArray w/ Subscription#unsubscribe()', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
-            const subscription = observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
+            const subscription = observable.on(() => fail('UNEXPECTED FLOW'));
             subscription.unsubscribe();
             observable.push('x');
             setTimeout(() => {
@@ -99,7 +99,7 @@ describe('observable/array spec', () => {
     it('ObservableArray#on(NOT notify unless target is changed)', done => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
-            observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
+            observable.on(() => fail('UNEXPECTED FLOW'));
             observable.push('x', 'y', 'z');
             observable.splice(3, 3);
             setTimeout(() => {
@@ -115,7 +115,7 @@ describe('observable/array spec', () => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             observable.suspend();
-            observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
+            observable.on(() => fail('UNEXPECTED FLOW'));
             observable.splice(0, 3, 'x', 'y', 'z');
             setTimeout(() => {
                 expect(observable.getObservableState()).toBe(ObservableState.SUSEPNDED);
@@ -152,7 +152,7 @@ describe('observable/array spec', () => {
         const observable = ObservableArray.of('a', 'b', 'c');
         setTimeout(() => {
             observable.suspend(true);
-            observable.on(() => expect('UNEXPECTED FLOW').toBeNull());
+            observable.on(() => fail('UNEXPECTED FLOW'));
             observable.splice(0, 3, 'x', 'y', 'z');
             setTimeout(() => {
                 expect(observable.getObservableState()).toBe(ObservableState.DISABLED);

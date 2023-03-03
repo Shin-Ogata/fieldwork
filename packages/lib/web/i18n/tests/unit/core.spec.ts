@@ -34,7 +34,7 @@ describe('i18n spec', () => {
                 resourcePath: '../res/i18n/locales/{{ns}}.{{lng}}.json',
                 noThrow: false,
             });
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }
@@ -112,7 +112,7 @@ describe('i18n spec', () => {
 
         try {
             await changeLanguage('fr', { noThrow: false });
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }

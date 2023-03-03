@@ -12,7 +12,7 @@ import {
 
 describe('dom/utils spec', () => {
     const body = document.body;
-    const { elementify, evaluate } = $.utils;
+    const { elementify, rootify, evaluate } = $.utils;
     const { isArray } = Array;
 
     afterEach((): void => {
@@ -255,6 +255,31 @@ describe('dom/utils spec', () => {
             };
             expect(() => elementify('.test-dom-child', invalidContext as ParentNode)).not.toThrow();
         }
+    });
+
+    it('check rootify', () => {
+        const template = document.createElement('template');
+        template.innerHTML = `
+<div>
+    <h2 class="title" data-i18n="test.title">🌐</h2>
+    <template type="if" if="{{ important }}">
+        <p class="important" data-i18n="test.description">🌐</p>
+    </template>
+</div>
+<template type="repeat" repeat="{{ messages }}">
+    <p class="message">{{ item.text }}</p>
+    <div>
+        <template type="if" if="{{ nest }}">
+            <p class="nest" data-i18n="test.nest">🌐</p>
+        </template>
+    </div>
+</template>
+        `;
+
+        const elems1 = rootify(template);
+        expect(elems1.length).toBe(4);
+        const elems2 = rootify($(elems1[0] as HTMLElement).find('.title')[0]);
+        expect(elems2.length).toBe(1);
     });
 
     it('check dom evaluate', () => {

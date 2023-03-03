@@ -224,7 +224,7 @@ describe('extention-i18n spec', () => {
                 expect('COMPLETE TEST').toBeDefined();
             } catch (e) {
                 console.error(e);
-                expect('UNEXPECTED FLOW').toBeNull();
+                fail('UNEXPECTED FLOW');
             }
         });
 

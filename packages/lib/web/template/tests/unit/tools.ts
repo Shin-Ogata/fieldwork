@@ -5,6 +5,7 @@ import {
 } from '@cdp/extension-template';
 import { dom, DOM } from '@cdp/dom';
 export { DOM };
+import { i18n } from '@cdp/i18n';
 
 const body = document.body;
 
@@ -62,3 +63,11 @@ export function cleanup(): void {
 
 export const stripExpressionMarkers = (html: string): string => html.replace(/<!--\?lit\$[0-9]+\$-->|<!--\??-->|lit\$[0-9]+\$/g, '');
 export const innerHTML = (dom: DOM): string => stripExpressionMarkers(dom[0].innerHTML);
+
+export function ensureCleanI18N(): void {
+    const context: Partial<typeof i18n> = i18n;
+    delete context['options'];
+    delete context['language'];
+    delete context['languages'];
+    delete context['isInitialized'];
+}

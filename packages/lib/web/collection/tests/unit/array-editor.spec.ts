@@ -92,7 +92,7 @@ describe('utils/array-editor spec', () => {
 
         try {
             await insertArray(array, 2.5, []);
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('insertArray(), index is invalid. index: 2.5');
@@ -118,7 +118,7 @@ describe('utils/array-editor spec', () => {
 
         try {
             await reorderArray(array, 2.5, []);
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('reorderArray(), index is invalid. index: 2.5');
@@ -150,7 +150,7 @@ describe('utils/array-editor spec', () => {
     it('check illegal input', async () => {
         try {
             await clearArray({} as any); // eslint-disable-line
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('target is not Array or ObservableArray.');
@@ -158,7 +158,7 @@ describe('utils/array-editor spec', () => {
 
         try {
             await reorderArray(array, 2, [3, 1, 5]);
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('orders[] index is invalid. index: 5');
@@ -166,7 +166,7 @@ describe('utils/array-editor spec', () => {
 
         try {
             await removeArray(array, [3, 1, -2]);
-            expect('UNEXPECTED FLOW').toBeNull();
+            fail('UNEXPECTED FLOW');
         } catch (e) {
             expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
             expect(e.message).toBe('orders[] index is invalid. index: -2');
