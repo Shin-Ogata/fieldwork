@@ -861,7 +861,7 @@ declare namespace i18n {
         /** Unique name */
         name: string;
         type: 'postProcessor';
-        process(value: string, key: string, options: TOptions, translator: any): string;
+        process(value: string, key: string | string[], options: TOptions, translator: any): string;
     }
     /**
      * Override the built-in console logger.

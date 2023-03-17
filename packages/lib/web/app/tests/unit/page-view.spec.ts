@@ -132,6 +132,6 @@ describe('page-view spec', () => {
         };
 
         const view = new TestView(route, { el: app.router.el });
-        (view as any).pageMounted({ to: route });
+        (view as any).pageInit({ to: route });
     });
 });

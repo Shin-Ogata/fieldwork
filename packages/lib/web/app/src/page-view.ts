@@ -151,6 +151,10 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
     pageInit(info: RouteChangeInfo): void | Promise<void> {
         const { to } = info;
         this[_properties].route = to;
+        const { el } = to;
+        if (el !== this.el as unknown) {
+            this.setElement(el as unknown as TElement);
+        }
         return this.onPageInit(to);
     }
 
@@ -162,10 +166,6 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
     pageMounted(info: RouteChangeInfo): void | Promise<void> {
         const { to } = info;
         this[_properties].route = to;
-        const { el } = to;
-        if (el !== this.el as unknown) {
-            this.setElement(el as unknown as TElement);
-        }
         return this.onPageMounted(to);
     }
 
