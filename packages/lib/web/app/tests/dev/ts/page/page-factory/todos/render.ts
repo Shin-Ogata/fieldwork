@@ -9,4 +9,7 @@ export const setRenderContext = (context: RenderContext, el: HTMLElement): void 
     _el      = el;
 };
 
-export const renderTodos = (): RootPart => render(_context(), _el);
+// export const renderTodos = (): RootPart => render(_context(), _el);
+export const renderTodos = (): RootPart => {
+    return render(_context(), _el);
+};
