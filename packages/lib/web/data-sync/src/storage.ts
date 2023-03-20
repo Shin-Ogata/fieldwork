@@ -76,7 +76,7 @@ export type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
 
 /** @internal check model or not */
 function isModel(context: SyncContext): boolean {
-    return !!context.constructor['idAttribute'];
+    return !!(context.constructor as unknown as Record<string, string>)['idAttribute'];
 }
 
 /** @internal create id */
@@ -88,11 +88,12 @@ function genId(url: string): string {
 function parseContext(context: SyncContext, separator: string): { model: boolean; key: string; url: string; data: { [idAttr: string]: string; }; } {
     const model  = isModel(context);
     const url    = resolveURL(context);
-    const idAttr = context.constructor['idAttribute'];
+    const idAttr = (context.constructor as unknown as Record<string, string>)['idAttribute'];
     const data = (() => {
         const retval = {} as { [idAttr: string]: string; };
         if (model) {
-            const valid    = !isFunction(context['has']) ? false : context['has'](idAttr) as boolean;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const valid    = !isFunction((context as any)['has']) ? false : (context as any)['has'](idAttr) as boolean;
             retval[idAttr] = valid ? context.id as string : genId(url);
         }
         return retval;

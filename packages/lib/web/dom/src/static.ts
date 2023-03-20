@@ -22,7 +22,7 @@ import {
 } from './class';
 
 declare namespace dom {
-    let fn: DOMClass;
+    let fn: DOMClass & Record<string | symbol, unknown>;
 }
 
 export type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
@@ -55,7 +55,7 @@ dom.utils = {
 /** @internal 循環参照回避のための遅延コンストラクションメソッド */
 export function setup(fn: DOMClass, factory: DOMFactory): void {
     _factory = factory;
-    dom.fn = fn;
+    (dom.fn as DOMClass) = fn;
 }
 
 export {

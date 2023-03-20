@@ -46,7 +46,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
         if (key.startsWith('[')) {
             const parts = key.split(']');
             key  = parts[1].trim();
-            attr = parts[0].substr(1, parts[0].length - 1).trim();
+            attr = parts[0].substring(1, parts[0].length).trim();
         }
 
         if ('html' === attr) {
@@ -58,7 +58,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
         } else if ('append' === attr) {
             insert('append', $el, key, opts);
         } else if (attr.startsWith('data-')) {
-            const dataAttr = attr.substr(('data-').length);
+            const dataAttr = attr.substring(('data-').length);
             const translated = i18next.t(key, extendDefault(opts, $el.data(dataAttr) as string));
             $el.data(dataAttr, translated);
             $el.attr(attr, translated);

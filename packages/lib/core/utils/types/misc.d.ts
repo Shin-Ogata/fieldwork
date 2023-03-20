@@ -90,7 +90,7 @@ export declare function once<T extends UnknownFunction>(executor: T): T;
  *  - `en` espace function
  *  - `ja` エスケープ関数
  */
-export declare function createEscaper(map: object): (src: Primitive) => string;
+export declare function createEscaper(map: Record<string, string>): (src: Primitive) => string;
 /**
  * @en Escape HTML string.
  * @ja HTML で使用する文字を制御文字に置換

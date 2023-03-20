@@ -1,4 +1,4 @@
-import { Class, UnknownObject, Keys } from '@cdp/core-utils';
+import { UnknownObject, Class, Keys } from '@cdp/core-utils';
 import { Silenceable, EventSource } from '@cdp/events';
 import { ModelSaveOptions } from '@cdp/model';
 import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionSeed, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
@@ -79,8 +79,7 @@ import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItem
  * }
  * ```
  */
-export declare abstract class Collection<TModel extends object = any, // eslint-disable-line @typescript-eslint/no-explicit-any
-TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>> extends EventSource<TEvent> implements Iterable<TModel> {
+export declare abstract class Collection<TModel extends object = any, TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>> extends EventSource<TEvent> implements Iterable<TModel> {
     /**
      * @en Model constructor. <br>
      *     The constructor is used internally by this [[Collection]] class for [[TModel]] construction.

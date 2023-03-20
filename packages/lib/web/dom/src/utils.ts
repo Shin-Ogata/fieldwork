@@ -74,7 +74,7 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
         } else if ((seed as Node).nodeType || isWindowContext(seed)) {
             // Node/element, Window
             elements.push(seed as Node as Element);
-        } else if (0 < (seed as T[]).length && (seed[0].nodeType || isWindowContext(seed[0]))) {
+        } else if (0 < (seed as T[]).length && ((seed as any)[0].nodeType || isWindowContext((seed as any)[0]))) {
             // array of elements or collection of DOM
             elements.push(...(seed as Node[] as Element[]));
         }
@@ -170,7 +170,7 @@ export function evaluate(code: string, options?: Element | EvalOptions, context?
 
     if (options) {
         for (const attr of _scriptsAttrs) {
-            const val = options[attr] || ((options as Element).getAttribute && (options as Element).getAttribute(attr));
+            const val = (options as Record<string, string>)[attr] || ((options as Element).getAttribute && (options as Element).getAttribute(attr));
             if (val) {
                 script.setAttribute(attr, val);
             }
@@ -181,9 +181,9 @@ export function evaluate(code: string, options?: Element | EvalOptions, context?
     try {
         getGlobalNamespace('CDP_DOM_EVAL_RETURN_VALUE_BRIDGE');
         doc.head.appendChild(script).parentNode!.removeChild(script); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-        const retval = globalThis['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
+        const retval = (globalThis as any)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
         return retval;
     } finally {
-        delete globalThis['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
+        delete (globalThis as any)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
     }
 }

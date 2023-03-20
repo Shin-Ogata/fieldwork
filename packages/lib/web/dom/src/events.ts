@@ -289,8 +289,8 @@ function eventShortcut<T extends ElementBase>(this: DOMEvents<T>, name: string, 
     if (null == handler) {
         for (const el of this) {
             if (!_noTrigger.includes(name)) {
-                if (isFunction(el[name])) {
-                    el[name]();
+                if (isFunction((el as any)[name])) {
+                    (el as any)[name]();
                 } else {
                     $(el as any).trigger(name as any);
                 }

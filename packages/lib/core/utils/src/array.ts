@@ -2,6 +2,7 @@
     no-invalid-this,
  */
 
+import type { UnknownObject } from './types';
 import { assignValue } from './deep-circuit';
 import { randomInt } from './misc';
 
@@ -196,24 +197,24 @@ export function groupBy<
     const _sumKeys: string[] = sumKeys || [];
     _sumKeys.push(_groupKey);
 
-    const hash = array.reduce((res: T, data: T) => {
+    const hash = array.reduce((res: T & UnknownObject, data: T & UnknownObject) => {
         // create groupBy internal key
         const _key = keys.reduce((s, k) => s + String(data[k]), '');
 
         // init keys
         if (!(_key in res)) {
-            const keyList = keys.reduce((h, k: string) => {
+            const keyList = keys.reduce((h: UnknownObject, k: string) => {
                 assignValue(h, k, data[k]);
                 return h;
             }, {});
 
-            res[_key] = _sumKeys.reduce((h, k: string) => {
+            (res[_key] as UnknownObject) = _sumKeys.reduce((h, k: string) => {
                 h[k] = 0;
                 return h;
             }, keyList);
         }
 
-        const resKey = res[_key];
+        const resKey = res[_key] as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // sum properties
         for (const k of _sumKeys) {

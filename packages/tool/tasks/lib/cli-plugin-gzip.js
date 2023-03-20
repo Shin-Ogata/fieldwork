@@ -1,6 +1,6 @@
 'use strict';
 
-const { basename, dirname } = require('path');
+const { basename, dirname } = require('node:path');
 const { ensureDirSync }     = require('fs-extra');
 const colors                = require('../colors');
 const { gzip }              = require('./misc');

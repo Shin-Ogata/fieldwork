@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 const { globSync } = require('glob');
 const colors = require('../colors');
 const { toPOSIX } = require('./misc');

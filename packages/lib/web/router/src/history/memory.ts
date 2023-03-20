@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/no-explicit-any
+ */
+
 import { PlainObject, post } from '@cdp/core-utils';
 import { Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
@@ -32,7 +36,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
      */
     constructor(id: string, state?: T) {
         super();
-        this[$signature] = true;
+        (this as any)[$signature] = true;
         // initialize
         void this.replace(id, state, { silent: true });
     }
@@ -43,7 +47,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
     dispose(): void {
         this._stack.dispose();
         this.off();
-        delete this[$signature];
+        delete (this as any)[$signature];
     }
 
     /**
@@ -229,7 +233,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         arg2: HistoryState<T> | undefined | ((reason?: unknown) => void),
     ): Promise<void> {
         const promises: Promise<unknown>[] = [];
-        this.publish(event, arg1, arg2 as any, promises); // eslint-disable-line @typescript-eslint/no-explicit-any
+        this.publish(event, arg1, arg2 as any, promises);
         await Promise.all(promises);
     }
 
@@ -305,7 +309,7 @@ export function createMemoryHistory<T = PlainObject>(id: string, state?: T): IHi
  *  - `ja` `MemoryHistory` インスタンスを指定
  */
 export async function resetMemoryHistory<T = PlainObject>(instance: IHistory<T>, options?: HistorySetStateOptions): Promise<void> {
-    instance[$signature] && await (instance as MemoryHistory<T>).reset(options);
+    (instance as any)[$signature] && await (instance as MemoryHistory<T>).reset(options);
 }
 
 /**
@@ -317,5 +321,5 @@ export async function resetMemoryHistory<T = PlainObject>(instance: IHistory<T>,
  *  - `ja` `MemoryHistory` インスタンスを指定
  */
 export function disposeMemoryHistory<T = PlainObject>(instance: IHistory<T>): void {
-    instance[$signature] && (instance as MemoryHistory<T>).dispose();
+    (instance as any)[$signature] && (instance as MemoryHistory<T>).dispose();
 }

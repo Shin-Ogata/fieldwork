@@ -1,7 +1,7 @@
 'use strict';
 
 const { readFileSync, outputFileSync } = require('fs-extra');
-const { resolve, basename }            = require('path');
+const { resolve, basename }            = require('node:path');
 const colors                           = require('../colors');
 
 const COMMAND = 'minify';

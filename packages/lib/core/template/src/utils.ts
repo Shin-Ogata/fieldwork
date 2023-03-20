@@ -1,5 +1,7 @@
 import { isArray, isPrimitive } from '@cdp/core-utils';
 export {
+    UnknownFunction,
+    UnknownObject,
     PlainObject,
     isString,
     isArray,

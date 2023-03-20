@@ -15,13 +15,11 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
-    "noImplicitUseStrict": true,
     "pretty": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "suppressImplicitAnyIndexErrors": true,
     "useDefineForClassFields": true
   }
 }

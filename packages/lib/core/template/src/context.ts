@@ -1,5 +1,7 @@
 import { TemplateContext } from './interfaces';
 import {
+    UnknownFunction,
+    UnknownObject,
     PlainObject,
     isFunction,
     has,
@@ -52,7 +54,7 @@ export class Context implements TemplateContext {
             value = cache[name];
         } else {
             let context: Context | undefined = this; // eslint-disable-line @typescript-eslint/no-this-alias
-            let intermediateValue: object | undefined | null;
+            let intermediateValue: UnknownObject | undefined | null;
             let names: string[];
             let index: number;
             let lookupHit = false;
@@ -87,7 +89,7 @@ export class Context implements TemplateContext {
                                 primitiveHasOwnProperty(intermediateValue, names[index])
                             );
                         }
-                        intermediateValue = intermediateValue[names[index++]];
+                        intermediateValue = intermediateValue[names[index++]] as UnknownObject;
                     }
                 } else {
                     intermediateValue = context._view[name];
@@ -126,7 +128,7 @@ export class Context implements TemplateContext {
         }
 
         if (isFunction(value)) {
-            value = value.call(this._view);
+            value = (value as UnknownFunction).call(this._view);
         }
 
         return value;

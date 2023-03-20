@@ -204,7 +204,7 @@ export function once<T extends UnknownFunction>(executor: T): T {
  *  - `en` espace function
  *  - `ja` エスケープ関数
  */
-export function createEscaper(map: object): (src: Primitive) => string {
+export function createEscaper(map: Record<string, string>): (src: Primitive) => string {
     const escaper = (match: string): string => {
         return map[match];
     };

@@ -228,7 +228,7 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
     if (null == content) {
         // noop element
         params.$template = $<HTMLElement>();
-    } else if (isString(content['selector'])) {
+    } else if (isString((content as Record<string, unknown>)['selector'])) {
         // from ajax
         const { selector, url } = content as { selector: string; url?: string; };
         const template = toTemplateElement(await loadTemplateSource(selector, { url }));

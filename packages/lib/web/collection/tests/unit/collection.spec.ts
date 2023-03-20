@@ -3,6 +3,7 @@
  */
 
 import {
+    UnknownObject,
     Constructor,
     GroupByReturnValue,
     sleep,
@@ -2153,7 +2154,7 @@ describe('collection/base spec', () => {
         }
 
         class CustomTrack3 extends CustomTrack2 {
-            private _prev: Track;
+            private _prev: Track & UnknownObject;
             constructor(t: Track) {
                 super(t);
                 this._prev = { ...this._track };

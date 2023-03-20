@@ -8,6 +8,7 @@ import { t } from '@cdp/i18n';
 import { ViewEventsHash } from '@cdp/view';
 import { Route } from '@cdp/router';
 import { PageView, registerPage } from '@cdp/app';
+import { i18nKey } from '../../types';
 import { entry } from '../signature';
 
 entry('PAGE_CONTEXT_PAGE_VIEW');
@@ -68,8 +69,9 @@ class RouterPageView extends PageView {
             <h2>${t('app.pageView.title')}</h2>
             <hr/>
             <label>👈</label>
-            <button id="page-view-back">${t('app.common.back')}</button>
+            <button id="page-view-back">${t(i18nKey.app.common.back)}</button>
             <ul>
+                <li><a href="/class" data-transition="slide">${t(i18nKey.app.navigateTo.class)}</a></li>
                 <li><button data-navigate-to="/subflow" @click=${this.onGo.bind(this)}>🌐</button></li>
             </ul>
         `;

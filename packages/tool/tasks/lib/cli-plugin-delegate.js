@@ -4,7 +4,7 @@ const {
     resolve,
     relative,
     dirname,
-} = require('path');
+} = require('node:path');
 const colors    = require('../colors');
 const command   = require('../command');
 const resolver  = require('./resolve-dependency');

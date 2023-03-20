@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve, dirname } = require('path');
+const { resolve, dirname } = require('node:path');
 const {
     existsSync,
     writeFileSync,

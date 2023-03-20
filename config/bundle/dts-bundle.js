@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve }       = require('path');
+const { resolve }       = require('node:path');
 const { config, merge } = require('@cdp/tasks');
 const {
     outName: OUTNAME,

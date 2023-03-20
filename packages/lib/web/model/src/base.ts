@@ -3,8 +3,8 @@
  */
 
 import {
-    Nullish,
     UnknownObject,
+    Nullish,
     Constructor,
     Class,
     Arguments,
@@ -63,7 +63,7 @@ import {
 
 /** @internal */
 interface Property<T> {
-    attrs: ObservableObject;
+    attrs: ObservableObject & UnknownObject;
     baseAttrs: T;
     prevAttrs: T;
     changedAttrs?: Partial<T>;
@@ -210,7 +210,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
         const opts = Object.assign({}, options);
         const attrs = opts.parse ? this.parse(attributes, opts) as T : attributes;
         const props: Property<T> = {
-            attrs: ObservableObject.from(attrs),
+            attrs: ObservableObject.from(attrs) as ObservableObject & UnknownObject,
             baseAttrs: { ...attrs },
             prevAttrs: { ...attrs },
             cid: luid('model:', 8),
@@ -223,7 +223,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
             this[_defineAttributes](this, key);
         }
 
-        this[_changeHandler] = () => {
+        (this as any)[_changeHandler] = () => {
             (this as Model).trigger('@change', this as Model);
 
             const { _prevAttrs, _attrs } = this;
@@ -279,7 +279,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     get id(): string {
         const idAttr = idAttribute(this, 'id');
         const { cid, attrs } = this[_properties];
-        return (idAttr in attrs) ? attrs[idAttr] || cid : cid;
+        return (idAttr in attrs) ? attrs[idAttr] as string || cid : cid;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -289,7 +289,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @en Attributes instance
      * @ja 属性を格納するインスタンス
      */
-    protected get _attrs(): ObservableObject {
+    protected get _attrs(): ObservableObject & UnknownObject {
         return this[_properties].attrs;
     }
 
@@ -305,8 +305,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @en Previous attributes instance
      * @ja 変更前の属性を格納するインスタンス
      */
-    protected get _prevAttrs(): T {
-        return this[_properties].prevAttrs;
+    protected get _prevAttrs(): T & UnknownObject {
+        return this[_properties].prevAttrs as T & UnknownObject;
     }
 
     /**
@@ -421,7 +421,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `ja` `channel` に対応したコールバック関数
      */
     public on<Channel extends keyof TEvent>(channel: Channel | Channel[], listener: (...args: Arguments<TEvent[Channel]>) => unknown): Subscription {
-        this._attrs.on('@', this[_changeHandler]);
+        this._attrs.on('@', (this as any)[_changeHandler]);
         return this._attrs.on(channel as any, listener as any);
     }
 
@@ -573,7 +573,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     public clear(options?: ModelSetOptions): this {
         const clearAttrs = {};
         for (const attr of Object.keys(this._baseAttrs)) {
-            clearAttrs[attr] = undefined;
+            (clearAttrs as UnknownObject)[attr] = undefined;
         }
         return this.setAttributes(clearAttrs, options);
     }
@@ -832,5 +832,5 @@ export function isModel(x: unknown): x is Model {
  * @ja [[Model]] の `id-attribute` を取得
  */
 export function idAttribute(x: unknown, fallback = ''): string {
-    return isObject(x) ? (x.constructor['idAttribute'] || fallback) : fallback;
+    return isObject(x) ? ((x.constructor as any)['idAttribute'] || fallback) : fallback;
 }
