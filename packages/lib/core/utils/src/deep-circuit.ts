@@ -147,7 +147,7 @@ export function deepEqual(lhs: unknown, rhs: unknown): boolean {
             }
         }
         for (const key of keysL) {
-            if (!deepEqual(lhs[key], rhs[key])) {
+            if (!deepEqual((lhs as UnknownObject)[key], (rhs as UnknownObject)[key])) {
                 return false;
             }
         }
@@ -165,7 +165,7 @@ export function deepEqual(lhs: unknown, rhs: unknown): boolean {
             keys.add(key);
         }
         for (const key of keys) {
-            if (!deepEqual(lhs[key], rhs[key])) {
+            if (!deepEqual((lhs as UnknownObject)[key], (rhs as UnknownObject)[key])) {
                 return false;
             }
         }

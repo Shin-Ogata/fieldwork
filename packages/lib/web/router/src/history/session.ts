@@ -1,4 +1,9 @@
+/* eslint-disable
+    @typescript-eslint/no-explicit-any
+ */
+
 import {
+    UnknownObject,
     PlainObject,
     isObject,
     noop,
@@ -53,17 +58,17 @@ const toPath = (url: string): string => {
 };
 
 /** @internal */
-const setDispatchInfo = <T>(state: T, additional: DispatchInfo<T>): T => {
-    state[$cdp] = additional;
+const setDispatchInfo = <T>(state: T & UnknownObject, additional: DispatchInfo<T>): T => {
+    (state[$cdp] as DispatchInfo<T>) = additional;
     return state;
 };
 
 /** @internal */
-const parseDispatchInfo = <T>(state: T): [T, DispatchInfo<T>?] => {
+const parseDispatchInfo = <T>(state: T & UnknownObject): [T, DispatchInfo<T>?] => {
     if (isObject(state) && state[$cdp]) {
         const additional = state[$cdp];
         delete state[$cdp];
-        return [state, additional];
+        return [state, additional as DispatchInfo<T>];
     } else {
         return [state];
     }
@@ -90,7 +95,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      */
     constructor(windowContxt: Window, mode: 'hash' | 'history', id?: string, state?: T) {
         super();
-        this[$signature] = true;
+        (this as any)[$signature] = true;
         this._window = windowContxt;
         this._mode = mode;
 
@@ -108,7 +113,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         this._window.removeEventListener('popstate', this._popStateHandler);
         this._stack.dispose();
         this.off();
-        delete this[$signature];
+        delete (this as any)[$signature];
     }
 
     /**
@@ -320,7 +325,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         arg2: HistoryState<T> | undefined | ((reason?: unknown) => void),
     ): Promise<void> {
         const promises: Promise<unknown>[] = [];
-        this.publish(event, arg1, arg2 as any, promises); // eslint-disable-line @typescript-eslint/no-explicit-any
+        this.publish(event, arg1, arg2 as any, promises);
         await Promise.all(promises);
     }
 
@@ -358,7 +363,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     }
 
     /** @internal dispatch `popstate` events */
-    private async dispatchChangeInfo(newState: T, additional: DispatchInfo<T>): Promise<void> {
+    private async dispatchChangeInfo(newState: T & UnknownObject, additional: DispatchInfo<T>): Promise<void> {
         const state = setDispatchInfo(newState, additional);
         this._window.dispatchEvent(new PopStateEvent('popstate', { state }));
         await additional.df;
@@ -412,7 +417,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     private async backToSesssionOrigin(): Promise<void> {
         await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
             const isOrigin = (st: unknown): boolean => {
-                return st && (st as object)['@origin'];
+                return (st && (st as UnknownObject)['@origin']) as boolean;
             };
 
             const { history } = this._window;
@@ -502,7 +507,7 @@ export function createSessionHistory<T = PlainObject>(id?: string, state?: T, op
  *  - `ja` `SessionHistory` インスタンスを指定
  */
 export async function resetSessionHistory<T = PlainObject>(instance: IHistory<T>, options?: HistorySetStateOptions): Promise<void> {
-    instance[$signature] && await (instance as SessionHistory<T>).reset(options);
+    (instance as any)[$signature] && await (instance as SessionHistory<T>).reset(options);
 }
 
 /**
@@ -514,5 +519,5 @@ export async function resetSessionHistory<T = PlainObject>(instance: IHistory<T>
  *  - `ja` `SessionHistory` インスタンスを指定
  */
 export function disposeSessionHistory<T = PlainObject>(instance: IHistory<T>): void {
-    instance[$signature] && (instance as SessionHistory<T>).dispose();
+    (instance as any)[$signature] && (instance as SessionHistory<T>).dispose();
 }

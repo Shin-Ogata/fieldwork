@@ -200,8 +200,8 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
     public prop<T extends NonFunctionPropertyNames<TElement>>(key: T | PlainObject, value?: TElement[T]): TElement[T] | this {
         if (null == value && isString(key)) {
             // get first element property
-            const first = this[0];
-            return first && first[key as string];
+            const first = this[0] as TElement & Record<string, TElement[T]>;
+            return first && first[key];
         } else {
             // set property
             for (const el of this) {
@@ -212,7 +212,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
                     // multiple
                     for (const name of Object.keys(key)) {
                         if (name in el) {
-                            assignValue(el as unknown as UnknownObject, name, key[name]);
+                            assignValue(el as unknown as UnknownObject, name, (key as Record<string, TElement[T]>)[name]);
                         }
                     }
                 }
@@ -280,7 +280,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
                     } else {
                         // multiple
                         for (const name of Object.keys(key)) {
-                            const val = key[name];
+                            const val = (key as Record<string, unknown>)[name];
                             if (null === val) {
                                 el.removeAttribute(name);
                             } else {

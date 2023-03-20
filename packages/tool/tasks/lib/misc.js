@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve, dirname } = require('path');
+const { resolve, dirname } = require('node:path');
 const fs                   = require('fs-extra');
 const { globSync }         = require('glob');
 const { merge }            = require('lodash');

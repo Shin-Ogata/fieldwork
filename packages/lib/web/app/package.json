@@ -1,7 +1,7 @@
 {
   "name": "@cdp/app",
   "description": "application context",
-  "version": "0.9.16",
+  "version": "0.9.17",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"
@@ -40,7 +40,7 @@
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
     "bundle:dev": "run-p bundle:dev:*",
-    "bundle:dev:html": "cdp-task bundle html --config ./tests/dev/dev.config.js",
+    "bundle:dev:html": "cdp-task bundle html -c ./tests/dev/dev.config.js",
     "bundle:dev:ts": "rollup -c ./tests/dev/dev.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
@@ -66,6 +66,7 @@
     "copy:dev:resource": "cdp-task copy ./res/**/* ../../.temp/dev -w ./tests/dev",
     "copy:dev:template": "cdp-task copy ./tpl/*.tpl ../../.temp/dev -w ./tests/dev",
     "debug": "npm run compile && run-p unit-test watch",
+    "gents:i18n": "cdp-task i18n genkey -i ./tests/dev/res/locales/messages.en-US.json -o ./tests/dev/ts/types/i18nkey.ts",
     "lint": "eslint src tests/unit tests/dev/ts -c ../../../../config/lint/tslint.js --ext .ts",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../../config/lint/eslint.js",

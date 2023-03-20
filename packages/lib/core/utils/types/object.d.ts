@@ -1,4 +1,4 @@
-import { Nullish, Writable } from './types';
+import { UnknownObject, Nullish, Writable } from './types';
 /**
  * @en Check whether input source has a property.
  * @ja 入力元がプロパティを持っているか判定
@@ -38,7 +38,7 @@ export declare function omit<T extends object, K extends keyof T>(target: T, ...
  *  - `en` target object
  *  - `ja` 対象オブジェクト
  */
-export declare function invert<T extends object = object>(target: object): T;
+export declare function invert<T extends object = UnknownObject>(target: object): T;
 /**
  * @en Get shallow copy of difference between `base` and `src`.
  * @ja `base` と `src` の差分プロパティをもつオブジェクトの Shallow Copy を取得

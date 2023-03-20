@@ -125,7 +125,7 @@ export const queryPlatform = (
         firefox: false,
         macos: false,
         windows: false,
-        cordova: !!(getGlobal()['cordova']),
+        cordova: !!((getGlobal() as Record<string, unknown>)['cordova']),
         electron: false,
     } as unknown as Writable<Platform>;
 

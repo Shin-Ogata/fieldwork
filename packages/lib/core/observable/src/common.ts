@@ -1,3 +1,4 @@
+import type { UnknownObject } from '@cdp/core-utils';
 import { Subscription, EventBroker } from '@cdp/events';
 import { _internal } from './internal';
 
@@ -75,5 +76,5 @@ export interface IObservableEventBrokerAccess<T extends object = any> extends IO
  *  - `ja` 評価する値
  */
 export function isObservable(x: unknown): x is IObservable {
-    return Boolean(x && (x as object)[_internal]);
+    return Boolean(x && (x as UnknownObject)[_internal]);
 }

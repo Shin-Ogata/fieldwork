@@ -6,7 +6,7 @@ const {
     basename,
     dirname,
     sep,
-} = require('path');
+} = require('node:path');
 const { copySync, writeFileSync } = require('fs-extra');
 const config = require('../config');
 

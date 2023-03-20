@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve, join } = require('path');
+const { resolve, join } = require('node:path');
 const { includes } = require('@cdp/tasks');
 const { packageName, src } = require('@cdp/tasks/config').build;
 const config = require('../../../../config/bundle/rollup-test');

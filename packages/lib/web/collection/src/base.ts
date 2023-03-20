@@ -1,7 +1,11 @@
+/* eslint-disable
+    @typescript-eslint/no-explicit-any,
+ */
+
 import {
+    UnknownObject,
     Constructor,
     Class,
-    UnknownObject,
     Keys,
     isNullish,
     isArray,
@@ -93,17 +97,17 @@ const ensureSortOptions = <T extends object, K extends Keys<T>>(options: Collect
 
 /** @internal */
 const modelIdAttribute = <T extends object>(ctor: Constructor<T> | undefined): string => {
-    return ctor?.['idAttribute'] || 'id';
+    return (ctor as any)?.['idAttribute'] || 'id';
 };
 
 /** @internal */
 const getModelId = <T extends object>(attrs: T, ctor: Constructor<T> | undefined): string => {
-    return attrs[modelIdAttribute(ctor)];
+    return (attrs as any)[modelIdAttribute(ctor)];
 };
 
 /** @internal */
 const getChangedIds = <T extends object>(obj: object, ctor: Constructor<T> | undefined): { id: string; prevId?: string; } | undefined => {
-    type ModelLike = { previous: (key: string) => string; };
+    type ModelLike = { previous: (key: string) => string; } & UnknownObject;
     const model = obj as ModelLike;
 
     const idAttribute = modelIdAttribute(ctor);
@@ -112,12 +116,12 @@ const getChangedIds = <T extends object>(obj: object, ctor: Constructor<T> | und
         return undefined;
     }
 
-    return { id: model[idAttribute], prevId: isFunction(model.previous) ? model.previous(idAttribute) : undefined };
+    return { id: model[idAttribute] as string, prevId: isFunction(model.previous) ? model.previous(idAttribute) : undefined };
 };
 
 /** @internal */
 const modelConstructor = <T extends object, E extends CollectionEvent<T>, K extends Keys<T>>(self: Collection<T, E, K>): Class | undefined => {
-    return self.constructor['model'];
+    return (self.constructor as any)['model'];
 };
 
 /** @internal */
@@ -227,7 +231,7 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
  * ```
  */
 export abstract class Collection<
-    TModel extends object = any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    TModel extends object = any,
     TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>,
     TKey extends Keys<TModel> = Keys<TModel>
 > extends EventSource<TEvent> implements Iterable<TModel> {
@@ -276,14 +280,14 @@ export abstract class Collection<
         this.initQueryInfo();
 
         /* model event handler */
-        this[_onModelEvent] = (event: string, model: TModel | undefined, collection: this, options: CollectionOperationOptions): void => {
+        (this as any)[_onModelEvent] = (event: string, model: TModel | undefined, collection: this, options: CollectionOperationOptions): void => {
             if (isString(event) && event.startsWith('@') && model) {
                 if (('@add' === event || '@remove' === event) && collection !== this) {
                     return;
                 }
                 if ('@destroy' === event) {
                     // model event arguments adjustment.
-                    options = (collection as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+                    options = (collection as any);
                     collection = this;             // eslint-disable-line @typescript-eslint/no-this-alias
                     this.remove(model, options);
                 }
@@ -1215,7 +1219,7 @@ export abstract class Collection<
             byId.set(id, model);
         }
         if (isModel(model) || (model instanceof EventPublisher)) {
-            this.listenTo(model as Subscribable, '*', this[_onModelEvent]);
+            this.listenTo(model as Subscribable, '*', (this as any)[_onModelEvent]);
         }
     }
 
@@ -1230,7 +1234,7 @@ export abstract class Collection<
             byId.delete(id);
         }
         if (!partial && (isModel(model) || (model instanceof EventPublisher))) {
-            this.stopListening(model as Subscribable, '*', this[_onModelEvent]);
+            this.stopListening(model as Subscribable, '*', (this as any)[_onModelEvent]);
         }
     }
 

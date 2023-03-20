@@ -77,10 +77,10 @@ function manageSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'width' |
         // getter
         if (isTypeWindow(dom)) {
             // スクロールバーを除いた幅 (clientWidth / clientHeight)
-            return dom[0].document.documentElement[`client${classify(type)}`];
+            return (dom[0].document.documentElement as unknown as Record<string, number>)[`client${classify(type)}`];
         } else if (isTypeDocument(dom)) {
             // (scrollWidth / scrollHeight)
-            return dom[0].documentElement[`scroll${classify(type)}`];
+            return (dom[0].documentElement as unknown as Record<string, number>)[`scroll${classify(type)}`];
         } else {
             const el = dom[0];
             if (isNodeHTMLOrSVGElement(el)) {
@@ -111,7 +111,7 @@ function manageInnerSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
             const el = dom[0];
             if (isNodeHTMLOrSVGElement(el)) {
                 // (clientWidth / clientHeight)
-                return el[`client${classify(type)}`];
+                return (el as unknown as Record<string, number>)[`client${classify(type)}`];
             } else {
                 return 0;
             }
@@ -161,7 +161,7 @@ function manageOuterSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
         // getter
         if (isTypeWindow(dom)) {
             // スクロールバーを含めた幅 (innerWidth / innerHeight)
-            return dom[0][`inner${classify(type)}`];
+            return (dom[0] as unknown as Record<string, number>)[`inner${classify(type)}`];
         } else if (isTypeDocument(dom)) {
             return manageSizeFor(dom as DOMStyles<T>, type);
         } else {
@@ -229,7 +229,7 @@ function getOffsetPosition(el: Element): { top: number; left: number; } {
 export function getOffsetSize(el: HTMLOrSVGElement, type: 'width' | 'height'): number {
     if (null != (el as HTMLElement).offsetWidth) {
         // (offsetWidth / offsetHeight)
-        return el[`offset${classify(type)}`];
+        return (el as unknown as Record<string, number>)[`offset${classify(type)}`];
     } else {
         /*
          * [NOTE] SVGElement は offsetWidth がサポートされない

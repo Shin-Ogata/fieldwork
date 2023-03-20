@@ -1,7 +1,7 @@
 'use strict';
 
 const fs          = require('fs-extra');
-const { resolve } = require('path');
+const { resolve } = require('node:path');
 const { pkg }     = require('./config');
 
 function buildDate() {

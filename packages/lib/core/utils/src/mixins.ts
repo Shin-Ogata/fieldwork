@@ -4,6 +4,7 @@
 
 import {
     UnknownFunction,
+    UnknownObject,
     Nullish,
     Type,
     Class,
@@ -95,7 +96,7 @@ export interface MixClassAttribute {
 
 /** @internal copy properties core */
 function reflectProperties(target: object, source: object, key: string | symbol): void {
-    if (null == target[key]) {
+    if (null == (target as UnknownObject)[key]) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
     }
 }
@@ -208,7 +209,7 @@ export function setMixClassAttribute<T extends object, U extends keyof MixClassA
 ): void {
     switch (attr) {
         case 'protoExtendsOnly':
-            target[_protoExtendsOnly] = true;
+            (target as unknown as UnknownObject)[_protoExtendsOnly] = true;
             break;
         case 'instanceOf':
             setInstanceOf(target, method);
@@ -355,8 +356,8 @@ export function mixins<
         const desc = Object.getOwnPropertyDescriptor(srcClass, Symbol.hasInstance);
         if (!desc || desc.writable) {
             const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
-            setInstanceOf(srcClass, (inst: object) => {
-                return orgInstanceOf.call(srcClass, inst) || ((null != inst && inst[_isInherited]) ? inst[_isInherited](srcClass) : false);
+            setInstanceOf(srcClass, (inst: UnknownObject) => {
+                return orgInstanceOf.call(srcClass, inst) || ((null != inst && inst[_isInherited]) ? (inst[_isInherited] as UnknownFunction)(srcClass) : false);
             });
         }
         // provide prototype

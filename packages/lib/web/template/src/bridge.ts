@@ -12,7 +12,7 @@ import {
 import { PlainObject } from '@cdp/core-utils';
 
 /** @internal builtin transformers (default: mustache). */
-const _builtins = {
+const _builtins: Record<string, TemplateTransformer> = {
     mustache: createMustacheTransformer(html, directives.unsafeHTML),
     stampino: createStampinoTransformer(),
 };

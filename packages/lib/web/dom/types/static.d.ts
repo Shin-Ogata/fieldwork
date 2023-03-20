@@ -1,7 +1,7 @@
 import { ElementBase, SelectorBase, QueryContext, EvalOptions, isWindowContext, elementify, rootify, evaluate } from './utils';
 import { DOM, DOMPlugin, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
 declare namespace dom {
-    let fn: DOMClass;
+    let fn: DOMClass & Record<string | symbol, unknown>;
 }
 export type DOMFactory = <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null) => DOMResult<T>;
 /**

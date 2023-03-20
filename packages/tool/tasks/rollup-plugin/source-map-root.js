@@ -1,6 +1,6 @@
 'use strict';
 
-const { relative } = require('path');
+const { relative } = require('node:path');
 
 function refrect(opts, content, map) {
     const { VERSION } = require('rollup');

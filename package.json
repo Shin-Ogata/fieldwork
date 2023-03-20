@@ -1,7 +1,7 @@
 {
   "name": "fieldwork",
   "description": "feasibility study",
-  "version": "0.9.16",
+  "version": "0.9.17",
   "author": "Shin Ogata",
   "bugs": {
     "url": "https://github.com/Shin-Ogata/fieldwork/issues"
@@ -45,8 +45,8 @@
     "tar": "6.1.13",
     "terser": "5.16.6",
     "testem": "3.10.1",
-    "typedoc": "0.23.27",
-    "typescript": "4.9.5"
+    "typedoc": "0.23.28",
+    "typescript": "5.0.2"
   },
   "homepage": "https://github.com/Shin-Ogata/fieldwork#readme",
   "keywords": [

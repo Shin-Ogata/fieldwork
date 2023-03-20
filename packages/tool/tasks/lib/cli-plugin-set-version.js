@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve, basename } = require('path');
+const { resolve, basename } = require('node:path');
 const { existsSync, writeFileSync } = require('fs-extra');
 const { valid, lte } = require('semver');
 const colors = require('../colors');

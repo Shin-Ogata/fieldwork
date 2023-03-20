@@ -17,6 +17,7 @@ import {
     i18n,
 } from '@cdp/i18n';
 import {
+    Route,
     RouteChangeInfo,
     RouteParameters,
     RouterConstructionOptions,
@@ -263,7 +264,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
     }
 
     get activePage(): Page {
-        return this._router.currentRoute['@params']?.page || {};
+        return (this._router.currentRoute as Route & Record<string, { page: Page; }>)['@params']?.page || {};
     }
 
     get orientation(): Orientation {

@@ -21,7 +21,7 @@ import { settings } from './settings';
 export type AjaxHeaderOptions = Pick<AjaxOptions<AjaxDataTypes>, 'headers' | 'method' | 'contentType' | 'dataType' | 'mode' | 'body' | 'username' | 'password'>;
 
 /** @internal */
-const _acceptHeaderMap = {
+const _acceptHeaderMap: Record<string, string> = {
     text: 'text/plain, text/html, application/xml; q=0.8, text/xml; q=0.8, */*; q=0.01',
     json: 'application/json, text/javascript, */*; q=0.01',
 };

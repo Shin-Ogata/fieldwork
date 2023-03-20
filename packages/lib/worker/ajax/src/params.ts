@@ -75,7 +75,7 @@ export const convertUrlParamType = (value: string): string | number | boolean | 
  * @returns { key: value } object.
  */
 export const parseUrlQuery = <T = Record<string, string | number | boolean | null>>(url: string): T => {
-    const query = {};
+    const query: Record<string, unknown> = {};
     const params = new URLSearchParams(url.includes('?') ? url.split('?')[1] : url);
     for (const [key, value] of params) {
         query[decodeURIComponent(key)] = convertUrlParamType(value);

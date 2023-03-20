@@ -1,4 +1,9 @@
-import { Keys, isFunction } from '@cdp/core-utils';
+import {
+    UnknownFunction,
+    UnknownObject,
+    Keys,
+    isFunction,
+} from '@cdp/core-utils';
 import { Subscribable, EventSource } from '@cdp/events';
 import type { AjaxDataStreamEvent, AjaxDataStream } from './interfaces';
 
@@ -32,7 +37,7 @@ export const toAjaxDataStream = (seed: Blob | ReadableStream<Uint8Array>, length
         }
     })();
 
-    const _eventSource = new EventSource<AjaxDataStreamEvent>();
+    const _eventSource = new EventSource<AjaxDataStreamEvent>() as (EventSource<AjaxDataStreamEvent> & UnknownObject);
 
     const _proxyReaderHandler: ProxyHandler<ReadableStreamDefaultReader<Uint8Array>> = {
         get: (target: ReadableStreamDefaultReader<Uint8Array>, prop: string) => {
@@ -63,7 +68,7 @@ export const toAjaxDataStream = (seed: Blob | ReadableStream<Uint8Array>, length
             } else if ('length' === prop) {
                 return total;
             } else if (_subscribableMethods.includes(prop as Keys<Subscribable>)) {
-                return (...args: unknown[]) => _eventSource[prop](...args);
+                return (...args: unknown[]) => (_eventSource[prop] as UnknownFunction)(...args);
             } else {
                 return _execGetDefault(target, prop);
             }

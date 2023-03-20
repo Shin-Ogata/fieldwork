@@ -1,4 +1,4 @@
-import { Nullish, Arguments } from '@cdp/core-utils';
+import { UnknownObject, Nullish, Arguments } from '@cdp/core-utils';
 import { Subscription, Silenceable, EventReceiver, EventSource } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
 import { Result } from '@cdp/result';
@@ -115,7 +115,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      * @en Attributes instance
      * @ja 属性を格納するインスタンス
      */
-    protected get _attrs(): ObservableObject;
+    protected get _attrs(): ObservableObject & UnknownObject;
     /**
      * @en Default attributes instance
      * @ja 既定値属性を格納するインスタンス
@@ -125,7 +125,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      * @en Previous attributes instance
      * @ja 変更前の属性を格納するインスタンス
      */
-    protected get _prevAttrs(): T;
+    protected get _prevAttrs(): T & UnknownObject;
     /**
      * @en Changed attributes instance
      * @ja 変更のあった属性を格納するインスタンス

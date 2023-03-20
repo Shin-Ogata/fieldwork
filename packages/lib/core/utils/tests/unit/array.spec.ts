@@ -1,4 +1,5 @@
 /* eslint-disable
+    @typescript-eslint/no-explicit-any,
     @typescript-eslint/require-await,
  */
 
@@ -138,13 +139,13 @@ describe('utils/array spec', () => {
         expect(result1).toBeDefined();
         expect(result1[0].trackArtist).toBeDefined();
         expect(result1[0].albumTitle).toBeDefined();
-        expect(result1[0]['duration']).toBeUndefined(); // compile error: result1[0].duration
-        expect(result1[0]['size']).toBeUndefined();     // compile error: result1[0].size
+        expect((result1[0] as any)['duration']).toBeUndefined(); // compile error: result1[0].duration
+        expect((result1[0] as any)['size']).toBeUndefined();     // compile error: result1[0].size
         expect(result1[0].items).toBeDefined();
 
         const result2 = groupBy(tracks, { keys: ['albumTitle'], sumKeys: ['duration', 'size'] });
         expect(result2).toBeDefined();
-        expect(result2[0]['trackArtist']).toBeUndefined();  // compile error: result2[0].trackArtist
+        expect((result2[0] as any)['trackArtist']).toBeUndefined();  // compile error: result2[0].trackArtist
         expect(result2[0].albumTitle).toBeDefined();
         expect(result2[0].duration).toBeDefined();
         expect(result2[0].size).toBeDefined();
@@ -152,11 +153,11 @@ describe('utils/array spec', () => {
 
         const result3 = groupBy(tracks, { keys: ['albumTitle'], sumKeys: ['size'], groupKey: 'hoge' });
         expect(result3).toBeDefined();
-        expect(result3[0]['trackArtist']).toBeUndefined();  // compile error: result3[0].trackArtist
+        expect((result3[0] as any)['trackArtist']).toBeUndefined(); // compile error: result3[0].trackArtist
         expect(result3[0].albumTitle).toBeDefined();
-        expect(result3[0]['duration']).toBeUndefined();     // compile error: result3[0].duration
+        expect((result3[0] as any)['duration']).toBeUndefined();    // compile error: result3[0].duration
         expect(result3[0].size).toBeDefined();
-        expect(result3[0]['items']).toBeUndefined();        // compile error: result3[0].items
+        expect((result3[0] as any)['items']).toBeUndefined();       // compile error: result3[0].items
         expect(result3[0].hoge).toBeDefined();
     });
 

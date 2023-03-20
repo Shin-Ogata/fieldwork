@@ -13,7 +13,7 @@ const {
     resolve,
     basename,
     dirname,
-} = require('path');
+} = require('node:path');
 const colors         = require('../colors');
 const command        = require('../command');
 const { pkg, dir }   = require('../config');
@@ -30,8 +30,8 @@ function defineCommands(commander, cmd, isDefault) {
         .description('manage bundled dev-dependencis')
         .option('-c, --config <path>', 'specified config file')
         .option('-v, --validate',      'validate for bundle task')
-        .option('-i, --input',         'input file')
-        .option('-o, --output',        'output file')
+        .option('-i, --input <path>',  'input file')
+        .option('-o, --output <path>', 'output file')
         .action((mode, options) => {
             cmd.action = COMMAND;
             const { cwd, silent } = commander.opts();

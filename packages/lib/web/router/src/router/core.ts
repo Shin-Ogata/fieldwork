@@ -375,7 +375,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const intent = newState.intent;
         delete newState.intent; // navigate 時に指定された intent は one time のみ有効にする
 
-        const from = oldState || this._lastRoute;
+        const from = (oldState || this._lastRoute) as RouteContext & Record<string, string> | undefined;
         const direction = this._history.direct(newState['@id'], from?.['@id']).direction;
         const asyncProcess = new RouteAyncProcessContext();
         const reload = newState.url === from?.url;
@@ -411,9 +411,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** @internal trigger page event */
     private triggerPageCallback(event: PageEvent, target: Page | undefined, arg: Route | RouteChangeInfoContext): void {
         const method = camelize(`page-${event}`);
-        if (isFunction(target?.[method])) {
-            const retval = target?.[method](arg);
-            if (retval instanceof Promise && arg['asyncProcess']) {
+        if (isFunction((target as Page & Record<string, UnknownFunction> | undefined)?.[method])) {
+            const retval = (target as Page & Record<string, UnknownFunction> | undefined)?.[method](arg);
+            if (retval instanceof Promise && (arg as Route & Record<string, unknown>)['asyncProcess']) {
                 (arg as RouteChangeInfoContext).asyncProcess.register(retval);
             }
         }

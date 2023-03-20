@@ -1,4 +1,4 @@
-export { PlainObject, isString, isArray, isFunction, has, escapeHTML, } from '@cdp/core-utils';
+export { UnknownFunction, UnknownObject, PlainObject, isString, isArray, isFunction, has, escapeHTML, } from '@cdp/core-utils';
 /**
  * More correct typeof string handling array
  * which normally returns typeof 'object'

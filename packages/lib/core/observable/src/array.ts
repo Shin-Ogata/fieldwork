@@ -89,7 +89,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
         if (ObservableState.DISABLED === internal.state || internal.byMethod || !Object.prototype.hasOwnProperty.call(attributes, 'value')) {
             return Reflect.defineProperty(target, p, attributes);
         }
-        const oldValue = target[p];
+        const oldValue = (target as any)[p]; // eslint-disable-line @typescript-eslint/no-explicit-any
         const newValue = attributes.value;
         // eslint-disable-next-line eqeqeq
         if ('length' === p && newValue != oldValue) { // Do NOT use strict inequality (!==)
@@ -125,7 +125,7 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
         if (ObservableState.DISABLED === internal.state || internal.byMethod || !Object.prototype.hasOwnProperty.call(target, p)) {
             return Reflect.deleteProperty(target, p);
         }
-        const oldValue = target[p];
+        const oldValue = (target as any)[p]; // eslint-disable-line @typescript-eslint/no-explicit-any
         const result = Reflect.deleteProperty(target, p);
         result && isValidArrayIndex(p) && target[_stockChange](ArrayChangeType.UPDATE, p as unknown as number >>> 0, undefined, oldValue);
         return result;

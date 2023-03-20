@@ -1,4 +1,5 @@
 import {
+    UnknownObject,
     isString,
     isSymbol,
     className,
@@ -20,7 +21,7 @@ export class EventBrokerProxy<Event extends object> {
 
 /** @internal */
 export function verifyObservable(x: unknown): void | never {
-    if (!x || !(x as object)[_internal]) {
+    if (!x || !(x as UnknownObject)[_internal]) {
         throw new TypeError(`The object passed is not an IObservable.`);
     }
 }

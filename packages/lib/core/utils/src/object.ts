@@ -1,5 +1,6 @@
 import { assignValue, deepEqual } from './deep-circuit';
 import {
+    UnknownObject,
     Nullish,
     Writable,
     isArray,
@@ -52,7 +53,7 @@ export function omit<T extends object, K extends keyof T>(target: T, ...omitKeys
     verify('typeOf', 'object', target);
     const obj = {} as Writable<Omit<T, K>>;
     for (const key of Object.keys(target)) {
-        !omitKeys.includes(key as K) && assignValue(obj, key, target[key]);
+        !omitKeys.includes(key as K) && assignValue(obj, key, (target as UnknownObject)[key]);
     }
     return obj;
 }
@@ -65,10 +66,10 @@ export function omit<T extends object, K extends keyof T>(target: T, ...omitKeys
  *  - `en` target object
  *  - `ja` 対象オブジェクト
  */
-export function invert<T extends object = object>(target: object): T {
+export function invert<T extends object = UnknownObject>(target: object): T {
     const result = {};
     for (const key of Object.keys(target)) {
-        assignValue(result, target[key], key);
+        assignValue(result, (target as UnknownObject)[key] as (string | number | symbol), key);
     }
     return result as T;
 }
@@ -91,8 +92,8 @@ export function diff<T extends object>(base: T, src: Partial<T>): Partial<T> {
     const retval: Partial<T> = {};
 
     for (const key of Object.keys(src)) {
-        if (!deepEqual(base[key], src[key])) {
-            assignValue(retval, key, src[key]);
+        if (!deepEqual((base as UnknownObject)[key], (src as UnknownObject)[key])) {
+            assignValue(retval, key, (src as UnknownObject)[key]);
         }
     }
 
@@ -118,7 +119,7 @@ export function drop<T extends object>(base: T, ...dropValues: unknown[]): Parti
         values.push(undefined);
     }
 
-    const retval: Partial<T> = { ...base };
+    const retval = { ...base } as Partial<T> & UnknownObject;
 
     for (const key of Object.keys(base)) {
         for (const val of values) {
@@ -156,13 +157,13 @@ export function result<T = any>(target: object | Nullish, property: string | str
         return isFunction(p) ? p.call(o) : p;
     };
 
-    let obj = target;
+    let obj = target as UnknownObject;
     for (const name of props) {
         const prop = null == obj ? undefined : obj[name];
         if (undefined === prop) {
             return resolve(obj, fallback) as T;
         }
-        obj = resolve(obj, prop) as object;
+        obj = resolve(obj, prop) as UnknownObject;
     }
     return obj as unknown as T;
 }

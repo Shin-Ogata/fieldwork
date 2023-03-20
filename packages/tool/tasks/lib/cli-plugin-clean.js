@@ -1,6 +1,6 @@
 'use strict';
 
-const { resolve, relative } = require('path');
+const { resolve, relative } = require('node:path');
 const fs     = require('fs-extra');
 const colors = require('../colors');
 const {

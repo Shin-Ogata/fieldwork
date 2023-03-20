@@ -6,7 +6,7 @@ const {
     join,
     dirname,
     basename,
-} = require('path');
+} = require('node:path');
 const { readJSON, outputFile } = require('fs-extra');
 const { glob } = require('glob');
 const { toPOSIX } = require('@cdp/tasks/utils');

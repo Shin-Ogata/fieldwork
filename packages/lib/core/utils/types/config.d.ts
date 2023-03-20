@@ -1,3 +1,4 @@
+import type { UnknownObject } from './types';
 /**
  * @en Safe `global` accessor.
  * @ja `global` アクセッサ
@@ -18,16 +19,16 @@ export declare function getGlobal(): typeof globalThis;
  *  - `en` object name chain for ensure instance.
  *  - `ja` 保証するオブジェクトの名前
  */
-export declare function ensureObject<T extends object = object>(parent: object | null, ...names: string[]): T;
+export declare function ensureObject<T extends object = UnknownObject>(parent: object | null, ...names: string[]): T;
 /**
  * @en Global namespace accessor.
  * @ja グローバルネームスペースアクセッサ
  */
-export declare function getGlobalNamespace<T extends object = object>(namespace: string): T;
+export declare function getGlobalNamespace<T extends object = UnknownObject>(namespace: string): T;
 /**
  * @en Global config accessor.
  * @ja グローバルコンフィグアクセッサ
  *
  * @returns default: `CDP.Config`
  */
-export declare function getConfig<T extends object = object>(namespace?: string, configName?: string): T;
+export declare function getConfig<T extends object = UnknownObject>(namespace?: string, configName?: string): T;

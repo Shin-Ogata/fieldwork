@@ -439,7 +439,7 @@ export function isIterable(x: unknown): any {
 }
 
 /** @internal */
-const _typedArrayNames = {
+const _typedArrayNames: Record<string, boolean> = {
     'Int8Array': true,
     'Uint8Array': true,
     'Uint8ClampedArray': true,

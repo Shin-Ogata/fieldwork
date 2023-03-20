@@ -1,4 +1,4 @@
-const { resolve } = require('path');
+const { resolve } = require('node:path');
 const fs          = require('fs-extra');
 const { merge }   = require('@cdp/tasks');
 const { dir }     = require('@cdp/tasks').config;

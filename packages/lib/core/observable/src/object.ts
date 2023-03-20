@@ -3,6 +3,7 @@
  */
 
 import {
+    UnknownObject,
     NonFunctionProperties,
     NonFunctionPropertyNames,
     isString,
@@ -37,7 +38,7 @@ const _proxyHandler: ProxyHandler<ObservableObject> = {
         if (!isString(p)) {
             return Reflect.set(target, p, value, receiver);
         }
-        const oldValue = target[p];
+        const oldValue = (target as any)[p];
         if (ObservableState.DISABLED !== target[_internal].state && value !== oldValue) {
             target[_stockChange](p, oldValue);
         }
@@ -298,7 +299,7 @@ export abstract class ObservableObject implements IObservable {
         const { changeMap } = this[_internal];
         const keyValue = new Map<PropertyKey, [any, any]>();
         for (const key of properties) {
-            const newValue = this[key];
+            const newValue = (this as UnknownObject)[key];
             const oldValue = changeMap.has(key) ? changeMap.get(key) : newValue;
             keyValue.set(key, [newValue, oldValue]);
         }
@@ -315,7 +316,7 @@ export abstract class ObservableObject implements IObservable {
         if (0 === changeMap.size) {
             changeMap.set(p, oldValue);
             for (const k of broker.get().channels()) {
-                changeMap.has(k) || changeMap.set(k, this[k]);
+                changeMap.has(k) || changeMap.set(k, (this as UnknownObject)[k]);
             }
             if (ObservableState.ACTIVE === state) {
                 void post(() => this[_notifyChanges]());
@@ -333,7 +334,7 @@ export abstract class ObservableObject implements IObservable {
         }
         const keyValuePairs = new Map<PropertyKey, [any, any]>();
         for (const [key, oldValue] of changeMap) {
-            const curValue = this[key];
+            const curValue = (this as UnknownObject)[key];
             if (!deepEqual(oldValue, curValue)) {
                 keyValuePairs.set(key, [curValue, oldValue]);
             }

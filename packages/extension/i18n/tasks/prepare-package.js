@@ -1,7 +1,7 @@
 'use strict';
 
 const { existsSync, ensureDirSync } = require('fs-extra');
-const { resolve } = require('path');
+const { resolve } = require('node:path');
 const colors      = require('@cdp/tasks/colors');
 const download    = require('@cdp/tasks/downloader');
 const libVersion  = require('./query-version');

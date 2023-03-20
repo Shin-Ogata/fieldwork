@@ -748,8 +748,8 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
 
         for (const event of events) {
-            $dom[event](stub.onCallback);
-            await $dom[event]();
+            ($dom as any)[event](stub.onCallback);
+            await ($dom as any)[event]();
         }
 
         expect(count).toBeGreaterThanOrEqual(events.length - 2 /* focus, blur は Testem UI 上ではタイミング問題で発火しないことがある */);
@@ -768,8 +768,8 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
 
         for (const event of events) {
-            $dom[event](stub.onCallback);
-            await $dom[event]();
+            ($dom as any)[event](stub.onCallback);
+            await ($dom as any)[event]();
         }
 
         expect(count).toBe(0);

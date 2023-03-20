@@ -124,7 +124,7 @@ function execScroll(el: HTMLElement | SVGElement, options: DOMScrollOptions): vo
         if (!enable) {
             return { max: 0, new: 0, initial: 0 };
         }
-        const maxValue = el[`scroll${classify(type)}`] - getOffsetSize(el, type);
+        const maxValue = (el as unknown as Record<string, number>)[`scroll${classify(type)}`] - getOffsetSize(el, type);
         const newValue = Math.max(Math.min(base, maxValue), 0);
         return { max: maxValue, new: newValue, initial: initialValue };
     };

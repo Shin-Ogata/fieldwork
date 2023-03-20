@@ -1,3 +1,4 @@
+import type { UnknownObject } from '@cdp/core-utils';
 import { getLanguage } from '@cdp/i18n';
 import {
     SortOrder,
@@ -48,10 +49,10 @@ export function defaultCollatorProvider(newProvider?: CollatorProvider): Collato
  *  - `ja` ソート順を指定
  */
 export function getStringComparator<T, K extends string = string>(prop: K, order: SortOrder): SortCallback<T> {
-    return (lhs: T, rhs: T): number => {
+    return (lhs: T & UnknownObject, rhs: T & UnknownObject): number => {
         // undefined は '' と同等に扱う
-        const lhsProp = (null != lhs[prop as string]) ? lhs[prop as string] : '';
-        const rhsProp = (null != rhs[prop as string]) ? rhs[prop as string] : '';
+        const lhsProp = (null != lhs[prop]) ? lhs[prop] as string : '';
+        const rhsProp = (null != rhs[prop]) ? rhs[prop] as string : '';
         return order * _collator().compare(lhsProp, rhsProp);
     };
 }
@@ -68,9 +69,9 @@ export function getStringComparator<T, K extends string = string>(prop: K, order
  *  - `ja` ソート順を指定
  */
 export function getDateComparator<T, K extends string = string>(prop: K, order: SortOrder): SortCallback<T> {
-    return (lhs: T, rhs: T): number => {
-        const lhsDate = lhs[prop as string];
-        const rhsDate = rhs[prop as string];
+    return (lhs: T & UnknownObject, rhs: T & UnknownObject): number => {
+        const lhsDate = lhs[prop];
+        const rhsDate = rhs[prop];
         if (lhsDate === rhsDate) {
             // (undefined === undefined) or 自己参照
             return 0;
@@ -104,17 +105,17 @@ export function getDateComparator<T, K extends string = string>(prop: K, order: 
  *  - `ja` ソート順を指定
  */
 export function getGenericComparator<T, K extends string = string>(prop: K, order: SortOrder): SortCallback<T> {
-    return (lhs: T, rhs: T): number => {
-        if (lhs[prop as string] === rhs[prop as string]) {
+    return (lhs: T & UnknownObject, rhs: T & UnknownObject): number => {
+        if (lhs[prop] === rhs[prop]) {
             return 0;
-        } else if (null == lhs[prop as string]) {
+        } else if (null == lhs[prop]) {
             // undefined は最低値扱い (昇順時に先頭へ)
             return -1 * order;
-        } else if (null == rhs[prop as string]) {
+        } else if (null == rhs[prop]) {
             // undefined は最低値扱い (昇順時に先頭へ)
             return 1 * order;
         } else {
-            return (lhs[prop as string] < rhs[prop as string] ? -1 * order : 1 * order);
+            return (lhs[prop] < rhs[prop] ? -1 * order : 1 * order);
         }
     };
 }
