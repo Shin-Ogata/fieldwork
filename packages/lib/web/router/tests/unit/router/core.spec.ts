@@ -146,6 +146,24 @@ describe('router/context spec', () => {
             const old2 = router.setTransitionSettings(old);
             expect(old2).toEqual({});
         });
+
+        it('navigation settings', async () => {
+            const router = await createRouterWrap({
+                routes: [{ path: '/' }],
+            });
+
+            await waitFrame(router);
+
+            const old = router.setNavigationSettings({ method: 'replace' });
+            expect(old).toEqual({
+                method: 'push',
+            });
+
+            const old2 = router.setNavigationSettings(old);
+            expect(old2).toEqual({
+                method: 'replace',
+            });
+        });
     });
 
     describe('assistance method', () => {
@@ -908,7 +926,7 @@ describe('router/context spec', () => {
                         path: '/second',
                         content: `
 <div class="router-page">
-    first page
+    second page
     <a href="#" id="to-back">Second Page</a>
 </div>`,
                     },
@@ -925,6 +943,37 @@ describe('router/context spec', () => {
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/first');
+        });
+
+        it('check anchor navigate replace', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [
+                    {
+                        path: '/first',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="/second" id="nav-replace" data-navigate-method="replace">Second Page</a>
+</div>`,
+                    },
+                    {
+                        path: '/second',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            const $button = $(router.el).find('#nav-replace');
+            expect($button.length).toBe(1);
+
+            $button[0].dispatchEvent(evClick);
+            await waitFrame(router);
+
+            expect(router.currentRoute.path).toBe('/second');
+            expect((router as any)._history.stack.length).toBe(1);
         });
 
         it('check anchor navigate no handle', async () => {

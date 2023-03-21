@@ -21,7 +21,7 @@
   "main": "dist/extension-i18n",
   "module": "dist/extension-i18n.mjs",
   "peerDependencies": {
-    "i18next": "22.4.12"
+    "i18next": "22.4.13"
   },
   "private": true,
   "repository": {

@@ -62,8 +62,9 @@ export const enum DomCache {
 
 /** @internal */
 export const enum LinkData {
-    TRANSITION     = 'transition',
-    PREVENT_ROUTER = 'prevent-router',
+    TRANSITION       = 'transition',
+    NAVIAGATE_METHOD = 'navigate-method',
+    PREVENT_ROUTER   = 'prevent-router',
 }
 
 /** @internal */
