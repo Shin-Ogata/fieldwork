@@ -323,6 +323,15 @@ export interface TransitionSettings {
 }
 
 /**
+ * @en Global navigation settings.
+ * @ja グローバルトナビゲーション設定
+ */
+export interface NavigationSettings {
+    /** default navigation method */
+    method?: 'push' | 'replace';
+}
+
+/**
  * @en Router construction option definition.
  * @ja ルーター構築オプション定義
  */
@@ -374,6 +383,12 @@ export interface RouterConstructionOptions {
      * @ja 共通トランジション設定
      */
     transition?: TransitionSettings;
+
+    /**
+     * @en Common navigation settings.
+     * @ja 共通ナビゲーション設定
+     */
+    navigation?: NavigationSettings;
 }
 
 /**
@@ -440,6 +455,12 @@ export interface RouteNavigationOptions extends PageTransitionParams {
      * @ja ユーザー定義可能な拡張プロパティ
      */
     intent?: unknown;
+
+    /**
+     * @en Methods of [[IHistory]] to use when navigating.
+     * @ja ナビゲーション時に使用する [[IHistory]] のメソッド
+     */
+    method?: 'push' | 'replace';
 }
 
 /**
@@ -447,8 +468,8 @@ export interface RouteNavigationOptions extends PageTransitionParams {
  * @ja ルーター更新レベル
  */
 export const enum RouterRefreshLevel {
-    RELOAD      = 1,
-    DOM_CLEAR   = 2,
+    RELOAD    = 1,
+    DOM_CLEAR = 2,
 }
 
 /**
@@ -520,8 +541,8 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `en` Specify [[PageStack]] object / object array
      *  - `ja` [[PageStack]] オブジェクト / オブジェクト配列を指定
      * @param noNavigate
-     *  - `en` Specify [[RouteNavigationOptions]]
-     *  - `ja` false: `default` スタック登録後, 最後のスタックに対してページ遷移する / true: スタック登録のみ行いページ遷移しない.
+     *  - `en` false(`default`): After stack registration, page transition to the last stack / true: Only perform stack registration and do not page transition.
+     *  - `ja` false(`default`): スタック登録後, 最後のスタックに対してページ遷移する / true: スタック登録のみ行いページ遷移しない.
      */
     pushPageStack(stack: PageStack | PageStack[], noNavigate?: boolean): Promise<this>;
 
@@ -609,6 +630,19 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `ja` 以前の設定オブジェクト
      */
     setTransitionSettings(newSettings: TransitionSettings): TransitionSettings;
+
+    /**
+     * @en Set common navigation settnigs.
+     * @ja 共通ナビゲーション設定
+     *
+     * @param newSettings
+     *  - `en` new settings object
+     *  - `ja` 新規の設定オブジェクト
+     * @returns
+     *  - `en` previous settings object
+     *  - `ja` 以前の設定オブジェクト
+     */
+    setNavigationSettings(newSettings: NavigationSettings): NavigationSettings;
 
     /**
      * @en Refresh router (specify update level).

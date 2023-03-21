@@ -26,6 +26,7 @@ import {
     RouteParameters,
     Route,
     TransitionSettings,
+    NavigationSettings,
     PageStack,
     RouterConstructionOptions,
     RouteSubFlowParams,
@@ -68,6 +69,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private readonly _errorHandler: typeof RouterContext.prototype.onHandleError;
     private readonly _cssPrefix: string;
     private _transitionSettings: TransitionSettings;
+    private _navigationSettings: Required<NavigationSettings>;
     private _lastRoute?: RouteContext;
     private _prevRoute?: RouteContext;
     private _tempTransitionParams?: PageTransitionParams;
@@ -88,6 +90,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             initialPath,
             cssPrefix,
             transition,
+            navigation,
         } = options;
 
         // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -112,6 +115,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         this._cssPrefix = cssPrefix || CssName.DEFAULT_PREFIX;
         this._transitionSettings = Object.assign({ default: 'none', reload: 'none' }, transition);
+        this._navigationSettings = Object.assign({ method: 'push' }, navigation);
 
         this.register(routes as RouteParameters[], start);
     }
@@ -161,13 +165,14 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED, `Route not found. [to: ${to}]`);
             }
 
-            const opts  = Object.assign({ intent: undefined }, options);
-            const url   = buildNavigateUrl(to, opts);
-            const route = toRouteContext(url, this, seed, opts);
+            const opts   = Object.assign({ intent: undefined }, options);
+            const url    = buildNavigateUrl(to, opts);
+            const route  = toRouteContext(url, this, seed, opts);
+            const method = opts.method || this._navigationSettings.method;
 
             try {
                 // exec navigate
-                await this._history.push(url, route);
+                await this._history[method](url, route);
             } catch {
                 // noop
             }
@@ -296,6 +301,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     setTransitionSettings(newSettings: TransitionSettings): TransitionSettings {
         const oldSettings = this._transitionSettings;
         this._transitionSettings = { ...newSettings };
+        return oldSettings;
+    }
+
+    /** Set common navigation settnigs. */
+    setNavigationSettings(newSettings: NavigationSettings): NavigationSettings {
+        const oldSettings = this._navigationSettings;
+        this._navigationSettings = Object.assign({ method: 'push' }, newSettings);
         return oldSettings;
     }
 
@@ -699,11 +711,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         const url        = $target.attr('href');
         const transition = $target.data(LinkData.TRANSITION) as string;
+        const method     = $target.data(LinkData.NAVIAGATE_METHOD) as string;
+        const methodOpts = ('push' === method || 'replace' === method ? { method } : {}) as NavigationSettings;
 
         if ('#' === url) {
             void this.back();
         } else {
-            void this.navigate(url as string, { transition });
+            void this.navigate(url as string, { transition, ...methodOpts });
         }
     }
 
