@@ -1,7 +1,7 @@
 'use strict';
 
 const { resolve, relative } = require('node:path');
-const fs     = require('fs-extra');
+const { rmSync } = require('node:fs');
 const colors = require('../colors');
 const {
     dist,
@@ -101,25 +101,25 @@ async function exec(options) {
 
     if (options.all || options.temp) {
         const tempDir = resolve(cwd, temp);
-        fs.removeSync(tempDir);
+        rmSync(tempDir, { force: true, recursive: true });
         info(tempDir);
     }
     if (options.all || options.built) {
         const builtDir = resolve(cwd, built);
-        fs.removeSync(builtDir);
+        rmSync(builtDir, { force: true, recursive: true });
         info(builtDir);
     }
     if (options.all || options.doc) {
         const docDir = resolve(cwd, doc);
         const docApiDir = resolve(docDir, api);
-        fs.removeSync(docApiDir);
+        rmSync(docApiDir, { force: true, recursive: true });
         info(docApiDir);
         const reportDir = resolve(docDir, report);
         const reportCoverageDir = resolve(reportDir, coverage);
-        fs.removeSync(reportCoverageDir);
+        rmSync(reportCoverageDir, { force: true, recursive: true });
         info(reportCoverageDir);
         const reportMetricsDir = resolve(reportDir, metrics);
-        fs.removeSync(reportMetricsDir);
+        rmSync(reportMetricsDir, { force: true, recursive: true });
         info(reportMetricsDir);
         cleanEmptyDir(docDir);
     }

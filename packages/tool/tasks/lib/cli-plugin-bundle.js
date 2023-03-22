@@ -1,14 +1,13 @@
 'use strict';
 
 const {
-    ensureDirSync,
+    mkdirSync,
     existsSync,
     unlinkSync,
     symlinkSync,
     readFileSync,
     writeFileSync,
-    outputJsonSync,
-} = require('fs-extra');
+} = require('node:fs');
 const {
     resolve,
     basename,
@@ -100,7 +99,7 @@ function linkTestUnit(cwd, target) {
     let dstRoot = resolve(cwd, test, unit);
     if (root) {
         dstRoot = resolve(dstRoot, root);
-        ensureDirSync(dstRoot);
+        mkdirSync(dstRoot, { recursive: true });
     }
 
     const src = resolve(location, test, unit);
@@ -177,7 +176,8 @@ async function bundleDTS(cwd, silent, config, validate) {
     }
 
     const tempConfigPath = resolve(cwd, dir.temp, TEMP_DTS_BUNDLE_CONFIG_PATH);
-    outputJsonSync(tempConfigPath, bundle);
+    mkdirSync(dirname(tempConfigPath), { recursive: true });
+    writeFileSync(tempConfigPath, JSON.stringify(bundle, null, 4));
 
     try {
         await command('dts-bundle-generator', `--config ${tempConfigPath}`);

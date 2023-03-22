@@ -1,6 +1,5 @@
 'use strict';
 
-const { resolve, dirname } = require('node:path');
 const { builtinModules } = require('node:module');
 const { nodeResolve }    = require('@rollup/plugin-node-resolve');
 const commonjs           = require('@rollup/plugin-commonjs');

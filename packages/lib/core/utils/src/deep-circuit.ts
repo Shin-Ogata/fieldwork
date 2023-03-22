@@ -73,7 +73,7 @@ function bufferEqual(lhs: SharedArrayBuffer | ArrayBuffer, rhs: SharedArrayBuffe
  * @ja オブジェクトに key, value を指定して設定 (プロトタイプ汚染対策)
  */
 export function assignValue(target: UnknownObject, key: string | number | symbol, value: unknown): void {
-    if ('__proto__' !== key) {
+    if ('__proto__' !== key && 'constructor' !== key) {
         target[key] = value;
     }
 }
@@ -240,7 +240,7 @@ function mergeMap(target: Map<unknown, unknown>, source: Map<unknown, unknown>):
 
 /** @internal merge object property */
 function mergeObjectProperty(target: UnknownObject, source: UnknownObject, key: string | number | symbol): void {
-    if ('__proto__' !== key) {
+    if ('__proto__' !== key && 'constructor' !== key) {
         const oldValue = target[key];
         const newValue = merge(oldValue, source[key]);
         !needUpdate(oldValue, newValue, true) || (target[key] = newValue);

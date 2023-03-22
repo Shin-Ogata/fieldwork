@@ -7,7 +7,11 @@ const {
     dirname,
     basename,
 } = require('node:path');
-const { readJSON, outputFile } = require('fs-extra');
+const {
+    readFile,
+    writeFile,
+    mkdir,
+} = require('node:fs/promises');
 const { glob } = require('glob');
 const { toPOSIX } = require('@cdp/tasks/utils');
 const colors = require('@cdp/tasks/colors');
@@ -24,10 +28,11 @@ async function makeMapFileList() {
 
 async function createSourceFiles(list) {
     for (const map of list) {
-        const json = await readJSON(resolve(MODULE_ROOT, map));
+        const json = JSON.parse((await readFile(resolve(MODULE_ROOT, map))).toString());
         for (let i = 0, n = json.sources.length; i < n; i++) {
             const srcPath = join(SOURCE_ROOT, dirname(map), basename(json.sources[i]));
-            await outputFile(srcPath, json.sourcesContent[i]);
+            await mkdir(dirname(srcPath), { recursive: true });
+            await writeFile(srcPath, json.sourcesContent[i]);
             console.log(colors.gray(`  created: ${relative(cwd, srcPath)}`));
         }
     }

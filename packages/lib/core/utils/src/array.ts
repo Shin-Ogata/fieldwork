@@ -2,7 +2,7 @@
     no-invalid-this,
  */
 
-import type { UnknownObject } from './types';
+import type { UnknownObject, Accessible } from './types';
 import { assignValue } from './deep-circuit';
 import { randomInt } from './misc';
 
@@ -197,7 +197,7 @@ export function groupBy<
     const _sumKeys: string[] = sumKeys || [];
     _sumKeys.push(_groupKey);
 
-    const hash = array.reduce((res: T & UnknownObject, data: T & UnknownObject) => {
+    const hash = array.reduce((res: Accessible<T>, data: Accessible<T>) => {
         // create groupBy internal key
         const _key = keys.reduce((s, k) => s + String(data[k]), '');
 

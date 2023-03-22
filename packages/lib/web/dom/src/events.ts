@@ -4,6 +4,7 @@
  */
 
 import {
+    Accessible,
     isFunction,
     isString,
     isArray,
@@ -285,12 +286,17 @@ function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
 /** @internal */ const _noTrigger = ['resize', 'scroll'];
 
 /** @internal event-shortcut impl */
-function eventShortcut<T extends ElementBase>(this: DOMEvents<T>, name: string, handler?: EventListener, options?: boolean | AddEventListenerOptions): DOMEvents<T> {
+function eventShortcut<T extends ElementBase>(
+    this: DOMEvents<Accessible<T, () => void>>,
+    name: string,
+    handler?: EventListener,
+    options?: boolean | AddEventListenerOptions
+): DOMEvents<T> {
     if (null == handler) {
         for (const el of this) {
             if (!_noTrigger.includes(name)) {
-                if (isFunction((el as any)[name])) {
-                    (el as any)[name]();
+                if (isFunction(el[name])) {
+                    el[name]();
                 } else {
                     $(el as any).trigger(name as any);
                 }

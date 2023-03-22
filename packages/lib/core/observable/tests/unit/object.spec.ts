@@ -2,7 +2,7 @@
     @typescript-eslint/no-explicit-any,
  */
 
-import { UnknownObject } from '@cdp/core-utils';
+import { Accessible } from '@cdp/core-utils';
 import {
     ObservableState,
     ObservableObject,
@@ -191,7 +191,7 @@ describe('observable/object spec', () => {
 
     it('check no-prop', done => {
         class NoProp extends ObservableObject { }
-        const model = new NoProp() as NoProp & UnknownObject;
+        const model = new NoProp() as Accessible<NoProp>;
         (model as IObservable).on('prop', () => {
             expect(model['prop']).toBe('enable');
             done();
@@ -211,7 +211,7 @@ describe('observable/object spec', () => {
             }
         }
 
-        const model = new Advanced('test') as Advanced & UnknownObject;
+        const model = new Advanced('test') as Accessible<Advanced>;
         model.on('prop', (newVal) => {
             model[symbol] = newVal;
             expect(model.getObservableState()).toBe(ObservableState.SUSEPNDED);

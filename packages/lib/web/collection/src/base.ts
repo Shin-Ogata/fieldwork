@@ -4,6 +4,7 @@
 
 import {
     UnknownObject,
+    Accessible,
     Constructor,
     Class,
     Keys,
@@ -101,13 +102,13 @@ const modelIdAttribute = <T extends object>(ctor: Constructor<T> | undefined): s
 };
 
 /** @internal */
-const getModelId = <T extends object>(attrs: T, ctor: Constructor<T> | undefined): string => {
-    return (attrs as any)[modelIdAttribute(ctor)];
+const getModelId = <T extends object>(attrs: Accessible<T, string>, ctor: Constructor<T> | undefined): string => {
+    return attrs[modelIdAttribute(ctor)];
 };
 
 /** @internal */
 const getChangedIds = <T extends object>(obj: object, ctor: Constructor<T> | undefined): { id: string; prevId?: string; } | undefined => {
-    type ModelLike = { previous: (key: string) => string; } & UnknownObject;
+    type ModelLike = Accessible<{ previous: (key: string) => string; }>;
     const model = obj as ModelLike;
 
     const idAttribute = modelIdAttribute(ctor);
@@ -1298,7 +1299,7 @@ export abstract class Collection<
         };
 
         const pos2key = (pos: number): string => {
-            return getModelId(context.base[pos], modelConstructor(this)) || String(pos);
+            return getModelId(context.base[pos] as Accessible<TModel, string>, modelConstructor(this)) || String(pos);
         };
 
         const iterator: IterableIterator<R> = {

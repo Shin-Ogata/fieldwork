@@ -1,5 +1,5 @@
+const { mkdirSync, createWriteStream } = require('node:fs');
 const { resolve } = require('node:path');
-const fs          = require('fs-extra');
 const { merge }   = require('@cdp/tasks');
 const { dir }     = require('@cdp/tasks').config;
 const settings    = require('./testem-amd');
@@ -9,8 +9,8 @@ const REPORTS_DIR  = resolve(DOC_DIR, dir.report);
 const COVERAGE_DIR = resolve(REPORTS_DIR, dir.coverage);
 
 // ensure coverage dir
-fs.ensureDirSync(REPORTS_DIR);
-fs.ensureDirSync(COVERAGE_DIR);
+mkdirSync(REPORTS_DIR, { recursive: true });
+mkdirSync(COVERAGE_DIR, { recursive: true });
 
 const port = settings.free_port();
 
@@ -24,7 +24,7 @@ const config = {
 
 settings.register_server(port, (req, res) => {
     console.log(`... Received coverage of ${req.headers['content-length']} length`);
-    req.pipe(fs.createWriteStream(resolve(COVERAGE_DIR, 'coverage.json')));
+    req.pipe(createWriteStream(resolve(COVERAGE_DIR, 'coverage.json')));
     req.on('end', res.end.bind(res));
 });
 

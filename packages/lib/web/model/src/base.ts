@@ -3,8 +3,9 @@
  */
 
 import {
-    UnknownObject,
+    Primitive,
     Nullish,
+    Accessible,
     Constructor,
     Class,
     Arguments,
@@ -63,7 +64,7 @@ import {
 
 /** @internal */
 interface Property<T> {
-    attrs: ObservableObject & UnknownObject;
+    attrs: Accessible<ObservableObject>;
     baseAttrs: T;
     prevAttrs: T;
     changedAttrs?: Partial<T>;
@@ -210,7 +211,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
         const opts = Object.assign({}, options);
         const attrs = opts.parse ? this.parse(attributes, opts) as T : attributes;
         const props: Property<T> = {
-            attrs: ObservableObject.from(attrs) as ObservableObject & UnknownObject,
+            attrs: ObservableObject.from(attrs) as Accessible<ObservableObject>,
             baseAttrs: { ...attrs },
             prevAttrs: { ...attrs },
             cid: luid('model:', 8),
@@ -247,8 +248,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                 this[_properties].prevAttrs = { ...attrs } as T;
             }
             delete this[_properties].changedAttrs;
-            assignValue(this._prevAttrs as UnknownObject, name, attrs[name]);
-            assignValue(attrs as unknown as UnknownObject, name, val);
+            assignValue(this._prevAttrs, name, attrs[name]);
+            assignValue(attrs, name, val);
         }
     }
 
@@ -289,7 +290,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @en Attributes instance
      * @ja 属性を格納するインスタンス
      */
-    protected get _attrs(): ObservableObject & UnknownObject {
+    protected get _attrs(): Accessible<ObservableObject> {
         return this[_properties].attrs;
     }
 
@@ -305,8 +306,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @en Previous attributes instance
      * @ja 変更前の属性を格納するインスタンス
      */
-    protected get _prevAttrs(): T & UnknownObject {
-        return this[_properties].prevAttrs as T & UnknownObject;
+    protected get _prevAttrs(): Accessible<T> {
+        return this[_properties].prevAttrs as Accessible<T>;
     }
 
     /**
@@ -522,7 +523,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @ja HTML で使用する文字を制御文字に置換した属性値を取得
      */
     public escape(attribute: keyof T): string {
-        return escapeHTML((this._attrs as any)[attribute]);
+        return escapeHTML(this._attrs[attribute] as Primitive);
     }
 
     /**
@@ -571,9 +572,9 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @ja [[Model]] からすべての属性を削除 (`undefined` を設定)
      */
     public clear(options?: ModelSetOptions): this {
-        const clearAttrs = {};
+        const clearAttrs = {} as Accessible<object>;
         for (const attr of Object.keys(this._baseAttrs)) {
-            (clearAttrs as UnknownObject)[attr] = undefined;
+            clearAttrs[attr] = undefined;
         }
         return this.setAttributes(clearAttrs, options);
     }

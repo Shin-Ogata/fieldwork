@@ -1126,7 +1126,7 @@ export declare const PartType: {
     readonly EVENT: 5;
     readonly ELEMENT: 6;
 };
-export declare type PartType = typeof PartType[keyof typeof PartType];
+export declare type PartType = (typeof PartType)[keyof typeof PartType];
 export interface ChildPartInfo {
     readonly type: typeof PartType.CHILD;
 }
@@ -1398,7 +1398,7 @@ export interface RootPart extends ChildPart {
      * as such, it is the responsibility of the caller to `render` to ensure that
      * `part.setConnected(false)` is called before the part object is potentially
      * discarded, to ensure that `AsyncDirective`s have a chance to dispose of
-     * any resources being held. If a `RootPart` that was prevously
+     * any resources being held. If a `RootPart` that was previously
      * disconnected is subsequently re-connected (and its `AsyncDirective`s should
      * re-connect), `setConnected(true)` should be called.
      *
@@ -1935,7 +1935,7 @@ export function pathToRegexp(path: Path, keys?: Key[], options?: TokensToRegexpO
 }
 
 export { path2regexp };
-import { $cdp, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
+import { $cdp, Accessible, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, ITemplateEngine, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
 export { ITemplateEngine, JST, TemplateAccessor, TemplateCompileOptions, TemplateContext, TemplateDelimiters, TemplateEngine, TemplateEscaper, TemplateGlobalSettings, TemplateScanner, TemplateToken, TemplateWriter };
 import { AjaxGetRequestShortcutOptions, AjaxOptions, AjaxRequestOptions, Serializable } from '@cdp/lib-worker';
 
@@ -4303,7 +4303,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      * @en Attributes instance
      * @ja 属性を格納するインスタンス
      */
-    protected get _attrs(): ObservableObject & UnknownObject;
+    protected get _attrs(): Accessible<ObservableObject>;
     /**
      * @en Default attributes instance
      * @ja 既定値属性を格納するインスタンス
@@ -4313,7 +4313,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      * @en Previous attributes instance
      * @ja 変更前の属性を格納するインスタンス
      */
-    protected get _prevAttrs(): T & UnknownObject;
+    protected get _prevAttrs(): Accessible<T>;
     /**
      * @en Changed attributes instance
      * @ja 変更のあった属性を格納するインスタンス

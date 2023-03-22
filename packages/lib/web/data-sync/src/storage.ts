@@ -1,4 +1,5 @@
 import {
+    Accessible,
     PlainObject,
     isArray,
     isString,
@@ -85,15 +86,14 @@ function genId(url: string): string {
 }
 
 /** @internal resolve key for localStorage */
-function parseContext(context: SyncContext, separator: string): { model: boolean; key: string; url: string; data: { [idAttr: string]: string; }; } {
+function parseContext(context: Accessible<SyncContext>, separator: string): { model: boolean; key: string; url: string; data: { [idAttr: string]: string; }; } {
     const model  = isModel(context);
     const url    = resolveURL(context);
     const idAttr = (context.constructor as unknown as Record<string, string>)['idAttribute'];
     const data = (() => {
         const retval = {} as { [idAttr: string]: string; };
         if (model) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const valid    = !isFunction((context as any)['has']) ? false : (context as any)['has'](idAttr) as boolean;
+            const valid    = !isFunction(context['has']) ? false : context['has'](idAttr) as boolean;
             retval[idAttr] = valid ? context.id as string : genId(url);
         }
         return retval;
@@ -194,7 +194,7 @@ class StorageDataSync implements IStorageDataSync {
      *  - `ja` ストレージオプション
      */
     async sync<K extends SyncMethods>(method: K, context: SyncContext, options?: StorageDataSyncOptions): Promise<SyncResult<K>> {
-        const { model, key, url, data } = parseContext(context, this._separator);
+        const { model, key, url, data } = parseContext(context as Accessible<SyncContext>, this._separator);
         if (!url) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, 'A "url" property or function must be specified.');
         }

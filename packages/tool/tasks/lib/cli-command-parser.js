@@ -1,7 +1,7 @@
 'use strict';
 
 const { resolve } = require('node:path');
-const { readdirSync } = require('fs');
+const { readdirSync } = require('node:fs');
 const colors = require('../colors');
 
 function loadPlugins() {

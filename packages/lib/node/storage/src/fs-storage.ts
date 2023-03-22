@@ -1,10 +1,10 @@
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import {
     existsSync,
     readFileSync,
     writeFile,
     unlinkSync,
-} from 'fs';
+} from 'node:fs';
 import {
     Keys,
     dropUndefined,

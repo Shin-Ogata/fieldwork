@@ -2,10 +2,10 @@
 
 const { resolve } = require('node:path');
 const {
-    copyFileSync,
-    removeSync,
+    cpSync,
+    rmSync,
     readdirSync,
-} = require('fs-extra');
+} = require('node:fs');
 const colors    = require('../colors');
 const command   = require('../command');
 const setup     = require('./setup-test-runner');
@@ -79,12 +79,12 @@ function cleanCoverageDirectory(all, options) {
     const coverageRoot = `./${doc}/${report}/${coverage}`;
 
     if (all) {
-        removeSync(resolve(cwd, coverageRoot));
+        rmSync(resolve(cwd, coverageRoot), { force: true, recursive: true });
     } else {
         readdirSync(resolve(cwd, coverageRoot))
             .forEach((file) => {
                 if ('coverage.json' !== file) {
-                    removeSync(resolve(cwd, coverageRoot, file));
+                    rmSync(resolve(cwd, coverageRoot, file), { force: true, recursive: true });
                 }
             });
     }
@@ -120,7 +120,7 @@ function resolveCoverageFile(options) {
     for (const key of Object.keys(procInfo.processes)) {
         if (null != procInfo.processes[key].parent) {
             const src = resolve(cwd, coverageRoot, `${key}.json`);
-            copyFileSync(src, coveragePath);
+            cpSync(src, coveragePath, { force: true, recursive: true });
             break;
         }
     }

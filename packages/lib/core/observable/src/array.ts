@@ -4,6 +4,7 @@
 
 import {
     UnknownFunction,
+    Accessible,
     Writable,
     isNumber,
     verify,
@@ -84,12 +85,12 @@ interface InternalProps<T = unknown> {
 
 /** @internal */
 const _proxyHandler: ProxyHandler<ObservableArray> = {
-    defineProperty(target, p, attributes) {
+    defineProperty(target: Accessible<ObservableArray, number>, p, attributes) {
         const internal = target[_internal];
         if (ObservableState.DISABLED === internal.state || internal.byMethod || !Object.prototype.hasOwnProperty.call(attributes, 'value')) {
             return Reflect.defineProperty(target, p, attributes);
         }
-        const oldValue = (target as any)[p]; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const oldValue = target[p];
         const newValue = attributes.value;
         // eslint-disable-next-line eqeqeq
         if ('length' === p && newValue != oldValue) { // Do NOT use strict inequality (!==)
@@ -120,12 +121,12 @@ const _proxyHandler: ProxyHandler<ObservableArray> = {
             return Reflect.defineProperty(target, p, attributes);
         }
     },
-    deleteProperty(target, p) {
+    deleteProperty(target: Accessible<ObservableArray, number>, p) {
         const internal = target[_internal];
         if (ObservableState.DISABLED === internal.state || internal.byMethod || !Object.prototype.hasOwnProperty.call(target, p)) {
             return Reflect.deleteProperty(target, p);
         }
-        const oldValue = (target as any)[p]; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const oldValue = target[p];
         const result = Reflect.deleteProperty(target, p);
         result && isValidArrayIndex(p) && target[_stockChange](ArrayChangeType.UPDATE, p as unknown as number >>> 0, undefined, oldValue);
         return result;

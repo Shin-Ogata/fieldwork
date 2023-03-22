@@ -3,7 +3,7 @@
  */
 
 import {
-    UnknownObject,
+    Accessible,
     PlainObject,
     isObject,
     noop,
@@ -58,13 +58,13 @@ const toPath = (url: string): string => {
 };
 
 /** @internal */
-const setDispatchInfo = <T>(state: T & UnknownObject, additional: DispatchInfo<T>): T => {
+const setDispatchInfo = <T>(state: Accessible<T>, additional: DispatchInfo<T>): T => {
     (state[$cdp] as DispatchInfo<T>) = additional;
     return state;
 };
 
 /** @internal */
-const parseDispatchInfo = <T>(state: T & UnknownObject): [T, DispatchInfo<T>?] => {
+const parseDispatchInfo = <T>(state: Accessible<T>): [T, DispatchInfo<T>?] => {
     if (isObject(state) && state[$cdp]) {
         const additional = state[$cdp];
         delete state[$cdp];
@@ -363,7 +363,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     }
 
     /** @internal dispatch `popstate` events */
-    private async dispatchChangeInfo(newState: T & UnknownObject, additional: DispatchInfo<T>): Promise<void> {
+    private async dispatchChangeInfo(newState: Accessible<T>, additional: DispatchInfo<T>): Promise<void> {
         const state = setDispatchInfo(newState, additional);
         this._window.dispatchEvent(new PopStateEvent('popstate', { state }));
         await additional.df;
@@ -416,8 +416,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     /** @internal follow the session history until `origin` (in silent) */
     private async backToSesssionOrigin(): Promise<void> {
         await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
-            const isOrigin = (st: unknown): boolean => {
-                return (st && (st as UnknownObject)['@origin']) as boolean;
+            const isOrigin = (st: Accessible<unknown>): boolean => {
+                return (st && st['@origin']) as boolean;
             };
 
             const { history } = this._window;

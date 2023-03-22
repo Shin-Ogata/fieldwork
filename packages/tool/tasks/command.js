@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('node:path');
-const { spawn } = require('child_process');
+const { spawn } = require('node:child_process');
 
 // https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
 function exec(command, args, options) {

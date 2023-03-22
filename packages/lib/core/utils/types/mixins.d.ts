@@ -1,4 +1,4 @@
-import { Nullish, Type, Class, Constructor } from './types';
+import type { Nullish, Type, Class, Constructor } from './types';
 /**
  * @en Mixin class's base interface.
  * @ja Mixin クラスの基底インターフェイス定義
