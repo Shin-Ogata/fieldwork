@@ -1,9 +1,44 @@
 'use strict';
 
+const {
+    statSync,
+    readdirSync,
+    rmSync,
+    rmdirSync,
+    mkdirSync,
+    copyFileSync,
+} = require('node:fs');
 const { resolve, dirname } = require('node:path');
-const fs                   = require('fs-extra');
-const { globSync }         = require('glob');
-const { merge }            = require('lodash');
+const { globSync } = require('glob');
+
+function merge(obj, ...sources) {
+    const isPrimitive = (x) => {
+        return !x || ('function' !== typeof x) && ('object' !== typeof x);
+    };
+
+    const extend = (target, source) => {
+        for (const prop in source) {
+            if ('__proto__' !== prop && 'constructor' !== prop) {
+                if (prop in target) {
+                    if (isPrimitive(target[prop]) || isPrimitive(source[prop])) {
+                        target[prop] = source[prop];
+                    } else {
+                        extend(target[prop], source[prop]);
+                    }
+                } else {
+                    target[prop] = source[prop];
+                }
+            }
+        }
+        return target;
+    };
+
+    let dst = obj;
+    for (const src of sources) {
+        dst = extend(dst, src);
+    }
+    return dst;
+}
 
 function toPOSIX(path) {
     return path.replace(/\\/g, '/');
@@ -16,9 +51,9 @@ function cleanEmptyDir(target) {
     });
     for (let i = list.length - 1; i >= 0; i--) {
         const filePath = resolve(target, list[i]);
-        if (fs.statSync(filePath).isDirectory()) {
-            if (0 === fs.readdirSync(filePath).length) {
-                fs.removeSync(filePath);
+        if (statSync(filePath).isDirectory()) {
+            if (0 === readdirSync(filePath).length) {
+                rmdirSync(filePath);
             }
         }
     }
@@ -65,8 +100,8 @@ function copy(globs, dest, options) {
         for (const f of files) {
             const src = resolve(cwd, f);
             const dst = resolve(dstRoot, f);
-            fs.ensureDirSync(dirname(dst));
-            fs.copyFileSync(src, dst);
+            mkdirSync(dirname(dst), { recursive: true });
+            copyFileSync(src, dst);
             retval.push(dst);
             if ('function' === typeof opts.callback) {
                 opts.callback(dst);
@@ -90,7 +125,7 @@ function del(globs, options) {
         });
         for (const f of files) {
             const src = resolve(cwd, f);
-            fs.removeSync(src);
+            rmSync(src, { force: true, recursive: true });
             retval.push(src);
             if ('function' === typeof opts.callback) {
                 opts.callback(src);

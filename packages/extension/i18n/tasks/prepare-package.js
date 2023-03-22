@@ -1,6 +1,6 @@
 'use strict';
 
-const { existsSync, ensureDirSync } = require('fs-extra');
+const { existsSync, mkdirSync } = require('node:fs');
 const { resolve } = require('node:path');
 const colors      = require('@cdp/tasks/colors');
 const download    = require('@cdp/tasks/downloader');
@@ -15,7 +15,7 @@ async function main() {
         }
 
         console.log(colors.cyan('preparing i18next tarball...'));
-        ensureDirSync(directory);
+        mkdirSync(directory, { recursive: true });
         const url = `https://github.com/i18next/i18next/archive/v${libVersion}.tar.gz`;
         await download(url, tarball);
         console.log(colors.green('done.'));

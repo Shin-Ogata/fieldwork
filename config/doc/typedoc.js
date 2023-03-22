@@ -1,6 +1,6 @@
 'use strict';
 
-const { existsSync } = require('fs-extra');
+const { existsSync } = require('node:fs');
 const { resolve } = require('node:path');
 const { test, doc, api } = require('@cdp/tasks/config').dir;
 const { dependencies, name } = require(resolve('package.json'));

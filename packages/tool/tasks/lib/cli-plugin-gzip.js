@@ -1,7 +1,7 @@
 'use strict';
 
 const { basename, dirname } = require('node:path');
-const { ensureDirSync }     = require('fs-extra');
+const { mkdirSync }         = require('node:fs');
 const colors                = require('../colors');
 const { gzip }              = require('./misc');
 
@@ -49,7 +49,7 @@ async function exec(options) {
 
     const dstDir = dirname(file);
     if (dstDir) {
-        ensureDirSync(dstDir);
+        mkdirSync(dstDir, { recursive: true });
     }
 
     await gzip(file, directory, cwd);

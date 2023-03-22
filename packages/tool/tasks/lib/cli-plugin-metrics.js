@@ -4,8 +4,8 @@ const { resolve, dirname } = require('node:path');
 const {
     existsSync,
     writeFileSync,
-    moveSync,
-} = require('fs-extra');
+    renameSync,
+} = require('node:fs');
 const { glob } = require('glob');
 const { dropSourceMap } = require('./source-map-utils');
 const { toPOSIX } = require('./misc');
@@ -124,13 +124,13 @@ async function runPlato(options) {
             const mjs = tgt.replace(/.js$/, '.mjs');
             return existsSync(mjs) ? mjs : bak;
         })();
-        moveSync(tgt, bak, { overwrite: true });
+        renameSync(tgt, bak, { overwrite: true });
         writeFileSync(tgt, patch(src));
         return { org: tgt, bak };
     });
     const restore = () => {
         for (const bk of backup) {
-            moveSync(bk.bak, bk.org, { overwrite: true });
+            renameSync(bk.bak, bk.org, { overwrite: true });
         }
     };
 

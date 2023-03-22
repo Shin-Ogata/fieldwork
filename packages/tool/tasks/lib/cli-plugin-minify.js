@@ -1,8 +1,16 @@
 'use strict';
 
-const { readFileSync, outputFileSync } = require('fs-extra');
-const { resolve, basename }            = require('node:path');
-const colors                           = require('../colors');
+const {
+    readFileSync,
+    writeFileSync,
+    mkdirSync,
+} = require('node:fs');
+const {
+    resolve,
+    dirname,
+    basename,
+} = require('node:path');
+const colors = require('../colors');
 
 const COMMAND = 'minify';
 
@@ -65,7 +73,8 @@ async function minifyJavaScript(options) {
     }
 
     // min.js
-    outputFileSync(out, result.code);
+    mkdirSync(dirname(out), { recursive: true });
+    writeFileSync(out, result.code);
     if (!silent) {
         console.log(colors.gray(`  input:      ${basename(src)}`));
         console.log(colors.gray(`  minified:   ${basename(out)}`));
@@ -73,7 +82,8 @@ async function minifyJavaScript(options) {
 
     // min.map
     if (result.map) {
-        outputFileSync(map, result.map);
+        mkdirSync(dirname(map), { recursive: true });
+        writeFileSync(map, result.map);
         if (!silent) {
             console.log(colors.gray(`  source-map: ${basename(map)}`));
         }

@@ -89,6 +89,11 @@ export type Writable<T> = {
     -readonly [K in keyof T]: T[K];
 };
 /**
+ * @en Convert to subscript accessible type.
+ * @ja 添え字アクセス可能な型に変換
+ */
+export type Accessible<T, S = unknown> = T & Record<string | number | symbol, S>;
+/**
  * @en Extract functional property names.
  * @ja 関数プロパティ名の抽出
  */

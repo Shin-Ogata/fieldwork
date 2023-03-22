@@ -1,6 +1,7 @@
 import { assignValue, deepEqual } from './deep-circuit';
 import {
     UnknownObject,
+    Accessible,
     Nullish,
     Writable,
     isArray,
@@ -119,7 +120,7 @@ export function drop<T extends object>(base: T, ...dropValues: unknown[]): Parti
         values.push(undefined);
     }
 
-    const retval = { ...base } as Partial<T> & UnknownObject;
+    const retval = { ...base } as Accessible<Partial<T>>;
 
     for (const key of Object.keys(base)) {
         for (const val of values) {

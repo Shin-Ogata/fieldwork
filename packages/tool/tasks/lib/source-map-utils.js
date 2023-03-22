@@ -1,7 +1,7 @@
 'use strict';
 
 const path    = require('node:path');
-const fs      = require('fs-extra');
+const fs      = require('node:fs');
 const convert = require('convert-source-map');
 const colors  = require('../colors');
 

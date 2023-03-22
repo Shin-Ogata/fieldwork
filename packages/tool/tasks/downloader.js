@@ -1,9 +1,9 @@
 'use strict';
 
-const { createWriteStream, unlinkSync } = require('fs');
-const { parse: parseURL } = require('url');
-const http   = require('http');
-const https  = require('https');
+const { createWriteStream, unlinkSync } = require('node:fs');
+const { parse: parseURL } = require('node:url');
+const http   = require('node:http');
+const https  = require('node:https');
 const Agent  = require('https-proxy-agent');
 const colors = require('./colors');
 const comand = require('./command');

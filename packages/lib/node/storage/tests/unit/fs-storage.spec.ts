@@ -4,10 +4,10 @@
     @typescript-eslint/no-unused-vars,
  */
 
-import { resolve } from 'path';
-import { existsSync, readFileSync } from 'fs-extra';
+import { resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 import { deepEqual } from '@cdp/core-utils';
-import { CancelToken, extendPromise } from '@cdp/promise';
+import { CancelToken } from '@cdp/promise';
 import { IStorage } from '@cdp/core-storage';
 import { FsStorage } from '@cdp/fs-storage';
 

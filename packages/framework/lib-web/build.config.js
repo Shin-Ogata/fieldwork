@@ -1,7 +1,7 @@
 'use strict';
 
 const { resolve }      = require('node:path');
-const { readFileSync } = require('fs-extra');
+const { readFileSync } = require('node:fs');
 const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
@@ -60,6 +60,7 @@ function patch(index, code, includes) {
             Nullish,
             UnknownObject,
             UnknownFunction,
+            Accessible,
             PlainObject,
             AnyObject,
             Constructor,

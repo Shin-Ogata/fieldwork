@@ -1,11 +1,11 @@
 'use strict';
 
-const path      = require('node:path');
-const fs        = require('fs-extra');
-const nyc       = ((ctor) => new ctor({}))(require('nyc'));
-const colors    = require('../colors');
-const config    = require('../config');
-const srcmap    = require('./source-map-utils');
+const path   = require('node:path');
+const fs     = require('node:fs');
+const nyc    = ((ctor) => new ctor({}))(require('nyc'));
+const colors = require('../colors');
+const config = require('../config');
+const srcmap = require('./source-map-utils');
 const {
     dist,
     doc,

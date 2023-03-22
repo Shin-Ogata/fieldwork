@@ -2,9 +2,10 @@
     @typescript-eslint/no-explicit-any,
  */
 
-import {
+import type {
     UnknownFunction,
     UnknownObject,
+    Accessible,
     Nullish,
     Type,
     Class,
@@ -95,8 +96,8 @@ export interface MixClassAttribute {
 /** @internal */ const _protoExtendsOnly = Symbol('proto-extends-only');
 
 /** @internal copy properties core */
-function reflectProperties(target: object, source: object, key: string | symbol): void {
-    if (null == (target as UnknownObject)[key]) {
+function reflectProperties(target: UnknownObject, source: object, key: string | symbol): void {
+    if (null == target[key]) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
     }
 }
@@ -106,11 +107,11 @@ function copyProperties(target: object, source: object): void {
     source && Object.getOwnPropertyNames(source)
         .filter(key => !/(prototype|name|constructor)/.test(key))
         .forEach(key => {
-            reflectProperties(target, source, key);
+            reflectProperties(target as UnknownObject, source, key);
         });
     source && Object.getOwnPropertySymbols(source)
         .forEach(key => {
-            reflectProperties(target, source, key);
+            reflectProperties(target as UnknownObject, source, key);
         });
 }
 
@@ -209,7 +210,7 @@ export function setMixClassAttribute<T extends object, U extends keyof MixClassA
 ): void {
     switch (attr) {
         case 'protoExtendsOnly':
-            (target as unknown as UnknownObject)[_protoExtendsOnly] = true;
+            (target as Accessible<Constructor<T>>)[_protoExtendsOnly] = true;
             break;
         case 'instanceOf':
             setInstanceOf(target, method);

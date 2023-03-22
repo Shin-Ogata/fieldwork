@@ -4,6 +4,7 @@
 
 import {
     UnknownObject,
+    Accessible,
     NonFunctionProperties,
     NonFunctionPropertyNames,
     isString,
@@ -34,11 +35,11 @@ interface InternalProps {
 
 /** @internal */
 const _proxyHandler: ProxyHandler<ObservableObject> = {
-    set(target, p, value, receiver) {
+    set(target: Accessible<ObservableObject>, p, value, receiver) {
         if (!isString(p)) {
             return Reflect.set(target, p, value, receiver);
         }
-        const oldValue = (target as any)[p];
+        const oldValue = target[p];
         if (ObservableState.DISABLED !== target[_internal].state && value !== oldValue) {
             target[_stockChange](p, oldValue);
         }

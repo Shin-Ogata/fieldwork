@@ -8,7 +8,6 @@ module.exports = {
     __esModule: true,
     default: config.default(testee, {
         external: {
-            'fs-extra': null,
         },
         postproc: {
             replaces: [resolveNodeTesteeValue()],

@@ -1,6 +1,6 @@
 'use strict';
 
-const { format } = require('util');
+const { format } = require('node:util');
 const command    = require('./command');
 const config     = require('./config');
 const banner     = require('./banner');

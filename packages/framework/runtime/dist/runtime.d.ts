@@ -108,6 +108,11 @@ export type Writable<T> = {
     -readonly [K in keyof T]: T[K];
 };
 /**
+ * @en Convert to subscript accessible type.
+ * @ja 添え字アクセス可能な型に変換
+ */
+export type Accessible<T, S = unknown> = T & Record<string | number | symbol, S>;
+/**
  * @en Extract functional property names.
  * @ja 関数プロパティ名の抽出
  */
@@ -5481,7 +5486,7 @@ export declare const PartType: {
     readonly EVENT: 5;
     readonly ELEMENT: 6;
 };
-export declare type PartType = typeof PartType[keyof typeof PartType];
+export declare type PartType = (typeof PartType)[keyof typeof PartType];
 export interface ChildPartInfo {
     readonly type: typeof PartType.CHILD;
 }
@@ -5753,7 +5758,7 @@ export interface RootPart extends ChildPart {
      * as such, it is the responsibility of the caller to `render` to ensure that
      * `part.setConnected(false)` is called before the part object is potentially
      * discarded, to ensure that `AsyncDirective`s have a chance to dispose of
-     * any resources being held. If a `RootPart` that was prevously
+     * any resources being held. If a `RootPart` that was previously
      * disconnected is subsequently re-connected (and its `AsyncDirective`s should
      * re-connect), `setConnected(true)` should be called.
      *
@@ -8642,7 +8647,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      * @en Attributes instance
      * @ja 属性を格納するインスタンス
      */
-    protected get _attrs(): ObservableObject & UnknownObject;
+    protected get _attrs(): Accessible<ObservableObject>;
     /**
      * @en Default attributes instance
      * @ja 既定値属性を格納するインスタンス
@@ -8652,7 +8657,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      * @en Previous attributes instance
      * @ja 変更前の属性を格納するインスタンス
      */
-    protected get _prevAttrs(): T & UnknownObject;
+    protected get _prevAttrs(): Accessible<T>;
     /**
      * @en Changed attributes instance
      * @ja 変更のあった属性を格納するインスタンス
