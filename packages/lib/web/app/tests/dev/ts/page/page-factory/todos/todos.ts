@@ -40,9 +40,9 @@ export const Todos = (): TemplateResult => html`
             store().tasks,
             (id, done) =>
                 store({
-                    tasks: store().tasks.map(t => (t.id === id ? { ...t, done } : t))
+                    tasks: store().tasks.map(task => (task.id === id ? { ...task, done } : task))
                 }),
-            id => store({ tasks: store().tasks.filter(t => t.id !== id) })
+            id => store({ tasks: store().tasks.filter(task => task.id !== id) })
         )}
     </section>
 </div>

@@ -32,47 +32,47 @@ class RouterPageView extends PageView {
     }
 
     protected onPageInit(thisPage: Route): void {
-        console.log(`onPageInit(${thisPage.path})`);
+        console.log(`${thisPage.url}: init`);
         this.render();
     }
 
     protected onPageMounted(thisPage: Route): void {
-        console.log(`onPageMounted(${thisPage.path})`);
+        console.log(`${thisPage.url}: mounted`);
     }
 
     protected onPageBeforeEnter(thisPage: Route): void {
-        console.log(`onPageBeforeEnter(${thisPage.path})`);
+        console.log(`${thisPage.url}: before-enter`);
     }
 
     protected onPageAfterEnter(thisPage: Route): void {
-        console.log(`onPageAfterEnter(${thisPage.path})`);
+        console.log(`${thisPage.url}: after-enter`);
     }
 
     protected onPageBeforeLeave(thisPage: Route): void {
-        console.log(`onPageBeforeLeave(${thisPage.path})`);
+        console.log(`${thisPage.url}: before-leave`);
     }
 
     protected onPageAfterLeave(thisPage: Route): void {
-        console.log(`onPageAfterLeave(${thisPage.path})`);
+        console.log(`${thisPage.url}: after-leave`);
     }
 
     protected onPageUnmounted(thisPage: Route): void {
-        console.log(`onPageUnmounted(${thisPage.path})`);
+        console.log(`${thisPage.url}: unmounted`);
     }
 
     protected onPageRemoved(thisPage: Route): void {
-        console.log(`onPageRemoved(${thisPage.path})`);
+        console.log(`${thisPage.url}: removed`);
     }
 
     private template(): TemplateResult {
         return html`
-            <h2>${t('app.pageView.title')}</h2>
+            <h2>${t(i18nKey.app.pageView.title)}</h2>
             <hr/>
             <label>👈</label>
             <button id="page-view-back">${t(i18nKey.app.common.back)}</button>
             <ul>
                 <li><a href="/class" data-transition="slide">${t(i18nKey.app.navigateTo.class)}</a></li>
-                <li><button data-navigate-to="/subflow" @click=${this.onGo.bind(this)}>🌐</button></li>
+                <li><button data-navigate-to="/subflow" @click=${this.onGoToSubflow.bind(this)}>${t(i18nKey.app.pageView.toSubflow)}</button></li>
             </ul>
         `;
     }
@@ -81,9 +81,9 @@ class RouterPageView extends PageView {
         this._router?.back();
     }
 
-    private onGo(event: UIEvent): void {
-        // TODO:
-        console.log(`onGo(${event.type})`);
+    private onGoToSubflow(event: UIEvent): void {
+        console.log(`onGoToSubflow(${event.type})`);
+        this._router?.navigate('/subflow-a', { transition: 'slide' });
     }
 }
 
