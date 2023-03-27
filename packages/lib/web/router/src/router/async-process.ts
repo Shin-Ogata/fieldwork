@@ -1,4 +1,4 @@
-import type { RouteAyncProcess, RouteChangeInfo } from './interfaces';
+import type { RouteAyncProcess } from './interfaces';
 
 /** @internal RouteAyncProcess implementation */
 export class RouteAyncProcessContext implements RouteAyncProcess {
@@ -22,9 +22,4 @@ export class RouteAyncProcessContext implements RouteAyncProcess {
         await Promise.all(this._promises);
         this._promises.length = 0;
     }
-}
-
-/** @internal */
-export interface RouteChangeInfoContext extends RouteChangeInfo {
-    readonly asyncProcess: RouteAyncProcessContext;
 }

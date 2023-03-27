@@ -24,7 +24,34 @@
         "ja": "日本語へ",
         "en": "英語へ"
       }
+    },
+    "pageView": {
+      "title": "ページ: ビュー",
+      "toSubflow": "Sub Flow の実装例へ"
+    },
+    "subflow": {
+      "title": {
+        "pageA-normal": "ページ: A",
+        "pageA-alternative": "ページ: A'",
+        "pageB-normal": "ページ: B",
+        "pageB-alternative": "ページ: B'",
+        "pageC": "ページ: C"
+      },
+      "description": {
+        "pageA-normal": "Sub Flow: ページ A (Normal)",
+        "pageA-alternative": "Sub Flow: ページ A' (Alternative)",
+        "pageB-normal": "Sub Flow: ページ B (Normal)",
+        "pageB-alternative": "Sub Flow: ページ B' (Alternative)",
+        "pageC": "Sub Flow: ページ C"
+      },
+      "button": {
+        "toPageB-normal": "ページ B (Normal) へ",
+        "toPageB-alternative": "ページ B' (Alternative)へ",
+        "beginSubFlowDestA": "Sub Flow: → [A'] → [B'] → [A]",
+        "beginSubFlowDestB": "Sub Flow: → [A'] → [B'] → [B]",
+        "beginSubFlowDestC": "Sub Flow: → [A'] → [B'] → [C]",
+        "endSubFlow": "Sub Flow の終了"
+      }
     }
-  },
-  "EOF": "EOF"
+  }
 }

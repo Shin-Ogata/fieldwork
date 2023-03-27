@@ -24,3 +24,8 @@
         pointer-events: none;
     }
 }
+
+.control-group {
+    display:flex;
+    flex-direction: column;
+}

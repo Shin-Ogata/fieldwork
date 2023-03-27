@@ -24,7 +24,34 @@
         "ja": "To Japanese",
         "en": "To English"
       }
+    },
+    "pageView": {
+      "title": "Page: View",
+      "toSubflow": "to Sub Flow Example"
+    },
+    "subflow": {
+      "title": {
+        "pageA-normal": "Page: A",
+        "pageA-alternative": "Page: A'",
+        "pageB-normal": "Page: B",
+        "pageB-alternative": "Page: B'",
+        "pageC": "Page: C"
+      },
+      "description": {
+        "pageA-normal": "Sub Flow: Page A (Normal)",
+        "pageA-alternative": "Sub Flow: Page A' (Alternative)",
+        "pageB-normal": "Sub Flow: Page B (Normal)",
+        "pageB-alternative": "Sub Flow: Page B' (Alternative)",
+        "pageC": "Sub Flow: Page C"
+      },
+      "button": {
+        "toPageB-normal": "to Page B (Normal)",
+        "toPageB-alternative": "to Page B' (Alternative)",
+        "beginSubFlowDestA": "Sub Flow: → [A'] → [B'] → [A]",
+        "beginSubFlowDestB": "Sub Flow: → [A'] → [B'] → [B]",
+        "beginSubFlowDestC": "Sub Flow: → [A'] → [B'] → [C]",
+        "endSubFlow": "End Sub Flow"
+      }
     }
-  },
-  "EOF": "EOF"
+  }
 }

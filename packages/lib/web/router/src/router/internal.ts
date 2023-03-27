@@ -20,7 +20,11 @@ import {
     DOMSelector,
     dom as $,
 } from '@cdp/dom';
-import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
+import {
+    toUrl,
+    loadTemplateSource,
+    toTemplateElement,
+} from '@cdp/web-utils';
 import {
     HistoryDirection,
     IHistory,
@@ -37,6 +41,7 @@ import type {
     RouteNavigationOptions,
     Router,
 } from './interfaces';
+import type { RouteAyncProcessContext } from './async-process';
 
 /** @internal */
 export const enum CssName {
@@ -74,6 +79,12 @@ export const enum Const {
 
 /** @internal */
 export type PageEvent = 'init' | 'mounted' | 'before-enter' | 'after-enter' | 'before-leave' | 'after-leave' | 'unmounted' | 'removed';
+
+/** @internal */
+export interface RouteChangeInfoContext extends RouteChangeInfo {
+    readonly asyncProcess: RouteAyncProcessContext;
+    samePageInstance?: boolean;
+}
 
 //__________________________________________________________________________________________________//
 
@@ -181,7 +192,7 @@ export const parseUrlParams = (route: RouteContext): void => {
     if (paramKeys.length) {
         const params = regexp.exec(url)?.map((value, index) => { return { value, key: paramKeys[index - 1] }; });
         for (const param of params!) { // eslint-disable-line @typescript-eslint/no-non-null-assertion
-            if (null != param.key) {
+            if (null != param.key && null != param.value) {
                 assignValue(route.params, param.key, convertUrlParamType(param.value));
             }
         }
@@ -232,7 +243,7 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
     } else if (isString((content as Record<string, unknown>)['selector'])) {
         // from ajax
         const { selector, url } = content as { selector: string; url?: string; };
-        const template = toTemplateElement(await loadTemplateSource(selector, { url }));
+        const template = toTemplateElement(await loadTemplateSource(selector, { url: url && toUrl(url) }));
         if (!template) {
             throw Error(`template load failed. [selector: ${selector}, url: ${url}]`);
         }

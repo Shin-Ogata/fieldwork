@@ -1222,6 +1222,14 @@ describe('router/context spec', () => {
             expect(router.currentRoute.path).toBe('/sub/a');
             expect(router.isInSubFlow).toBe(true);
 
+            await router.back();
+            expect(router.currentRoute.path).toBe('/main/B');
+            expect(router.isInSubFlow).toBe(false);
+
+            await router.beginSubFlow('/sub/a');
+            expect(router.currentRoute.path).toBe('/sub/a');
+            expect(router.isInSubFlow).toBe(true);
+
             await router.navigate('/sub/b');
             expect(router.currentRoute.path).toBe('/sub/b');
             expect(router.isInSubFlow).toBe(true);

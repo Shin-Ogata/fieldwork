@@ -10,6 +10,7 @@ import {
 } from '@cdp/router';
 import { t, getLanguage } from '@cdp/i18n';
 import { registerPage, AppContext } from '@cdp/app';
+import { i18nKey } from '../../types';
 import { entry } from '../signature';
 
 entry('PAGE_CONTEXT_PAGE_CLASS');
@@ -102,23 +103,23 @@ class RouterPage implements Page {
 
     static template = `
 <div id="page-class" class="router-page">
-    <h2 data-i18n="app.pageClass.title">🌐</h2>
+    <h2 data-i18n="${i18nKey.app.pageClass.title}">🌐</h2>
     <hr/>
     <label>👈</label>
-    <button><a href="#" data-transition="fade" data-i18n="app.common.back">🌐</a></button>
+    <button><a href="#" data-transition="fade" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
     <br/><br/>
-    <h3 data-i18n="app.pageClass.refresh.title">🌐</h3>
+    <h3 data-i18n="${i18nKey.app.pageClass.refresh.title}">🌐</h3>
     <fieldset>
-        <label data-i18n="[append]app.pageClass.refresh.lv1">
+        <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv1}">
             <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv1" value="1" checked="checked">
         </label>
-        <label data-i18n="[append]app.pageClass.refresh.lv2">
+        <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv2}">
             <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv2" value="2">
         </label>
-        <button id="page-class-refresh" data-i18n="app.common.reload">🌐</button>
+        <button id="page-class-refresh" data-i18n="${i18nKey.app.common.reload}">🌐</button>
     </fieldset>
     <br/><br/>
-    <h3 data-i18n="app.pageClass.language.title">🌐</h3>
+    <h3 data-i18n="${i18nKey.app.pageClass.language.title}">🌐</h3>
     <fieldset>
         <button id="page-class-change-lng">🌐</button>
     </fieldset>

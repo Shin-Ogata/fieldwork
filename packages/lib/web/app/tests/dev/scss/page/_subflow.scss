@@ -1,0 +1,47 @@
+.subflow-page {
+    padding: 0 20px;
+    margin: 0 -10px;
+    overflow-x: hidden;
+
+    &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0 -10px;
+        box-sizing: border-box;
+        z-index: -1;
+    }
+
+    &[data-theme=normal] {
+        color: #cacacf;
+        background: #1c1c1d;
+        [data-normal-only=true] {
+            display: block;
+        }
+    }
+
+    &[data-theme=alternative] {
+        color: #1c1c1d;
+        background: #cacacf;
+        [data-normal-only=true] {
+            display: none;
+        }
+    }
+
+    header {
+        display:flex;
+        align-items:center;
+        h1 {
+            margin-left: 10px;
+        }
+    }
+
+    .control-group {
+        button {
+            margin: 5px;
+            padding: 5px;
+        }
+    }
+}

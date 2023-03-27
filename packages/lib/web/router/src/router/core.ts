@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/no-non-null-assertion
+ */
+
 import {
     UnknownFunction,
     isArray,
@@ -41,6 +45,7 @@ import {
     PageEvent,
     RouteContextParameters,
     RouteContext,
+    RouteChangeInfoContext,
     toRouteContextParameters,
     toRouteContext,
     prepareHistory,
@@ -51,7 +56,7 @@ import {
     decideTransitionDirection,
     processPageTransition,
 } from './internal';
-import { RouteAyncProcessContext, RouteChangeInfoContext } from './async-process';
+import { RouteAyncProcessContext } from './async-process';
 
 //__________________________________________________________________________________________________//
 
@@ -326,12 +331,12 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                         this.triggerPageCallback('unmounted', page, route);
                     }
                     if (route.el) {
-                        route.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        route.el = null!;
                         this.publish('unloaded', route);
                         this.triggerPageCallback('removed', page, route);
                     }
                 }
-                this._prevRoute && (this._prevRoute.el = null!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                this._prevRoute && (this._prevRoute.el = null!);
                 return this.go();
             }
             default:
@@ -443,6 +448,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
             parseUrlParams(nextRoute);
 
+            // 遷移先が subflow 開始点である場合, subflow 解除
+            if (nextRoute.url === this.findSubFlowParams(false)?.params.base) {
+                this.findSubFlowParams(true);
+            }
+
             const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
             this._tempTransitionParams = undefined;
 
@@ -458,6 +468,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 $elNext, $elPrev,
                 changeInfo.from as RouteContext,
                 !changeInfo.reload,
+                !!changeInfo.samePageInstance,
             );
 
             this.publish('changed', changeInfo);
@@ -466,37 +477,46 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         }
     }
 
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
     /** @internal */
     private async prepareChangeContext(changeInfo: RouteChangeInfoContext): Promise<[Page, DOM, Page, DOM]> {
         const nextRoute = changeInfo.to as HistoryState<RouteContext>;
         const prevRoute = changeInfo.from as HistoryState<RouteContext> | undefined;
 
-        const { '@params': params } = nextRoute;
+        const { '@params': nextParams } = nextRoute;
+        const { '@params': prevParams } = prevRoute || {};
 
         // page instance
         await ensureRouterPageInstance(nextRoute);
         // page $template
-        await ensureRouterPageTemplate(params);
+        await ensureRouterPageTemplate(nextParams);
+
+        changeInfo.samePageInstance = prevParams?.page && prevParams.page === nextParams.page;
+        const { reload, samePageInstance, asyncProcess } = changeInfo;
 
         // page $el
         if (!nextRoute.el) {
-            if (params.$template?.isConnected) {
-                nextRoute.el     = params.$template[0];
-                params.$template = params.$template.clone();
+            if (!reload && samePageInstance) {
+                nextRoute.el  = prevRoute!.el;
+                prevRoute!.el = nextRoute.el?.cloneNode(true) as HTMLElement;
+                $(prevRoute!.el).insertBefore(nextRoute.el);
+                $(nextRoute.el).attr('aria-hidden', true).removeClass([`${this._cssPrefix}-${CssName.PAGE_CURRENT}`, `${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`]);
             } else {
-                nextRoute.el = params.$template!.clone()[0];
+                if (nextParams.$template?.isConnected) {
+                    nextRoute.el         = nextParams.$template[0];
+                    nextParams.$template = nextParams.$template.clone();
+                } else {
+                    nextRoute.el = nextParams.$template!.clone()[0];
+                }
+                this.publish('loaded', changeInfo);
+                await asyncProcess.complete();
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                this.triggerPageCallback('init', nextParams.page!, changeInfo);
+                await asyncProcess.complete();
             }
-            this.publish('loaded', changeInfo);
-            await changeInfo.asyncProcess.complete();
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            this.triggerPageCallback('init', nextRoute['@params'].page!, changeInfo);
-            await changeInfo.asyncProcess.complete();
         }
 
         const $elNext = $(nextRoute.el);
-        const pageNext = nextRoute['@params'].page!;
+        const pageNext = nextParams.page!;
 
         // mount
         if (!$elNext.isConnected) {
@@ -504,18 +524,14 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             this._$el.append($elNext);
             this.publish('mounted', changeInfo);
             this.triggerPageCallback('mounted', pageNext, changeInfo);
-            await changeInfo.asyncProcess.complete();
+            await asyncProcess.complete();
         }
 
-        const { reload } = changeInfo;
-
         return [
-            pageNext, $elNext,                                                                              // next
-            (reload && {} || prevRoute?.['@params']?.page || {}), (reload && $(null) || $(prevRoute?.el)),  // prev
+            pageNext, $elNext,                                                                  // next
+            (reload && {} || prevParams?.page || {}), (reload && $(null) || $(prevRoute?.el)),  // prev
         ];
     }
-
-    /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
     /** @internal */
     private async transitionPage(
@@ -614,7 +630,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** @internal update page status after transition */
-    private updateChangeContext($elNext: DOM, $elPrev: DOM, prevRoute: RouteContext | undefined, urlChanged: boolean): void {
+    private updateChangeContext(
+        $elNext: DOM,
+        $elPrev: DOM,
+        prevRoute: RouteContext | undefined,
+        urlChanged: boolean,
+        samePageInstance: boolean,
+    ): void {
         if ($elNext[0] !== $elPrev[0]) {
             // update class
             $elPrev
@@ -623,18 +645,18 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             ;
             $elNext.addClass(`${this._cssPrefix}-${CssName.PAGE_CURRENT}`);
 
-            if (this._prevRoute) {
+            if (urlChanged && this._prevRoute) {
                 const $el = $(this._prevRoute.el);
                 $el.removeClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
-                if (this._prevRoute.el !== this.currentRoute.el) {
+                if (this._prevRoute.el && this._prevRoute.el !== this.currentRoute.el) {
                     const cacheLv = $el.data(DomCache.DATA_NAME);
                     if (DomCache.CACHE_LEVEL_CONNECT !== cacheLv) {
-                        $el.detach();
                         const page = this._prevRoute['@params'].page;
+                        $el.detach();
                         this.publish('unmounted', this._prevRoute);
                         this.triggerPageCallback('unmounted', page, this._prevRoute);
                         if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
-                            this._prevRoute.el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                            this._prevRoute.el = null!;
                             this.publish('unloaded', this._prevRoute);
                             this.triggerPageCallback('removed', page, this._prevRoute);
                         }
@@ -645,6 +667,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         if (urlChanged) {
             this._prevRoute = prevRoute;
+            if (samePageInstance) {
+                $elPrev.detach();
+                $elNext.addClass(`${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`);
+                this._prevRoute && (this._prevRoute.el = null!);
+            }
         }
 
         this._lastRoute = this.currentRoute as RouteContext;

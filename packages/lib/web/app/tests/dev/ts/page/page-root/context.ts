@@ -1,6 +1,5 @@
 import { loadTemplateSource, toTemplateElement } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
-import {  } from '@cdp/i18n';
 import type { RouteChangeInfo } from '@cdp/router';
 import { registerPage } from '@cdp/app';
 import { entry } from '../signature';
