@@ -71,7 +71,7 @@ class RouterPageView extends PageView {
             <label>👈</label>
             <button id="page-view-back">${t(i18nKey.app.common.back)}</button>
             <ul>
-                <li><a href="/class" data-transition="slide">${t(i18nKey.app.navigateTo.class)}</a></li>
+                <li><a href="/class">${t(i18nKey.app.navigateTo.class)}</a></li>
                 <li><button data-navigate-to="/subflow" @click=${this.onGoToSubflow.bind(this)}>${t(i18nKey.app.pageView.toSubflow)}</button></li>
             </ul>
         `;
@@ -83,7 +83,7 @@ class RouterPageView extends PageView {
 
     private onGoToSubflow(event: UIEvent): void {
         console.log(`onGoToSubflow(${event.type})`);
-        this._router?.navigate('/subflow-a', { transition: 'slide' });
+        this._router?.navigate('/subflow-a');
     }
 }
 

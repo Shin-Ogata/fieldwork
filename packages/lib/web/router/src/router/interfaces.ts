@@ -81,6 +81,13 @@ export interface RouterEvent {
     'mounted': [RouteChangeInfo];
 
     /**
+     * @en DOM ready notification on same page instance transition.
+     * @ja 同一ページインスタンスの遷移時の DOM 準備完了通知
+     * @args [[RouteChangeInfo]]
+     */
+    'cloned': [RouteChangeInfo];
+
+    /**
      * @en Before transition notification.
      * @ja トランジション開始通知
      * @args [[RouteChangeInfo]]
@@ -623,26 +630,26 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja 共通トランジション設定
      *
      * @param newSettings
-     *  - `en` new settings object
-     *  - `ja` 新規の設定オブジェクト
+     *  - `en` new settings object. get current value without specification.
+     *  - `ja` 新規の設定オブジェクト. 指定なしで現在の値を取得
      * @returns
      *  - `en` previous settings object
      *  - `ja` 以前の設定オブジェクト
      */
-    setTransitionSettings(newSettings: TransitionSettings): TransitionSettings;
+    transitionSettings(newSettings?: TransitionSettings): TransitionSettings;
 
     /**
      * @en Set common navigation settnigs.
      * @ja 共通ナビゲーション設定
      *
      * @param newSettings
-     *  - `en` new settings object
-     *  - `ja` 新規の設定オブジェクト
+     *  - `en` new settings object. get current value without specification
+     *  - `ja` 新規の設定オブジェクト. 指定なしで現在の値を取得
      * @returns
      *  - `en` previous settings object
      *  - `ja` 以前の設定オブジェクト
      */
-    setNavigationSettings(newSettings: NavigationSettings): NavigationSettings;
+    navigationSettings(newSettings?: NavigationSettings): NavigationSettings;
 
     /**
      * @en Refresh router (specify update level).

@@ -19,6 +19,9 @@
         "lv1": "レベル1: リロード",
         "lv2": "レベル2: DOM の再構築"
       },
+      "transition": {
+        "title": "トランジション"
+      },
       "language": {
         "title": "言語切り替え",
         "ja": "日本語へ",
@@ -32,21 +35,21 @@
     "subflow": {
       "title": {
         "pageA-normal": "ページ: A",
-        "pageA-alternative": "ページ: A'",
+        "pageA-subflow": "ページ: A'",
         "pageB-normal": "ページ: B",
-        "pageB-alternative": "ページ: B'",
+        "pageB-subflow": "ページ: B'",
         "pageC": "ページ: C"
       },
       "description": {
         "pageA-normal": "Sub Flow: ページ A (Normal)",
-        "pageA-alternative": "Sub Flow: ページ A' (Alternative)",
+        "pageA-subflow": "Sub Flow: ページ A' (in Sub Flow)",
         "pageB-normal": "Sub Flow: ページ B (Normal)",
-        "pageB-alternative": "Sub Flow: ページ B' (Alternative)",
+        "pageB-subflow": "Sub Flow: ページ B' (in Sub Flow)",
         "pageC": "Sub Flow: ページ C"
       },
       "button": {
         "toPageB-normal": "ページ B (Normal) へ",
-        "toPageB-alternative": "ページ B' (Alternative)へ",
+        "toPageB-subflow": "ページ B' (Sub Flow)へ",
         "beginSubFlowDestA": "Sub Flow: → [A'] → [B'] → [A]",
         "beginSubFlowDestB": "Sub Flow: → [A'] → [B'] → [B]",
         "beginSubFlowDestC": "Sub Flow: → [A'] → [B'] → [C]",

@@ -98,6 +98,13 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
 
     /**
      * @overridable
+     * @en Triggered immediately after the page's HTMLElement is cloned and inserted into the DOM.
+     * @ja ページの HTMLElement が複製され DOM に挿入された直後に発火
+     */
+    protected onPageCloned(thisPage: Route, prevPage: Route): void | Promise<void> { /* overridable */ }
+
+    /**
+     * @overridable
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */
@@ -167,6 +174,17 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
         const { to } = info;
         this[_properties].route = to;
         return this.onPageMounted(to);
+    }
+
+    /**
+     * @internal
+     * @en Triggered immediately after the page's HTMLElement is cloned and inserted into the DOM.
+     * @ja ページの HTMLElement が複製され DOM に挿入された直後に発火
+     */
+    pageCloned(info: RouteChangeInfo): void | Promise<void> {
+        const { to, from } = info;
+        this[_properties].route = to;
+        return this.onPageCloned(to, from as Route);
     }
 
     /**

@@ -34,7 +34,9 @@ class RouterPage implements Page {
     get name(): string { return 'I was born from an class.'; }
 
     pageInit(info: RouteChangeInfo): void {
-        console.log(`pageInit("${info.to.path}")`);
+        console.log(`${info.to.url}: init`);
+
+        const app = AppContext();
 
         this._$el = $(info.to.el);
 
@@ -50,6 +52,7 @@ class RouterPage implements Page {
                 break;
         }
 
+        // 読み込み確認
         this._$el.find('input[name="page-class-refresh-lv"]').on('change', () => {
             this._refreshLv = Number(this._$el.find('input[name="page-class-refresh-lv"]:checked').val()) as RouterRefreshLevel;
         });
@@ -58,9 +61,16 @@ class RouterPage implements Page {
             void info.to.router.refresh(this._refreshLv);
         });
 
+        // トランジション設定
+        const { default: transition } = app.router.transitionSettings();
+        this._$el.find('#page-class-select-transition').val(transition || 'none');
+        this._$el.find('#page-class-select-transition').on('change', (ev: UIEvent) => {
+            app.router.transitionSettings({ default: $(ev.target as Element).val() });
+        });
+
         // 言語設定
         this._$el.find('#page-class-change-lng').on('click', () => {
-            void AppContext().changeLanguage(nextLanguage());
+            void app.changeLanguage(nextLanguage());
         });
 
         // スクロール位置の復元
@@ -70,35 +80,35 @@ class RouterPage implements Page {
     }
 
     pageMounted(info: RouteChangeInfo): void {
-        console.log(`pageMounted("${info.to.path}")`);
+        console.log(`${info.to.url}: mounted`);
     }
 
     pageBeforeEnter(info: RouteChangeInfo): void {
-        console.log(`pageBeforeEnter("${info.from?.path} → ${info.to.path}")`);
+        console.log(`${info.to.url}: before-enter`);
         // 言語設定
         this._$el.find('#page-class-change-lng').text(t(`app.pageClass.language.${nextLanguage()}`) as string); // eslint-disable-line
     }
 
     pageAfterEnter(info: RouteChangeInfo): void {
-        console.log(`pageAfterEnter("${info.from?.path} → ${info.to.path}")`);
+        console.log(`${info.to.url}: after-enter`);
         // スクロールの復元
         this._$el.scrollTop(this._lastScrollPos, 500, 'swing');
     }
 
     pageBeforeLeave(info: RouteChangeInfo): void {
-        console.log(`pageBeforeLeave("${info.from?.path} → ${info.to.path}")`);
+        console.log(`${info.from?.url}: before-leave`);
     }
 
     pageAfterLeave(info: RouteChangeInfo): void {
-        console.log(`pageAfterLeave("${info.from?.path} → ${info.to.path}")`);
+        console.log(`${info.from?.url}: after-leave`);
     }
 
     pageUnmounted(info: Route): void {
-        console.log(`pageUnmounted("${info.path}")`);
+        console.log(`${info.url}: unmounted`);
     }
 
     pageRemoved(info: Route): void {
-        console.log(`pageRemoved("${info.path}")`);
+        console.log(`${info.url}: removed`);
     }
 
     static template = `
@@ -106,7 +116,7 @@ class RouterPage implements Page {
     <h2 data-i18n="${i18nKey.app.pageClass.title}">🌐</h2>
     <hr/>
     <label>👈</label>
-    <button><a href="#" data-transition="fade" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
+    <button><a href="#" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
     <br/><br/>
     <h3 data-i18n="${i18nKey.app.pageClass.refresh.title}">🌐</h3>
     <fieldset>
@@ -117,6 +127,19 @@ class RouterPage implements Page {
             <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv2" value="2">
         </label>
         <button id="page-class-refresh" data-i18n="${i18nKey.app.common.reload}">🌐</button>
+    </fieldset>
+    <br/><br/>
+    <h3 data-i18n="${i18nKey.app.pageClass.transition.title}">🌐</h3>
+    <fieldset>
+        <select id="page-class-select-transition">
+            <option value="fade">Fade</option>
+            <option value="float-up">Float Up</option>
+            <option value="slide">Slide</option>
+            <option value="slide-up">Slide Up</option>
+            <option value="slide-fade">Slide Fade</option>
+            <option value="bounce">Bounce</option>
+            <option value="none">None</option>
+        </select>
     </fieldset>
     <br/><br/>
     <h3 data-i18n="${i18nKey.app.pageClass.language.title}">🌐</h3>

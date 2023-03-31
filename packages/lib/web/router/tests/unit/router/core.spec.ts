@@ -135,7 +135,7 @@ describe('router/context spec', () => {
 
             await waitFrame(router);
 
-            const old = router.setTransitionSettings({});
+            const old = router.transitionSettings({});
             expect(old).toEqual({
                 default: 'fade',
                 reload: 'none',
@@ -143,7 +143,7 @@ describe('router/context spec', () => {
                 'leave-active-class': 'animate__animated animate__bounceOutRight',
             });
 
-            const old2 = router.setTransitionSettings(old);
+            const old2 = router.transitionSettings(old);
             expect(old2).toEqual({});
         });
 
@@ -154,12 +154,12 @@ describe('router/context spec', () => {
 
             await waitFrame(router);
 
-            const old = router.setNavigationSettings({ method: 'replace' });
+            const old = router.navigationSettings({ method: 'replace' });
             expect(old).toEqual({
                 method: 'push',
             });
 
-            const old2 = router.setNavigationSettings(old);
+            const old2 = router.navigationSettings(old);
             expect(old2).toEqual({
                 method: 'replace',
             });
@@ -1132,7 +1132,7 @@ describe('router/context spec', () => {
             await router.pushPageStack([
                 {
                     url: '/one',
-                    route: { path: '/one' }
+                    route: { path: '/one' },
                 },
                 {
                     url: '/two/user/100',
@@ -1141,7 +1141,7 @@ describe('router/context spec', () => {
                 },
                 {
                     url: '/three',
-                    route: { path: '/three' }
+                    route: { path: '/three' },
                 },
             ]);
 

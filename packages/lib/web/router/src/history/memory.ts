@@ -62,7 +62,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
 
         const oldState = this.state;
         this.setIndex(0);
-        this.clearForward();
+        await this.clearForward();
         const newState = this.state;
 
         if (!silent) {
@@ -198,7 +198,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
      * @en Clear forward history from current index.
      * @ja 現在の履歴のインデックスより前方の履歴を削除
      */
-    clearForward(): void {
+    async clearForward(): Promise<void> { // eslint-disable-line @typescript-eslint/require-await
         this._stack.clearForward();
     }
 

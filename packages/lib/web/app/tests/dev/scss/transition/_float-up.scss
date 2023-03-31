@@ -1,0 +1,32 @@
+$float-up-new-page-offset: 56px;
+$float-up-duration: 300ms;
+
+@keyframes float-up {
+    from {
+        opacity: 0;
+        transform: translate3d(0,$float-up-new-page-offset,0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0,0,0);
+    }
+}
+
+.float-up-leave-active {
+    z-index: 0;
+}
+
+.float-up-enter-active {
+    z-index: 10;
+    animation: float-up $float-up-duration forwards normal;
+}
+
+.cdp-transition-direction-back {
+    .float-up-leave-active {
+        z-index: 10;
+        animation: float-up $float-up-duration forwards reverse;
+    }
+    .float-up-enter-active {
+        z-index: 0;
+    }
+}

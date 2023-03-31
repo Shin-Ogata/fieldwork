@@ -9,7 +9,7 @@ import { entry } from '../signature';
 entry('PAGE_CONTEXT_SUBFLOW_PAGE_A');
 
 class PageSubFlowA extends PageView {
-    private _mode: 'normal' | 'alternative' = 'normal';
+    private _mode: 'normal' | 'subflow' = 'normal';
 
     events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<PageSubFlowA>> {
         /* eslint-disable @typescript-eslint/unbound-method */
@@ -24,9 +24,9 @@ class PageSubFlowA extends PageView {
 
     render(): this {
         this.$el.data('theme', this._mode);
-        this.$el.find('#page-subflow-a-title').text(t(i18nKey.app.subflow.title[`pageA-${this._mode}`]) as string);         // eslint-disable-line
-        this.$el.find('#page-subflow-a-desctiption').text(t(i18nKey.app.subflow.title[`pageA-${this._mode}`]) as string);   // eslint-disable-line
-        this.$el.find('#page-subflow-a-btn-1').text(t(i18nKey.app.subflow.button[`toPageB-${this._mode}`]) as string);      // eslint-disable-line
+        this.$el.find('#page-subflow-a-title').text(t(i18nKey.app.subflow.title[`pageA-${this._mode}`]) as string);             // eslint-disable-line
+        this.$el.find('#page-subflow-a-desctiption').text(t(i18nKey.app.subflow.description[`pageA-${this._mode}`]) as string); // eslint-disable-line
+        this.$el.find('#page-subflow-a-btn-1').text(t(i18nKey.app.subflow.button[`toPageB-${this._mode}`]) as string);          // eslint-disable-line
         return this;
     }
 
@@ -38,9 +38,13 @@ class PageSubFlowA extends PageView {
         console.log(`${thisPage.url}: mounted`);
     }
 
+    protected onPageCloned(thisPage: Route): void {
+        console.log(`${thisPage.url}: cloned`);
+    }
+
     protected onPageBeforeEnter(thisPage: Route): void {
         console.log(`${thisPage.url}: before-enter`);
-        this._mode = (thisPage.params['mode'] || 'normal') as 'normal' | 'alternative';
+        this._mode = (thisPage.params['mode'] || 'normal') as 'normal' | 'subflow';
         this.render();
     }
 
@@ -69,21 +73,23 @@ class PageSubFlowA extends PageView {
 
     private onButton1(event: UIEvent): void {
         console.log(`onButton1(${event.type})`);
+        const additional = 'subflow' === this._mode ? '/subflow' : '';
+        this._router?.navigate(`/subflow-b${additional}`);
     }
 
     private onButton2(event: UIEvent): void {
         console.log(`onButton2(${event.type})`);
-        // this._router?.beginSubFlow('/subflow-a/alternative', {}, { transition: 'slide-fade' });
-        // this._router?.beginSubFlow('/subflow-a/alternative', {}, { transition: 'bounce' });
-        this._router?.beginSubFlow('/subflow-a/alternative', {}, { transition: 'slide' });
+        this._router?.beginSubFlow('/subflow-a/subflow', {}, { transition: 'slide-up' });
     }
 
     private onButton3(event: UIEvent): void {
         console.log(`onButton3(${event.type})`);
+        // TODO:
     }
 
     private onButton4(event: UIEvent): void {
         console.log(`onButton4(${event.type})`);
+        // TODO:
     }
 }
 

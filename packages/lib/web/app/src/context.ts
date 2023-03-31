@@ -184,10 +184,10 @@ export interface AppContext extends Subscribable<AppContextEvent> {
 const _initialPages: RouteParameters[] = [];
 
 /**
- * @en Route parameters for page registration. Need to describe `path`, `component`, `content`.
- * @ja ページ登録用ルートパラメータ. `path`, `component`, `content` の記述が必要
+ * @en Route parameters for page registration. Need to describe `path`, `content`.
+ * @ja ページ登録用ルートパラメータ. `path`, `content` の記述が必要
  */
-export type PageRouteParameters = Required<Pick<RouteParameters, 'component' | 'content'>> & RouteParameters;
+export type PageRouteParameters = Required<Pick<RouteParameters, 'content'>> & RouteParameters;
 
 /**
  * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
