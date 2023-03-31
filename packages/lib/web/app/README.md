@@ -33,15 +33,16 @@
 - 各 page 実装方法の検証 (全部 register する)
   - ☆ page-root (object. dom-cache する. `string` は非同期読み込み用 reserve)
   - ☆ page-class (すべてのページイベントを確認)
-  - page-factory (非同期)
-  - page-view (RoutePathParams で複数のパスを扱う)
+  - ☆ page-factory (非同期)
+  - ☆ page-view (RoutePathParams で複数のパスを扱う)
 - ☆ reflesh(lv2) 多言語読み込み
 - ☆ 遷移アニメーション
 
-- 画面遷移の拒否
+- ☆ 画面遷移の拒否
 - sub-flow
+  - ☆ sub-flow 終了時のブラウザ履歴管理があまい (以前から)
 
-- 同一URL, 同一ページインスタンスへの遷移のケア?
+- ☆ 同一URL, 同一ページインスタンスへの遷移のケア?
 
 - bug:
   - ☆初期ページ. `onPageLoaded` をハンドリングできない

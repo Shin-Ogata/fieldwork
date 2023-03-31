@@ -132,7 +132,7 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
      * @en Clear forward history from current index.
      * @ja 現在の履歴のインデックスより前方の履歴を削除
      */
-    clearForward(): void;
+    clearForward(): Promise<void>;
     /**
      * @en Return closet index by ID.
      * @ja 指定された ID から最も近い index を返却

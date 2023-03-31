@@ -45,7 +45,7 @@ export const waitDomContentLoaded = async (context: Document): Promise<void> => 
     });
 };
 
-/** @internal ensure custom document event ready*/
+/** @internal ensure custom document event ready */
 export const waitDocumentEventReady = async (context: Document, event: string | undefined): Promise<void> => {
     null != event && await new Promise<unknown>(resolve => {
         context.addEventListener(event, resolve, { once: true });

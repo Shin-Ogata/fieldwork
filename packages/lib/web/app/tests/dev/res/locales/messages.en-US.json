@@ -19,6 +19,9 @@
         "lv1": "Level 1: Reload",
         "lv2": "Level 2: DOM reconstruction"
       },
+      "transition": {
+        "title": "Transition"
+      },
       "language": {
         "title": "Change Language",
         "ja": "To Japanese",
@@ -32,21 +35,21 @@
     "subflow": {
       "title": {
         "pageA-normal": "Page: A",
-        "pageA-alternative": "Page: A'",
+        "pageA-subflow": "Page: A'",
         "pageB-normal": "Page: B",
-        "pageB-alternative": "Page: B'",
+        "pageB-subflow": "Page: B'",
         "pageC": "Page: C"
       },
       "description": {
         "pageA-normal": "Sub Flow: Page A (Normal)",
-        "pageA-alternative": "Sub Flow: Page A' (Alternative)",
+        "pageA-subflow": "Sub Flow: Page A' (in Sub Flow)",
         "pageB-normal": "Sub Flow: Page B (Normal)",
-        "pageB-alternative": "Sub Flow: Page B' (Alternative)",
+        "pageB-subflow": "Sub Flow: Page B' (in Sub Flow)",
         "pageC": "Sub Flow: Page C"
       },
       "button": {
         "toPageB-normal": "to Page B (Normal)",
-        "toPageB-alternative": "to Page B' (Alternative)",
+        "toPageB-subflow": "to Page B' (Sub Flow)",
         "beginSubFlowDestA": "Sub Flow: → [A'] → [B'] → [A]",
         "beginSubFlowDestB": "Sub Flow: → [A'] → [B'] → [B]",
         "beginSubFlowDestC": "Sub Flow: → [A'] → [B'] → [C]",

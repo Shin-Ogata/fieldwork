@@ -33,6 +33,9 @@ describe('page-view spec', () => {
         get path(): string {
             return this._route?.path as string;
         }
+        get url(): string {
+            return this._route?.url as string;
+        }
         get router(): Router | undefined {
             return this._router;
         }
@@ -116,6 +119,60 @@ describe('page-view spec', () => {
 
         expect(view3.active).toBe(false);
         expect(view2.active).toBe(true);
+        expect(view1.active).toBe(false);
+    });
+
+    it('check same page instance', async () => {
+        const { el, window } = await prepareQueryContext();
+        const app = await AppContext({
+            initialPath: '/one',
+            main: '#test-app',
+            el,
+            window,
+            routes: [
+                {
+                    path: '/one',
+                    component: TestView,
+                    content: '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">ONE</div>',
+                },
+                {
+                    path: '/two/:mode?',
+                    component: TestView,
+                    content: '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">TWO</div>',
+                },
+            ],
+            reset: true,
+        } as AppContextOptions);
+
+        await new Promise(resolve => {
+            app.router.on('changed', () => resolve());
+        });
+
+        const view1 = app.activePage as TestView;
+        expect(view1.path).toBe('/one');
+        expect(view1.$el.text()).toBe('ONE');
+        expect(view1.router === app.router).toBe(true);
+        expect(view1.active).toBe(true);
+
+        await app.router.navigate('/two/normal');
+
+        const view2 = app.activePage as TestView;
+        expect(view2.path).toBe('/two/:mode?');
+        expect(view2.url).toBe('/two/normal');
+        expect(view2.$el.text()).toBe('TWO');
+        expect(view2.router === app.router).toBe(true);
+        expect(view2.active).toBe(true);
+        expect(view1.active).toBe(false);
+
+        await app.router.navigate('/two/alternative');
+
+        const view3 = app.activePage as TestView;
+        expect(view3.path).toBe('/two/:mode?');
+        expect(view3.url).toBe('/two/alternative');
+        expect(view3.$el.text()).toBe('TWO');
+        expect(view3.router === app.router).toBe(true);
+        expect(view3.active).toBe(true);
+        expect(view3).toBe(view2);
         expect(view1.active).toBe(false);
     });
 

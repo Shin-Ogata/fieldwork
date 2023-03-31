@@ -32,6 +32,9 @@ void (async () => {
                 'en': 'en-US',
             },
         },
+        transition: {
+            default: 'slide',
+        },
     }).ready;
 
     const app = AppContext() as AppContextEx;

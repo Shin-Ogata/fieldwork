@@ -419,7 +419,7 @@ describe('router/history/session spec', () => {
         expect(instance.id).toBe('three');
         expect(instance.state).toEqual({ index: 2, '@id': 'three' });
 
-        instance.clearForward();
+        await instance.clearForward();
 
         expect(instance.length).toBe(3);
         expect(instance.id).toBe('three');

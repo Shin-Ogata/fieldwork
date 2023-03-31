@@ -255,7 +255,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     async beginSubFlow(to: string, subflow?: RouteSubFlowParams, options?: RouteNavigationOptions): Promise<this> {
         try {
             const params = Object.assign({}, subflow || {});
-            this.evaluationSubFlowParams(params);
+            this.evaluateSubFlowParams(params);
             (this.currentRoute as RouteContext).subflow = params;
             await this.navigate(to, options);
         } catch (e) {
@@ -282,7 +282,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         } else {
             await this.go(-1 * distance);
         }
-        this._history.clearForward();
+        await this._history.clearForward();
 
         return this;
     }
@@ -297,22 +297,22 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         // `reverse`: 履歴上は `back` 方向になるため, I/F 指定方向と反転するように調整. default: true
         this._tempTransitionParams = Object.assign({}, params, { reverse: !Object.assign({ reverse: true }, params).reverse });
         await this.go(-1 * subflow.distance);
-        this._history.clearForward();
+        await this._history.clearForward();
 
         return this;
     }
 
     /** Set common transition settnigs. */
-    setTransitionSettings(newSettings: TransitionSettings): TransitionSettings {
+    transitionSettings(newSettings?: TransitionSettings): TransitionSettings {
         const oldSettings = this._transitionSettings;
-        this._transitionSettings = { ...newSettings };
+        newSettings && (this._transitionSettings = { ...newSettings });
         return oldSettings;
     }
 
     /** Set common navigation settnigs. */
-    setNavigationSettings(newSettings: NavigationSettings): NavigationSettings {
+    navigationSettings(newSettings?: NavigationSettings): NavigationSettings {
         const oldSettings = this._navigationSettings;
-        this._navigationSettings = Object.assign({ method: 'push' }, newSettings);
+        newSettings && (this._navigationSettings = Object.assign({ method: 'push' }, newSettings));
         return oldSettings;
     }
 
@@ -348,8 +348,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 ///////////////////////////////////////////////////////////////////////
 // private methods: sub-flow
 
-    /** @internal evaluation sub-flow parameters */
-    private evaluationSubFlowParams(subflow: RouteSubFlowParams): void {
+    /** @internal evaluate sub-flow parameters */
+    private evaluateSubFlowParams(subflow: RouteSubFlowParams): void {
         let additionalDistance = 0;
 
         if (subflow.base) {
@@ -448,11 +448,6 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
             parseUrlParams(nextRoute);
 
-            // 遷移先が subflow 開始点である場合, subflow 解除
-            if (nextRoute.url === this.findSubFlowParams(false)?.params.base) {
-                this.findSubFlowParams(true);
-            }
-
             const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
             this._tempTransitionParams = undefined;
 
@@ -462,14 +457,15 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             ] = await this.prepareChangeContext(changeInfo);
 
             // transition core
-            await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
+            const transition = await this.transitionPage(pageNext, $elNext, pagePrev, $elPrev, changeInfo);
 
-            this.updateChangeContext(
-                $elNext, $elPrev,
-                changeInfo.from as RouteContext,
-                !changeInfo.reload,
-                !!changeInfo.samePageInstance,
-            );
+            this.updateChangeContext($elNext, $elPrev, changeInfo, transition);
+
+            // 遷移先が subflow 開始点である場合, subflow 解除
+            if (nextRoute.url === this.findSubFlowParams(false)?.params.base) {
+                this.findSubFlowParams(true);
+                await this._history.clearForward();
+            }
 
             this.publish('changed', changeInfo);
         } finally {
@@ -500,6 +496,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 prevRoute!.el = nextRoute.el?.cloneNode(true) as HTMLElement;
                 $(prevRoute!.el).insertBefore(nextRoute.el);
                 $(nextRoute.el).attr('aria-hidden', true).removeClass([`${this._cssPrefix}-${CssName.PAGE_CURRENT}`, `${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`]);
+                this.publish('cloned', changeInfo);
+                this.triggerPageCallback('cloned', nextParams.page, changeInfo);
+                await asyncProcess.complete();
             } else {
                 if (nextParams.$template?.isConnected) {
                     nextRoute.el         = nextParams.$template[0];
@@ -509,8 +508,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 }
                 this.publish('loaded', changeInfo);
                 await asyncProcess.complete();
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                this.triggerPageCallback('init', nextParams.page!, changeInfo);
+                this.triggerPageCallback('init', nextParams.page, changeInfo);
                 await asyncProcess.complete();
             }
         }
@@ -538,7 +536,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         pageNext: Page, $elNext: DOM,
         pagePrev: Page, $elPrev: DOM,
         changeInfo: RouteChangeInfoContext,
-    ): Promise<void> {
+    ): Promise<string | undefined> {
         const transition = changeInfo.transition || this._transitionSettings.default;
 
         const {
@@ -581,6 +579,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             pagePrev, $elPrev,
             changeInfo,
         );
+
+        return transition;
     }
 
     /** @internal transition proc : begin */
@@ -603,8 +603,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         $elPrev.addClass([leaveFromClass, leaveActiveClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
 
         this.publish('before-transition', changeInfo);
-        this.triggerPageCallback('before-enter', pageNext, changeInfo);
         this.triggerPageCallback('before-leave', pagePrev, changeInfo);
+        this.triggerPageCallback('before-enter', pageNext, changeInfo);
         await changeInfo.asyncProcess.complete();
     }
 
@@ -623,8 +623,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             `${this._cssPrefix}-${CssName.TRANSITION_DIRECTION}-${changeInfo.direction}`,
         ]);
 
-        this.triggerPageCallback('after-enter', pageNext, changeInfo);
         this.triggerPageCallback('after-leave', pagePrev, changeInfo);
+        this.triggerPageCallback('after-enter', pageNext, changeInfo);
         this.publish('after-transition', changeInfo);
         await changeInfo.asyncProcess.complete();
     }
@@ -633,10 +633,14 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private updateChangeContext(
         $elNext: DOM,
         $elPrev: DOM,
-        prevRoute: RouteContext | undefined,
-        urlChanged: boolean,
-        samePageInstance: boolean,
+        changeInfo: RouteChangeInfoContext,
+        transition: string | undefined,
     ): void {
+        const { from, reload, samePageInstance, direction } = changeInfo;
+        const prevRoute = from as RouteContext;
+        const urlChanged = !reload;
+
+
         if ($elNext[0] !== $elPrev[0]) {
             // update class
             $elPrev
@@ -675,6 +679,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         }
 
         this._lastRoute = this.currentRoute as RouteContext;
+        'back' !== direction && (this._lastRoute.transition = transition);
     }
 
 ///////////////////////////////////////////////////////////////////////

@@ -50,6 +50,12 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
     protected onPageMounted(thisPage: Route): void | Promise<void>;
     /**
      * @overridable
+     * @en Triggered immediately after the page's HTMLElement is cloned and inserted into the DOM.
+     * @ja ページの HTMLElement が複製され DOM に挿入された直後に発火
+     */
+    protected onPageCloned(thisPage: Route, prevPage: Route): void | Promise<void>;
+    /**
+     * @overridable
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */

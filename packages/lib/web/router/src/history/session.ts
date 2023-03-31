@@ -130,8 +130,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         const oldURL = location.href;
 
         this.setIndex(0);
-        this.clearForward();
-        await this.backToSesssionOrigin();
+        await this.clearForward();
 
         const newURL = location.href;
 
@@ -280,8 +279,9 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      * @en Clear forward history from current index.
      * @ja 現在の履歴のインデックスより前方の履歴を削除
      */
-    clearForward(): void {
+    clearForward(): Promise<void> {
         this._stack.clearForward();
+        return this.clearForwardHistory();
     }
 
     /**
@@ -413,8 +413,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         }
     }
 
-    /** @internal follow the session history until `origin` (in silent) */
-    private async backToSesssionOrigin(): Promise<void> {
+    /** @internal clear forward session history from current index. */
+    private async clearForwardHistory(): Promise<void> {
         await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
             const isOrigin = (st: Accessible<unknown>): boolean => {
                 return (st && st['@origin']) as boolean;
@@ -422,10 +422,25 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
             const { history } = this._window;
             let state = history.state;
+
+            // back to session origin
             while (!isOrigin(state)) {
                 const promise = wait();
                 history.back();
                 state = await promise;
+            }
+
+            const ensure = (src: Accessible<unknown>): unknown => {
+                const ctx = { ...src };
+                delete ctx['router'];
+                delete ctx['@params'];
+                return JSON.parse(JSON.stringify(ctx));
+            };
+
+            // forward from index 1 to current value
+            for (let i = 1, n = this._stack.length; i < n; i++) {
+                const st = this._stack.at(i);
+                history.pushState(ensure(st), '', this.toUrl(st['@id']));
             }
         });
     }

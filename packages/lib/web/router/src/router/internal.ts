@@ -78,7 +78,7 @@ export const enum Const {
 }
 
 /** @internal */
-export type PageEvent = 'init' | 'mounted' | 'before-enter' | 'after-enter' | 'before-leave' | 'after-leave' | 'unmounted' | 'removed';
+export type PageEvent = 'init' | 'mounted' | 'cloned' | 'before-enter' | 'after-enter' | 'before-leave' | 'after-leave' | 'unmounted' | 'removed';
 
 /** @internal */
 export interface RouteChangeInfoContext extends RouteChangeInfo {
