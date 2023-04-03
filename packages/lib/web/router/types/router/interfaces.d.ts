@@ -142,6 +142,11 @@ export interface Page {
      */
     pageMounted?(info: RouteChangeInfo): void | Promise<void>;
     /**
+     * @en Triggered immediately after the page's HTMLElement is cloned and inserted into the DOM.
+     * @ja ページの HTMLElement が複製され DOM に挿入された直後に発火
+     */
+    pageCloned?(info: RouteChangeInfo): void | Promise<void>;
+    /**
      * @en Triggered when the page is ready to be activated after initialization.
      * @ja 初期化後, ページがアクティベート可能な状態になると発火
      */

@@ -370,8 +370,8 @@ describe('router/context spec', () => {
         it('path params', async () => {
             const router = await createRouterWrap({
                 routes: [
-                    { path: '/' },
-                    { path: '/params/user/:userId/post/:postId' },
+                    { path: '/', content: '<div class="router-page root"></div>' },
+                    { path: '/params/user/:userId/post/:postId', content: '<div class="router-page"></div>' },
                 ],
             });
 
@@ -388,6 +388,37 @@ describe('router/context spec', () => {
             expect(router.currentRoute.params).toEqual({
                 userId: 100,
                 postId: 12,
+            });
+
+            // check same page instance
+            await router.navigate('/params/user/:userId/post/:postId', {
+                params: {
+                    userId: 200,
+                    postId: 24,
+                }
+            });
+
+            expect(router.currentRoute.url).toBe('/params/user/200/post/24');
+            expect(router.currentRoute.path).toBe('/params/user/:userId/post/:postId');
+            expect(router.currentRoute.params).toEqual({
+                userId: 200,
+                postId: 24,
+            });
+
+            await router.navigate('/');
+
+            await router.navigate('/params/user/:userId/post/:postId', {
+                params: {
+                    userId: 300,
+                    postId: 36,
+                }
+            });
+
+            expect(router.currentRoute.url).toBe('/params/user/300/post/36');
+            expect(router.currentRoute.path).toBe('/params/user/:userId/post/:postId');
+            expect(router.currentRoute.params).toEqual({
+                userId: 300,
+                postId: 36,
             });
         });
 

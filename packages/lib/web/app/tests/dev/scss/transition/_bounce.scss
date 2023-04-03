@@ -6,6 +6,12 @@
     animation: bounce-in 0.5s reverse;
 }
 
+.cdp-transition-direction-back {
+    .bounce-leave-active {
+        z-index: 100;
+    }
+}
+
 @keyframes bounce-in {
     0% {
         transform: scale(0);

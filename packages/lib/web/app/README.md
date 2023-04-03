@@ -39,32 +39,10 @@
 - ☆ 遷移アニメーション
 
 - ☆ 画面遷移の拒否
-- sub-flow
+- ☆ sub-flow
   - ☆ sub-flow 終了時のブラウザ履歴管理があまい (以前から)
 
 - ☆ 同一URL, 同一ページインスタンスへの遷移のケア?
-
-- bug:
-  - ☆初期ページ. `onPageLoaded` をハンドリングできない
-  - ☆root → class → [戻る] → [進む]
-    - ☆[戻る] ときの `this._prevRoute`, `cdp-page-previous` の管理がおかしい
-  - ☆`aria-hidden` と表示・非表示の関係を整理
-  - ☆`root` → `class` → [戻る] → `class` で class の js インスタンス 1 に対して DOM インスタンスが2つ
-    - そもそも `id` が同じ場合は dom instance が使いまわせるべき? path param どうする?
-      - 旧 cafeteria は DOM も使いまわし. (transition はあきらめている. 仕様でよさそう)
-      - ∴ `id` = `path` は今のまま
-      - ∴ `id` が同じなら DOM が再利用できる場合は再利用する
-        - _stack.direct(id).state.el
-  - ☆`reload` で　`cdp-page-previous`と`cdp-page-current`の両方がつくケース
-  - ☆`reload` で　`leave` が来るのはおかしいかも
-      - `reload`を changeInfo で判別
-      - `reload`用のtransitionを設定可能に
-      - `reload`中の場合は`leave`を発行しない
-  - ☆トランジションがまだ変
-    - ~~https://theorthodoxworks.com/web-design/css-animation-transition-bubbling/~~
-    - ~~beginTransition() の $elNext.removeAttr('aria-hidden')~~
-    - ~~slide は beginTransition() で動いているから間違い?~~ → animatiohn の場合はこの挙動
-    - ☆リフローの強制でいけるっぽい
 
 ## 参考
 
