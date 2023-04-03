@@ -84,12 +84,38 @@ class PageSubFlowA extends PageView {
 
     private onButton3(event: UIEvent): void {
         console.log(`onButton3(${event.type})`);
-        // TODO:
+        this._router?.beginSubFlow(
+            '/subflow-a/subflow',
+            {
+                base: '/subflow-a',
+                additinalStacks: [
+                    {
+                        url: '/subflow-b',
+                    }
+                ],
+            },
+            {
+                transition: 'slide-up',
+            }
+        );
     }
 
     private onButton4(event: UIEvent): void {
         console.log(`onButton4(${event.type})`);
-        // TODO:
+        this._router?.beginSubFlow(
+            '/subflow-a/subflow',
+            {
+                base: '/view',
+                additinalStacks: [
+                    {
+                        url: '/subflow-c',
+                    }
+                ],
+            },
+            {
+                transition: 'slide-up',
+            },
+        );
     }
 }
 

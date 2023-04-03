@@ -1,7 +1,11 @@
-import { FunctionPropertyNames } from '@cdp/core-utils';
+import type { FunctionPropertyNames } from '@cdp/core-utils';
 import { t } from '@cdp/i18n';
-import { ViewEventsHash } from '@cdp/view';
-import { Route } from '@cdp/router';
+import type { ViewEventsHash } from '@cdp/view';
+import type {
+    Route,
+    RouteSubFlowParams,
+    PageTransitionParams,
+} from '@cdp/router';
 import { PageView, registerPage } from '@cdp/app';
 import { i18nKey } from '../../types';
 import { entry } from '../signature';
@@ -76,18 +80,60 @@ class PageSubFlowB extends PageView {
 
     private onButton1(event: UIEvent): void {
         console.log(`onButton1(${event.type})`);
-        // TODO:
-        this._router?.navigate('/subflow-c');
+        if ('subflow' === this._mode) {
+            this._router?.commitSubFlow(this.commitOptions);
+        } else {
+            this._router?.beginSubFlow('/subflow-a/subflow', { base: '/subflow-a' }, { transition: 'slide-up' });
+        }
     }
 
     private onButton2(event: UIEvent): void {
         console.log(`onButton2(${event.type})`);
-        // TODO:
+        this._router?.beginSubFlow('/subflow-a/subflow', {}, { transition: 'slide-up' });
     }
 
     private onButton3(event: UIEvent): void {
         console.log(`onButton3(${event.type})`);
-        // TODO:
+        this._router?.beginSubFlow(
+            '/subflow-a/subflow',
+            {
+                base: '/view',
+                additinalStacks: [
+                    {
+                        url: '/subflow-c',
+                    }
+                ],
+            },
+            {
+                transition: 'slide-up',
+            },
+        );
+    }
+
+///////////////////////////////////////////////////////////////////////
+// internal methods
+
+    private querySubFlowDestination(): string | undefined {
+        // eslint-disable-next-line
+        const { params } = (this._router as any)?.findSubFlowParams(false) as { params: RouteSubFlowParams; };
+        if (params?.additinalStacks) {
+            return params.additinalStacks[params.additinalStacks.length - 1].url;
+        } else if (params?.base) {
+            return params.base;
+        } else {
+            return undefined;
+        }
+    }
+
+    private get commitOptions(): PageTransitionParams {
+        switch (this.querySubFlowDestination()) {
+            case '/subflow-c': {
+                const { default: transition } = this._router?.transitionSettings() || {};
+                return { transition, reverse: true };
+            }
+            default:
+                return {};
+        }
     }
 }
 

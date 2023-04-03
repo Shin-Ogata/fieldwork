@@ -33,6 +33,7 @@ import {
 } from '../history';
 import { normalizeId } from '../history/internal';
 import type {
+    PageTransitionParams,
     RouteChangeInfo,
     Page,
     RouteParameters,
@@ -100,10 +101,13 @@ export type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
     page?: Page;
 };
 
+/** @internal */
+export type RouteSubFlowParamsContext = RouteSubFlowParams & Required<PageTransitionParams>;
+
 /** @internal RouteContext */
 export type RouteContext = Writable<Route> & RouteNavigationOptions & {
     '@params': RouteContextParameters;
-    subflow?: RouteSubFlowParams;
+    subflow?: RouteSubFlowParamsContext;
 };
 
 //__________________________________________________________________________________________________//
