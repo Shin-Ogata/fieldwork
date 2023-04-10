@@ -102,7 +102,9 @@ export type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
 };
 
 /** @internal */
-export type RouteSubFlowParamsContext = RouteSubFlowParams & Required<PageTransitionParams>;
+export type RouteSubFlowParamsContext = RouteSubFlowParams & Required<PageTransitionParams> & {
+    origin: string;
+};
 
 /** @internal RouteContext */
 export type RouteContext = Writable<Route> & RouteNavigationOptions & {

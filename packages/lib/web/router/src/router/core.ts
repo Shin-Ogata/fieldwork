@@ -260,6 +260,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 {
                     transition: this._transitionSettings.default as string,
                     reverse: false,
+                    origin: this.currentRoute.url,
                 },
                 subflow,
                 {
@@ -476,7 +477,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             this.updateChangeContext($elNext, $elPrev, changeInfo, transition);
 
             // 遷移先が subflow 開始点である場合, subflow 解除
-            if (nextRoute.url === this.findSubFlowParams(false)?.params.base) {
+            if (nextRoute.url === this.findSubFlowParams(false)?.params.origin) {
                 this.findSubFlowParams(true);
                 await this._history.clearForward();
             }
