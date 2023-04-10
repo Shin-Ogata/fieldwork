@@ -38,5 +38,5 @@ module.exports = {
     logLevel: 'Error',
     name,
     out: resolve(`${doc}/${api}`),
-    readme: existsSync(resolve('README.md')) ? 'README.md' : 'none',
+    readme: existsSync(resolve('README.md')) ? resolve('README.md') : 'none',
 };
