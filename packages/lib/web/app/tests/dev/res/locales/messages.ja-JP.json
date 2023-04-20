@@ -7,7 +7,8 @@
     "navigateTo": {
       "class": "クラスページへ",
       "factory": "ファクトリーページへ",
-      "pageView": "ページビューへ"
+      "pageView": "ページビューへ",
+      "settings": "設定へ"
     },
     "pageRoot": {
       "title": "ページ: ルート"
@@ -30,7 +31,13 @@
     },
     "pageView": {
       "title": "ページ: ビュー",
-      "toSubflow": "Sub Flow の実装例へ"
+      "functions": {
+        "description": "機能別",
+        "to": {
+          "subflow": "Sub Flow の実装例へ",
+          "template": "Template の実装例へ"
+        }
+      }
     },
     "subflow": {
       "title": {
@@ -54,6 +61,66 @@
         "beginSubFlowDestB": "Sub Flow: → [A'] → [B'] → [B]",
         "beginSubFlowDestC": "Sub Flow: → [A'] → [B'] → [C]",
         "endSubFlow": "Sub Flow の終了"
+      }
+    },
+    "template": {
+      "root": {
+        "title": "Template: ルート",
+        "description": "Template 実装例",
+        "navigateTo": {
+          "mustache": "Mustache テンプレート (core-template) 例へ",
+          "mustache-bridge": "Mustache テンプレートブリッジ (lit-html) 例へ"
+        }
+      },
+      "mustache": {
+        "title": "Mustache",
+        "description": "Mustache テンプレート (core-template) 実装例",
+        "input": {
+          "description": "※テンプレートを全更新するため, `input` は宣言的実装に向かない"
+        }
+      },
+      "mustache-bridge": {
+        "title": "Mustache Bridge (lit-html)",
+        "description": "Mustache テンプレートを利用した lit-html ブリッジ実装例",
+        "input": {
+          "description": "※テンプレートを差分更新するため, input を宣言的に実装可能"
+        }
+      },
+      "content": {
+        "state": {
+          "label": "カウント: ",
+          "button": {
+            "reset": "リセット"
+          }
+        },
+        "effect": {
+          "label": "クリック数: ",
+          "button": {
+            "label": "クリックしてください🙇‍♂️"
+          }
+        },
+        "interval": {
+          "label": "時刻: ",
+          "button": {
+            "start": "インターバル開始",
+            "stop": "インターバル停止"
+          }
+        },
+        "input": {
+          "label": "入力文字: ",
+          "placeholder": "文字を入力してください"
+        },
+        "list": {
+          "label": "要素数: ",
+          "column": {
+            "id": "ID",
+            "score": "スコア"
+          },
+          "button": {
+            "clear": "クリア"
+          },
+          "noItem": "リストアイテムを追加してください"
+        }
       }
     }
   }

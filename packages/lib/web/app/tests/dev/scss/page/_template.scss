@@ -1,0 +1,33 @@
+.template-page {
+    padding: 0 20px;
+    margin: 0 -10px;
+    overflow-x: hidden;
+    color: #cacacf;
+    background: #043886;
+
+    &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0 -10px;
+        box-sizing: border-box;
+        z-index: -1;
+    }
+
+    header {
+        display:flex;
+        align-items:center;
+        h1 {
+            margin-left: 10px;
+        }
+    }
+
+    .control-group {
+        button {
+            margin: 5px;
+            padding: 5px;
+        }
+    }
+}

@@ -9,6 +9,7 @@ import {
     camelize,
 } from '@cdp/core-utils';
 import { EventPublisher } from '@cdp/events';
+import { NativePromise } from '@cdp/promise';
 import {
     RESULT_CODE,
     isResult,
@@ -319,15 +320,15 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
     /** Set common transition settnigs. */
     transitionSettings(newSettings?: TransitionSettings): TransitionSettings {
-        const oldSettings = this._transitionSettings;
-        newSettings && (this._transitionSettings = { ...newSettings });
+        const oldSettings = { ...this._transitionSettings };
+        newSettings && Object.assign(this._transitionSettings, newSettings);
         return oldSettings;
     }
 
     /** Set common navigation settnigs. */
     navigationSettings(newSettings?: NavigationSettings): NavigationSettings {
-        const oldSettings = this._navigationSettings;
-        newSettings && (this._navigationSettings = Object.assign({ method: 'push' }, newSettings));
+        const oldSettings = { ...this._navigationSettings };
+        newSettings && Object.assign(this._navigationSettings, newSettings);
         return oldSettings;
     }
 
@@ -445,7 +446,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const method = camelize(`page-${event}`);
         if (isFunction((target as Page & Record<string, UnknownFunction> | undefined)?.[method])) {
             const retval = (target as Page & Record<string, UnknownFunction> | undefined)?.[method](arg);
-            if (retval instanceof Promise && (arg as Route & Record<string, unknown>)['asyncProcess']) {
+            if (retval instanceof NativePromise && (arg as Route & Record<string, unknown>)['asyncProcess']) {
                 (arg as RouteChangeInfoContext).asyncProcess.register(retval);
             }
         }

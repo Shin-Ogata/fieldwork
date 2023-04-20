@@ -1,12 +1,17 @@
 .bounce-enter-active {
     animation: bounce-in 0.5s;
+    z-index: 100;
 }
 
 .bounce-leave-active {
     animation: bounce-in 0.5s reverse;
+    z-index: inherit;
 }
 
 .cdp-transition-direction-back {
+    .bounce-enter-active {
+        z-index: inherit;
+    }
     .bounce-leave-active {
         z-index: 100;
     }

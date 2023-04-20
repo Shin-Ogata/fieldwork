@@ -7,7 +7,8 @@
     "navigateTo": {
       "class": "To Page Class",
       "factory": "To Page Factory",
-      "pageView": "To Page View"
+      "pageView": "To Page View",
+      "settings": "To Settings"
   },
     "pageRoot": {
       "title": "Page: Root"
@@ -30,7 +31,13 @@
     },
     "pageView": {
       "title": "Page: View",
-      "toSubflow": "to Sub Flow Example"
+      "functions": {
+        "description": "By Function",
+        "to": {
+          "subflow": "to Sub Flow Examples",
+          "template": "to Template Examples"
+        }
+      }
     },
     "subflow": {
       "title": {
@@ -54,6 +61,66 @@
         "beginSubFlowDestB": "Sub Flow: → [A'] → [B'] → [B]",
         "beginSubFlowDestC": "Sub Flow: → [A'] → [B'] → [C]",
         "endSubFlow": "End Sub Flow"
+      }
+    },
+    "template": {
+      "root": {
+        "title": "Template: Root",
+        "description": "Template Examples",
+        "navigateTo": {
+          "mustache": "To Mustache template (core-template) Example",
+          "mustache-bridge": "Mustache template bridge (lit-html) Example"
+        }
+      },
+      "mustache": {
+        "title": "Mustache",
+        "description": "Mustache template (core-template) Example",
+        "input": {
+          "description": "※`input` is not suitable for declarative implementation as it updates all templates"
+        }
+      },
+      "mustache-bridge": {
+        "title": "Mustache Bridge (lit-html)",
+        "description": "lit-html bridge using Mustache templates Example",
+        "input": {
+          "description": "※`input` can be implemented declaratively to incrementally update templates"
+        }
+      },
+      "content": {
+        "state": {
+          "label": "Count: ",
+          "button": {
+            "reset": "Reset"
+          }
+        },
+        "effect": {
+          "label": "Clicked: ",
+          "button": {
+            "label": "Click me 🙇‍♂️"
+          }
+        },
+        "interval": {
+          "label": "Time: ",
+          "button": {
+            "start": "Start Interval",
+            "stop": "Stop Interval"
+          }
+        },
+        "input": {
+          "label": "Input: ",
+          "placeholder": "Please input text"
+        },
+        "list": {
+          "label": "Num of Elements: ",
+          "column": {
+            "id": "ID",
+            "score": "Score"
+          },
+          "button": {
+            "clear": "Clear"
+          },
+          "noItem": "Please add list item"
+        }
       }
     }
   }

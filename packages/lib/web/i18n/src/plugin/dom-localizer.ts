@@ -31,9 +31,9 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
             $el[method](translated);
         } else {
             const translatedWithWrap = `<${customTagName}>${translated}</${customTagName}>`;
-            const $firstChild = $($el[0].firstElementChild) as DOM;
-            if ($firstChild.is(customTagName)) {
-                $firstChild.replaceWith(translatedWithWrap);
+            const $target = $el.children(customTagName);
+            if ($target.length) {
+                $target.replaceWith(translatedWithWrap);
             } else {
                 $el[method](translatedWithWrap);
             }

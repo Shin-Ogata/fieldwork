@@ -297,14 +297,19 @@ export abstract class ObservableObject implements IObservable {
         if (0 === properties.length) {
             return;
         }
+
         const { changeMap } = this[_internal];
         const keyValue = new Map<PropertyKey, [any, any]>();
         for (const key of properties) {
             const newValue = (this as UnknownObject)[key];
             const oldValue = changeMap.has(key) ? changeMap.get(key) : newValue;
             keyValue.set(key, [newValue, oldValue]);
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                this[_internal].changed = true;
+            }
         }
-        0 < keyValue.size && this[_notify](keyValue);
+
+        this[_notify](keyValue);
     }
 
 ///////////////////////////////////////////////////////////////////////

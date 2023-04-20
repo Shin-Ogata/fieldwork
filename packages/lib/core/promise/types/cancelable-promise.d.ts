@@ -6,6 +6,13 @@ declare global {
     }
 }
 /**
+ * @en `Native Promise` constructor <br>
+ *     Can be used as an alias for `Native Promise`.
+ * @ja `Native Promise` コンストラクタ <br>
+ *     `Native Promise` のエイリアスとして使用可能
+ */
+declare const NativePromise: PromiseConstructor;
+/**
  * @en Extended `Promise` class which enabled cancellation. <br>
  *     `Native Promise` constructor is overridden by framework default behaviour.
  * @ja キャンセルを可能にした `Promise` 拡張クラス <br>
@@ -35,4 +42,4 @@ declare class CancelablePromise<T> extends Promise<T> {
  *  - `ja` `true`: [[CancelablePromise]] を使用 / `false`: `Native Promise` を使用
  */
 export declare function extendPromise(enable: boolean): PromiseConstructor;
-export { CancelablePromise, CancelablePromise as Promise, };
+export { NativePromise, CancelablePromise, CancelablePromise as Promise, };
