@@ -20,9 +20,26 @@ import invertedSection from 'lit-transformer/src/transformers/invertedSection';
 import comment from 'lit-transformer/src/transformers/comment';
 import customDelimiter from 'lit-transformer/src/transformers/customDelimiter';
 
-const xform = (mustache: MustacheTransformer): TemplateTransformer => {
+/** @internal */
+type MustacheTransformerContext = MustacheTransformer & { delimiter: { start: string; end: string; }; };
+
+const xform = (mustache: MustacheTransformerContext): TemplateTransformer => {
     return (template: HTMLTemplateElement | string): TemplateBridgeEndine => {
-        return mustache(template instanceof HTMLTemplateElement ? template.innerHTML : template);
+        const { start, end } = mustache.delimiter;
+
+        // コメントブロック内の delimiter 抽出
+        const regCommentRemoveStart = new RegExp(`<!--\\s*${start}`, 'g');
+        const regCommentRemoveEnd   = new RegExp(`${end}\\s*-->`, 'g');
+        // delimiter 前後の trim 用正規表現
+        const regTrim = new RegExp(`(${start}[#^/]?)\\s*([\\w\\.]+)\\s*(${end})`, 'g');
+
+        const body = (template instanceof HTMLTemplateElement ? template.innerHTML : template)
+            .replace(regCommentRemoveStart, start)
+            .replace(regCommentRemoveEnd, end)
+            .replace(regTrim, '$1$2$3')
+        ;
+
+        return mustache(body);
     };
 };
 
@@ -43,17 +60,21 @@ const patch = (html: TemplateTag): TemplateTag => {
 function createMustacheTransformer(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
 function createMustacheTransformer(config: TransformConfig): TemplateTransformer;
 function createMustacheTransformer(arg1: unknown, arg2?: unknown): TemplateTransformer {
+    const delimiter = { start: '{{', end: '}}' };
+    let transformer: MustacheTransformerContext;
     if ('function' === typeof arg1) {
-        return xform(createDefault(patch(arg1 as TemplateTag), arg2 as TransformDirective));
+        transformer = createDefault(patch(arg1 as TemplateTag), arg2 as TransformDirective) as MustacheTransformerContext;
+        transformer.delimiter = delimiter;
     } else {
         const { html } = arg1 as { html: TemplateTag; };
-        return xform(
-            createCustom(Object.assign({
-                delimiter: { start: '{{', end: '}}' },
-                transformers: {},
-            }, arg1, { html: patch(html) }) as TransformConfig)
-        );
+        const config = Object.assign({
+            delimiter,
+            transformers: {},
+        }, arg1, { html: patch(html) }) as TransformConfig;
+        transformer = createCustom(config) as MustacheTransformerContext;
+        transformer.delimiter = config.delimiter!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
     }
+    return xform(transformer);
 }
 
 const transformer: {

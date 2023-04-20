@@ -15,4 +15,11 @@
         z-index: -1;
         background: #d7ffea;
     }
+
+    .control-group {
+        button {
+            margin: 5px;
+            padding: 5px;
+        }
+    }
 }

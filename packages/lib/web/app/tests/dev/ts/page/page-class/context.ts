@@ -117,7 +117,7 @@ class RouterPage implements Page {
     <hr/>
     <label>👈</label>
     <button><a href="#" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
-    <br/><br/>
+    <br/>
     <h3 data-i18n="${i18nKey.app.pageClass.refresh.title}">🌐</h3>
     <fieldset>
         <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv1}">
@@ -128,7 +128,7 @@ class RouterPage implements Page {
         </label>
         <button id="page-class-refresh" data-i18n="${i18nKey.app.common.reload}">🌐</button>
     </fieldset>
-    <br/><br/>
+    <br/>
     <h3 data-i18n="${i18nKey.app.pageClass.transition.title}">🌐</h3>
     <fieldset>
         <select id="page-class-select-transition">
@@ -141,7 +141,7 @@ class RouterPage implements Page {
             <option value="none">None</option>
         </select>
     </fieldset>
-    <br/><br/>
+    <br/>
     <h3 data-i18n="${i18nKey.app.pageClass.language.title}">🌐</h3>
     <fieldset>
         <button id="page-class-change-lng">🌐</button>

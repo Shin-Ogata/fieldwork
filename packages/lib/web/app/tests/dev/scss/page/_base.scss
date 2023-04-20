@@ -6,6 +6,17 @@
     bottom: 80px;
 }
 
+.control-group {
+    display:flex;
+    flex-direction: column;
+}
+
+button {
+    a {
+        display: block;
+    };
+}
+
 .router-page {
     position: absolute;
     top: 0;
@@ -23,9 +34,4 @@
         visibility: hidden;
         pointer-events: none;
     }
-}
-
-.control-group {
-    display:flex;
-    flex-direction: column;
 }

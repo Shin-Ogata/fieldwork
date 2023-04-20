@@ -1,11 +1,12 @@
 import { FunctionPropertyNames } from '@cdp/core-utils';
+import { dom as $ } from '@cdp/dom';
 import {
     TemplateResult,
     html,
     render,
 } from '@cdp/template';
 import { t } from '@cdp/i18n';
-import { ViewEventsHash } from '@cdp/view';
+import { ViewConstructionOptions, ViewEventsHash } from '@cdp/view';
 import { Route } from '@cdp/router';
 import { PageView, registerPage } from '@cdp/app';
 import { i18nKey } from '../../types';
@@ -14,6 +15,13 @@ import { entry } from '../signature';
 entry('PAGE_CONTEXT_PAGE_VIEW');
 
 class RouterPageView extends PageView {
+    private readonly _onNavigate: typeof RouterPageView.prototype.onNavigateTo;
+
+    constructor(route?: Route, options?: ViewConstructionOptions<HTMLElement>) {
+        super(route, options);
+        this._onNavigate = this.onNavigateTo.bind(this);
+    }
+
     events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<RouterPageView>> {
         /* eslint-disable @typescript-eslint/unbound-method */
         return {
@@ -71,19 +79,25 @@ class RouterPageView extends PageView {
             <label>👈</label>
             <button id="page-view-back">${t(i18nKey.app.common.back)}</button>
             <ul>
-                <li><a href="/class">${t(i18nKey.app.navigateTo.class)}</a></li>
-                <li><button data-navigate-to="/subflow" @click=${this.onGoToSubflow.bind(this)}>${t(i18nKey.app.pageView.toSubflow)}</button></li>
+                <li><a href="/class">⚙️${t(i18nKey.app.navigateTo.settings)}</a></li>
             </ul>
+            <h3>${t(i18nKey.app.pageView.functions.description)}</h3>
+            <fieldset class="control-group">
+                <button data-navigate-to="/subflow-a" @click=${this._onNavigate}>${t(i18nKey.app.pageView.functions.to.subflow)}</button>
+                <button data-navigate-to="/template" @click=${this._onNavigate}>${t(i18nKey.app.pageView.functions.to.template)}</button>
+           </fieldset>
         `;
     }
 
-    private onBack(/*event: UIEvent*/): void {
+    private onBack(event: UIEvent): void {
+        console.log(`onBack(${event.type})`);
         this._router?.back();
     }
 
-    private onGoToSubflow(event: UIEvent): void {
-        console.log(`onGoToSubflow(${event.type})`);
-        this._router?.navigate('/subflow-a');
+    private onNavigateTo(event: UIEvent): void {
+        const to = $(event.currentTarget as HTMLElement).data('navigate-to') as string;
+        console.log(`onNavigateTo('${to}')`);
+        this._router?.navigate(to);
     }
 }
 

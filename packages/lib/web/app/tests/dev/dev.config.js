@@ -7,10 +7,12 @@ const { default: rollup, testem } = base;
 
 module.exports = config(rollup[1], {
     external: {
+        '@cdp/observable': 'CDP',
         '@cdp/template': 'CDP',
     },
     requirejs: {
         paths: Object.assign({}, testem.external, {
+            '@cdp/observable': 'node_modules/@cdp/observable/dist/observable',
             '@cdp/template': 'node_modules/@cdp/template/dist/template',
             // template
             '@cdp/extension-template': 'node_modules/@cdp/template/node_modules/@cdp/extension-template/dist/extension-template',

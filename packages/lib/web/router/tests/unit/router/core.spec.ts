@@ -135,7 +135,7 @@ describe('router/context spec', () => {
 
             await waitFrame(router);
 
-            const old = router.transitionSettings({});
+            const old = router.transitionSettings({ default: 'slide' });
             expect(old).toEqual({
                 default: 'fade',
                 reload: 'none',
@@ -144,7 +144,12 @@ describe('router/context spec', () => {
             });
 
             const old2 = router.transitionSettings(old);
-            expect(old2).toEqual({});
+            expect(old2).toEqual({
+                default: 'slide',
+                reload: 'none',
+                'enter-active-class': 'animate__animated animate__tada',
+                'leave-active-class': 'animate__animated animate__bounceOutRight',
+            });
         });
 
         it('navigation settings', async () => {

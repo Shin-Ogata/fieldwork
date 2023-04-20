@@ -20,10 +20,15 @@ declare global {
 
 }
 
-/** @internal `Native Promise` constructor */
+/**
+ * @en `Native Promise` constructor <br>
+ *     Can be used as an alias for `Native Promise`.
+ * @ja `Native Promise` コンストラクタ <br>
+ *     `Native Promise` のエイリアスとして使用可能
+ */
 const NativePromise = Promise;
-/** @internal `Native then` method */
-const nativeThen = NativePromise.prototype.then;
+
+/** @internal */ const nativeThen = NativePromise.prototype.then;
 /** @internal */ const _create = Symbol('create');
 /** @internal */ const _tokens = new WeakMap<Promise<unknown>, CancelToken>();
 
@@ -196,6 +201,7 @@ interface GlobalConfig {
 extendPromise(!getConfig<GlobalConfig>().noAutomaticNativeExtend);
 
 export {
+    NativePromise,
     CancelablePromise,
     CancelablePromise as Promise,
 };
