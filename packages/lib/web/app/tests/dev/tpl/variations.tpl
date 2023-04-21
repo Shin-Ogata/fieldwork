@@ -1,54 +1,5 @@
-<template id="subflow-a">
-    <div id="page-subflow-a" class="router-page subflow-page" data-theme="normal">
-        <header>
-            <label>👈</label>
-            <button><a href="#" data-i18n="app.common.back">🌐</a></button>
-            <h1 id="page-subflow-a-title" data-i18n="app.subflow.title.pageA:normal">🌐</h1>
-        </header>
-        <section>
-            <h3 id="page-subflow-a-desctiption" data-i18n="app.subflow.description.pageA:normal">🌐</h3>
-            <fieldset class="control-group">
-                <button id="page-subflow-a-btn-1" data-i18n="app.subflow.button.toPageB:normal">🌐</button>
-                <button id="page-subflow-a-btn-2" data-i18n="app.subflow.button.beginSubFlowDestA" data-normal-only="true">🌐</button>
-                <button id="page-subflow-a-btn-3" data-i18n="app.subflow.button.beginSubFlowDestB" data-normal-only="true">🌐</button>
-                <button id="page-subflow-a-btn-4" data-i18n="app.subflow.button.beginSubFlowDestC" data-normal-only="true">🌐</button>
-            </fieldset>
-        </section>
-    </div>
-</template>
-
-<template id="subflow-b">
-    <div id="page-subflow-b" class="router-page subflow-page" data-theme="normal">
-        <header>
-            <label>👈</label>
-            <button><a href="#" data-i18n="app.common.back">🌐</a></button>
-            <h1 id="page-subflow-b-title" data-i18n="app.subflow.title.pageB:normal">🌐</h1>
-        </header>
-        <section>
-            <h3 id="page-subflow-b-desctiption" data-i18n="app.subflow.description.pageB:normal">🌐</h3>
-            <fieldset class="control-group">
-                <button id="page-subflow-b-btn-1" data-i18n="app.subflow.button.beginSubFlowDestA">🌐</button>
-                <button id="page-subflow-b-btn-2" data-i18n="app.subflow.button.beginSubFlowDestB" data-normal-only="true">🌐</button>
-                <button id="page-subflow-b-btn-3" data-i18n="app.subflow.button.beginSubFlowDestC" data-normal-only="true">🌐</button>
-            </fieldset>
-        </section>
-    </div>
-</template>
-
-<script type="text/template" id="subflow-c">
-    <div id="page-subflow-c" class="router-page subflow-page" data-theme="normal">
-        <header>
-            <label>👈</label>
-            <button><a href="#" data-i18n="app.common.back">🌐</a></button>
-            <h1 data-i18n="app.subflow.title.pageC">🌐</h1>
-        </header>
-        <section>
-            <h3 data-i18n="app.subflow.description.pageC">🌐</h3>
-        </section>
-    </div>
-</script>
-
-<script type="text/template" id="template-mustache-content">
+<!-- traditional mustache template -->
+<script type="text/template" id="template-mustache-traditional-content">
     <header>
         <label>👈</label>
         <button><a href="#" data-i18n="app.common.back">🌐</a></button>
@@ -63,7 +14,7 @@
             <button class="state-minus">➖</button>
         </fieldset>
         <fieldset class="template-control-group">
-            <p data-i18n="[prepend]app.template.content.effect.label">{{ clicked }}</p>
+            <p class="effect-label" data-i18n="[prepend]app.template.content.effect.label">0</p>
             <button class="effect" data-i18n="app.template.content.effect.button.label">🌐</button>
         </fieldset>
         <fieldset class="template-control-group">
@@ -107,6 +58,7 @@
     </section>
 </script>
 
+<!-- mustache-bridge acceptable template -->
 <template id="template-mustache-bridge-content">
     <header>
         <label>👈</label>
@@ -122,7 +74,7 @@
             <button class="state-minus">➖</button>
         </fieldset>
         <fieldset class="template-control-group">
-            <p data-i18n="[prepend]app.template.content.effect.label">{{ clicked }}</p>
+            <p class="effect-label" data-i18n="[prepend]app.template.content.effect.label">0</p>
             <button class="effect" data-i18n="app.template.content.effect.button.label">🌐</button>
         </fieldset>
         <fieldset class="template-control-group">
@@ -156,6 +108,60 @@
             {{^ list.length }}
             <p data-i18n="app.template.content.list.noItem">🌐</p>
             {{/ list.length }}
+        </fieldset>
+    </section>
+</template>
+
+<!-- stampino-bridge acceptable template -->
+<template id="template-stampino-bridge-content">
+    <header>
+        <label>👈</label>
+        <button><a href="#" data-i18n="app.common.back">🌐</a></button>
+        <h1 data-i18n="app.template.stampino-bridge.title">🌐</h1>
+    </header>
+    <section>
+        <h3 data-i18n="app.template.stampino-bridge.description">🌐</h3>
+        <fieldset class="template-control-group">
+            <p data-i18n="[prepend]app.template.content.state.label">{{ count }}</p>
+            <button class="state-reset" @click="{{ handler.stateReset }}" data-i18n="app.template.content.state.button.reset">🌐</button>
+            <button class="state-plus" @click="{{ handler.statePlus }}">➕</button>
+            <button class="state-minus" @click="{{ handler.stateMinus }}">➖</button>
+        </fieldset>
+        <fieldset class="template-control-group">
+            <p class="effect-label" data-i18n="[prepend]app.template.content.effect.label">0</p>
+            <button class="effect" @click="{{ handler.effect }}" data-i18n="app.template.content.effect.button.label">🌐</button>
+        </fieldset>
+        <fieldset class="template-control-group">
+            <p data-i18n="[prepend]app.template.content.interval.label">{{ now }}</p>
+            <button class="interval-start" @click="{{ handler.intervalStart }}" data-i18n="app.template.content.interval.button.start">🌐</button>
+            <button class="interval-stop" @click="{{ handler.intervalStop }}" data-i18n="app.template.content.interval.button.stop">🌐</button>
+        </fieldset>
+        <fieldset class="template-control-group">
+            <p data-i18n="[prepend]app.template.content.input.label">{{ text }}</p>
+            <input class="input-text" type="text" placeholder="🌐" @input="{{ handler.inputText }}" data-i18n="[placeholder]app.template.content.input.placeholder"/>
+        </fieldset>
+        <fieldset class="template-control-group">
+            <p data-i18n="[prepend]app.template.content.list.label">{{ list.length }}</p>
+            <button class="list-reset" @click="{{ handler.listReset }}" data-i18n="app.template.content.list.button.clear">🌐</button>
+            <button class="list-plus" @click="{{ handler.listPlus }}">➕</button>
+            <button class="list-minus" @click="{{ handler.listMinus }}">➖</button>
+            <hr>
+            <template type="if" if="{{ list.length }}">
+                <table border="1">
+                    <tr>
+                        <th data-i18n="app.template.content.list.column.id">🌐</th><th data-i18n="app.template.content.list.column.score">🌐</th>
+                    </tr>
+                    <!-- stampino テンプレートでは配列の要素は `item` にマッピングされる -->
+                    <template type="repeat" repeat="{{ list }}">
+                        <tr>
+                            <td>{{ item.id }}</td><td>{{ item.score }}</td>
+                        </tr>
+                    </template>
+                </table>
+            </template>
+            <template type="if" if="{{ !list.length }}">
+                <p data-i18n="app.template.content.list.noItem">🌐</p>
+            </template>
         </fieldset>
     </section>
 </template>

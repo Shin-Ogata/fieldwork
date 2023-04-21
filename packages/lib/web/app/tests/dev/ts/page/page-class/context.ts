@@ -111,7 +111,7 @@ class RouterPage implements Page {
         console.log(`${info.url}: removed`);
     }
 
-    static template = `
+    static template = /* html */`
 <div id="page-class" class="router-page">
     <h2 data-i18n="${i18nKey.app.pageClass.title}">🌐</h2>
     <hr/>

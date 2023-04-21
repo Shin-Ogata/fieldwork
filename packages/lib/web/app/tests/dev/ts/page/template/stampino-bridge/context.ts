@@ -1,4 +1,4 @@
-import type { FunctionPropertyNames } from '@cdp/core-utils';
+import type { UnknownFunction, PlainObject } from '@cdp/core-utils';
 import {
     toUrl,
     loadTemplateSource,
@@ -10,54 +10,38 @@ import {
     TemplateBridge,
     render,
 } from '@cdp/template';
-import { ViewEventsHash } from '@cdp/view';
 import { PageView, registerPage } from '@cdp/app';
 import { entry } from '../../signature';
 import { Props } from '../props';
 
-entry('PAGE_CONTEXT_TEMPLATE_MUSTACHE_BRIDGE');
+entry('PAGE_CONTEXT_TEMPLATE_STAMPINO_BRIDGE');
 
 const prepareTemplate = async (): Promise<CompiledTemplate> => {
+    const stampino = TemplateBridge.getBuitinTransformer('stampino');
     const content =  toTemplateElement(
-        await loadTemplateSource('#template-mustache-bridge-content', { url: toUrl('/tpl/variations.tpl') })
+        await loadTemplateSource('#template-stampino-bridge-content', { url: toUrl('/tpl/variations.tpl') })
     ) as HTMLTemplateElement;
     $(content).localize();
-    return TemplateBridge.compile(content.innerHTML);
+    return TemplateBridge.compile(content.innerHTML, { transformer: stampino });
 };
 
 //__________________________________________________________________________________________________//
 
 /**
- * backbone.js like な使用例
+ * stampino エンジンの使用例
  * lit-html 連携により差分更新が行われ, より宣言的に記述できる
  */
-class MustacheBridgeView extends PageView {
+class StampinoBridgeView extends PageView {
     private _template!: CompiledTemplate;
+    private _handler!: PlainObject<UnknownFunction>;
     private _state = { count: 0, clicked: 0 };
     private _props!: Props;
 
 ///////////////////////////////////////////////////////////////////////
 // override: PageView
 
-    events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<MustacheBridgeView>> {
-        /* eslint-disable @typescript-eslint/unbound-method */
-        return {
-            'click .state-reset': this.onStateReset,
-            'click .state-plus': this.onStatePlus,
-            'click .state-minus': this.onStateMinus,
-            'click .effect': this.onEffect,
-            'click .interval-start': this.onStartInterval,
-            'click .interval-stop': this.onStopInterval,
-            'input .input-text': this.onInput,
-            'click .list-reset': this.onListReset,
-            'click .list-plus': this.onListPlus,
-            'click .list-minus': this.onListMinus,
-        };
-        /* eslint-enable @typescript-eslint/unbound-method */
-    }
-
     render(): void {
-        render(this._template({ ...this._state, ...this._props.toJSON() }), this.el);
+        render(this._template({ ...this._state, ...this._props.toJSON(), handler: this._handler }), this.el);
     }
 
     protected async onPageInit(): Promise<void> {
@@ -65,6 +49,23 @@ class MustacheBridgeView extends PageView {
         this._state = { count: 0, clicked: 0 };
         this._props = new Props();
         this._props.on('@', this.render.bind(this));
+
+        if (!this._handler) {
+            // PageView#events() でもイベントハンドリングは可能. ここでは template 引数に渡せる例を記載
+            this._handler = {
+                stateReset: this.onStateReset.bind(this),
+                statePlus: this.onStatePlus.bind(this),
+                stateMinus: this.onStateMinus.bind(this),
+                effect: this.onEffect.bind(this),
+                intervalStart: this.onStartInterval.bind(this),
+                intervalStop: this.onStopInterval.bind(this),
+                inputText: this.onInput.bind(this),
+                listReset: this.onListReset.bind(this),
+                listPlus: this.onListPlus.bind(this),
+                listMinus: this.onListMinus.bind(this),
+            };
+        }
+
         this.render();
     }
 
@@ -132,7 +133,7 @@ class MustacheBridgeView extends PageView {
 }
 
 registerPage({
-    path: '/template/mustache-bridge',
-    component: MustacheBridgeView,
-    content: /*html*/`<div id="page-template-mustache-bridge" class="router-page template-page"></div>`,
+    path: '/template/stampino-bridge',
+    component: StampinoBridgeView,
+    content: /*html*/`<div id="page-template-stampino-bridge" class="router-page template-page"></div>`,
 });

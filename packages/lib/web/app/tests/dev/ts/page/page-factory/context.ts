@@ -33,5 +33,5 @@ const asyncFactory = async (route: Route, options?: unknown): Promise<Page> => {
 registerPage({
     path: '/factory',
     component: asyncFactory,
-    content: '<div id="page-factory" class="router-page"></div>',
+    content: /*html*/`<div id="page-factory" class="router-page"></div>`,
 });

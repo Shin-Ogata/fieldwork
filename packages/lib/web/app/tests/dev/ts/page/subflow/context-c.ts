@@ -7,6 +7,6 @@ registerPage({
     path: '/subflow-c',
     content: {
         selector: '#subflow-c',
-        url: '/tpl/templates.tpl',
+        url: '/tpl/subflow.tpl',
     },
 });

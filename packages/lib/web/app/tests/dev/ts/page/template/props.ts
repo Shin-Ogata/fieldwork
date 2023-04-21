@@ -7,8 +7,6 @@ interface Item {
 }
 
 export class Props extends ObservableObject {
-    count        = 0;
-    clicked      = 0;
     interval     = 0;
     text         = '';
     list: Item[] = [];

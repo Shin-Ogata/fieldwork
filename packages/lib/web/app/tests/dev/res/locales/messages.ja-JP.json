@@ -67,24 +67,41 @@
       "root": {
         "title": "Template: ルート",
         "description": "Template 実装例",
+        "type" :{
+          "single": "単一テンプレート",
+          "composite": "複合テンプレート"
+        },
         "navigateTo": {
-          "mustache": "Mustache テンプレート (core-template) 例へ",
-          "mustache-bridge": "Mustache テンプレートブリッジ (lit-html) 例へ"
+          "mustache": "Mustache トラディショナル (core-template) 例へ",
+          "mustache-bridge": "Mustache ブリッジ (lit-html) 例へ",
+          "stampino-bridge": "Stampino ブリッジ (lit-html) 例へ",
+          "template-literal": "テンプレートリテラル (lit-html) 例へ",
+          "component-view" : "View コンポーネント (mustache) 例へ",
+          "component-class" : "クラスコンポーネント (template-literal) 例へ",
+          "component-function" : "関数コンポーネント (template-literal) 例へ"
         }
       },
       "mustache": {
-        "title": "Mustache",
-        "description": "Mustache テンプレート (core-template) 実装例",
+        "title": "Mustache トラディショナル",
+        "description": "Mustache `core-template` 使用例",
         "input": {
           "description": "※テンプレートを全更新するため, `input` は宣言的実装に向かない"
         }
       },
       "mustache-bridge": {
-        "title": "Mustache Bridge (lit-html)",
-        "description": "Mustache テンプレートを利用した lit-html ブリッジ実装例",
+        "title": "Mustache ブリッジ",
+        "description": "Mustache を利用した `lit-html` ブリッジ使用例",
         "input": {
           "description": "※テンプレートを差分更新するため, input を宣言的に実装可能"
         }
+      },
+      "stampino-bridge": {
+        "title": "Stampino ブリッジ",
+        "description": "`stampino` テンプレートの使用例"
+      },
+      "template-literal": {
+        "title": "テンプレートリテラル",
+        "description": "テンプレートリテラル使用した宣言的な実装例"
       },
       "content": {
         "state": {

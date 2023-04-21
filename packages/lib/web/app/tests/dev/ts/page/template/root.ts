@@ -1,17 +1,19 @@
 import { registerPage } from '@cdp/app';
 import { i18nKey } from '../../types';
 import { entry } from '../signature';
-import './mustache';
+import './mustache-traditional';
 import './mustache-bridge';
-import './stampino';
-import './class-component';
-import './function-component';
+import './stampino-bridge';
+import './template-literal';
+import './component-view';
+import './component-class';
+import './component-function';
 
 entry('PAGE_CONTEXT_TEMPLATE_ROOT');
 
 registerPage({
     path: '/template',
-    content: `
+    content: /* html */`
     <div id="page-template-root" class="router-page template-page">
         <header>
             <label>👈</label>
@@ -21,8 +23,17 @@ registerPage({
         <section>
             <h3 id="page-template-root-desctiption" data-i18n="${i18nKey.app.template.root.description}">🌐</h3>
             <fieldset class="control-group">
+                <p data-i18n="${i18nKey.app.template.root.type.single}">🌐</p>
                 <button><a href="/template/mustache" data-i18n="${i18nKey.app.template.root.navigateTo.mustache}">🌐</a></button>
                 <button><a href="/template/mustache-bridge" data-i18n="${i18nKey.app.template.root.navigateTo['mustache-bridge']}">🌐</a></button>
+                <button><a href="/template/stampino-bridge" data-i18n="${i18nKey.app.template.root.navigateTo['stampino-bridge']}">🌐</a></button>
+                <button><a href="/template/template-literal" data-i18n="${i18nKey.app.template.root.navigateTo['template-literal']}">🌐</a></button>
+            </fieldset>
+            <fieldset class="control-group">
+                <p data-i18n="${i18nKey.app.template.root.type.composite}">🌐</p>
+                <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-view']}">🌐</a></button>
+                <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-class']}">🌐</a></button>
+                <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-function']}">🌐</a></button>
             </fieldset>
         </section>
     </div>
