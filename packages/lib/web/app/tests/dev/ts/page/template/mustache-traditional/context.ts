@@ -11,11 +11,11 @@ import { PageView, registerPage } from '@cdp/app';
 import { entry } from '../../signature';
 import { Props } from '../props';
 
-entry('PAGE_CONTEXT_TEMPLATE_MUSTACHE');
+entry('PAGE_CONTEXT_TEMPLATE_MUSTACHE_TRADITIONAL');
 
 const prepareTemplate = async (): Promise<JST> => {
     const content =  toTemplateElement(
-        await loadTemplateSource('#template-mustache-content', { url: toUrl('/tpl/templates.tpl') })
+        await loadTemplateSource('#template-mustache-traditional-content', { url: toUrl('/tpl/variations.tpl') })
     ) as HTMLTemplateElement;
     $(content).localize();
     return TemplateEngine.compile(content.innerHTML);
@@ -24,17 +24,19 @@ const prepareTemplate = async (): Promise<JST> => {
 //__________________________________________________________________________________________________//
 
 /**
- * backbone.js like な使用方法
+ * backbone.js like な使用例
+ * 伝統的な template 使用方法のため, 全更新が発生する
  */
-class TemplateMustacheView extends PageView {
+class MustacheTraditionalView extends PageView {
     private _template!: JST;
+    private _state = { count: 0, clicked: 0 };
     private _props!: Props;
-    private _updateText!: typeof TemplateMustacheView.prototype.onInput;
+    private _updateText!: typeof MustacheTraditionalView.prototype.onInput;
 
 ///////////////////////////////////////////////////////////////////////
 // override: PageView
 
-    events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<TemplateMustacheView>> {
+    events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<MustacheTraditionalView>> {
         /* eslint-disable @typescript-eslint/unbound-method */
         return {
             'click .state-reset': this.onStateReset,
@@ -52,11 +54,14 @@ class TemplateMustacheView extends PageView {
     }
 
     render(): void {
-        this.$el.children().replaceWith(this._template(this._props.toJSON()));
+        this.$el.children().replaceWith(this._template({ ...this._state, ...this._props.toJSON() }));
+        // テンプレートを全更新するため, effect 更新は別途呼び出す必要がある
+        this.effect();
     }
 
     protected async onPageInit(): Promise<void> {
         this._template = await prepareTemplate();
+        this._state = { count: 0, clicked: 0 };
         this._props = new Props();
         this._props.on('@', this.render.bind(this));
         if (!this._updateText) {
@@ -74,22 +79,34 @@ class TemplateMustacheView extends PageView {
     }
 
 ///////////////////////////////////////////////////////////////////////
+// draw:
+
+    private effect(): void {
+        const $label = this.$el.find('.effect-label');
+        $label.text(String(this._state.clicked)).localize();
+    }
+
+///////////////////////////////////////////////////////////////////////
 // event handlers:
 
     private onStateReset(): void {
-        this._props.count = 0;
+        this._state.count = 0;
+        this.render();
     }
 
     private onStatePlus(): void {
-        this._props.count++;
+        this._state.count++;
+        this.render();
     }
 
     private onStateMinus(): void {
-        this._props.count--;
+        this._state.count--;
+        this.render();
     }
 
     private onEffect(): void {
-        this._props.clicked++;
+        this._state.clicked++;
+        this.effect();
     }
 
     private onStartInterval(): void {
@@ -121,6 +138,6 @@ class TemplateMustacheView extends PageView {
 
 registerPage({
     path: '/template/mustache',
-    component: TemplateMustacheView,
-    content: '<div id="page-template-mustache" class="router-page template-page"><div>contents</div></div>',
+    component: MustacheTraditionalView,
+    content: /*html*/`<div id="page-template-mustache" class="router-page template-page"><div>contents</div></div>`,
 });

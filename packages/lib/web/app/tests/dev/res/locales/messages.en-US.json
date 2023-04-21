@@ -67,24 +67,41 @@
       "root": {
         "title": "Template: Root",
         "description": "Template Examples",
+        "type" :{
+          "single": "Single Template",
+          "composite": "Composite Template"
+        },
         "navigateTo": {
-          "mustache": "To Mustache template (core-template) Example",
-          "mustache-bridge": "Mustache template bridge (lit-html) Example"
+          "mustache": "To Mustache (core-template) Example",
+          "mustache-bridge": "To Mustache bridge (lit-html) Example",
+          "stampino-bridge": "To Stampino bridge (lit-html) Example",
+          "template-literal": "To Template Literal (lit-html) Example",
+          "component-view" : "To View component (mustache) Example",
+          "component-class" : "To Class component (template-literal) Example",
+          "component-function" : "To Function component (template-literal) Example"
         }
       },
       "mustache": {
-        "title": "Mustache",
-        "description": "Mustache template (core-template) Example",
+        "title": "Mustache Traditional",
+        "description": "Mustache `core-template` Example",
         "input": {
           "description": "※`input` is not suitable for declarative implementation as it updates all templates"
         }
       },
       "mustache-bridge": {
-        "title": "Mustache Bridge (lit-html)",
-        "description": "lit-html bridge using Mustache templates Example",
+        "title": "Mustache Bridge",
+        "description": "By using mustache templates bridge for `lit-html` Example",
         "input": {
           "description": "※`input` can be implemented declaratively to incrementally update templates"
         }
+      },
+      "stampino-bridge": {
+        "title": "Stampino Bridge",
+        "description": "By using `stampino` templates Example"
+      },
+      "template-literal": {
+        "title": "Template Literal",
+        "description": "Declarative example implementation by using Template Literals"
       },
       "content": {
         "state": {

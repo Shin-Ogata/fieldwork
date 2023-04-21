@@ -124,6 +124,6 @@ registerPage({
     component: PageSubFlowA,
     content: {
         selector: '#subflow-a',
-        url: '/tpl/templates.tpl',
+        url: '/tpl/subflow.tpl',
     },
 });
