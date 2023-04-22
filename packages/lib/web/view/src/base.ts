@@ -414,7 +414,7 @@ export abstract class View<TElement extends Node = HTMLElement, TEvent extends o
      * }
      * ```
      */
-    abstract render(...args: unknown[]): Promise<this | void> | this | void;
+    abstract render(...args: unknown[]): Promise<any | void> | any | void;
 
 ///////////////////////////////////////////////////////////////////////
 // internal:

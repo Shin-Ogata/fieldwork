@@ -103,6 +103,13 @@
         "title": "Template Literal",
         "description": "Declarative example implementation by using Template Literals"
       },
+      "component-view": {
+        "title": "View Component",
+        "description": "Considering update efficiency using View class Example",
+        "input": {
+          "description": "※`input` can be optimized Individually, it can maintain focus"
+        }
+      },
       "content": {
         "state": {
           "label": "Count: ",
