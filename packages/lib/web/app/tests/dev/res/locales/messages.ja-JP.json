@@ -103,6 +103,13 @@
         "title": "テンプレートリテラル",
         "description": "テンプレートリテラル使用した宣言的な実装例"
       },
+      "component-view": {
+        "title": "View コンポーネント",
+        "description": "View クラスを利用した更新効率を考慮した実装例",
+        "input": {
+          "description": "※個別最適されているため, フォーカスを維持できる"
+        }
+      },
       "content": {
         "state": {
           "label": "カウント: ",

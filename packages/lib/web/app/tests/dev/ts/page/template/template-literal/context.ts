@@ -37,7 +37,6 @@ class TemplateLiteralView extends PageView {
         this._props.on('@', this.render.bind(this));
 
         if (!this._handler) {
-            // PageView#events() でもイベントハンドリングは可能. ここでは template 引数に渡せる例を記載
             this._handler = {
                 stateReset: this.onStateReset.bind(this),
                 statePlus: this.onStatePlus.bind(this),

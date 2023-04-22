@@ -31,7 +31,7 @@ registerPage({
             </fieldset>
             <fieldset class="control-group">
                 <p data-i18n="${i18nKey.app.template.root.type.composite}">🌐</p>
-                <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-view']}">🌐</a></button>
+                <button><a href="/template/component-view" data-i18n="${i18nKey.app.template.root.navigateTo['component-view']}">🌐</a></button>
                 <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-class']}">🌐</a></button>
                 <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-function']}">🌐</a></button>
             </fieldset>
