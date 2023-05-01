@@ -50,21 +50,24 @@ class ComponentViewPage extends PageView {
 
         const promises: (Promise<void> | void)[] = [];
         const contexts = [
-            { ctor: StateComponentView, selector: '.state-base' },
-            { ctor: EffectComponentView, selector: '.effect-base' },
-            { ctor: IntervalComponentView, selector: '.interval-base' },
-            { ctor: InputComponentView, selector: '.input-base' },
-            { ctor: ListComponentView, selector: '.list-base' },
+            { ctor: StateComponentView, args: undefined },
+            { ctor: StateComponentView, args: { initVal: 2 } },
+            { ctor: EffectComponentView, args: undefined },
+            { ctor: IntervalComponentView, args: undefined },
+            { ctor: InputComponentView, args: undefined },
+            { ctor: ListComponentView, args: undefined },
         ];
 
-        contexts.forEach(({ ctor, selector }, index) => {
+        const $section = this.$el.find('section');
+        contexts.forEach((ctx, index) => {
             let view = this._views[index];
             if (!view) {
-                view = new ctor();
+                view = new ctx.ctor(ctx.args as any);   // eslint-disable-line @typescript-eslint/no-explicit-any
                 this._views[index] = view;
             }
-            const el = this.$el.find(selector)[0] as HTMLElement;
-            promises.push(view.componentInit(el, this._props));
+            const div = document.createElement('div');
+            $section.append(div);
+            promises.push(view.componentInit(div, this._props));
         });
         await Promise.all(promises);
 

@@ -923,7 +923,11 @@ declare class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEl
         left?: number;
     }): this;
 }
-export type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap : T extends HTMLElement ? HTMLElementEventMap : T extends Element ? ElementEventMap : GlobalEventHandlersEventMap;
+export interface ConnectEventMap {
+    'connected': Event;
+    'disconnected': Event;
+}
+export type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap & ConnectEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap & ConnectEventMap : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap : T extends Element ? ElementEventMap & ConnectEventMap : GlobalEventHandlersEventMap;
 export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
 export type EventWithNamespace<T extends DOMEventMap<unknown>> = keyof T | `${string & keyof T}.${string}`;
 export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
@@ -1687,6 +1691,8 @@ declare namespace dom {
         elementify: typeof elementify;
         rootify: typeof rootify;
         evaluate: typeof evaluate;
+        detectify: <T extends Node>(node: T, observed?: Node | undefined) => T;
+        undetectify: <T_1 extends Node>(node?: T_1 | undefined) => void;
     };
 }
 

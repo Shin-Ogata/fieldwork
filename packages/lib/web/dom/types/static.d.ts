@@ -23,6 +23,8 @@ declare namespace dom {
         elementify: typeof elementify;
         rootify: typeof rootify;
         evaluate: typeof evaluate;
+        detectify: <T extends Node>(node: T, observed?: Node | undefined) => T;
+        undetectify: <T_1 extends Node>(node?: T_1 | undefined) => void;
     };
 }
 export { ElementBase, SelectorBase, QueryContext, EvalOptions, DOM, DOMPlugin, DOMSelector, DOMResult, DOMIterateCallback, dom, };

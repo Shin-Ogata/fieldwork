@@ -4,51 +4,12 @@ import { DOM, DOMSelector, DOMResult, DOMEventListener, DOMEventMap, EventType, 
 import { ViewEventsHash, ViewConstructionOptions } from './interfaces';
 export type ViewFindSelector = Node | string | Nullish;
 /**
- * @en Base class definition for view that manages the layout and a DOM events.
- * @ja レイアウト管理と DOM イベントの監視を行う View の基底クラス定義
- *
- * @example <br>
- *
- * ```ts
- * import { TemplateEngine } from '@cdp/core-template';
- * import { DOM, dom as $ } from '@cdp/dom';
- * import { View, ViewEventsHash } from '@cdp/view';
- * import { ToDo, ToDoEventSource } from './todo';
- *
- * const _template = TemplateEngine.compile($('#item-template').html());
- *
- * export class ToDoView extends View {
- *     private _model: ToDo;
- *     private _$input?: DOM<HTMLInputElement>;
- *
- *     constructor(todo: ToDo) {
- *         super({ tagName: 'li' });
- *         this._model = todo;
- *         this.listenTo(this._model as ToDoEventSource, '@change', this.render.bind(this));
- *         this.listenTo(this._model as ToDoEventSource, '@destroy', this.remove.bind(this));
- *     }
- *
- *     protected events(): ViewEventsHash<HTMLElement> {
- *         return {
- *             'click .toggle':   this.toggleDone,
- *             'dblclick .view':  this.edit,
- *             'click a.destroy': this.clear,
- *             'keypress .edit':  this.updateOnEnter,
- *             'blur .edit':      this.close,
- *         };
- *     }
- *
- *     render(): this {
- *         this.$el.html(_template(this._model.toJSON()));
- *         this.$el.toggleClass('done', this._model.done);
- *         this._$input = this.$('.edit') as DOM<HTMLInputElement>;
- *         return this;
- *     }
- *     :
- * }
- * ```
+ * @en Core implementation of [[View]] without [[EventSource]] interface. <br>
+ *     Can be specified as mixin source.
+ * @ja [[EventSource]] インターフェイスを持たない [[View]] のコア実装 <br>
+ *     Mixin source として指定可能
  */
-export declare abstract class View<TElement extends Node = HTMLElement, TEvent extends object = object> extends EventSource<TEvent> {
+export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
     /**
      * constructor
      *
@@ -241,3 +202,58 @@ export declare abstract class View<TElement extends Node = HTMLElement, TEvent e
      */
     abstract render(...args: unknown[]): Promise<any | void> | any | void;
 }
+/**
+ * @en Base class definition for view that manages the layout and a DOM events.
+ * @ja レイアウト管理と DOM イベントの監視を行う View の基底クラス定義
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { TemplateEngine } from '@cdp/core-template';
+ * import { DOM, dom as $ } from '@cdp/dom';
+ * import { View, ViewEventsHash } from '@cdp/view';
+ * import { ToDo, ToDoEventSource } from './todo';
+ *
+ * const _template = TemplateEngine.compile($('#item-template').html());
+ *
+ * export class ToDoView extends View {
+ *     private _model: ToDo;
+ *     private _$input?: DOM<HTMLInputElement>;
+ *
+ *     constructor(todo: ToDo) {
+ *         super({ tagName: 'li' });
+ *         this._model = todo;
+ *         this.listenTo(this._model as ToDoEventSource, '@change', this.render.bind(this));
+ *         this.listenTo(this._model as ToDoEventSource, '@destroy', this.remove.bind(this));
+ *     }
+ *
+ *     protected events(): ViewEventsHash<HTMLElement> {
+ *         return {
+ *             'click .toggle':   this.toggleDone,
+ *             'dblclick .view':  this.edit,
+ *             'click a.destroy': this.clear,
+ *             'keypress .edit':  this.updateOnEnter,
+ *             'blur .edit':      this.close,
+ *         };
+ *     }
+ *
+ *     render(): this {
+ *         this.$el.html(_template(this._model.toJSON()));
+ *         this.$el.toggleClass('done', this._model.done);
+ *         this._$input = this.$('.edit') as DOM<HTMLInputElement>;
+ *         return this;
+ *     }
+ *     :
+ * }
+ * ```
+ */
+export type _View<TElement extends Node = HTMLElement, TEvent extends object = object> = ViewCore<TElement> & EventSource<TEvent>;
+/**
+ * @en Constructor of [[View]]
+ * @ja [[View]] のコンストラクタ実体
+ */
+declare const _View: {
+    readonly prototype: _View<any, any>;
+    new <TElement extends Node = HTMLElement, TEvent extends object = object>(options?: ViewConstructionOptions<TElement>): _View<TElement, TEvent>;
+};
+export { _View as View };

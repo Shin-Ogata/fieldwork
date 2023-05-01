@@ -175,11 +175,6 @@
     </header>
     <section>
         <h3 data-i18n="app.template.component-view.description">🌐</h3>
-        <div class="state-base"></div>
-        <div class="effect-base"></div>
-        <div class="interval-base"></div>
-        <div class="input-base"></div>
-        <div class="list-base"></div>
     </section>
 </template>
 

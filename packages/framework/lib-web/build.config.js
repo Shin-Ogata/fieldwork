@@ -24,6 +24,7 @@ function patch(index, code, includes) {
         '@cdp/extension-template-bridge',
         '@cdp/extension-path2regexp',
         '@cdp/dom',
+        '@cdp/view',
     ];
 
     {// includes info
@@ -121,6 +122,7 @@ function patch(index, code, includes) {
         prepend += `import { ${enumerate(workerStuff)} } from '@cdp/lib-worker';\n`;
 
         prepend += read(resolve('../../lib/web/dom/dist/dom.d.ts'));
+        prepend += read(resolve('../../lib/web/view/dist/view.d.ts'));
 
         code = prepend + code;
     }
@@ -145,6 +147,8 @@ function patch(index, code, includes) {
         code = code
             // drop 'export * from '@cdp/dom';'
             .replace(`export * from '@cdp/dom';\n`, '')
+            // drop 'export * from '@cdp/view';'
+            .replace(`export * from '@cdp/view';\n`, '')
             // dynamic import: import('@cdp/core-utils') → import('@cdp/lib-core')
             .replace(/import\('@cdp\/core-utils'\)/g, `import('@cdp/lib-core')`)
         ;
@@ -195,7 +199,7 @@ module.exports = {
         },
     }),
     dts: bundle_dts({
-        excludeLibraries: ['@cdp/dom'], // special treat
+        excludeLibraries: ['@cdp/dom', '@cdp/view'], // special treat
         postProcess: patch,
     }),
     minify: {

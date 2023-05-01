@@ -33,12 +33,13 @@
   "scripts": {
     "build": "run-s -l build:src build:test build:dev",
     "build:dev": "run-s compile:dev bundle:dev copy:dev:framework",
-    "build:src": "run-s compile:src bundle:src",
+    "build:src": "run-s compile:src bundle:src bundle:dts",
     "build:test": "run-s compile:test bundle:test",
     "bundle": "run-p bundle:*",
     "bundle:dev": "run-p bundle:dev:*",
     "bundle:dev:html": "cdp-task bundle html --config ./tests/dev/dev.config.js",
     "bundle:dev:ts": "rollup -c ./tests/dev/dev.config.js",
+    "bundle:dts": "cdp-task bundle dts --config ./build.config.js",
     "bundle:src": "run-p bundle:src:*",
     "bundle:src:built": "rollup -c ./build.config.js",
     "bundle:test": "rollup -c ./tests/test.config.js",
@@ -78,5 +79,5 @@
     "watch:ts:src": "npm run compile:src -- -w",
     "watch:ts:test": "npm run compile:test -- -w"
   },
-  "types": "types/index.d.ts"
+  "types": "dist/view.d.ts"
 }

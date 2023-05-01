@@ -86,57 +86,57 @@ class TemplateLiteralView extends PageView {
 
         /* eslint-disable @typescript-eslint/indent */
         return html`
-        <header>
-            <label>👈</label>
-            <button><a href="#">${t(i18nKey.app.common.back)}</a></button>
-            <h1>${t(i18nKey.app.template['template-literal'].title)}</h1>
-        </header>
-        <section>
-            <h3>${t(i18nKey.app.template['template-literal'].description)}</h3>
-            <fieldset class="template-control-group">
-                <p>${t(i18nKey.app.template.content.state.label)}${ count }</p>
-                <button class="state-reset" @click=${this._handler.stateReset}>${t(i18nKey.app.template.content.state.button.reset)}</button>
-                <button class="state-plus" @click=${this._handler.statePlus}>➕</button>
-                <button class="state-minus" @click=${this._handler.stateMinus}>➖</button>
-            </fieldset>
-            <fieldset class="template-control-group">
-                <p class="effect-label">${t(i18nKey.app.template.content.effect.label)}0</p>
-                <button class="effect" @click=${this._handler.effect}>${t(i18nKey.app.template.content.effect.button.label)}</button>
-            </fieldset>
-            <fieldset class="template-control-group">
-                <p>${t(i18nKey.app.template.content.interval.label)}${ now }</p>
-                <button class="interval-start" @click=${this._handler.intervalStart}>${t(i18nKey.app.template.content.interval.button.start)}</button>
-                <button class="interval-stop" @click=${this._handler.intervalStop}>${t(i18nKey.app.template.content.interval.button.stop)}</button>
-            </fieldset>
-            <fieldset class="template-control-group">
-                <p>${t(i18nKey.app.template.content.input.label)}${ text }</p>
-                <input class="input-text" type="text" placeholder="${t(i18nKey.app.template.content.input.placeholder)}" @input=${this._handler.inputText} />
-            </fieldset>
-            <fieldset class="template-control-group">
-                <p>${t(i18nKey.app.template.content.list.label)}${ list.length }</p>
-                <button class="list-reset" @click=${this._handler.listReset}>${t(i18nKey.app.template.content.list.button.clear)}</button>
-                <button class="list-plus" @click=${this._handler.listPlus}>➕</button>
-                <button class="list-minus" @click=${this._handler.listMinus}>➖</button>
-                <hr>
-                ${list.length
-                    ? html`
-                        <table border="1">
-                            <tr>
-                                <th>${t(i18nKey.app.template.content.list.column.id)}</th><th>${t(i18nKey.app.template.content.list.column.score)}</th>
-                            </tr>
+            <header>
+                <label>👈</label>
+                <button><a href="#">${t(i18nKey.app.common.back)}</a></button>
+                <h1>${t(i18nKey.app.template['template-literal'].title)}</h1>
+            </header>
+            <section>
+                <h3>${t(i18nKey.app.template['template-literal'].description)}</h3>
+                <fieldset class="template-control-group">
+                    <p>${t(i18nKey.app.template.content.state.label)}${ count }</p>
+                    <button class="state-reset" @click=${this._handler.stateReset}>${t(i18nKey.app.template.content.state.button.reset)}</button>
+                    <button class="state-plus" @click=${this._handler.statePlus}>➕</button>
+                    <button class="state-minus" @click=${this._handler.stateMinus}>➖</button>
+                </fieldset>
+                <fieldset class="template-control-group">
+                    <p class="effect-label">${t(i18nKey.app.template.content.effect.label)}0</p>
+                    <button class="effect" @click=${this._handler.effect}>${t(i18nKey.app.template.content.effect.button.label)}</button>
+                </fieldset>
+                <fieldset class="template-control-group">
+                    <p>${t(i18nKey.app.template.content.interval.label)}${ now }</p>
+                    <button class="interval-start" @click=${this._handler.intervalStart}>${t(i18nKey.app.template.content.interval.button.start)}</button>
+                    <button class="interval-stop" @click=${this._handler.intervalStop}>${t(i18nKey.app.template.content.interval.button.stop)}</button>
+                </fieldset>
+                <fieldset class="template-control-group">
+                    <p>${t(i18nKey.app.template.content.input.label)}${ text }</p>
+                    <input class="input-text" type="text" placeholder="${t(i18nKey.app.template.content.input.placeholder)}" @input=${this._handler.inputText} />
+                </fieldset>
+                <fieldset class="template-control-group">
+                    <p>${t(i18nKey.app.template.content.list.label)}${ list.length }</p>
+                    <button class="list-reset" @click=${this._handler.listReset}>${t(i18nKey.app.template.content.list.button.clear)}</button>
+                    <button class="list-plus" @click=${this._handler.listPlus}>➕</button>
+                    <button class="list-minus" @click=${this._handler.listMinus}>➖</button>
+                    <hr>
+                    ${list.length
+                        ? html`
+                            <table border="1">
+                                <tr>
+                                    <th>${t(i18nKey.app.template.content.list.column.id)}</th><th>${t(i18nKey.app.template.content.list.column.score)}</th>
+                                </tr>
                             ${repeat(list, (item) => item.id, (item) => html`
                                 <tr>
                                     <td>${ item.id }</td><td>${ item.score }</td>
                                 </tr>
                             `)}
-                        </table>
-                    `
-                    : html`
-                        <p>${t(i18nKey.app.template.content.list.noItem)}</p>
-                    `
-                }
-            </fieldset>
-        </section>
+                            </table>
+                        `
+                        : html`
+                            <p>${t(i18nKey.app.template.content.list.noItem)}</p>
+                        `
+                    }
+                </fieldset>
+            </section>
         `;
         /* eslint-enable @typescript-eslint/indent */
     }

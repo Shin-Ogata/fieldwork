@@ -25,6 +25,12 @@ const prepareTemplate = async (): Promise<JST> => {
 export class StateComponentView extends ComponentViewBase {
     private _template!: JST;
     private _state = { count: 0 };
+    private readonly _initVal: number;
+
+    constructor({ initVal }: { initVal?: number; } = {}) {
+        super();
+        this._initVal = initVal || 0;
+    }
 
 ///////////////////////////////////////////////////////////////////////
 // override: ComponentViewBase
@@ -45,7 +51,7 @@ export class StateComponentView extends ComponentViewBase {
 
     protected async onComponentInit(): Promise<void> {
         this._template = await prepareTemplate();
-        this._state = { count: 0 };
+        this._state = { count: this._initVal };
         this.$el.append(this._template(this._state));
     }
 
