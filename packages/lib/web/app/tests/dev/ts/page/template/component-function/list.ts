@@ -15,7 +15,7 @@ export const List = (props: Props): TemplateResult => {
     return html`
         <fieldset class="template-control-group">
             <p>${t(i18nKey.app.template.content.list.label)}${ list.length }</p>
-            <button class="list-reset" @click=${() => props.removeListItem()}>${t(i18nKey.app.template.content.list.button.clear)}</button>
+            <button class="list-reset" @click=${() => props.resetListItem()}>${t(i18nKey.app.template.content.list.button.clear)}</button>
             <button class="list-plus" @click=${() => props.addListItem()}>➕</button>
             <button class="list-minus" @click=${() => props.removeListItem()}>➖</button>
             <hr>

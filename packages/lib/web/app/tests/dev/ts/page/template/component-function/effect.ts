@@ -2,7 +2,7 @@ import { TemplateResult, html } from '@cdp/template';
 import { dom as $ } from '@cdp/dom';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
-import { useState, useEffect } from './hooks-prototype';
+import { useState, useEffect } from './hooks';
 
 export const Effect = (): TemplateResult => {
     const [count, setCount] = useState(0);
@@ -12,7 +12,7 @@ export const Effect = (): TemplateResult => {
         // Update the element using the browser API
         const $label = $('.effect-label');
         $label.text(`${t(i18nKey.app.template.content.effect.label)}${count}`);
-    });
+    }, [count]);
 
     return html`
         <fieldset class="template-control-group">
