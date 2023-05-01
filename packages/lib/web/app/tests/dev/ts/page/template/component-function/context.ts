@@ -11,7 +11,6 @@ import { i18nKey } from '../../../types';
 import { entry } from '../../signature';
 import { Props } from '../props';
 import { hooks, hooksWith } from './hooks';
-import { hooks as phooks } from './hooks-prototype';
 import { State } from './state';
 import { Effect } from './effect';
 import { Interval } from './interval';
@@ -23,7 +22,7 @@ entry('PAGE_CONTEXT_TEMPLATE_COMPONENT_FUNCTION');
 let _el: HTMLElement;
 let _props: Props;
 
-const template = (elRoot: Node): TemplateResult => {
+const template = (): TemplateResult => {
     return html`
         <header>
             <label>👈</label>
@@ -33,17 +32,17 @@ const template = (elRoot: Node): TemplateResult => {
         <section>
             <h3>${t(i18nKey.app.template['component-function'].description)}</h3>
             ${hooks(State)}
-            ${hooksWith(elRoot, State, { initVal: 2 })}
-            <!-- ${phooks(Effect)}
-            ${phooks(Interval)}
-            ${phooks(Input, _props)}
-            ${phooks(List, _props)} -->
+            ${hooksWith(_el, State, { initVal: 2 })}
+            ${hooks(Effect)}
+            ${hooks(Interval)}
+            ${hooks(Input, _props)}
+            ${hooks(List, _props)}
         </section>
     `;
 };
 
 const renderPage = (): RootPart => {
-    return render(template(_el), _el);
+    return render(template(), _el);
 };
 
 registerPage({

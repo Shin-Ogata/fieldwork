@@ -1,7 +1,8 @@
 import { TemplateResult, html } from '@cdp/template';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
-import { useState, useInterval, useEffect } from './hooks-prototype';
+import { useState } from './hooks';
+import { useInterval } from './hooks/use-interval';
 
 export const Interval = (): TemplateResult => {
     const [now, setTime] = useState<string>();
@@ -12,12 +13,6 @@ export const Interval = (): TemplateResult => {
             setTime(intervalState ? new Date().toLocaleTimeString() : '');
         },
     });
-
-    // useEffect(() => {
-    //     return () => {
-    //         stop();
-    //     };
-    // }, []);
 
     return html`
         <fieldset class="template-control-group">

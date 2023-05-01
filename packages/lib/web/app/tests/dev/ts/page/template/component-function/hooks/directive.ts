@@ -1,7 +1,4 @@
-import {
-    UnknownFunction,
-    noop,
-} from '@cdp/core-utils';
+import { UnknownFunction, noop } from '@cdp/core-utils';
 import {
     PartInfo,
     AsyncDirective,
@@ -22,6 +19,7 @@ class HookDirective extends AsyncDirective {
     private _renderer: UnknownFunction;
     private _args: unknown[];
     private _elObserved?: Node;
+    private _disconnectedHandler?: typeof HookDirective.prototype.disconnected;
 
     constructor(part: PartInfo) {
         super(part);
@@ -53,11 +51,15 @@ class HookDirective extends AsyncDirective {
     }
 
     private observe(elRoot: Node | null): void {
+        if (this._disconnectedHandler) {
+            return;
+        }
+
         const { _$parent } = this as unknown as Disconnectable;
         this._elObserved = _$parent?.parentNode;
         if (this._elObserved) {
             $.utils.detectify(this._elObserved, elRoot as Node);
-            this._elObserved.addEventListener('disconnected', () => { this.disconnected(); });
+            this._elObserved.addEventListener('disconnected', this._disconnectedHandler = this.disconnected.bind(this));
         }
     }
 }
