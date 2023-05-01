@@ -29,10 +29,10 @@ interface TimerContext {
 }
 
 /** @internal */ const _root = getGlobal() as unknown as TimerContext;
-const setTimeout: TimerStartFunction   = safe(_root.setTimeout);
-const clearTimeout: TimerStopFunction  = safe(_root.clearTimeout);
-const setInterval: TimerStartFunction  = safe(_root.setInterval);
-const clearInterval: TimerStopFunction = safe(_root.clearInterval);
+const setTimeout: TimerStartFunction   = safe(_root.setTimeout).bind(_root);
+const clearTimeout: TimerStopFunction  = safe(_root.clearTimeout).bind(_root);
+const setInterval: TimerStartFunction  = safe(_root.setInterval).bind(_root);
+const clearInterval: TimerStopFunction = safe(_root.clearInterval).bind(_root);
 
 export {
     setTimeout,

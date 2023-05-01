@@ -97,8 +97,12 @@ export interface MixClassAttribute {
 
 /** @internal copy properties core */
 function reflectProperties(target: UnknownObject, source: object, key: string | symbol): void {
-    if (null == target[key]) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
+    try {
+        if (null == target[key]) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key) as PropertyDecorator);
+        }
+    } catch {
+        // noop
     }
 }
 

@@ -77,7 +77,7 @@
           "stampino-bridge": "To Stampino bridge (lit-html) Example",
           "template-literal": "To Template Literal (lit-html) Example",
           "component-view" : "To View component (mustache) Example",
-          "component-class" : "To Class component (template-literal) Example",
+          "component-custom" : "To Custom Element component (template-literal) Example",
           "component-function" : "To Function component (template-literal) Example"
         }
       },
@@ -109,6 +109,14 @@
         "input": {
           "description": "※`input` can be optimized Individually, it can maintain focus"
         }
+      },
+      "component-custom": {
+        "title": "Custom Element Component",
+        "description": "By using `Custom Element` Example"
+      },
+      "component-function": {
+        "title": "Function Component",
+        "description": "By using Function Components and Hooks Example"
       },
       "content": {
         "state": {

@@ -6,7 +6,7 @@ import './mustache-bridge';
 import './stampino-bridge';
 import './template-literal';
 import './component-view';
-import './component-class';
+import './component-custom';
 import './component-function';
 
 entry('PAGE_CONTEXT_TEMPLATE_ROOT');
@@ -32,8 +32,8 @@ registerPage({
             <fieldset class="control-group">
                 <p data-i18n="${i18nKey.app.template.root.type.composite}">🌐</p>
                 <button><a href="/template/component-view" data-i18n="${i18nKey.app.template.root.navigateTo['component-view']}">🌐</a></button>
-                <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-class']}">🌐</a></button>
-                <button><a href="#" data-i18n="${i18nKey.app.template.root.navigateTo['component-function']}">🌐</a></button>
+                <button><a href="/template/component-custom" data-i18n="${i18nKey.app.template.root.navigateTo['component-custom']}">🌐</a></button>
+                <button><a href="/template/component-function" data-i18n="${i18nKey.app.template.root.navigateTo['component-function']}">🌐</a></button>
             </fieldset>
         </section>
     </div>

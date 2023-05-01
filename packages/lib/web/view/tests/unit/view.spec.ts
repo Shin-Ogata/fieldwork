@@ -3,13 +3,16 @@
  */
 
 import {
+    Constructor,
     FunctionPropertyNames,
     className,
     sleep,
+    mixins,
 } from '@cdp/core-utils';
 import { dom as $ } from '@cdp/dom';
 import {
     View,
+    ViewCore,
     ViewEventsHash,
     ViewConstructionOptions,
 } from '@cdp/view';
@@ -249,6 +252,38 @@ describe('view spec', () => {
             const testView = new BaseView({ el: '#d1' });
             const $child = testView.$('.test-dom-child');
             expect($child.text()).toBe('Bingo');
+        });
+    });
+
+    describe('ViewCore', () => {
+        abstract class ComponentElement extends mixins(HTMLElement, ViewCore as Constructor<ViewCore>) {
+            private readonly _root: ShadowRoot;
+            constructor() {
+                super();
+                this.super(ViewCore as Constructor<ViewCore>);
+                this._root = this.attachShadow({ mode: 'open' });
+            }
+        }
+
+        class TestComponent extends ComponentElement {
+            render(): void {
+                this.$el.append('<div>ok</div>');
+            }
+        }
+
+        customElements.define('test-component', TestComponent);
+
+        it('check component', () => {
+            const divs = prepareTestElements($.utils.elementify(`
+<div id="d1" class="test-dom">
+    <test-component></test-component>
+</div>`
+            ));
+
+            const length = $(divs).find('test-component').length;
+            expect(length).toBe(1);
+
+            cleanupTestElements();
         });
     });
 });

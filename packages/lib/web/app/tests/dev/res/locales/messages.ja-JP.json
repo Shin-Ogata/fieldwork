@@ -77,7 +77,7 @@
           "stampino-bridge": "Stampino ブリッジ (lit-html) 例へ",
           "template-literal": "テンプレートリテラル (lit-html) 例へ",
           "component-view" : "View コンポーネント (mustache) 例へ",
-          "component-class" : "クラスコンポーネント (template-literal) 例へ",
+          "component-custom" : "カスタムエレメントコンポーネント (template-literal) 例へ",
           "component-function" : "関数コンポーネント (template-literal) 例へ"
         }
       },
@@ -109,6 +109,14 @@
         "input": {
           "description": "※個別最適されているため, フォーカスを維持できる"
         }
+      },
+      "component-custom": {
+        "title": "クラスコンポーネント",
+        "description": "Web Components カスタムエレメントを利用した実装例"
+      },
+      "component-function": {
+        "title": "関数コンポーネント",
+        "description": "関数コンポーネントと Hooks の実装例"
       },
       "content": {
         "state": {

@@ -12,6 +12,7 @@ import {
     rootify,
     evaluate,
 } from './utils';
+import { detectify, undetectify } from './detection';
 import {
     DOM,
     DOMPlugin,
@@ -50,6 +51,8 @@ dom.utils = {
     elementify,
     rootify,
     evaluate,
+    detectify,
+    undetectify,
 };
 
 /** @internal 循環参照回避のための遅延コンストラクションメソッド */

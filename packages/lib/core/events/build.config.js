@@ -9,8 +9,8 @@ function patch(index, code) {
     }
 
     code = code
-        // rename `EventSourceBase` → `EventSource`
-        .replace(/EventSourceBase/gm, 'EventSource')
+        // rename `_EventSource` → `EventSource`
+        .replace(/_EventSource/gm, 'EventSource')
         // 'declare type EventSource' → 'export declare type EventSource'
         .replace(/^declare type EventSource/gm, 'export declare type EventSource')
         // 'declare const EventSource' → 'export declare const EventSource'

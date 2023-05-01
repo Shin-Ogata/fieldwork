@@ -18,6 +18,7 @@ import {
     dom as $,
 } from './static';
 import { DOMIterable, isTypeElement } from './base';
+import type { ConnectEventMap } from './detection';
 
 /** @internal */
 interface InternalEventListener extends EventListener {
@@ -361,10 +362,10 @@ function handleSelfEvent<TElement extends ElementBase>(
 export type DOMEventMap<T>
     = T extends Window ? WindowEventMap
     : T extends Document ? DocumentEventMap
-    : T extends HTMLBodyElement ? HTMLBodyElementEventMap
-    : T extends HTMLMediaElement ? HTMLMediaElementEventMap
-    : T extends HTMLElement ? HTMLElementEventMap
-    : T extends Element ? ElementEventMap
+    : T extends HTMLBodyElement ? HTMLBodyElementEventMap & ConnectEventMap
+    : T extends HTMLMediaElement ? HTMLMediaElementEventMap & ConnectEventMap
+    : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap
+    : T extends Element ? ElementEventMap & ConnectEventMap
     : GlobalEventHandlersEventMap;
 /* eslint-enable @typescript-eslint/indent */
 

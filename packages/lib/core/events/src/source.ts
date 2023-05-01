@@ -50,7 +50,7 @@ import { EventReceiver } from './receiver';
  * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
  * ```
  */
-type EventSourceBase<T extends object> = EventBroker<T> & EventReceiver;
+export type _EventSource<T extends object> = EventBroker<T> & EventReceiver;
 
 /** @internal [[EventSource]] class */
 class EventSource extends mixins(EventBroker, EventReceiver) {
@@ -64,9 +64,9 @@ class EventSource extends mixins(EventBroker, EventReceiver) {
  * @en Constructor of [[EventSource]]
  * @ja [[EventSource]] のコンストラクタ実体
  */
-const EventSourceBase: {
-    readonly prototype: EventSourceBase<any>;
-    new <T extends object>(): EventSourceBase<T>;
+const _EventSource: {
+    readonly prototype: _EventSource<any>;
+    new <T extends object>(): _EventSource<T>;
 } = EventSource as any;
 
-export { EventSourceBase as EventSource };
+export { _EventSource as EventSource };
