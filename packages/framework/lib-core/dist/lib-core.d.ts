@@ -1475,6 +1475,19 @@ export declare function debounce<T extends UnknownFunction>(executor: T, wait: n
  */
 export declare function once<T extends UnknownFunction>(executor: T): T;
 /**
+ * @en Return a deferred executable function object.
+ * @ja 遅延実行可能な関数オブジェクトを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const schedule = scheduler();
+ * schedule(() => task1());
+ * schedule(() => task2());
+ * ```
+ */
+export declare function scheduler(): (exec: () => void) => void;
+/**
  * @en Create escape function from map.
  * @ja 文字置換関数を作成
  *

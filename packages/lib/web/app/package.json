@@ -18,6 +18,7 @@
     "@cdp/web-utils": "file:../utils"
   },
   "devDependencies": {
+    "@cdp/core-template": "file:../../core/template",
     "@cdp/observable": "file:../../core/observable",
     "@cdp/template": "file:../template"
   },

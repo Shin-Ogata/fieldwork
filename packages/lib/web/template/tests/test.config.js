@@ -7,7 +7,6 @@ module.exports = {
     __esModule: true,
     default: config.default(testee, {
         external: {
-            '@cdp/dom': 'CDP',
             '@cdp/i18n': 'CDP',
         },
     }),

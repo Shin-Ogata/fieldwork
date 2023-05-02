@@ -10,6 +10,7 @@ import {
     throttle,
     debounce,
     once,
+    scheduler,
     escapeHTML,
     unescapeHTML,
     toTypedData,
@@ -203,6 +204,21 @@ describe('utils/misc spec', () => {
         }
 
         expect(value).toBe(1);
+    });
+
+    it('check scheduler()', async () => {
+        let count = 0;
+        const defer = scheduler();
+        const up = (): number => count++;
+
+        defer(up);
+        defer(up);
+
+        expect(count).toBe(0);
+
+        await post(noop);
+
+        expect(count).toBe(2);
     });
 
     it('check escapeHTML()', () => {

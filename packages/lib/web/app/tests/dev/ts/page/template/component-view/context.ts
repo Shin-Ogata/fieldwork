@@ -4,7 +4,7 @@ import {
     toTemplateElement,
 } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
-import { JST, TemplateEngine } from '@cdp/template';
+import { JST, TemplateEngine } from '@cdp/core-template';
 import { PageView, registerPage } from '@cdp/app';
 import { entry } from '../../signature';
 import { Props } from '../props';

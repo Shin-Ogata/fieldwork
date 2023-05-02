@@ -9,12 +9,12 @@
   "dependencies": {
     "@cdp/core-template": "file:../../core/template",
     "@cdp/core-utils": "file:../../core/utils",
+    "@cdp/dom": "file:../dom",
     "@cdp/extension-template": "file:../../../extension/template",
     "@cdp/extension-template-bridge": "file:../../../extension/template-bridge",
     "@cdp/web-utils": "file:../utils"
   },
   "devDependencies": {
-    "@cdp/dom": "file:../dom",
     "@cdp/i18n": "file:../i18n"
   },
   "keywords": [

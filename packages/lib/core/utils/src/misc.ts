@@ -191,6 +191,39 @@ export function once<T extends UnknownFunction>(executor: T): T {
     /* eslint-enable no-invalid-this, @typescript-eslint/no-non-null-assertion */
 }
 
+/**
+ * @en Return a deferred executable function object.
+ * @ja 遅延実行可能な関数オブジェクトを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const schedule = scheduler();
+ * schedule(() => task1());
+ * schedule(() => task2());
+ * ```
+ */
+export function scheduler(): (exec: () => void) => void {
+    let tasks: (() => void)[] = [];
+    let id: Promise<void> | null;
+
+    function runTasks(): void {
+        id = null;
+        const work = tasks;
+        tasks = [];
+        for (const task of work) {
+            task();
+        }
+    }
+
+    return function(task: () => unknown): void {
+        tasks.push(task);
+        if (null == id) {
+            id = post(runTasks);
+        }
+    };
+}
+
 //__________________________________________________________________________________________________//
 
 /**

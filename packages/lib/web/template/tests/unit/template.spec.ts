@@ -1,5 +1,4 @@
 import {
-    TemplateEngine,
     TemplateBridge,
     html,
     svg,
@@ -8,7 +7,6 @@ import {
 
 describe('template spec', () => {
     it('check main instance', () => {
-        expect(TemplateEngine).toBeDefined();
         expect(TemplateBridge).toBeDefined();
         expect(html).toBeDefined();
         expect(svg).toBeDefined();
