@@ -33,8 +33,8 @@ function patch(index, code) {
         // replace `TrustedHTML` -> `HTMLElement`
         .replace(/TrustedHTML/g, 'HTMLElement')
         // rename list
-        .replace(regex_declare, '$1 $2 directive_$3$4\n')
-        .replace(regex_typeof, '$1 directive_$2;')
+        .replace(regex_declare, '$1 $2 _directive_$3$4\n')
+        .replace(regex_typeof, '$1 _directive_$2;')
     ;
 
     return code;

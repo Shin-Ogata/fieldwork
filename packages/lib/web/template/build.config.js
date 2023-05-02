@@ -11,6 +11,7 @@ module.exports = {
             '@cdp/core-utils': 'CDP',
             '@cdp/core-template': 'CDP',
             '@cdp/web-utils': 'CDP',
+            '@cdp/dom': 'CDP',
         },
     }),
 };

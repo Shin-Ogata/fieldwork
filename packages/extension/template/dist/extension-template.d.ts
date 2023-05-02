@@ -482,7 +482,7 @@ declare class RefDirective extends AsyncDirective {
     disconnected(): void;
     reconnected(): void;
 }
-declare const directive_ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+declare const _directive_ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
 export declare type Mapper<T> = (v: T, index?: number) => unknown;
 declare class AsyncReplaceDirective extends AsyncDirective {
     private __value?;
@@ -509,8 +509,8 @@ declare class CacheDirective extends Directive {
     render(v: unknown): unknown[];
     update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
 }
-declare const directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
-declare const directive_choose: <T, V>(value: T, cases: [
+declare const _directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
+declare const _directive_choose: <T, V>(value: T, cases: [
     T,
     () => V
 ][], defaultCase?: (() => V) | undefined) => V | undefined;
@@ -537,10 +537,10 @@ declare class GuardDirective extends Directive {
     render(_value: unknown, f: () => unknown): unknown;
     update(_part: Part, [value, f]: DirectiveParameters<this>): unknown;
 }
-declare const directive_guard: (_value: unknown, f: () => unknown) => DirectiveResult<typeof GuardDirective>;
+declare const _directive_guard: (_value: unknown, f: () => unknown) => DirectiveResult<typeof GuardDirective>;
 declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
-declare function directive_join<I, J>(items: Iterable<I> | undefined, joiner: (index: number) => J): Iterable<I | J>;
-declare function directive_join<I, J>(items: Iterable<I> | undefined, joiner: J): Iterable<I | J>;
+declare function _directive_join<I, J>(items: Iterable<I> | undefined, joiner: (index: number) => J): Iterable<I | J>;
+declare function _directive_join<I, J>(items: Iterable<I> | undefined, joiner: J): Iterable<I | J>;
 declare class Keyed extends Directive {
     key: unknown;
     render(k: unknown, v: unknown): unknown;
@@ -552,10 +552,10 @@ declare class LiveDirective extends Directive {
     render(value: unknown): unknown;
     update(part: AttributePart, [value]: DirectiveParameters<this>): unknown;
 }
-declare const directive_live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
-declare function directive_map<T>(items: Iterable<T> | undefined, f: (value: T, index: number) => unknown): Generator<unknown, void, unknown>;
-declare function directive_range(end: number): Iterable<number>;
-declare function directive_range(start: number, end: number, step?: number): Iterable<number>;
+declare const _directive_live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
+declare function _directive_map<T>(items: Iterable<T> | undefined, f: (value: T, index: number) => unknown): Generator<unknown, void, unknown>;
+declare function _directive_range(end: number): Iterable<number>;
+declare function _directive_range(start: number, end: number, step?: number): Iterable<number>;
 export declare type KeyFn<T> = (item: T, index: number) => unknown;
 export declare type ItemTemplate<T> = (item: T, index: number) => unknown;
 export interface RepeatDirectiveFn {
@@ -563,7 +563,7 @@ export interface RepeatDirectiveFn {
     <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
     <T>(items: Iterable<T>, keyFn: KeyFn<T> | ItemTemplate<T>, template: ItemTemplate<T>): unknown;
 }
-declare const directive_repeat: RepeatDirectiveFn;
+declare const _directive_repeat: RepeatDirectiveFn;
 /**
  * A key-value set of CSS properties and values.
  *
@@ -611,10 +611,10 @@ declare class UntilDirective extends AsyncDirective {
     disconnected(): void;
     reconnected(): void;
 }
-declare const directive_until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
-declare function directive_when<T, F>(condition: true, trueCase: () => T, falseCase?: () => F): T;
-declare function directive_when<T, F = undefined>(condition: false, trueCase: () => T, falseCase?: () => F): F;
-declare function directive_when<T, F = undefined>(condition: unknown, trueCase: () => T, falseCase?: () => F): T | F;
+declare const _directive_until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
+declare function _directive_when<T, F>(condition: true, trueCase: () => T, falseCase?: () => F): T;
+declare function _directive_when<T, F = undefined>(condition: false, trueCase: () => T, falseCase?: () => F): F;
+declare function _directive_when<T, F = undefined>(condition: unknown, trueCase: () => T, falseCase?: () => F): T | F;
 export declare const _Σ: {
     AttributePart: AttributePart;
     PropertyPart: PropertyPart;
@@ -625,24 +625,24 @@ export declare const _Σ: {
 declare namespace directives {
     type asyncAppend = typeof asyncAppend;
     type asyncReplace = typeof asyncReplace;
-    type cache = typeof directive_cache;
-    type choose = typeof directive_choose;
+    type cache = typeof _directive_cache;
+    type choose = typeof _directive_choose;
     type classMap = typeof classMap;
-    type guard = typeof directive_guard;
+    type guard = typeof _directive_guard;
     type ifDefined = typeof ifDefined;
-    type join = typeof directive_join;
+    type join = typeof _directive_join;
     type keyed = typeof keyed;
-    type live = typeof directive_live;
-    type map = typeof directive_map;
-    type range = typeof directive_range;
-    type ref = typeof directive_ref;
-    type repeat = typeof directive_repeat;
+    type live = typeof _directive_live;
+    type map = typeof _directive_map;
+    type range = typeof _directive_range;
+    type ref = typeof _directive_ref;
+    type repeat = typeof _directive_repeat;
     type styleMap = typeof styleMap;
     type templateContent = typeof templateContent;
     type unsafeHTML = typeof unsafeHTML;
     type unsafeSVG = typeof unsafeSVG;
-    type until = typeof directive_until;
-    type when = typeof directive_when;
+    type until = typeof _directive_until;
+    type when = typeof _directive_when;
 }
 export interface TemplateDirectives {
     asyncAppend: directives.asyncAppend;

@@ -85,6 +85,8 @@ function patch(index, code, includes) {
             ObservableArray,
             ArrayChangeRecord,
             Result,
+            JST,
+            TemplateCompileOptions,
             IStorage,
             IStorageOptions,
             IStorageDataOptions,
@@ -95,21 +97,6 @@ function patch(index, code, includes) {
             $cdp,
         `;
 
-        const coreReExportStuff = `
-            TemplateToken,
-            TemplateDelimiters,
-            TemplateScanner,
-            TemplateContext,
-            TemplateWriter,
-            JST,
-            TemplateEscaper,
-            ITemplateEngine,
-            TemplateAccessor,
-            TemplateGlobalSettings,
-            TemplateCompileOptions,
-            TemplateEngine,
-        `;
-
         const workerStuff = `
             AjaxOptions,
             AjaxRequestOptions,
@@ -117,8 +104,7 @@ function patch(index, code, includes) {
             Serializable,
         `;
 
-        prepend += `import { ${enumerate(coreStuff + coreReExportStuff)} } from '@cdp/lib-core';\n`;
-        prepend += `export { ${enumerate(coreReExportStuff)} };\n`;
+        prepend += `import { ${enumerate(coreStuff)} } from '@cdp/lib-core';\n`;
         prepend += `import { ${enumerate(workerStuff)} } from '@cdp/lib-worker';\n`;
 
         prepend += read(resolve('../../lib/web/dom/dist/dom.d.ts'));

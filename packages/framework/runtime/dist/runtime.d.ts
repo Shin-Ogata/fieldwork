@@ -1494,6 +1494,19 @@ export declare function debounce<T extends UnknownFunction>(executor: T, wait: n
  */
 export declare function once<T extends UnknownFunction>(executor: T): T;
 /**
+ * @en Return a deferred executable function object.
+ * @ja 遅延実行可能な関数オブジェクトを返却
+ *
+ * @example <br>
+ *
+ * ```ts
+ * const schedule = scheduler();
+ * schedule(() => task1());
+ * schedule(() => task2());
+ * ```
+ */
+export declare function scheduler(): (exec: () => void) => void;
+/**
  * @en Create escape function from map.
  * @ja 文字置換関数を作成
  *
@@ -5992,7 +6005,7 @@ declare class RefDirective extends AsyncDirective {
     disconnected(): void;
     reconnected(): void;
 }
-declare const directive_ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+declare const _directive_ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
 export declare type Mapper<T> = (v: T, index?: number) => unknown;
 declare class AsyncReplaceDirective extends AsyncDirective {
     private __value?;
@@ -6019,8 +6032,8 @@ declare class CacheDirective extends Directive {
     render(v: unknown): unknown[];
     update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
 }
-declare const directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
-declare const directive_choose: <T, V>(value: T, cases: [
+declare const _directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
+declare const _directive_choose: <T, V>(value: T, cases: [
     T,
     () => V
 ][], defaultCase?: (() => V) | undefined) => V | undefined;
@@ -6047,10 +6060,10 @@ declare class GuardDirective extends Directive {
     render(_value: unknown, f: () => unknown): unknown;
     update(_part: Part, [value, f]: DirectiveParameters<this>): unknown;
 }
-declare const directive_guard: (_value: unknown, f: () => unknown) => DirectiveResult<typeof GuardDirective>;
+declare const _directive_guard: (_value: unknown, f: () => unknown) => DirectiveResult<typeof GuardDirective>;
 declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
-declare function directive_join<I, J>(items: Iterable<I> | undefined, joiner: (index: number) => J): Iterable<I | J>;
-declare function directive_join<I, J>(items: Iterable<I> | undefined, joiner: J): Iterable<I | J>;
+declare function _directive_join<I, J>(items: Iterable<I> | undefined, joiner: (index: number) => J): Iterable<I | J>;
+declare function _directive_join<I, J>(items: Iterable<I> | undefined, joiner: J): Iterable<I | J>;
 declare class Keyed extends Directive {
     key: unknown;
     render(k: unknown, v: unknown): unknown;
@@ -6062,10 +6075,10 @@ declare class LiveDirective extends Directive {
     render(value: unknown): unknown;
     update(part: AttributePart, [value]: DirectiveParameters<this>): unknown;
 }
-declare const directive_live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
-declare function directive_map<T>(items: Iterable<T> | undefined, f: (value: T, index: number) => unknown): Generator<unknown, void, unknown>;
-declare function directive_range(end: number): Iterable<number>;
-declare function directive_range(start: number, end: number, step?: number): Iterable<number>;
+declare const _directive_live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
+declare function _directive_map<T>(items: Iterable<T> | undefined, f: (value: T, index: number) => unknown): Generator<unknown, void, unknown>;
+declare function _directive_range(end: number): Iterable<number>;
+declare function _directive_range(start: number, end: number, step?: number): Iterable<number>;
 export declare type KeyFn<T> = (item: T, index: number) => unknown;
 export declare type ItemTemplate<T> = (item: T, index: number) => unknown;
 export interface RepeatDirectiveFn {
@@ -6073,7 +6086,7 @@ export interface RepeatDirectiveFn {
     <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
     <T>(items: Iterable<T>, keyFn: KeyFn<T> | ItemTemplate<T>, template: ItemTemplate<T>): unknown;
 }
-declare const directive_repeat: RepeatDirectiveFn;
+declare const _directive_repeat: RepeatDirectiveFn;
 /**
  * A key-value set of CSS properties and values.
  *
@@ -6121,10 +6134,10 @@ declare class UntilDirective extends AsyncDirective {
     disconnected(): void;
     reconnected(): void;
 }
-declare const directive_until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
-declare function directive_when<T, F>(condition: true, trueCase: () => T, falseCase?: () => F): T;
-declare function directive_when<T, F = undefined>(condition: false, trueCase: () => T, falseCase?: () => F): F;
-declare function directive_when<T, F = undefined>(condition: unknown, trueCase: () => T, falseCase?: () => F): T | F;
+declare const _directive_until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
+declare function _directive_when<T, F>(condition: true, trueCase: () => T, falseCase?: () => F): T;
+declare function _directive_when<T, F = undefined>(condition: false, trueCase: () => T, falseCase?: () => F): F;
+declare function _directive_when<T, F = undefined>(condition: unknown, trueCase: () => T, falseCase?: () => F): T | F;
 export declare const _Σ: {
     AttributePart: AttributePart;
     PropertyPart: PropertyPart;
@@ -6135,24 +6148,24 @@ export declare const _Σ: {
 declare namespace directives {
     type asyncAppend = typeof asyncAppend;
     type asyncReplace = typeof asyncReplace;
-    type cache = typeof directive_cache;
-    type choose = typeof directive_choose;
+    type cache = typeof _directive_cache;
+    type choose = typeof _directive_choose;
     type classMap = typeof classMap;
-    type guard = typeof directive_guard;
+    type guard = typeof _directive_guard;
     type ifDefined = typeof ifDefined;
-    type join = typeof directive_join;
+    type join = typeof _directive_join;
     type keyed = typeof keyed;
-    type live = typeof directive_live;
-    type map = typeof directive_map;
-    type range = typeof directive_range;
-    type ref = typeof directive_ref;
-    type repeat = typeof directive_repeat;
+    type live = typeof _directive_live;
+    type map = typeof _directive_map;
+    type range = typeof _directive_range;
+    type ref = typeof _directive_ref;
+    type repeat = typeof _directive_repeat;
     type styleMap = typeof styleMap;
     type templateContent = typeof templateContent;
     type unsafeHTML = typeof unsafeHTML;
     type unsafeSVG = typeof unsafeSVG;
-    type until = typeof directive_until;
-    type when = typeof directive_when;
+    type until = typeof _directive_until;
+    type when = typeof _directive_when;
 }
 export interface TemplateDirectives {
     asyncAppend: directives.asyncAppend;
@@ -11118,6 +11131,247 @@ export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends Load
  *  - `ja` クエリオプション
  */
 export declare function getTemplate<T extends TemplateQueryTypes = 'engine'>(selector: string, options?: TemplateQueryOptions<T>): Promise<TemplateQueryTypeList[T]>;
+export interface IHookStateContext<H = unknown> {
+    host: H;
+    update: VoidFunction;
+}
+export type NewHookState<T> = T | ((previousState?: T) => T);
+export type HookStateUpdater<T> = (value: NewHookState<T>) => void;
+export type HookReducer<S, A> = (state: S, action: A) => S;
+/**
+ * @en Base abstract class for Custom Hook Class.
+ * @ja カスタムフッククラスの基底抽象クラス
+ */
+export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
+    id: number;
+    state: IHookStateContext<H>;
+    constructor(id: number, state: IHookStateContext<H>);
+    abstract update(...args: P): R;
+    teardown?(): void;
+}
+/**
+ * @en Interface definition for custom hooks.
+ * @ja カスタムフックのインターフェイス定義
+ */
+export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
+    new (id: number, state: IHookStateContext<H>, ...args: P): Hook<P, R, H>;
+}
+/**
+ * @en Factory function for creating custom hooks.
+ * @ja カスタムフック作成用ファクトリ関数
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { IHookStateContext, Hook, makeHook } from '@cdp/runtime';
+ *
+ * export const useMemo = makeHook(class <T> extends Hook {
+ *     value: T;
+ *     values: unknown[];
+ *
+ *     constructor(id: number, state: State, fn: () => T, values: unknown[]) {
+ *         super(id, state);
+ *         this.value = fn();
+ *         this.values = values;
+ *     }
+ *
+ *     update(fn: () => T, values: unknown[]): T {
+ *         if (this.hasChanged(values)) {
+ *             this.values = values;
+ *             this.value = fn();
+ *         }
+ *         return this.value;
+ *     }
+ *
+ *     hasChanged(values: unknown[] = []): boolean {
+ *         return values.some((value, i) => this.values[i] !== value);
+ *     }
+ * });
+ * ```
+ */
+export declare const makeHook: <P extends unknown[], R, H = unknown>(Hook: CustomHook<P, R, H>) => (...args: P) => R;
+/**
+ * @en Provides functionality parity with the React hooks concept.
+ * @ja React hooks コンセプトと同等の機能を提供
+ *
+ * @example <br>
+ *
+ * ```ts
+ * import { html, render, hooks } from '@cdp/runtime';
+ * const { useState } = hooks;
+ *
+ * // function component
+ * function App() {
+ *     const [count, setCount] = useState(0);
+ *     return html`
+ *         <p>Count: ${ count }</p>
+ *         <button class='state-plus' @click=${() => setCount(prevCount => prevCount! + 1)}>➕</button>
+ *     `;
+ * }
+ *
+ * // render with hooks
+ * render(hooks(App), document.body);
+ * ```
+ */
+export interface Hooks {
+    /**
+     * @en Provides functionality parity with the React hooks concept. <br>
+     *     Add Hooks feature to template literal syntax.
+     * @ja React hooks コンセプトと同等の機能を提供 <br>
+     *     テンプレートリテラル構文に Hooks 機能を付加
+     *
+     * @example <br>
+     *
+     * ```ts
+     * import { html, render, hooks } from '@cdp/runtime';
+     * const { useState } = hooks;
+     *
+     * // function component
+     * function App() {
+     *     const [count, setCount] = useState(0);
+     *     return html`
+     *         <p>Count: ${ count }</p>
+     *         <button class='state-plus' @click=${() => setCount(prevCount => prevCount! + 1)}>➕</button>
+     *     `;
+     * }
+     *
+     * // enabling hooks
+     * render(hooks(App), document.body);
+     * ```
+     *
+     * @param renderer
+     *  - `en` A function object that returns a template literal syntax
+     *  - `ja` テンプレートリテラル構文を返却する関数オブジェクト
+     * @param args
+     *  - `en` Arguments passed template literal syntax
+     *  - `ja` テンプレートリテラル構文にわたる引数
+     */
+    (renderer: UnknownFunction, ...args: unknown[]): unknown;
+    /**
+     * @en Add Hooks feature to template literal syntax. (specify a DOM disconnect detection element)
+     * @ja テンプレートリテラル構文に Hooks 機能を付加 (DOM 切断検知要素を指定)
+     *
+     * @example <br>
+     *
+     * ```ts
+     * const el = document.getElementById('some-page');
+     * // enabling hooks with root element
+     * render(hooks.with(el, App), document.body);
+     * ```
+     *
+     * @param elRoot
+     *  - `en` Root element used for DOM disconnection detection. If `null` passed, `document` is specified
+     *  - `ja` DOM 切断検知に使用するルート要素. `null` が渡ると `document` が指定される
+     * @param renderer
+     *  - `en` A function object that returns a template literal syntax
+     *  - `ja` テンプレートリテラル構文を返却する関数オブジェクト
+     * @param args
+     *  - `en` Arguments passed template literal syntax
+     *  - `ja` テンプレートリテラル構文にわたる引数
+     */
+    with: (elRoot: Node | null, renderer: UnknownFunction, ...args: unknown[]) => unknown;
+    /**
+     * @en Return a stateful value and a function to update it.
+     * @ja ステートフルな値と、それを更新するための関数を返却
+     *
+     * @param initialState
+     *  - `en` The value you want the state to be initially.
+     *  - `ja` 状態の初期化値
+     * @returns
+     *  - `en` returns an array with exactly two values. [`currentState`, `updateFunction`]
+     *  - `ja` 2つの値を持つ配列を返却 [`currentState`, `updateFunction`]
+     */
+    useState: <T>(initialState?: T) => readonly [
+        T extends ((...args: unknown[]) => infer R) ? R : T,
+        HookStateUpdater<T extends ((...args: unknown[]) => infer S) ? S : T>
+    ];
+    /**
+     * @en Accepts a function that contains imperative, possibly effectful code.
+     * @ja 副作用を有する可能性のある命令型のコードの適用
+     *
+     * @param effect
+     *  - `en` callback function that runs each time dependencies change
+     *  - `ja` 依存関係が変更されるたびに実行されるコールバック関数
+     * @param dependencies
+     *  - `en` list of dependencies to the effect
+     *  - `ja` 副作用発火のトリガーとなる依存関係のリスト
+     */
+    useEffect: (effect: () => void, dependencies?: unknown[]) => void;
+    /**
+     * @en Accepts a function that contains imperative, possibly effectful code. <br>
+     *     Unlike [[useEffect]] , it is executed before the component is rendered and the new element is displayed on the screen.
+     * @ja 副作用を有する可能性のある命令型のコードの適用 <br>
+     *     [[useEffect]] と異なり, コンポーネントがレンダリングされて新しい要素が画面に表示される前に実行される。
+     *
+     * @param effect
+     *  - `en` callback function that runs each time dependencies change
+     *  - `ja` 依存関係が変更されるたびに実行されるコールバック関数
+     * @param dependencies
+     *  - `en` list of dependencies to the effect
+     *  - `ja` 副作用発火のトリガーとなる依存関係のリスト
+     */
+    useLayoutEffect: (effect: () => void, dependencies?: unknown[]) => void;
+    /**
+     * @en Used to reduce component re-rendering. <br>
+     *     Cache the return value of the function and return the cached value when called with the same arguments.
+     * @ja コンポーネントの再レンダリングを抑えるために使用 <br>
+     *     関数の戻り値をキャッシュし、同じ引数で呼び出された場合にキャッシュされた値を返却
+     *
+     * @param fn
+     *  - `en` A function that returns a value
+     *  - `ja` 値を返す関数
+     * @param values
+     *  - `en` An array of values that are used as arguments for `fn`
+     *  - `ja` `fn` の引数として使用される値の配列
+     */
+    useMemo: <T>(fn: () => T, values: unknown[]) => T;
+    /**
+     * @en Lets you reference a value that’s not needed for rendering. <br>
+     *     Mainly available for accessing DOM nodes.
+     * @ja レンダリングに不要な値を参照可能にする<br>
+     *     主に DOM ノードへのアクセスに利用可能
+     *
+     * @param initialValue
+     *  - `en` The initial value of the reference
+     *  - `ja` 参照の初期値
+     */
+    useRef: <T>(initialValue: T) => {
+        current: T;
+    };
+    /**
+     * @en Returns a memoized version of the callback function that only changes if the dependencies change. <br>
+     *     Useful for passing callbacks to optimized child components that rely on referential equality.
+     * @ja 依存関係が変更された場合にのみ変更されるコールバック関数のメモ化バージョンを返却 <br>
+     *     参照等価性に依存する最適化された子コンポーネントにコールバックを渡す場合に役立つ
+     *
+     * @param fn
+     *  - `en` The function to memoize
+     *  - `ja` メモ化する関数
+     * @param inputs
+     *  - `en` An array of inputs to watch for changes
+     *  - `ja` 変更を監視する入力の配列
+     */
+    useCallback: <T extends UnknownFunction>(fn: T, inputs: unknown[]) => T;
+    /**
+     * @en Hook API for managing state in function components.
+     * @ja 関数コンポーネントで状態を管理するための Hook API
+     *
+     * @param reducer
+     *  - `en` A function that takes the current state and an action and returns a new state
+     *  - `ja` 現在の状態とアクションを受け取り、新しい状態を返す関数
+     * @param initialState
+     *  - `en` The initial state of the reducer
+     *  - `ja` リデューサーの初期状態を指定
+     * @param init
+     *  - `en` An optional function that returns the initial state of the reducer
+     *  - `ja` リデューサーの初期状態を返すオプションの関数
+     */
+    useReducer: <S, I, A>(reducer: HookReducer<S, A>, initialState: I, init?: ((_: I) => S) | undefined) => readonly [
+        S,
+        (action: A) => void
+    ];
+}
+export declare const hooks: Hooks;
 /**
  * @en History state object.
  * @ja 履歴状態オブジェクト
