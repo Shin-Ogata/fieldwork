@@ -1,4 +1,4 @@
-import type { IHookStateContext } from './interfaces';
+import type { IHookState } from './interfaces';
 import type { Hook } from './hook';
 import { setCurrent, clearCurrent } from './current';
 import {
@@ -14,7 +14,7 @@ export interface Callable {
 }
 
 /** @internal */
-export class State<H = unknown> implements IHookStateContext<H> {
+export class State<H = unknown> implements IHookState<H> {
     update: VoidFunction;
     host: H;
     virtual?: boolean;

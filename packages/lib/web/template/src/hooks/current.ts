@@ -1,12 +1,12 @@
-import type { IHookStateContext } from './interfaces';
+import type { IHookState } from './interfaces';
 
 let _currentId = 0;
 
 /** @internal */
-export let current: IHookStateContext | null;
+export let current: IHookState | null;
 
 /** @internal */
-export const setCurrent = (state: IHookStateContext): void => {
+export const setCurrent = (state: IHookState): void => {
     current = state;
 };
 
