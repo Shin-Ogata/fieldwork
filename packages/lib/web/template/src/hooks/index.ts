@@ -1,5 +1,9 @@
 import type { UnknownFunction } from '@cdp/core-utils';
-import type { HookStateUpdater, HookReducer } from './interfaces';
+import type {
+    HookStateUpdater,
+    HookReducer,
+    IHookContext,
+} from './interfaces';
 import { hooksWith } from './directive';
 import { useState } from './use-state';
 import { useEffect } from './use-effect';
@@ -8,6 +12,8 @@ import { useMemo } from './use-memo';
 import { useRef } from './use-ref';
 import { useCallback } from './use-callback';
 import { useReducer } from './use-reducer';
+import { createContext } from './create-context';
+import { useContext } from './use-context';
 export * from './interfaces';
 export { Hook, makeHook } from './hook';
 
@@ -194,6 +200,32 @@ export interface Hooks {
      *  - `ja` リデューサーの初期状態を返すオプションの関数
      */
     useReducer: <S, I, A>(reducer: HookReducer<S, A>, initialState: I, init?: ((_: I) => S) | undefined) => readonly [S, (action: A) => void];
+
+    /**
+     * @en
+     * createContext is a function that creates a new context object. A context object is used to share data that can be considered “global” for a tree of React components.
+     *
+     * @ja
+     * createContext は新しいコンテキストオブジェクトを作成する関数です。コンテキストオブジェクトは、React コンポーネントのツリーに対して「グローバル」と考えられるデータを共有するために使用されます。
+     *
+     * @param defaultValue
+     *  - `en`: The default value for the context object.
+     *  - `ja`: コンテキストオブジェクトのデフォルト値。
+     */
+    createContext: <T>(defaultValue?: T) => IHookContext<T>;
+
+    /**
+     * @en
+     * useContext is a hook that returns the current context value for the given context object. When the nearest <MyContext.Provider> above the component updates, this hook will trigger a rerender with the latest context value passed to that MyContext provider.
+     *
+     * @ja
+     * useContext は、指定されたコンテキストオブジェクトに対する現在のコンテキスト値を返すフックです。このフックは、コンポーネントの上にある最も近い <MyContext.Provider> が更新されると、その MyContext プロバイダーに渡された最新のコンテキスト値で再レンダリングがトリガーされます。
+     *
+     * @param context
+     *  - `en`: The context object returned from React.createContext.
+     *  - `ja`: React.createContext から返されるコンテキストオブジェクト。
+     */
+    useContext: <T>(context: IHookContext<T>) => T;
 }
 
 const hooks: Hooks = hooksWith.bind(null, null);
@@ -205,5 +237,7 @@ hooks.useMemo         = useMemo;
 hooks.useRef          = useRef;
 hooks.useCallback     = useCallback;
 hooks.useReducer      = useReducer;
+hooks.createContext   = createContext;
+hooks.useContext      = useContext;
 
 export { hooks };

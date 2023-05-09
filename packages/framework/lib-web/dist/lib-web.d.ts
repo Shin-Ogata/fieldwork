@@ -6723,21 +6723,26 @@ export interface TemplateQueryOptions<T extends TemplateQueryTypes> extends Load
  *  - `ja` クエリオプション
  */
 export declare function getTemplate<T extends TemplateQueryTypes = 'engine'>(selector: string, options?: TemplateQueryOptions<T>): Promise<TemplateQueryTypeList[T]>;
-export interface IHookStateContext<H = unknown> {
+export interface IHookState<H = unknown> {
     host: H;
     update: VoidFunction;
 }
 export type NewHookState<T> = T | ((previousState?: T) => T);
 export type HookStateUpdater<T> = (value: NewHookState<T>) => void;
 export type HookReducer<S, A> = (state: S, action: A) => S;
+export interface IHookContext<T = unknown> {
+    provide: (value: T, template?: DirectiveResult) => DirectiveResult;
+    consume: (callback: (value: T) => DirectiveResult | void) => DirectiveResult | void;
+    readonly defaultValue: T | undefined;
+}
 /**
  * @en Base abstract class for Custom Hook Class.
  * @ja カスタムフッククラスの基底抽象クラス
  */
 export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
     id: number;
-    state: IHookStateContext<H>;
-    constructor(id: number, state: IHookStateContext<H>);
+    state: IHookState<H>;
+    constructor(id: number, state: IHookState<H>);
     abstract update(...args: P): R;
     teardown?(): void;
 }
@@ -6746,7 +6751,7 @@ export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown,
  * @ja カスタムフックのインターフェイス定義
  */
 export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
-    new (id: number, state: IHookStateContext<H>, ...args: P): Hook<P, R, H>;
+    new (id: number, state: IHookState<H>, ...args: P): Hook<P, R, H>;
 }
 /**
  * @en Factory function for creating custom hooks.
@@ -6962,6 +6967,30 @@ export interface Hooks {
         S,
         (action: A) => void
     ];
+    /**
+     * @en
+     * createContext is a function that creates a new context object. A context object is used to share data that can be considered “global” for a tree of React components.
+     *
+     * @ja
+     * createContext は新しいコンテキストオブジェクトを作成する関数です。コンテキストオブジェクトは、React コンポーネントのツリーに対して「グローバル」と考えられるデータを共有するために使用されます。
+     *
+     * @param defaultValue
+     *  - `en`: The default value for the context object.
+     *  - `ja`: コンテキストオブジェクトのデフォルト値。
+     */
+    createContext: <T>(defaultValue?: T) => IHookContext<T>;
+    /**
+     * @en
+     * useContext is a hook that returns the current context value for the given context object. When the nearest <MyContext.Provider> above the component updates, this hook will trigger a rerender with the latest context value passed to that MyContext provider.
+     *
+     * @ja
+     * useContext は、指定されたコンテキストオブジェクトに対する現在のコンテキスト値を返すフックです。このフックは、コンポーネントの上にある最も近い <MyContext.Provider> が更新されると、その MyContext プロバイダーに渡された最新のコンテキスト値で再レンダリングがトリガーされます。
+     *
+     * @param context
+     *  - `en`: The context object returned from React.createContext.
+     *  - `ja`: React.createContext から返されるコンテキストオブジェクト。
+     */
+    useContext: <T>(context: IHookContext<T>) => T;
 }
 export declare const hooks: Hooks;
 /**

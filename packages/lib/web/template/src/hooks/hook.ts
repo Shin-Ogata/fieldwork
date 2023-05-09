@@ -1,4 +1,4 @@
-import type { IHookStateContext } from './interfaces';
+import type { IHookState } from './interfaces';
 import { current, notify } from './current';
 import { hookSymbol } from './symbols';
 
@@ -8,9 +8,9 @@ import { hookSymbol } from './symbols';
  */
 export abstract class Hook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
     id: number;
-    state: IHookStateContext<H>;
+    state: IHookState<H>;
 
-    constructor(id: number, state: IHookStateContext<H>) {
+    constructor(id: number, state: IHookState<H>) {
         this.id = id;
         this.state = state;
     }
@@ -24,7 +24,7 @@ export abstract class Hook<P extends unknown[] = unknown[], R = unknown, H = unk
  * @ja カスタムフックのインターフェイス定義
  */
 export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
-    new (id: number, state: IHookStateContext<H>, ...args: P): Hook<P, R, H>;
+    new (id: number, state: IHookState<H>, ...args: P): Hook<P, R, H>;
 }
 
 const use = <P extends unknown[], R, H = unknown>(Hook: CustomHook<P, R, H>, ...args: P): R => {
@@ -33,7 +33,7 @@ const use = <P extends unknown[], R, H = unknown>(Hook: CustomHook<P, R, H>, ...
 
     let hook = hooks.get(id) as Hook<P, R, H> | undefined;
     if (!hook) {
-        hook = new Hook(id, current as IHookStateContext<H>, ...args);
+        hook = new Hook(id, current as IHookState<H>, ...args);
         hooks.set(id, hook);
     }
 

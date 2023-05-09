@@ -1,12 +1,12 @@
-import type { IHookStateContext } from './interfaces';
+import type { IHookState } from './interfaces';
 /**
  * @en Base abstract class for Custom Hook Class.
  * @ja カスタムフッククラスの基底抽象クラス
  */
 export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
     id: number;
-    state: IHookStateContext<H>;
-    constructor(id: number, state: IHookStateContext<H>);
+    state: IHookState<H>;
+    constructor(id: number, state: IHookState<H>);
     abstract update(...args: P): R;
     teardown?(): void;
 }
@@ -15,7 +15,7 @@ export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown,
  * @ja カスタムフックのインターフェイス定義
  */
 export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
-    new (id: number, state: IHookStateContext<H>, ...args: P): Hook<P, R, H>;
+    new (id: number, state: IHookState<H>, ...args: P): Hook<P, R, H>;
 }
 /**
  * @en Factory function for creating custom hooks.
