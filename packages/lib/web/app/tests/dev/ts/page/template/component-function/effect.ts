@@ -1,8 +1,13 @@
-import { TemplateResult, html } from '@cdp/template';
+import {
+    TemplateResult,
+    html,
+    hooks,
+} from '@cdp/template';
 import { dom as $ } from '@cdp/dom';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
-import { useState, useEffect } from './hooks';
+
+const { useState, useEffect } = hooks;
 
 export const Effect = (): TemplateResult => {
     const [count, setCount] = useState(0);

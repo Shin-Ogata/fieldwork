@@ -2,10 +2,15 @@
     @typescript-eslint/no-non-null-assertion,
  */
 
-import { TemplateResult, html } from '@cdp/template';
+import {
+    TemplateResult,
+    html,
+    hooks,
+} from '@cdp/template';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
-import { useState } from './hooks';
+
+const { useState } = hooks;
 
 export const State = ({ initVal }: { initVal?: number; } = {}): TemplateResult => {
     const [count, setCount] = useState(initVal || 0);

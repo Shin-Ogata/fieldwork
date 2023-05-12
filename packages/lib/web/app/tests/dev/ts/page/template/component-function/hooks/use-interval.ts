@@ -3,7 +3,9 @@ import {
     setInterval,
     clearInterval,
 } from '@cdp/core-utils';
-import { useState, useEffect } from '../hooks';
+import { hooks } from '@cdp/template';
+
+const { useState, useEffect } = hooks;
 
 export const  useInterval = (
     { startImmediate, duration, callback }: { startImmediate?: boolean; duration: number; callback?: UnknownFunction; }
