@@ -2,8 +2,8 @@ import type { PlainObject } from '@cdp/core-utils';
 import type { Subscribable } from '@cdp/events';
 import type { Cancelable } from '@cdp/promise';
 /**
- * @en Arguments passed to [[AjaxDataStreamEvent]] `progress`.
- * @ja [[AjaxDataStreamEvent]] `progress` に渡される引数
+ * @en Arguments passed to {@link AjaxDataStreamEvent} `progress`.
+ * @ja {@link AjaxDataStreamEvent} `progress` に渡される引数
  */
 export interface AjaxDataStreamEventProgresArg {
     /**
@@ -33,8 +33,8 @@ export interface AjaxDataStreamEventProgresArg {
     readonly chunk?: Uint8Array;
 }
 /**
- * @en [[AjaxDataStream]] event definitions.
- * @ja [[AjaxDataStream]] イベント定義
+ * @en {@link AjaxDataStream} event definitions.
+ * @ja {@link AjaxDataStream} イベント定義
  */
 export interface AjaxDataStreamEvent {
     /**
@@ -70,8 +70,8 @@ export interface AjaxDataTypeList<T = PlainObject> {
  */
 export type AjaxDataTypes = keyof AjaxDataTypeList;
 /**
- * @en [[ajax]]() method options.
- * @ja [[ajax]]() に指定可能なオプション
+ * @en {@link ajax:function}() method options.
+ * @ja {@link ajax:function}() に指定可能なオプション
  */
 export interface AjaxOptions<T extends AjaxDataTypes | object = 'response'> extends RequestInit, Cancelable {
     /**
@@ -120,7 +120,7 @@ export type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'm
  */
 export type AjaxGetRequestShortcutOptions = AjaxRequestOptions & Pick<AjaxOptions, 'data'>;
 /**
- * @en Result of [[ajax]]() returns value.
- * @ja [[ajax]]() が返却する結果
+ * @en Result of {@link ajax:function}() returns value.
+ * @ja {@link ajax:function}() が返却する結果
  */
 export type AjaxResult<T extends AjaxDataTypes | object> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];

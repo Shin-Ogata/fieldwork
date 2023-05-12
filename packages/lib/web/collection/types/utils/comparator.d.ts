@@ -8,11 +8,11 @@ export type CollatorProvider = () => Intl.Collator;
  * @ja 既定の Intl.Collator を設定
  *
  * @param newProvider
- *  - `en` new [[CollatorProvider]] object. if `undefined` passed, only returns the current object.
- *  - `ja` 新しい [[CollatorProvider]] オブジェクトを指定. `undefined` が渡される場合は現在設定されているオブジェクトの返却のみ行う
+ *  - `en` new {@link CollatorProvider} object. if `undefined` passed, only returns the current object.
+ *  - `ja` 新しい {@link CollatorProvider} オブジェクトを指定. `undefined` が渡される場合は現在設定されているオブジェクトの返却のみ行う
  * @returns
- *  - `en` old [[CollatorProvider]] object.
- *  - `ja` 設定されていた [[CollatorProvider]] オブジェクト
+ *  - `en` old {@link CollatorProvider} object.
+ *  - `ja` 設定されていた {@link CollatorProvider} オブジェクト
  */
 export declare function defaultCollatorProvider(newProvider?: CollatorProvider): CollatorProvider;
 /**
@@ -62,12 +62,12 @@ export declare const getBooleanComparator: typeof getGenericComparator;
  */
 export declare const getNumberComparator: typeof getGenericComparator;
 /**
- * @en Convert to comparator from [[SortKey]].
- * @ja [[SortKey]] を comparator に変換
+ * @en Convert to comparator from {@link SortKey}.
+ * @ja {@link SortKey} を comparator に変換
  */
 export declare function toComparator<T, K extends string = string>(sortKey: SortKey<K>): SortCallback<T>;
 /**
- * @en Convert to comparator array from [[SortKey]] array.
- * @ja [[SortKey]] 配列を comparator 配列に変換
+ * @en Convert to comparator array from {@link SortKey} array.
+ * @ja {@link SortKey} 配列を comparator 配列に変換
  */
 export declare function convertSortKeys<T, K extends string = string>(sortKeys: SortKey<K>[]): SortCallback<T>[];

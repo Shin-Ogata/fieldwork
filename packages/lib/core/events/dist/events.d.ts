@@ -13,8 +13,8 @@ export interface EventAll {
     '*': any[];
 }
 /**
- * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
- * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ * @en Represents a disposable resource, such as the execution of an {@link Subscribable}.
+ * @ja {@link Subscribable} オブジェクトが返す購読情報コンテキストオブジェクト
  */
 export interface Subscription {
     /**
@@ -96,8 +96,8 @@ export interface Subscribable<Event extends object = any> {
     once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
 }
 /**
- * @en Extract event schema from [[Subscribable]] type.
- * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ * @en Extract event schema from {@link Subscribable} type.
+ * @ja {@link Subscribable} 型からイベントスキーマ定義の抽出
  */
 export type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
 /**
@@ -117,7 +117,7 @@ export interface Silenceable {
  * @example <br>
  *
  * ```ts
- * import { EventPublisher } from '@cdp/events';
+ * import { EventPublisher } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -235,7 +235,7 @@ export type EventArguments<T> = Arguments<T>;
  * @example <br>
  *
  * ```ts
- * import { EventBroker } from '@cdp/events';
+ * import { EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -263,8 +263,8 @@ export interface EventBroker<Event extends object> extends Subscribable<Event> {
     trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
 /**
- * @en Constructor of [[EventBroker]]
- * @ja [[EventBroker]] のコンストラクタ実体
+ * @en Constructor of {@link EventBroker}
+ * @ja {@link EventBroker} のコンストラクタ実体
  */
 export declare const EventBroker: {
     readonly prototype: EventBroker<any>;
@@ -280,7 +280,7 @@ export declare const EventBroker: {
  * @example <br>
  *
  * ```ts
- * import { EventReceiver, EventBroker } from '@cdp/events';
+ * import { EventReceiver, EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -375,15 +375,15 @@ export declare class EventReceiver {
     stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }
 /**
- * @en The class which have I/F of [[EventBroker]] and [[EventReceiver]]. <br>
+ * @en The class which have I/F of {@link EventBroker} and {@link EventReceiver}. <br>
  *     `Events` class of `Backbone.js` equivalence.
- * @ja [[EventBroker]] と [[EventReceiver]] の I/F をあわせ持つクラス <br>
+ * @ja {@link EventBroker} と {@link EventReceiver} の I/F をあわせ持つクラス <br>
  *     `Backbone.js` の `Events` クラス相当
  *
  * @example <br>
  *
  * ```ts
- * import { EventSource } from '@cdp/events';
+ * import { EventSource } from '@cdp/runtime';
  *
  * // declare event interface
  * interface TargetEvent {

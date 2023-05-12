@@ -31,20 +31,20 @@ export type StorageDataTypes = Types<StorageDataTypeList>;
 export type StorageData = Record<string, StorageDataTypes>;
 
 /**
- * @en The types by which designation is possible in [[setItem]]().
- * @ja [[setItem]]() に指定可能な型
+ * @en The types by which designation is possible in {@link IStorage.setItem | IStorage.setItem}().
+ * @ja {@link IStorage.setItem | IStorage.setItem}() に指定可能な型
  */
 export type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
 
 /**
- * @en [[IStorage]] common option interface.
- * @ja [[IStorage]] 操作に使用する共通のオプションインターフェイス
+ * @en {@link IStorage} common option interface.
+ * @ja {@link IStorage} 操作に使用する共通のオプションインターフェイス
  */
 export type IStorageOptions = Silenceable & Cancelable;
 
 /**
- * @en [[IStorage]] common format option interface.
- * @ja [[IStorage]] フォーマットに関するオプションインターフェイス
+ * @en {@link IStorage} common format option interface.
+ * @ja {@link IStorage} フォーマットに関するオプションインターフェイス
  */
 export interface IStorageFormatOptions {
     /** JSON space number */
@@ -52,8 +52,8 @@ export interface IStorageFormatOptions {
 }
 
 /**
- * @en [[IStorage]] data I/O operation option interface.
- * @ja [[IStorage]] データ I/O 操作に使用するオプションインターフェイス
+ * @en {@link IStorage} data I/O operation option interface.
+ * @ja {@link IStorage} データ I/O 操作に使用するオプションインターフェイス
  */
 export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Keys<T>> extends IStorageOptions, IStorageFormatOptions {
     /**
@@ -64,14 +64,14 @@ export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Ke
 }
 
 /**
- * @en [[IStorage]]`#getItem<cast>()` return types.
- * @ja [[IStorage]]`#getItem<cast>()` の戻り値
+ * @en {@link IStorage.getItem | IStorage.getItem}() return types.
+ * @ja {@link IStorage.getItem | IStorage.getItem}() の戻り値
  */
 export type IStorageDataReturnType<T extends StorageDataTypeList, D extends Types<T>> = TypeToKey<T, D> extends never ? never : D | null;
 
 /**
- * @en [[IStorage]] callback function definition.
- * @ja [[IStorage]] コールバック関数
+ * @en {@link IStorage} callback function definition.
+ * @ja {@link IStorage} コールバック関数
  */
 export type IStorageEventCallback<T extends StorageDataTypeList> = (key: string | null, newValue: Types<T> | null, oldValue: Types<T> | null) => void;
 
@@ -81,8 +81,8 @@ export type IStorageEventCallback<T extends StorageDataTypeList> = (key: string 
  */
 export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     readonly kind: string;
 

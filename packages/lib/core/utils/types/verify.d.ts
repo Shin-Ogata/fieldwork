@@ -9,8 +9,8 @@ import { TypeKeys } from './types';
  */
 interface Verifier {
     /**
-     * @en Verification for the input value is not [[Nullish]].
-     * @ja [[Nullish]] でないことを検証
+     * @en Verification for the input value is not {@link Nullish}.
+     * @ja {@link Nullish} でないことを検証
      *
      * @param notNullish.x
      *  - `en` evaluated value
@@ -21,12 +21,12 @@ interface Verifier {
      */
     notNullish: (x: unknown, message?: string | null) => void | never;
     /**
-     * @en Verification for the input is [[TypeKeys]].
-     * @ja 指定した [[TypeKeys]] であるか検証
+     * @en Verification for the input is {@link TypeKeys}.
+     * @ja 指定した {@link TypeKeys} であるか検証
      *
      * @param typeOf.type
-     *  - `en` one of [[TypeKeys]]
-     *  - `ja` [[TypeKeys]] を指定
+     *  - `en` one of {@link TypeKeys}
+     *  - `ja` {@link TypeKeys} を指定
      * @param typeOf.x
      *  - `en` evaluated value
      *  - `ja` 評価する値

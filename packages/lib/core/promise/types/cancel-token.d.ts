@@ -5,8 +5,8 @@ import { Subscription } from '@cdp/events';
  */
 export interface CancelTokenSource<T = unknown> {
     /**
-     * @en [[CancelToken]] getter.
-     * @ja [[CancelToken]] 取得
+     * @en {@link CancelToken} getter.
+     * @ja {@link CancelToken} 取得
      */
     readonly token: CancelToken<T>;
     /**
@@ -35,7 +35,7 @@ export interface CancelTokenSource<T = unknown> {
  * @example <br>
  *
  * ```ts
- * import { CancelToken } from '@cdp/promise';
+ * import { CancelToken } from '@cdp/runtime';
  * ```
  *
  * - Basic Usage
@@ -83,13 +83,13 @@ export interface CancelTokenSource<T = unknown> {
  */
 export declare class CancelToken<T = unknown> {
     /**
-     * @en Create [[CancelTokenSource]] instance.
-     * @ja [[CancelTokenSource]] インスタンスの取得
+     * @en Create {@link CancelTokenSource} instance.
+     * @ja {@link CancelTokenSource} インスタンスの取得
      *
      * @param linkedTokens
-     *  - `en` relating already made [[CancelToken]] instance.
+     *  - `en` relating already made {@link CancelToken} instance.
      *        You can attach to the token that to be a cancellation target.
-     *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
+     *  - `ja` すでに作成された {@link CancelToken} 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
     static source<T = unknown>(...linkedTokens: CancelToken[]): CancelTokenSource<T>;
@@ -100,9 +100,9 @@ export declare class CancelToken<T = unknown> {
      *  - `en` executer that has `cancel` and `close` callback.
      *  - `ja` キャンセル/クローズ 実行コールバックを指定
      * @param linkedTokens
-     *  - `en` relating already made [[CancelToken]] instance.
+     *  - `en` relating already made {@link CancelToken} instance.
      *        You can attach to the token that to be a cancellation target.
-     *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
+     *  - `ja` すでに作成された {@link CancelToken} 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
     constructor(executor: (cancel: (reason: T) => void, close: () => void) => void, ...linkedTokens: CancelToken[]);

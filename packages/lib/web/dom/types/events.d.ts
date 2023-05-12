@@ -50,9 +50,9 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     on<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on | on}() or {@link DOMEvents.once | once}() and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on | on}() または {@link DOMEvents.once | once}() と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -70,9 +70,9 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     off<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], selector: string, listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on | on}() or {@link DOMEvents.once | once}() and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on | on}() または {@link DOMEvents.once | once}() と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -148,8 +148,8 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     trigger<TEventMap extends DOMEventMap<TElement>>(seed: EventType<TEventMap> | (EventType<TEventMap>)[] | Event | Event[] | (EventType<TEventMap> | Event)[], ...eventData: unknown[]): this;
     /**
-     * @en Shortcut for [[once]]('transitionstart').
-     * @ja [[once]]('transitionstart') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('transitionstart').
+     * @ja {@link DOMEvents.once | once}('transitionstart') のユーティリティ
      *
      * @param callback
      *  - `en` `transitionstart` handler.
@@ -160,8 +160,8 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     transitionStart(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('transitionend').
-     * @ja [[once]]('transitionend') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('transitionend').
+     * @ja {@link DOMEvents.once | once}('transitionend') のユーティリティ
      *
      * @param callback
      *  - `en` `transitionend` handler.
@@ -172,8 +172,8 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     transitionEnd(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('animationstart').
-     * @ja [[once]]('animationstart') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('animationstart').
+     * @ja {@link DOMEvents.once | once}('animationstart') のユーティリティ
      *
      * @param callback
      *  - `en` `animationstart` handler.
@@ -184,8 +184,8 @@ export declare class DOMEvents<TElement extends ElementBase> implements DOMItera
      */
     animationStart(callback: (event: AnimationEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('animationend').
-     * @ja [[once]]('animationend') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('animationend').
+     * @ja {@link DOMEvents.once | once}('animationend') のユーティリティ
      *
      * @param callback
      *  - `en` `animationend` handler.

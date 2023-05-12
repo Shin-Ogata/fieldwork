@@ -58,8 +58,8 @@ class CancelablePromise<T> extends Promise<T> {
      *  - `en` the value transmitted in promise chain.
      *  - `ja` `Promise` に伝達する値
      * @param cancelToken
-     *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
-     *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
+     *  - `en` {@link CancelToken} instance create from {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
      */
     static resolve<T>(value?: T | PromiseLike<T>, cancelToken?: CancelToken | null): CancelablePromise<T> {
         return this[_create](super.resolve(value), cancelToken);
@@ -119,8 +119,8 @@ class CancelablePromise<T> extends Promise<T> {
      *  - `en` A callback used to initialize the promise. This callback is passed two arguments `resolve` and `reject`.
      *  - `ja` promise の初期化に使用するコールバックを指定. `resolve` と `reject` の2つの引数を持つ
      * @param cancelToken
-     *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
-     *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
+     *  - `en` {@link CancelToken} instance create from {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
      */
     constructor(
         executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void,
@@ -174,14 +174,14 @@ class CancelablePromise<T> extends Promise<T> {
 }
 
 /**
- * @en Switch the global `Promise` constructor `Native Promise` or [[CancelablePromise]]. <br>
+ * @en Switch the global `Promise` constructor `Native Promise` or {@link CancelablePromise}. <br>
  *     `Native Promise` constructor is overridden by framework default behaviour.
- * @ja グローバル `Promise` コンストラクタを `Native Promise` または [[CancelablePromise]] に切り替え <br>
+ * @ja グローバル `Promise` コンストラクタを `Native Promise` または {@link CancelablePromise} に切り替え <br>
  *     既定で `Native Promise` をオーバーライドする.
  *
  * @param enable
- *  - `en` `true`: use [[CancelablePromise]] /  `false`: use `Native Promise`
- *  - `ja` `true`: [[CancelablePromise]] を使用 / `false`: `Native Promise` を使用
+ *  - `en` `true`: use {@link CancelablePromise} /  `false`: use `Native Promise`
+ *  - `ja` `true`: {@link CancelablePromise} を使用 / `false`: `Native Promise` を使用
  */
 export function extendPromise(enable: boolean): PromiseConstructor {
     if (enable) {

@@ -63,8 +63,8 @@ export class Result extends Error {
     }
 
     /**
-     * @en [[RESULT_CODE]] value.
-     * @ja [[RESULT_CODE]] の値
+     * @en {@link RESULT_CODE} value.
+     * @ja {@link RESULT_CODE} の値
      */
     readonly code!: number;
 
@@ -105,16 +105,16 @@ export class Result extends Error {
     }
 
     /**
-     * @en Get formatted [[RESULT_CODE]] name string.
-     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
+     * @en Get formatted {@link RESULT_CODE} name string.
+     * @ja フォーマットされた {@link RESULT_CODE} 名文字列を取得
      */
     get codeName(): string {
         return toNameString(this.code, this.name);
     }
 
     /**
-     * @en Get [[RESULT_CODE]] help string.
-     * @ja [[RESULT_CODE]] のヘルプストリングを取得
+     * @en Get {@link RESULT_CODE} help string.
+     * @ja {@link RESULT_CODE} のヘルプストリングを取得
      */
     get help(): string {
         return toHelpString(this.code);
@@ -139,8 +139,8 @@ export function isResult(x: unknown): x is Result {
 }
 
 /**
- * @en Convert to [[Result]] object.
- * @ja [[Result]] オブジェクトに変換
+ * @en Convert to {@link Result} object.
+ * @ja {@link Result} オブジェクトに変換
  */
 export function toResult(o: unknown): Result {
     if (o instanceof Result) {
@@ -163,8 +163,8 @@ export function toResult(o: unknown): Result {
 }
 
 /**
- * @en Create [[Result]] helper.
- * @ja [[Result]] オブジェクト構築ヘルパー
+ * @en Create {@link Result} helper.
+ * @ja {@link Result} オブジェクト構築ヘルパー
  *
  * @param code
  *  - `en` result code
@@ -181,8 +181,8 @@ export function makeResult(code: number, message?: string, cause?: unknown): Res
 }
 
 /**
- * @en Create canceled [[Result]] helper.
- * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
+ * @en Create canceled {@link Result} helper.
+ * @ja キャンセル情報格納 {@link Result} オブジェクト構築ヘルパー
  *
  * @param message
  *  - `en` result info message

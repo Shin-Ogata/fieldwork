@@ -793,15 +793,15 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 //__________________________________________________________________________________________________//
 
 /**
- * @en Create [[Router]] object.
- * @ja [[Router]] オブジェクトを構築
+ * @en Create {@link Router} object.
+ * @ja {@link Router} オブジェクトを構築
  *
  * @param selector
- *  - `en` An object or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるインスタンスまたはセレクタ文字列
+ *  - `en` An object or the selector string which becomes origin of {@link DOM}.
+ *  - `ja` {@link DOM} のもとになるインスタンスまたはセレクタ文字列
  * @param options
- *  - `en` [[RouterConstructionOptions]] object
- *  - `ja` [[RouterConstructionOptions]] オブジェクト
+ *  - `en` {@link RouterConstructionOptions} object
+ *  - `ja` {@link RouterConstructionOptions} オブジェクト
  */
 export function createRouter(selector: DOMSelector<string | HTMLElement>, options?: RouterConstructionOptions): Router {
     return new RouterContext(selector, Object.assign({

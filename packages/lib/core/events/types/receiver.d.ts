@@ -10,7 +10,7 @@ import { Subscribable, Subscription, EventSchema } from './interfaces';
  * @example <br>
  *
  * ```ts
- * import { EventReceiver, EventBroker } from '@cdp/events';
+ * import { EventReceiver, EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {

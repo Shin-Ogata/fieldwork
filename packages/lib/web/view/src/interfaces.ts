@@ -10,8 +10,8 @@ export interface ViewEventsHash<TElement extends Node = HTMLElement, TFuncName =
 }
 
 /**
- * @en [[View]] construction options.
- * @ja [[View]] 構築に指定するオプション
+ * @en {@link View} construction options.
+ * @ja {@link View} 構築に指定するオプション
  */
 export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string> {
     el?: DOMSelector<TElement | string>;

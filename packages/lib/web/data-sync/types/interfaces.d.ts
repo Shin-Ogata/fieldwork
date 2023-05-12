@@ -2,16 +2,16 @@ import type { PlainObject, AnyObject, KeyToType } from '@cdp/core-utils';
 import type { EventBroker } from '@cdp/events';
 import type { Cancelable } from '@cdp/promise';
 /**
- * @en The event definition fired in [[IDataSync]].
- * @ja [[IDataSync]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link IDataSync}.
+ * @ja {@link IDataSync} 内から発行されるイベント定義
  */
 export interface SyncEvent<T extends object> {
     /** @args [context, response] */
     '@request': [EventBroker<SyncEvent<T>>, Promise<T | PlainObject>];
 }
 /**
- * @en List of the methods and the return value types [[IDataSync]] supports.
- * @ja [[IDataSync]] がサポートするメソッドと戻り値のリスト
+ * @en List of the methods and the return value types {@link IDataSync} supports.
+ * @ja {@link IDataSync} がサポートするメソッドと戻り値のリスト
  */
 export interface SyncMethodList<T extends object = PlainObject> {
     create: PlainObject | void;
@@ -21,38 +21,38 @@ export interface SyncMethodList<T extends object = PlainObject> {
     read: T;
 }
 /**
- * @en [[IDataSync]]`#sync()` method list.
- * @ja [[IDataSync]]`#sync()` に指定するメソッド一覧
+ * @en {@link IDataSync.sync | IDataSync.sync}() method list.
+ * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するメソッド一覧
  */
 export type SyncMethods = keyof SyncMethodList;
 /**
- * @en Return type of [[IDataSync]]`#sync()`.
- * @ja [[IDataSync]]`#sync()` の戻り値の型
+ * @en Return type of {@link IDataSync.sync | IDataSync.sync}().
+ * @ja {@link IDataSync.sync | IDataSync.sync}() の戻り値の型
  */
 export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
 /**
- * @en Default [[SyncContext]] type.
- * @ja [[SyncContext]] の既定型
+ * @en Default {@link SyncContext} type.
+ * @ja {@link SyncContext} の既定型
  */
 export type SyncObject = AnyObject;
 /**
- * @en Context type of [[IDataSync]]`#sync()`.
- * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
+ * @en Context type of {@link IDataSync.sync | IDataSync.sync}().
+ * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するコンテキストの型
  */
 export type SyncContext<T extends object = SyncObject> = EventBroker<SyncEvent<T>> & {
     id?: string;
     toJSON(): T;
 };
 /**
- * @en [[IDataSync]] sync() options.
- * @ja [[IDataSync]] sync() に指定するオプション
+ * @en {@link IDataSync.sync | IDataSync.sync}() options.
+ * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するオプション
  */
 export interface IDataSyncOptions extends Cancelable {
     /**
-     * @en Data to be sent to the server. [[AjaxOptions]] compatible. <br>
+     * @en Data to be sent to the server. {@link AjaxOptions} compatible. <br>
      *     If this property passed, the value is reflected as primary.
      *
-     * @ja サーバーに送信されるデータ. [[AjaxOptions]] 互換 <br>
+     * @ja サーバーに送信されるデータ. {@link AjaxOptions} 互換 <br>
      *     指定された場合, このオプションが優先される.
      */
     data?: PlainObject;
@@ -65,8 +65,8 @@ export interface IDataSyncOptions extends Cancelable {
  */
 export interface IDataSync<T extends object = SyncObject> {
     /**
-     * @en [[IDataSync]] kind signature.
-     * @ja [[IDataSync]] の種別を表す識別子
+     * @en {@link IDataSync} kind signature.
+     * @ja {@link IDataSync} の種別を表す識別子
      */
     readonly kind: string;
     /**

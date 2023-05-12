@@ -44,25 +44,25 @@ export interface Waitable {
 }
 
 /**
- * @en Default [[Model]] seed type.
- * @ja 既定の [[Model]] シードデータ型
+ * @en Default {@link Model} seed type.
+ * @ja 既定の {@link Model} シードデータ型
  */
 export type ModelSeed = PlainObject;
 
-/** helper for [[ModelAttributeChangeEvent]] */
+/** helper for {@link ModelAttributeChangeEvent} */
 export type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
-/** helper for [[ModelAttributeChangeEvent]] */
+/** helper for {@link ModelAttributeChangeEvent} */
 export type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ? A extends keyof T ? [Model<T>, T[A], T[A], A] : never : never;
 
 /**
- * @en [[Model]] attribute change event definition.
- * @ja [[Model]] 属性変更イベント定義
+ * @en {@link Model} attribute change event definition.
+ * @ja {@link Model} 属性変更イベント定義
  */
 export type ModelAttributeChangeEvent<T extends object> = { [K in ChangedAttributeEvent<T>]: MakeEventArg<T, K>; }
 
 /**
- * @en Default [[Model]] event definition.
- * @ja 既定の [[Model]] イベント定義
+ * @en Default {@link Model} event definition.
+ * @ja 既定の {@link Model} イベント定義
  */
 export type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttributeChangeEvent<T> & {
     /**
@@ -123,14 +123,14 @@ export type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttrib
 };
 
 /**
- * @en [[Model]] attributes definition.
- * @ja [[Model]] が持つ属性の定義
+ * @en {@link Model} attributes definition.
+ * @ja {@link Model} が持つ属性の定義
  */
 export type ModelAttributes<T extends object> = { [P in keyof T]: T[P] };
 
 /**
- * @en [[Model]] base constructor definition.
- * @ja [[Model]] の基底コンストラクタの定義
+ * @en {@link Model} base constructor definition.
+ * @ja {@link Model} の基底コンストラクタの定義
  */
 export interface ModelConstructor<C extends object, T extends object> {
     idAttribute: string;
@@ -138,36 +138,36 @@ export interface ModelConstructor<C extends object, T extends object> {
 }
 
 /**
- * @en [[Model]]'s `EventSource` definition from attributes.
- * @ja 属性から [[Model]] の `EventSource` 定義抽出
+ * @en {@link Model}'s `EventSource` definition from attributes.
+ * @ja 属性から {@link Model} の `EventSource` 定義抽出
  */
 export type ModelEventSource<T extends object> = Subscribable<ModelEvent<T>>;
 
 /**
- * @en [[Model]] validate options.
- * @ja [[Model]] 検証オプション
+ * @en {@link Model} validate options.
+ * @ja {@link Model} 検証オプション
  */
 export interface ModelValidateAttributeOptions extends Silenceable {
     extend?: boolean;
 }
 
 /**
- * @en [[Model]] attributes argument type.
- * @ja [[Model]] 属性引数の型
+ * @en {@link Model} attributes argument type.
+ * @ja {@link Model} 属性引数の型
  */
 export type ModelAttributeInput<T> = Partial<T> & SyncObject;
 
 /**
- * @en [[Model]] attributes setup options.
- * @ja [[Model]] 属性設定時に指定するオプション
+ * @en {@link Model} attributes setup options.
+ * @ja {@link Model} 属性設定時に指定するオプション
  */
 export interface ModelSetOptions extends Validable, ModelValidateAttributeOptions {
     syncMethod?: SyncMethods;
 }
 
 /**
- * @en [[Model]] construction options.
- * @ja [[Model]] 構築に指定するオプション
+ * @en {@link Model} construction options.
+ * @ja {@link Model} 構築に指定するオプション
  */
 export type ModelConstructionOptions = ModelSetOptions & Parseable;
 
@@ -177,21 +177,21 @@ export type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed>
 export type ModelDataSyncOptions = RestDataSyncOptions;
 
 /**
- * @en [[Model]] fetch options.
- * @ja [[Model]] fetch に指定するオプション
+ * @en {@link Model} fetch options.
+ * @ja {@link Model} fetch に指定するオプション
  */
 export type ModelFetchOptions = ModelDataSyncOptions & Omit<ModelSetOptions, 'noThrow'> & Parseable;
 
 /**
- * @en [[Model]] save options.
- * @ja [[Model]] save に指定するオプション
+ * @en {@link Model} save options.
+ * @ja {@link Model} save に指定するオプション
  */
 export interface ModelSaveOptions extends ModelFetchOptions, Waitable {
     patch?: boolean;
 }
 
 /**
- * @en [[Model]] destroy options.
- * @ja [[Model]] destroy に指定するオプション
+ * @en {@link Model} destroy options.
+ * @ja {@link Model} destroy に指定するオプション
  */
 export type ModelDestroyOptions = ModelDataSyncOptions & Waitable;

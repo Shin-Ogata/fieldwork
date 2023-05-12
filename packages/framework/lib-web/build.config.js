@@ -142,7 +142,8 @@ function patch(index, code, includes) {
 
     {// module-extends
         const i18n = read(resolve('../../lib/web/i18n/types/plugin/module-extends.d.ts'));
-        const pluginI18N = i18n.match(/( {4}namespace i18n {)([^}]+})([^}]+})([\s]+}\n)/)[0].replace('namespace', 'declare namespace');
+        // namespace i18n { ～ } を検出. 対象の `}` の分だけ `([^}]+})` を追加
+        const pluginI18N = i18n.match(/( {4}namespace i18n {)([^}]+})([^}]+})([^}]+})([^}]+})([^}]+})([^}]+})([^}]+})/)[0].replace('namespace', 'declare namespace');
         code += pluginI18N.split('\n').map(s => s.replace('    ', '')).join('\n');
         const pluginDOM = i18n.match(/( {4}interface DOMPlugin {)[\s\S]*?(}\n)/)[0].replace('interface', 'export interface');
         code += pluginDOM.split('\n').map(s => s.replace('    ', '')).join('\n');

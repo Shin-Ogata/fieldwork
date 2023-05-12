@@ -66,8 +66,8 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
      * constructor
      *
      * @param storage
-     *  - `en` Web [[Storage]] instance
-     *  - `ja` Web [[Storage]] インスタンス
+     *  - `en` Web {@link Storage} instance
+     *  - `ja` Web {@link Storage} インスタンス
      */
     constructor(storage: Storage) {
         verify('instanceOf', Storage, storage);
@@ -77,8 +77,8 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
 ///////////////////////////////////////////////////////////////////////
 // implements: IStorage
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     get kind(): string {
         const signature = localStorage === this._storage ? 'local-storage' : 'session-storage';

@@ -1,6 +1,6 @@
 /**
- * @en [[InlineWorker]] source type definition.
- * @ja [[InlineWorker]] に指定可能なソース型定義
+ * @en {@link InlineWorker} source type definition.
+ * @ja {@link InlineWorker} に指定可能なソース型定義
  */
 export type InlienWorkerSource = ((self: Worker) => unknown) | string;
 /**

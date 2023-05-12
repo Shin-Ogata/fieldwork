@@ -28,8 +28,8 @@ export declare class FsStorage implements IStorage {
      */
     constructor(location: string);
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     get kind(): string;
     /**

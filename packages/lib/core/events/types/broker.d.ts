@@ -9,7 +9,7 @@ export type EventArguments<T> = Arguments<T>;
  * @example <br>
  *
  * ```ts
- * import { EventBroker } from '@cdp/events';
+ * import { EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -37,8 +37,8 @@ export interface EventBroker<Event extends object> extends Subscribable<Event> {
     trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
 /**
- * @en Constructor of [[EventBroker]]
- * @ja [[EventBroker]] のコンストラクタ実体
+ * @en Constructor of {@link EventBroker}
+ * @ja {@link EventBroker} のコンストラクタ実体
  */
 export declare const EventBroker: {
     readonly prototype: EventBroker<any>;

@@ -15,8 +15,8 @@ export declare class DynamicCondition<TItem extends object, TKey extends Keys<TI
      * constructor
      *
      * @param seeds
-     *  - `en` [[DynamicConditionSeed]] instance
-     *  - `ja` [[DynamicConditionSeed]] インスタンス
+     *  - `en` {@link DynamicConditionSeed} instance
+     *  - `ja` {@link DynamicConditionSeed} インスタンス
      */
     constructor(seeds?: DynamicConditionSeed<TItem, TKey>);
     get operators(): DynamicOperatorContext<TItem>[];

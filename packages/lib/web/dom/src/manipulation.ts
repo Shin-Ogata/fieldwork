@@ -171,8 +171,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素に引数で指定したコンテンツを追加
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     public append<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
         const nodes = toNodeSet(...contents);
@@ -189,8 +189,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下要素を他の要素に追加
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public appendTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         return ($(selector) as DOM).append(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
@@ -201,8 +201,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素の先頭に引数で指定したコンテンツを挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     public prepend<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
         const nodes = toNodeSet(...contents);
@@ -219,8 +219,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下要素を他の要素の先頭に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public prependTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         return ($(selector) as DOM).prepend(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
@@ -234,8 +234,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素の前に指定した HTML や要素を挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     public before<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
         const nodes = toNodeSet(...contents);
@@ -254,8 +254,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定した別要素の前に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         return ($(selector) as DOM).before(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
@@ -266,8 +266,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素の後ろに指定した HTML や要素を挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     public after<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this {
         const nodes = toNodeSet(...[...contents].reverse());
@@ -286,8 +286,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定した別要素の後ろに挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         return ($(selector) as DOM).after(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;
@@ -301,8 +301,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定した別要素でそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public wrapAll<T extends SelectorBase>(selector: DOMSelector<T>): this {
         if (isTypeDocument(this) || isTypeWindow(this)) {
@@ -333,8 +333,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素の内側を, 指定した別エレメントでそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public wrapInner<T extends SelectorBase>(selector: DOMSelector<T>): this {
         if (!isTypeElement(this)) {
@@ -359,8 +359,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を, 指定した別要素でそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public wrap<T extends SelectorBase>(selector: DOMSelector<T>): this {
         if (!isTypeElement(this)) {
@@ -414,8 +414,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 要素を DOM から削除. 削除後もイベントリスナは有効
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public detach<T extends SelectorBase>(selector?: DOMSelector<T>): this {
         removeElement(selector, this, true);
@@ -427,8 +427,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 要素を DOM から削除
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public remove<T extends SelectorBase>(selector?: DOMSelector<T>): this {
         removeElement(selector, this, false);
@@ -443,8 +443,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定された別の要素や HTML と差し替え
      *
      * @param newContent
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public replaceWith<T extends SelectorBase>(newContent?: DOMSelector<T>): this {
         const elem = (() => {
@@ -476,8 +476,8 @@ export class DOMManipulation<TElement extends ElementBase> implements DOMIterabl
      * @ja 配下の要素を指定した別の要素と差し替え
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     public replaceAll<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T> {
         return ($(selector) as DOM).replaceWith(this as DOMIterable<Node> as DOM<Element>) as DOMResult<T>;

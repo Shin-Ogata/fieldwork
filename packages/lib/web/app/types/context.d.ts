@@ -11,8 +11,8 @@ export declare const enum Orientation {
     LANDSCAPE = "landscape"
 }
 /**
- * @en The event definition fired in [[AppContext]].
- * @ja [[AppContext]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link AppContext}.
+ * @ja {@link AppContext} 内から発行されるイベント定義
  */
 export interface AppContextEvent {
     /**
@@ -42,20 +42,20 @@ export interface AppContextEvent {
     'languagechange': [string, i18n.TFunction];
 }
 /**
- * @en [[AppContext]] create options.
- * @ja [[AppContext]] 構築オプション
+ * @en {@link AppContext} create options.
+ * @ja {@link AppContext} 構築オプション
  */
 export interface AppContextOptions extends RouterConstructionOptions {
     /**
-     * @en An object or the selector string which becomes origin of [[DOM]] for main router.
-     * @ja メインルーターの [[DOM]] のもとになるインスタンスまたはセレクタ文字列
+     * @en An object or the selector string which becomes origin of {@link DOM} for main router.
+     * @ja メインルーターの {@link DOM} のもとになるインスタンスまたはセレクタ文字列
      * @default `#app`
      */
     main?: DOMSelector<string | HTMLElement>;
     /**
-     * @en An object or the selector string which becomes origin of [[DOM]] assigned to the splash screen. <br>
+     * @en An object or the selector string which becomes origin of {@link DOM} assigned to the splash screen. <br>
      *     It will be removed just before appliaction ready.
-     * @ja スプラッシュスクリーンに割り当てられている [[DOM]] のもとになるインスタンスまたはセレクタ文字列 <br>
+     * @ja スプラッシュスクリーンに割り当てられている {@link DOM} のもとになるインスタンスまたはセレクタ文字列 <br>
      *     準備完了直前に削除される
      */
     splash?: DOMSelector<string | HTMLElement>;
@@ -101,8 +101,8 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      */
     readonly activePage: Page;
     /**
-     * @en Current [[Orientation]] id.
-     * @ja 現在の [[Orientation]] を取得
+     * @en Current {@link Orientation} id.
+     * @ja 現在の {@link Orientation} を取得
      */
     readonly orientation: Orientation;
     /**
@@ -129,9 +129,9 @@ export interface AppContext extends Subscribable<AppContextEvent> {
  */
 export type PageRouteParameters = Required<Pick<RouteParameters, 'content'>> & RouteParameters;
 /**
- * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
+ * @en Pre-register concrete {@link Page} class. Registered with the main router when instantiating {@link AppContext}. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
- * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
+ * @ja Page 具象化クラスの事前登録. {@link AppContext} のインスタンス化時にメインルーターに登録される. <br>
  *     constructor を指定する引数がある場合は, `options.componentOptions` を利用可能
  *
  * @example <br>

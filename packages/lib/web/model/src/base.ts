@@ -107,7 +107,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * @example <br>
  *
  * ```ts
- * import { Model, ModelConstructor } from '@cdp/model';
+ * import { Model, ModelConstructor } from '@cdp/runtime';
  *
  * interface ContentAttribute {
  *   uri: string;
@@ -511,8 +511,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 // operations: attributes
 
     /**
-     * @en Check the [[Model]] has valid property. (not `null` or `undefined`)
-     * @ja [[Model]] が有効なプロパティを持っているか確認 (`null` または `undefined` でない)
+     * @en Check the {@link Model} has valid property. (not `null` or `undefined`)
+     * @ja {@link Model} が有効なプロパティを持っているか確認 (`null` または `undefined` でない)
      */
     public has(attribute: keyof T): boolean {
         return null != (this._attrs as unknown as T)[attribute];
@@ -568,8 +568,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     }
 
     /**
-     * @en Clear all attributes on the [[Model]]. (set `undefined`)
-     * @ja [[Model]] からすべての属性を削除 (`undefined` を設定)
+     * @en Clear all attributes on the {@link Model}. (set `undefined`)
+     * @ja {@link Model} からすべての属性を削除 (`undefined` を設定)
      */
     public clear(options?: ModelSetOptions): this {
         const clearAttrs = {} as Accessible<object>;
@@ -643,8 +643,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 // operations: sync
 
     /**
-     * @en Check a [[Model]] is new if it has never been saved to the server, and lacks an id.
-     * @ja [[Model]] がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
+     * @en Check a {@link Model} is new if it has never been saved to the server, and lacks an id.
+     * @ja {@link Model} がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
      */
     protected isNew(): boolean {
         const idAttr = idAttribute(this, 'id');
@@ -662,7 +662,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     }
 
     /**
-     * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
+     * @en Proxy {@link IDataSync.sync | IDataSync.sync}() by default -- but override this if you need custom syncing semantics for *this* particular model.
      * @ja データ同期. 必要に応じてオーバーライド可能.
      *
      * @override
@@ -682,8 +682,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     }
 
     /**
-     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
-     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     * @en Fetch the {@link Model} from the server, merging the response with the model's local attributes.
+     * @ja {@link Model} 属性のサーバー同期. レスポンスのマージを実行
      */
     public async fetch(options?: ModelFetchOptions): Promise<T> {
         const opts = Object.assign({ parse: true }, options, { syncMethod: 'read' });
@@ -700,9 +700,9 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     }
 
     /**
-     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     * @en Set a hash of {@link Model} attributes, and sync the model to the server. <br>
      *     If the server returns an attributes hash that differs, the model's state will be `set` again.
-     * @ja [[Model]] 属性をサーバーに保存. <br>
+     * @ja {@link Model} 属性をサーバーに保存. <br>
      *     異なる属性が返却される場合は再設定
      *
      * @param key
@@ -718,9 +718,9 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     public async save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<T | void>;
 
     /**
-     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     * @en Set a hash of {@link Model} attributes, and sync the model to the server. <br>
      *     If the server returns an attributes hash that differs, the model's state will be `set` again.
-     * @ja [[Model]] 属性をサーバーに保存. <br>
+     * @ja {@link Model} 属性をサーバーに保存. <br>
      *     異なる属性が返却される場合は再設定
      *
      * @param attributes
@@ -775,8 +775,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
     }
 
     /**
-     * @en Destroy this [[Model]] on the server if it was already persisted.
-     * @ja [[Model]] をサーバーから削除
+     * @en Destroy this {@link Model} on the server if it was already persisted.
+     * @ja {@link Model} をサーバーから削除
      *
      * @param options
      *  - `en` destroy options
@@ -817,8 +817,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 setMixClassAttribute(Model as unknown as Class, 'instanceOf', null);
 
 /**
- * @en Check the value-type is [[Model]].
- * @ja [[Model]] 型であるか判定
+ * @en Check the value-type is {@link Model}.
+ * @ja {@link Model} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -829,8 +829,8 @@ export function isModel(x: unknown): x is Model {
 }
 
 /**
- * @en Query [[Model]] `id-attribute`.
- * @ja [[Model]] の `id-attribute` を取得
+ * @en Query {@link Model} `id-attribute`.
+ * @ja {@link Model} の `id-attribute` を取得
  */
 export function idAttribute(x: unknown, fallback = ''): string {
     return isObject(x) ? ((x.constructor as any)['idAttribute'] || fallback) : fallback;

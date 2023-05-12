@@ -4,8 +4,8 @@ import { dataSyncNULL } from './null';
 /** @internal */ let _default: IDataSync = dataSyncNULL;
 
 /**
- * @en Get or update default [[IDataSync]] object.
- * @ja 既定の [[IDataSync]] オブジェクトの取得 / 更新
+ * @en Get or update default {@link IDataSync} object.
+ * @ja 既定の {@link IDataSync} オブジェクトの取得 / 更新
  *
  * @param newSync
  *  - `en` new data-sync object. if `undefined` passed, only returns the current object.

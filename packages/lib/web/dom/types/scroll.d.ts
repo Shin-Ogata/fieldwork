@@ -1,8 +1,8 @@
 import { ElementBase } from './static';
 import { DOMIterable } from './base';
 /**
- * @en [[DOM]]`.scrollTo()` options definition.
- * @ja [[DOM]]`.scrollTo()` に指定するオプション定義
+ * @en {@link DOM}`.scrollTo()` options definition.
+ * @ja {@link DOM}`.scrollTo()` に指定するオプション定義
  */
 export interface DOMScrollOptions {
     /**

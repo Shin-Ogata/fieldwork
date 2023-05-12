@@ -45,8 +45,8 @@ export class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = K
      * constructor
      *
      * @param seeds
-     *  - `en` [[DynamicConditionSeed]] instance
-     *  - `ja` [[DynamicConditionSeed]] インスタンス
+     *  - `en` {@link DynamicConditionSeed} instance
+     *  - `ja` {@link DynamicConditionSeed} インスタンス
      */
     constructor(seeds: DynamicConditionSeed<TItem, TKey> = { operators: [] }) {
         const { operators, combination, sumKeys, limit, random, sortKeys } = seeds;

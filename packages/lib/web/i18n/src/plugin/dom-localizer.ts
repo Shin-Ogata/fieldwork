@@ -6,7 +6,7 @@ import {
 } from '@cdp/dom';
 import './module-extends';
 
-/** @internal extends [[DOM]] instance method */
+/** @internal extends {@link DOM} instance method */
 function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i18n): void {
     const {
         selectorAttr,

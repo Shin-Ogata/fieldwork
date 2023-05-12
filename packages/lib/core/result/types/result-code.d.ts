@@ -10,7 +10,7 @@ export { RESULT_CODE, RESULT_CODE_BASE, RESULT_CODE_RANGE, LOCAL_CODE_RANGE_GUID
  * @en Judge fail or not.
  * @ja 失敗判定
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @returns true: fail result / false: success result
  */
 export declare function FAILED(code: number): boolean;
@@ -18,24 +18,24 @@ export declare function FAILED(code: number): boolean;
  * @en Judge success or not.
  * @ja 成功判定
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @returns true: success result / false: fail result
  */
 export declare function SUCCEEDED(code: number): boolean;
 /**
- * @en Convert to [[RESULT_CODE]] `name` string from [[RESULT_CODE]].
- * @ja [[RESULT_CODE]] を [[RESULT_CODE]] 文字列に変換
+ * @en Convert to {@link RESULT_CODE} `name` string from {@link RESULT_CODE}.
+ * @ja {@link RESULT_CODE} を {@link RESULT_CODE} 文字列に変換
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @param tag  custom tag if needed.
  * @returns name string ex) "[tag][NOT_SUPPORTED]"
  */
 export declare function toNameString(code: number, tag?: string): string;
 /**
- * @en Convert to help string from [[RESULT_CODE]].
- * @ja [[RESULT_CODE]] をヘルプストリングに変換
+ * @en Convert to help string from {@link RESULT_CODE}.
+ * @ja {@link RESULT_CODE} をヘルプストリングに変換
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @returns registered help string
  */
 export declare function toHelpString(code: number): string;

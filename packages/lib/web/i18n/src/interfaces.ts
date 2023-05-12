@@ -13,8 +13,8 @@ export interface I18NDetectErrorBehaviour extends Cancelable {
 }
 
 /**
- * @en Option interface for [[initializeI18N]]().
- * @ja [[initializeI18N]]() に指定するオプションインターフェイス
+ * @en Option interface for {@link initializeI18N}().
+ * @ja {@link initializeI18N}() に指定するオプションインターフェイス
  */
 export interface I18NOptions extends i18n.InitOptions, I18NDetectErrorBehaviour {
     /** short-cut for `ns` & 'defaultNS' */

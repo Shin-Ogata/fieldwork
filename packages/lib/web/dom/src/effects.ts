@@ -11,31 +11,31 @@ import {
 } from './base';
 
 /**
- * @en [[DOM]] effect parameter.
- * @ja [[DOM]] エフェクト効果のパラメータ
+ * @en {@link DOM} effect parameter.
+ * @ja {@link DOM} エフェクト効果のパラメータ
  */
 export type DOMEffectParameters = Keyframe[] | PropertyIndexedKeyframes | null;
 
 /**
- * @en [[DOM]] effect options.
- * @ja [[DOM]] エフェクト効果のオプション
+ * @en {@link DOM} effect options.
+ * @ja {@link DOM} エフェクト効果のオプション
  */
 export type DOMEffectOptions = number | KeyframeAnimationOptions;
 
 /**
- * @en [[DOM]] effect context object.
- * @ja [[DOM]] のエフェクト効果のコンテキストオブジェクト
+ * @en {@link DOM} effect context object.
+ * @ja {@link DOM} のエフェクト効果のコンテキストオブジェクト
  */
 export interface DOMEffectContext<TElement extends ElementBase> {
     /**
-     * @en [[DOM]] instance that called [[animate]]() method.
-     * @ja [[animate]]() メソッドを実行した [[DOM]] インスタンス
+     * @en {@link DOM} instance that called {@link DOMEffects.animate | animate}() method.
+     * @ja {@link DOMEffects.animate | animate}() メソッドを実行した {@link DOM} インスタンス
      */
     readonly dom: DOM<TElement>;
 
     /**
-     * @en `Element` and `Animation` instance map by execution [[animate]]() method at this time.
-     * @ja 今回実行した `Element` と `Animation` インスタンスのマップ
+     * @en `Element` and `Animation` instance map by execution {@link DOMEffects.animate | animate}() method at this time.
+     * @ja 今回 {@link DOMEffects.animate | animate}() 実行した `Element` と `Animation` インスタンスのマップ
      */
     readonly animations: Map<TElement, Animation>;
 

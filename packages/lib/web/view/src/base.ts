@@ -48,9 +48,9 @@ interface Property<T extends Node> {
 export type ViewFindSelector = Node | string | Nullish;
 
 /**
- * @en Core implementation of [[View]] without [[EventSource]] interface. <br>
+ * @en Core implementation of {@link View} without {@link EventSource} interface. <br>
  *     Can be specified as mixin source.
- * @ja [[EventSource]] インターフェイスを持たない [[View]] のコア実装 <br>
+ * @ja {@link EventSource} インターフェイスを持たない {@link View} のコア実装 <br>
  *     Mixin source として指定可能
  */
 export abstract class ViewCore<TElement extends Node = HTMLElement> {
@@ -114,8 +114,8 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
     }
 
     /**
-     * @en Get [[DOM]] object.
-     * @ja [[DOM]] オブジェクトを取得
+     * @en Get {@link DOM} object.
+     * @ja {@link DOM} オブジェクトを取得
      */
     get $el(): DOM<TElement> {
         return this[_properties].$el;
@@ -165,12 +165,12 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
     }
 
     /**
-     * @en Set DOM callbacks from [[ViewEventsHash]] object.
-     * @ja [[ViewEventsHash]] オブジェクトから DOM コールバックを設定
+     * @en Set DOM callbacks from {@link ViewEventsHash} object.
+     * @ja {@link ViewEventsHash} オブジェクトから DOM コールバックを設定
      *
      * @param events
-     *  - `en` [[ViewEventsHash]] object. `this.events()` is used by default.
-     *  - `ja` [[ViewEventsHash]] オブジェクト. 既定値は `this.events()`
+     *  - `en` {@link ViewEventsHash} object. `this.events()` is used by default.
+     *  - `ja` {@link ViewEventsHash} オブジェクト. 既定値は `this.events()`
      */
     public delegateEvents(events?: ViewEventsHash<TElement>): this {
         const hash = events || this.events();
@@ -254,9 +254,9 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
     }
 
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on} or {@link DOMEvents.once} and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on} または {@link DOMEvents.once} と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -280,9 +280,9 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
     ): this;
 
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on} or {@link DOMEvents.once} and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on} または {@link DOMEvents.once} と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -357,7 +357,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
      * @example <br>
      *
      * ```ts
-     * import { TemplateEngine } from '@cdp/core-template';
+     * import { TemplateEngine } from '@cdp/runtime';
      *
      * class SampleView extends View {
      *     private _template = TemplateEngine.compile('{{title}}');
@@ -400,7 +400,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
     }
 }
 
-/** @internal [[View]] class */
+/** @internal {@link View} class */
 abstract class View extends (mixins(EventSource, ViewCore as Constructor<ViewCore>)) {
     /**
      * constructor
@@ -434,9 +434,11 @@ abstract class View extends (mixins(EventSource, ViewCore as Constructor<ViewCor
  * @example <br>
  *
  * ```ts
- * import { TemplateEngine } from '@cdp/core-template';
- * import { DOM, dom as $ } from '@cdp/dom';
- * import { View, ViewEventsHash } from '@cdp/view';
+ * import {
+ *     TemplateEngine,
+ *     DOM, dom as $,
+ *     View, ViewEventsHash,
+ * } from '@cdp/rumtime';
  * import { ToDo, ToDoEventSource } from './todo';
  *
  * const _template = TemplateEngine.compile($('#item-template').html());
@@ -475,8 +477,8 @@ abstract class View extends (mixins(EventSource, ViewCore as Constructor<ViewCor
 export type _View<TElement extends Node = HTMLElement, TEvent extends object = object> = ViewCore <TElement> & EventSource<TEvent>;
 
 /**
- * @en Constructor of [[View]]
- * @ja [[View]] のコンストラクタ実体
+ * @en Constructor of {@link View}
+ * @ja {@link View} のコンストラクタ実体
  */
 const _View: {
     readonly prototype: _View<any, any>;

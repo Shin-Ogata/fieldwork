@@ -16,8 +16,8 @@ export type Primitive = string | number | boolean | symbol | bigint | null | und
 export type Nullish = void | null | undefined;
 
 /**
- * @en The type of object or [[Nullish]].
- * @ja [[Nullish]] になりえるオブジェクト型定義
+ * @en The type of object or {@link Nullish}.
+ * @ja {@link Nullish} になりえるオブジェクト型定義
  */
 export type Nullable<T extends object> = T | Nullish;
 
@@ -49,8 +49,8 @@ interface TypeList {
 }
 
 /**
- * @en The key list of [[TypeList]].
- * @ja [[TypeList]] キー一覧
+ * @en The key list of {@link TypeList}.
+ * @ja {@link TypeList} キー一覧
  */
 export type TypeKeys = keyof TypeList;
 
@@ -149,22 +149,22 @@ export type KeyToType<O extends object, K extends keyof O> = K extends keyof O ?
 export type TypeToKey<O extends object, T extends Types<O>> = { [K in keyof O]: O[K] extends T ? K : never }[keyof O];
 
 /**
- * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
+ * @en The {@link PlainObject} type is a JavaScript object containing zero or more key-value pairs. <br>
  *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
- * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>
+ * @ja 0 以上の key-value ペアを持つ {@link PlainObject} 定義 <br>
  *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
  */
 export type PlainObject<T = {} | null | undefined> = Record<string, T>;
 
 /**
  * @en Object can be guaranteed definition. Be careful not to abuse it because it does not force the cast.
- *   - Unlike [[PlainObject]], it can accept Class (built-in object), Array, Function.
+ *   - Unlike {@link PlainObject}, it can accept Class (built-in object), Array, Function.
  *   - Unlike `object`, you can access unknown properties.
- *   - Unlike `{} / Object`, it can repel [[Primitive]].
+ *   - Unlike `{} / Object`, it can repel {@link Primitive}.
  * @ja Object を保証可能な定義. キャストを強制しないため乱用しないように注意が必要.
- *   - [[PlainObject]] と違い、Class (組み込みオブジェクト), Array, Function を受け付けることができる.
+ *   - {@link PlainObject} と違い、Class (組み込みオブジェクト), Array, Function を受け付けることができる.
  *   - `object` と違い、未知のプロパティにアクセスすることができる.
- *   - `{} / Object` と違い、[[Primitive]] をはじくことができる.
+ *   - `{} / Object` と違い、{@link Primitive} をはじくことができる.
  */
 export type AnyObject = Record<string, any>;
 
@@ -247,8 +247,8 @@ export function exists<T>(x: T | Nullish): x is T {
 }
 
 /**
- * @en Check the value-type is [[Nullish]].
- * @ja [[Nullish]] 型であるか判定
+ * @en Check the value-type is {@link Nullish}.
+ * @ja {@link Nullish} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -353,8 +353,8 @@ export function isObject(x: unknown): x is object {
 }
 
 /**
- * @en Check the value-type is [[PlainObject]].
- * @ja [[PlainObject]] 型であるか判定
+ * @en Check the value-type is {@link PlainObject}.
+ * @ja {@link PlainObject} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -458,8 +458,8 @@ const _typedArrayNames: Record<string, boolean> = {
 };
 
 /**
- * @en Check the value is one of [[TypedArray]].
- * @ja 指定したインスタンスが [[TypedArray]] の一種であるか判定
+ * @en Check the value is one of {@link TypedArray}.
+ * @ja 指定したインスタンスが {@link TypedArray} の一種であるか判定
  *
  * @param x
  *  - `en` evaluated value

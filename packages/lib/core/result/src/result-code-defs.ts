@@ -45,9 +45,9 @@ namespace CDP_DECLARE {
     }
 
     /**
-     * @en Offset value enumeration for [[RESULT_CODE]]. <br>
+     * @en Offset value enumeration for {@link RESULT_CODE}. <br>
      *     The client can expand a definition in other module.
-     * @ja [[RESULT_CODE]] のオフセット値 <br>
+     * @ja {@link RESULT_CODE} のオフセット値 <br>
      *     エラーコード対応するモジュール内で 定義を拡張する.
      *
      * @example <br>
@@ -129,9 +129,9 @@ namespace CDP_DECLARE {
     }
 
     /**
-     * @en Assign declared [[RESULT_CODE]] to root enumeration.
+     * @en Assign declared {@link RESULT_CODE} to root enumeration.
      *     (It's enable to merge enum in the module system environment.)
-     * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
+     * @ja 拡張した {@link RESULT_CODE} を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
     export function ASSIGN_RESULT_CODE(extend: Record<string, unknown>): void {
@@ -162,8 +162,8 @@ namespace CDP_DECLARE {
      * @ja 成功コードを生成
      *
      * @param base
-     *  - `en` set base offset as [[RESULT_CODE_BASE]]
-     *  - `ja` オフセット値を [[RESULT_CODE_BASE]] として指定
+     *  - `en` set base offset as {@link RESULT_CODE_BASE}
+     *  - `ja` オフセット値を {@link RESULT_CODE_BASE} として指定
      * @param code
      *  - `en` set local code for declaration. ex) '1'
      *  - `ja` 宣言用のローカルコード値を指定  例) '1'
@@ -180,8 +180,8 @@ namespace CDP_DECLARE {
      * @ja エラーコード生成
      *
      * @param base
-     *  - `en` set base offset as [[RESULT_CODE_BASE]]
-     *  - `ja` オフセット値を [[RESULT_CODE_BASE]] として指定
+     *  - `en` set base offset as {@link RESULT_CODE_BASE}
+     *  - `ja` オフセット値を {@link RESULT_CODE_BASE} として指定
      * @param code
      *  - `en` set local code for declaration. ex) '1'
      *  - `ja` 宣言用のローカルコード値を指定  例) '1'
@@ -196,7 +196,7 @@ namespace CDP_DECLARE {
 ///////////////////////////////////////////////////////////////////////
 // private section:
 
-    /** @internal register for [[RESULT_CODE]] */
+    /** @internal register for {@link RESULT_CODE} */
     function declareResultCode(base: RESULT_CODE_BASE, code: number, message: string | undefined, succeeded: boolean): number | never {
         if (code < 0 || RESULT_CODE_RANGE.MAX <= code) {
             throw new RangeError(`declareResultCode(), invalid local-code range. [code: ${code}]`);

@@ -17,30 +17,12 @@ export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
 
-/**
- * @en Check the value-type is Window.
- * @ja Window 型であるか判定
- *
- * @param x
- *  - `en` evaluated value
- *  - `ja` 評価する値
- */
+/** @internal */
 export function isWindowContext(x: unknown): x is Window {
     return (x as Window)?.parent instanceof Window;
 }
 
-/**
- * @en Create Element array from seed arg.
- * @ja 指定された Seed から Element 配列を作成
- *
- * @param seed
- *  - `en` Object(s) or the selector string which becomes origin of Element array.
- *  - `ja` Element 配列のもとになるオブジェクト(群)またはセレクタ文字列
- * @param context
- *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
- *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
- * @returns Element[] based Node or Window object.
- */
+/** @internal */
 export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[] {
     if (!seed) {
         return [];
@@ -85,20 +67,7 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
     return elements as ElementResult<T>[];
 }
 
-/**
- * @en Create Element array from seed arg. <br>
- *     And also lists for the `DocumentFragment` inside the `<template>` tag.
- * @ja 指定された Seed から Element 配列を作成 <br>
- *     `<template>` タグ内の `DocumentFragment` も列挙する
- *
- * @param seed
- *  - `en` Object(s) or the selector string which becomes origin of Element array.
- *  - `ja` Element 配列のもとになるオブジェクト(群)またはセレクタ文字列
- * @param context
- *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
- *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
- * @returns Element[] based Node.
- */
+/** @internal */
 export function rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[] {
     const parse = (el: Element, pool: ParentNode[]): void => {
         const root = (el instanceof HTMLTemplateElement) ? el.content : el;
@@ -119,6 +88,7 @@ export function rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, contex
 }
 
 /**
+ * @internal
  * @en Ensure positive number, if not returned `undefined`.
  * @en 正値の保証. 異なる場合 `undefined` を返却
  */
@@ -127,6 +97,7 @@ export function ensurePositiveNumber(value: number | undefined): number | undefi
 }
 
 /**
+ * @internal
  * @en For easing `swing` timing-function.
  * @ja easing `swing` 用タイミング関数
  *
@@ -141,8 +112,8 @@ export function swing(progress: number): number {
 }
 
 /**
- * @en [[evaluate]]() options.
- * @ja [[evaluate]]() に渡すオプション
+ * @en {@link DOMStatic.utils.evaluate | evaluate}() options.
+ * @ja {@link DOMStatic.utils.evaluate | evaluate}() に渡すオプション
  */
 export interface EvalOptions {
     type?: string;
@@ -159,10 +130,7 @@ const _scriptsAttrs: (keyof EvalOptions)[] = [
     'noModule',
 ];
 
-/**
- * @en The `eval` function by which script `nonce` attribute considered under the CSP condition.
- * @ja CSP 環境においてスクリプト `nonce` 属性を考慮した `eval` 実行関数
- */
+/** @internal */
 export function evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any {
     const doc: Document = context || document;
     const script = doc.createElement('script');

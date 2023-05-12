@@ -22,8 +22,8 @@ import {
 } from './interfaces';
 
 /**
- * @en Registry management class for synchronous Read/Write accessible from any [[IStorage]] object.
- * @ja 任意の [[IStorage]] オブジェクトから同期 Read/Write アクセス可能なレジストリ管理クラス
+ * @en Registry management class for synchronous Read/Write accessible from any {@link IStorage} object.
+ * @ja 任意の {@link IStorage} オブジェクトから同期 Read/Write アクセス可能なレジストリ管理クラス
  *
  * @example <br>
  *
@@ -39,7 +39,7 @@ import {
  *
  * // 2. prepare IStorage instance
  * // ex
- * import { webStorage } from '@cdp/web-storage';
+ * import { webStorage } from '@cdp/runtime';
  *
  * // 3. instantiate this class
  * const reg = new Registry<Schema>(webStorage, '@test');
@@ -67,11 +67,11 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
      * constructor
      *
      * @param storage
-     *  - `en` Root key for [[IStorage]].
-     *  - `ja` [[IStorage]] に使用するルートキー
+     *  - `en` Root key for {@link IStorage}.
+     *  - `ja` {@link IStorage} に使用するルートキー
      * @param rootKey
-     *  - `en` Root key for [[IStorage]].
-     *  - `ja` [[IStorage]] に使用するルートキー
+     *  - `en` Root key for {@link IStorage}.
+     *  - `ja` {@link IStorage} に使用するルートキー
      * @param formatSpace
      *  - `en` for JSON format space.
      *  - `ja` JSON フォーマットスペースを指定
@@ -92,8 +92,8 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
     }
 
     /**
-     * @en Access to [[IStorage]] object.
-     * @ja [[IStorage]] オブジェクトを取得
+     * @en Access to {@link IStorage} object.
+     * @ja {@link IStorage} オブジェクトを取得
      */
     get storage(): IStorage<any> {
         return this._storage;
@@ -103,8 +103,8 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
 // public methods:
 
     /**
-     * @en Read persistence data from [[IStorage]]. The data loaded already will be cleared.
-     * @ja [[IStorage]] から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
+     * @en Read persistence data from {@link IStorage}. The data loaded already will be cleared.
+     * @ja {@link IStorage} から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
      */
     public async load(options?: IStorageOptions): Promise<void> {
         options = options || {};
@@ -115,8 +115,8 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
     }
 
     /**
-     * @en Persist data to [[IStorage]].
-     * @ja [[IStorage]] にデータを永続化
+     * @en Persist data to {@link IStorage}.
+     * @ja {@link IStorage} にデータを永続化
      */
     public async save(options?: RegistrySaveOptions): Promise<void> {
         const opts: RegistrySaveOptions = { ...this._defaultOptions, ...options };

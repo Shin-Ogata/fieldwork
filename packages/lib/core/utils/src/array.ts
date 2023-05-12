@@ -136,8 +136,8 @@ export function indices<T>(array: T[], ...excludes: number[]): number[] {
 //__________________________________________________________________________________________________//
 
 /**
- * @en [[groupBy]]() options definition.
- * @ja [[groupBy]]() に指定するオプション定義
+ * @en {@link groupBy}() options definition.
+ * @ja {@link groupBy}() に指定するオプション定義
  */
 export interface GroupByOptions<
     T extends object,
@@ -165,8 +165,8 @@ export interface GroupByOptions<
 }
 
 /**
- * @en Return type of [[groupBy]]().
- * @ja [[groupBy]]() が返却する型
+ * @en Return type of {@link groupBy}().
+ * @ja {@link groupBy}() が返却する型
  */
 export type GroupByReturnValue<
     T extends object,

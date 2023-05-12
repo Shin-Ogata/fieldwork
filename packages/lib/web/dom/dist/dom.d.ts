@@ -10,12 +10,9 @@ export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
-declare function isWindowContext(x: unknown): x is Window;
-declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
-declare function rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
 /**
- * @en [[evaluate]]() options.
- * @ja [[evaluate]]() に渡すオプション
+ * @en {@link DOMStatic.utils.evaluate | evaluate}() options.
+ * @ja {@link DOMStatic.utils.evaluate | evaluate}() に渡すオプション
  */
 export interface EvalOptions {
     type?: string;
@@ -23,7 +20,6 @@ export interface EvalOptions {
     nonce?: string;
     noModule?: string;
 }
-declare function evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any;
 declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
     /**
      * @en number of `Element`
@@ -48,18 +44,18 @@ declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T
      * @ja 対象が `Node` でありかつ `Document` または `ShadowRoot` に接続されているか判定
      *
      * @param el
-     *  - `en` [[ElementBase]] instance
-     *  - `ja` [[ElementBase]] インスタンス
+     *  - `en` {@link ElementBase} instance
+     *  - `ja` {@link ElementBase} インスタンス
      */
     get isConnected(): boolean;
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Iterator of {@link ElementBase} values in the array.
+     * @ja 格納している {@link ElementBase} にアクセス可能なイテレータオブジェクトを返却
      */
     [Symbol.iterator](): Iterator<T>;
     /**
-     * @en Returns an iterable of key(index), value([[ElementBase]]) pairs for every entry in the array.
-     * @ja key(index), value([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of key(index), value({@link ElementBase}) pairs for every entry in the array.
+     * @ja key(index), value({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     entries(): IterableIterator<[
         number,
@@ -71,8 +67,8 @@ declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T
      */
     keys(): IterableIterator<number>;
     /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of values({@link ElementBase}) in the array.
+     * @ja values({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     values(): IterableIterator<T>;
 }
@@ -272,7 +268,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
         TElement
     ]>;
     /**
-     * @en Retrieve one of the elements matched by the [[DOM]] instance.
+     * @en Retrieve one of the elements matched by the {@link DOM} instance.
      * @ja インデックスを指定して配下の要素にアクセス
      *
      * @param index
@@ -283,54 +279,54 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      */
     get(index: number): TElement | undefined;
     /**
-     * @en Retrieve the elements matched by the [[DOM]] instance.
+     * @en Retrieve the elements matched by the {@link DOM} instance.
      * @ja 配下の要素すべてを配列で取得
      */
     get(): TElement[];
     /**
-     * @en Retrieve all the elements contained in the [[DOM]] set, as an array.
+     * @en Retrieve all the elements contained in the {@link DOM} set, as an array.
      * @ja 配下の要素すべてを配列で取得
      */
     toArray(): TElement[];
     /**
-     * @en Return the position of the first element within the [[DOM]] collection relative to its sibling elements.
-     * @ja [[DOM]] 内の最初の要素が兄弟要素の何番目に所属するかを返却
+     * @en Return the position of the first element within the {@link DOM} collection relative to its sibling elements.
+     * @ja {@link DOM} 内の最初の要素が兄弟要素の何番目に所属するかを返却
      */
     index(): number | undefined;
     /**
-     * @en Search for a given a selector, element, or [[DOM]] instance from among the matched elements.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 配下の何番目に所属しているかを返却
+     * @en Search for a given a selector, element, or {@link DOM} instance from among the matched elements.
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 配下の何番目に所属しているかを返却
      */
     index<T extends ElementBase>(selector: string | T | DOM<T>): number | undefined;
     /**
-     * @en Reduce the set of matched elements to the first in the set as [[DOM]] instance.
-     * @ja 管轄している最初の要素を [[DOM]] インスタンスにして取得
+     * @en Reduce the set of matched elements to the first in the set as {@link DOM} instance.
+     * @ja 管轄している最初の要素を {@link DOM} インスタンスにして取得
      */
     first(): DOM<TElement>;
     /**
-     * @en Reduce the set of matched elements to the final one in the set as [[DOM]] instance.
-     * @ja 管轄している末尾の要素を [[DOM]] インスタンスにして取得
+     * @en Reduce the set of matched elements to the final one in the set as {@link DOM} instance.
+     * @ja 管轄している末尾の要素を {@link DOM} インスタンスにして取得
      */
     last(): DOM<TElement>;
     /**
-     * @en Create a new [[DOM]] instance with elements added to the set from selector.
-     * @ja 指定された `selector` で取得した `Element` を追加した新規 [[DOM]] インスタンスを返却
+     * @en Create a new {@link DOM} instance with elements added to the set from selector.
+     * @ja 指定された `selector` で取得した `Element` を追加した新規 {@link DOM} インスタンスを返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param context
      *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
      *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
      */
     add<T extends SelectorBase>(selector: DOMSelector<T>, context?: QueryContext): DOM<TElement>;
     /**
-     * @en Check the current matched set of elements against a selector, element, or [[DOM]] instance.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 現在の要素のセットと一致するか確認
+     * @en Check the current matched set of elements against a selector, element, or {@link DOM} instance.
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 現在の要素のセットと一致するか確認
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      * @returns
      *  - `en` `true` if at least one of these elements matches the given arguments.
      *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
@@ -338,26 +334,26 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     is<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): boolean;
     /**
      * @en Reduce the set of matched elements to those that match the selector or pass the function's test.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 現在の要素のセットと一致したものを返却
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 現在の要素のセットと一致したものを返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      * @returns
-     *  - `en` New [[DOM]] instance including filtered elements.
-     *  - `ja` フィルタリングされた要素を内包する 新規 [[DOM]] インスタンス
+     *  - `en` New {@link DOM} instance including filtered elements.
+     *  - `ja` フィルタリングされた要素を内包する 新規 {@link DOM} インスタンス
      */
     filter<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
     /**
      * @en Remove elements from the set of match the selector or pass the function's test.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 現在の要素のセットと一致したものを削除して返却
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 現在の要素のセットと一致したものを削除して返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      * @returns
-     *  - `en` New [[DOM]] instance excluding filtered elements.
-     *  - `ja` フィルタリングされた要素を以外を内包する 新規 [[DOM]] インスタンス
+     *  - `en` New {@link DOM} instance excluding filtered elements.
+     *  - `ja` フィルタリングされた要素を以外を内包する 新規 {@link DOM} インスタンス
      */
     not<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
     /**
@@ -365,8 +361,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja 配下の要素に対して指定したセレクタに一致する要素を検索
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     find<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -374,13 +370,13 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja 配下の要素に対して指定したセレクタに一致した子要素持つ要素を返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     has<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
-     * @en Pass each element in the current matched set through a function, producing a new [[DOM]] instance containing the return values.
-     * @ja コールバックで変更された要素を用いて新たに [[DOM]] インスタンスを構築
+     * @en Pass each element in the current matched set through a function, producing a new {@link DOM} instance containing the return values.
+     * @ja コールバックで変更された要素を用いて新たに {@link DOM} インスタンスを構築
      *
      * @param callback
      *  - `en` modification function object that will be invoked for each element in the current set.
@@ -388,7 +384,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      */
     map<T extends ElementBase>(callback: DOMModificationCallback<TElement, T>): DOM<T>;
     /**
-     * @en Iterate over a [[DOM]] instance, executing a function for each matched element.
+     * @en Iterate over a {@link DOM} instance, executing a function for each matched element.
      * @ja 配下の要素に対してコールバック関数を実行
      *
      * @param callback
@@ -398,7 +394,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     each(callback: DOMIterateCallback<TElement>): this;
     /**
      * @en Reduce the set of matched elements to a subset specified by a range of indices.
-     * @ja インデックス指定された範囲の要素を含む [[DOM]] インスタンスを返却
+     * @ja インデックス指定された範囲の要素を含む {@link DOM} インスタンスを返却
      *
      * @param begin
      *  - `en` An integer indicating the 0-based position at which the elements begin to be selected.
@@ -410,7 +406,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     slice(begin?: number, end?: number): DOM<TElement>;
     /**
      * @en Reduce the set of matched elements to the one at the specified index.
-     * @ja インデックス指定した要素を含む [[DOM]] インスタンスを返却
+     * @ja インデックス指定した要素を含む {@link DOM} インスタンスを返却
      *
      * @param index
      *  - `en` A zero-based integer indicating which element to retrieve. <br>
@@ -424,8 +420,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja 開始要素から最も近い親要素を選択. セレクター指定した場合, マッチする最も近い親要素を返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      */
     closest<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -444,7 +440,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @param selector
      *  - `en` filtered by a selector.
      *  - `ja` フィルタ用セレクタ
-     * @returns [[DOM]] instance
+     * @returns {@link DOM} instance
      */
     parent<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T>;
     /**
@@ -454,21 +450,21 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @param selector
      *  - `en` filtered by a selector.
      *  - `ja` フィルタ用セレクタ
-     * @returns [[DOM]] instance
+     * @returns {@link DOM} instance
      */
     parents<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T>;
     /**
      * @en Get the ancestors of each element in the current set of matched elements, <br>
-     *     up to but not including the element matched by the selector, DOM node, or [[DOM]] instance
+     *     up to but not including the element matched by the selector, DOM node, or {@link DOM} instance
      * @ja 管轄している各要素の祖先で, 指定したセレクターや条件に一致する要素が出てくるまで選択して取得
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param filter
      *  - `en` filtered by a string selector.
      *  - `ja` フィルタ用文字列セレクタ
-     * @returns [[DOM]] instance
+     * @returns {@link DOM} instance
      */
     parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase, V extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: DOMSelector<V>): DOM<T>;
     /**
@@ -496,8 +492,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja マッチした要素の次以降の兄弟要素で, 指定したセレクターや条件に一致する要素が出てくるまで選択して取得
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param filter
      *  - `en` filtered by a string selector.
      *  - `ja` フィルタ用文字列セレクタ
@@ -528,8 +524,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja マッチした要素の前以降の兄弟要素で, 指定したセレクタや条件に一致する要素が出てくるまで選択して取得
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param filter
      *  - `en` filtered by a string selector.
      *  - `ja` フィルタ用文字列セレクタ
@@ -598,8 +594,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素に引数で指定したコンテンツを追加
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     append<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -607,8 +603,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下要素を他の要素に追加
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     appendTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -616,8 +612,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の先頭に引数で指定したコンテンツを挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     prepend<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -625,8 +621,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下要素を他の要素の先頭に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     prependTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -634,8 +630,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の前に指定した HTML や要素を挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     before<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -643,8 +639,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別要素の前に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -652,8 +648,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の後ろに指定した HTML や要素を挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     after<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -661,8 +657,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別要素の後ろに挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -670,8 +666,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別要素でそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     wrapAll<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
@@ -679,8 +675,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の内側を, 指定した別エレメントでそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     wrapInner<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
@@ -688,8 +684,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を, 指定した別要素でそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     wrap<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
@@ -711,8 +707,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 要素を DOM から削除. 削除後もイベントリスナは有効
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     detach<T extends SelectorBase>(selector?: DOMSelector<T>): this;
     /**
@@ -720,8 +716,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 要素を DOM から削除
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     remove<T extends SelectorBase>(selector?: DOMSelector<T>): this;
     /**
@@ -729,8 +725,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定された別の要素や HTML と差し替え
      *
      * @param newContent
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     replaceWith<T extends SelectorBase>(newContent?: DOMSelector<T>): this;
     /**
@@ -738,8 +734,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別の要素と差し替え
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     replaceAll<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
 }
@@ -975,9 +971,9 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     on<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on | on}() or {@link DOMEvents.once | once}() and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on | on}() または {@link DOMEvents.once | once}() と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -995,9 +991,9 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     off<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], selector: string, listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on | on}() or {@link DOMEvents.once | once}() and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on | on}() または {@link DOMEvents.once | once}() と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -1073,8 +1069,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     trigger<TEventMap extends DOMEventMap<TElement>>(seed: EventType<TEventMap> | (EventType<TEventMap>)[] | Event | Event[] | (EventType<TEventMap> | Event)[], ...eventData: unknown[]): this;
     /**
-     * @en Shortcut for [[once]]('transitionstart').
-     * @ja [[once]]('transitionstart') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('transitionstart').
+     * @ja {@link DOMEvents.once | once}('transitionstart') のユーティリティ
      *
      * @param callback
      *  - `en` `transitionstart` handler.
@@ -1085,8 +1081,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     transitionStart(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('transitionend').
-     * @ja [[once]]('transitionend') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('transitionend').
+     * @ja {@link DOMEvents.once | once}('transitionend') のユーティリティ
      *
      * @param callback
      *  - `en` `transitionend` handler.
@@ -1097,8 +1093,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     transitionEnd(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('animationstart').
-     * @ja [[once]]('animationstart') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('animationstart').
+     * @ja {@link DOMEvents.once | once}('animationstart') のユーティリティ
      *
      * @param callback
      *  - `en` `animationstart` handler.
@@ -1109,8 +1105,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     animationStart(callback: (event: AnimationEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('animationend').
-     * @ja [[once]]('animationend') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('animationend').
+     * @ja {@link DOMEvents.once | once}('animationend') のユーティリティ
      *
      * @param callback
      *  - `en` `animationend` handler.
@@ -1448,8 +1444,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
     clone(withEvents?: boolean, deep?: boolean): DOM<TElement>;
 }
 /**
- * @en [[DOM]]`.scrollTo()` options definition.
- * @ja [[DOM]]`.scrollTo()` に指定するオプション定義
+ * @en {@link DOM}`.scrollTo()` options definition.
+ * @ja {@link DOM}`.scrollTo()` に指定するオプション定義
  */
 export interface DOMScrollOptions {
     /**
@@ -1560,28 +1556,28 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
     scrollTo(options: DOMScrollOptions): this;
 }
 /**
- * @en [[DOM]] effect parameter.
- * @ja [[DOM]] エフェクト効果のパラメータ
+ * @en {@link DOM} effect parameter.
+ * @ja {@link DOM} エフェクト効果のパラメータ
  */
 export type DOMEffectParameters = Keyframe[] | PropertyIndexedKeyframes | null;
 /**
- * @en [[DOM]] effect options.
- * @ja [[DOM]] エフェクト効果のオプション
+ * @en {@link DOM} effect options.
+ * @ja {@link DOM} エフェクト効果のオプション
  */
 export type DOMEffectOptions = number | KeyframeAnimationOptions;
 /**
- * @en [[DOM]] effect context object.
- * @ja [[DOM]] のエフェクト効果のコンテキストオブジェクト
+ * @en {@link DOM} effect context object.
+ * @ja {@link DOM} のエフェクト効果のコンテキストオブジェクト
  */
 export interface DOMEffectContext<TElement extends ElementBase> {
     /**
-     * @en [[DOM]] instance that called [[animate]]() method.
-     * @ja [[animate]]() メソッドを実行した [[DOM]] インスタンス
+     * @en {@link DOM} instance that called {@link DOMEffects.animate | animate}() method.
+     * @ja {@link DOMEffects.animate | animate}() メソッドを実行した {@link DOM} インスタンス
      */
     readonly dom: DOM<TElement>;
     /**
-     * @en `Element` and `Animation` instance map by execution [[animate]]() method at this time.
-     * @ja 今回実行した `Element` と `Animation` インスタンスのマップ
+     * @en `Element` and `Animation` instance map by execution {@link DOMEffects.animate | animate}() method at this time.
+     * @ja 今回 {@link DOMEffects.animate | animate}() 実行した `Element` と `Animation` インスタンスのマップ
      */
     readonly animations: Map<TElement, Animation>;
     /**
@@ -1626,8 +1622,8 @@ declare class DOMEffects<TElement extends ElementBase> implements DOMIterable<TE
 }
 export type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
 /**
- * @en [[DOM]] plugin method definition.
- * @ja [[DOM]] プラグインメソッド定義
+ * @en {@link DOM} plugin method definition.
+ * @ja {@link DOM} プラグインメソッド定義
  *
  * @note
  *  - プラグイン拡張定義はこのインターフェイスマージする.
@@ -1661,42 +1657,147 @@ declare class DOMClass extends DOMClass_base {
     private constructor();
 }
 /**
- * @en Check the value-type is [[DOM]].
- * @ja [[DOM]] 型であるか判定
+ * @en Check the value-type is {@link DOM}.
+ * @ja {@link DOM} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
 export declare function isDOMClass(x: unknown): x is DOM;
-declare namespace dom {
-    let fn: DOMClass & Record<string | symbol, unknown>;
-}
 /**
- * @en Create [[DOM]] instance from `selector` arg.
- * @ja 指定された `selector` [[DOM]] インスタンスを作成
+ * @en Provides functionality equivalent to `jQuery` DOM manipulation.
+ * @ja `jQuery` の DOM 操作と同等の機能を提供
  *
- * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
- * @param context
- *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
- *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
- * @returns [[DOM]] instance.
+ * @example <br>
+ *
+ * ```ts
+ * import { dom as $ } from '@cdp/runtime';
+ *
+ * // Get the <button> element with the class 'continue' and change its HTML to 'Next Step...'
+ * $('button.continue').html('Next Step...');
+ * ```
  */
-declare function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
-declare namespace dom {
-    var utils: {
-        isWindowContext: typeof isWindowContext;
-        elementify: typeof elementify;
-        rootify: typeof rootify;
-        evaluate: typeof evaluate;
-        detectify: <T extends Node>(node: T, observed?: Node | undefined) => T;
-        undetectify: <T_1 extends Node>(node?: T_1 | undefined) => void;
+export interface DOMStatic {
+    /**
+     * @en Provides functionality equivalent to `jQuery` DOM manipulation. <br>
+     *     Create {@link DOM} instance from `selector` arg.
+     * @ja `jQuery` の DOM 操作と同等の機能を提供 <br>
+     *     指定された `selector` {@link DOM} インスタンスを作成
+     *
+     * @example <br>
+     *
+     * ```ts
+     * import { dom as $ } from '@cdp/runtime';
+     *
+     * // Get the <button> element with the class 'continue' and change its HTML to 'Next Step...'
+     * $('button.continue').html('Next Step...');
+     * ```
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるオブジェクト(群)またはセレクタ文字列
+     * @param context
+     *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+     *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+     * @returns {@link DOM} instance.
+     */
+    <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
+    /**
+     * @en The object's `prototype` alias.
+     * @ja オブジェクトの `prototype`エイリアス
+     */
+    fn: DOMClass & Record<string | symbol, unknown>;
+    /** DOM Utilities */
+    readonly utils: {
+        /**
+         * @en Check the value-type is Window.
+         * @ja Window 型であるか判定
+         *
+         * @param x
+         *  - `en` evaluated value
+         *  - `ja` 評価する値
+         */
+        isWindowContext(x: unknown): x is Window;
+        /**
+         * @en Create Element array from seed arg.
+         * @ja 指定された Seed から Element 配列を作成
+         *
+         * @param seed
+         *  - `en` Object(s) or the selector string which becomes origin of Element array.
+         *  - `ja` Element 配列のもとになるオブジェクト(群)またはセレクタ文字列
+         * @param context
+         *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+         *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+         * @returns Element[] based Node or Window object.
+         */
+        elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+        /**
+         * @en Create Element array from seed arg. <br>
+         *     And also lists for the `DocumentFragment` inside the `<template>` tag.
+         * @ja 指定された Seed から Element 配列を作成 <br>
+         *     `<template>` タグ内の `DocumentFragment` も列挙する
+         *
+         * @param seed
+         *  - `en` Object(s) or the selector string which becomes origin of Element array.
+         *  - `ja` Element 配列のもとになるオブジェクト(群)またはセレクタ文字列
+         * @param context
+         *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+         *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+         * @returns Element[] based Node.
+         */
+        rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+        /**
+         * @en The `eval` function by which script `nonce` attribute considered under the CSP condition.
+         * @ja CSP 環境においてスクリプト `nonce` 属性を考慮した `eval` 実行関数
+         */
+        evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any;
+        /**
+         * @en Enabling the node to detect events of DOM connected and disconnected.
+         * @ja 要素に対して, DOM への接続, DOM からの切断イベントを検出可能にする
+         *
+         * @example <br>
+         *
+         * ```ts
+         * import { dom } from '@cdp/runtime';
+         * const { detectify, undetectify } = dom.utils;
+         *
+         * const el = document.createElement('div');
+         *
+         * // observation start
+         * detectify(el);
+         * el.addEventListener('connected', () => {
+         *     console.log('on connected');
+         * });
+         * el.addEventListener('disconnected', () => {
+         *     console.log('on disconnected');
+         * });
+         *
+         * // observation stop
+         * undetectify(el);
+         * ```
+         *
+         * @param node
+         *  - `en` target node
+         *  - `ja` 対象の要素
+         * @param observed
+         *  - `en` Specifies the root element to watch. If not specified, `ownerDocument` is evaluated first, followed by global `document`.
+         *  - `ja` 監視対象のルート要素を指定. 未指定の場合は `ownerDocument`, グローバル `document` の順に評価される
+         */
+        detectify<T extends Node>(node: T, observed?: Node): T;
+        /**
+         * @en Undetect connected and disconnected from DOM events for an element.
+         * @ja 要素に対して, DOM への接続, DOM からの切断イベントを検出を解除する
+         *
+         * @param node
+         *  - `en` target node. If not specified, execute all release.
+         *  - `ja` 対象の要素. 指定しない場合は全解除を実行
+         */
+        undetectify<T extends Node>(node?: T): void;
     };
 }
+export declare const dom: DOMStatic;
 
 export {
     dom as default,
 };
-export { dom };

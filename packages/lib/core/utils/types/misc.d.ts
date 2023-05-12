@@ -137,8 +137,8 @@ export declare const unescapeHTML: (src: Primitive) => string;
  */
 export declare function toTypedData(data: string | undefined): TypedData | undefined;
 /**
- * @en Convert to string from [[TypedData]].
- * @ja [[TypedData]] を文字列に変換
+ * @en Convert to string from {@link TypedData}.
+ * @ja {@link TypedData} を文字列に変換
  *
  * @param data
  *  - `en` input string

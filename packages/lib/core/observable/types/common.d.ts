@@ -31,8 +31,8 @@ export interface IObservable {
      * @ja イベント購読状態のサスペンド
      *
      * @param noRecord
-     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
-     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when {@link resume}() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, {@link resume}() 時に発火する (既定)
      */
     suspend(noRecord?: boolean): this;
     /**
@@ -47,19 +47,19 @@ export interface IObservable {
     getObservableState(): ObservableState;
 }
 /**
- * @en Interface able to access to [[EventBroker]] with [[IObservable]].
- * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
+ * @en Interface able to access to {@link EventBroker} with {@link IObservable}.
+ * @ja {@link IObservable} の持つ内部 {@link EventBroker} にアクセス可能なインターフェイス
  */
 export interface IObservableEventBrokerAccess<T extends object = any> extends IObservable {
     /**
-     * @en Get [[EventBroker]] instance.
-     * @ja [[EventBroker]] インスタンスの取得
+     * @en Get {@link EventBroker} instance.
+     * @ja {@link EventBroker} インスタンスの取得
      */
     getBroker(): EventBroker<T>;
 }
 /**
- * @en Check the value-type is [[IObservable]].
- * @ja [[IObservable]] 型であるか判定
+ * @en Check the value-type is {@link IObservable}.
+ * @ja {@link IObservable} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value

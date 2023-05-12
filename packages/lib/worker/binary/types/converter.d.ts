@@ -354,7 +354,7 @@ export type SerializableReturnType<T extends SerializableCastableTypes> = TypeTo
  * @ja デシリアライズに使用するオプション
  */
 export interface DeserializeOptions<T extends Serializable = Serializable, K extends Keys<T> = Keys<T>> extends Cancelable {
-    /** [[SerializableKeys]] */
+    /** {@link SerializableKeys} */
     dataType?: K;
 }
 /**
