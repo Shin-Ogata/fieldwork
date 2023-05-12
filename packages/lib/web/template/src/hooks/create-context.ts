@@ -1,12 +1,6 @@
 import { DirectiveResult, noChange } from '@cdp/extension-template';
+import { isFunction } from '@cdp/core-utils';
 import type { IHookContext } from './interfaces';
-
-/** @internal */
-export interface HookContextListener {
-    onUpdateContext: (value: unknown) => void;
-}
-
-// const _mapHooks = new WeakMap<IHookContext, Set<HookContextListener>>();
 
 class HookContext<T> implements IHookContext<T> {
     readonly defaultValue: T | undefined;
@@ -17,30 +11,17 @@ class HookContext<T> implements IHookContext<T> {
         this.consume = this.consume.bind(this);
         this.defaultValue = defaultValue;
         this._value = defaultValue as T;
-        // _mapHooks.set(this, new Set());
     }
 
-    provide(value: T, template?: DirectiveResult): DirectiveResult {
-        if (this._value === value) {
-            return noChange;
-        }
+    provide(value: T, callback?: (value: T) => DirectiveResult): DirectiveResult {
         this._value = value;
-        // const listeners = _mapHooks.get(this) as Set<HookContextListener>;
-        // for (const listener of listeners) {
-        //     listener.onUpdateContext(this._value);
-        // }
-        return template || noChange;
+        return isFunction(callback) ? callback(value) : noChange;
     }
 
     consume(callback: (value: T) => DirectiveResult | void): DirectiveResult | void {
         return callback(this._value);
     }
 }
-
-/** @internal */
-// export const getContextStack = (context: IHookContext): Set<HookContextListener> => {
-//     return _mapHooks.get(context) || new Set();
-// };
 
 /** @internal */
 export const createContext = <T>(defaultValue?: T): IHookContext<T> => {

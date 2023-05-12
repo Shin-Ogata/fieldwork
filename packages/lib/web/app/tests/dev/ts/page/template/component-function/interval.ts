@@ -1,8 +1,13 @@
-import { TemplateResult, html } from '@cdp/template';
+import {
+    TemplateResult,
+    html,
+    hooks,
+} from '@cdp/template';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
-import { useState } from './hooks';
-import { useInterval } from './hooks/use-interval';
+import { useInterval } from './hooks';
+
+const  { useState } = hooks;
 
 export const Interval = (): TemplateResult => {
     const [now, setTime] = useState<string>();

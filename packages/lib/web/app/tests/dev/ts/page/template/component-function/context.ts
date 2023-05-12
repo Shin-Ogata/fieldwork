@@ -3,6 +3,7 @@ import {
     TemplateResult,
     html,
     render,
+    hooks,
 } from '@cdp/template';
 import { t } from '@cdp/i18n';
 import { RouteChangeInfo } from '@cdp/router';
@@ -10,7 +11,6 @@ import { registerPage } from '@cdp/app';
 import { i18nKey } from '../../../types';
 import { entry } from '../../signature';
 import { Props } from '../props';
-import { hooks, hooksWith } from './hooks';
 import { State } from './state';
 import { Effect } from './effect';
 import { Interval } from './interval';
@@ -32,7 +32,7 @@ const template = (): TemplateResult => {
         <section>
             <h3>${t(i18nKey.app.template['component-function'].description)}</h3>
             ${hooks(State)}
-            ${hooksWith(_el, State, { initVal: 2 })}
+            ${hooks.with(_el, State, { initVal: 2 })}
             ${hooks(Effect)}
             ${hooks(Interval)}
             ${hooks(Input, _props)}

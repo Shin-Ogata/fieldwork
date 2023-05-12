@@ -44,9 +44,7 @@ describe('hooks/use-context spec', () => {
         expect(retval).toBe(noChange);
     });
 
-    xit('check standard use case', async () => {
-        let setter!: UnknownFunction;
-
+    it('check standard use case', async () => {
         const ThemeContext = createContext('dark');
 
         function App(): TemplateResult {
@@ -59,7 +57,44 @@ describe('hooks/use-context spec', () => {
         expect(_$dom.text()).toBe('dark');
     });
 
-    xit('check concept use case', async () => {
+    it('check provider update', async () => {
+        let setter!: UnknownFunction;
+
+        // eslint-disable-next-line func-call-spacing
+        const ThemeContext = createContext<{ theme: 'dark' | 'light'; setTheme: (theme: 'dark' | 'light') => void; }>({ theme: 'dark', setTheme: noop });
+
+        function Provider(callback: (value: string) => DirectiveResult): DirectiveResult {
+            const [theme, setTheme] = useState<'dark' | 'light'>('light');
+            ThemeContext.provide({ theme, setTheme });
+            return callback(theme);
+        }
+
+        function MyConsumer(): string {
+            const { theme, setTheme } = useContext(ThemeContext);
+            setter = setTheme;
+            return theme;
+        }
+
+        /* eslint-disable @typescript-eslint/indent */
+        function App(): TemplateResult {
+            return html`
+                ${Provider(() => html`
+                    ${MyConsumer()}`
+                )}
+            `;
+        }
+        /* eslint-enable @typescript-eslint/indent */
+
+        render(hooks(App), _$dom[0]);
+        await waitFrame();
+        expect(_$dom.text()).toBe('light');
+
+        setter('dark');
+        await waitFrame();
+        expect(_$dom.text()).toBe('dark');
+    });
+
+    it('check concept use case', async () => {
         let setter!: UnknownFunction;
 
         const ThemeContext = createContext('dark');
@@ -75,9 +110,9 @@ describe('hooks/use-context spec', () => {
             setter = setTheme;
 
             return html`
-                ${provide(theme, html`
+                ${provide(theme, () => html`
                     ${MyConsumer()}
-                    ${provide(theme === 'dark' ? 'light' : 'dark', html`
+                    ${provide('dark' === theme ? 'light' : 'dark', () => html`
                         ${consume((value) => html`<h1>${value}</h1>`)}
                     `)}
                 `)}
@@ -88,43 +123,10 @@ describe('hooks/use-context spec', () => {
 
         render(hooks(App), _$dom[0]);
         await waitFrame();
+        expect(_$dom.text().replace(stripWhiteSpace, '')).toBe('lightdark');
+
+        setter('dark');
+        await waitFrame();
         expect(_$dom.text().replace(stripWhiteSpace, '')).toBe('darklight');
-    });
-
-    xit('check provider update', async () => {
-        let setter!: UnknownFunction;
-
-        // eslint-disable-next-line func-call-spacing
-        const ThemeContext = createContext<{ theme: 'dark' | 'light'; setTheme: (theme: 'dark' | 'light') => void; }>({ theme: 'dark', setTheme: noop });
-
-        function Provider(template: DirectiveResult): DirectiveResult {
-            const [theme, setTheme] = useState<'dark' | 'light'>('light');
-            ThemeContext.provide({ theme, setTheme });
-            return template;
-        }
-
-        function MyConsumer(): string {
-            const { theme, setTheme } = useContext(ThemeContext);
-            setter = setTheme;
-            return theme;
-        }
-
-        /* eslint-disable @typescript-eslint/indent */
-        function App(): TemplateResult {
-            return html`
-                ${Provider(html`
-                    ${MyConsumer()}`
-                )}
-            `;
-        }
-        /* eslint-enable @typescript-eslint/indent */
-
-        render(hooks(App), _$dom[0]);
-        await waitFrame();
-        expect(_$dom.text()).toBe('dark');
-
-        setter('light');
-        await waitFrame();
-        expect(_$dom.text()).toBe('light');
     });
 });
