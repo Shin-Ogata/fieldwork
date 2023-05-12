@@ -29,19 +29,19 @@ const enum Const {
 }
 
 /**
- * @en [[IDataSync]] interface for [[IStorage]] accessor.
- * @ja [[IStorage]] アクセッサを備える [[IDataSync]] インターフェイス
+ * @en {@link IDataSync} interface for {@link IStorage} accessor.
+ * @ja {@link IStorage} アクセッサを備える {@link IDataSync} インターフェイス
  */
 export interface IStorageDataSync<T extends object = SyncObject> extends IDataSync<T> {
     /**
-     * @en Get current [[IStorage]] instance.
-     * @ja 現在対象の [[IStorage]] インスタンスにアクセス
+     * @en Get current {@link IStorage} instance.
+     * @ja 現在対象の {@link IStorage} インスタンスにアクセス
      */
     getStorage(): IStorage;
 
     /**
-     * @en Set new [[IStorage]] instance.
-     * @ja 新しい [[IStorage]] インスタンスを設定
+     * @en Set new {@link IStorage} instance.
+     * @ja 新しい {@link IStorage} インスタンスを設定
      */
     setStorage(newStorage: IStorage): this;
 
@@ -60,16 +60,16 @@ export interface IStorageDataSync<T extends object = SyncObject> extends IDataSy
 }
 
 /**
- * @en [[StorageDataSync]] construction options.
- * @ja [[StorageDataSync]] 構築に指定するオプション
+ * @en {@link StorageDataSync} construction options.
+ * @ja {@link StorageDataSync} 構築に指定するオプション
  */
 export interface StorageDataSyncConstructionOptions {
     separator?: string;
 }
 
 /**
- * @en Options interface for [[StorageDataSync]].
- * @ja [[StorageDataSync]] に指定するオプション
+ * @en Options interface for {@link StorageDataSync}.
+ * @ja {@link StorageDataSync} に指定するオプション
  */
 export type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
 
@@ -109,8 +109,8 @@ function parseContext(context: Accessible<SyncContext>, separator: string): { mo
 //__________________________________________________________________________________________________//
 
 /**
- * @en The [[IDataSync]] implemant class which target is [[IStorage]]. Default storage is [[WebStorage]].
- * @ja [[IStorage]] を対象とした [[IDataSync]] 実装クラス. 既定値は [[WebStorage]]
+ * @en The {@link IDataSync} implemant class which target is {@link IStorage}. Default storage is {@link WebStorage}.
+ * @ja {@link IStorage} を対象とした {@link IDataSync} 実装クラス. 既定値は {@link WebStorage}
  */
 class StorageDataSync implements IStorageDataSync {
     private _storage: IStorage;
@@ -120,8 +120,8 @@ class StorageDataSync implements IStorageDataSync {
      * constructor
      *
      * @param storage
-     *  - `en` [[IStorage]] object
-     *  - `ja` [[IStorage]] オブジェクト
+     *  - `en` {@link IStorage} object
+     *  - `ja` {@link IStorage} オブジェクト
      * @param options
      *  - `en` construction options
      *  - `ja` 構築オプション
@@ -135,16 +135,16 @@ class StorageDataSync implements IStorageDataSync {
     // implements: IStorageDataSync
 
     /**
-     * @en Get current [[IStorage]] instance.
-     * @ja 現在対象の [[IStorage]] インスタンスにアクセス
+     * @en Get current {@link IStorage} instance.
+     * @ja 現在対象の {@link IStorage} インスタンスにアクセス
      */
     getStorage(): IStorage {
         return this._storage;
     }
 
     /**
-     * @en Set new [[IStorage]] instance.
-     * @ja 新しい [[IStorage]] インスタンスを設定
+     * @en Set new {@link IStorage} instance.
+     * @ja 新しい {@link IStorage} インスタンスを設定
      */
     setStorage(newStorage: IStorage): this {
         this._storage = newStorage;
@@ -172,8 +172,8 @@ class StorageDataSync implements IStorageDataSync {
 // implements: IDataSync
 
     /**
-     * @en [[IDataSync]] kind signature.
-     * @ja [[IDataSync]] の種別を表す識別子
+     * @en {@link IDataSync} kind signature.
+     * @ja {@link IDataSync} の種別を表す識別子
      */
     get kind(): string {
         return 'storage';
@@ -308,12 +308,12 @@ class StorageDataSync implements IStorageDataSync {
 }
 
 /**
- * @en Create [[IStorageDataSync]] object with [[IStorage]].
- * @ja [[IStorage]] を指定して, [[IStorageDataSync]] オブジェクトを構築
+ * @en Create {@link IStorageDataSync} object with {@link IStorage}.
+ * @ja {@link IStorage} を指定して, {@link IStorageDataSync} オブジェクトを構築
  *
  * @param storage
- *  - `en` [[IStorage]] object
- *  - `ja` [[IStorage]] オブジェクト
+ *  - `en` {@link IStorage} object
+ *  - `ja` {@link IStorage} オブジェクト
  * @param options
  *  - `en` construction options
  *  - `ja` 構築オプション

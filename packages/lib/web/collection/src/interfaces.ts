@@ -259,8 +259,8 @@ export interface DynamicConditionSeed<TItem extends object, TKey extends Keys<TI
 //__________________________________________________________________________________________________//
 
 /**
- * @en [[Collection]] sort options.
- * @ja [[Collection]] の sort に使用するオプション
+ * @en {@link Collection} sort options.
+ * @ja {@link Collection} の sort に使用するオプション
  */
 export interface CollectionSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> {
     /**
@@ -280,17 +280,17 @@ export interface CollectionSortOptions<TItem extends object, TKey extends Keys<T
     /**
      * @en Sort comparator functions <br>
      *     When sorting more in control, it's designated. <br>
-     *     When this property given, [[sortKeys]] is ignored.
+     *     When this property given, {@link CollectionSortOptions.sortKeys} is ignored.
      * @ja 比較関数指定 <br>
      *     より自由度の高いソートを行うときに指定 <br>
-     *     このプロパティが指定されるとき, [[sortKeys]] は無視される
+     *     このプロパティが指定されるとき, {@link CollectionSortOptions.sortKeys} は無視される
      */
     comparators?: SortCallback<TItem>[];
 }
 
 /**
- * @en [[Collection]] filter options.
- * @ja [[Collection]] の filter に使用するオプション
+ * @en {@link Collection} filter options.
+ * @ja {@link Collection} の filter に使用するオプション
  */
 export interface CollectionFilterOptions<TItem extends object> {
     /**
@@ -301,8 +301,8 @@ export interface CollectionFilterOptions<TItem extends object> {
 }
 
 /**
- * @en Base option interface for [[Collection]]`#fetch()`.
- * @ja [[Collection]]`#fetch()` に使用する基底オプション
+ * @en Base option interface for {@link Collection.fetch | Collection.fetch}().
+ * @ja {@link Collection.fetch | Collection.fetch}() に使用する基底オプション
  */
 export interface CollectionFetchOptions<TItem extends object> extends Cancelable {
     /**
@@ -331,8 +331,8 @@ export interface CollectionFetchOptions<TItem extends object> extends Cancelable
 }
 
 /**
- * @en Argument value type for [[CollectionFetchProgress]].
- * @ja [[CollectionFetchProgress]] に渡される引数
+ * @en Argument value type for {@link CollectionFetchProgress}.
+ * @ja {@link CollectionFetchProgress} に渡される引数
  */
 export type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
     total: number;
@@ -341,10 +341,10 @@ export type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys
 } & Pick<TItem, TSumKey>;
 
 /**
- * @en Progress callback function type by using [[CollectionFetchOptions]]`.auto`. <br>
- *     最終進捗 の items は Promise.resolve() に渡るものと同等
- * @ja [[CollectionFetchOptions]]`.auto` が指定された場合に使用する進捗取得用コールバック関数 <br>
- *     最終進捗 の items は Promise.resolve() に渡るものと同等
+ * @en Progress callback function type by using {@link CollectionFetchOptions.auto | CollectionFetchOptions.auto}. <br>
+ *     最終進捗 の items は `Promise.resolve`() に渡るものと同等
+ * @ja {@link CollectionFetchOptions.auto | CollectionFetchOptions.auto} が指定された場合に使用する進捗取得用コールバック関数 <br>
+ *     最終進捗 の items は `Promise.resolve`() に渡るものと同等
  */
 export type CollectionFetchProgress<TItem extends object> = (progress: CollectionItemQueryResult<TItem>) => void;
 
@@ -361,13 +361,13 @@ export interface CollectionItemQueryOptions<TItem extends object, TKey extends K
     condition?: DynamicConditionSeed<TItem, TKey>;
 
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` doesn't use sorting and filtering from [[CollectionQueryInfo]] cached.
-     * @ja [[CollectionQueryInfo]] にキャッシュされたソート/フィルターが不要な時に指定
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() doesn't use sorting and filtering from {@link CollectionQueryInfo} cached.
+     * @ja {@link CollectionQueryInfo} にキャッシュされたソート/フィルターが不要な時に指定
      */
     noSearch?: boolean;
 
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` doesn't cache result.
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() doesn't cache result.
      * @ja 明示的に cache しない場合に true
      */
     noCache?: boolean;
@@ -385,8 +385,8 @@ export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TIt
 }
 
 /**
- * @en [[Collection]] items provider function type.
- * @ja [[Collection]] の Item を供給する関数の型
+ * @en {@link Collection} items provider function type.
+ * @ja {@link Collection} の Item を供給する関数の型
  */
 export type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
     = (options?: CollectionItemQueryOptions<TItem, TKey>) => Promise<CollectionItemQueryResult<TItem>>;
@@ -394,8 +394,8 @@ export type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem
 //__________________________________________________________________________________________________//
 
 /**
- * @en [[Collection]] construction options.
- * @ja [[Collection]] 構築に指定するオプション
+ * @en {@link Collection} construction options.
+ * @ja {@link Collection} 構築に指定するオプション
  */
 export interface CollectionConstructionOptions<T extends object, K extends Keys<T> = Keys<T>> extends Silenceable {
     /** custom model provider */
@@ -415,8 +415,8 @@ export interface CollectionConstructionOptions<T extends object, K extends Keys<
 export type CollectionOperationOptions = Silenceable & Parseable;
 
 /**
- * @en Add item to [[Collection]] options.
- * @ja [[Collection]] への追加オプション
+ * @en Add item to {@link Collection} options.
+ * @ja {@link Collection} への追加オプション
  */
 export interface CollectionAddOptions extends CollectionOperationOptions {
     at?: number;
@@ -425,8 +425,8 @@ export interface CollectionAddOptions extends CollectionOperationOptions {
 }
 
 /**
- * @en [[Collection]] setup options.
- * @ja [[Collection]] 設定オプション
+ * @en {@link Collection} setup options.
+ * @ja {@link Collection} 設定オプション
  */
 export interface CollectionSetOptions extends CollectionAddOptions {
     add?: boolean;
@@ -435,21 +435,21 @@ export interface CollectionSetOptions extends CollectionAddOptions {
 }
 
 /**
- * @en [[Collection]] re-sort options.
- * @ja [[Collection]] 再ソートオプション
+ * @en {@link Collection} re-sort options.
+ * @ja {@link Collection} 再ソートオプション
  */
 export type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
     = Validable & CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
 
 /**
- * @en [[Collection]] after-filter options.
- * @ja [[Collection]] 絞り込みフィルタオプション
+ * @en {@link Collection} after-filter options.
+ * @ja {@link Collection} 絞り込みフィルタオプション
  */
 export type CollectionAfterFilterOptions<TItem extends object> = CollectionFilterOptions<TItem> & Silenceable;
 
 /**
- * @en [[Collection]] update options.
- * @ja [[Collection]] 更新時のオプション
+ * @en {@link Collection} update options.
+ * @ja {@link Collection} 更新時のオプション
  */
 export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & CollectionSetOptions & {
     index?: number;
@@ -464,27 +464,27 @@ export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & C
 export type CollectionDataSyncOptions = RestDataSyncOptions;
 
 /**
- * @en [[Collection]]`#fetch()` options.
- * @ja [[Collection]]`#fetch()` のオプション
+ * @en {@link Collection.fetch | Collection.fetch}() options.
+ * @ja {@link Collection.fetch | Collection.fetch}() のオプション
  */
 export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
     extends CollectionItemQueryOptions<TItem, TKey>, CollectionSetOptions {
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` calls [[Collection]]`#reset()` instead of [[Collection]]`#add()`.
-     * @ja 明示的に `[[Collection]]`#reset()` メソッドを呼ぶ場合に true
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() calls {@link Collection.reset | Collection.reset}() instead of {@link Collection.add | Collection.add}().
+     * @ja {@link Collection.fetch | Collection.fetch}() 内で明示的に {@link Collection.reset | Collection.reset}() メソッドを呼ぶ場合に true
      */
     reset?: boolean;
 
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` calls [[Collection]]`#sort()`.
-     * @ja `[[Collection]]`#sort()` を実行する場合 true
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() calls {@link Collection.sort | Collection.sort}().
+     * @ja {@link Collection.fetch | Collection.fetch}() 内で {@link Collection.sort | Collection.sort} を実行する場合 true
      */
     sort?: boolean;
 }
 
 /**
- * @en [[Collection]]`#requery()` options.
- * @ja [[Collection]]`#requery()` のオプション
+ * @en {@link Collection.requery | Collection.requery}() options.
+ * @ja {@link Collection.requery | Collection.requery}() のオプション
  */
 export type CollectionRequeryOptions = Silenceable & Cancelable;
 
@@ -496,14 +496,14 @@ export type CollectionModelAttributeChangeEvent<T extends object>
     = { [K in ChangedAttributeEvent<T>]: K extends `@change:${string}` ? [T, Collection<T>, CollectionOperationOptions] : never; }
 
 /**
- * @en Default [[Collection]] seed type.
- * @ja 既定の [[Collection]] シードデータ型
+ * @en Default {@link Collection} seed type.
+ * @ja 既定の {@link Collection} シードデータ型
  */
 export type CollectionSeed = AnyObject;
 
 /**
- * @en Default [[Collection]] event definition.
- * @ja 既定の [[Collection]] イベント定義
+ * @en Default {@link Collection} event definition.
+ * @ja 既定の {@link Collection} イベント定義
  */
 export type CollectionEvent<TItem extends object> = EventAll & SyncEvent<Collection<TItem>> & CollectionModelAttributeChangeEvent<TItem> & {
     /**

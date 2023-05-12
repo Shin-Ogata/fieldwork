@@ -12,8 +12,8 @@ export interface CompiledTemplate {
      */
     source: string;
     /**
-     * @en Get [[TemplateResult]] that applied given parameter(s).
-     * @ja パラメータを適用し [[TemplateResult]] へ変換
+     * @en Get {@link TemplateResult} that applied given parameter(s).
+     * @ja パラメータを適用し {@link TemplateResult} へ変換
      *
      * @param view
      *  - `en` template parameters for source.
@@ -22,8 +22,8 @@ export interface CompiledTemplate {
     (view?: PlainObject): TemplateResult | SVGTemplateResult;
 }
 /**
- * @en [[TemplateBridge]] compile options
- * @ja [[TemplateBridge]] コンパイルオプション
+ * @en {@link TemplateBridge} compile options
+ * @ja {@link TemplateBridge} コンパイルオプション
  */
 export interface TemplateBridgeCompileOptions {
     transformer?: TemplateTransformer;
@@ -34,8 +34,8 @@ export interface TemplateBridgeCompileOptions {
  */
 export declare class TemplateBridge {
     /**
-     * @en Get [[CompiledTemplate]] from template source.
-     * @ja テンプレート文字列から [[CompiledTemplate]] を取得
+     * @en Get {@link CompiledTemplate} from template source.
+     * @ja テンプレート文字列から {@link CompiledTemplate} を取得
      *
      * @param template
      *  - `en` template source string / template element

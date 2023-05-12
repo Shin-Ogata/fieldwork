@@ -9,13 +9,14 @@ import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItem
  * @example <br>
  *
  * ```ts
- * import { Model, ModelConstructor } from '@cdp/model';
  * import {
+ *     Model,
+ *     ModelConstructor,
  *     Collection,
  *     CollectionItemQueryOptions,
  *     CollectionItemQueryResult,
  *     CollectionSeed,
- * } from '@cdp/collection';
+ * } from '@cdp/runtime';
  *
  * // Model schema
  * interface TrackAttribute {
@@ -82,9 +83,9 @@ import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItem
 export declare abstract class Collection<TModel extends object = any, TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>> extends EventSource<TEvent> implements Iterable<TModel> {
     /**
      * @en Model constructor. <br>
-     *     The constructor is used internally by this [[Collection]] class for [[TModel]] construction.
+     *     The constructor is used internally by this {@link Collection} class for `TModel` construction.
      * @ja Model コンストラクタ <br>
-     *     [[Collection]] クラスが [[TModel]] を構築するために使用する
+     *     {@link Collection} クラスが `TModel` を構築するために使用する
      */
     static readonly model?: Class;
     /**
@@ -138,13 +139,13 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     get filtered(): boolean;
     /**
-     * @en [[CollectionQueryInfo]] instance
-     * @ja [[CollectionQueryInfo]] を格納するインスタンス
+     * @en {@link CollectionQueryInfo} instance
+     * @ja {@link CollectionQueryInfo} を格納するインスタンス
      */
     protected get _queryInfo(): CollectionQueryInfo<TModel, TKey>;
     /**
-     * @en [[CollectionQueryInfo]] instance
-     * @ja [[CollectionQueryInfo]] を格納するインスタンス
+     * @en {@link CollectionQueryInfo} instance
+     * @ja {@link CollectionQueryInfo} を格納するインスタンス
      */
     protected set _queryInfo(val: CollectionQueryInfo<TModel, TKey>);
     /**
@@ -286,8 +287,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     protected parse(response: CollectionSeed | CollectionSeed[] | void, options?: CollectionSetOptions): TModel[] | CollectionSeed[] | undefined;
     /**
-     * @en The [[fetch]] method proxy that is compatible with [[CollectionItemProvider]] returns one-shot result.
-     * @ja [[CollectionItemProvider]] 互換の単発の fetch 結果を返却. 必要に応じてオーバーライド可能.
+     * @en The {@link Collection.fetch} method proxy that is compatible with {@link CollectionItemProvider} returns one-shot result.
+     * @ja {@link CollectionItemProvider} 互換の単発の {@link Collection.fetch} 結果を返却. 必要に応じてオーバーライド可能.
      *
      * @override
      *
@@ -297,8 +298,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     protected sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<object>>;
     /**
-     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
-     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     * @en Fetch the {@link Model} from the server, merging the response with the model's local attributes.
+     * @ja {@link Model} 属性のサーバー同期. レスポンスのマージを実行
      *
      * @param options
      *  - `en` fetch options.
@@ -483,8 +484,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     create(attrs: object, options?: ModelSaveOptions): TModel | undefined;
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Iterator of {@link ElementBase} values in the array.
+     * @ja 格納している {@link ElementBase} にアクセス可能なイテレータオブジェクトを返却
      */
     [Symbol.iterator](): Iterator<TModel>;
     /**
@@ -498,8 +499,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     keys(): IterableIterator<string>;
     /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of values({@link ElementBase}) in the array.
+     * @ja values({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     values(): IterableIterator<TModel>;
 }

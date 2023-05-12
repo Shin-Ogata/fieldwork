@@ -111,9 +111,9 @@ export interface Hooks {
     useEffect: (effect: () => void, dependencies?: unknown[]) => void;
     /**
      * @en Accepts a function that contains imperative, possibly effectful code. <br>
-     *     Unlike [[useEffect]] , it is executed before the component is rendered and the new element is displayed on the screen.
+     *     Unlike {@link Hooks.useEffect} , it is executed before the component is rendered and the new element is displayed on the screen.
      * @ja 副作用を有する可能性のある命令型のコードの適用 <br>
-     *     [[useEffect]] と異なり, コンポーネントがレンダリングされて新しい要素が画面に表示される前に実行される。
+     *     {@link Hooks.useEffect} と異なり, コンポーネントがレンダリングされて新しい要素が画面に表示される前に実行される。
      *
      * @param effect
      *  - `en` callback function that runs each time dependencies change
@@ -180,27 +180,21 @@ export interface Hooks {
      */
     useReducer: <S, I, A>(reducer: HookReducer<S, A>, initialState: I, init?: ((_: I) => S) | undefined) => readonly [S, (action: A) => void];
     /**
-     * @en
-     * createContext is a function that creates a new context object. A context object is used to share data that can be considered “global” for a tree of React components.
-     *
-     * @ja
-     * createContext は新しいコンテキストオブジェクトを作成する関数です。コンテキストオブジェクトは、React コンポーネントのツリーに対して「グローバル」と考えられるデータを共有するために使用されます。
+     * @en Create a new context object. Context objects are used to share data that is considered "global".
+     * @ja 新しいコンテキストオブジェクトを作成する。コンテキストオブジェクトは,「グローバル」と考えられるデータを共有するために使用される。
      *
      * @param defaultValue
-     *  - `en`: The default value for the context object.
-     *  - `ja`: コンテキストオブジェクトのデフォルト値。
+     *  - `en`: The default value for the context object
+     *  - `ja`: コンテキストオブジェクトのデフォルト値
      */
     createContext: <T>(defaultValue?: T) => IHookContext<T>;
     /**
-     * @en
-     * useContext is a hook that returns the current context value for the given context object. When the nearest <MyContext.Provider> above the component updates, this hook will trigger a rerender with the latest context value passed to that MyContext provider.
-     *
-     * @ja
-     * useContext は、指定されたコンテキストオブジェクトに対する現在のコンテキスト値を返すフックです。このフックは、コンポーネントの上にある最も近い <MyContext.Provider> が更新されると、その MyContext プロバイダーに渡された最新のコンテキスト値で再レンダリングがトリガーされます。
+     * @en Returns the current context value for the specified context object.
+     * @ja 指定されたコンテキストオブジェクトに対する現在のコンテキスト値を返却
      *
      * @param context
-     *  - `en`: The context object returned from React.createContext.
-     *  - `ja`: React.createContext から返されるコンテキストオブジェクト。
+     *  - `en`: the context object returned from {@link Hooks.createContext}
+     *  - `ja`: {@link Hooks.createContext} から返されるコンテキストオブジェクト
      */
     useContext: <T>(context: IHookContext<T>) => T;
 }

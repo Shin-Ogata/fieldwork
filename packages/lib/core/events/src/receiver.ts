@@ -118,7 +118,7 @@ function unregister(context: Context, target?: Subscribable, channel?: string | 
  * @example <br>
  *
  * ```ts
- * import { EventReceiver, EventBroker } from '@cdp/events';
+ * import { EventReceiver, EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {

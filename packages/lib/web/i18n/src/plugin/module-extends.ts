@@ -8,8 +8,8 @@ import { AjaxRequestOptions } from '@cdp/ajax';
 declare module '@cdp/extension-i18n' {
     namespace i18n {
         /**
-         * @en [[AjaxBackend]] options interface.
-         * @ja [[AjaxBackend]] のオプションインターフェイス
+         * @en {@link AjaxBackend} options interface.
+         * @ja {@link AjaxBackend} のオプションインターフェイス
          */
         export interface AjaxBackendOptions extends AjaxRequestOptions {
             /** load path resolver */
@@ -17,8 +17,8 @@ declare module '@cdp/extension-i18n' {
         }
 
         /**
-         * @en [[DomLocalizer]] options interface.
-         * @ja [[DomLocalizer]] のオプションインターフェイス
+         * @en {@link DomLocalizer} options interface.
+         * @ja {@link DomLocalizer} のオプションインターフェイス
          */
         export interface DomLocalizerOptions {
             /** selector for translating elements */

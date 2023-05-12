@@ -22,8 +22,8 @@ export type Primitive = string | number | boolean | symbol | bigint | null | und
  */
 export type Nullish = void | null | undefined;
 /**
- * @en The type of object or [[Nullish]].
- * @ja [[Nullish]] になりえるオブジェクト型定義
+ * @en The type of object or {@link Nullish}.
+ * @ja {@link Nullish} になりえるオブジェクト型定義
  */
 export type Nullable<T extends object> = T | Nullish;
 /**
@@ -51,8 +51,8 @@ export interface TypeList {
     function(...args: unknown[]): unknown;
 }
 /**
- * @en The key list of [[TypeList]].
- * @ja [[TypeList]] キー一覧
+ * @en The key list of {@link TypeList}.
+ * @ja {@link TypeList} キー一覧
  */
 export type TypeKeys = keyof TypeList;
 /**
@@ -145,21 +145,21 @@ export type TypeToKey<O extends object, T extends Types<O>> = {
     [K in keyof O]: O[K] extends T ? K : never;
 }[keyof O];
 /**
- * @en The [[PlainObject]] type is a JavaScript object containing zero or more key-value pairs. <br>
+ * @en The {@link PlainObject} type is a JavaScript object containing zero or more key-value pairs. <br>
  *     'Plain' means it from other kinds of JavaScript objects. ex: null, user-defined arrays, and host objects such as `document`.
- * @ja 0 以上の key-value ペアを持つ [[PlainObject]] 定義 <br>
+ * @ja 0 以上の key-value ペアを持つ {@link PlainObject} 定義 <br>
  *     'Plain' とは他の種類の JavaScript オブジェクトを含まないオブジェクトを意味する. 例:  null, ユーザー定義配列, または `document` のような組み込みオブジェクト
  */
 export type PlainObject<T = {} | null | undefined> = Record<string, T>;
 /**
  * @en Object can be guaranteed definition. Be careful not to abuse it because it does not force the cast.
- *   - Unlike [[PlainObject]], it can accept Class (built-in object), Array, Function.
+ *   - Unlike {@link PlainObject}, it can accept Class (built-in object), Array, Function.
  *   - Unlike `object`, you can access unknown properties.
- *   - Unlike `{} / Object`, it can repel [[Primitive]].
+ *   - Unlike `{} / Object`, it can repel {@link Primitive}.
  * @ja Object を保証可能な定義. キャストを強制しないため乱用しないように注意が必要.
- *   - [[PlainObject]] と違い、Class (組み込みオブジェクト), Array, Function を受け付けることができる.
+ *   - {@link PlainObject} と違い、Class (組み込みオブジェクト), Array, Function を受け付けることができる.
  *   - `object` と違い、未知のプロパティにアクセスすることができる.
- *   - `{} / Object` と違い、[[Primitive]] をはじくことができる.
+ *   - `{} / Object` と違い、{@link Primitive} をはじくことができる.
  */
 export type AnyObject = Record<string, any>;
 /**
@@ -229,8 +229,8 @@ export interface TypedArrayConstructor {
  */
 export declare function exists<T>(x: T | Nullish): x is T;
 /**
- * @en Check the value-type is [[Nullish]].
- * @ja [[Nullish]] 型であるか判定
+ * @en Check the value-type is {@link Nullish}.
+ * @ja {@link Nullish} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -310,8 +310,8 @@ export declare const isArray: (arg: any) => arg is any[];
  */
 export declare function isObject(x: unknown): x is object;
 /**
- * @en Check the value-type is [[PlainObject]].
- * @ja [[PlainObject]] 型であるか判定
+ * @en Check the value-type is {@link PlainObject}.
+ * @ja {@link PlainObject} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -368,8 +368,8 @@ export declare function typeOf<K extends TypeKeys>(type: K, x: unknown): x is Ty
 export declare function isIterable<T>(x: Nullable<Iterable<T>>): x is Iterable<T>;
 export declare function isIterable(x: unknown): x is Iterable<unknown>;
 /**
- * @en Check the value is one of [[TypedArray]].
- * @ja 指定したインスタンスが [[TypedArray]] の一種であるか判定
+ * @en Check the value is one of {@link TypedArray}.
+ * @ja 指定したインスタンスが {@link TypedArray} の一種であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -481,8 +481,8 @@ export declare function getConfig<T extends object = UnknownObject>(namespace?: 
  */
 export interface Verifier {
     /**
-     * @en Verification for the input value is not [[Nullish]].
-     * @ja [[Nullish]] でないことを検証
+     * @en Verification for the input value is not {@link Nullish}.
+     * @ja {@link Nullish} でないことを検証
      *
      * @param notNullish.x
      *  - `en` evaluated value
@@ -493,12 +493,12 @@ export interface Verifier {
      */
     notNullish: (x: unknown, message?: string | null) => void | never;
     /**
-     * @en Verification for the input is [[TypeKeys]].
-     * @ja 指定した [[TypeKeys]] であるか検証
+     * @en Verification for the input is {@link TypeKeys}.
+     * @ja 指定した {@link TypeKeys} であるか検証
      *
      * @param typeOf.type
-     *  - `en` one of [[TypeKeys]]
-     *  - `ja` [[TypeKeys]] を指定
+     *  - `en` one of {@link TypeKeys}
+     *  - `ja` {@link TypeKeys} を指定
      * @param typeOf.x
      *  - `en` evaluated value
      *  - `ja` 評価する値
@@ -700,14 +700,14 @@ export interface MixinConstructor<B extends Class, U extends object> extends Typ
      *  - `en` base class arguments
      *  - `ja` 基底クラスに指定した引数
      * @returns
-     *  - `en` union type of classes when calling [[mixins]]()
-     *  - `ja` [[mixins]]() に渡したクラスの集合
+     *  - `en` union type of classes when calling {@link mixins}()
+     *  - `ja` {@link mixins}() に渡したクラスの集合
      */
     new (...args: ConstructorParameters<B>): U;
 }
 /**
- * @en Definition of [[setMixClassAttribute]] function's arguments.
- * @ja [[setMixClassAttribute]] の取りうる引数定義
+ * @en Definition of {@link setMixClassAttribute} function's arguments.
+ * @ja {@link setMixClassAttribute} の取りうる引数定義
  */
 export interface MixClassAttribute {
     /**
@@ -717,10 +717,10 @@ export interface MixClassAttribute {
     protoExtendsOnly: void;
     /**
      * @en Setup [Symbol.hasInstance] property. <br>
-     *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
+     *     The class designated as a source of {@link mixins}() has [Symbol.hasInstance] property implicitly. <br>
      *     It's used to avoid becoming the behavior `instanceof` doesn't intend when the class is extended from the mixined class the other place.
      * @ja [Symbol.hasInstance] プロパティ設定<br>
-     *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
+     *     {@link mixins}() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
      *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
      */
     instanceOf: ((inst: object) => boolean) | Nullish;
@@ -912,8 +912,8 @@ export declare function at<T>(array: T[], index: number): T | never;
  */
 export declare function indices<T>(array: T[], ...excludes: number[]): number[];
 /**
- * @en [[groupBy]]() options definition.
- * @ja [[groupBy]]() に指定するオプション定義
+ * @en {@link groupBy}() options definition.
+ * @ja {@link groupBy}() に指定するオプション定義
  */
 export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T, TGROUPKEY extends string> {
     /**
@@ -933,8 +933,8 @@ export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEY
     groupKey?: TGROUPKEY;
 }
 /**
- * @en Return type of [[groupBy]]().
- * @ja [[groupBy]]() が返却する型
+ * @en Return type of {@link groupBy}().
+ * @ja {@link groupBy}() が返却する型
  */
 export type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
 /**
@@ -1289,7 +1289,7 @@ export declare function result<T = any>(target: object | Nullish, property: stri
  */
 export type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec';
 /**
- * @en Calculate from the date which becomes a cardinal point before a N date time or after a N date time (by [[DateUnit]]).
+ * @en Calculate from the date which becomes a cardinal point before a N date time or after a N date time (by {@link DateUnit}).
  * @ja 基点となる日付から、N日後、N日前を算出
  *
  * @param base
@@ -1298,7 +1298,7 @@ export type DateUnit = 'year' | 'month' | 'day' | 'hour' | 'min' | 'sec' | 'msec
  * @param add
  *  - `en` relative date time.
  *  - `ja` 加算日. マイナス指定でn日前も設定可能
- * @param unit [[DateUnit]]
+ * @param unit {@link DateUnit}
  */
 export declare function computeDate(base: Date, add: number, unit?: DateUnit): Date;
 /**
@@ -1532,8 +1532,8 @@ export declare const unescapeHTML: (src: Primitive) => string;
  */
 export declare function toTypedData(data: string | undefined): TypedData | undefined;
 /**
- * @en Convert to string from [[TypedData]].
- * @ja [[TypedData]] を文字列に変換
+ * @en Convert to string from {@link TypedData}.
+ * @ja {@link TypedData} を文字列に変換
  *
  * @param data
  *  - `en` input string
@@ -1725,8 +1725,8 @@ export interface EventAll {
     '*': any[];
 }
 /**
- * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
- * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ * @en Represents a disposable resource, such as the execution of an {@link Subscribable}.
+ * @ja {@link Subscribable} オブジェクトが返す購読情報コンテキストオブジェクト
  */
 export interface Subscription {
     /**
@@ -1808,8 +1808,8 @@ export interface Subscribable<Event extends object = any> {
     once<Channel extends keyof Event>(channel: Channel | Channel[], listener: (...args: Arguments<Event[Channel]>) => unknown): Subscription;
 }
 /**
- * @en Extract event schema from [[Subscribable]] type.
- * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ * @en Extract event schema from {@link Subscribable} type.
+ * @ja {@link Subscribable} 型からイベントスキーマ定義の抽出
  */
 export type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
 /**
@@ -1829,7 +1829,7 @@ export interface Silenceable {
  * @example <br>
  *
  * ```ts
- * import { EventPublisher } from '@cdp/events';
+ * import { EventPublisher } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -1947,7 +1947,7 @@ export type EventArguments<T> = Arguments<T>;
  * @example <br>
  *
  * ```ts
- * import { EventBroker } from '@cdp/events';
+ * import { EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -1975,8 +1975,8 @@ export interface EventBroker<Event extends object> extends Subscribable<Event> {
     trigger<Channel extends keyof Event>(channel: Channel, ...args: Arguments<Partial<Event[Channel]>>): void;
 }
 /**
- * @en Constructor of [[EventBroker]]
- * @ja [[EventBroker]] のコンストラクタ実体
+ * @en Constructor of {@link EventBroker}
+ * @ja {@link EventBroker} のコンストラクタ実体
  */
 export declare const EventBroker: {
     readonly prototype: EventBroker<any>;
@@ -1992,7 +1992,7 @@ export declare const EventBroker: {
  * @example <br>
  *
  * ```ts
- * import { EventReceiver, EventBroker } from '@cdp/events';
+ * import { EventReceiver, EventBroker } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {
@@ -2087,15 +2087,15 @@ export declare class EventReceiver {
     stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }
 /**
- * @en The class which have I/F of [[EventBroker]] and [[EventReceiver]]. <br>
+ * @en The class which have I/F of {@link EventBroker} and {@link EventReceiver}. <br>
  *     `Events` class of `Backbone.js` equivalence.
- * @ja [[EventBroker]] と [[EventReceiver]] の I/F をあわせ持つクラス <br>
+ * @ja {@link EventBroker} と {@link EventReceiver} の I/F をあわせ持つクラス <br>
  *     `Backbone.js` の `Events` クラス相当
  *
  * @example <br>
  *
  * ```ts
- * import { EventSource } from '@cdp/events';
+ * import { EventSource } from '@cdp/runtime';
  *
  * // declare event interface
  * interface TargetEvent {
@@ -2141,8 +2141,8 @@ export declare const EventSource: {
  */
 export interface CancelTokenSource<T = unknown> {
     /**
-     * @en [[CancelToken]] getter.
-     * @ja [[CancelToken]] 取得
+     * @en {@link CancelToken} getter.
+     * @ja {@link CancelToken} 取得
      */
     readonly token: CancelToken<T>;
     /**
@@ -2171,7 +2171,7 @@ export interface CancelTokenSource<T = unknown> {
  * @example <br>
  *
  * ```ts
- * import { CancelToken } from '@cdp/promise';
+ * import { CancelToken } from '@cdp/runtime';
  * ```
  *
  * - Basic Usage
@@ -2219,13 +2219,13 @@ export interface CancelTokenSource<T = unknown> {
  */
 export declare class CancelToken<T = unknown> {
     /**
-     * @en Create [[CancelTokenSource]] instance.
-     * @ja [[CancelTokenSource]] インスタンスの取得
+     * @en Create {@link CancelTokenSource} instance.
+     * @ja {@link CancelTokenSource} インスタンスの取得
      *
      * @param linkedTokens
-     *  - `en` relating already made [[CancelToken]] instance.
+     *  - `en` relating already made {@link CancelToken} instance.
      *        You can attach to the token that to be a cancellation target.
-     *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
+     *  - `ja` すでに作成された {@link CancelToken} 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
     static source<T = unknown>(...linkedTokens: CancelToken[]): CancelTokenSource<T>;
@@ -2236,9 +2236,9 @@ export declare class CancelToken<T = unknown> {
      *  - `en` executer that has `cancel` and `close` callback.
      *  - `ja` キャンセル/クローズ 実行コールバックを指定
      * @param linkedTokens
-     *  - `en` relating already made [[CancelToken]] instance.
+     *  - `en` relating already made {@link CancelToken} instance.
      *        You can attach to the token that to be a cancellation target.
-     *  - `ja` すでに作成された [[CancelToken]] 関連付ける場合に指定
+     *  - `ja` すでに作成された {@link CancelToken} 関連付ける場合に指定
      *        渡された token はキャンセル対象として紐づけられる
      */
     constructor(executor: (cancel: (reason: T) => void, close: () => void) => void, ...linkedTokens: CancelToken[]);
@@ -2303,20 +2303,20 @@ export declare class CancelablePromise<T> extends Promise<T> {
      *  - `en` A callback used to initialize the promise. This callback is passed two arguments `resolve` and `reject`.
      *  - `ja` promise の初期化に使用するコールバックを指定. `resolve` と `reject` の2つの引数を持つ
      * @param cancelToken
-     *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
-     *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
+     *  - `en` {@link CancelToken} instance create from {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
      */
     constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null);
 }
 /**
- * @en Switch the global `Promise` constructor `Native Promise` or [[CancelablePromise]]. <br>
+ * @en Switch the global `Promise` constructor `Native Promise` or {@link CancelablePromise}. <br>
  *     `Native Promise` constructor is overridden by framework default behaviour.
- * @ja グローバル `Promise` コンストラクタを `Native Promise` または [[CancelablePromise]] に切り替え <br>
+ * @ja グローバル `Promise` コンストラクタを `Native Promise` または {@link CancelablePromise} に切り替え <br>
  *     既定で `Native Promise` をオーバーライドする.
  *
  * @param enable
- *  - `en` `true`: use [[CancelablePromise]] /  `false`: use `Native Promise`
- *  - `ja` `true`: [[CancelablePromise]] を使用 / `false`: `Native Promise` を使用
+ *  - `en` `true`: use {@link CancelablePromise} /  `false`: use `Native Promise`
+ *  - `ja` `true`: {@link CancelablePromise} を使用 / `false`: `Native Promise` を使用
  */
 export declare function extendPromise(enable: boolean): PromiseConstructor;
 /**
@@ -2353,8 +2353,8 @@ export declare function wait(promises: Promise<unknown>[]): Promise<unknown[]>;
  * ```
  *
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  */
 export declare function checkCanceled(token: CancelToken | undefined): Promise<void>;
 /**
@@ -2366,7 +2366,7 @@ export declare function checkCanceled(token: CancelToken | undefined): Promise<v
  * @example <br>
  *
  * ```ts
- * import { checkStatus } from '@cdp/promise';
+ * import { checkStatus } from '@cdp/runtime';
  *
  * let promise: Promise<unknown>; // some promise instance
  * :
@@ -2401,16 +2401,16 @@ export declare class Deferred<T = void> extends CancelablePromise<T> {
      * constructor
      *
      * @param cancelToken
-     *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
-     *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
+     *  - `en` {@link CancelToken} instance create from {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
      */
     constructor(cancelToken?: CancelToken | null);
 }
 /**
  * @en The class manages lumping multiple `Promise` objects. <br>
- *     It's possible to make them cancel more than one `Promise` which handles different [[CancelToken]] by lumping.
+ *     It's possible to make them cancel more than one `Promise` which handles different {@link CancelToken} by lumping.
  * @ja 複数 `Promise` オブジェクトを一括管理するクラス <br>
- *     異なる [[CancelToken]] を扱う複数の `Promise` を一括でキャンセルさせることが可能
+ *     異なる {@link CancelToken} を扱う複数の `Promise` を一括でキャンセルさせることが可能
  */
 export declare class PromiseManager {
     private readonly _pool;
@@ -2422,8 +2422,8 @@ export declare class PromiseManager {
      *  - `en` any `Promise` instance is available.
      *  - `ja` 任意の `Promise` インスタンス
      * @param cancelSource
-     *  - `en` [[CancelTokenSource]] instance made by `CancelToken.source()`.
-     *  - `ja` `CancelToken.source()` で生成される [[CancelTokenSource]] インスタンス
+     *  - `en` {@link CancelTokenSource} instance made by {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() で生成される {@link CancelTokenSource} インスタンス
      * @returns
      *  - `en` return the same instance of input `promise` instance.
      *  - `ja` 入力した `promise` と同一インスタンスを返却
@@ -2454,9 +2454,9 @@ export declare class PromiseManager {
      */
     race(): Promise<unknown>;
     /**
-     * @en Call [[wait]]() for under the management. <br>
+     * @en Call {@link wait}() for under the management. <br>
      *     Wait for all `settled`. (simplified version)
-     * @ja 管理対象に対して [[wait]]() <br>
+     * @ja 管理対象に対して {@link wait}() <br>
      *     すべてが `settled` になるまで待機 (簡易バージョン)
      */
     wait(): Promise<unknown[]>;
@@ -2483,7 +2483,7 @@ export declare class PromiseManager {
      *  - `ja` `cancelSource` に渡される引数
      * @returns
      *  - `en` `Promise` instance which wait by until cancellation completion.
-     *  - `ja` キャンセル完了まで待機する [[Promise]] インスタンス
+     *  - `ja` キャンセル完了まで待機する `Promise` インスタンス
      */
     abort<T>(reason?: T): Promise<unknown[]>;
 }
@@ -2519,8 +2519,8 @@ export interface IObservable {
      * @ja イベント購読状態のサスペンド
      *
      * @param noRecord
-     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
-     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when {@link resume}() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, {@link resume}() 時に発火する (既定)
      */
     suspend(noRecord?: boolean): this;
     /**
@@ -2535,19 +2535,19 @@ export interface IObservable {
     getObservableState(): ObservableState;
 }
 /**
- * @en Interface able to access to [[EventBroker]] with [[IObservable]].
- * @ja [[IObservable]] の持つ内部 [[EventBroker]] にアクセス可能なインターフェイス
+ * @en Interface able to access to {@link EventBroker} with {@link IObservable}.
+ * @ja {@link IObservable} の持つ内部 {@link EventBroker} にアクセス可能なインターフェイス
  */
 export interface IObservableEventBrokerAccess<T extends object = any> extends IObservable {
     /**
-     * @en Get [[EventBroker]] instance.
-     * @ja [[EventBroker]] インスタンスの取得
+     * @en Get {@link EventBroker} instance.
+     * @ja {@link EventBroker} インスタンスの取得
      */
     getBroker(): EventBroker<T>;
 }
 /**
- * @en Check the value-type is [[IObservable]].
- * @ja [[IObservable]] 型であるか判定
+ * @en Check the value-type is {@link IObservable}.
+ * @ja {@link IObservable} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -2611,8 +2611,8 @@ export declare abstract class ObservableObject implements IObservable {
      * constructor
      *
      * @param state
-     *  - `en` initial state. default: [[ObservableState.ACTIVE]]
-     *  - `ja` 初期状態 既定: [[ObservableState.ACTIVE]]
+     *  - `en` initial state. default: {@link ObservableState.ACTIVE | ObservableState.ACTIVE}
+     *  - `ja` 初期状態 既定: {@link ObservableState.ACTIVE | ObservableState.ACTIVE}
      */
     constructor(state?: ObservableState);
     /**
@@ -2672,8 +2672,8 @@ export declare abstract class ObservableObject implements IObservable {
      * @ja イベント購読状態のサスペンド
      *
      * @param noRecord
-     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
-     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when {@link resume}() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, {@link resume}() 時に発火する (既定)
      */
     suspend(noRecord?: boolean): this;
     /**
@@ -2687,8 +2687,8 @@ export declare abstract class ObservableObject implements IObservable {
      */
     getObservableState(): ObservableState;
     /**
-     * @en Create [[ObservableObject]] from any object.
-     * @ja 任意のオブジェクトから [[ObservableObject]] を生成
+     * @en Create {@link ObservableObject} from any object.
+     * @ja 任意のオブジェクトから {@link ObservableObject} を生成
      *
      * @example <br>
      *
@@ -2809,8 +2809,8 @@ export declare class ObservableArray<T = unknown> extends Array<T> implements IO
      * @ja イベント購読状態のサスペンド
      *
      * @param noRecord
-     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when [[resume]]() callded. (default)
-     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, [[resume]]() 時に発火する (既定)
+     *  - `en` `true`: not recording property changes and clear changes. / `false`: property changes are recorded and fired when {@link resume}() callded. (default)
+     *  - `ja` `true`: プロパティ変更も記録せず, 現在の記録も破棄 / `false`: プロパティ変更は記録され, {@link resume}() 時に発火する (既定)
      */
     suspend(noRecord?: boolean): this;
     /**
@@ -2921,7 +2921,7 @@ export declare namespace ObservableArray {
  * @en Judge fail or not.
  * @ja 失敗判定
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @returns true: fail result / false: success result
  */
 export declare function FAILED(code: number): boolean;
@@ -2929,24 +2929,24 @@ export declare function FAILED(code: number): boolean;
  * @en Judge success or not.
  * @ja 成功判定
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @returns true: success result / false: fail result
  */
 export declare function SUCCEEDED(code: number): boolean;
 /**
- * @en Convert to [[RESULT_CODE]] `name` string from [[RESULT_CODE]].
- * @ja [[RESULT_CODE]] を [[RESULT_CODE]] 文字列に変換
+ * @en Convert to {@link RESULT_CODE} `name` string from {@link RESULT_CODE}.
+ * @ja {@link RESULT_CODE} を {@link RESULT_CODE} 文字列に変換
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @param tag  custom tag if needed.
  * @returns name string ex) '[tag][NOT_SUPPORTED]'
  */
 export declare function toNameString(code: number, tag?: string): string;
 /**
- * @en Convert to help string from [[RESULT_CODE]].
- * @ja [[RESULT_CODE]] をヘルプストリングに変換
+ * @en Convert to help string from {@link RESULT_CODE}.
+ * @ja {@link RESULT_CODE} をヘルプストリングに変換
  *
- * @param code [[RESULT_CODE]]
+ * @param code {@link RESULT_CODE}
  * @returns registered help string
  */
 export declare function toHelpString(code: number): string;
@@ -2972,8 +2972,8 @@ export declare class Result extends Error {
      */
     constructor(code?: number, message?: string, options?: ErrorOptions);
     /**
-     * @en [[RESULT_CODE]] value.
-     * @ja [[RESULT_CODE]] の値
+     * @en {@link RESULT_CODE} value.
+     * @ja {@link RESULT_CODE} の値
      */
     readonly code: number;
     /**
@@ -3002,26 +3002,26 @@ export declare class Result extends Error {
      */
     get isCanceled(): boolean;
     /**
-     * @en Get formatted [[RESULT_CODE]] name string.
-     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
+     * @en Get formatted {@link RESULT_CODE} name string.
+     * @ja フォーマットされた {@link RESULT_CODE} 名文字列を取得
      */
     get codeName(): string;
     /**
-     * @en Get [[RESULT_CODE]] help string.
-     * @ja [[RESULT_CODE]] のヘルプストリングを取得
+     * @en Get {@link RESULT_CODE} help string.
+     * @ja {@link RESULT_CODE} のヘルプストリングを取得
      */
     get help(): string;
 }
 /** Returns `true` if `x` is `Result`, `false` otherwise. */
 export declare function isResult(x: unknown): x is Result;
 /**
- * @en Convert to [[Result]] object.
- * @ja [[Result]] オブジェクトに変換
+ * @en Convert to {@link Result} object.
+ * @ja {@link Result} オブジェクトに変換
  */
 export declare function toResult(o: unknown): Result;
 /**
- * @en Create [[Result]] helper.
- * @ja [[Result]] オブジェクト構築ヘルパー
+ * @en Create {@link Result} helper.
+ * @ja {@link Result} オブジェクト構築ヘルパー
  *
  * @param code
  *  - `en` result code
@@ -3035,8 +3035,8 @@ export declare function toResult(o: unknown): Result;
  */
 export declare function makeResult(code: number, message?: string, cause?: unknown): Result;
 /**
- * @en Create canceled [[Result]] helper.
- * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
+ * @en Create canceled {@link Result} helper.
+ * @ja キャンセル情報格納 {@link Result} オブジェクト構築ヘルパー
  *
  * @param message
  *  - `en` result info message
@@ -3067,26 +3067,26 @@ export type StorageDataTypes = Types<StorageDataTypeList>;
  */
 export type StorageData = Record<string, StorageDataTypes>;
 /**
- * @en The types by which designation is possible in [[setItem]]().
- * @ja [[setItem]]() に指定可能な型
+ * @en The types by which designation is possible in {@link IStorage.setItem | IStorage.setItem}().
+ * @ja {@link IStorage.setItem | IStorage.setItem}() に指定可能な型
  */
 export type StorageInputDataTypeList<T extends object> = Types<T> | null | undefined;
 /**
- * @en [[IStorage]] common option interface.
- * @ja [[IStorage]] 操作に使用する共通のオプションインターフェイス
+ * @en {@link IStorage} common option interface.
+ * @ja {@link IStorage} 操作に使用する共通のオプションインターフェイス
  */
 export type IStorageOptions = Silenceable & Cancelable;
 /**
- * @en [[IStorage]] common format option interface.
- * @ja [[IStorage]] フォーマットに関するオプションインターフェイス
+ * @en {@link IStorage} common format option interface.
+ * @ja {@link IStorage} フォーマットに関するオプションインターフェイス
  */
 export interface IStorageFormatOptions {
     /** JSON space number */
     jsonSpace?: number;
 }
 /**
- * @en [[IStorage]] data I/O operation option interface.
- * @ja [[IStorage]] データ I/O 操作に使用するオプションインターフェイス
+ * @en {@link IStorage} data I/O operation option interface.
+ * @ja {@link IStorage} データ I/O 操作に使用するオプションインターフェイス
  */
 export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Keys<T>> extends IStorageOptions, IStorageFormatOptions {
     /**
@@ -3096,13 +3096,13 @@ export interface IStorageDataOptions<T extends StorageDataTypeList, K extends Ke
     dataType?: K;
 }
 /**
- * @en [[IStorage]]`#getItem<cast>()` return types.
- * @ja [[IStorage]]`#getItem<cast>()` の戻り値
+ * @en {@link IStorage.getItem | IStorage.getItem}() return types.
+ * @ja {@link IStorage.getItem | IStorage.getItem}() の戻り値
  */
 export type IStorageDataReturnType<T extends StorageDataTypeList, D extends Types<T>> = TypeToKey<T, D> extends never ? never : D | null;
 /**
- * @en [[IStorage]] callback function definition.
- * @ja [[IStorage]] コールバック関数
+ * @en {@link IStorage} callback function definition.
+ * @ja {@link IStorage} コールバック関数
  */
 export type IStorageEventCallback<T extends StorageDataTypeList> = (key: string | null, newValue: Types<T> | null, oldValue: Types<T> | null) => void;
 /**
@@ -3111,8 +3111,8 @@ export type IStorageEventCallback<T extends StorageDataTypeList> = (key: string 
  */
 export interface IStorage<T extends StorageDataTypeList = StorageDataTypeList> {
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     readonly kind: string;
     /**
@@ -3283,8 +3283,8 @@ export type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeLi
  */
 export declare class MemoryStorage implements IStorage {
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     get kind(): string;
     /**
@@ -3384,8 +3384,8 @@ export declare class MemoryStorage implements IStorage {
 }
 export declare const memoryStorage: MemoryStorage;
 /**
- * @en Registry management class for synchronous Read/Write accessible from any [[IStorage]] object.
- * @ja 任意の [[IStorage]] オブジェクトから同期 Read/Write アクセス可能なレジストリ管理クラス
+ * @en Registry management class for synchronous Read/Write accessible from any {@link IStorage} object.
+ * @ja 任意の {@link IStorage} オブジェクトから同期 Read/Write アクセス可能なレジストリ管理クラス
  *
  * @example <br>
  *
@@ -3401,7 +3401,7 @@ export declare const memoryStorage: MemoryStorage;
  *
  * // 2. prepare IStorage instance
  * // ex
- * import { webStorage } from '@cdp/web-storage';
+ * import { webStorage } from '@cdp/runtime';
  *
  * // 3. instantiate this class
  * const reg = new Registry<Schema>(webStorage, '@test');
@@ -3419,11 +3419,11 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      * constructor
      *
      * @param storage
-     *  - `en` Root key for [[IStorage]].
-     *  - `ja` [[IStorage]] に使用するルートキー
+     *  - `en` Root key for {@link IStorage}.
+     *  - `ja` {@link IStorage} に使用するルートキー
      * @param rootKey
-     *  - `en` Root key for [[IStorage]].
-     *  - `ja` [[IStorage]] に使用するルートキー
+     *  - `en` Root key for {@link IStorage}.
+     *  - `ja` {@link IStorage} に使用するルートキー
      * @param formatSpace
      *  - `en` for JSON format space.
      *  - `ja` JSON フォーマットスペースを指定
@@ -3435,18 +3435,18 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
      */
     get rootKey(): string;
     /**
-     * @en Access to [[IStorage]] object.
-     * @ja [[IStorage]] オブジェクトを取得
+     * @en Access to {@link IStorage} object.
+     * @ja {@link IStorage} オブジェクトを取得
      */
     get storage(): IStorage<any>;
     /**
-     * @en Read persistence data from [[IStorage]]. The data loaded already will be cleared.
-     * @ja [[IStorage]] から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
+     * @en Read persistence data from {@link IStorage}. The data loaded already will be cleared.
+     * @ja {@link IStorage} から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
      */
     load(options?: IStorageOptions): Promise<void>;
     /**
-     * @en Persist data to [[IStorage]].
-     * @ja [[IStorage]] にデータを永続化
+     * @en Persist data to {@link IStorage}.
+     * @ja {@link IStorage} にデータを永続化
      */
     save(options?: RegistrySaveOptions): Promise<void>;
     /**
@@ -3499,13 +3499,13 @@ export declare class Registry<T extends RegistrySchemaBase = any> extends EventP
     clear(options?: RegistryWriteOptions): void;
 }
 /**
- * @en [[TemplateEngine]] token structure.
- * @ja [[TemplateEngine]] token 型
+ * @en {@link TemplateEngine} token structure.
+ * @ja {@link TemplateEngine} token 型
  */
 export type TemplateToken = unknown;
 /**
- * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
- * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
+ * @en Delimiters definition for {@link TemplateEngine}. ex) ['{{','}}']
+ * @ja {@link TemplateEngine} に使用する区切り文字 ex) ['{{','}}']
  */
 export type TemplateDelimiters = [
     string,
@@ -3644,26 +3644,26 @@ export interface JST {
  */
 export type TemplateEscaper = typeof escapeHTML;
 /**
- * @en [[ITemplateEngine]] base type definition.
- * @ja [[ITemplateEngine]] 基底型
+ * @en {@link ITemplateEngine} base type definition.
+ * @ja {@link ITemplateEngine} 基底型
  */
 export interface ITemplateEngine {
 }
 /**
- * @en [[TemplateEngine]] internal I/F accssor.
- * @ja [[TemplateEngine]] 内部インターフェイスのアクセッサ
+ * @en {@link TemplateEngine} internal I/F accssor.
+ * @ja {@link TemplateEngine} 内部インターフェイスのアクセッサ
  */
 export interface TemplateAccessor extends ITemplateEngine {
-    /** Create [[TemplateScanner]] instance */
+    /** Create {@link TemplateScanner} instance */
     createScanner(src: string): TemplateScanner;
-    /** Create [[TemplateContext]] instance */
+    /** Create {@link TemplateContext} instance */
     createContext(view: TemplateViewParam, parentContext?: TemplateContext): TemplateContext;
-    /** Create [[TemplateWriter]] instance */
+    /** Create {@link TemplateWriter} instance */
     createWriter(): TemplateWriter;
 }
 /**
- * @en [[TemplateEngine]] global settng options
- * @ja [[TemplateEngine]] グローバル設定オプション
+ * @en {@link TemplateEngine} global settng options
+ * @ja {@link TemplateEngine} グローバル設定オプション
  */
 export interface TemplateGlobalSettings {
     writer?: TemplateWriter;
@@ -3671,8 +3671,8 @@ export interface TemplateGlobalSettings {
     escape?: TemplateEscaper;
 }
 /**
- * @en [[TemplateEngine]] compile options
- * @ja [[TemplateEngine]] コンパイルオプション
+ * @en {@link TemplateEngine} compile options
+ * @ja {@link TemplateEngine} コンパイルオプション
  */
 export interface TemplateCompileOptions {
     tags?: TemplateDelimiters;
@@ -3683,8 +3683,8 @@ export interface TemplateCompileOptions {
  */
 export declare class TemplateEngine implements ITemplateEngine {
     /**
-     * @en Get [[JST]] from template source.
-     * @ja テンプレート文字列から [[JST]] を取得
+     * @en Get {@link JST} from template source.
+     * @ja テンプレート文字列から {@link JST} を取得
      *
      * @param template
      *  - `en` template source string
@@ -3695,13 +3695,13 @@ export declare class TemplateEngine implements ITemplateEngine {
      */
     static compile(template: string, options?: TemplateCompileOptions): JST;
     /**
-     * @en Clears all cached templates in the default [[TemplateWriter]].
-     * @ja 既定の [[TemplateWriter]] のすべてのキャッシュを削除
+     * @en Clears all cached templates in the default {@link TemplateWriter}.
+     * @ja 既定の {@link TemplateWriter} のすべてのキャッシュを削除
      */
     static clearCache(): void;
     /**
-     * @en Change [[TemplateEngine]] global settings.
-     * @ja [[TemplateEngine]] グローバル設定の更新
+     * @en Change {@link TemplateEngine} global settings.
+     * @ja {@link TemplateEngine} グローバル設定の更新
      *
      * @param settings
      *  - `en` new settings
@@ -3746,9 +3746,9 @@ declare namespace CDP_DECLARE {
         FUNCTION = 20
     }
     /**
-     * @en Offset value enumeration for [[RESULT_CODE]]. <br>
+     * @en Offset value enumeration for {@link RESULT_CODE}. <br>
      *     The client can expand a definition in other module.
-     * @ja [[RESULT_CODE]] のオフセット値 <br>
+     * @ja {@link RESULT_CODE} のオフセット値 <br>
      *     エラーコード対応するモジュール内で 定義を拡張する.
      *
      * @example <br>
@@ -3824,9 +3824,9 @@ declare namespace CDP_DECLARE {
         NOT_SUPPORTED = -3
     }
     /**
-     * @en Assign declared [[RESULT_CODE]] to root enumeration.
+     * @en Assign declared {@link RESULT_CODE} to root enumeration.
      *     (It's enable to merge enum in the module system environment.)
-     * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
+     * @ja 拡張した {@link RESULT_CODE} を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
     function ASSIGN_RESULT_CODE(extend: Record<string, unknown>): void;
@@ -3842,8 +3842,8 @@ declare namespace CDP_DECLARE {
      * @ja 成功コードを生成
      *
      * @param base
-     *  - `en` set base offset as [[RESULT_CODE_BASE]]
-     *  - `ja` オフセット値を [[RESULT_CODE_BASE]] として指定
+     *  - `en` set base offset as {@link RESULT_CODE_BASE}
+     *  - `ja` オフセット値を {@link RESULT_CODE_BASE} として指定
      * @param code
      *  - `en` set local code for declaration. ex) '1'
      *  - `ja` 宣言用のローカルコード値を指定  例) '1'
@@ -3857,8 +3857,8 @@ declare namespace CDP_DECLARE {
      * @ja エラーコード生成
      *
      * @param base
-     *  - `en` set base offset as [[RESULT_CODE_BASE]]
-     *  - `ja` オフセット値を [[RESULT_CODE_BASE]] として指定
+     *  - `en` set base offset as {@link RESULT_CODE_BASE}
+     *  - `ja` オフセット値を {@link RESULT_CODE_BASE} として指定
      * @param code
      *  - `en` set local code for declaration. ex) '1'
      *  - `ja` 宣言用のローカルコード値を指定  例) '1'

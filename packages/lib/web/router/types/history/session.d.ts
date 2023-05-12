@@ -1,8 +1,8 @@
 import { PlainObject } from '@cdp/core-utils';
 import type { IHistory, HistorySetStateOptions } from './interfaces';
 /**
- * @en [[createSessionHistory]]() options.
- * @ja [[createSessionHistory]]() に渡すオプション
+ * @en {@link createSessionHistory}() options.
+ * @ja {@link createSessionHistory}() に渡すオプション
  *
  */
 export interface SessionHistoryCreateOptions {
@@ -20,8 +20,8 @@ export interface SessionHistoryCreateOptions {
  *  - `en` State object associated with the stack
  *  - `ja` スタック に紐づく状態オブジェクト
  * @param options
- *  - `en` [[SessionHistoryCreateOptions]] object
- *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
+ *  - `en` {@link SessionHistoryCreateOptions} object
+ *  - `ja` {@link SessionHistoryCreateOptions} オブジェクト
  */
 export declare function createSessionHistory<T = PlainObject>(id?: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
 /**

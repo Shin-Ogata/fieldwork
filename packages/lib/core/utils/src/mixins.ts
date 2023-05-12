@@ -56,15 +56,15 @@ export interface MixinConstructor<B extends Class, U extends object> extends Typ
      *  - `en` base class arguments
      *  - `ja` 基底クラスに指定した引数
      * @returns
-     *  - `en` union type of classes when calling [[mixins]]()
-     *  - `ja` [[mixins]]() に渡したクラスの集合
+     *  - `en` union type of classes when calling {@link mixins}()
+     *  - `ja` {@link mixins}() に渡したクラスの集合
      */
     new(...args: ConstructorParameters<B>): U;
 }
 
 /**
- * @en Definition of [[setMixClassAttribute]] function's arguments.
- * @ja [[setMixClassAttribute]] の取りうる引数定義
+ * @en Definition of {@link setMixClassAttribute} function's arguments.
+ * @ja {@link setMixClassAttribute} の取りうる引数定義
  */
 export interface MixClassAttribute {
     /**
@@ -75,10 +75,10 @@ export interface MixClassAttribute {
 
     /**
      * @en Setup [Symbol.hasInstance] property. <br>
-     *     The class designated as a source of [[mixins]]() has [Symbol.hasInstance] property implicitly. <br>
+     *     The class designated as a source of {@link mixins}() has [Symbol.hasInstance] property implicitly. <br>
      *     It's used to avoid becoming the behavior `instanceof` doesn't intend when the class is extended from the mixined class the other place.
      * @ja [Symbol.hasInstance] プロパティ設定<br>
-     *     [[mixins]]() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
+     *     {@link mixins}() のソースに指定されたクラスは [Symbol.hasInstance] を暗黙的に備えるため<br>
      *     そのクラスが他で継承されている場合 `instanceof` が意図しない振る舞いとなるのを避けるために使用する.
      */
     instanceOf: ((inst: object) => boolean) | Nullish;

@@ -20,8 +20,8 @@ export declare class Result extends Error {
      */
     constructor(code?: number, message?: string, options?: ErrorOptions);
     /**
-     * @en [[RESULT_CODE]] value.
-     * @ja [[RESULT_CODE]] の値
+     * @en {@link RESULT_CODE} value.
+     * @ja {@link RESULT_CODE} の値
      */
     readonly code: number;
     /**
@@ -50,26 +50,26 @@ export declare class Result extends Error {
      */
     get isCanceled(): boolean;
     /**
-     * @en Get formatted [[RESULT_CODE]] name string.
-     * @ja フォーマットされた [[RESULT_CODE]] 名文字列を取得
+     * @en Get formatted {@link RESULT_CODE} name string.
+     * @ja フォーマットされた {@link RESULT_CODE} 名文字列を取得
      */
     get codeName(): string;
     /**
-     * @en Get [[RESULT_CODE]] help string.
-     * @ja [[RESULT_CODE]] のヘルプストリングを取得
+     * @en Get {@link RESULT_CODE} help string.
+     * @ja {@link RESULT_CODE} のヘルプストリングを取得
      */
     get help(): string;
 }
 /** Returns `true` if `x` is `Result`, `false` otherwise. */
 export declare function isResult(x: unknown): x is Result;
 /**
- * @en Convert to [[Result]] object.
- * @ja [[Result]] オブジェクトに変換
+ * @en Convert to {@link Result} object.
+ * @ja {@link Result} オブジェクトに変換
  */
 export declare function toResult(o: unknown): Result;
 /**
- * @en Create [[Result]] helper.
- * @ja [[Result]] オブジェクト構築ヘルパー
+ * @en Create {@link Result} helper.
+ * @ja {@link Result} オブジェクト構築ヘルパー
  *
  * @param code
  *  - `en` result code
@@ -83,8 +83,8 @@ export declare function toResult(o: unknown): Result;
  */
 export declare function makeResult(code: number, message?: string, cause?: unknown): Result;
 /**
- * @en Create canceled [[Result]] helper.
- * @ja キャンセル情報格納 [[Result]] オブジェクト構築ヘルパー
+ * @en Create canceled {@link Result} helper.
+ * @ja キャンセル情報格納 {@link Result} オブジェクト構築ヘルパー
  *
  * @param message
  *  - `en` result info message

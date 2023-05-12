@@ -9,8 +9,8 @@ import { DOMScroll } from './scroll';
 import { DOMEffects } from './effects';
 type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
 /**
- * @en [[DOM]] plugin method definition.
- * @ja [[DOM]] プラグインメソッド定義
+ * @en {@link DOM} plugin method definition.
+ * @ja {@link DOM} プラグインメソッド定義
  *
  * @note
  *  - プラグイン拡張定義はこのインターフェイスマージする.
@@ -71,8 +71,8 @@ export declare class DOMClass extends DOMClass_base {
     private constructor();
 }
 /**
- * @en Check the value-type is [[DOM]].
- * @ja [[DOM]] 型であるか判定
+ * @en Check the value-type is {@link DOM}.
+ * @ja {@link DOM} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value

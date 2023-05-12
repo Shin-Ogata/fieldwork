@@ -30,8 +30,8 @@ type DOMFeatures<T extends ElementBase>
     & DOMEffects<T>;
 
 /**
- * @en [[DOM]] plugin method definition.
- * @ja [[DOM]] プラグインメソッド定義
+ * @en {@link DOM} plugin method definition.
+ * @ja {@link DOM} プラグインメソッド定義
  *
  * @note
  *  - プラグイン拡張定義はこのインターフェイスマージする.
@@ -104,18 +104,18 @@ export class DOMClass extends mixins(
     }
 
     /**
-     * @en Create [[DOM]] instance from `selector` arg.
-     * @ja 指定された `selector` [[DOM]] インスタンスを作成
+     * @en Create {@link DOM} instance from `selector` arg.
+     * @ja 指定された `selector` {@link DOM} インスタンスを作成
      *
      * @internal
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるオブジェクト(群)またはセレクタ文字列
      * @param context
      *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
      *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
-     * @returns [[DOM]] instance.
+     * @returns {@link DOM} instance.
      */
     public static create<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T> {
         if (selector && !context) {
@@ -131,8 +131,8 @@ export class DOMClass extends mixins(
 setMixClassAttribute(DOMClass as unknown as Class, 'instanceOf', null);
 
 /**
- * @en Check the value-type is [[DOM]].
- * @ja [[DOM]] 型であるか判定
+ * @en Check the value-type is {@link DOM}.
+ * @ja {@link DOM} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value

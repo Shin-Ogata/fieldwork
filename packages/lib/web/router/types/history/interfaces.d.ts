@@ -10,8 +10,8 @@ export type HistoryState<T = PlainObject> = T & {
     '@origin'?: boolean;
 };
 /**
- * @en The event definition fired in [[IHistory]].
- * @ja [[IHistory]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link IHistory}.
+ * @ja {@link IHistory} 内から発行されるイベント定義
  */
 export interface HistoryEvent<T = PlainObject> {
     /** @args [nextState, cancel, promises[]] */
@@ -32,8 +32,8 @@ export type HistorySetStateOptions = Silenceable & Cancelable;
  */
 export type HistoryDirection = 'back' | 'forward' | 'none' | 'missing';
 /**
- * @en Definition of [[IHistory.direct]]`()` return type.
- * @ja [[IHistory.direct]]`()` の返却する型
+ * @en Definition of {@link IHistory.direct | IHistory.direct}() return type.
+ * @ja {@link IHistory.direct | IHistory.direct}() の返却する型
  */
 export interface HistoryDirectReturnType<T = PlainObject> {
     direction: HistoryDirection;

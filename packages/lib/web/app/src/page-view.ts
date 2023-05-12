@@ -18,8 +18,8 @@ interface Property {
 //__________________________________________________________________________________________________//
 
 /**
- * @en Base class definition of [[View]] that can be specified in as [[Page]] of [[Router]].
- * @ja [[Router]] の [[Page]] に指定可能な [[View]] の基底クラス定義
+ * @en Base class definition of {@link View} that can be specified in as {@link Page} of {@link Router}.
+ * @ja {@link Router} の {@link Page} に指定可能な {@link View} の基底クラス定義
  */
 export abstract class PageView<TElement extends Element = HTMLElement, TEvent extends object = object>
     extends View<TElement, TEvent> implements Page {
@@ -34,8 +34,8 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      *  - `en` route context
      *  - `ja` ルートコンテキスト
      * @param options
-     *  - `en` [[View]] construction options.
-     *  - `ja` [[View]] 構築オプション
+     *  - `en` {@link View} construction options.
+     *  - `ja` {@link View} 構築オプション
      */
     constructor(route?: Route, options?: ViewConstructionOptions<TElement>) {
         super(options);
@@ -62,16 +62,16 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
     }
 
     /**
-     * @en [[Router]] instance
-     * @ja [[Router]] インスタンス
+     * @en {@link Router} instance
+     * @ja {@link Router} インスタンス
      */
     protected get _route(): Route | undefined {
         return this['@route'];
     }
 
     /**
-     * @en [[Router]] instance
-     * @ja [[Router]] インスタンス
+     * @en {@link Router} instance
+     * @ja {@link Router} インスタンス
      */
     protected get _router(): Router | undefined {
         return this[_properties].route?.router;

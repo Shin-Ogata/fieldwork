@@ -10,8 +10,8 @@ import {
 } from './interfaces';
 
 /**
- * @en The [[IDataSync]] implemant class which has no effects.
- * @ja 何もしない [[IDataSync]] 実装クラス
+ * @en The {@link IDataSync} implemant class which has no effects.
+ * @ja 何もしない {@link IDataSync} 実装クラス
  */
 class NullDataSync implements IDataSync<object> {
 
@@ -19,8 +19,8 @@ class NullDataSync implements IDataSync<object> {
 // implements: IDataSync
 
     /**
-     * @en [[IDataSync]] kind signature.
-     * @ja [[IDataSync]] の種別を表す識別子
+     * @en {@link IDataSync} kind signature.
+     * @ja {@link IDataSync} の種別を表す識別子
      */
     get kind(): string {
         return 'null';

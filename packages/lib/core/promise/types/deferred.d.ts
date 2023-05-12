@@ -21,8 +21,8 @@ export declare class Deferred<T = void> extends CancelablePromise<T> {
      * constructor
      *
      * @param cancelToken
-     *  - `en` [[CancelToken]] instance create from [[CancelToken]].`source()`.
-     *  - `ja` [[CancelToken]].`source()` より作成した [[CancelToken]] インスタンスを指定
+     *  - `en` {@link CancelToken} instance create from {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
      */
     constructor(cancelToken?: CancelToken | null);
 }

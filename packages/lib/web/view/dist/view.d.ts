@@ -20,8 +20,8 @@ export interface ViewEventsHash<TElement extends Node = HTMLElement, TFuncName =
     [selector: string]: TFuncName | DOMEventListener<TElement>;
 }
 /**
- * @en [[View]] construction options.
- * @ja [[View]] 構築に指定するオプション
+ * @en {@link View} construction options.
+ * @ja {@link View} 構築に指定するオプション
  */
 export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string> {
     el?: DOMSelector<TElement | string>;
@@ -33,9 +33,9 @@ export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TF
 }
 export type ViewFindSelector = Node | string | Nullish;
 /**
- * @en Core implementation of [[View]] without [[EventSource]] interface. <br>
+ * @en Core implementation of {@link View} without {@link EventSource} interface. <br>
  *     Can be specified as mixin source.
- * @ja [[EventSource]] インターフェイスを持たない [[View]] のコア実装 <br>
+ * @ja {@link EventSource} インターフェイスを持たない {@link View} のコア実装 <br>
  *     Mixin source として指定可能
  */
 export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
@@ -68,8 +68,8 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     get el(): TElement;
     /**
-     * @en Get [[DOM]] object.
-     * @ja [[DOM]] オブジェクトを取得
+     * @en Get {@link DOM} object.
+     * @ja {@link DOM} オブジェクトを取得
      */
     get $el(): DOM<TElement>;
     /**
@@ -97,12 +97,12 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     setElement(el: DOMSelector<TElement | string>): this;
     /**
-     * @en Set DOM callbacks from [[ViewEventsHash]] object.
-     * @ja [[ViewEventsHash]] オブジェクトから DOM コールバックを設定
+     * @en Set DOM callbacks from {@link ViewEventsHash} object.
+     * @ja {@link ViewEventsHash} オブジェクトから DOM コールバックを設定
      *
      * @param events
-     *  - `en` [[ViewEventsHash]] object. `this.events()` is used by default.
-     *  - `ja` [[ViewEventsHash]] オブジェクト. 既定値は `this.events()`
+     *  - `en` {@link ViewEventsHash} object. `this.events()` is used by default.
+     *  - `ja` {@link ViewEventsHash} オブジェクト. 既定値は `this.events()`
      */
     delegateEvents(events?: ViewEventsHash<TElement>): this;
     /**
@@ -144,9 +144,9 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     delegate<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on} or {@link DOMEvents.once} and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on} または {@link DOMEvents.once} と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -164,9 +164,9 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     undelegate<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], selector: string, listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on} or {@link DOMEvents.once} and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on} または {@link DOMEvents.once} と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -219,7 +219,7 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      * @example <br>
      *
      * ```ts
-     * import { TemplateEngine } from '@cdp/core-template';
+     * import { TemplateEngine } from '@cdp/runtime';
      *
      * class SampleView extends View {
      *     private _template = TemplateEngine.compile('{{title}}');
@@ -238,9 +238,11 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
  * @example <br>
  *
  * ```ts
- * import { TemplateEngine } from '@cdp/core-template';
- * import { DOM, dom as $ } from '@cdp/dom';
- * import { View, ViewEventsHash } from '@cdp/view';
+ * import {
+ *     TemplateEngine,
+ *     DOM, dom as $,
+ *     View, ViewEventsHash,
+ * } from '@cdp/rumtime';
  * import { ToDo, ToDoEventSource } from './todo';
  *
  * const _template = TemplateEngine.compile($('#item-template').html());

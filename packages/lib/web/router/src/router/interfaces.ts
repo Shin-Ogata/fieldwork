@@ -53,8 +53,8 @@ export interface RouteChangeInfo extends Readonly<PageTransitionParams> {
 }
 
 /**
- * @en The event definition fired in [[Router]].
- * @ja [[Router]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link Router}.
+ * @ja {@link Router} 内から発行されるイベント定義
  */
 export interface RouterEvent {
     /**
@@ -69,42 +69,42 @@ export interface RouterEvent {
     /**
      * @en New DOM content loaded notification.
      * @ja 新しいDOM コンテンツのロード通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'loaded': [RouteChangeInfo];
 
     /**
      * @en Next page just inserted to DOM notification.
      * @ja 次のページの DOM 挿入通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'mounted': [RouteChangeInfo];
 
     /**
      * @en DOM ready notification on same page instance transition.
      * @ja 同一ページインスタンスの遷移時の DOM 準備完了通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'cloned': [RouteChangeInfo];
 
     /**
      * @en Before transition notification.
      * @ja トランジション開始通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'before-transition': [RouteChangeInfo];
 
     /**
      * @en After transition notification.
      * @ja トランジション終了通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'after-transition': [RouteChangeInfo];
 
     /**
      * @en Previous page just detached from DOM notification.
      * @ja 前のページの DOM 切除通知
-     * @args [[Route]]
+     * @args {@link Route}
      */
     'unmounted': [Route];
 
@@ -206,8 +206,8 @@ export interface Page {
 }
 
 /**
- * @en [[Page]] factory function.
- * @ja [[Page]] 構築関数
+ * @en {@link Page} factory function.
+ * @ja {@link Page} 構築関数
  */
 export type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
 
@@ -235,9 +235,9 @@ export interface RouteParameters {
 
     /**
      * @en Specify the constructor or built object of the page component. <br>
-     *     In case of functional type, [[Route]] instance is passed as an argument.
+     *     In case of functional type, {@link Route} instance is passed as an argument.
      * @ja ページコンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
-     *     関数型の場合は引数に [[Route]] インスタンスが渡される
+     *     関数型の場合は引数に {@link Route} インスタンスが渡される
      *
      * @reserved `string` type: load pages as a component via Ajax
      */
@@ -363,13 +363,13 @@ export interface RouterConstructionOptions {
 
     /**
      * @en Specify the [IHistory] instance or mode to use with the router. The default is to use the `hash` mode in the browser history.
-     * @ja ルーターで使用する [[IHistory]] インスタンスまたはモードを指定. 既定は ブラウザ履歴の `hash` モードを使用.
+     * @ja ルーターで使用する {@link IHistory} インスタンスまたはモードを指定. 既定は ブラウザ履歴の `hash` モードを使用.
      */
     history?: 'hash' | 'history' | 'memory' | IHistory;
 
     /**
-     * @en Initialization route path. If [[IHistory]] object given to `history` property, this parameter is ignored.
-     * @ja 初期ルートパス. `history` に [[IHistory]] が指定された場合は無視される
+     * @en Initialization route path. If {@link IHistory} object given to `history` property, this parameter is ignored.
+     * @ja 初期ルートパス. `history` に {@link IHistory} が指定された場合は無視される
      */
     initialPath?: string;
 
@@ -436,8 +436,8 @@ export interface RouteSubFlowParams {
     base?: string;
 
     /**
-     * @en Specify [[PageStack]] to add from `base` that transitions at the end of sub-flow. If not specified, transition to `base`.
-     * @ja sub-flow 終了時に遷移する `base` からの追加 [[PageStack]] を指定。指定がない場合は、`base` に遷移する。
+     * @en Specify {@link PageStack} to add from `base` that transitions at the end of sub-flow. If not specified, transition to `base`.
+     * @ja sub-flow 終了時に遷移する `base` からの追加 {@link PageStack} を指定。指定がない場合は、`base` に遷移する。
      */
     additinalStacks?: PageStack[];
 }
@@ -470,8 +470,8 @@ export interface RouteNavigationOptions extends PageTransitionParams {
     intent?: unknown;
 
     /**
-     * @en Methods of [[IHistory]] to use when navigating.
-     * @ja ナビゲーション時に使用する [[IHistory]] のメソッド
+     * @en Methods of {@link IHistory} to use when navigating.
+     * @ja ナビゲーション時に使用する {@link IHistory} のメソッド
      */
     method?: 'push' | 'replace';
 }
@@ -525,8 +525,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @jp ルートの登録
      *
      * @param routes
-     *  - `en` Specify [[RouteParameters]]
-     *  - `ja` [[RouteParameters]] を指定
+     *  - `en` Specify {@link RouteParameters}
+     *  - `ja` {@link RouteParameters} を指定
      * @param refersh
      *  - `en` Specify `true` to reload after registration. default: `false`
      *  - `ja` 登録後, 再読み込みを行う場合は `true` を指定. default: `false`
@@ -541,8 +541,8 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `en` Set a navigate destination (url / path)
      *  - `ja` ナビゲート先の設定（url / path）
      * @param options
-     *  - `en` Specify [[RouteNavigationOptions]]
-     *  - `ja` [[RouteNavigationOptions]] を指定
+     *  - `en` Specify {@link RouteNavigationOptions}
+     *  - `ja` {@link RouteNavigationOptions} を指定
      */
     navigate(to: string, options?: RouteNavigationOptions): Promise<this>;
 
@@ -551,8 +551,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja 現在の履歴を起点にページスタックを追加
      *
      * @param stack
-     *  - `en` Specify [[PageStack]] object / object array
-     *  - `ja` [[PageStack]] オブジェクト / オブジェクト配列を指定
+     *  - `en` Specify {@link PageStack} object / object array
+     *  - `ja` {@link PageStack} オブジェクト / オブジェクト配列を指定
      * @param noNavigate
      *  - `en` false(`default`): After stack registration, page transition to the last stack / true: Only perform stack registration and do not page transition.
      *  - `ja` false(`default`): スタック登録後, 最後のスタックに対してページ遷移する / true: スタック登録のみ行いページ遷移しない.
@@ -603,11 +603,11 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `en` Set a navigate destination (url / path)
      *  - `ja` ナビゲート先の設定（url / path）
      * @param params
-     *  - `en` Specify [[RouteSubFlowParam]]
-     *  - `ja` [[RouteSubFlowParam]] を指定
+     *  - `en` Specify {@link RouteSubFlowParam}
+     *  - `ja` {@link RouteSubFlowParam} を指定
      * @param options
-     *  - `en` Specify [[RouteSubFlowParams]]
-     *  - `ja` [[RouteSubFlowParams]] を指定
+     *  - `en` Specify {@link RouteSubFlowParams}
+     *  - `ja` {@link RouteSubFlowParams} を指定
      */
     beginSubFlow(to: string, subflow?: RouteSubFlowParams, options?: RouteNavigationOptions): Promise<this>;
 
@@ -616,8 +616,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja sub-flow トランザクションの終了
      *
      * @param params
-     *  - `en` Specify [[PageTransitionParams]]. default: { reverse: false }
-     *  - `ja` [[PageTransitionParams]] を指定. default: { reverse: false }
+     *  - `en` Specify {@link PageTransitionParams}. default: { reverse: false }
+     *  - `ja` {@link PageTransitionParams} を指定. default: { reverse: false }
      */
     commitSubFlow(params?: PageTransitionParams): Promise<this>;
 
@@ -626,8 +626,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja sub-flow トランザクションのキャンセル
      *
      * @param params
-     *  - `en` Specify [[PageTransitionParams]]. default: { reverse: true }
-     *  - `ja` [[PageTransitionParams]] を指定. default: { reverse: true }
+     *  - `en` Specify {@link PageTransitionParams}. default: { reverse: true }
+     *  - `ja` {@link PageTransitionParams} を指定. default: { reverse: true }
      */
     cancelSubFlow(params?: PageTransitionParams): Promise<this>;
 

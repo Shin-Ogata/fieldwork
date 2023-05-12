@@ -1,15 +1,15 @@
 import { EventBroker } from './broker';
 import { EventReceiver } from './receiver';
 /**
- * @en The class which have I/F of [[EventBroker]] and [[EventReceiver]]. <br>
+ * @en The class which have I/F of {@link EventBroker} and {@link EventReceiver}. <br>
  *     `Events` class of `Backbone.js` equivalence.
- * @ja [[EventBroker]] と [[EventReceiver]] の I/F をあわせ持つクラス <br>
+ * @ja {@link EventBroker} と {@link EventReceiver} の I/F をあわせ持つクラス <br>
  *     `Backbone.js` の `Events` クラス相当
  *
  * @example <br>
  *
  * ```ts
- * import { EventSource } from '@cdp/events';
+ * import { EventSource } from '@cdp/runtime';
  *
  * // declare event interface
  * interface TargetEvent {
@@ -46,8 +46,8 @@ import { EventReceiver } from './receiver';
  */
 export type _EventSource<T extends object> = EventBroker<T> & EventReceiver;
 /**
- * @en Constructor of [[EventSource]]
- * @ja [[EventSource]] のコンストラクタ実体
+ * @en Constructor of {@link EventSource}
+ * @ja {@link EventSource} のコンストラクタ実体
  */
 declare const _EventSource: {
     readonly prototype: _EventSource<any>;

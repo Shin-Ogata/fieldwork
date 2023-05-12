@@ -1768,22 +1768,22 @@ export interface TemplateDirectives {
 export declare const directives: TemplateDirectives;
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>
- *     This method is helper brigdge for the [[html]] or the [[svg]] are able to received plain string.
+ *     This method is helper brigdge for the {@link html} or the {@link svg} are able to received plain string.
  * @ja `string` を `TemplateStringsArray`に変換. <br>
- *     [[html]] や [[svg]] が文字列を受け付けるためのブリッジメソッド
+ *     {@link html} や {@link svg} が文字列を受け付けるためのブリッジメソッド
  *
  * @example <br>
  *
  * ```ts
- * import { toTemplateStringsArray as bridge } from '@cdp/extension-template';
+ * import { toTemplateStringsArray as bridge } from '@cdp/runtime';
  *
  * const raw = '<p>Hello Raw String</p>';
  * render(html(bridge(raw)), document.body);
  * ```
  *
  * @param src
- *  - `en` plain string / string array. ex) [[JST]] returned value.
- *  - `ja` プレーン文字列 / 文字列配列. ex) [[JST]] の戻り値などを想定
+ *  - `en` plain string / string array. ex) {@link JST} returned value.
+ *  - `ja` プレーン文字列 / 文字列配列. ex) {@link JST} の戻り値などを想定
  */
 export declare const toTemplateStringsArray: (src: string | string[] | TemplateStringsArray) => TemplateStringsArray;
 
@@ -1975,12 +1975,9 @@ export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export type SelectorBase = Node | Window | string | Nullish;
 export type ElementifySeed<T extends SelectorBase = HTMLElement> = T | (T extends ElementBase ? T[] : never) | NodeListOf<T extends Node ? T : never>;
 export type QueryContext = ParentNode & Partial<NonElementParentNode>;
-declare function isWindowContext(x: unknown): x is Window;
-declare function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
-declare function rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
 /**
- * @en [[evaluate]]() options.
- * @ja [[evaluate]]() に渡すオプション
+ * @en {@link DOMStatic.utils.evaluate | evaluate}() options.
+ * @ja {@link DOMStatic.utils.evaluate | evaluate}() に渡すオプション
  */
 export interface EvalOptions {
     type?: string;
@@ -1988,7 +1985,6 @@ export interface EvalOptions {
     nonce?: string;
     noModule?: string;
 }
-declare function evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any;
 declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
     /**
      * @en number of `Element`
@@ -2013,18 +2009,18 @@ declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T
      * @ja 対象が `Node` でありかつ `Document` または `ShadowRoot` に接続されているか判定
      *
      * @param el
-     *  - `en` [[ElementBase]] instance
-     *  - `ja` [[ElementBase]] インスタンス
+     *  - `en` {@link ElementBase} instance
+     *  - `ja` {@link ElementBase} インスタンス
      */
     get isConnected(): boolean;
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Iterator of {@link ElementBase} values in the array.
+     * @ja 格納している {@link ElementBase} にアクセス可能なイテレータオブジェクトを返却
      */
     [Symbol.iterator](): Iterator<T>;
     /**
-     * @en Returns an iterable of key(index), value([[ElementBase]]) pairs for every entry in the array.
-     * @ja key(index), value([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of key(index), value({@link ElementBase}) pairs for every entry in the array.
+     * @ja key(index), value({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     entries(): IterableIterator<[
         number,
@@ -2036,8 +2032,8 @@ declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T
      */
     keys(): IterableIterator<number>;
     /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of values({@link ElementBase}) in the array.
+     * @ja values({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     values(): IterableIterator<T>;
 }
@@ -2237,7 +2233,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
         TElement
     ]>;
     /**
-     * @en Retrieve one of the elements matched by the [[DOM]] instance.
+     * @en Retrieve one of the elements matched by the {@link DOM} instance.
      * @ja インデックスを指定して配下の要素にアクセス
      *
      * @param index
@@ -2248,54 +2244,54 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      */
     get(index: number): TElement | undefined;
     /**
-     * @en Retrieve the elements matched by the [[DOM]] instance.
+     * @en Retrieve the elements matched by the {@link DOM} instance.
      * @ja 配下の要素すべてを配列で取得
      */
     get(): TElement[];
     /**
-     * @en Retrieve all the elements contained in the [[DOM]] set, as an array.
+     * @en Retrieve all the elements contained in the {@link DOM} set, as an array.
      * @ja 配下の要素すべてを配列で取得
      */
     toArray(): TElement[];
     /**
-     * @en Return the position of the first element within the [[DOM]] collection relative to its sibling elements.
-     * @ja [[DOM]] 内の最初の要素が兄弟要素の何番目に所属するかを返却
+     * @en Return the position of the first element within the {@link DOM} collection relative to its sibling elements.
+     * @ja {@link DOM} 内の最初の要素が兄弟要素の何番目に所属するかを返却
      */
     index(): number | undefined;
     /**
-     * @en Search for a given a selector, element, or [[DOM]] instance from among the matched elements.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 配下の何番目に所属しているかを返却
+     * @en Search for a given a selector, element, or {@link DOM} instance from among the matched elements.
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 配下の何番目に所属しているかを返却
      */
     index<T extends ElementBase>(selector: string | T | DOM<T>): number | undefined;
     /**
-     * @en Reduce the set of matched elements to the first in the set as [[DOM]] instance.
-     * @ja 管轄している最初の要素を [[DOM]] インスタンスにして取得
+     * @en Reduce the set of matched elements to the first in the set as {@link DOM} instance.
+     * @ja 管轄している最初の要素を {@link DOM} インスタンスにして取得
      */
     first(): DOM<TElement>;
     /**
-     * @en Reduce the set of matched elements to the final one in the set as [[DOM]] instance.
-     * @ja 管轄している末尾の要素を [[DOM]] インスタンスにして取得
+     * @en Reduce the set of matched elements to the final one in the set as {@link DOM} instance.
+     * @ja 管轄している末尾の要素を {@link DOM} インスタンスにして取得
      */
     last(): DOM<TElement>;
     /**
-     * @en Create a new [[DOM]] instance with elements added to the set from selector.
-     * @ja 指定された `selector` で取得した `Element` を追加した新規 [[DOM]] インスタンスを返却
+     * @en Create a new {@link DOM} instance with elements added to the set from selector.
+     * @ja 指定された `selector` で取得した `Element` を追加した新規 {@link DOM} インスタンスを返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param context
      *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
      *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
      */
     add<T extends SelectorBase>(selector: DOMSelector<T>, context?: QueryContext): DOM<TElement>;
     /**
-     * @en Check the current matched set of elements against a selector, element, or [[DOM]] instance.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 現在の要素のセットと一致するか確認
+     * @en Check the current matched set of elements against a selector, element, or {@link DOM} instance.
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 現在の要素のセットと一致するか確認
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      * @returns
      *  - `en` `true` if at least one of these elements matches the given arguments.
      *  - `ja` 引数に指定した条件が要素の一つでも一致すれば `true` を返却
@@ -2303,26 +2299,26 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     is<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): boolean;
     /**
      * @en Reduce the set of matched elements to those that match the selector or pass the function's test.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 現在の要素のセットと一致したものを返却
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 現在の要素のセットと一致したものを返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      * @returns
-     *  - `en` New [[DOM]] instance including filtered elements.
-     *  - `ja` フィルタリングされた要素を内包する 新規 [[DOM]] インスタンス
+     *  - `en` New {@link DOM} instance including filtered elements.
+     *  - `ja` フィルタリングされた要素を内包する 新規 {@link DOM} インスタンス
      */
     filter<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
     /**
      * @en Remove elements from the set of match the selector or pass the function's test.
-     * @ja セレクタ, 要素, または [[DOM]] インスタンスを指定し, 現在の要素のセットと一致したものを削除して返却
+     * @ja セレクタ, 要素, または {@link DOM} インスタンスを指定し, 現在の要素のセットと一致したものを削除して返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      * @returns
-     *  - `en` New [[DOM]] instance excluding filtered elements.
-     *  - `ja` フィルタリングされた要素を以外を内包する 新規 [[DOM]] インスタンス
+     *  - `en` New {@link DOM} instance excluding filtered elements.
+     *  - `ja` フィルタリングされた要素を以外を内包する 新規 {@link DOM} インスタンス
      */
     not<T extends SelectorBase>(selector: DOMSelector<T> | DOMIterateCallback<TElement>): DOM<TElement>;
     /**
@@ -2330,8 +2326,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja 配下の要素に対して指定したセレクタに一致する要素を検索
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     find<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -2339,13 +2335,13 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja 配下の要素に対して指定したセレクタに一致した子要素持つ要素を返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     has<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
-     * @en Pass each element in the current matched set through a function, producing a new [[DOM]] instance containing the return values.
-     * @ja コールバックで変更された要素を用いて新たに [[DOM]] インスタンスを構築
+     * @en Pass each element in the current matched set through a function, producing a new {@link DOM} instance containing the return values.
+     * @ja コールバックで変更された要素を用いて新たに {@link DOM} インスタンスを構築
      *
      * @param callback
      *  - `en` modification function object that will be invoked for each element in the current set.
@@ -2353,7 +2349,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      */
     map<T extends ElementBase>(callback: DOMModificationCallback<TElement, T>): DOM<T>;
     /**
-     * @en Iterate over a [[DOM]] instance, executing a function for each matched element.
+     * @en Iterate over a {@link DOM} instance, executing a function for each matched element.
      * @ja 配下の要素に対してコールバック関数を実行
      *
      * @param callback
@@ -2363,7 +2359,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     each(callback: DOMIterateCallback<TElement>): this;
     /**
      * @en Reduce the set of matched elements to a subset specified by a range of indices.
-     * @ja インデックス指定された範囲の要素を含む [[DOM]] インスタンスを返却
+     * @ja インデックス指定された範囲の要素を含む {@link DOM} インスタンスを返却
      *
      * @param begin
      *  - `en` An integer indicating the 0-based position at which the elements begin to be selected.
@@ -2375,7 +2371,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
     slice(begin?: number, end?: number): DOM<TElement>;
     /**
      * @en Reduce the set of matched elements to the one at the specified index.
-     * @ja インデックス指定した要素を含む [[DOM]] インスタンスを返却
+     * @ja インデックス指定した要素を含む {@link DOM} インスタンスを返却
      *
      * @param index
      *  - `en` A zero-based integer indicating which element to retrieve. <br>
@@ -2389,8 +2385,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja 開始要素から最も近い親要素を選択. セレクター指定した場合, マッチする最も近い親要素を返却
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]], test function.
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}, test function.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列, テスト関数
      */
     closest<T extends SelectorBase = SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -2409,7 +2405,7 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @param selector
      *  - `en` filtered by a selector.
      *  - `ja` フィルタ用セレクタ
-     * @returns [[DOM]] instance
+     * @returns {@link DOM} instance
      */
     parent<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T>;
     /**
@@ -2419,21 +2415,21 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @param selector
      *  - `en` filtered by a selector.
      *  - `ja` フィルタ用セレクタ
-     * @returns [[DOM]] instance
+     * @returns {@link DOM} instance
      */
     parents<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>): DOM<T>;
     /**
      * @en Get the ancestors of each element in the current set of matched elements, <br>
-     *     up to but not including the element matched by the selector, DOM node, or [[DOM]] instance
+     *     up to but not including the element matched by the selector, DOM node, or {@link DOM} instance
      * @ja 管轄している各要素の祖先で, 指定したセレクターや条件に一致する要素が出てくるまで選択して取得
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param filter
      *  - `en` filtered by a string selector.
      *  - `ja` フィルタ用文字列セレクタ
-     * @returns [[DOM]] instance
+     * @returns {@link DOM} instance
      */
     parentsUntil<T extends Node = HTMLElement, U extends SelectorBase = SelectorBase, V extends SelectorBase = SelectorBase>(selector?: DOMSelector<U>, filter?: DOMSelector<V>): DOM<T>;
     /**
@@ -2461,8 +2457,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja マッチした要素の次以降の兄弟要素で, 指定したセレクターや条件に一致する要素が出てくるまで選択して取得
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param filter
      *  - `en` filtered by a string selector.
      *  - `ja` フィルタ用文字列セレクタ
@@ -2493,8 +2489,8 @@ declare class DOMTraversing<TElement extends ElementBase> implements DOMIterable
      * @ja マッチした要素の前以降の兄弟要素で, 指定したセレクタや条件に一致する要素が出てくるまで選択して取得
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      * @param filter
      *  - `en` filtered by a string selector.
      *  - `ja` フィルタ用文字列セレクタ
@@ -2563,8 +2559,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素に引数で指定したコンテンツを追加
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     append<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -2572,8 +2568,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下要素を他の要素に追加
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     appendTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -2581,8 +2577,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の先頭に引数で指定したコンテンツを挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     prepend<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -2590,8 +2586,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下要素を他の要素の先頭に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     prependTo<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -2599,8 +2595,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の前に指定した HTML や要素を挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     before<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -2608,8 +2604,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別要素の前に挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     insertBefore<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -2617,8 +2613,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の後ろに指定した HTML や要素を挿入
      *
      * @param contents
-     *  - `en` element(s), text node(s), HTML string, or [[DOM]] instance.
-     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または [[DOM]] インスタンス
+     *  - `en` element(s), text node(s), HTML string, or {@link DOM} instance.
+     *  - `ja` 追加する要素(群), テキストノード(群), HTML string, または {@link DOM} インスタンス
      */
     after<T extends Element>(...contents: (Node | string | DOM<T> | NodeListOf<T>)[]): this;
     /**
@@ -2626,8 +2622,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別要素の後ろに挿入
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     insertAfter<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
     /**
@@ -2635,8 +2631,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別要素でそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     wrapAll<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
@@ -2644,8 +2640,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素の内側を, 指定した別エレメントでそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     wrapInner<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
@@ -2653,8 +2649,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を, 指定した別要素でそれぞれ囲む
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     wrap<T extends SelectorBase>(selector: DOMSelector<T>): this;
     /**
@@ -2676,8 +2672,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 要素を DOM から削除. 削除後もイベントリスナは有効
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     detach<T extends SelectorBase>(selector?: DOMSelector<T>): this;
     /**
@@ -2685,8 +2681,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 要素を DOM から削除
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     remove<T extends SelectorBase>(selector?: DOMSelector<T>): this;
     /**
@@ -2694,8 +2690,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定された別の要素や HTML と差し替え
      *
      * @param newContent
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     replaceWith<T extends SelectorBase>(newContent?: DOMSelector<T>): this;
     /**
@@ -2703,8 +2699,8 @@ declare class DOMManipulation<TElement extends ElementBase> implements DOMIterab
      * @ja 配下の要素を指定した別の要素と差し替え
      *
      * @param selector
-     *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
-     *  - `ja` [[DOM]] のもとになるインスタンス(群)またはセレクタ文字列
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるインスタンス(群)またはセレクタ文字列
      */
     replaceAll<T extends SelectorBase>(selector: DOMSelector<T>): DOMResult<T>;
 }
@@ -2940,9 +2936,9 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     on<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on | on}() or {@link DOMEvents.once | once}() and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on | on}() または {@link DOMEvents.once | once}() と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -2960,9 +2956,9 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     off<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], selector: string, listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on | on}() or {@link DOMEvents.once | once}() and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on | on}() または {@link DOMEvents.once | once}() と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -3038,8 +3034,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     trigger<TEventMap extends DOMEventMap<TElement>>(seed: EventType<TEventMap> | (EventType<TEventMap>)[] | Event | Event[] | (EventType<TEventMap> | Event)[], ...eventData: unknown[]): this;
     /**
-     * @en Shortcut for [[once]]('transitionstart').
-     * @ja [[once]]('transitionstart') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('transitionstart').
+     * @ja {@link DOMEvents.once | once}('transitionstart') のユーティリティ
      *
      * @param callback
      *  - `en` `transitionstart` handler.
@@ -3050,8 +3046,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     transitionStart(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('transitionend').
-     * @ja [[once]]('transitionend') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('transitionend').
+     * @ja {@link DOMEvents.once | once}('transitionend') のユーティリティ
      *
      * @param callback
      *  - `en` `transitionend` handler.
@@ -3062,8 +3058,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     transitionEnd(callback: (event: TransitionEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('animationstart').
-     * @ja [[once]]('animationstart') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('animationstart').
+     * @ja {@link DOMEvents.once | once}('animationstart') のユーティリティ
      *
      * @param callback
      *  - `en` `animationstart` handler.
@@ -3074,8 +3070,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      */
     animationStart(callback: (event: AnimationEvent, ...args: unknown[]) => void, permanent?: boolean): this;
     /**
-     * @en Shortcut for [[once]]('animationend').
-     * @ja [[once]]('animationend') のユーティリティ
+     * @en Shortcut for {@link DOMEvents.once | once}('animationend').
+     * @ja {@link DOMEvents.once | once}('animationend') のユーティリティ
      *
      * @param callback
      *  - `en` `animationend` handler.
@@ -3413,8 +3409,8 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
     clone(withEvents?: boolean, deep?: boolean): DOM<TElement>;
 }
 /**
- * @en [[DOM]]`.scrollTo()` options definition.
- * @ja [[DOM]]`.scrollTo()` に指定するオプション定義
+ * @en {@link DOM}`.scrollTo()` options definition.
+ * @ja {@link DOM}`.scrollTo()` に指定するオプション定義
  */
 export interface DOMScrollOptions {
     /**
@@ -3525,28 +3521,28 @@ declare class DOMScroll<TElement extends ElementBase> implements DOMIterable<TEl
     scrollTo(options: DOMScrollOptions): this;
 }
 /**
- * @en [[DOM]] effect parameter.
- * @ja [[DOM]] エフェクト効果のパラメータ
+ * @en {@link DOM} effect parameter.
+ * @ja {@link DOM} エフェクト効果のパラメータ
  */
 export type DOMEffectParameters = Keyframe[] | PropertyIndexedKeyframes | null;
 /**
- * @en [[DOM]] effect options.
- * @ja [[DOM]] エフェクト効果のオプション
+ * @en {@link DOM} effect options.
+ * @ja {@link DOM} エフェクト効果のオプション
  */
 export type DOMEffectOptions = number | KeyframeAnimationOptions;
 /**
- * @en [[DOM]] effect context object.
- * @ja [[DOM]] のエフェクト効果のコンテキストオブジェクト
+ * @en {@link DOM} effect context object.
+ * @ja {@link DOM} のエフェクト効果のコンテキストオブジェクト
  */
 export interface DOMEffectContext<TElement extends ElementBase> {
     /**
-     * @en [[DOM]] instance that called [[animate]]() method.
-     * @ja [[animate]]() メソッドを実行した [[DOM]] インスタンス
+     * @en {@link DOM} instance that called {@link DOMEffects.animate | animate}() method.
+     * @ja {@link DOMEffects.animate | animate}() メソッドを実行した {@link DOM} インスタンス
      */
     readonly dom: DOM<TElement>;
     /**
-     * @en `Element` and `Animation` instance map by execution [[animate]]() method at this time.
-     * @ja 今回実行した `Element` と `Animation` インスタンスのマップ
+     * @en `Element` and `Animation` instance map by execution {@link DOMEffects.animate | animate}() method at this time.
+     * @ja 今回 {@link DOMEffects.animate | animate}() 実行した `Element` と `Animation` インスタンスのマップ
      */
     readonly animations: Map<TElement, Animation>;
     /**
@@ -3591,8 +3587,8 @@ declare class DOMEffects<TElement extends ElementBase> implements DOMIterable<TE
 }
 export type DOMFeatures<T extends ElementBase> = DOMBase<T> & DOMAttributes<T> & DOMTraversing<T> & DOMManipulation<T> & DOMStyles<T> & DOMEvents<T> & DOMScroll<T> & DOMEffects<T>;
 /**
- * @en [[DOM]] plugin method definition.
- * @ja [[DOM]] プラグインメソッド定義
+ * @en {@link DOM} plugin method definition.
+ * @ja {@link DOM} プラグインメソッド定義
  *
  * @note
  *  - プラグイン拡張定義はこのインターフェイスマージする.
@@ -3626,45 +3622,150 @@ declare class DOMClass extends DOMClass_base {
     private constructor();
 }
 /**
- * @en Check the value-type is [[DOM]].
- * @ja [[DOM]] 型であるか判定
+ * @en Check the value-type is {@link DOM}.
+ * @ja {@link DOM} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
  *  - `ja` 評価する値
  */
 export declare function isDOMClass(x: unknown): x is DOM;
-declare namespace dom {
-    let fn: DOMClass & Record<string | symbol, unknown>;
-}
 /**
- * @en Create [[DOM]] instance from `selector` arg.
- * @ja 指定された `selector` [[DOM]] インスタンスを作成
+ * @en Provides functionality equivalent to `jQuery` DOM manipulation.
+ * @ja `jQuery` の DOM 操作と同等の機能を提供
  *
- * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
- * @param context
- *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
- *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
- * @returns [[DOM]] instance.
+ * @example <br>
+ *
+ * ```ts
+ * import { dom as $ } from '@cdp/runtime';
+ *
+ * // Get the <button> element with the class 'continue' and change its HTML to 'Next Step...'
+ * $('button.continue').html('Next Step...');
+ * ```
  */
-declare function dom<T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
-declare namespace dom {
-    var utils: {
-        isWindowContext: typeof isWindowContext;
-        elementify: typeof elementify;
-        rootify: typeof rootify;
-        evaluate: typeof evaluate;
-        detectify: <T extends Node>(node: T, observed?: Node | undefined) => T;
-        undetectify: <T_1 extends Node>(node?: T_1 | undefined) => void;
+export interface DOMStatic {
+    /**
+     * @en Provides functionality equivalent to `jQuery` DOM manipulation. <br>
+     *     Create {@link DOM} instance from `selector` arg.
+     * @ja `jQuery` の DOM 操作と同等の機能を提供 <br>
+     *     指定された `selector` {@link DOM} インスタンスを作成
+     *
+     * @example <br>
+     *
+     * ```ts
+     * import { dom as $ } from '@cdp/runtime';
+     *
+     * // Get the <button> element with the class 'continue' and change its HTML to 'Next Step...'
+     * $('button.continue').html('Next Step...');
+     * ```
+     *
+     * @param selector
+     *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+     *  - `ja` {@link DOM} のもとになるオブジェクト(群)またはセレクタ文字列
+     * @param context
+     *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+     *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+     * @returns {@link DOM} instance.
+     */
+    <T extends SelectorBase>(selector?: DOMSelector<T>, context?: QueryContext | null): DOMResult<T>;
+    /**
+     * @en The object's `prototype` alias.
+     * @ja オブジェクトの `prototype`エイリアス
+     */
+    fn: DOMClass & Record<string | symbol, unknown>;
+    /** DOM Utilities */
+    readonly utils: {
+        /**
+         * @en Check the value-type is Window.
+         * @ja Window 型であるか判定
+         *
+         * @param x
+         *  - `en` evaluated value
+         *  - `ja` 評価する値
+         */
+        isWindowContext(x: unknown): x is Window;
+        /**
+         * @en Create Element array from seed arg.
+         * @ja 指定された Seed から Element 配列を作成
+         *
+         * @param seed
+         *  - `en` Object(s) or the selector string which becomes origin of Element array.
+         *  - `ja` Element 配列のもとになるオブジェクト(群)またはセレクタ文字列
+         * @param context
+         *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+         *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+         * @returns Element[] based Node or Window object.
+         */
+        elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+        /**
+         * @en Create Element array from seed arg. <br>
+         *     And also lists for the `DocumentFragment` inside the `<template>` tag.
+         * @ja 指定された Seed から Element 配列を作成 <br>
+         *     `<template>` タグ内の `DocumentFragment` も列挙する
+         *
+         * @param seed
+         *  - `en` Object(s) or the selector string which becomes origin of Element array.
+         *  - `ja` Element 配列のもとになるオブジェクト(群)またはセレクタ文字列
+         * @param context
+         *  - `en` Set using `Document` context. When being un-designating, a fixed value of the environment is used.
+         *  - `ja` 使用する `Document` コンテキストを指定. 未指定の場合は環境の既定値が使用される.
+         * @returns Element[] based Node.
+         */
+        rootify<T extends SelectorBase>(seed?: ElementifySeed<T>, context?: QueryContext | null): ElementResult<T>[];
+        /**
+         * @en The `eval` function by which script `nonce` attribute considered under the CSP condition.
+         * @ja CSP 環境においてスクリプト `nonce` 属性を考慮した `eval` 実行関数
+         */
+        evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any;
+        /**
+         * @en Enabling the node to detect events of DOM connected and disconnected.
+         * @ja 要素に対して, DOM への接続, DOM からの切断イベントを検出可能にする
+         *
+         * @example <br>
+         *
+         * ```ts
+         * import { dom } from '@cdp/runtime';
+         * const { detectify, undetectify } = dom.utils;
+         *
+         * const el = document.createElement('div');
+         *
+         * // observation start
+         * detectify(el);
+         * el.addEventListener('connected', () => {
+         *     console.log('on connected');
+         * });
+         * el.addEventListener('disconnected', () => {
+         *     console.log('on disconnected');
+         * });
+         *
+         * // observation stop
+         * undetectify(el);
+         * ```
+         *
+         * @param node
+         *  - `en` target node
+         *  - `ja` 対象の要素
+         * @param observed
+         *  - `en` Specifies the root element to watch. If not specified, `ownerDocument` is evaluated first, followed by global `document`.
+         *  - `ja` 監視対象のルート要素を指定. 未指定の場合は `ownerDocument`, グローバル `document` の順に評価される
+         */
+        detectify<T extends Node>(node: T, observed?: Node): T;
+        /**
+         * @en Undetect connected and disconnected from DOM events for an element.
+         * @ja 要素に対して, DOM への接続, DOM からの切断イベントを検出を解除する
+         *
+         * @param node
+         *  - `en` target node. If not specified, execute all release.
+         *  - `ja` 対象の要素. 指定しない場合は全解除を実行
+         */
+        undetectify<T extends Node>(node?: T): void;
     };
 }
+export declare const dom: DOMStatic;
 
 export {
     dom as default,
 };
-export { dom };
 
 /**
  * @en DOM relation event map hash.
@@ -3674,8 +3775,8 @@ export interface ViewEventsHash<TElement extends Node = HTMLElement, TFuncName =
     [selector: string]: TFuncName | DOMEventListener<TElement>;
 }
 /**
- * @en [[View]] construction options.
- * @ja [[View]] 構築に指定するオプション
+ * @en {@link View} construction options.
+ * @ja {@link View} 構築に指定するオプション
  */
 export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string> {
     el?: DOMSelector<TElement | string>;
@@ -3687,9 +3788,9 @@ export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TF
 }
 export type ViewFindSelector = Node | string | Nullish;
 /**
- * @en Core implementation of [[View]] without [[EventSource]] interface. <br>
+ * @en Core implementation of {@link View} without {@link EventSource} interface. <br>
  *     Can be specified as mixin source.
- * @ja [[EventSource]] インターフェイスを持たない [[View]] のコア実装 <br>
+ * @ja {@link EventSource} インターフェイスを持たない {@link View} のコア実装 <br>
  *     Mixin source として指定可能
  */
 export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
@@ -3722,8 +3823,8 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     get el(): TElement;
     /**
-     * @en Get [[DOM]] object.
-     * @ja [[DOM]] オブジェクトを取得
+     * @en Get {@link DOM} object.
+     * @ja {@link DOM} オブジェクトを取得
      */
     get $el(): DOM<TElement>;
     /**
@@ -3751,12 +3852,12 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     setElement(el: DOMSelector<TElement | string>): this;
     /**
-     * @en Set DOM callbacks from [[ViewEventsHash]] object.
-     * @ja [[ViewEventsHash]] オブジェクトから DOM コールバックを設定
+     * @en Set DOM callbacks from {@link ViewEventsHash} object.
+     * @ja {@link ViewEventsHash} オブジェクトから DOM コールバックを設定
      *
      * @param events
-     *  - `en` [[ViewEventsHash]] object. `this.events()` is used by default.
-     *  - `ja` [[ViewEventsHash]] オブジェクト. 既定値は `this.events()`
+     *  - `en` {@link ViewEventsHash} object. `this.events()` is used by default.
+     *  - `ja` {@link ViewEventsHash} オブジェクト. 既定値は `this.events()`
      */
     delegateEvents(events?: ViewEventsHash<TElement>): this;
     /**
@@ -3798,9 +3899,9 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     delegate<TEventMap extends DOMEventMap<TElement>>(type: EventType<TEventMap> | (EventType<TEventMap>)[], listener: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on} or {@link DOMEvents.once} and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on} または {@link DOMEvents.once} と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -3818,9 +3919,9 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     undelegate<TEventMap extends DOMEventMap<TElement>>(type: EventTypeOrNamespace<TEventMap> | (EventTypeOrNamespace<TEventMap>)[], selector: string, listener?: DOMEventListener<TElement, TEventMap>, options?: boolean | AddEventListenerOptions): this;
     /**
-     * @en Remove event handler. The handler designated at [[on]] or [[once]] and that same condition are released. <br>
+     * @en Remove event handler. The handler designated at {@link DOMEvents.on} or {@link DOMEvents.once} and that same condition are released. <br>
      *     If the method receives no arguments, all handlers are released.
-     * @ja 設定されているイベントハンドラの解除. [[on]] または [[once]] と同条件で指定したものが解除される <br>
+     * @ja 設定されているイベントハンドラの解除. {@link DOMEvents.on} または {@link DOMEvents.once} と同条件で指定したものが解除される <br>
      *     引数が無い場合はすべてのハンドラが解除される.
      *
      * @param type
@@ -3873,7 +3974,7 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      * @example <br>
      *
      * ```ts
-     * import { TemplateEngine } from '@cdp/core-template';
+     * import { TemplateEngine } from '@cdp/runtime';
      *
      * class SampleView extends View {
      *     private _template = TemplateEngine.compile('{{title}}');
@@ -3892,9 +3993,11 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
  * @example <br>
  *
  * ```ts
- * import { TemplateEngine } from '@cdp/core-template';
- * import { DOM, dom as $ } from '@cdp/dom';
- * import { View, ViewEventsHash } from '@cdp/view';
+ * import {
+ *     TemplateEngine,
+ *     DOM, dom as $,
+ *     View, ViewEventsHash,
+ * } from '@cdp/rumtime';
  * import { ToDo, ToDoEventSource } from './todo';
  *
  * const _template = TemplateEngine.compile($('#item-template').html());
@@ -3968,8 +4071,8 @@ export declare const webRoot: string;
  * ```
  *
  * @param seed
- *  - `en` set relative path from [[webRoot]].
- *  - `ja` [[webRoot]] からの相対パスを指定
+ *  - `en` set relative path from {@link webRoot}.
+ *  - `ja` {@link webRoot} からの相対パスを指定
  */
 export declare const toUrl: (seed: string) => string;
 /**
@@ -4148,8 +4251,8 @@ export interface I18NDetectErrorBehaviour extends Cancelable {
     noThrow?: boolean;
 }
 /**
- * @en Option interface for [[initializeI18N]]().
- * @ja [[initializeI18N]]() に指定するオプションインターフェイス
+ * @en Option interface for {@link initializeI18N}().
+ * @ja {@link initializeI18N}() に指定するオプションインターフェイス
  */
 export interface I18NOptions extends i18n.InitOptions, I18NDetectErrorBehaviour {
     /** short-cut for `ns` & 'defaultNS' */
@@ -4204,8 +4307,8 @@ export declare const changeLanguage: (lng: string, options?: I18NDetectErrorBeha
  * @ja DOM ローカライズ
  *
  * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+ *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+ *  - `ja` {@link DOM} のもとになるオブジェクト(群)またはセレクタ文字列
  * @param options
  *  - `en` translation options.
  *  - `ja` 翻訳オプション
@@ -4237,13 +4340,13 @@ export declare class WebStorage implements IStorage<WebStorageDataTypeList> {
      * constructor
      *
      * @param storage
-     *  - `en` Web [[Storage]] instance
-     *  - `ja` Web [[Storage]] インスタンス
+     *  - `en` Web {@link Storage} instance
+     *  - `ja` Web {@link Storage} インスタンス
      */
     constructor(storage: Storage);
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     get kind(): string;
     /**
@@ -4338,8 +4441,8 @@ export declare class WebStorage implements IStorage<WebStorageDataTypeList> {
 }
 export declare const webStorage: WebStorage;
 /**
- * @en The event definition fired in [[IDataSync]].
- * @ja [[IDataSync]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link IDataSync}.
+ * @ja {@link IDataSync} 内から発行されるイベント定義
  */
 export interface SyncEvent<T extends object> {
     /** @args [context, response] */
@@ -4349,8 +4452,8 @@ export interface SyncEvent<T extends object> {
     ];
 }
 /**
- * @en List of the methods and the return value types [[IDataSync]] supports.
- * @ja [[IDataSync]] がサポートするメソッドと戻り値のリスト
+ * @en List of the methods and the return value types {@link IDataSync} supports.
+ * @ja {@link IDataSync} がサポートするメソッドと戻り値のリスト
  */
 export interface SyncMethodList<T extends object = PlainObject> {
     create: PlainObject | void;
@@ -4360,38 +4463,38 @@ export interface SyncMethodList<T extends object = PlainObject> {
     read: T;
 }
 /**
- * @en [[IDataSync]]`#sync()` method list.
- * @ja [[IDataSync]]`#sync()` に指定するメソッド一覧
+ * @en {@link IDataSync.sync | IDataSync.sync}() method list.
+ * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するメソッド一覧
  */
 export type SyncMethods = keyof SyncMethodList;
 /**
- * @en Return type of [[IDataSync]]`#sync()`.
- * @ja [[IDataSync]]`#sync()` の戻り値の型
+ * @en Return type of {@link IDataSync.sync | IDataSync.sync}().
+ * @ja {@link IDataSync.sync | IDataSync.sync}() の戻り値の型
  */
 export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
 /**
- * @en Default [[SyncContext]] type.
- * @ja [[SyncContext]] の既定型
+ * @en Default {@link SyncContext} type.
+ * @ja {@link SyncContext} の既定型
  */
 export type SyncObject = AnyObject;
 /**
- * @en Context type of [[IDataSync]]`#sync()`.
- * @ja [[IDataSync]]`#sync()` に指定するコンテキストの型
+ * @en Context type of {@link IDataSync.sync | IDataSync.sync}().
+ * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するコンテキストの型
  */
 export type SyncContext<T extends object = SyncObject> = EventBroker<SyncEvent<T>> & {
     id?: string;
     toJSON(): T;
 };
 /**
- * @en [[IDataSync]] sync() options.
- * @ja [[IDataSync]] sync() に指定するオプション
+ * @en {@link IDataSync.sync | IDataSync.sync}() options.
+ * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するオプション
  */
 export interface IDataSyncOptions extends Cancelable {
     /**
-     * @en Data to be sent to the server. [[AjaxOptions]] compatible. <br>
+     * @en Data to be sent to the server. {@link AjaxOptions} compatible. <br>
      *     If this property passed, the value is reflected as primary.
      *
-     * @ja サーバーに送信されるデータ. [[AjaxOptions]] 互換 <br>
+     * @ja サーバーに送信されるデータ. {@link AjaxOptions} 互換 <br>
      *     指定された場合, このオプションが優先される.
      */
     data?: PlainObject;
@@ -4404,8 +4507,8 @@ export interface IDataSyncOptions extends Cancelable {
  */
 export interface IDataSync<T extends object = SyncObject> {
     /**
-     * @en [[IDataSync]] kind signature.
-     * @ja [[IDataSync]] の種別を表す識別子
+     * @en {@link IDataSync} kind signature.
+     * @ja {@link IDataSync} の種別を表す識別子
      */
     readonly kind: string;
     /**
@@ -4426,26 +4529,26 @@ export interface IDataSync<T extends object = SyncObject> {
 }
 export declare const dataSyncNULL: IDataSync<object>;
 /**
- * @en Options interface for [[RestDataSync]].
- * @ja [[RestDataSync]] に指定するオプション
+ * @en Options interface for {@link RestDataSync}.
+ * @ja {@link RestDataSync} に指定するオプション
  */
 export interface RestDataSyncOptions extends AjaxOptions<'json'> {
     url?: string;
 }
 export declare const dataSyncREST: IDataSync<import('@cdp/lib-core').AnyObject>;
 /**
- * @en [[IDataSync]] interface for [[IStorage]] accessor.
- * @ja [[IStorage]] アクセッサを備える [[IDataSync]] インターフェイス
+ * @en {@link IDataSync} interface for {@link IStorage} accessor.
+ * @ja {@link IStorage} アクセッサを備える {@link IDataSync} インターフェイス
  */
 export interface IStorageDataSync<T extends object = SyncObject> extends IDataSync<T> {
     /**
-     * @en Get current [[IStorage]] instance.
-     * @ja 現在対象の [[IStorage]] インスタンスにアクセス
+     * @en Get current {@link IStorage} instance.
+     * @ja 現在対象の {@link IStorage} インスタンスにアクセス
      */
     getStorage(): IStorage;
     /**
-     * @en Set new [[IStorage]] instance.
-     * @ja 新しい [[IStorage]] インスタンスを設定
+     * @en Set new {@link IStorage} instance.
+     * @ja 新しい {@link IStorage} インスタンスを設定
      */
     setStorage(newStorage: IStorage): this;
     /**
@@ -4462,24 +4565,24 @@ export interface IStorageDataSync<T extends object = SyncObject> extends IDataSy
     setIdSeparator(newSeparator: string): string;
 }
 /**
- * @en [[StorageDataSync]] construction options.
- * @ja [[StorageDataSync]] 構築に指定するオプション
+ * @en {@link StorageDataSync} construction options.
+ * @ja {@link StorageDataSync} 構築に指定するオプション
  */
 export interface StorageDataSyncConstructionOptions {
     separator?: string;
 }
 /**
- * @en Options interface for [[StorageDataSync]].
- * @ja [[StorageDataSync]] に指定するオプション
+ * @en Options interface for {@link StorageDataSync}.
+ * @ja {@link StorageDataSync} に指定するオプション
  */
 export type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
 /**
- * @en Create [[IStorageDataSync]] object with [[IStorage]].
- * @ja [[IStorage]] を指定して, [[IStorageDataSync]] オブジェクトを構築
+ * @en Create {@link IStorageDataSync} object with {@link IStorage}.
+ * @ja {@link IStorage} を指定して, {@link IStorageDataSync} オブジェクトを構築
  *
  * @param storage
- *  - `en` [[IStorage]] object
- *  - `ja` [[IStorage]] オブジェクト
+ *  - `en` {@link IStorage} object
+ *  - `ja` {@link IStorage} オブジェクト
  * @param options
  *  - `en` construction options
  *  - `ja` 構築オプション
@@ -4487,8 +4590,8 @@ export type StorageDataSyncOptions = IDataSyncOptions & IStorageOptions;
 export declare const createStorageDataSync: (storage: IStorage, options?: StorageDataSyncConstructionOptions) => IStorageDataSync;
 export declare const dataSyncSTORAGE: IStorageDataSync<import('@cdp/lib-core').AnyObject>;
 /**
- * @en Get or update default [[IDataSync]] object.
- * @ja 既定の [[IDataSync]] オブジェクトの取得 / 更新
+ * @en Get or update default {@link IDataSync} object.
+ * @ja 既定の {@link IDataSync} オブジェクトの取得 / 更新
  *
  * @param newSync
  *  - `en` new data-sync object. if `undefined` passed, only returns the current object.
@@ -4510,7 +4613,7 @@ export declare const RESULT_VALID_ATTRS: Readonly<Result>;
  * @example <br>
  *
  * ```ts
- * import { Model, ModelConstructor } from '@cdp/model';
+ * import { Model, ModelConstructor } from '@cdp/runtime';
  *
  * interface ContentAttribute {
  *   uri: string;
@@ -4735,8 +4838,8 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     protected validateAttributes<A extends T>(attributes: ModelAttributeInput<A>, options?: ModelValidateAttributeOptions): Result;
     /**
-     * @en Check the [[Model]] has valid property. (not `null` or `undefined`)
-     * @ja [[Model]] が有効なプロパティを持っているか確認 (`null` または `undefined` でない)
+     * @en Check the {@link Model} has valid property. (not `null` or `undefined`)
+     * @ja {@link Model} が有効なプロパティを持っているか確認 (`null` または `undefined` でない)
      */
     has(attribute: keyof T): boolean;
     /**
@@ -4757,8 +4860,8 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     setAttributes<A extends T>(attributes: ModelAttributeInput<A>, options?: ModelSetOptions): this;
     /**
-     * @en Clear all attributes on the [[Model]]. (set `undefined`)
-     * @ja [[Model]] からすべての属性を削除 (`undefined` を設定)
+     * @en Clear all attributes on the {@link Model}. (set `undefined`)
+     * @ja {@link Model} からすべての属性を削除 (`undefined` を設定)
      */
     clear(options?: ModelSetOptions): this;
     /**
@@ -4797,8 +4900,8 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     previous<K extends keyof T>(attribute: K): T[K];
     /**
-     * @en Check a [[Model]] is new if it has never been saved to the server, and lacks an id.
-     * @ja [[Model]] がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
+     * @en Check a {@link Model} is new if it has never been saved to the server, and lacks an id.
+     * @ja {@link Model} がまだサーバーに存在しないかチェック. 既定では `idAttribute` の有無で判定
      */
     protected isNew(): boolean;
     /**
@@ -4809,7 +4912,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     protected parse(response: ModelSeed | void, options?: ModelSetOptions): T | void;
     /**
-     * @en Proxy [[IDataSync#sync]] by default -- but override this if you need custom syncing semantics for *this* particular model.
+     * @en Proxy {@link IDataSync.sync | IDataSync.sync}() by default -- but override this if you need custom syncing semantics for *this* particular model.
      * @ja データ同期. 必要に応じてオーバーライド可能.
      *
      * @override
@@ -4826,14 +4929,14 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     protected sync<K extends ModelSyncMethods>(method: K, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<K, T>>;
     /**
-     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
-     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     * @en Fetch the {@link Model} from the server, merging the response with the model's local attributes.
+     * @ja {@link Model} 属性のサーバー同期. レスポンスのマージを実行
      */
     fetch(options?: ModelFetchOptions): Promise<T>;
     /**
-     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     * @en Set a hash of {@link Model} attributes, and sync the model to the server. <br>
      *     If the server returns an attributes hash that differs, the model's state will be `set` again.
-     * @ja [[Model]] 属性をサーバーに保存. <br>
+     * @ja {@link Model} 属性をサーバーに保存. <br>
      *     異なる属性が返却される場合は再設定
      *
      * @param key
@@ -4848,9 +4951,9 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     save<K extends keyof T>(key?: keyof T, value?: T[K], options?: ModelSaveOptions): Promise<T | void>;
     /**
-     * @en Set a hash of [[Model]] attributes, and sync the model to the server. <br>
+     * @en Set a hash of {@link Model} attributes, and sync the model to the server. <br>
      *     If the server returns an attributes hash that differs, the model's state will be `set` again.
-     * @ja [[Model]] 属性をサーバーに保存. <br>
+     * @ja {@link Model} 属性をサーバーに保存. <br>
      *     異なる属性が返却される場合は再設定
      *
      * @param attributes
@@ -4862,8 +4965,8 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      */
     save<A extends T>(attributes: ModelAttributeInput<A> | Nullish, options?: ModelSaveOptions): Promise<T | void>;
     /**
-     * @en Destroy this [[Model]] on the server if it was already persisted.
-     * @ja [[Model]] をサーバーから削除
+     * @en Destroy this {@link Model} on the server if it was already persisted.
+     * @ja {@link Model} をサーバーから削除
      *
      * @param options
      *  - `en` destroy options
@@ -4872,8 +4975,8 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
     destroy(options?: ModelDestroyOptions): Promise<T | void>;
 }
 /**
- * @en Check the value-type is [[Model]].
- * @ja [[Model]] 型であるか判定
+ * @en Check the value-type is {@link Model}.
+ * @ja {@link Model} 型であるか判定
  *
  * @param x
  *  - `en` evaluated value
@@ -4881,8 +4984,8 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
  */
 export declare function isModel(x: unknown): x is Model;
 /**
- * @en Query [[Model]] `id-attribute`.
- * @ja [[Model]] の `id-attribute` を取得
+ * @en Query {@link Model} `id-attribute`.
+ * @ja {@link Model} の `id-attribute` を取得
  */
 export declare function idAttribute(x: unknown, fallback?: string): string;
 /**
@@ -4908,13 +5011,13 @@ export interface Waitable {
     wait?: boolean;
 }
 /**
- * @en Default [[Model]] seed type.
- * @ja 既定の [[Model]] シードデータ型
+ * @en Default {@link Model} seed type.
+ * @ja 既定の {@link Model} シードデータ型
  */
 export type ModelSeed = PlainObject;
-/** helper for [[ModelAttributeChangeEvent]] */
+/** helper for {@link ModelAttributeChangeEvent} */
 export type ChangedAttributeEvent<T extends object> = `@change:${string & NonFunctionPropertyNames<T>}`;
-/** helper for [[ModelAttributeChangeEvent]] */
+/** helper for {@link ModelAttributeChangeEvent} */
 export type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ? A extends keyof T ? [
     Model<T>,
     T[A],
@@ -4922,15 +5025,15 @@ export type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ?
     A
 ] : never : never;
 /**
- * @en [[Model]] attribute change event definition.
- * @ja [[Model]] 属性変更イベント定義
+ * @en {@link Model} attribute change event definition.
+ * @ja {@link Model} 属性変更イベント定義
  */
 export type ModelAttributeChangeEvent<T extends object> = {
     [K in ChangedAttributeEvent<T>]: MakeEventArg<T, K>;
 };
 /**
- * @en Default [[Model]] event definition.
- * @ja 既定の [[Model]] イベント定義
+ * @en Default {@link Model} event definition.
+ * @ja 既定の {@link Model} イベント定義
  */
 export type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttributeChangeEvent<T> & {
     /**
@@ -5007,47 +5110,47 @@ export type ModelEvent<T extends object> = EventAll & SyncEvent<T> & ModelAttrib
     ];
 };
 /**
- * @en [[Model]] attributes definition.
- * @ja [[Model]] が持つ属性の定義
+ * @en {@link Model} attributes definition.
+ * @ja {@link Model} が持つ属性の定義
  */
 export type ModelAttributes<T extends object> = {
     [P in keyof T]: T[P];
 };
 /**
- * @en [[Model]] base constructor definition.
- * @ja [[Model]] の基底コンストラクタの定義
+ * @en {@link Model} base constructor definition.
+ * @ja {@link Model} の基底コンストラクタの定義
  */
 export interface ModelConstructor<C extends object, T extends object> {
     idAttribute: string;
     new (...args: ConstructorParameters<Constructor<C>>): C & ModelAttributes<T>;
 }
 /**
- * @en [[Model]]'s `EventSource` definition from attributes.
- * @ja 属性から [[Model]] の `EventSource` 定義抽出
+ * @en {@link Model}'s `EventSource` definition from attributes.
+ * @ja 属性から {@link Model} の `EventSource` 定義抽出
  */
 export type ModelEventSource<T extends object> = Subscribable<ModelEvent<T>>;
 /**
- * @en [[Model]] validate options.
- * @ja [[Model]] 検証オプション
+ * @en {@link Model} validate options.
+ * @ja {@link Model} 検証オプション
  */
 export interface ModelValidateAttributeOptions extends Silenceable {
     extend?: boolean;
 }
 /**
- * @en [[Model]] attributes argument type.
- * @ja [[Model]] 属性引数の型
+ * @en {@link Model} attributes argument type.
+ * @ja {@link Model} 属性引数の型
  */
 export type ModelAttributeInput<T> = Partial<T> & SyncObject;
 /**
- * @en [[Model]] attributes setup options.
- * @ja [[Model]] 属性設定時に指定するオプション
+ * @en {@link Model} attributes setup options.
+ * @ja {@link Model} 属性設定時に指定するオプション
  */
 export interface ModelSetOptions extends Validable, ModelValidateAttributeOptions {
     syncMethod?: SyncMethods;
 }
 /**
- * @en [[Model]] construction options.
- * @ja [[Model]] 構築に指定するオプション
+ * @en {@link Model} construction options.
+ * @ja {@link Model} 構築に指定するオプション
  */
 export type ModelConstructionOptions = ModelSetOptions & Parseable;
 /** re-exports */
@@ -5055,20 +5158,20 @@ export type ModelSyncMethods = SyncMethods;
 export type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
 export type ModelDataSyncOptions = RestDataSyncOptions;
 /**
- * @en [[Model]] fetch options.
- * @ja [[Model]] fetch に指定するオプション
+ * @en {@link Model} fetch options.
+ * @ja {@link Model} fetch に指定するオプション
  */
 export type ModelFetchOptions = ModelDataSyncOptions & Omit<ModelSetOptions, 'noThrow'> & Parseable;
 /**
- * @en [[Model]] save options.
- * @ja [[Model]] save に指定するオプション
+ * @en {@link Model} save options.
+ * @ja {@link Model} save に指定するオプション
  */
 export interface ModelSaveOptions extends ModelFetchOptions, Waitable {
     patch?: boolean;
 }
 /**
- * @en [[Model]] destroy options.
- * @ja [[Model]] destroy に指定するオプション
+ * @en {@link Model} destroy options.
+ * @ja {@link Model} destroy に指定するオプション
  */
 export type ModelDestroyOptions = ModelDataSyncOptions & Waitable;
 /**
@@ -5078,13 +5181,14 @@ export type ModelDestroyOptions = ModelDataSyncOptions & Waitable;
  * @example <br>
  *
  * ```ts
- * import { Model, ModelConstructor } from '@cdp/model';
  * import {
+ *     Model,
+ *     ModelConstructor,
  *     Collection,
  *     CollectionItemQueryOptions,
  *     CollectionItemQueryResult,
  *     CollectionSeed,
- * } from '@cdp/collection';
+ * } from '@cdp/runtime';
  *
  * // Model schema
  * interface TrackAttribute {
@@ -5151,9 +5255,9 @@ export type ModelDestroyOptions = ModelDataSyncOptions & Waitable;
 export declare abstract class Collection<TModel extends object = any, TEvent extends CollectionEvent<TModel> = CollectionEvent<TModel>, TKey extends Keys<TModel> = Keys<TModel>> extends EventSource<TEvent> implements Iterable<TModel> {
     /**
      * @en Model constructor. <br>
-     *     The constructor is used internally by this [[Collection]] class for [[TModel]] construction.
+     *     The constructor is used internally by this {@link Collection} class for `TModel` construction.
      * @ja Model コンストラクタ <br>
-     *     [[Collection]] クラスが [[TModel]] を構築するために使用する
+     *     {@link Collection} クラスが `TModel` を構築するために使用する
      */
     static readonly model?: Class;
     /**
@@ -5207,13 +5311,13 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     get filtered(): boolean;
     /**
-     * @en [[CollectionQueryInfo]] instance
-     * @ja [[CollectionQueryInfo]] を格納するインスタンス
+     * @en {@link CollectionQueryInfo} instance
+     * @ja {@link CollectionQueryInfo} を格納するインスタンス
      */
     protected get _queryInfo(): CollectionQueryInfo<TModel, TKey>;
     /**
-     * @en [[CollectionQueryInfo]] instance
-     * @ja [[CollectionQueryInfo]] を格納するインスタンス
+     * @en {@link CollectionQueryInfo} instance
+     * @ja {@link CollectionQueryInfo} を格納するインスタンス
      */
     protected set _queryInfo(val: CollectionQueryInfo<TModel, TKey>);
     /**
@@ -5355,8 +5459,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     protected parse(response: CollectionSeed | CollectionSeed[] | void, options?: CollectionSetOptions): TModel[] | CollectionSeed[] | undefined;
     /**
-     * @en The [[fetch]] method proxy that is compatible with [[CollectionItemProvider]] returns one-shot result.
-     * @ja [[CollectionItemProvider]] 互換の単発の fetch 結果を返却. 必要に応じてオーバーライド可能.
+     * @en The {@link Collection.fetch} method proxy that is compatible with {@link CollectionItemProvider} returns one-shot result.
+     * @ja {@link CollectionItemProvider} 互換の単発の {@link Collection.fetch} 結果を返却. 必要に応じてオーバーライド可能.
      *
      * @override
      *
@@ -5366,8 +5470,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     protected sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<object>>;
     /**
-     * @en Fetch the [[Model]] from the server, merging the response with the model's local attributes.
-     * @ja [[Model]] 属性のサーバー同期. レスポンスのマージを実行
+     * @en Fetch the {@link Model} from the server, merging the response with the model's local attributes.
+     * @ja {@link Model} 属性のサーバー同期. レスポンスのマージを実行
      *
      * @param options
      *  - `en` fetch options.
@@ -5552,8 +5656,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     create(attrs: object, options?: ModelSaveOptions): TModel | undefined;
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Iterator of {@link ElementBase} values in the array.
+     * @ja 格納している {@link ElementBase} にアクセス可能なイテレータオブジェクトを返却
      */
     [Symbol.iterator](): Iterator<TModel>;
     /**
@@ -5570,8 +5674,8 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      */
     keys(): IterableIterator<string>;
     /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of values({@link ElementBase}) in the array.
+     * @ja values({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     values(): IterableIterator<TModel>;
 }
@@ -5788,8 +5892,8 @@ export interface DynamicConditionSeed<TItem extends object, TKey extends Keys<TI
     sortKeys?: SortKey<TKey>[];
 }
 /**
- * @en [[Collection]] sort options.
- * @ja [[Collection]] の sort に使用するオプション
+ * @en {@link Collection} sort options.
+ * @ja {@link Collection} の sort に使用するオプション
  */
 export interface CollectionSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> {
     /**
@@ -5808,16 +5912,16 @@ export interface CollectionSortOptions<TItem extends object, TKey extends Keys<T
     /**
      * @en Sort comparator functions <br>
      *     When sorting more in control, it's designated. <br>
-     *     When this property given, [[sortKeys]] is ignored.
+     *     When this property given, {@link CollectionSortOptions.sortKeys} is ignored.
      * @ja 比較関数指定 <br>
      *     より自由度の高いソートを行うときに指定 <br>
-     *     このプロパティが指定されるとき, [[sortKeys]] は無視される
+     *     このプロパティが指定されるとき, {@link CollectionSortOptions.sortKeys} は無視される
      */
     comparators?: SortCallback<TItem>[];
 }
 /**
- * @en [[Collection]] filter options.
- * @ja [[Collection]] の filter に使用するオプション
+ * @en {@link Collection} filter options.
+ * @ja {@link Collection} の filter に使用するオプション
  */
 export interface CollectionFilterOptions<TItem extends object> {
     /**
@@ -5827,8 +5931,8 @@ export interface CollectionFilterOptions<TItem extends object> {
     filter?: FilterCallback<TItem>;
 }
 /**
- * @en Base option interface for [[Collection]]`#fetch()`.
- * @ja [[Collection]]`#fetch()` に使用する基底オプション
+ * @en Base option interface for {@link Collection.fetch | Collection.fetch}().
+ * @ja {@link Collection.fetch | Collection.fetch}() に使用する基底オプション
  */
 export interface CollectionFetchOptions<TItem extends object> extends Cancelable {
     /**
@@ -5853,8 +5957,8 @@ export interface CollectionFetchOptions<TItem extends object> extends Cancelable
     progress?: CollectionFetchProgress<TItem>;
 }
 /**
- * @en Argument value type for [[CollectionFetchProgress]].
- * @ja [[CollectionFetchProgress]] に渡される引数
+ * @en Argument value type for {@link CollectionFetchProgress}.
+ * @ja {@link CollectionFetchProgress} に渡される引数
  */
 export type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys<TItem> = never> = {
     total: number;
@@ -5862,10 +5966,10 @@ export type CollectionItemQueryResult<TItem extends object, TSumKey extends Keys
     options?: CollectionItemQueryOptions<TItem>;
 } & Pick<TItem, TSumKey>;
 /**
- * @en Progress callback function type by using [[CollectionFetchOptions]]`.auto`. <br>
- *     最終進捗 の items は Promise.resolve() に渡るものと同等
- * @ja [[CollectionFetchOptions]]`.auto` が指定された場合に使用する進捗取得用コールバック関数 <br>
- *     最終進捗 の items は Promise.resolve() に渡るものと同等
+ * @en Progress callback function type by using {@link CollectionFetchOptions.auto | CollectionFetchOptions.auto}. <br>
+ *     最終進捗 の items は `Promise.resolve`() に渡るものと同等
+ * @ja {@link CollectionFetchOptions.auto | CollectionFetchOptions.auto} が指定された場合に使用する進捗取得用コールバック関数 <br>
+ *     最終進捗 の items は `Promise.resolve`() に渡るものと同等
  */
 export type CollectionFetchProgress<TItem extends object> = (progress: CollectionItemQueryResult<TItem>) => void;
 /**
@@ -5879,12 +5983,12 @@ export interface CollectionItemQueryOptions<TItem extends object, TKey extends K
      */
     condition?: DynamicConditionSeed<TItem, TKey>;
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` doesn't use sorting and filtering from [[CollectionQueryInfo]] cached.
-     * @ja [[CollectionQueryInfo]] にキャッシュされたソート/フィルターが不要な時に指定
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() doesn't use sorting and filtering from {@link CollectionQueryInfo} cached.
+     * @ja {@link CollectionQueryInfo} にキャッシュされたソート/フィルターが不要な時に指定
      */
     noSearch?: boolean;
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` doesn't cache result.
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() doesn't cache result.
      * @ja 明示的に cache しない場合に true
      */
     noCache?: boolean;
@@ -5900,13 +6004,13 @@ export interface CollectionQueryInfo<TItem extends object, TKey extends Keys<TIt
     cache?: CollectionItemQueryResult<TItem>;
 }
 /**
- * @en [[Collection]] items provider function type.
- * @ja [[Collection]] の Item を供給する関数の型
+ * @en {@link Collection} items provider function type.
+ * @ja {@link Collection} の Item を供給する関数の型
  */
 export type CollectionItemProvider<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = (options?: CollectionItemQueryOptions<TItem, TKey>) => Promise<CollectionItemQueryResult<TItem>>;
 /**
- * @en [[Collection]] construction options.
- * @ja [[Collection]] 構築に指定するオプション
+ * @en {@link Collection} construction options.
+ * @ja {@link Collection} 構築に指定するオプション
  */
 export interface CollectionConstructionOptions<T extends object, K extends Keys<T> = Keys<T>> extends Silenceable {
     /** custom model provider */
@@ -5924,8 +6028,8 @@ export interface CollectionConstructionOptions<T extends object, K extends Keys<
  */
 export type CollectionOperationOptions = Silenceable & Parseable;
 /**
- * @en Add item to [[Collection]] options.
- * @ja [[Collection]] への追加オプション
+ * @en Add item to {@link Collection} options.
+ * @ja {@link Collection} への追加オプション
  */
 export interface CollectionAddOptions extends CollectionOperationOptions {
     at?: number;
@@ -5933,8 +6037,8 @@ export interface CollectionAddOptions extends CollectionOperationOptions {
     sort?: boolean;
 }
 /**
- * @en [[Collection]] setup options.
- * @ja [[Collection]] 設定オプション
+ * @en {@link Collection} setup options.
+ * @ja {@link Collection} 設定オプション
  */
 export interface CollectionSetOptions extends CollectionAddOptions {
     add?: boolean;
@@ -5942,18 +6046,18 @@ export interface CollectionSetOptions extends CollectionAddOptions {
     merge?: boolean;
 }
 /**
- * @en [[Collection]] re-sort options.
- * @ja [[Collection]] 再ソートオプション
+ * @en {@link Collection} re-sort options.
+ * @ja {@link Collection} 再ソートオプション
  */
 export type CollectionReSortOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> = Validable & CollectionSortOptions<TItem, TKey> & CollectionOperationOptions;
 /**
- * @en [[Collection]] after-filter options.
- * @ja [[Collection]] 絞り込みフィルタオプション
+ * @en {@link Collection} after-filter options.
+ * @ja {@link Collection} 絞り込みフィルタオプション
  */
 export type CollectionAfterFilterOptions<TItem extends object> = CollectionFilterOptions<TItem> & Silenceable;
 /**
- * @en [[Collection]] update options.
- * @ja [[Collection]] 更新時のオプション
+ * @en {@link Collection} update options.
+ * @ja {@link Collection} 更新時のオプション
  */
 export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & CollectionSetOptions & {
     index?: number;
@@ -5966,24 +6070,24 @@ export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & C
 /** re-exports */
 export type CollectionDataSyncOptions = RestDataSyncOptions;
 /**
- * @en [[Collection]]`#fetch()` options.
- * @ja [[Collection]]`#fetch()` のオプション
+ * @en {@link Collection.fetch | Collection.fetch}() options.
+ * @ja {@link Collection.fetch | Collection.fetch}() のオプション
  */
 export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> extends CollectionItemQueryOptions<TItem, TKey>, CollectionSetOptions {
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` calls [[Collection]]`#reset()` instead of [[Collection]]`#add()`.
-     * @ja 明示的に `[[Collection]]`#reset()` メソッドを呼ぶ場合に true
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() calls {@link Collection.reset | Collection.reset}() instead of {@link Collection.add | Collection.add}().
+     * @ja {@link Collection.fetch | Collection.fetch}() 内で明示的に {@link Collection.reset | Collection.reset}() メソッドを呼ぶ場合に true
      */
     reset?: boolean;
     /**
-     * @en If given `true`, [[Collection]]`#fetch()` calls [[Collection]]`#sort()`.
-     * @ja `[[Collection]]`#sort()` を実行する場合 true
+     * @en If given `true`, {@link Collection.fetch | Collection.fetch}() calls {@link Collection.sort | Collection.sort}().
+     * @ja {@link Collection.fetch | Collection.fetch}() 内で {@link Collection.sort | Collection.sort} を実行する場合 true
      */
     sort?: boolean;
 }
 /**
- * @en [[Collection]]`#requery()` options.
- * @ja [[Collection]]`#requery()` のオプション
+ * @en {@link Collection.requery | Collection.requery}() options.
+ * @ja {@link Collection.requery | Collection.requery}() のオプション
  */
 export type CollectionRequeryOptions = Silenceable & Cancelable;
 /**
@@ -5998,13 +6102,13 @@ export type CollectionModelAttributeChangeEvent<T extends object> = {
     ] : never;
 };
 /**
- * @en Default [[Collection]] seed type.
- * @ja 既定の [[Collection]] シードデータ型
+ * @en Default {@link Collection} seed type.
+ * @ja 既定の {@link Collection} シードデータ型
  */
 export type CollectionSeed = AnyObject;
 /**
- * @en Default [[Collection]] event definition.
- * @ja 既定の [[Collection]] イベント定義
+ * @en Default {@link Collection} event definition.
+ * @ja 既定の {@link Collection} イベント定義
  */
 export type CollectionEvent<TItem extends object> = EventAll & SyncEvent<Collection<TItem>> & CollectionModelAttributeChangeEvent<TItem> & {
     /**
@@ -6172,11 +6276,11 @@ export type CollatorProvider = () => Intl.Collator;
  * @ja 既定の Intl.Collator を設定
  *
  * @param newProvider
- *  - `en` new [[CollatorProvider]] object. if `undefined` passed, only returns the current object.
- *  - `ja` 新しい [[CollatorProvider]] オブジェクトを指定. `undefined` が渡される場合は現在設定されているオブジェクトの返却のみ行う
+ *  - `en` new {@link CollatorProvider} object. if `undefined` passed, only returns the current object.
+ *  - `ja` 新しい {@link CollatorProvider} オブジェクトを指定. `undefined` が渡される場合は現在設定されているオブジェクトの返却のみ行う
  * @returns
- *  - `en` old [[CollatorProvider]] object.
- *  - `ja` 設定されていた [[CollatorProvider]] オブジェクト
+ *  - `en` old {@link CollatorProvider} object.
+ *  - `ja` 設定されていた {@link CollatorProvider} オブジェクト
  */
 export declare function defaultCollatorProvider(newProvider?: CollatorProvider): CollatorProvider;
 /**
@@ -6226,13 +6330,13 @@ export declare const getBooleanComparator: typeof getGenericComparator;
  */
 export declare const getNumberComparator: typeof getGenericComparator;
 /**
- * @en Convert to comparator from [[SortKey]].
- * @ja [[SortKey]] を comparator に変換
+ * @en Convert to comparator from {@link SortKey}.
+ * @ja {@link SortKey} を comparator に変換
  */
 export declare function toComparator<T, K extends string = string>(sortKey: SortKey<K>): SortCallback<T>;
 /**
- * @en Convert to comparator array from [[SortKey]] array.
- * @ja [[SortKey]] 配列を comparator 配列に変換
+ * @en Convert to comparator array from {@link SortKey} array.
+ * @ja {@link SortKey} 配列を comparator 配列に変換
  */
 export declare function convertSortKeys<T, K extends string = string>(sortKeys: SortKey<K>[]): SortCallback<T>[];
 /**
@@ -6348,8 +6452,8 @@ export declare class ArrayCursor<T = any> {
  *  - `en` target array
  *  - `ja` 対象配列
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -6366,8 +6470,8 @@ export declare function clearArray<T>(target: ObservableArray<T> | T[], token?: 
  *  - `en` source elements
  *  - `ja` 追加元要素
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -6387,8 +6491,8 @@ export declare function appendArray<T>(target: ObservableArray<T> | T[], src: T[
  *  - `en` source elements
  *  - `ja` 追加元要素
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -6408,8 +6512,8 @@ export declare function insertArray<T>(target: ObservableArray<T> | T[], index: 
  *  - `en` edit order index array
  *  - `ja` インデックス配列
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -6426,8 +6530,8 @@ export declare function reorderArray<T>(target: ObservableArray<T> | T[], index:
  *  - `en` removed order index array
  *  - `ja` インデックス配列
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -6448,8 +6552,8 @@ export declare class DynamicCondition<TItem extends object, TKey extends Keys<TI
      * constructor
      *
      * @param seeds
-     *  - `en` [[DynamicConditionSeed]] instance
-     *  - `ja` [[DynamicConditionSeed]] インスタンス
+     *  - `en` {@link DynamicConditionSeed} instance
+     *  - `ja` {@link DynamicConditionSeed} インスタンス
      */
     constructor(seeds?: DynamicConditionSeed<TItem, TKey>);
     get operators(): DynamicOperatorContext<TItem>[];
@@ -6476,13 +6580,13 @@ export declare class DynamicCondition<TItem extends object, TKey extends Keys<TI
     get filter(): FilterCallback<TItem>;
 }
 /**
- * @en Apply `filter` and `sort key` to the `items` from [[queryItems]]`()` result.
- * @ja [[queryItems]]`()` した `items` に対して `filter` と `sort key` を適用
+ * @en Apply `filter` and `sort key` to the `items` from {@link queryItems}() result.
+ * @ja {@link queryItems}() した `items` に対して `filter` と `sort key` を適用
  */
 export declare function searchItems<TItem>(items: TItem[], filter?: FilterCallback<TItem> | null, ...comparators: SortCallback<TItem>[]): TItem[];
 /**
- * @en Fix the target items by [[DynamicCondition]].
- * @ja [[DynamicCondition]] に従い対象を整形
+ * @en Fix the target items by {@link DynamicCondition}.
+ * @ja {@link DynamicCondition} に従い対象を整形
  *
  * @param items
  *  - `en` target items (destructive)
@@ -6493,8 +6597,8 @@ export declare function searchItems<TItem>(items: TItem[], filter?: FilterCallba
  */
 export declare function conditionalFix<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>(items: TItem[], condition: DynamicCondition<TItem, TKey>): CollectionItemQueryResult<TItem>;
 /**
- * @en Low level function for [[Collection]] query items.
- * @ja [[Collection]] Item をクエリする低レベル関数
+ * @en Low level function for {@link Collection} query items.
+ * @ja {@link Collection} Item をクエリする低レベル関数
  *
  * @param queryInfo
  *  - `en` query information
@@ -6513,45 +6617,45 @@ export declare function queryItems<TItem extends object, TKey extends Keys<TItem
  */
 export type CollectionEditee<M extends object> = Collection<M, any, any>;
 /**
- * @en Clear all elements of [[Collection]].
- * @ja [[Collection]] 要素の全削除
+ * @en Clear all elements of {@link Collection}.
+ * @ja {@link Collection} 要素の全削除
  *
  * @param collection
- *  - `en` target [[Collection]]
- *  - `ja` 対象 [[Collection]]
+ *  - `en` target {@link Collection}
+ *  - `ja` 対象 {@link Collection}
  * @param options
- *  - `en` [[CollectionEditOptions]] reference.
- *  - `ja` [[CollectionEditOptions]] を指定
+ *  - `en` {@link CollectionEditOptions} reference.
+ *  - `ja` {@link CollectionEditOptions} を指定
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
  */
 export declare function clearCollection<T extends object>(collection: CollectionEditee<T>, options?: ListEditOptions): Promise<ListChanged<T>>;
 /**
- * @en Append source elements to the end of [[Collection]].
- * @ja [[Collection]] の末尾に追加
+ * @en Append source elements to the end of {@link Collection}.
+ * @ja {@link Collection} の末尾に追加
  *
  * @param collection
- *  - `en` target [[Collection]]
- *  - `ja` 対象 [[Collection]]
+ *  - `en` target {@link Collection}
+ *  - `ja` 対象 {@link Collection}
  * @param src
  *  - `en` source elements
  *  - `ja` 追加元要素
  * @param options
- *  - `en` [[CollectionEditOptions]] reference.
- *  - `ja` [[CollectionEditOptions]] を指定
+ *  - `en` {@link CollectionEditOptions} reference.
+ *  - `ja` {@link CollectionEditOptions} を指定
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
  */
 export declare function appendCollection<T extends object>(collection: CollectionEditee<T>, src: T[], options?: ListEditOptions): Promise<ListChanged<T>>;
 /**
- * @en Insert source elements to specified index of [[Collection]].
- * @ja [[Collection]] の指定した位置に挿入
+ * @en Insert source elements to specified index of {@link Collection}.
+ * @ja {@link Collection} の指定した位置に挿入
  *
  * @param collection
- *  - `en` target [[Collection]]
- *  - `ja` 対象 [[Collection]]
+ *  - `en` target {@link Collection}
+ *  - `ja` 対象 {@link Collection}
  * @param index
  *  - `ja` target array position index
  *  - `ja` 追加先のインデックス
@@ -6559,20 +6663,20 @@ export declare function appendCollection<T extends object>(collection: Collectio
  *  - `en` source elements
  *  - `ja` 追加元要素
  * @param options
- *  - `en` [[CollectionEditOptions]] reference.
- *  - `ja` [[CollectionEditOptions]] を指定
+ *  - `en` {@link CollectionEditOptions} reference.
+ *  - `ja` {@link CollectionEditOptions} を指定
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
  */
 export declare function insertCollection<T extends object>(collection: CollectionEditee<T>, index: number, src: T[], options?: ListEditOptions): Promise<ListChanged<T>>;
 /**
- * @en Reorder [[Collection]] elements position.
- * @ja [[Collection]] 項目の位置を変更
+ * @en Reorder {@link Collection} elements position.
+ * @ja {@link Collection} 項目の位置を変更
  *
  * @param collection
- *  - `en` target [[Collection]]
- *  - `ja` 対象 [[Collection]]
+ *  - `en` target {@link Collection}
+ *  - `ja` 対象 {@link Collection}
  * @param index
  *  - `ja` target array position index
  *  - `ja` 追加先のインデックス
@@ -6580,26 +6684,26 @@ export declare function insertCollection<T extends object>(collection: Collectio
  *  - `en` edit order index array
  *  - `ja` インデックス配列
  * @param options
- *  - `en` [[CollectionEditOptions]] reference.
- *  - `ja` [[CollectionEditOptions]] を指定
+ *  - `en` {@link CollectionEditOptions} reference.
+ *  - `ja` {@link CollectionEditOptions} を指定
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
  */
 export declare function reorderCollection<T extends object>(collection: CollectionEditee<T>, index: number, orders: number[], options?: ListEditOptions): Promise<ListChanged<T>>;
 /**
- * @en Remove [[Collection]] elements.
- * @ja [[Collection]] 項目の削除
+ * @en Remove {@link Collection} elements.
+ * @ja {@link Collection} 項目の削除
  *
  * @param collection
- *  - `en` target [[Collection]]
- *  - `ja` 対象 [[Collection]]
+ *  - `en` target {@link Collection}
+ *  - `ja` 対象 {@link Collection}
  * @param orders
  *  - `en` removed order index array
  *  - `ja` インデックス配列
  * @param options
- *  - `en` [[CollectionEditOptions]] reference.
- *  - `ja` [[CollectionEditOptions]] を指定
+ *  - `en` {@link CollectionEditOptions} reference.
+ *  - `ja` {@link CollectionEditOptions} を指定
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -6616,8 +6720,8 @@ export interface CompiledTemplate {
      */
     source: string;
     /**
-     * @en Get [[TemplateResult]] that applied given parameter(s).
-     * @ja パラメータを適用し [[TemplateResult]] へ変換
+     * @en Get {@link TemplateResult} that applied given parameter(s).
+     * @ja パラメータを適用し {@link TemplateResult} へ変換
      *
      * @param view
      *  - `en` template parameters for source.
@@ -6626,8 +6730,8 @@ export interface CompiledTemplate {
     (view?: PlainObject): TemplateResult | SVGTemplateResult;
 }
 /**
- * @en [[TemplateBridge]] compile options
- * @ja [[TemplateBridge]] コンパイルオプション
+ * @en {@link TemplateBridge} compile options
+ * @ja {@link TemplateBridge} コンパイルオプション
  */
 export interface TemplateBridgeCompileOptions {
     transformer?: TemplateTransformer;
@@ -6638,8 +6742,8 @@ export interface TemplateBridgeCompileOptions {
  */
 export declare class TemplateBridge {
     /**
-     * @en Get [[CompiledTemplate]] from template source.
-     * @ja テンプレート文字列から [[CompiledTemplate]] を取得
+     * @en Get {@link CompiledTemplate} from template source.
+     * @ja テンプレート文字列から {@link CompiledTemplate} を取得
      *
      * @param template
      *  - `en` template source string / template element
@@ -6896,9 +7000,9 @@ export interface Hooks {
     useEffect: (effect: () => void, dependencies?: unknown[]) => void;
     /**
      * @en Accepts a function that contains imperative, possibly effectful code. <br>
-     *     Unlike [[useEffect]] , it is executed before the component is rendered and the new element is displayed on the screen.
+     *     Unlike {@link Hooks.useEffect} , it is executed before the component is rendered and the new element is displayed on the screen.
      * @ja 副作用を有する可能性のある命令型のコードの適用 <br>
-     *     [[useEffect]] と異なり, コンポーネントがレンダリングされて新しい要素が画面に表示される前に実行される。
+     *     {@link Hooks.useEffect} と異なり, コンポーネントがレンダリングされて新しい要素が画面に表示される前に実行される。
      *
      * @param effect
      *  - `en` callback function that runs each time dependencies change
@@ -6968,27 +7072,21 @@ export interface Hooks {
         (action: A) => void
     ];
     /**
-     * @en
-     * createContext is a function that creates a new context object. A context object is used to share data that can be considered “global” for a tree of React components.
-     *
-     * @ja
-     * createContext は新しいコンテキストオブジェクトを作成する関数です。コンテキストオブジェクトは、React コンポーネントのツリーに対して「グローバル」と考えられるデータを共有するために使用されます。
+     * @en Create a new context object. Context objects are used to share data that is considered 'global'.
+     * @ja 新しいコンテキストオブジェクトを作成する。コンテキストオブジェクトは,「グローバル」と考えられるデータを共有するために使用される。
      *
      * @param defaultValue
-     *  - `en`: The default value for the context object.
-     *  - `ja`: コンテキストオブジェクトのデフォルト値。
+     *  - `en`: The default value for the context object
+     *  - `ja`: コンテキストオブジェクトのデフォルト値
      */
     createContext: <T>(defaultValue?: T) => IHookContext<T>;
     /**
-     * @en
-     * useContext is a hook that returns the current context value for the given context object. When the nearest <MyContext.Provider> above the component updates, this hook will trigger a rerender with the latest context value passed to that MyContext provider.
-     *
-     * @ja
-     * useContext は、指定されたコンテキストオブジェクトに対する現在のコンテキスト値を返すフックです。このフックは、コンポーネントの上にある最も近い <MyContext.Provider> が更新されると、その MyContext プロバイダーに渡された最新のコンテキスト値で再レンダリングがトリガーされます。
+     * @en Returns the current context value for the specified context object.
+     * @ja 指定されたコンテキストオブジェクトに対する現在のコンテキスト値を返却
      *
      * @param context
-     *  - `en`: The context object returned from React.createContext.
-     *  - `ja`: React.createContext から返されるコンテキストオブジェクト。
+     *  - `en`: the context object returned from {@link Hooks.createContext}
+     *  - `ja`: {@link Hooks.createContext} から返されるコンテキストオブジェクト
      */
     useContext: <T>(context: IHookContext<T>) => T;
 }
@@ -7002,8 +7100,8 @@ export type HistoryState<T = PlainObject> = T & {
     '@origin'?: boolean;
 };
 /**
- * @en The event definition fired in [[IHistory]].
- * @ja [[IHistory]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link IHistory}.
+ * @ja {@link IHistory} 内から発行されるイベント定義
  */
 export interface HistoryEvent<T = PlainObject> {
     /** @args [nextState, cancel, promises[]] */
@@ -7034,8 +7132,8 @@ export type HistorySetStateOptions = Silenceable & Cancelable;
  */
 export type HistoryDirection = 'back' | 'forward' | 'none' | 'missing';
 /**
- * @en Definition of [[IHistory.direct]]`()` return type.
- * @ja [[IHistory.direct]]`()` の返却する型
+ * @en Definition of {@link IHistory.direct | IHistory.direct}() return type.
+ * @ja {@link IHistory.direct | IHistory.direct}() の返却する型
  */
 export interface HistoryDirectReturnType<T = PlainObject> {
     direction: HistoryDirection;
@@ -7161,8 +7259,8 @@ export interface IHistory<T = PlainObject> extends Subscribable<HistoryEvent<T>>
     direct(toId: string, fromId?: string): HistoryDirectReturnType<T>;
 }
 /**
- * @en [[createSessionHistory]]() options.
- * @ja [[createSessionHistory]]() に渡すオプション
+ * @en {@link createSessionHistory}() options.
+ * @ja {@link createSessionHistory}() に渡すオプション
  *
  */
 export interface SessionHistoryCreateOptions {
@@ -7180,8 +7278,8 @@ export interface SessionHistoryCreateOptions {
  *  - `en` State object associated with the stack
  *  - `ja` スタック に紐づく状態オブジェクト
  * @param options
- *  - `en` [[SessionHistoryCreateOptions]] object
- *  - `ja` [[SessionHistoryCreateOptions]] オブジェクト
+ *  - `en` {@link SessionHistoryCreateOptions} object
+ *  - `ja` {@link SessionHistoryCreateOptions} オブジェクト
  */
 export declare function createSessionHistory<T = PlainObject>(id?: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T>;
 /**
@@ -7277,8 +7375,8 @@ export interface RouteChangeInfo extends Readonly<PageTransitionParams> {
     intent?: unknown;
 }
 /**
- * @en The event definition fired in [[Router]].
- * @ja [[Router]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link Router}.
+ * @ja {@link Router} 内から発行されるイベント定義
  */
 export interface RouterEvent {
     /**
@@ -7295,7 +7393,7 @@ export interface RouterEvent {
     /**
      * @en New DOM content loaded notification.
      * @ja 新しいDOM コンテンツのロード通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'loaded': [
         RouteChangeInfo
@@ -7303,7 +7401,7 @@ export interface RouterEvent {
     /**
      * @en Next page just inserted to DOM notification.
      * @ja 次のページの DOM 挿入通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'mounted': [
         RouteChangeInfo
@@ -7311,7 +7409,7 @@ export interface RouterEvent {
     /**
      * @en DOM ready notification on same page instance transition.
      * @ja 同一ページインスタンスの遷移時の DOM 準備完了通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'cloned': [
         RouteChangeInfo
@@ -7319,7 +7417,7 @@ export interface RouterEvent {
     /**
      * @en Before transition notification.
      * @ja トランジション開始通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'before-transition': [
         RouteChangeInfo
@@ -7327,7 +7425,7 @@ export interface RouterEvent {
     /**
      * @en After transition notification.
      * @ja トランジション終了通知
-     * @args [[RouteChangeInfo]]
+     * @args {@link RouteChangeInfo}
      */
     'after-transition': [
         RouteChangeInfo
@@ -7335,7 +7433,7 @@ export interface RouterEvent {
     /**
      * @en Previous page just detached from DOM notification.
      * @ja 前のページの DOM 切除通知
-     * @args [[Route]]
+     * @args {@link Route}
      */
     'unmounted': [
         Route
@@ -7428,8 +7526,8 @@ export interface Page {
     pageRemoved?(info: Route): void;
 }
 /**
- * @en [[Page]] factory function.
- * @ja [[Page]] 構築関数
+ * @en {@link Page} factory function.
+ * @ja {@link Page} 構築関数
  */
 export type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
 export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string;
@@ -7454,9 +7552,9 @@ export interface RouteParameters {
     routes?: RouteParameters[];
     /**
      * @en Specify the constructor or built object of the page component. <br>
-     *     In case of functional type, [[Route]] instance is passed as an argument.
+     *     In case of functional type, {@link Route} instance is passed as an argument.
      * @ja ページコンポーネントのコンストラクタもしくは構築済みオブジェクト <br>
-     *     関数型の場合は引数に [[Route]] インスタンスが渡される
+     *     関数型の場合は引数に {@link Route} インスタンスが渡される
      *
      * @reserved `string` type: load pages as a component via Ajax
      */
@@ -7566,12 +7664,12 @@ export interface RouterConstructionOptions {
     start?: boolean;
     /**
      * @en Specify the [IHistory] instance or mode to use with the router. The default is to use the `hash` mode in the browser history.
-     * @ja ルーターで使用する [[IHistory]] インスタンスまたはモードを指定. 既定は ブラウザ履歴の `hash` モードを使用.
+     * @ja ルーターで使用する {@link IHistory} インスタンスまたはモードを指定. 既定は ブラウザ履歴の `hash` モードを使用.
      */
     history?: 'hash' | 'history' | 'memory' | IHistory;
     /**
-     * @en Initialization route path. If [[IHistory]] object given to `history` property, this parameter is ignored.
-     * @ja 初期ルートパス. `history` に [[IHistory]] が指定された場合は無視される
+     * @en Initialization route path. If {@link IHistory} object given to `history` property, this parameter is ignored.
+     * @ja 初期ルートパス. `history` に {@link IHistory} が指定された場合は無視される
      */
     initialPath?: string;
     /**
@@ -7629,8 +7727,8 @@ export interface RouteSubFlowParams {
      */
     base?: string;
     /**
-     * @en Specify [[PageStack]] to add from `base` that transitions at the end of sub-flow. If not specified, transition to `base`.
-     * @ja sub-flow 終了時に遷移する `base` からの追加 [[PageStack]] を指定。指定がない場合は、`base` に遷移する。
+     * @en Specify {@link PageStack} to add from `base` that transitions at the end of sub-flow. If not specified, transition to `base`.
+     * @ja sub-flow 終了時に遷移する `base` からの追加 {@link PageStack} を指定。指定がない場合は、`base` に遷移する。
      */
     additinalStacks?: PageStack[];
 }
@@ -7659,8 +7757,8 @@ export interface RouteNavigationOptions extends PageTransitionParams {
      */
     intent?: unknown;
     /**
-     * @en Methods of [[IHistory]] to use when navigating.
-     * @ja ナビゲーション時に使用する [[IHistory]] のメソッド
+     * @en Methods of {@link IHistory} to use when navigating.
+     * @ja ナビゲーション時に使用する {@link IHistory} のメソッド
      */
     method?: 'push' | 'replace';
 }
@@ -7707,8 +7805,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @jp ルートの登録
      *
      * @param routes
-     *  - `en` Specify [[RouteParameters]]
-     *  - `ja` [[RouteParameters]] を指定
+     *  - `en` Specify {@link RouteParameters}
+     *  - `ja` {@link RouteParameters} を指定
      * @param refersh
      *  - `en` Specify `true` to reload after registration. default: `false`
      *  - `ja` 登録後, 再読み込みを行う場合は `true` を指定. default: `false`
@@ -7722,8 +7820,8 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `en` Set a navigate destination (url / path)
      *  - `ja` ナビゲート先の設定（url / path）
      * @param options
-     *  - `en` Specify [[RouteNavigationOptions]]
-     *  - `ja` [[RouteNavigationOptions]] を指定
+     *  - `en` Specify {@link RouteNavigationOptions}
+     *  - `ja` {@link RouteNavigationOptions} を指定
      */
     navigate(to: string, options?: RouteNavigationOptions): Promise<this>;
     /**
@@ -7731,8 +7829,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja 現在の履歴を起点にページスタックを追加
      *
      * @param stack
-     *  - `en` Specify [[PageStack]] object / object array
-     *  - `ja` [[PageStack]] オブジェクト / オブジェクト配列を指定
+     *  - `en` Specify {@link PageStack} object / object array
+     *  - `ja` {@link PageStack} オブジェクト / オブジェクト配列を指定
      * @param noNavigate
      *  - `en` false(`default`): After stack registration, page transition to the last stack / true: Only perform stack registration and do not page transition.
      *  - `ja` false(`default`): スタック登録後, 最後のスタックに対してページ遷移する / true: スタック登録のみ行いページ遷移しない.
@@ -7778,11 +7876,11 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `en` Set a navigate destination (url / path)
      *  - `ja` ナビゲート先の設定（url / path）
      * @param params
-     *  - `en` Specify [[RouteSubFlowParam]]
-     *  - `ja` [[RouteSubFlowParam]] を指定
+     *  - `en` Specify {@link RouteSubFlowParam}
+     *  - `ja` {@link RouteSubFlowParam} を指定
      * @param options
-     *  - `en` Specify [[RouteSubFlowParams]]
-     *  - `ja` [[RouteSubFlowParams]] を指定
+     *  - `en` Specify {@link RouteSubFlowParams}
+     *  - `ja` {@link RouteSubFlowParams} を指定
      */
     beginSubFlow(to: string, subflow?: RouteSubFlowParams, options?: RouteNavigationOptions): Promise<this>;
     /**
@@ -7790,8 +7888,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja sub-flow トランザクションの終了
      *
      * @param params
-     *  - `en` Specify [[PageTransitionParams]]. default: { reverse: false }
-     *  - `ja` [[PageTransitionParams]] を指定. default: { reverse: false }
+     *  - `en` Specify {@link PageTransitionParams}. default: { reverse: false }
+     *  - `ja` {@link PageTransitionParams} を指定. default: { reverse: false }
      */
     commitSubFlow(params?: PageTransitionParams): Promise<this>;
     /**
@@ -7799,8 +7897,8 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja sub-flow トランザクションのキャンセル
      *
      * @param params
-     *  - `en` Specify [[PageTransitionParams]]. default: { reverse: true }
-     *  - `ja` [[PageTransitionParams]] を指定. default: { reverse: true }
+     *  - `en` Specify {@link PageTransitionParams}. default: { reverse: true }
+     *  - `ja` {@link PageTransitionParams} を指定. default: { reverse: true }
      */
     cancelSubFlow(params?: PageTransitionParams): Promise<this>;
     /**
@@ -7834,15 +7932,15 @@ export interface Router extends Subscribable<RouterEvent> {
     refresh(level?: RouterRefreshLevel): Promise<this>;
 }
 /**
- * @en Create [[Router]] object.
- * @ja [[Router]] オブジェクトを構築
+ * @en Create {@link Router} object.
+ * @ja {@link Router} オブジェクトを構築
  *
  * @param selector
- *  - `en` An object or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるインスタンスまたはセレクタ文字列
+ *  - `en` An object or the selector string which becomes origin of {@link DOM}.
+ *  - `ja` {@link DOM} のもとになるインスタンスまたはセレクタ文字列
  * @param options
- *  - `en` [[RouterConstructionOptions]] object
- *  - `ja` [[RouterConstructionOptions]] オブジェクト
+ *  - `en` {@link RouterConstructionOptions} object
+ *  - `ja` {@link RouterConstructionOptions} オブジェクト
  */
 export declare function createRouter(selector: DOMSelector<string | HTMLElement>, options?: RouterConstructionOptions): Router;
 /**
@@ -7854,8 +7952,8 @@ export declare const enum Orientation {
     LANDSCAPE = 'landscape'
 }
 /**
- * @en The event definition fired in [[AppContext]].
- * @ja [[AppContext]] 内から発行されるイベント定義
+ * @en The event definition fired in {@link AppContext}.
+ * @ja {@link AppContext} 内から発行されるイベント定義
  */
 export interface AppContextEvent {
     /**
@@ -7895,20 +7993,20 @@ export interface AppContextEvent {
     ];
 }
 /**
- * @en [[AppContext]] create options.
- * @ja [[AppContext]] 構築オプション
+ * @en {@link AppContext} create options.
+ * @ja {@link AppContext} 構築オプション
  */
 export interface AppContextOptions extends RouterConstructionOptions {
     /**
-     * @en An object or the selector string which becomes origin of [[DOM]] for main router.
-     * @ja メインルーターの [[DOM]] のもとになるインスタンスまたはセレクタ文字列
+     * @en An object or the selector string which becomes origin of {@link DOM} for main router.
+     * @ja メインルーターの {@link DOM} のもとになるインスタンスまたはセレクタ文字列
      * @default `#app`
      */
     main?: DOMSelector<string | HTMLElement>;
     /**
-     * @en An object or the selector string which becomes origin of [[DOM]] assigned to the splash screen. <br>
+     * @en An object or the selector string which becomes origin of {@link DOM} assigned to the splash screen. <br>
      *     It will be removed just before appliaction ready.
-     * @ja スプラッシュスクリーンに割り当てられている [[DOM]] のもとになるインスタンスまたはセレクタ文字列 <br>
+     * @ja スプラッシュスクリーンに割り当てられている {@link DOM} のもとになるインスタンスまたはセレクタ文字列 <br>
      *     準備完了直前に削除される
      */
     splash?: DOMSelector<string | HTMLElement>;
@@ -7954,8 +8052,8 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      */
     readonly activePage: Page;
     /**
-     * @en Current [[Orientation]] id.
-     * @ja 現在の [[Orientation]] を取得
+     * @en Current {@link Orientation} id.
+     * @ja 現在の {@link Orientation} を取得
      */
     readonly orientation: Orientation;
     /**
@@ -7982,9 +8080,9 @@ export interface AppContext extends Subscribable<AppContextEvent> {
  */
 export type PageRouteParameters = Required<Pick<RouteParameters, 'content'>> & RouteParameters;
 /**
- * @en Pre-register concrete [[Page]] class. Registered with the main router when instantiating [[AppContext]]. <br>
+ * @en Pre-register concrete {@link Page} class. Registered with the main router when instantiating {@link AppContext}. <br>
  *     If constructor needs arguments, `options.componentOptions` is available.
- * @ja Page 具象化クラスの事前登録. [[AppContext]] のインスタンス化時にメインルーターに登録される. <br>
+ * @ja Page 具象化クラスの事前登録. {@link AppContext} のインスタンス化時にメインルーターに登録される. <br>
  *     constructor を指定する引数がある場合は, `options.componentOptions` を利用可能
  *
  * @example <br>
@@ -8061,8 +8159,8 @@ export declare const registerPage: (params: PageRouteParameters) => void;
  */
 export declare const AppContext: (options?: AppContextOptions) => AppContext;
 /**
- * @en Base class definition of [[View]] that can be specified in as [[Page]] of [[Router]].
- * @ja [[Router]] の [[Page]] に指定可能な [[View]] の基底クラス定義
+ * @en Base class definition of {@link View} that can be specified in as {@link Page} of {@link Router}.
+ * @ja {@link Router} の {@link Page} に指定可能な {@link View} の基底クラス定義
  */
 export declare abstract class PageView<TElement extends Element = HTMLElement, TEvent extends object = object> extends View<TElement, TEvent> implements Page {
     /**
@@ -8072,8 +8170,8 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
      *  - `en` route context
      *  - `ja` ルートコンテキスト
      * @param options
-     *  - `en` [[View]] construction options.
-     *  - `ja` [[View]] 構築オプション
+     *  - `en` {@link View} construction options.
+     *  - `ja` {@link View} 構築オプション
      */
     constructor(route?: Route, options?: ViewConstructionOptions<TElement>);
     /**
@@ -8087,13 +8185,13 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
      */
     get ['@route'](): Route | undefined;
     /**
-     * @en [[Router]] instance
-     * @ja [[Router]] インスタンス
+     * @en {@link Router} instance
+     * @ja {@link Router} インスタンス
      */
     protected get _route(): Route | undefined;
     /**
-     * @en [[Router]] instance
-     * @ja [[Router]] インスタンス
+     * @en {@link Router} instance
+     * @ja {@link Router} インスタンス
      */
     protected get _router(): Router | undefined;
     /**
@@ -8153,16 +8251,16 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
 }
 declare namespace i18n {
     /**
-     * @en [[AjaxBackend]] options interface.
-     * @ja [[AjaxBackend]] のオプションインターフェイス
+     * @en {@link AjaxBackend} options interface.
+     * @ja {@link AjaxBackend} のオプションインターフェイス
      */
     interface AjaxBackendOptions extends AjaxRequestOptions {
         /** load path resolver */
         loadPath?: string | ((languages: string[], namespaces: string[]) => string);
     }
     /**
-     * @en [[DomLocalizer]] options interface.
-     * @ja [[DomLocalizer]] のオプションインターフェイス
+     * @en {@link DomLocalizer} options interface.
+     * @ja {@link DomLocalizer} のオプションインターフェイス
      */
     interface DomLocalizerOptions {
         /** selector for translating elements */
@@ -8178,8 +8276,7 @@ declare namespace i18n {
         /** `append` and `prepend` wrapper tag name */
         customTagName?: string | false;
     }
-}
-export interface DOMPlugin {
+}export interface DOMPlugin {
     /**
      * @en Localize DOM method.
      * @ja DOM のローカライズ

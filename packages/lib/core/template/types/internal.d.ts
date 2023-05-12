@@ -2,8 +2,8 @@ import { TemplateDelimiters } from './interfaces';
 /** (string | Token[]) */
 export type TokenList = unknown;
 /**
- * @en [[Token]] address id.
- * @ja [[Token]] アドレス識別子
+ * @en {@link Token} address id.
+ * @ja {@link Token} アドレス識別子
  */
 export declare const enum TokenAddress {
     TYPE = 0,
@@ -15,7 +15,7 @@ export declare const enum TokenAddress {
     HAS_NO_SPACE = 6
 }
 /**
- * @en Internal delimiters definition for [[TemplateEngine]]. ex) ['{{','}}'] or '{{ }}'
- * @ja [[TemplateEngine]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
+ * @en Internal delimiters definition for {@link TemplateEngine}. ex) ['{{','}}'] or '{{ }}'
+ * @ja {@link TemplateEngine} の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
  */
 export type Delimiters = string | TemplateDelimiters;

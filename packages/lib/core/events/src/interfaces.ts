@@ -13,8 +13,8 @@ export interface EventAll {
 }
 
 /**
- * @en Represents a disposable resource, such as the execution of an [[Subscribable]].
- * @ja [[Subscribable]] オブジェクトが返す購読情報コンテキストオブジェクト
+ * @en Represents a disposable resource, such as the execution of an {@link Subscribable}.
+ * @ja {@link Subscribable} オブジェクトが返す購読情報コンテキストオブジェクト
  */
 export interface Subscription {
     /**
@@ -104,8 +104,8 @@ export interface Subscribable<Event extends object = any> {
 }
 
 /**
- * @en Extract event schema from [[Subscribable]] type.
- * @ja [[Subscribable]] 型からイベントスキーマ定義の抽出
+ * @en Extract event schema from {@link Subscribable} type.
+ * @ja {@link Subscribable} 型からイベントスキーマ定義の抽出
  */
 export type EventSchema<T extends Subscribable> = T extends Subscribable<infer R> ? R : never;
 

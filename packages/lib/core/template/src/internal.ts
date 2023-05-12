@@ -9,16 +9,16 @@ import {
 export type TokenList = unknown;
 
 /**
- * @en [[TemplateEngine]] token structure.
- * @ja [[TemplateEngine]] token 型
+ * @en {@link TemplateEngine} token structure.
+ * @ja {@link TemplateEngine} token 型
  *
  * @internal
  */
 export type Token = [string, string, number, number, TokenList?, number?, boolean?];
 
 /**
- * @en [[Token]] address id.
- * @ja [[Token]] アドレス識別子
+ * @en {@link Token} address id.
+ * @ja {@link Token} アドレス識別子
  */
 export const enum TokenAddress {
     TYPE = 0,
@@ -31,8 +31,8 @@ export const enum TokenAddress {
 }
 
 /**
- * @en Internal delimiters definition for [[TemplateEngine]]. ex) ['{{','}}'] or '{{ }}'
- * @ja [[TemplateEngine]] の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
+ * @en Internal delimiters definition for {@link TemplateEngine}. ex) ['{{','}}'] or '{{ }}'
+ * @ja {@link TemplateEngine} の内部で使用する区切り文字 ex) ['{{','}}'] or '{{ }}'
  */
 export type Delimiters = string | TemplateDelimiters;
 

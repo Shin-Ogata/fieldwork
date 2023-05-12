@@ -1,9 +1,9 @@
 import { CancelTokenSource } from './cancel-token';
 /**
  * @en The class manages lumping multiple `Promise` objects. <br>
- *     It's possible to make them cancel more than one `Promise` which handles different [[CancelToken]] by lumping.
+ *     It's possible to make them cancel more than one `Promise` which handles different {@link CancelToken} by lumping.
  * @ja 複数 `Promise` オブジェクトを一括管理するクラス <br>
- *     異なる [[CancelToken]] を扱う複数の `Promise` を一括でキャンセルさせることが可能
+ *     異なる {@link CancelToken} を扱う複数の `Promise` を一括でキャンセルさせることが可能
  */
 export declare class PromiseManager {
     private readonly _pool;
@@ -15,8 +15,8 @@ export declare class PromiseManager {
      *  - `en` any `Promise` instance is available.
      *  - `ja` 任意の `Promise` インスタンス
      * @param cancelSource
-     *  - `en` [[CancelTokenSource]] instance made by `CancelToken.source()`.
-     *  - `ja` `CancelToken.source()` で生成される [[CancelTokenSource]] インスタンス
+     *  - `en` {@link CancelTokenSource} instance made by {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() で生成される {@link CancelTokenSource} インスタンス
      * @returns
      *  - `en` return the same instance of input `promise` instance.
      *  - `ja` 入力した `promise` と同一インスタンスを返却
@@ -47,9 +47,9 @@ export declare class PromiseManager {
      */
     race(): Promise<unknown>;
     /**
-     * @en Call [[wait]]() for under the management. <br>
+     * @en Call {@link wait}() for under the management. <br>
      *     Wait for all `settled`. (simplified version)
-     * @ja 管理対象に対して [[wait]]() <br>
+     * @ja 管理対象に対して {@link wait}() <br>
      *     すべてが `settled` になるまで待機 (簡易バージョン)
      */
     wait(): Promise<unknown[]>;
@@ -76,7 +76,7 @@ export declare class PromiseManager {
      *  - `ja` `cancelSource` に渡される引数
      * @returns
      *  - `en` `Promise` instance which wait by until cancellation completion.
-     *  - `ja` キャンセル完了まで待機する [[Promise]] インスタンス
+     *  - `ja` キャンセル完了まで待機する `Promise` インスタンス
      */
     abort<T>(reason?: T): Promise<unknown[]>;
 }

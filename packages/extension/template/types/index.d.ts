@@ -77,21 +77,21 @@ export interface TemplateDirectives {
 export declare const directives: TemplateDirectives;
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>
- *     This method is helper brigdge for the [[html]] or the [[svg]] are able to received plain string.
+ *     This method is helper brigdge for the {@link html} or the {@link svg} are able to received plain string.
  * @ja `string` を `TemplateStringsArray`に変換. <br>
- *     [[html]] や [[svg]] が文字列を受け付けるためのブリッジメソッド
+ *     {@link html} や {@link svg} が文字列を受け付けるためのブリッジメソッド
  *
  * @example <br>
  *
  * ```ts
- * import { toTemplateStringsArray as bridge } from '@cdp/extension-template';
+ * import { toTemplateStringsArray as bridge } from '@cdp/runtime';
  *
  * const raw = '<p>Hello Raw String</p>';
  * render(html(bridge(raw)), document.body);
  * ```
  *
  * @param src
- *  - `en` plain string / string array. ex) [[JST]] returned value.
- *  - `ja` プレーン文字列 / 文字列配列. ex) [[JST]] の戻り値などを想定
+ *  - `en` plain string / string array. ex) {@link JST} returned value.
+ *  - `ja` プレーン文字列 / 文字列配列. ex) {@link JST} の戻り値などを想定
  */
 export declare const toTemplateStringsArray: (src: string | string[] | TemplateStringsArray) => TemplateStringsArray;

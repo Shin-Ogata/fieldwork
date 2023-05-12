@@ -25,7 +25,7 @@ function makePromise<T>(editor: ObservableArray<T>, remap?: T[]): Promise<ArrayC
     });
 }
 
-/** @internal convert to [[ObservableArray]] if needed. */
+/** @internal convert to {@link ObservableArray} if needed. */
 async function getEditContext<T>(
     target: ObservableArray<T> | T[],
     token?: CancelToken
@@ -71,8 +71,8 @@ function validOrders(length: number, orders: number[]): boolean | never {
  *  - `en` target array
  *  - `ja` 対象配列
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -100,8 +100,8 @@ export async function clearArray<T>(target: ObservableArray<T> | T[], token?: Ca
  *  - `en` source elements
  *  - `ja` 追加元要素
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -132,8 +132,8 @@ export async function appendArray<T>(target: ObservableArray<T> | T[], src: T[],
  *  - `en` source elements
  *  - `ja` 追加元要素
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -167,8 +167,8 @@ export async function insertArray<T>(target: ObservableArray<T> | T[], index: nu
  *  - `en` edit order index array
  *  - `ja` インデックス配列
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報
@@ -217,8 +217,8 @@ export async function reorderArray<T>(target: ObservableArray<T> | T[], index: n
  *  - `en` removed order index array
  *  - `ja` インデックス配列
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  * @returns
  *  - `en` Changed information
  *  - `ja` 変更情報

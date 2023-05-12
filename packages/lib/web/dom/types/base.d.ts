@@ -1,8 +1,8 @@
 import { Nullish } from '@cdp/core-utils';
 import { ElementBase, SelectorBase, DOM, DOMSelector } from './static';
 /**
- * @en Base abstraction class of [[DOMClass]]. This class provides iterator methods.
- * @ja [[DOMClass]] の基底抽象クラス. iterator を提供.
+ * @en Base abstraction class of {@link DOMClass}. This class provides iterator methods.
+ * @ja {@link DOMClass} の基底抽象クラス. iterator を提供.
  */
 export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T> {
     /**
@@ -28,18 +28,18 @@ export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Ite
      * @ja 対象が `Node` でありかつ `Document` または `ShadowRoot` に接続されているか判定
      *
      * @param el
-     *  - `en` [[ElementBase]] instance
-     *  - `ja` [[ElementBase]] インスタンス
+     *  - `en` {@link ElementBase} instance
+     *  - `ja` {@link ElementBase} インスタンス
      */
     get isConnected(): boolean;
     /**
-     * @en Iterator of [[ElementBase]] values in the array.
-     * @ja 格納している [[ElementBase]] にアクセス可能なイテレータオブジェクトを返却
+     * @en Iterator of {@link ElementBase} values in the array.
+     * @ja 格納している {@link ElementBase} にアクセス可能なイテレータオブジェクトを返却
      */
     [Symbol.iterator](): Iterator<T>;
     /**
-     * @en Returns an iterable of key(index), value([[ElementBase]]) pairs for every entry in the array.
-     * @ja key(index), value([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of key(index), value({@link ElementBase}) pairs for every entry in the array.
+     * @ja key(index), value({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     entries(): IterableIterator<[number, T]>;
     /**
@@ -48,8 +48,8 @@ export declare class DOMBase<T extends ElementBase> implements ArrayLike<T>, Ite
      */
     keys(): IterableIterator<number>;
     /**
-     * @en Returns an iterable of values([[ElementBase]]) in the array.
-     * @ja values([[ElementBase]]) 配列にアクセス可能なイテレータオブジェクトを返却
+     * @en Returns an iterable of values({@link ElementBase}) in the array.
+     * @ja values({@link ElementBase}) 配列にアクセス可能なイテレータオブジェクトを返却
      */
     values(): IterableIterator<T>;
 }
@@ -67,8 +67,8 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
  * @ja 対象が `Node` であるか判定
  *
  * @param el
- *  - `en` [[ElementBase]] instance
- *  - `ja` [[ElementBase]] インスタンス
+ *  - `en` {@link ElementBase} instance
+ *  - `ja` {@link ElementBase} インスタンス
  */
 export declare function isNode(el: unknown): el is Node;
 /**
@@ -76,8 +76,8 @@ export declare function isNode(el: unknown): el is Node;
  * @ja 対象が `Element` であるか判定
  *
  * @param el
- *  - `en` [[ElementBase]] instance
- *  - `ja` [[ElementBase]] インスタンス
+ *  - `en` {@link ElementBase} instance
+ *  - `ja` {@link ElementBase} インスタンス
  */
 export declare function isNodeElement(el: ElementBase | Nullish): el is Element;
 /**
@@ -85,8 +85,8 @@ export declare function isNodeElement(el: ElementBase | Nullish): el is Element;
  * @ja 対象が `HTMLElement` または `SVGElement` であるか判定
  *
  * @param el
- *  - `en` [[ElementBase]] instance
- *  - `ja` [[ElementBase]] インスタンス
+ *  - `en` {@link ElementBase} instance
+ *  - `ja` {@link ElementBase} インスタンス
  */
 export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nullish): el is HTMLElement | SVGElement;
 /**
@@ -94,8 +94,8 @@ export declare function isNodeHTMLOrSVGElement(el: ElementBase | Nullish): el is
  * @ja 対象が `Element` または `Document` であるか判定
  *
  * @param el
- *  - `en` [[ElementBase]] instance
- *  - `ja` [[ElementBase]] インスタンス
+ *  - `en` {@link ElementBase} instance
+ *  - `ja` {@link ElementBase} インスタンス
  */
 export declare function isNodeQueriable(el: ElementBase | Nullish): el is Element | Document;
 /**
@@ -103,44 +103,44 @@ export declare function isNodeQueriable(el: ElementBase | Nullish): el is Elemen
  * @ja 対象が `Document` であるか判定
  *
  * @param el
- *  - `en` [[ElementBase]] instance
- *  - `ja` [[ElementBase]] インスタンス
+ *  - `en` {@link ElementBase} instance
+ *  - `ja` {@link ElementBase} インスタンス
  */
 export declare function isNodeDocument(el: ElementBase | Nullish): el is Document;
 /**
- * @en Check [[DOM]] target is `Element`.
- * @ja [[DOM]] が `Element` を対象にしているか判定
+ * @en Check {@link DOM} target is `Element`.
+ * @ja {@link DOM} が `Element` を対象にしているか判定
  *
  * @param dom
- *  - `en` [[DOMIterable]] instance
- *  - `ja` [[DOMIterable]] インスタンス
+ *  - `en` {@link DOMIterable} instance
+ *  - `ja` {@link DOMIterable} インスタンス
  */
 export declare function isTypeElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<Element>;
 /**
- * @en Check [[DOM]] target is `HTMLElement` or `SVGElement`.
- * @ja [[DOM]] が `HTMLElement` または `SVGElement` を対象にしているか判定
+ * @en Check {@link DOM} target is `HTMLElement` or `SVGElement`.
+ * @ja {@link DOM} が `HTMLElement` または `SVGElement` を対象にしているか判定
  *
  * @param dom
- *  - `en` [[DOMIterable]] instance
- *  - `ja` [[DOMIterable]] インスタンス
+ *  - `en` {@link DOMIterable} instance
+ *  - `ja` {@link DOMIterable} インスタンス
  */
 export declare function isTypeHTMLOrSVGElement(dom: DOMIterable<ElementBase>): dom is DOMIterable<HTMLElement | SVGElement>;
 /**
- * @en Check [[DOM]] target is `Document`.
- * @ja [[DOM]] が `Document` を対象にしているか判定
+ * @en Check {@link DOM} target is `Document`.
+ * @ja {@link DOM} が `Document` を対象にしているか判定
  *
  * @param dom
- *  - `en` [[DOMIterable]] instance
- *  - `ja` [[DOMIterable]] インスタンス
+ *  - `en` {@link DOMIterable} instance
+ *  - `ja` {@link DOMIterable} インスタンス
  */
 export declare function isTypeDocument(dom: DOMIterable<ElementBase>): dom is DOMIterable<Document>;
 /**
- * @en Check [[DOM]] target is `Window`.
- * @ja [[DOM]] が `Window` を対象にしているか判定
+ * @en Check {@link DOM} target is `Window`.
+ * @ja {@link DOM} が `Window` を対象にしているか判定
  *
  * @param dom
- *  - `en` [[DOMIterable]] instance
- *  - `ja` [[DOMIterable]] インスタンス
+ *  - `en` {@link DOMIterable} instance
+ *  - `ja` {@link DOMIterable} インスタンス
  */
 export declare function isTypeWindow(dom: DOMIterable<ElementBase>): dom is DOMIterable<Window>;
 /**
@@ -207,8 +207,8 @@ export declare function isWindowSelector<T extends SelectorBase>(selector: DOMSe
  */
 export declare function isIterableSelector<T extends SelectorBase>(selector: DOMSelector<T>): selector is Extract<DOMSelector<T>, NodeListOf<Node>>;
 /**
- * @en Check the selector type is [[DOM]].
- * @ja [[DOM]] セレクタであるか判定
+ * @en Check the selector type is {@link DOM}.
+ * @ja {@link DOM} セレクタであるか判定
  *
  * @param selector
  *  - `en` evaluated value

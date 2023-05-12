@@ -110,8 +110,8 @@ export const changeLanguage = (lng: string, options?: I18NDetectErrorBehaviour):
  * @ja DOM ローカライズ
  *
  * @param selector
- *  - `en` Object(s) or the selector string which becomes origin of [[DOM]].
- *  - `ja` [[DOM]] のもとになるオブジェクト(群)またはセレクタ文字列
+ *  - `en` Object(s) or the selector string which becomes origin of {@link DOM}.
+ *  - `ja` {@link DOM} のもとになるオブジェクト(群)またはセレクタ文字列
  * @param options
  *  - `en` translation options.
  *  - `ja` 翻訳オプション

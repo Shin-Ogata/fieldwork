@@ -73,38 +73,7 @@ const stopAll = (): void => {
     _observerMap.clear();
 };
 
-/**
- * @en Enabling the node to detect events of DOM connected and disconnected.
- * @ja 要素に対して, DOM への接続, DOM からの切断イベントを検出可能にする
- *
- * @example <br>
- *
- * ```ts
- * import { dom } from '@cdp/runtime';
- * const { detectify, undetectify } = dom.utils;
- *
- * const el = document.createElement('div');
- *
- * // observation start
- * detectify(el);
- * el.addEventListener('connected', () => {
- *     console.log('on connected');
- * });
- * el.addEventListener('disconnected', () => {
- *     console.log('on disconnected');
- * });
- *
- * // observation stop
- * undetectify(el);
- * ```
- *
- * @param node
- *  - `en` target node
- *  - `ja` 対象の要素
- * @param observed
- *  - `en` Specifies the root element to watch. If not specified, `ownerDocument` is evaluated first, followed by global `document`.
- *  - `ja` 監視対象のルート要素を指定. 未指定の場合は `ownerDocument`, グローバル `document` の順に評価される
- */
+/** @internal */
 export const detectify = <T extends Node>(node: T, observed?: Node): T => {
     const observedNode = observed || (node.ownerDocument?.body && node.ownerDocument) || document;
     const context = _observerMap.get(observedNode) || start(observedNode);
@@ -112,14 +81,7 @@ export const detectify = <T extends Node>(node: T, observed?: Node): T => {
     return node;
 };
 
-/**
- * @en Undetect connected and disconnected from DOM events for an element.
- * @ja 要素に対して, DOM への接続, DOM からの切断イベントを検出を解除する
- *
- * @param node
- *  - `en` target node. If not specified, execute all release.
- *  - `ja` 対象の要素. 指定しない場合は全解除を実行
- */
+/** @internal */
 export const undetectify = <T extends Node>(node?: T): void => {
     if (null == node) {
         stopAll();

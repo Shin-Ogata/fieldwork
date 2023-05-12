@@ -33,8 +33,8 @@ export declare function wait(promises: Promise<unknown>[]): Promise<unknown[]>;
  * ```
  *
  * @param token
- *  - `en` [[CancelToken]] reference. (enable `undefined`)
- *  - `ja` [[CancelToken]] を指定 (undefined 可)
+ *  - `en` {@link CancelToken} reference. (enable `undefined`)
+ *  - `ja` {@link CancelToken} を指定 (undefined 可)
  */
 export declare function checkCanceled(token: CancelToken | undefined): Promise<void>;
 /**
@@ -46,7 +46,7 @@ export declare function checkCanceled(token: CancelToken | undefined): Promise<v
  * @example <br>
  *
  * ```ts
- * import { checkStatus } from '@cdp/promise';
+ * import { checkStatus } from '@cdp/runtime';
  *
  * let promise: Promise<unknown>; // some promise instance
  * :

@@ -1,7 +1,7 @@
 import { JST, TemplateDelimiters, ITemplateEngine, TemplateWriter, TemplateEscaper } from './interfaces';
 /**
- * @en [[TemplateEngine]] global settng options
- * @ja [[TemplateEngine]] グローバル設定オプション
+ * @en {@link TemplateEngine} global settng options
+ * @ja {@link TemplateEngine} グローバル設定オプション
  */
 export interface TemplateGlobalSettings {
     writer?: TemplateWriter;
@@ -9,8 +9,8 @@ export interface TemplateGlobalSettings {
     escape?: TemplateEscaper;
 }
 /**
- * @en [[TemplateEngine]] compile options
- * @ja [[TemplateEngine]] コンパイルオプション
+ * @en {@link TemplateEngine} compile options
+ * @ja {@link TemplateEngine} コンパイルオプション
  */
 export interface TemplateCompileOptions {
     tags?: TemplateDelimiters;
@@ -21,8 +21,8 @@ export interface TemplateCompileOptions {
  */
 export declare class TemplateEngine implements ITemplateEngine {
     /**
-     * @en Get [[JST]] from template source.
-     * @ja テンプレート文字列から [[JST]] を取得
+     * @en Get {@link JST} from template source.
+     * @ja テンプレート文字列から {@link JST} を取得
      *
      * @param template
      *  - `en` template source string
@@ -33,13 +33,13 @@ export declare class TemplateEngine implements ITemplateEngine {
      */
     static compile(template: string, options?: TemplateCompileOptions): JST;
     /**
-     * @en Clears all cached templates in the default [[TemplateWriter]].
-     * @ja 既定の [[TemplateWriter]] のすべてのキャッシュを削除
+     * @en Clears all cached templates in the default {@link TemplateWriter}.
+     * @ja 既定の {@link TemplateWriter} のすべてのキャッシュを削除
      */
     static clearCache(): void;
     /**
-     * @en Change [[TemplateEngine]] global settings.
-     * @ja [[TemplateEngine]] グローバル設定の更新
+     * @en Change {@link TemplateEngine} global settings.
+     * @ja {@link TemplateEngine} グローバル設定の更新
      *
      * @param settings
      *  - `en` new settings

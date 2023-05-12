@@ -37,8 +37,8 @@ export const webRoot: string = getWebDirectory(document.querySelector('base')?.g
  * ```
  *
  * @param seed
- *  - `en` set relative path from [[webRoot]].
- *  - `ja` [[webRoot]] からの相対パスを指定
+ *  - `en` set relative path from {@link webRoot}.
+ *  - `ja` {@link webRoot} からの相対パスを指定
  */
 export const toUrl = (seed: string): string => {
     if (seed?.includes('://')) {

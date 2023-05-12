@@ -32,8 +32,8 @@ interface SafeCollectionQueryOptions<TItem extends object, TKey extends Keys<TIt
 //__________________________________________________________________________________________________//
 
 /**
- * @en Apply `filter` and `sort key` to the `items` from [[queryItems]]`()` result.
- * @ja [[queryItems]]`()` した `items` に対して `filter` と `sort key` を適用
+ * @en Apply `filter` and `sort key` to the `items` from {@link queryItems}() result.
+ * @ja {@link queryItems}() した `items` に対して `filter` と `sort key` を適用
  */
 export function searchItems<TItem>(items: TItem[], filter?: FilterCallback<TItem> | null, ...comparators: SortCallback<TItem>[]): TItem[] {
     let result = isFunction(filter) ? items.filter(filter) : items.slice();
@@ -62,8 +62,8 @@ const _limitCriteria = {
 };
 
 /**
- * @en Fix the target items by [[DynamicCondition]].
- * @ja [[DynamicCondition]] に従い対象を整形
+ * @en Fix the target items by {@link DynamicCondition}.
+ * @ja {@link DynamicCondition} に従い対象を整形
  *
  * @param items
  *  - `en` target items (destructive)
@@ -318,8 +318,8 @@ function ensureOptions<TItem extends object, TKey extends Keys<TItem>>(
 }
 
 /**
- * @en Low level function for [[Collection]] query items.
- * @ja [[Collection]] Item をクエリする低レベル関数
+ * @en Low level function for {@link Collection} query items.
+ * @ja {@link Collection} Item をクエリする低レベル関数
  *
  * @param queryInfo
  *  - `en` query information

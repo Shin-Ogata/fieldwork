@@ -12,8 +12,8 @@ import { Subscribable } from '@cdp/lib-core';
 import { Cancelable } from '@cdp/lib-core';
 
 /**
- * @en Arguments passed to [[AjaxDataStreamEvent]] `progress`.
- * @ja [[AjaxDataStreamEvent]] `progress` に渡される引数
+ * @en Arguments passed to {@link AjaxDataStreamEvent} `progress`.
+ * @ja {@link AjaxDataStreamEvent} `progress` に渡される引数
  */
 export interface AjaxDataStreamEventProgresArg {
     /**
@@ -43,8 +43,8 @@ export interface AjaxDataStreamEventProgresArg {
     readonly chunk?: Uint8Array;
 }
 /**
- * @en [[AjaxDataStream]] event definitions.
- * @ja [[AjaxDataStream]] イベント定義
+ * @en {@link AjaxDataStream} event definitions.
+ * @ja {@link AjaxDataStream} イベント定義
  */
 export interface AjaxDataStreamEvent {
     /**
@@ -80,8 +80,8 @@ export interface AjaxDataTypeList<T = PlainObject> {
  */
 export type AjaxDataTypes = keyof AjaxDataTypeList;
 /**
- * @en [[ajax]]() method options.
- * @ja [[ajax]]() に指定可能なオプション
+ * @en {@link ajax:function}() method options.
+ * @ja {@link ajax:function}() に指定可能なオプション
  */
 export interface AjaxOptions<T extends AjaxDataTypes | object = 'response'> extends RequestInit, Cancelable {
     /**
@@ -130,8 +130,8 @@ export type AjaxRequestOptions = Pick<AjaxOptions, Exclude<keyof AjaxOptions, 'm
  */
 export type AjaxGetRequestShortcutOptions = AjaxRequestOptions & Pick<AjaxOptions, 'data'>;
 /**
- * @en Result of [[ajax]]() returns value.
- * @ja [[ajax]]() が返却する結果
+ * @en Result of {@link ajax:function}() returns value.
+ * @ja {@link ajax:function}() が返却する結果
  */
 export type AjaxResult<T extends AjaxDataTypes | object> = T extends AjaxDataTypes ? AjaxDataTypeList[T] : AjaxDataTypeList<T>['json'];
 /**
@@ -174,7 +174,7 @@ export declare const convertUrlParamType: (value: string) => string | number | b
  *
  * ```ts
  * const url = '/page/?id=5&foo=bar&bool=true';
- * const query = parseUrl();
+ * const query = parseUrlQuery(url);
  * // { id: 5, foo: 'bar', bool: true }
  * ```
  *
@@ -605,7 +605,7 @@ export type SerializableReturnType<T extends SerializableCastableTypes> = TypeTo
  * @ja デシリアライズに使用するオプション
  */
 export interface DeserializeOptions<T extends Serializable = Serializable, K extends Keys<T> = Keys<T>> extends Cancelable {
-    /** [[SerializableKeys]] */
+    /** {@link SerializableKeys} */
     dataType?: K;
 }
 /**
@@ -664,8 +664,8 @@ export declare class BlobURL {
     static revoke(...blobs: Blob[]): void;
 }
 /**
- * @en [[InlineWorker]] source type definition.
- * @ja [[InlineWorker]] に指定可能なソース型定義
+ * @en {@link InlineWorker} source type definition.
+ * @ja {@link InlineWorker} に指定可能なソース型定義
  */
 export type InlienWorkerSource = ((self: Worker) => unknown) | string;
 /**

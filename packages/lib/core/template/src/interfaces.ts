@@ -5,14 +5,14 @@ import type {
 } from '@cdp/core-utils';
 
 /**
- * @en [[TemplateEngine]] token structure.
- * @ja [[TemplateEngine]] token 型
+ * @en {@link TemplateEngine} token structure.
+ * @ja {@link TemplateEngine} token 型
  */
 export type TemplateToken = unknown;
 
 /**
- * @en Delimiters definition for [[TemplateEngine]]. ex) ['{{','}}']
- * @ja [[TemplateEngine]] に使用する区切り文字 ex) ['{{','}}']
+ * @en Delimiters definition for {@link TemplateEngine}. ex) ['{{','}}']
+ * @ja {@link TemplateEngine} に使用する区切り文字 ex) ['{{','}}']
  */
 export type TemplateDelimiters = [string, string];
 
@@ -164,20 +164,20 @@ export interface JST {
 export type TemplateEscaper = typeof escapeHTML;
 
 /**
- * @en [[ITemplateEngine]] base type definition.
- * @ja [[ITemplateEngine]] 基底型
+ * @en {@link ITemplateEngine} base type definition.
+ * @ja {@link ITemplateEngine} 基底型
  */
 export interface ITemplateEngine { } // eslint-disable-line @typescript-eslint/no-empty-interface
 
 /**
- * @en [[TemplateEngine]] internal I/F accssor.
- * @ja [[TemplateEngine]] 内部インターフェイスのアクセッサ
+ * @en {@link TemplateEngine} internal I/F accssor.
+ * @ja {@link TemplateEngine} 内部インターフェイスのアクセッサ
  */
 export interface TemplateAccessor extends ITemplateEngine {
-    /** Create [[TemplateScanner]] instance */
+    /** Create {@link TemplateScanner} instance */
     createScanner(src: string): TemplateScanner;
-    /** Create [[TemplateContext]] instance */
+    /** Create {@link TemplateContext} instance */
     createContext(view: TemplateViewParam, parentContext?: TemplateContext): TemplateContext;
-    /** Create [[TemplateWriter]] instance */
+    /** Create {@link TemplateWriter} instance */
     createWriter(): TemplateWriter;
 }

@@ -20,8 +20,8 @@ export type MemoryStorageEventCallback = IStorageEventCallback<StorageDataTypeLi
  */
 export declare class MemoryStorage implements IStorage {
     /**
-     * @en [[IStorage]] kind signature.
-     * @ja [[IStorage]] の種別を表す識別子
+     * @en {@link IStorage} kind signature.
+     * @ja {@link IStorage} の種別を表す識別子
      */
     get kind(): string;
     /**

@@ -30,7 +30,7 @@ export declare const webRoot: string;
  * ```
  *
  * @param seed
- *  - `en` set relative path from [[webRoot]].
- *  - `ja` [[webRoot]] からの相対パスを指定
+ *  - `en` set relative path from {@link webRoot}.
+ *  - `ja` {@link webRoot} からの相対パスを指定
  */
 export declare const toUrl: (seed: string) => string;

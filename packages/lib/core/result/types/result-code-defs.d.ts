@@ -32,9 +32,9 @@ declare namespace CDP_DECLARE {
         FUNCTION = 20
     }
     /**
-     * @en Offset value enumeration for [[RESULT_CODE]]. <br>
+     * @en Offset value enumeration for {@link RESULT_CODE}. <br>
      *     The client can expand a definition in other module.
-     * @ja [[RESULT_CODE]] のオフセット値 <br>
+     * @ja {@link RESULT_CODE} のオフセット値 <br>
      *     エラーコード対応するモジュール内で 定義を拡張する.
      *
      * @example <br>
@@ -110,9 +110,9 @@ declare namespace CDP_DECLARE {
         NOT_SUPPORTED = -3
     }
     /**
-     * @en Assign declared [[RESULT_CODE]] to root enumeration.
+     * @en Assign declared {@link RESULT_CODE} to root enumeration.
      *     (It's enable to merge enum in the module system environment.)
-     * @ja 拡張した [[RESULT_CODE]] を ルート enum にアサイン
+     * @ja 拡張した {@link RESULT_CODE} を ルート enum にアサイン
      *     モジュールシステム環境においても、enum をマージを可能にする
      */
     function ASSIGN_RESULT_CODE(extend: Record<string, unknown>): void;
@@ -128,8 +128,8 @@ declare namespace CDP_DECLARE {
      * @ja 成功コードを生成
      *
      * @param base
-     *  - `en` set base offset as [[RESULT_CODE_BASE]]
-     *  - `ja` オフセット値を [[RESULT_CODE_BASE]] として指定
+     *  - `en` set base offset as {@link RESULT_CODE_BASE}
+     *  - `ja` オフセット値を {@link RESULT_CODE_BASE} として指定
      * @param code
      *  - `en` set local code for declaration. ex) '1'
      *  - `ja` 宣言用のローカルコード値を指定  例) '1'
@@ -143,8 +143,8 @@ declare namespace CDP_DECLARE {
      * @ja エラーコード生成
      *
      * @param base
-     *  - `en` set base offset as [[RESULT_CODE_BASE]]
-     *  - `ja` オフセット値を [[RESULT_CODE_BASE]] として指定
+     *  - `en` set base offset as {@link RESULT_CODE_BASE}
+     *  - `ja` オフセット値を {@link RESULT_CODE_BASE} として指定
      * @param code
      *  - `en` set local code for declaration. ex) '1'
      *  - `ja` 宣言用のローカルコード値を指定  例) '1'

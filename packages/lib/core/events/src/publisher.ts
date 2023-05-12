@@ -82,7 +82,7 @@ function triggerEvent<Event, Channel extends keyof Event>(
  * @example <br>
  *
  * ```ts
- * import { EventPublisher } from '@cdp/events';
+ * import { EventPublisher } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {

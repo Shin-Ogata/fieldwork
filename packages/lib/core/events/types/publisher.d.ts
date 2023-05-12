@@ -9,7 +9,7 @@ import { Subscription, Subscribable } from './interfaces';
  * @example <br>
  *
  * ```ts
- * import { EventPublisher } from '@cdp/events';
+ * import { EventPublisher } from '@cdp/runtime';
  *
  * // declare event interface
  * interface SampleEvent {

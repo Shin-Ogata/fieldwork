@@ -9,8 +9,8 @@ import {
 import { resolveURL } from './internal';
 
 /**
- * @en Options interface for [[RestDataSync]].
- * @ja [[RestDataSync]] に指定するオプション
+ * @en Options interface for {@link RestDataSync}.
+ * @ja {@link RestDataSync} に指定するオプション
  */
 export interface RestDataSyncOptions extends AjaxOptions<'json'> {
     url?: string;
@@ -28,8 +28,8 @@ const _methodMap = {
 //__________________________________________________________________________________________________//
 
 /**
- * @en The [[IDataSync]] implemant class which compliant RESTful.
- * @ja REST に準拠した [[IDataSync]] 実装クラス
+ * @en The {@link IDataSync} implemant class which compliant RESTful.
+ * @ja REST に準拠した {@link IDataSync} 実装クラス
  */
 class RestDataSync implements IDataSync {
 
@@ -37,8 +37,8 @@ class RestDataSync implements IDataSync {
 // implements: IDataSync
 
     /**
-     * @en [[IDataSync]] kind signature.
-     * @ja [[IDataSync]] の種別を表す識別子
+     * @en {@link IDataSync} kind signature.
+     * @ja {@link IDataSync} の種別を表す識別子
      */
     get kind(): string {
         return 'rest';

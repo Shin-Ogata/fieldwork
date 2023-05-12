@@ -22,7 +22,7 @@ export declare const convertUrlParamType: (value: string) => string | number | b
  *
  * ```ts
  * const url = '/page/?id=5&foo=bar&bool=true';
- * const query = parseUrl();
+ * const query = parseUrlQuery(url);
  * // { id: 5, foo: 'bar', bool: true }
  * ```
  *

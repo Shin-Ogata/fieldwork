@@ -68,8 +68,8 @@ export declare function at<T>(array: T[], index: number): T | never;
  */
 export declare function indices<T>(array: T[], ...excludes: number[]): number[];
 /**
- * @en [[groupBy]]() options definition.
- * @ja [[groupBy]]() に指定するオプション定義
+ * @en {@link groupBy}() options definition.
+ * @ja {@link groupBy}() に指定するオプション定義
  */
 export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T, TGROUPKEY extends string> {
     /**
@@ -89,8 +89,8 @@ export interface GroupByOptions<T extends object, TKEYS extends keyof T, TSUMKEY
     groupKey?: TGROUPKEY;
 }
 /**
- * @en Return type of [[groupBy]]().
- * @ja [[groupBy]]() が返却する型
+ * @en Return type of {@link groupBy}().
+ * @ja {@link groupBy}() が返却する型
  */
 export type GroupByReturnValue<T extends object, TKEYS extends keyof T, TSUMKEYS extends keyof T = never, TGROUPKEY extends string = 'items'> = Readonly<Record<TKEYS, unknown> & Record<TSUMKEYS, unknown> & Record<TGROUPKEY, T[]>>;
 /**
