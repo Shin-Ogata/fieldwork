@@ -1,0 +1,21 @@
+{
+  "extends": "../../../../config/tsconfig/web",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationDir": null,
+    "outDir": "../built/tests/unit",
+    "rootDir": "unit",
+    "baseUrl": ".",
+    "paths": {
+      "@cdp/core-utils": [ "../../../lib/core/utils" ],
+      "@cdp/promise": [ "../../../lib/core/promise" ],
+      "@cdp/result": [ "../../../lib/core/result" ]
+    }
+  },
+  "include": [
+    "unit/**/*"
+  ],
+  "exclude": [
+    "unit/*/**/_*.d.ts"
+  ]
+}

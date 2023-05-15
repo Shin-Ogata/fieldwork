@@ -1,0 +1,28 @@
+/*!
+ * @cdp/ui-components 0.9.17
+ *   ui-componets collection
+ */
+
+/*!
+ * @cdp/ui-core 0.9.17
+ *   UI core components
+ */
+
+const UI_CORE_STATUS = 'UNDER CONSTRUCTION';
+
+/*!
+ * @cdp/ui-forms 0.9.17
+ *   UI form components
+ */
+
+const UI_FORMS_STATUS = 'UNDER CONSTRUCTION';
+
+/*!
+ * @cdp/ui-listview 0.9.17
+ *   web domain utilities
+ */
+
+const UI_LISTVIEW_STATUS = 'UNDER CONSTRUCTION';
+
+export { UI_CORE_STATUS, UI_FORMS_STATUS, UI_LISTVIEW_STATUS };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidWktY29tcG9uZW50cy5tanMiLCJzb3VyY2VzIjpbInVpLWNvcmUvaW5kZXgudHMiLCJ1aS1mb3Jtcy9pbmRleC50cyIsInVpLWxpc3R2aWV3L2luZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBVSV9DT1JFX1NUQVRVUyA9ICdVTkRFUiBDT05TVFJVQ1RJT04nO1xuIiwiZXhwb3J0IGNvbnN0IFVJX0ZPUk1TX1NUQVRVUyA9ICdVTkRFUiBDT05TVFJVQ1RJT04nO1xuIiwiZXhwb3J0IGNvbnN0IFVJX0xJU1RWSUVXX1NUQVRVUyA9ICdVTkRFUiBDT05TVFJVQ1RJT04nO1xuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7QUFBTyxNQUFNLGNBQWMsR0FBRzs7Ozs7OztBQ0F2QixNQUFNLGVBQWUsR0FBRzs7Ozs7OztBQ0F4QixNQUFNLGtCQUFrQixHQUFHOzs7OyIsInNvdXJjZVJvb3QiOiJjZHA6Ly8vQGNkcC91aS1jb21wb25lbnRzLyJ9
