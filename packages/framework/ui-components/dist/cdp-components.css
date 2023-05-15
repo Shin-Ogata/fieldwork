@@ -1,0 +1,80 @@
+/*!
+ * cdp-components 0.9.17
+ *   ui-componets collection
+ */
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role=list],
+ol[role=list] {
+  list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  -webkit-text-decoration-skip: ink;
+          text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9zY3NzL2NkcC1jb21wb25lbnRzLnNjc3MiLCIuLi8uLi8uLi9saWIvdWkvY29yZS9zcmMvc2Nzcy9fcmVzZXQuc2NzcyIsIi4uLy50ZW1wL3NyYy9zY3NzL2NkcC1jb21wb25lbnRzLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0VBQUE7QUNBQyxxQkFBQTtBQUNEOzs7RUFHSSxzQkFBQTtBQ0tKOztBREZBLDBCQUFBO0FBQ0E7Ozs7Ozs7Ozs7RUFVSSxTQUFBO0FDS0o7O0FERkEsMkdBQUE7QUFDQTs7RUFFSSxnQkFBQTtBQ0tKOztBREZBLDJCQUFBO0FBQ0E7RUFDSSx1QkFBQTtBQ0tKOztBREZBLDJCQUFBO0FBQ0E7RUFDSSxpQkFBQTtFQUNBLDZCQUFBO0VBQ0EsZ0JBQUE7QUNLSjs7QURGQSwwREFBQTtBQUNBO0VBQ0ksaUNBQUE7VUFBQSw4QkFBQTtBQ0tKOztBREZBLG9DQUFBO0FBQ0E7O0VBRUksZUFBQTtFQUNBLGNBQUE7QUNLSjs7QURGQSx5Q0FBQTtBQUNBOzs7O0VBSUksYUFBQTtBQ0tKOztBREZBLGlGQUFBO0FBQ0E7RUFDSTtJQUNJLHFCQUFBO0VDS047RURIRTs7O0lBR0kscUNBQUE7SUFDQSx1Q0FBQTtJQUNBLHNDQUFBO0lBQ0EsZ0NBQUE7RUNLTjtBQUNGIiwiZmlsZSI6ImNkcC1jb21wb25lbnRzLmNzcyJ9 */

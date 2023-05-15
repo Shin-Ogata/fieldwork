@@ -90,6 +90,33 @@ async function minifyJavaScript(options) {
     }
 }
 
+async function minifyCSS(options) {
+    const { minify } = require('csso');
+    const { cwd, silent, config } = options;
+    let settings = require(resolve(cwd, config));
+    if (settings.minify) {
+        settings = settings.minify.css;
+    }
+
+    const { targets, csso: { sourceMap } } = settings;
+    for (const tgt of targets) {
+        const css = readFileSync(tgt.src, 'utf8');
+        const result = minify(css, { filename: tgt.mapFileName, sourceMap });
+
+        writeFileSync(tgt.out, result.css);
+        if (!silent) {
+            console.log(colors.gray(`  input:      ${basename(tgt.src)}`));
+            console.log(colors.gray(`  minified:   ${basename(tgt.out)}`));
+        }
+        if (sourceMap) {
+            writeFileSync(tgt.map, result.map.toString());
+            if (!silent) {
+                console.log(colors.gray(`  source-map: ${basename(tgt.map)}`));
+            }
+        }
+    }
+}
+
 async function exec(options) {
     options = options || defaultOptions();
     switch (options.type) {
@@ -97,7 +124,7 @@ async function exec(options) {
             await minifyJavaScript(options);
             break;
         case 'css':
-            console.log('under construction');
+            await minifyCSS(options);
             break;
         case 'html':
             console.log('under construction');

@@ -1,0 +1,11 @@
+/*!
+ * cdp-components 0.9.17
+ *   ui-componets collection
+ */
+
+// @use, @forward はコメント位置を保証しない.
+// banner 等, コメント位置を保証する必要がある場合は, @include meta.load-css() を使用する
+// https://github.com/sass/dart-sass/issues/1033#issuecomment-656330252
+// @use "components";
+@use "sass:meta";
+@include meta.load-css("components");

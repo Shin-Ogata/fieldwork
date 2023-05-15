@@ -14,6 +14,7 @@
   "peerDependencies": {
     "commander": "*",
     "convert-source-map": "*",
+    "csso": "*",
     "dts-bundle-generator": "*",
     "glob": "*",
     "https-proxy-agent": "*",
