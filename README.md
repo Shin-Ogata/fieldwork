@@ -69,9 +69,9 @@ npm run install:all
 
 - Node
 
-| module                                                 | description                    |
-|:-------------------------------------------------------|:-------------------------------|
-| [fs-storage](./packages/lib/node/storage/README.md)    | storage implementation w/ `fs` |
+| module                                                 | description                         |
+|:-------------------------------------------------------|:------------------------------------|
+| [fs-storage](./packages/lib/node/storage/README.md)    | storage implementation w/ `node:fs` |
 
 - Worker
 
@@ -97,6 +97,14 @@ npm run install:all
 | [template](./packages/lib/web/template/README.md)          | template library collection                |
 | [router](./packages/lib/web/router/README.md)              | router class                               |
 | [app](./packages/lib/web/app/README.md)                    | application context                        |
+
+- UI componets
+| module                                                 | description                     |
+|:-------------------------------------------------------|:--------------------------------|
+| [ui-core](./packages/lib/ui/core/README.md)            | ui common logic                 |
+| [ui-forms](./packages/lib/ui/forms/README.md)          | forms collection                |
+| [ui-listview](./packages/lib/ui/listview/README.md)    | list view component             |
+
 
 ## License
 

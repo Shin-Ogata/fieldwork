@@ -4,7 +4,6 @@ const { createWriteStream, unlinkSync } = require('node:fs');
 const { parse: parseURL } = require('node:url');
 const http   = require('node:http');
 const https  = require('node:https');
-const Agent  = require('https-proxy-agent');
 const colors = require('./colors');
 const comand = require('./command');
 
@@ -20,21 +19,22 @@ function queryProtocol(url, options) {
     return protocol;
 }
 
-function queryProxy(protocol, options) {
+async function queryProxy(protocol, options) {
     const { proxy } = options;
 
-    const parse = (src) => {
+    const parse = async (src) => {
         if (src) {
+            const Agent = require('https-proxy-agent');
             return { agent: new Agent(src) };
         }
     };
 
     if (proxy) {
         if ('off' === proxy) {
-            return Promise.resolve({});
+            return {};
         } else {
-            const param = parse(proxy);
-            return param ? Promise.resolve(param) : Promise.resolve({});
+            const param = await parse(proxy);
+            return param ? param : {};
         }
     }
 
@@ -100,6 +100,7 @@ async function download(url, dst, protocol, proxy) {
 
     try {
         do {
+            // parseURL: https://qiita.com/sen-higa/items/43d4af5daadf438921a2
             url = await request(stream, connection, { ...parseURL(url), ...proxy });
         } while (url);
         stream.end();

@@ -109,6 +109,10 @@ function patch(src) {
         .replace(/\?\./gm, '.')
         // aboid `??` [Nullish Coalescing]
         .replace(/\?\?/gm, '||')
+        // aboid `||=` [Logical OR assignment]
+        .replace(/\|\|=/gm, '=')
+        // aboid `||=` [Logical AND assignment]
+        .replace(/&&=/gm, '=')
         // aboid `catch {}` [Optional catch binding]
         .replace(/catch {/gm, 'catch (e) {')
     ;
