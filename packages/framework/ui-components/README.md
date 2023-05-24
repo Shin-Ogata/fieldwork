@@ -1,3 +1,3 @@
-# @cdp/lib-worker
+# @cdp/ui-components
 
 [description]

@@ -19,7 +19,7 @@ function getConfig(options) {
             src: resolve(css),
             out: resolve(`${css.replace(/.css$/, '.min.css')}`),
             map: resolve(`${css.replace(/.css$/, '.min.map')}`),
-            mapFileName: `${DOMAIN}:///${basename(css)}`,
+            mapFileName: `${DOMAIN}:///stylesheets/${basename(css)}`,
         };
     });
 

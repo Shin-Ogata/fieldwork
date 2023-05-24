@@ -976,7 +976,7 @@ declare namespace i18n {
          * Is set to the current resolved language.
          * It can be used as primary used language, for example in a language switcher.
          */
-        resolvedLanguage: string;
+        resolvedLanguage?: string;
         /**
          * Loads additional namespaces not defined in init options.
          */
