@@ -18,22 +18,22 @@ export function notEqual<T extends object>(prop: keyof T, value: ValueTypeALL<T>
 
 /** @internal DynamicPackageOperator.GREATER */
 export function greater<T extends object>(prop: keyof T, value: ValueTypeComparable<T>): FilterCallback<T> {
-    return (item: T) => item[prop] > value;
+    return (item: T) => (item[prop] as ValueTypeComparable<T>) > value;
 }
 
 /** @internal DynamicPackageOperator.LESS */
 export function less<T extends object>(prop: keyof T, value: ValueTypeComparable<T>): FilterCallback<T> {
-    return (item: T) => item[prop] < value;
+    return (item: T) => (item[prop] as ValueTypeComparable<T>) < value;
 }
 
 /** @internal DynamicPackageOperator.GREATER_EQUAL */
 export function greaterEqual<T extends object>(prop: keyof T, value: ValueTypeComparable<T>): FilterCallback<T> {
-    return (item: T) => item[prop] >= value;
+    return (item: T) => (item[prop] as ValueTypeComparable<T>) >= value;
 }
 
 /** @internal DynamicPackageOperator.LESS_EQUAL */
 export function lessEqual<T extends object>(prop: keyof T, value: ValueTypeComparable<T>): FilterCallback<T> {
-    return (item: T) => item[prop] <= value;
+    return (item: T) => (item[prop] as ValueTypeComparable<T>) <= value;
 }
 
 /** @internal DynamicPackageOperator.LIKE */

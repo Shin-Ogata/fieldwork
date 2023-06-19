@@ -1,18 +1,12 @@
 {
-  "extends": "../../../../config/tsconfig/core",
+  "extends": "../../../../config/tsconfig/node",
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "types",
     "inlineSources": true,
     "inlineSourceMap": true,
     "outDir": "built",
-    "rootDir": "src",
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "rootDir": "src"
   },
   "include": [
     "src/**/*"
