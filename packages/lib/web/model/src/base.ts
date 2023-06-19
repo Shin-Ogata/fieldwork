@@ -795,7 +795,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
             !wait && destruct();
 
-            let resp: ModelSeed | void;
+            let resp: ModelSeed | void | undefined;
             if (!exists) {
                 await cc(cancel);
             } else {

@@ -74,7 +74,7 @@ export class Writer implements TemplateWriter {
         let buffer = '';
 
         for (const token of tokens) {
-            let value: string | void;
+            let value: string | void | undefined;
             switch (token[$.TYPE]) {
                 case '#':
                     value = this.renderSection(token, context, partials, originalTemplate);

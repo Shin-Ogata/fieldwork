@@ -1,7 +1,4 @@
 # common settings
-.cache/
-.temp/
-.vs/
 bin/
 built/
 reports/
@@ -10,6 +7,7 @@ ipch/
 node_modules/
 obj/
 typedoc/
+.*
 *.csproj.user
 *.njsproj.user
 *.vcxproj.user
@@ -18,7 +16,6 @@ typedoc/
 !/bin/
 /dist/
 /reports/
-/.scannerwork/
 sonar-project.properties
 *.VC.db
 *.VC.VC.opendb
