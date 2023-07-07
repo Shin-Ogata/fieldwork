@@ -5442,6 +5442,14 @@ export declare namespace i18n {
          */
         resolvedLanguage?: string;
         /**
+         * Checks if namespace has loaded yet.
+         * i.e. used by react-i18next
+         */
+        hasLoadedNamespace(ns: string | readonly string[], options?: {
+            lng?: string | readonly string[];
+            precheck: (i18n: i18n, loadNotPending: (lng: string | readonly string[], ns: string | readonly string[]) => boolean) => boolean;
+        }): boolean;
+        /**
          * Loads additional namespaces not defined in init options.
          */
         loadNamespaces(ns: string | readonly string[], callback?: Callback): Promise<void>;
@@ -5817,7 +5825,7 @@ export declare type AttributeTemplatePart = {
     readonly ctor: typeof AttributePart;
     readonly strings: ReadonlyArray<string>;
 };
-export declare type NodeTemplatePart = {
+export declare type ChildTemplatePart = {
     readonly type: typeof CHILD_PART;
     readonly index: number;
 };
@@ -5834,7 +5842,7 @@ export declare type CommentTemplatePart = {
  * is instantiated. When a template is instantiated Parts are created from
  * TemplateParts.
  */
-export declare type TemplatePart = NodeTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
+export declare type TemplatePart = ChildTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
 export declare type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
 declare class ChildPart implements Disconnectable {
     readonly type = 2;
@@ -6031,19 +6039,19 @@ export declare class Ref<T = Element> {
      */
     readonly value?: T;
 }
-export declare type RefOrCallback = Ref | ((el: Element | undefined) => void);
+export declare type RefOrCallback<T = Element> = Ref<T> | ((el: T | undefined) => void);
 declare class RefDirective extends AsyncDirective {
     private _element?;
     private _ref?;
     private _context?;
-    render(_ref: RefOrCallback): symbol;
+    render(_ref?: RefOrCallback): symbol;
     update(part: ElementPart, [ref]: Parameters<this['render']>): symbol;
     private _updateRefValue;
     private get _lastElementForRef();
     disconnected(): void;
     reconnected(): void;
 }
-declare const _directive_ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+declare const _directive_ref: (_ref?: RefOrCallback<Element> | undefined) => DirectiveResult<typeof RefDirective>;
 export declare type Mapper<T> = (v: T, index?: number) => unknown;
 declare class AsyncReplaceDirective extends AsyncDirective {
     private __value?;

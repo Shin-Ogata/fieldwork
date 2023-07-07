@@ -1642,7 +1642,7 @@
     exports.resetMemoryHistory = resetMemoryHistory;
     exports.resetSessionHistory = resetSessionHistory;
     Object.keys(extensionPath2regexp).forEach(function (k) {
-        if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+        if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
             enumerable: true,
             get: function () { return extensionPath2regexp[k]; }
         });

@@ -489,13 +489,13 @@
     exports.hooks = hooks;
     exports.makeHook = makeHook;
     Object.keys(extensionTemplate).forEach(function (k) {
-        if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+        if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
             enumerable: true,
             get: function () { return extensionTemplate[k]; }
         });
     });
     Object.keys(extensionTemplateBridge).forEach(function (k) {
-        if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+        if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
             enumerable: true,
             get: function () { return extensionTemplateBridge[k]; }
         });
