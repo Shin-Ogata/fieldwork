@@ -59,7 +59,7 @@ export class AppView extends View {
 
     private addOne(todo: ToDo): void {
         const view = new ToDoView(todo);
-        this.$('#todo-list').append(view.render().el as HTMLElement);
+        this.$('#todo-list').append(view.render().el);
     }
 
     private addAll(): void {

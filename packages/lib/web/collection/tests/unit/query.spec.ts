@@ -78,8 +78,8 @@ const provider = async (options?: ItemQueryOptions): Promise<CollectionItemQuery
             options: nextOptions,
         };
     } else {
-        const idx = (null == index) ? 0 : index;
-        const result = targets.slice(idx, (null != limit) ? idx + limit : undefined); // eslint-disable-line
+        const idx = index ?? 0;
+        const result = targets.slice(idx, (null != limit) ? idx + limit : undefined);
         return {
             total: targets.length,
             items: result,
@@ -735,8 +735,8 @@ describe('query/query spec', () => {
                         options: nextOptions,
                     };
                 } else {
-                    const idx = (null == index) ? 0 : index;
-                    const result = targets.slice(idx, (null != limit) ? idx + limit : undefined); // eslint-disable-line
+                    const idx = index ?? 0;
+                    const result = targets.slice(idx, (null != limit) ? idx + limit : undefined);
                     return {
                         total: targets.length,
                         items: result,

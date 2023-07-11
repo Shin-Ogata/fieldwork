@@ -23,9 +23,7 @@ export abstract class Hook<P extends unknown[] = unknown[], R = unknown, H = unk
  * @en Interface definition for custom hooks.
  * @ja カスタムフックのインターフェイス定義
  */
-export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
-    new (id: number, state: IHookState<H>, ...args: P): Hook<P, R, H>;
-}
+export type CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> = new (id: number, state: IHookState<H>, ...args: P) => Hook<P, R, H>;
 
 const use = <P extends unknown[], R, H = unknown>(Hook: CustomHook<P, R, H>, ...args: P): R => {
     const id = notify();

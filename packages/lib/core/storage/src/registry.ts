@@ -107,7 +107,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
      * @ja {@link IStorage} から永続化したデータを読み込み. すでにキャッシュされているデータは破棄される
      */
     public async load(options?: IStorageOptions): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         this._store = (await this._storage.getItem(this._rootKey, options)) || {};
         if (!options.silent) {
             void post(() => this.publish('change', '*'));
@@ -138,9 +138,9 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
      *  - `ja` 読み取りオプションを指定
      */
     public read<K extends keyof T>(key: K, options?: RegistryReadOptions): T[K] | null {
-        const { field } = options || {};
+        const { field } = options ?? {};
         const structure = String(key).split('/');
-        const lastKey = structure.pop() as string;
+        const lastKey = structure.pop()!;
 
         let name: string | undefined;
         let reg = this.targetRoot(field);
@@ -171,10 +171,10 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
      *  - `ja` 書き込みオプションを指定
      */
     public write<K extends keyof T>(key: K, value: T[K] | null, options?: RegistryWriteOptions): void {
-        const { field, noSave, silent } = options || {};
+        const { field, noSave, silent } = options ?? {};
         const remove = (null == value);
         const structure = String(key).split('/');
-        const lastKey = structure.pop() as string;
+        const lastKey = structure.pop()!;
 
         let name: string | undefined;
         let reg = this.targetRoot(field);
@@ -233,7 +233,7 @@ export class Registry<T extends RegistrySchemaBase = any> extends EventPublisher
      *  - `ja` 書き込みオプションを指定
      */
     public clear(options?: RegistryWriteOptions): void {
-        options = options || {};
+        options = options ?? {};
         this._store = {};
         void this._storage.removeItem(this._rootKey, options);
         if (!options.silent) {

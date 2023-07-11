@@ -26,7 +26,7 @@ describe('hooks/use-reducer spec', () => {
     });
 
     it('check reducer behaviour', async () => {
-        type State = { count: number; };
+        interface State { count: number; }
         type Action = { type: 'increment'; } | { type: 'decrement'; } | { type: 'reset'; };
 
         const initialState = { count: 3 };
@@ -79,7 +79,7 @@ describe('hooks/use-reducer spec', () => {
     });
 
     it('check reducer behaviour w/ initializer', async () => {
-        type State = { count: number; };
+        interface State { count: number; }
         type Other = State & { otherProp: number; };
         type Action = { type: 'increment'; } | { type: 'decrement'; } | { type: 'reset'; };
 

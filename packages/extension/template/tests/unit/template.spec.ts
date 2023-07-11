@@ -5,7 +5,6 @@
     @typescript-eslint/unbound-method,
     @typescript-eslint/no-unused-vars,
     @typescript-eslint/indent,
-    @typescript-eslint/restrict-plus-operands,
     @typescript-eslint/explicit-function-return-type,
  */
 

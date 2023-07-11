@@ -124,7 +124,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
     ): Promise<WebStorageResult<K> | null>;
 
     async getItem(key: string, options?: WebStorageOptions): Promise<WebStorageDataTypes | null> {
-        return dropUndefined(await deserialize(this._storage[key], options!)); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        return dropUndefined(await deserialize(this._storage[key], options!));
     }
 
     /**
@@ -139,7 +139,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
      *  - `ja` I/O オプション
      */
     async setItem<V extends WebStorageInputDataTypes>(key: string, value: V, options?: WebStorageOptions<never>): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         const newVal = dropUndefined(value, true);                                      // `null` or `undefined` → 'null' or 'undefined'
         const oldVal = dropUndefined(await deserialize(this._storage[key], options));   // `undefined` → `null`
         if (!deepEqual(oldVal, newVal)) {
@@ -157,7 +157,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
      *  - `ja` ストレージオプション
      */
     async removeItem(key: string, options?: IStorageOptions): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         await cc(options.cancel);
         const value = this._storage[key];
         if (undefined !== value) {
@@ -175,7 +175,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
      *  - `ja` ストレージオプション
      */
     async clear(options?: IStorageOptions): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         await cc(options.cancel);
         if (0 < this._storage.length) {
             this._storage.clear();
@@ -192,7 +192,7 @@ export class WebStorage implements IStorage<WebStorageDataTypeList> {
      *  - `ja` キャンセルオプション
      */
     async keys(options?: Cancelable): Promise<string[]> {
-        await cc(options && options.cancel);
+        await cc(options?.cancel);
         return Object.keys(this._storage);
     }
 

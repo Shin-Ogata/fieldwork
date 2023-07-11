@@ -30,7 +30,7 @@ describe('i18n/plugin/dom-localizer spec', () => {
     it('check instance', async () => {
         await initializeI18N();
         expect(localize).toBeDefined();
-        expect($().localize).toBeDefined();
+        expect($().localize).toBeDefined(); // eslint-disable-line @typescript-eslint/unbound-method
     });
 
     it('check translate an element', () => {

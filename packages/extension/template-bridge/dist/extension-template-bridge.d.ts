@@ -12,10 +12,10 @@ export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) 
 export type TransformDirective = (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
 export type TransformTester = (input: string, config: TransformConfig) => boolean;
 export type TransformExecutor = (input: string, config: TransformConfig) => TemplateResult | SVGTemplateResult | undefined;
-export type TransformeContext = {
+export interface TransformeContext {
     test: TransformTester;
     transform: TransformExecutor;
-};
+}
 export interface TransformConfig {
     html: TemplateTag;
     transformVariable: TransformExecutor;
@@ -39,20 +39,14 @@ export declare const transformer: {
  * A TemplateRenderer is responsible for rendering a block call, like
  * `<template name='foo'>`
  */
-export interface TemplateRenderer {
-    (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers): unknown;
-}
-export interface TemplateRenderers {
-    [name: string]: TemplateRenderer;
-}
+export declare type TemplateRenderer = (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
+export declare type TemplateRenderers = Record<string, TemplateRenderer>;
 /**
  * A TemplateHandlers is responsible for rendering control flow like
  * `<template type='if' if='{{x}}'>`
  */
 export declare type TemplateHandler = (template: HTMLTemplateElement, view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
-export interface TemplateHandlers {
-    [name: string]: TemplateHandler;
-}
+export declare type TemplateHandlers = Record<string, TemplateHandler>;
 /**
  * @returns {Function} a template function of the form (view) => TemplateResult
  */

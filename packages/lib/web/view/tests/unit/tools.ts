@@ -11,7 +11,7 @@ export function createTestElementsFromTemplate(): HTMLElement[] {
 }
 
 export function prepareTestElements(divs?: HTMLElement[]): HTMLElement[] {
-    divs = divs || createTestElementsFromTemplate();
+    divs = divs ?? createTestElementsFromTemplate();
 
     const fragment = document.createDocumentFragment();
     for (const div of divs) {

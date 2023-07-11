@@ -164,7 +164,7 @@ export const toRouteContextParameters = (routes: RouteParameters | RouteParamete
 /** @internal prepare IHistory object */
 export const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 'hash', initialPath?: string, context?: Window): IHistory<RouteContext> => {
     return (isString(seed)
-        ? 'memory' === seed ? createMemoryHistory(initialPath || '') : createSessionHistory(initialPath, undefined, { mode: seed, context })
+        ? 'memory' === seed ? createMemoryHistory(initialPath ?? '') : createSessionHistory(initialPath, undefined, { mode: seed, context })
         : seed
     ) as IHistory<RouteContext>;
 };
@@ -174,7 +174,7 @@ export const buildNavigateUrl = (path: string, options: RouteNavigationOptions):
     try {
         path = `/${normalizeId(path)}`;
         const { query, params } = options;
-        let url = path2regexp.compile(path)(params || {});
+        let url = path2regexp.compile(path)(params ?? {});
         if (query) {
             url += `?${toQueryStrings(query)}`;
         }
@@ -197,7 +197,7 @@ export const parseUrlParams = (route: RouteContext): void => {
     const { regexp, paramKeys } = route['@params'];
     if (paramKeys.length) {
         const params = regexp.exec(url)?.map((value, index) => { return { value, key: paramKeys[index - 1] }; });
-        for (const param of params!) { // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        for (const param of params!) {
             if (null != param.key && null != param.value) {
                 assignValue(route.params, param.key, convertUrlParamType(param.value));
             }
@@ -246,7 +246,7 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
     if (null == content) {
         // noop element
         params.$template = $<HTMLElement>();
-    } else if (isString((content as Record<string, unknown>)['selector'])) {
+    } else if (isString((content as Record<string, unknown>)['selector'])) { // eslint-disable-line @typescript-eslint/dot-notation
         // from ajax
         const { selector, url } = content as { selector: string; url?: string; };
         const template = toTemplateElement(await loadTemplateSource(selector, { url: url && toUrl(url) }));

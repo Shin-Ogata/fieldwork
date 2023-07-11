@@ -13,7 +13,7 @@ import { XMLHttpRequest } from './ssr';
 
 /** @internal */
 function ensureDataType(dataType?: AjaxDataTypes): AjaxDataTypes {
-    return dataType || 'json';
+    return dataType ?? 'json';
 }
 
 /**

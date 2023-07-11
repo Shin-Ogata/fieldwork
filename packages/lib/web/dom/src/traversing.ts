@@ -47,7 +47,7 @@ function winnow<T extends SelectorBase, U extends ElementBase>(
     validCallback: (el: U) => unknown,
     invalidCallback?: () => unknown,
 ): any {
-    invalidCallback = invalidCallback || noop;
+    invalidCallback = invalidCallback ?? noop;
 
     let retval: unknown;
     for (const [index, el] of dom.entries()) {
@@ -815,7 +815,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         } else {
             const offsets = new Set<Node>();
             for (const el of this) {
-                const offset = getOffsetParent(el as Node) || rootElement;
+                const offset = getOffsetParent(el as Node) ?? rootElement;
                 offsets.add(offset);
             }
             return $([...offsets]) as DOM<T>;

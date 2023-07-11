@@ -63,7 +63,7 @@ export function thread<T, U>(executor: (...args: U[]) => T | Promise<T>, options
 
     const abort = (): void => worker.terminate();
     originalToken?.register(abort);
-    const { token } = CancelToken.source(originalToken as CancelToken);
+    const { token } = CancelToken.source(originalToken!);
 
     const promise = new Promise((resolve, reject) => {
         worker.onerror = ev => {

@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/dot-notation,
  */
 
 import { has, noop } from '@cdp/core-utils';

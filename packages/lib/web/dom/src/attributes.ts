@@ -266,7 +266,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
         } else if (undefined === value && isString(key)) {
             // get first element attribute
             const attr = this[0].getAttribute(key);
-            return (null != attr) ? attr : undefined;
+            return attr ?? undefined;
         } else if (null === value) {
             // remove attribute
             return this.removeAttr(key as string);
@@ -430,7 +430,7 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             }
         } else {
             // set value
-            const prop = camelize(key || '');
+            const prop = camelize(key ?? '');
             if (prop) {
                 for (const el of this) {
                     if (isNodeHTMLOrSVGElement(el)) {

@@ -1,3 +1,6 @@
+/* eslint-disable
+    @typescript-eslint/dot-notation,
+ */
 import { dom } from '@cdp/dom';
 import { i18n } from '@cdp/i18n';
 
@@ -20,7 +23,7 @@ export function createTestElementsFromTemplate(): HTMLElement[] {
 }
 
 export function prepareTestElements(divs?: HTMLElement[]): HTMLElement[] {
-    divs = divs || createTestElementsFromTemplate();
+    divs = divs ?? createTestElementsFromTemplate();
 
     const fragment = document.createDocumentFragment();
     for (const div of divs) {

@@ -18,9 +18,9 @@ import { ListComponentView } from './list';
 entry('PAGE_CONTEXT_TEMPLATE_COMPONENT_VIEW');
 
 const prepareTemplate = async (): Promise<JST> => {
-    const content =  toTemplateElement(
+    const content = toTemplateElement(
         await loadTemplateSource('#template-component-view-page-body', { url: toUrl('/tpl/variations.tpl') })
-    ) as HTMLTemplateElement;
+    )!;
     $(content).localize();
     return TemplateEngine.compile(content.innerHTML);
 };

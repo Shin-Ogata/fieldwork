@@ -292,7 +292,7 @@ describe('extention-i18n spec', () => {
 
             const promise = new Promise<void>(resolve => {
                 void post(() => {
-                    i18next.init({
+                    void i18next.init({
                         lng: 'ja-JP',
                         initImmediate: false,
                         resources: {

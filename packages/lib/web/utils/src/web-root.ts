@@ -10,7 +10,7 @@ import { location, document } from './ssr';
  */
 export const getWebDirectory = (url: string): string => {
     const match = /^(([^?#]+)\/)([\S]*)?$/.exec(url);
-    return (match && match[1]) || '';
+    return match?.[1] ?? '';
 };
 
 /**
@@ -19,7 +19,7 @@ export const getWebDirectory = (url: string): string => {
  * @ja Web root location へのアクセス <br>
  *     index.html の配置場所となり、ブラウザ環境のみ有効となる.
  */
-export const webRoot: string = getWebDirectory(document.querySelector('base')?.getAttribute('href') || location.href);
+export const webRoot: string = getWebDirectory(document.querySelector('base')?.getAttribute('href') ?? location.href);
 
 /**
  * @en Convert to an absolute url string if given a relative path. <br>

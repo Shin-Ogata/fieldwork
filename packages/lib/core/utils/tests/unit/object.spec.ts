@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-empty-function,
  */
 
 import {
@@ -187,7 +188,7 @@ describe('utils/object spec', () => {
         }
 
         {
-            const Foo: new () => any = function () { } as any; // eslint-disable-line
+            const Foo: new () => any = function () { } as any;
             Foo.prototype.bar = 1;
             expect(result(new Foo(), 'bar', 2)).toBe(1);
         }

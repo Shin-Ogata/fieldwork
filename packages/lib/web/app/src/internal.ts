@@ -22,10 +22,12 @@ export const hasPartialClassName = <T extends Element>(el: T, className: string)
 /** @internal force clear i18n settings */
 export const clearI18NSettings = (): void => {
     const context: Partial<typeof i18n> = i18n;
+    /* eslint-disable @typescript-eslint/dot-notation */
     delete context['options'];
     delete context['language'];
     delete context['languages'];
     delete context['isInitialized'];
+    /* eslint-enable @typescript-eslint/dot-notation */
 };
 
 /** @internal */

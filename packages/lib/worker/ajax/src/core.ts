@@ -46,7 +46,7 @@ export function setupHeaders(options: AjaxHeaderOptions): Headers {
         if (headers.get('Content-Type') && body instanceof FormData) {
             headers.delete('Content-Type');
         } else if (!headers.get('Content-Type')) {
-            if (null == contentType && 'json' === dataType as AjaxDataTypes) {
+            if (null == contentType && 'json' === dataType!) {
                 headers.set('Content-Type', 'application/json; charset=UTF-8');
             } else if (null != contentType) {
                 headers.set('Content-Type', contentType);
@@ -56,7 +56,7 @@ export function setupHeaders(options: AjaxHeaderOptions): Headers {
 
     // Accept
     if (!headers.get('Accept')) {
-        headers.set('Accept', _acceptHeaderMap[dataType as AjaxDataTypes] || '*/*');
+        headers.set('Accept', _acceptHeaderMap[dataType!] || '*/*');
     }
 
     // X-Requested-With
@@ -66,7 +66,7 @@ export function setupHeaders(options: AjaxHeaderOptions): Headers {
 
     // Basic Authorization
     if (null != username && !headers.get('Authorization')) {
-        headers.set('Authorization', `Basic ${Base64.encode(`${username}:${password || ''}`)}`);
+        headers.set('Authorization', `Basic ${Base64.encode(`${username}:${password ?? ''}`)}`);
     }
 
     return headers;
@@ -105,7 +105,7 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
         originalToken.register(abort);
     }
 
-    const source = CancelToken.source(originalToken as CancelToken);
+    const source = CancelToken.source(originalToken!);
     const { token } = source;
     token.register(abort);
 
@@ -138,7 +138,7 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
         throw makeResult(RESULT_CODE.ERROR_AJAX_RESPONSE, response.statusText, response);
     } else if ('stream' === dataType) {
         return toAjaxDataStream(
-            response.body as ReadableStream<Uint8Array>,
+            response.body!,
             Number(response.headers.get('content-length')),
         ) as AjaxResult<T>;
     } else {

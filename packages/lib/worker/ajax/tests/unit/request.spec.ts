@@ -1,7 +1,7 @@
 import { Result, RESULT_CODE } from '@cdp/result';
 import { request } from '@cdp/ajax';
 
-type RespSchema = { propNumber: number; propBoolean: boolean; propString: string; };
+type RespSchema = { propNumber: number; propBoolean: boolean; propString: string; }; // eslint-disable-line @typescript-eslint/consistent-type-definitions
 
 describe('ajax/reauest spec', () => {
     it('check request#get()', async () => {

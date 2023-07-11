@@ -66,7 +66,7 @@ function nestTokens(tokens: Token[]): Token[] {
                 collector = token[$.TOKEN_LIST] = [];
                 break;
             case '/':
-                section = sections.pop() as Token;
+                section = sections.pop()!;
                 section[$.TAG_INDEX] = token[$.START];
                 collector = sections.length > 0 ? sections[sections.length - 1][$.TOKEN_LIST] as Token[] : nestedTokens;
                 break;
@@ -126,7 +126,7 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
     const stripSpace = (): void => {
         if (hasTag && !nonSpace) {
             while (spaces.length) {
-                delete tokens[spaces.pop() as number];
+                delete tokens[spaces.pop()!];
             }
         } else {
             spaces.length = 0;
@@ -155,7 +155,7 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
     };
 
     const { tag: reTag, white: reWhite, equals: reEquals, curly: reCurly } = _regexp;
-    let _regxpTags = compileTags(tags || globalSettings.tags);
+    let _regxpTags = compileTags(tags ?? globalSettings.tags);
 
     const scanner = new Scanner(template);
 

@@ -10,7 +10,7 @@ import { EventBroker } from '@cdp/events';
 export class EventBrokerProxy<Event extends object> {
     private _broker?: EventBroker<Event>;
     public get(): EventBroker<Event> {
-        return this._broker || (this._broker = new EventBroker());
+        return this._broker ?? (this._broker = new EventBroker());
     }
 }
 

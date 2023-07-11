@@ -106,14 +106,14 @@ export class MemoryStorage implements IStorage {
     ): Promise<MemoryStorageResult<K> | null>;
 
     async getItem(key: string, options?: MemoryStorageOptions): Promise<MemoryStorageDataTypes | null> {
-        options = options || {};
+        options = options ?? {};
         await cc(options.cancel);
 
         // `undefined` → `null`
         const value = dropUndefined(this._storage[key]);
         switch (options.dataType) {
             case 'string':
-                return fromTypedData(value) as string;
+                return fromTypedData(value)!;
             case 'number':
                 return Number(restoreNullish(value));
             case 'boolean':
@@ -137,7 +137,7 @@ export class MemoryStorage implements IStorage {
      *  - `ja` I/O オプション
      */
     async setItem<V extends MemoryStorageInputDataTypes>(key: string, value: V, options?: MemoryStorageOptions<never>): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         await cc(options.cancel);
         const newVal = dropUndefined(value, true);         // `null` or `undefined` → 'null' or 'undefined'
         const oldVal = dropUndefined(this._storage[key]);  // `undefined` → `null`
@@ -156,7 +156,7 @@ export class MemoryStorage implements IStorage {
      *  - `ja` ストレージオプション
      */
     async removeItem(key: string, options?: IStorageOptions): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         await cc(options.cancel);
         const oldVal = this._storage[key];
         if (undefined !== oldVal) {
@@ -174,7 +174,7 @@ export class MemoryStorage implements IStorage {
      *  - `ja` ストレージオプション
      */
     async clear(options?: IStorageOptions): Promise<void> {
-        options = options || {};
+        options = options ?? {};
         await cc(options.cancel);
         if (!isEmptyObject(this._storage)) {
             this._storage = {};
@@ -191,7 +191,7 @@ export class MemoryStorage implements IStorage {
      *  - `ja` キャンセルオプション
      */
     async keys(options?: Cancelable): Promise<string[]> {
-        await cc(options && options.cancel);
+        await cc(options?.cancel);
         return Object.keys(this._storage);
     }
 

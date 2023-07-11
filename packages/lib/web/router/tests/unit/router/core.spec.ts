@@ -59,7 +59,7 @@ describe('router/context spec', () => {
 
     const prepareQueryContext = async (): Promise<{ el: Document | null; window: Window | null; }> => {
         const iframe = await prepareIFrameElements();
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
         return { el: iframe.contentDocument, window: iframe.contentWindow };
     };
@@ -528,7 +528,7 @@ describe('router/context spec', () => {
 
             router.on('before-transition', (info) => {
                 expect(info.to.path).toBe('/one');
-                router.back();
+                void router.back();
             });
 
             await router.navigate('/one');

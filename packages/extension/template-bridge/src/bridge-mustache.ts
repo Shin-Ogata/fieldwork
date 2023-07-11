@@ -72,7 +72,7 @@ function createMustacheTransformer(arg1: unknown, arg2?: unknown): TemplateTrans
             transformers: {},
         }, arg1, { html: patch(html) }) as TransformConfig;
         transformer = createCustom(config) as MustacheTransformerContext;
-        transformer.delimiter = config.delimiter!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        transformer.delimiter = config.delimiter!;
     }
     return xform(transformer);
 }

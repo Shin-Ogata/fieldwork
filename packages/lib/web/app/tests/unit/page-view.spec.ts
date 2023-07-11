@@ -1,5 +1,7 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/await-thenable,
+    @typescript-eslint/no-non-null-asserted-optional-chain,
  */
 
 import { RESULT_CODE } from '@cdp/result';
@@ -24,17 +26,17 @@ describe('page-view spec', () => {
 
     const prepareQueryContext = async (): Promise<{ el: Document | null; window: Window | null; }> => {
         const iframe = await prepareIFrameElements();
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
         return { el: iframe.contentDocument, window: iframe.contentWindow };
     };
 
     class TestView extends PageView {
         get path(): string {
-            return this._route?.path as string;
+            return this._route?.path!;
         }
         get url(): string {
-            return this._route?.url as string;
+            return this._route?.url!;
         }
         get router(): Router | undefined {
             return this._router;

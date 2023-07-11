@@ -503,7 +503,7 @@ describe('collection/base spec', () => {
             const opts = Object.assign({}, options, { noSearch: true }/* sort, filter を provider 側で行うため */);
 
             const { index, limit, filter, sortKeys: keys, comparators: comps } = opts;
-            const comparators = comps || convertSortKeys(keys || []);
+            const comparators = comps ?? convertSortKeys(keys ?? []);
 
             const items = await dataSyncSTORAGE.sync('read', _dummyContext as SyncContext, options as IDataSyncOptions) as Track[];
             const targets = searchItems(items, filter, ...comparators);
@@ -521,7 +521,7 @@ describe('collection/base spec', () => {
                 super(items, Object.assign({ parse: true }, options));
             }
             protected sync(options?: CollectionItemQueryOptions<Content>): Promise<CollectionItemQueryResult<object>> {
-                return customProvider((options || {}) as CollectionQueryOptions<Track>) as any;
+                return customProvider((options ?? {}) as CollectionQueryOptions<Track>) as any;
             }
         }
 
@@ -1550,7 +1550,7 @@ describe('collection/base spec', () => {
             expect(playlist.length).toBe(2);
 
             const model = playlist.models[0];
-            model.destroy();
+            void model.destroy();
 
             await sleep(0);
 
@@ -2007,7 +2007,7 @@ describe('collection/base spec', () => {
 
             /** アルバム内の曲数 */
             get totalTracks(): number {
-                return this._queryResult?.items.length || 0;
+                return this._queryResult?.items.length ?? 0;
             }
 
             /** 総演奏時間を取得 [msec] */
@@ -2141,7 +2141,7 @@ describe('collection/base spec', () => {
             }
             setAttributes(attributes: any, options?: Silenceable): this {
                 Object.assign(this._track, attributes);
-                const { silent } = options || {};
+                const { silent } = options ?? {};
                 if (!silent) {
                     this.trigger('@change', this);
                 }

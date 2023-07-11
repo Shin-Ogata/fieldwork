@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/unbound-method,
+ */
+
 import { noop, post } from '@cdp/core-utils';
 import { CancelToken, Deferred } from '@cdp/promise';
 
@@ -143,7 +147,7 @@ describe('promise/cancel-token spec', () => {
 
     it('check Subscription#unsbuscribe', async () => {
         const { cancel, token } = CancelToken.source();
-        const s = token.register(reason => { throw new Error(`test fail: ${reason} received.`); });
+        const s = token.register(reason => { throw new Error(`test fail: ${reason as string} received.`); });
 
         s.unsubscribe();
         await post(() => cancel(error));
@@ -158,7 +162,7 @@ describe('promise/cancel-token spec', () => {
         await post(close);
         expect(() => close()).not.toThrow();
 
-        const s = token.register(reason => { throw new Error(`test fail: ${reason} received.`); });
+        const s = token.register(reason => { throw new Error(`test fail: ${reason as string} received.`); });
         expect(s.enable).toBeFalsy();
         expect(() => s.unsubscribe()).not.toThrow();
 

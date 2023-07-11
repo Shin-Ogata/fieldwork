@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/await-thenable,
  */
 
 import {
@@ -484,7 +485,7 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
 
         $dom.transitionStart(stub.onCallback);
-        await $dom[0].firstElementChild!.dispatchEvent(evTransitionStart); // eslint-disable-line
+        await $dom[0].firstElementChild!.dispatchEvent(evTransitionStart);
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
     });
@@ -542,7 +543,7 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
 
         $dom.transitionEnd(stub.onCallback);
-        await $dom[0].firstElementChild!.dispatchEvent(evTransitionEnd); // eslint-disable-line
+        await $dom[0].firstElementChild!.dispatchEvent(evTransitionEnd);
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
     });
@@ -600,7 +601,7 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
 
         $dom.animationStart(stub.onCallback);
-        await $dom[0].firstElementChild!.dispatchEvent(evAnimationStart); // eslint-disable-line
+        await $dom[0].firstElementChild!.dispatchEvent(evAnimationStart);
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
     });
@@ -658,7 +659,7 @@ describe('dom/events spec', () => {
         const $dom = $('#d1');
 
         $dom.animationEnd(stub.onCallback);
-        await $dom[0].firstElementChild!.dispatchEvent(evAnimationEnd); // eslint-disable-line
+        await $dom[0].firstElementChild!.dispatchEvent(evAnimationEnd);
         expect(stub.onCallback).not.toHaveBeenCalled();
         expect(count).toBe(0);
     });

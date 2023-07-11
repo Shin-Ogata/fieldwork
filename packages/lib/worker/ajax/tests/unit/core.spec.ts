@@ -68,7 +68,7 @@ describe('ajax/core spec', () => {
             bool: false,
         });
 
-        type Schema = { id: number; foo: string; };
+        type Schema = { id: number; foo: string; }; // eslint-disable-line @typescript-eslint/consistent-type-definitions
         const ret1 = parseUrlQuery<Schema>('/page/?id=5&foo=bar');
         expect(ret1).toBeDefined();
         expect(ret1.id).toBe(5);
@@ -116,7 +116,7 @@ describe('ajax/core spec', () => {
         while (!result || !result.done) {
             result = await reader.read();
             if (!result.done) {
-                chunk += result.value?.length as number;
+                chunk += result.value?.length;
                 console.log(`received: ${chunk}(${Math.round(chunk / stream.length * 100)} %)`);
             }
         }
@@ -262,7 +262,7 @@ describe('ajax/core spec', () => {
         expect(reason).toBeDefined();
         expect(reason.code).toBe(RESULT_CODE.ABORT);
 
-        reason = null!; // eslint-disable-line
+        reason = null!;
 
         try {
             await ajax('/api-ajax', {

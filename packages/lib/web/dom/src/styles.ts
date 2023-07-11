@@ -33,7 +33,7 @@ function ensureChainCaseProperies(props: PlainObject<string | null>): PlainObjec
 
 /** @internal helper for `css()` get props */
 function getDefaultView(el: Element): Window {
-    return (el.ownerDocument && el.ownerDocument.defaultView) || window;
+    return (el.ownerDocument && el.ownerDocument.defaultView) ?? window;
 }
 
 /** @internal helper for `css()` get props */
@@ -143,7 +143,7 @@ function manageInnerSizeFor<T extends ElementBase>(dom: DOMStyles<T>, type: 'wid
     }
 }
 
-/** @internal */ type ParseOuterSizeArgsResult = { includeMargin: boolean; value: number | string; };
+/** @internal */ interface ParseOuterSizeArgsResult { includeMargin: boolean; value: number | string; }
 
 /** @internal helper for `outerWidth()` and `outerHeigth()` */
 function parseOuterSizeArgs(...args: unknown[]): ParseOuterSizeArgsResult {
@@ -538,7 +538,7 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
             // Account for the *real* offset parent, which can be the document or its root element
             // when a statically positioned element is identified
             const doc = el.ownerDocument;
-            let offsetParent = getOffsetParent(el) || doc.documentElement;
+            let offsetParent = getOffsetParent(el) ?? doc.documentElement;
             let $offsetParent = $(offsetParent);
             while (offsetParent &&
                 (offsetParent === doc.body || offsetParent === doc.documentElement) &&

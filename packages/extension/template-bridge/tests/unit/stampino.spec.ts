@@ -32,9 +32,7 @@ describe('bridge-stampino spec', () => {
 
     const convert = createStampinoTransformer();
 
-    interface Updater {
-        (view?: TemplateBridgeArg): DOM;
-    }
+    type Updater = (view?: TemplateBridgeArg) => DOM;
 
     class TemplateEngine {
         static compile(template: HTMLTemplateElement | string): Updater {
@@ -344,7 +342,7 @@ describe('bridge-stampino spec', () => {
 
         it('createTemplateFunction(invalid)', () => {
             expect(() => {
-                convert(null!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                convert(null!);
             }).toThrow(new TypeError(`Type of template is not a valid. [typeof: object]`));
         });
     });

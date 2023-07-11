@@ -103,7 +103,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         this._window.addEventListener('popstate', this._popStateHandler);
 
         // initialize
-        void this.replace(null != id ? id : this.toId(this._window.location.href), state, { silent: true });
+        void this.replace(id ?? this.toId(this._window.location.href), state, { silent: true });
     }
 
     /**
@@ -124,7 +124,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
             return;
         }
 
-        const { silent } = options || {};
+        const { silent } = options ?? {};
         const { location } = this._window;
         const prevState = this._stack.state;
         const oldURL = location.href;
@@ -254,7 +254,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      *  - `ja` 状態管理用オプションを指定
      */
     push(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
-        return this.updateState('push', id, state, options || {});
+        return this.updateState('push', id, state, options ?? {});
     }
 
     /**
@@ -272,7 +272,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      *  - `ja` 状態管理用オプションを指定
      */
     replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
-        return this.updateState('replace', id, state, options || {});
+        return this.updateState('replace', id, state, options ?? {});
     }
 
     /**
@@ -297,7 +297,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
      * @ja 起点, 終点の ID を指定してスタック情報を返却
      */
     direct(toId: string, fromId?: string): HistoryDirectReturnType<T> {
-        return this._stack.direct(toId, fromId as string);
+        return this._stack.direct(toId, fromId);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -402,7 +402,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
                 break;
             default:
                 await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
-                    const delta = this.index - (this.closest(newId) as number);
+                    const delta = this.index - this.closest(newId)!;
                     if (0 !== delta) {
                         const promise = wait();
                         delta && history.go(delta);
@@ -417,7 +417,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     private async clearForwardHistory(): Promise<void> {
         await this.suppressEventListenerScope(async (wait: () => Promise<unknown>): Promise<void> => {
             const isOrigin = (st: Accessible<unknown>): boolean => {
-                return (st && st['@origin']) as boolean;
+                return st?.['@origin'] as boolean;
             };
 
             const { history } = this._window;
@@ -432,7 +432,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
             const ensure = (src: Accessible<unknown>): unknown => {
                 const ctx = { ...src };
-                delete ctx['router'];
+                delete ctx['router'];  // eslint-disable-line @typescript-eslint/dot-notation
                 delete ctx['@params'];
                 return JSON.parse(JSON.stringify(ctx));
             };
@@ -452,9 +452,9 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     private async onPopState(ev: PopStateEvent): Promise<void> {
         const { location } = this._window;
         const [newState, additional] = parseDispatchInfo(ev.state);
-        const newId   = additional?.newId || this.toId(location.href);
-        const method  = additional?.postproc || 'seek';
-        const df      = additional?.df || this._dfGo || new Deferred();
+        const newId   = additional?.newId ?? this.toId(location.href);
+        const method  = additional?.postproc ?? 'seek';
+        const df      = additional?.df ?? this._dfGo ?? new Deferred();
         const oldData = additional?.prevState || this.state;
         const newData = additional?.nextState || this.direct(newId).state || createData(newId, newState);
         const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
@@ -510,7 +510,7 @@ export interface SessionHistoryCreateOptions {
  */
 export function createSessionHistory<T = PlainObject>(id?: string, state?: T, options?: SessionHistoryCreateOptions): IHistory<T> {
     const { context, mode } = Object.assign({ mode: 'hash' }, options);
-    return new SessionHistory(context || window, mode, id, state);
+    return new SessionHistory(context ?? window, mode, id, state);
 }
 
 /**

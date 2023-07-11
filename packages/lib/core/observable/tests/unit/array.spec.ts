@@ -161,7 +161,7 @@ describe('observable/array spec', () => {
                 expect(observable[2]).toBe('z');
                 observable.sort((lhs, rhs) => lhs < rhs ? 1 : -1);
                 const item = observable.shift();
-                observable.unshift(item as string);
+                observable.unshift(item!);
                 observable.resume();
                 setTimeout(() => {
                     expect(observable.getObservableState()).toBe(ObservableState.ACTIVE);

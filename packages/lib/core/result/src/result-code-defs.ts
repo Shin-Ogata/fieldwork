@@ -2,6 +2,7 @@
     no-inner-declarations,
     @typescript-eslint/no-namespace,
     @typescript-eslint/no-unused-vars,
+    @typescript-eslint/no-duplicate-enum-values,
  */
 
 /*
@@ -139,7 +140,7 @@ namespace CDP_DECLARE {
     }
 
     /** @internal */
-    const _code2message: { [code: string]: string; } = {
+    const _code2message: Record<string, string> = {
         '0': 'operation succeeded.',
         '1': 'operation aborted.',
         '2': 'operation pending.',
@@ -153,7 +154,7 @@ namespace CDP_DECLARE {
      * @en Access to error message map.
      * @ja エラーメッセージマップの取得
      */
-    export function ERROR_MESSAGE_MAP(): { [code: string]: string; } {
+    export function ERROR_MESSAGE_MAP(): Record<string, string> {
         return _code2message;
     }
 

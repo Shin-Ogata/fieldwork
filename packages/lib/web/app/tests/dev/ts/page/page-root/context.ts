@@ -12,7 +12,7 @@ registerPage({
         name: 'I was born from an object.',
         async pageInit(info: RouteChangeInfo) {
             console.log(info.to.path);
-            const template = toTemplateElement(await loadTemplateSource('#root-content', { noCache: true })) as HTMLTemplateElement;
+            const template = toTemplateElement(await loadTemplateSource('#root-content', { noCache: true }))!;
             $(info.to.el).append($(...template.content.children).localize());
         }
     },

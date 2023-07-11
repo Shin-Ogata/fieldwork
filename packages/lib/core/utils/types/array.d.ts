@@ -323,7 +323,7 @@ export declare function findIndex<T>(this: unknown, array: T[], callback: (value
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export declare function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean>;
+export declare function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean>;
 /**
  * @en Substitution method of `Array.prototype.every()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.every()` の代替メソッド
@@ -341,7 +341,7 @@ export declare function some<T>(this: unknown, array: T[], callback: (value: T, 
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export declare function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean>;
+export declare function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean>;
 /**
  * @en Substitution method of `Array.prototype.reduce()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.reduce()` の代替メソッド

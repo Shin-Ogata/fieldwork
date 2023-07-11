@@ -16,9 +16,7 @@ import { EventSource } from '@cdp/events';
  * @en DOM relation event map hash.
  * @ja DOM イベントに関連付けるハッシュ定義
  */
-export interface ViewEventsHash<TElement extends Node = HTMLElement, TFuncName = string> {
-    [selector: string]: TFuncName | DOMEventListener<TElement>;
-}
+export type ViewEventsHash<TElement extends Node = HTMLElement, TFuncName = string> = Record<string, TFuncName | DOMEventListener<TElement>>;
 /**
  * @en {@link View} construction options.
  * @ja {@link View} 構築に指定するオプション
@@ -229,7 +227,7 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      * }
      * ```
      */
-    abstract render(...args: unknown[]): Promise<any | void> | any | void;
+    abstract render(...args: unknown[]): any;
 }
 /**
  * @en Base class definition for view that manages the layout and a DOM events.

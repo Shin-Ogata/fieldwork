@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/dot-notation,
  */
 
 import {
@@ -91,8 +92,8 @@ const resetModelStore = <T extends object, K extends Keys<T>>(context: Property<
 const ensureSortOptions = <T extends object, K extends Keys<T>>(options: CollectionSortOptions<T, K>): Required<CollectionSortOptions<T, K>> => {
     const { sortKeys: keys, comparators: comps } = options;
     return {
-        sortKeys: keys || [],
-        comparators: comps || convertSortKeys(keys || []),
+        sortKeys: keys ?? [],
+        comparators: comps ?? convertSortKeys(keys ?? []),
     };
 };
 
@@ -270,7 +271,7 @@ export abstract class Collection<
 
         this[_properties] = {
             constructOptions: opts,
-            provider: opts.provider || this.sync.bind(this),
+            provider: opts.provider ?? this.sync.bind(this),
             cid: luid('collection:', 8),
             queryOptions,
             queryInfo: {},
@@ -501,7 +502,7 @@ export abstract class Collection<
         const id = getModelId(isModel(seed) ? seed.toJSON() : seed as object, modelConstructor(this));
         const cid = (seed as object as { _cid?: string; })._cid;
 
-        return byId.get(id) || (cid && byId.get(cid)) as TModel | undefined;
+        return byId.get(id) ?? (cid && byId.get(cid)) as TModel | undefined;
     }
 
     /**
@@ -544,7 +545,7 @@ export abstract class Collection<
      *  - `ja` ソートオプション
      */
     public sort(options?: CollectionReSortOptions<TModel, TKey>): this {
-        const opts = options || {};
+        const opts = options ?? {};
         const { noThrow, silent } = opts;
         const { sortKeys, comparators: comps } = ensureSortOptions(opts);
         const comparators = 0 < comps.length ? comps : this._comparators;
@@ -817,7 +818,7 @@ export abstract class Collection<
 
         const opts = Object.assign({ parse: this._defaultParse }, _setOptions, options) as CollectionUpdateOptions<TModel>;
         if (opts.parse && !isCollectionModel(seeds, this)) {
-            seeds = this.parse(seeds, options) || [];
+            seeds = this.parse(seeds, options) ?? [];
         }
 
         const singular = !isArray(seeds);
@@ -849,11 +850,11 @@ export abstract class Collection<
         let sort = false;
         const sortable = this._comparators.length && null == at && false !== opts.sort;
 
-        type ModelFeature = {
+        interface ModelFeature {
             parse: (atrr?: object, options?: object) => object;
             setAttributes: (atrr: object, options?: object) => void;
             hasChanged: () => boolean;
-        };
+        }
 
         // Turn bare objects into model references, and prevent invalid models from being added.
         for (const [i, item] of items.entries()) {
@@ -919,7 +920,7 @@ export abstract class Collection<
             if (sortable) {
                 sort = true;
             }
-            spliceArray(store, toAdd, null == at ? store.length : at);
+            spliceArray(store, toAdd, at ?? store.length);
         }
 
         // Silently sort the collection if appropriate.
@@ -1126,7 +1127,7 @@ export abstract class Collection<
      *  - `ja` Model 構築オプション
      */
     public create(attrs: object, options?: ModelSaveOptions): TModel | undefined {
-        const { wait } = options || {};
+        const { wait } = options ?? {};
         const seed = this[_prepareModel](attrs, options as Silenceable);
         if (!seed) {
             return undefined;
@@ -1260,7 +1261,7 @@ export abstract class Collection<
                 } else {
                     return {
                         done: true,
-                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        value: undefined!,
                     };
                 }
             },
@@ -1315,7 +1316,7 @@ export abstract class Collection<
                 } else {
                     return {
                         done: true,
-                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        value: undefined!,
                     };
                 }
             },

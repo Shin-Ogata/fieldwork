@@ -26,7 +26,7 @@ export class PromiseManager {
      *  - `ja` 入力した `promise` と同一インスタンスを返却
      */
     public add<T>(promise: Promise<T>, cancelSource?: CancelTokenSource): Promise<T> {
-        this._pool.set(promise, cancelSource && cancelSource.cancel); // eslint-disable-line @typescript-eslint/unbound-method
+        this._pool.set(promise, cancelSource?.cancel); // eslint-disable-line @typescript-eslint/unbound-method
 
         const always = (): void => {
             this._pool.delete(promise);
@@ -122,7 +122,7 @@ export class PromiseManager {
         for (const canceler of this._pool.values()) {
             if (canceler) {
                 canceler(
-                    (null != reason) ? reason : new Error('abort')
+                    reason ?? new Error('abort')
                 );
             }
         }

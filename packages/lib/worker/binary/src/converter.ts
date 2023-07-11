@@ -164,7 +164,7 @@ export function blobToDataURL(blob: Blob, options?: BlobReadOptions): Promise<st
  * @param options
  */
 export function blobToText(blob: Blob, options?: BlobReadOptions & { encoding?: string | null; }): Promise<string> {
-    const opts = options || {};
+    const opts = options ?? {};
     const { encoding } = opts;
     return readAsText(blob, encoding, opts);
 }
@@ -567,7 +567,7 @@ export interface DeserializeOptions<T extends Serializable = Serializable, K ext
  * @param options blob convert options
  */
 export async function serialize<T extends SerializableInputDataTypes>(data: T, options?: BlobReadOptions): Promise<string> {
-    const { cancel } = options || {};
+    const { cancel } = options ?? {};
     await cc(cancel);
     if (null == data) {
         return String(data);
@@ -578,7 +578,7 @@ export async function serialize<T extends SerializableInputDataTypes>(data: T, o
     } else if (data instanceof Blob) {
         return blobToDataURL(data, options);
     } else {
-        return fromTypedData(data) as string;
+        return fromTypedData(data)!;
     }
 }
 
@@ -603,7 +603,7 @@ export function deserialize<T extends SerializableCastableTypes = SerializableCa
 export function deserialize<T extends SerializableKeys>(value: string | undefined, options: DeserializeOptions<Serializable, T>): Promise<Serializable[T] | null | undefined>;
 
 export async function deserialize(value: string | undefined, options?: DeserializeOptions): Promise<SerializableDataTypes | null | undefined> {
-    const { dataType, cancel } = options || {};
+    const { dataType, cancel } = options ?? {};
     await cc(cancel);
 
     const data = restoreNullish(toTypedData(value));
@@ -617,11 +617,11 @@ export async function deserialize(value: string | undefined, options?: Deseriali
         case 'object':
             return Object(data);
         case 'buffer':
-            return dataURLToBuffer(fromTypedData(data) as string);
+            return dataURLToBuffer(fromTypedData(data)!);
         case 'binary':
-            return dataURLToBinary(fromTypedData(data) as string);
+            return dataURLToBinary(fromTypedData(data)!);
         case 'blob':
-            return dataURLToBlob(fromTypedData(data) as string);
+            return dataURLToBlob(fromTypedData(data)!);
         default:
             return data;
     }

@@ -44,13 +44,13 @@ function exec<T extends keyof FileReaderResultMap>(
     onprogress && verify('typeOf', 'function', onprogress);
     return new Promise<TResult>((resolve, reject) => {
         const reader = new FileReader();
-        const subscription = token && token.register(() => {
+        const subscription = token?.register(() => {
             reader.abort();
         });
         reader.onabort = reader.onerror = () => {
             reject(reader.error);
         };
-        reader.onprogress = onprogress!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        reader.onprogress = onprogress!;
         reader.onload = () => {
             resolve(reader.result as TResult);
         };
@@ -106,5 +106,5 @@ export function readAsDataURL(blob: Blob, options?: BlobReadOptions): Promise<st
  *  - `ja` 読み取りオプションを指定
  */
 export function readAsText(blob: Blob, encoding?: string | null, options?: BlobReadOptions): Promise<string> {
-    return exec('readAsText', [blob, encoding || undefined], { ...options });
+    return exec('readAsText', [blob, encoding ?? undefined], { ...options });
 }

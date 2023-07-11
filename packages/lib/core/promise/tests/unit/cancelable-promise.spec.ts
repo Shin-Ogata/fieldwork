@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/unbound-method,
  */
 
 import { noop } from '@cdp/core-utils';

@@ -61,7 +61,7 @@ class RestDataSync implements IDataSync {
     sync<K extends SyncMethods>(method: K, context: SyncContext, options?: RestDataSyncOptions): Promise<SyncResult<K>> {
         const params = Object.assign({ dataType: 'json' }, options);
 
-        const url = params.url || resolveURL(context);
+        const url = params.url ?? resolveURL(context);
         if (!url) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, 'A "url" property or function must be specified.');
         }

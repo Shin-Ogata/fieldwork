@@ -38,9 +38,7 @@ interface BindInfo {
 }
 
 /** @internal */
-interface BindEventContext {
-    [cookie: string]: BindInfo;
-}
+type BindEventContext = Record<string, BindInfo>;
 
 /** @internal */
 const enum Const {
@@ -61,7 +59,7 @@ const _eventContextMap = {
 
 /** @internal query event-data from element */
 function queryEventData(event: Event): unknown[] {
-    const data = _eventContextMap.eventData.get(event.target as Element) || [];
+    const data = _eventContextMap.eventData.get(event.target as Element) ?? [];
     data.unshift(event);
     return data;
 }
@@ -79,7 +77,7 @@ function deleteEventData(elem: ElementBase): void {
 /** @internal normalize event namespace */
 function normalizeEventNamespaces(event: string): string {
     const namespaces = event.split('.');
-    const main = namespaces.shift() as string;
+    const main = namespaces.shift()!;
     if (!namespaces.length) {
         return main;
     } else {
@@ -93,7 +91,7 @@ function splitEventNamespaces(event: string): { type: string; namespace: string;
     const retval: { type: string; namespace: string; }[] = [];
 
     const namespaces = event.split('.');
-    const main = namespaces.shift() as string;
+    const main = namespaces.shift()!;
 
     if (!namespaces.length) {
         retval.push({ type: main, namespace: '' });
@@ -120,7 +118,7 @@ function resolveEventNamespaces(elem: ElementBase, event: string): { type: strin
     const retval: { type: string; namespace: string; }[] = [];
 
     const namespaces = event.split('.');
-    const main = namespaces.shift() as string;
+    const main = namespaces.shift()!;
     const type = normalizeEventNamespaces(event);
 
     if (!namespaces.length) {
@@ -175,13 +173,13 @@ function getEventListenersHandlers(elem: ElementBase, event: string, namespace: 
             eventListeners.set(elem, {});
         } else {
             return {
-                registered: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                registered: undefined!,
                 handlers: [],
             };
         }
     }
 
-    const context = eventListeners.get(elem) as BindEventContext;
+    const context = eventListeners.get(elem)!;
     const cookie = toCookie(event, namespace, selector, options);
     if (!context[cookie]) {
         context[cookie] = {
@@ -258,12 +256,12 @@ function extractNamespaceHandlers(elem: ElementBase, namespaces: string): { even
 }
 
 /** @internal */
-type ParseEventArgsResult = {
+interface ParseEventArgsResult {
     type: string[];
     selector: string;
     listener: InternalEventListener;
     options: AddEventListenerOptions;
-};
+}
 
 /** @internal parse event args */
 function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
@@ -565,7 +563,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
                                     const handler = handlers[i];
                                     if (
                                         (listener && handler.listener === listener) ||
-                                        (listener && handler.listener && handler.listener.origin && handler.listener.origin === listener) ||
+                                        (handler?.listener?.origin === listener) ||
                                         (!listener)
                                     ) {
                                         el.removeEventListener(type, handler.proxy, options);
@@ -769,7 +767,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `mouseleave` ハンドラを指定
      */
     public hover(handlerIn: DOMEventListener, handlerOut?: DOMEventListener): this {
-        handlerOut = handlerOut || handlerIn;
+        handlerOut = handlerOut ?? handlerIn;
         return this.mouseenter(handlerIn).mouseleave(handlerOut);
     }
 

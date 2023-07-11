@@ -120,9 +120,7 @@ declare namespace CDP_DECLARE {
      * @en Access to error message map.
      * @ja エラーメッセージマップの取得
      */
-    function ERROR_MESSAGE_MAP(): {
-        [code: string]: string;
-    };
+    function ERROR_MESSAGE_MAP(): Record<string, string>;
     /**
      * @en Generate success code.
      * @ja 成功コードを生成

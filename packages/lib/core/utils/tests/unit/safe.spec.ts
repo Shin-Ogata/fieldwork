@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/unbound-method,
  */
 
 import { safe } from '@cdp/core-utils';
@@ -18,7 +19,7 @@ describe('utils/safe spec', () => {
             prop2: {
                 prop: string;
                 func(): {
-                    new(...args: any[]): Widget;
+                    new(...args: any[]): Widget; // eslint-disable-line  @typescript-eslint/prefer-function-type
                 };
             };
         }

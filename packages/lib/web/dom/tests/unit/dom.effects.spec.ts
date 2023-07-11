@@ -22,7 +22,7 @@ describe('dom/effects spec', () => {
 `));
             const $dom = $('.test-dom');
             const contexts = $dom.animate([{ opacity: 1 }, { opacity: 0.5 }], 100);
-            contexts.finished.then(ctx => ctx.dom.css('opacity', '0.5'));
+            void contexts.finished.then(ctx => ctx.dom.css('opacity', '0.5'));
             await wait(150);
             expect(contexts.animations.size).toBe(3);
             expect([...contexts.animations.values()][0].playState).toBe('finished');

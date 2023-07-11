@@ -121,7 +121,7 @@ function copyProperties(target: object, source: object): void {
 
 /** @internal helper for setMixClassAttribute(target, 'instanceOf') */
 function setInstanceOf<T extends object>(target: Constructor<T>, method: ((inst: object) => boolean) | Nullish): void {
-    const behaviour = method || (null === method ? undefined : ((i: object) => Object.prototype.isPrototypeOf.call(target.prototype, i)));
+    const behaviour = method ?? (null === method ? undefined : ((i: object) => Object.prototype.isPrototypeOf.call(target.prototype, i)));
     const applied = behaviour && Object.getOwnPropertyDescriptor(target, _override);
     if (!applied) {
         Object.defineProperties(target, {
@@ -362,7 +362,7 @@ export function mixins<
         if (!desc || desc.writable) {
             const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
             setInstanceOf(srcClass, (inst: UnknownObject) => {
-                return orgInstanceOf.call(srcClass, inst) || ((null != inst && inst[_isInherited]) ? (inst[_isInherited] as UnknownFunction)(srcClass) : false);
+                return orgInstanceOf.call(srcClass, inst) || ((inst?.[_isInherited]) ? (inst[_isInherited] as UnknownFunction)(srcClass) : false);
             });
         }
         // provide prototype

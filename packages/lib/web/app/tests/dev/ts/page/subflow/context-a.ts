@@ -44,7 +44,7 @@ class PageSubFlowA extends PageView {
 
     protected onPageBeforeEnter(thisPage: Route): void {
         console.log(`${thisPage.url}: before-enter`);
-        this._mode = (thisPage.params['mode'] || 'normal') as 'normal' | 'subflow';
+        this._mode = (thisPage.params['mode'] ?? 'normal') as 'normal' | 'subflow'; // eslint-disable-line @typescript-eslint/dot-notation
         this.render();
     }
 
@@ -74,17 +74,17 @@ class PageSubFlowA extends PageView {
     private onButton1(event: UIEvent): void {
         console.log(`onButton1(${event.type})`);
         const additional = 'subflow' === this._mode ? '/subflow' : '';
-        this._router?.navigate(`/subflow-b${additional}`);
+        void this._router?.navigate(`/subflow-b${additional}`);
     }
 
     private onButton2(event: UIEvent): void {
         console.log(`onButton2(${event.type})`);
-        this._router?.beginSubFlow('/subflow-a/subflow', {}, { transition: 'slide-up' });
+        void this._router?.beginSubFlow('/subflow-a/subflow', {}, { transition: 'slide-up' });
     }
 
     private onButton3(event: UIEvent): void {
         console.log(`onButton3(${event.type})`);
-        this._router?.beginSubFlow(
+        void this._router?.beginSubFlow(
             '/subflow-a/subflow',
             {
                 base: '/subflow-a',
@@ -102,7 +102,7 @@ class PageSubFlowA extends PageView {
 
     private onButton4(event: UIEvent): void {
         console.log(`onButton4(${event.type})`);
-        this._router?.beginSubFlow(
+        void this._router?.beginSubFlow(
             '/subflow-a/subflow',
             {
                 base: '/view',

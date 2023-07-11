@@ -18,9 +18,9 @@ entry('PAGE_CONTEXT_TEMPLATE_STAMPINO_BRIDGE');
 
 const prepareTemplate = async (): Promise<CompiledTemplate> => {
     const stampino = TemplateBridge.getBuitinTransformer('stampino');
-    const content =  toTemplateElement(
+    const content = toTemplateElement(
         await loadTemplateSource('#template-stampino-bridge-content', { url: toUrl('/tpl/variations.tpl') })
-    ) as HTMLTemplateElement;
+    )!;
     $(content).localize();
     return TemplateBridge.compile(content.innerHTML, { transformer: stampino });
 };

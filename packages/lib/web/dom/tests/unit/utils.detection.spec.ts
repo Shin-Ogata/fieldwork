@@ -10,7 +10,7 @@ import {
 } from './tools';
 
 describe('dom/utils detection spec', () => {
-    const { detectify, undetectify } = $.utils;
+    const { detectify, undetectify } = $.utils; // eslint-disable-line @typescript-eslint/unbound-method
 
     const testee = $.utils.elementify.bind($.utils);
     let count: number;

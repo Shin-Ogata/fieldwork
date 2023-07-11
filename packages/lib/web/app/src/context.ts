@@ -247,7 +247,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
     constructor(options: AppContextOptions) {
         super();
         const { main, window: win } = options;
-        this._window = win || window;
+        this._window = win ?? window;
         this._router = createRouter(main as string, options);
         void this.initialize(options);
     }
@@ -304,7 +304,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
             waitDocumentEventReady(_window.document, documentEventReady),
         ]);
 
-        _window.document.addEventListener(documentEventBackButton as string, this.onHandleBackKey.bind(this));
+        _window.document.addEventListener(documentEventBackButton!, this.onHandleBackKey.bind(this));
         _window.addEventListener('orientationchange', this.onHandleOrientationChanged.bind(this));
 
         this._router.on('loaded', this.onPageLoaded.bind(this));

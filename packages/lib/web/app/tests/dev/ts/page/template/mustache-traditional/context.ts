@@ -14,9 +14,9 @@ import { Props } from '../props';
 entry('PAGE_CONTEXT_TEMPLATE_MUSTACHE_TRADITIONAL');
 
 const prepareTemplate = async (): Promise<JST> => {
-    const content =  toTemplateElement(
+    const content = toTemplateElement(
         await loadTemplateSource('#template-mustache-traditional-content', { url: toUrl('/tpl/variations.tpl') })
-    ) as HTMLTemplateElement;
+    )!;
     $(content).localize();
     return TemplateEngine.compile(content.innerHTML);
 };

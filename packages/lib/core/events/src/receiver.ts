@@ -31,8 +31,8 @@ function register(context: Context, target: Subscribable, channel: string | stri
         context.set.add(s);
         subscriptions.push(s);
 
-        const listenerMap = context.map.get(target) || new Map<string, Map<UnknownFunction, Subscription>>();
-        const map = listenerMap.get(ch) || new Map<UnknownFunction, Subscription>();
+        const listenerMap = context.map.get(target) ?? new Map<string, Map<UnknownFunction, Subscription>>();
+        const map = listenerMap.get(ch) ?? new Map<UnknownFunction, Subscription>();
         map.set(listener, s);
 
         if (!listenerMap.has(ch)) {

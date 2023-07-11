@@ -91,13 +91,13 @@ class RouterPageView extends PageView {
 
     private onBack(event: UIEvent): void {
         console.log(`onBack(${event.type})`);
-        this._router?.back();
+        void this._router?.back();
     }
 
     private onNavigateTo(event: UIEvent): void {
         const to = $(event.currentTarget as HTMLElement).data('navigate-to') as string;
         console.log(`onNavigateTo('${to}')`);
-        this._router?.navigate(to);
+        void this._router?.navigate(to);
     }
 }
 

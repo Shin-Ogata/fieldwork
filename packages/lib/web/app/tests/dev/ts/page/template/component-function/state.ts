@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/no-non-null-assertion,
- */
-
 import {
     TemplateResult,
     html,
@@ -13,7 +9,7 @@ import { i18nKey } from '../../../types';
 const { useState } = hooks;
 
 export const State = ({ initVal }: { initVal?: number; } = {}): TemplateResult => {
-    const [count, setCount] = useState(initVal || 0);
+    const [count, setCount] = useState(initVal ?? 0);
     return html`
         <fieldset class="template-control-group">
             <p>${t(i18nKey.app.template.content.state.label)}${ count }</p>

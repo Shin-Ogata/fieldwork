@@ -6,18 +6,26 @@ module.exports = {
     extends: [
         './eslint.js',
         'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'plugin:@typescript-eslint/recommended-type-checked',
+        'plugin:@typescript-eslint/stylistic-type-checked',
     ],
     plugins: [
         '@typescript-eslint',
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        project: resolve(process.cwd(), 'tsconfig.json'),
+        project: [
+            resolve(process.cwd(), 'tsconfig.json'),
+            resolve(process.cwd(), './tests/tsconfig.json'),
+            resolve(process.cwd(), './tests/dev/tsconfig.json'),
+        ],
         createDefaultProgram: true,
     },
     rules: {
+        ////////////////////////////////////////////////////////
+        // added rules
+        ////////////////////////////////////////////////////////
+
         '@typescript-eslint/indent': [
             'error',
             4,
@@ -26,7 +34,6 @@ module.exports = {
                 ignoreComments: true,
             },
         ],
-        '@typescript-eslint/await-thenable': 'error',
         '@typescript-eslint/func-call-spacing': 'error',
         '@typescript-eslint/member-naming': [
             'off',
@@ -35,16 +42,6 @@ module.exports = {
             },
         ],
         '@typescript-eslint/no-require-imports': 'error',
-        '@typescript-eslint/no-this-alias': [
-            'error',
-            {
-                allowDestructuring: true,
-                allowedNames: [
-                    'self',
-                ],
-            },
-        ],
-        '@typescript-eslint/consistent-type-assertions': 'error',
         '@typescript-eslint/unified-signatures': 'error',
         '@typescript-eslint/explicit-function-return-type': [
             'error',
@@ -82,6 +79,30 @@ module.exports = {
                 classes: false,
             },
         ],
+        '@typescript-eslint/require-array-sort-compare': [
+            'warn',
+            {
+                ignoreStringArrays: true,
+            },
+        ],
+        '@typescript-eslint/no-unnecessary-qualifier': 'warn',
+        '@typescript-eslint/no-useless-constructor': 'warn',
+        '@typescript-eslint/prefer-includes': 'warn',
+        '@typescript-eslint/prefer-regexp-exec': 'warn',
+
+        ////////////////////////////////////////////////////////
+        // patch: @typescript-eslint/recommended-type-checked
+        ////////////////////////////////////////////////////////
+
+        '@typescript-eslint/no-this-alias': [
+            'error',
+            {
+                allowDestructuring: true,
+                allowedNames: [
+                    'self',
+                ],
+            },
+        ],
         '@typescript-eslint/unbound-method': [
             'error',
             {
@@ -112,28 +133,28 @@ module.exports = {
                 allowNullish: true,
             },
         ],
-        '@typescript-eslint/require-array-sort-compare': [
-            'warn',
-            {
-                ignoreStringArrays: true,
-            },
-        ],
         '@typescript-eslint/no-for-in-array': 'warn',
-        '@typescript-eslint/no-unnecessary-qualifier': 'warn',
-        '@typescript-eslint/no-useless-constructor': 'warn',
-        '@typescript-eslint/prefer-for-of': 'warn',
-        '@typescript-eslint/prefer-includes': 'warn',
-        '@typescript-eslint/prefer-string-starts-ends-with': 'warn',
-        '@typescript-eslint/prefer-regexp-exec': 'warn',
         '@typescript-eslint/restrict-plus-operands': 'warn',
-        '@typescript-eslint/interface-name-prefix': 'off',
-        // related `@typescript-eslint/no-explicit-any`. continue consideration to validate the following props.
-        // v3.0+
+        // v3.0+: related `@typescript-eslint/no-explicit-any`. continue consideration to validate the following props.
         '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         // v5.0+
         '@typescript-eslint/no-unsafe-argument': 'off',
+        // v6.0+
+        '@typescript-eslint/no-base-to-string': 'off',
+        '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+
+        ////////////////////////////////////////////////////////
+        // patch: @typescript-eslint/stylistic-type-checked
+        ////////////////////////////////////////////////////////
+
+        '@typescript-eslint/prefer-for-of': 'warn',
+        '@typescript-eslint/prefer-string-starts-ends-with': 'warn',
+        '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
+        '@typescript-eslint/prefer-optional-chain': 'warn',
+        // prefer true read-only
+        '@typescript-eslint/class-literal-property-style': 'off',
     },
 };
