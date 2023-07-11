@@ -58,7 +58,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
             return;
         }
 
-        const { silent } = options || {};
+        const { silent } = options ?? {};
 
         const oldState = this.state;
         this.setIndex(0);
@@ -134,7 +134,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         try {
             // if given 0, just reload.
             const oldState = delta ? this.state : undefined;
-            const newState = this._stack.distance(delta || 0);
+            const newState = this._stack.distance(delta ?? 0);
             const df = new Deferred();
             void post(() => {
                 void this.onChangeState('seek', df, newState, oldState);
@@ -173,7 +173,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
      *  - `ja` 状態管理用オプションを指定
      */
     push(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
-        return this.updateState('push', id, state, options || {});
+        return this.updateState('push', id, state, options ?? {});
     }
 
     /**
@@ -191,7 +191,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
      *  - `ja` 状態管理用オプションを指定
      */
     replace(id: string, state?: T, options?: HistorySetStateOptions): Promise<number> {
-        return this.updateState('replace', id, state, options || {});
+        return this.updateState('replace', id, state, options ?? {});
     }
 
     /**
@@ -215,7 +215,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
      * @ja 起点, 終点の ID から終点のスタック情報を返却
      */
     direct(toId: string, fromId?: string): HistoryDirectReturnType<T> {
-        return this._stack.direct(toId, fromId as string);
+        return this._stack.direct(toId, fromId);
     }
 
 ///////////////////////////////////////////////////////////////////////

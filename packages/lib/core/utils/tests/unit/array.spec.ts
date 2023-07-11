@@ -1,6 +1,7 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
     @typescript-eslint/require-await,
+    @typescript-eslint/dot-notation,
  */
 
 import {
@@ -278,7 +279,7 @@ describe('utils/array spec', () => {
     it('check combination() example', () => {
         const type = 'click.bb.aa.cc';
         const namespaces = type.split('.');
-        const main = namespaces.shift() as string;
+        const main = namespaces.shift()!;
         namespaces.sort();
 
         const store: string[][] = [];
@@ -414,7 +415,7 @@ describe('utils/array spec', () => {
         expect(result).toBe(15);
 
         // sync callback
-        result = await reduce(array, (a, v) => a + v, 2); // eslint-disable-line
+        result = await reduce(array, (a, v) => a + v, 2);
         expect(result).toBe(17);
 
         // error

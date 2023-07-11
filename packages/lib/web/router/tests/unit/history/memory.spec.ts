@@ -449,7 +449,7 @@ describe('router/history/memory spec', () => {
             promises.push(df);
         };
 
-        const instance = await preparePackedHistory();
+        const instance = await preparePackedHistory(); // eslint-disable-line @typescript-eslint/await-thenable
         await instance.go(-2);
         expect(instance.id).toBe('three');
 

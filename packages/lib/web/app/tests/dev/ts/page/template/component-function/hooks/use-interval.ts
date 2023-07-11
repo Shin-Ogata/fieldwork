@@ -17,7 +17,7 @@ export const  useInterval = (
             if (intervalState) {
                 const intervalId = setInterval(
                     () => {
-                        callback && callback(intervalState);
+                        callback?.(intervalState);
                     },
                     duration,
                 );
@@ -28,7 +28,7 @@ export const  useInterval = (
                     }
                 };
             } else {
-                callback && callback(intervalState);
+                callback?.(intervalState);
             }
         }
     );

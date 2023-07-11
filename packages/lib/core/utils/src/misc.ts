@@ -70,7 +70,7 @@ export function sleep(elapse: number): Promise<void> {
  * @param options
  */
 export function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
-    const opts = options || {};
+    const opts = options ?? {};
     let handle: TimerHandle | undefined;
     let args: unknown[] | undefined;
     let context: unknown, result: unknown;
@@ -111,7 +111,7 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
     };
 
     throttled.cancel = function (): void {
-        clearTimeout(handle as TimerHandle);
+        clearTimeout(handle!);
         previous = 0;
         handle = context = args = undefined;
     };
@@ -162,7 +162,7 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, i
     };
 
     debounced.cancel = function (): void {
-        clearTimeout(handle as TimerHandle);
+        clearTimeout(handle!);
         handle = undefined;
     };
 
@@ -179,7 +179,7 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, i
  *  - `ja` 対象の関数
  */
 export function once<T extends UnknownFunction>(executor: T): T {
-    /* eslint-disable no-invalid-this, @typescript-eslint/no-non-null-assertion */
+    /* eslint-disable no-invalid-this */
     let memo: unknown;
     return function (this: unknown, ...args: unknown[]): unknown {
         if (executor) {
@@ -188,7 +188,7 @@ export function once<T extends UnknownFunction>(executor: T): T {
         }
         return memo;
     } as T;
-    /* eslint-enable no-invalid-this, @typescript-eslint/no-non-null-assertion */
+    /* eslint-enable no-invalid-this */
 }
 
 /**
@@ -344,7 +344,7 @@ export function fromTypedData(data: TypedData | undefined): string | undefined {
  *     `undefined` を返却しないことを保証
  */
 export function dropUndefined<T>(value: T | null | undefined, nullishSerialize = false): T | 'null' | 'undefined' | null {
-    return null != value ? value : (nullishSerialize ? String(value) : null) as T | 'null' | 'undefined' | null;
+    return value ?? (nullishSerialize ? String(value) : null) as T | 'null' | 'undefined' | null;
 }
 
 /**

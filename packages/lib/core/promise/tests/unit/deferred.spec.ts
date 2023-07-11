@@ -32,7 +32,7 @@ describe('promise/deferred spec', () => {
 
     it('check cancelToken', async () => {
         try {
-            const { cancel, token } = CancelToken.source();
+            const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
             cancel(new Error('cancel'));
             const df = new Deferred(token);
             await df;

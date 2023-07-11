@@ -14,9 +14,7 @@ export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown,
  * @en Interface definition for custom hooks.
  * @ja カスタムフックのインターフェイス定義
  */
-export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
-    new (id: number, state: IHookState<H>, ...args: P): Hook<P, R, H>;
-}
+export type CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> = new (id: number, state: IHookState<H>, ...args: P) => Hook<P, R, H>;
 /**
  * @en Factory function for creating custom hooks.
  * @ja カスタムフック作成用ファクトリ関数

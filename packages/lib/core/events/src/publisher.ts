@@ -39,7 +39,7 @@ function validChannel(channel: unknown): void | never {
 }
 
 /** @internal Listener の型検証 */
-function validListener(listener?: (...args: unknown[]) => unknown): any | never {
+function validListener(listener?: (...args: unknown[]) => unknown): any {
     if (null != listener) {
         verify('typeOf', 'function', listener);
     }
@@ -201,7 +201,7 @@ export abstract class EventPublisher<Event extends object> implements Subscribab
         const channels = isArray(channel) ? channel : [channel];
         for (const ch of channels) {
             validChannel(ch);
-            map.has(ch) ? map.get(ch)!.add(listener) : map.set(ch, new Set([listener])); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+            map.has(ch) ? map.get(ch)!.add(listener) : map.set(ch, new Set([listener]));
         }
 
         return Object.freeze({

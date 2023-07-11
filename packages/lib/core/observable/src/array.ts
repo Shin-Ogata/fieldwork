@@ -187,7 +187,7 @@ function findRelatedChangeIndex<T>(records: MutableChangeRecord<T>[], type: Arra
  * }
  * ```
  */
-export class ObservableArray<T = unknown> extends Array<T> implements IObservable {
+export class ObservableArray<T = unknown> extends Array<T> implements IObservable { // eslint-disable-line @typescript-eslint/no-unsafe-declaration-merging
     /** @internal */
     private readonly [_internal]!: InternalProps<T>;
 

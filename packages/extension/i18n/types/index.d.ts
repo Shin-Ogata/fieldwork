@@ -8,12 +8,8 @@ declare namespace i18n {
     type ReactOptions = i18nextReactOptions;
     type InitOptions = i18nextInitOptions;
     type TOptionsBase = i18nextTOptionsBase;
-    type TOptions<T extends Record<string, unknown> = {
-        [key: string]: any;
-    }> = i18nextTOptions<T>;
-    type ExistsFunction<K extends string = string, T extends Record<string, unknown> = {
-        [key: string]: any;
-    }> = i18nextExistsFunction<K, T>;
+    type TOptions<T extends Record<string, unknown> = Record<string, any>> = i18nextTOptions<T>;
+    type ExistsFunction<K extends string = string, T extends Record<string, unknown> = Record<string, any>> = i18nextExistsFunction<K, T>;
     type WithT = i18nextWithT;
     type TFunction = i18nextTFunction;
     type Resource = i18nextResource;

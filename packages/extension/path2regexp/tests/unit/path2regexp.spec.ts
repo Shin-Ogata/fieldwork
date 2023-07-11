@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/array-type,
  */
 
 import { path2regexp } from '@cdp/extension-path2regexp';
@@ -2912,7 +2913,7 @@ describe('extention-path2regexp spec', () => {
 
                                 if ('string' === typeof path && params !== undefined) {
                                     const match = path2regexp.match(path, options);
-                                    it(`message ${params}`, () => {
+                                    it(`message ${params}`, () => { // eslint-disable-line @typescript-eslint/restrict-template-expressions
                                         expect(match(pathname)).toEqual(params);
                                     });
                                 }

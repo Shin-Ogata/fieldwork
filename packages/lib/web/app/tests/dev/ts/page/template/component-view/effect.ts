@@ -10,9 +10,9 @@ import { ViewEventsHash } from '@cdp/view';
 import { ComponentViewBase } from './base';
 
 const prepareTemplate = async (): Promise<JST> => {
-    const content =  toTemplateElement(
+    const content = toTemplateElement(
         await loadTemplateSource('#template-component-view-effect', { url: toUrl('/tpl/variations.tpl') })
-    ) as HTMLTemplateElement;
+    )!;
     $(content).localize();
     return TemplateEngine.compile(content.innerHTML);
 };

@@ -22,7 +22,7 @@ export function createTestElementsFromTemplate(): HTMLElement[] {
 }
 
 function prepareTestElements(divs?: HTMLElement[]): HTMLElement[] {
-    divs = divs || createTestElementsFromTemplate();
+    divs = divs ?? createTestElementsFromTemplate();
 
     const fragment = document.createDocumentFragment();
     for (const div of divs) {
@@ -36,7 +36,7 @@ function prepareTestElements(divs?: HTMLElement[]): HTMLElement[] {
 export function prepareIFrameElements(): Promise<HTMLIFrameElement> {
     return new Promise((resolve) => {
         const divs = prepareTestElements();
-        const iframe = divs[0].querySelector('#test-frame') as HTMLIFrameElement;
+        const iframe = divs[0].querySelector('#test-frame') as HTMLIFrameElement; // eslint-disable-line @typescript-eslint/non-nullable-type-assertion-style
         const onFrameDOMContentLoaded = (): void => {
             resolve(iframe);
         };

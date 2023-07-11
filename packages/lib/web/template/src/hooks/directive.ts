@@ -65,7 +65,7 @@ class HookDirective extends AsyncDirective {
         const { _$parent } = this as unknown as Disconnectable;
         this._elObserved = _$parent?.parentNode;
         if (this._elObserved) {
-            $.utils.detectify(this._elObserved, elRoot as Node);
+            $.utils.detectify(this._elObserved, elRoot!);
             this._elObserved.addEventListener('disconnected', this._disconnectedHandler = this.disconnected.bind(this));
         }
     }

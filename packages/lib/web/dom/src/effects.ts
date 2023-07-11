@@ -87,7 +87,7 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
         for (const el of this) {
             if (isNodeElement(el)) {
                 const anim = el.animate(params, options);
-                const context = _animContextMap.get(el) || new Set();
+                const context = _animContextMap.get(el) ?? new Set();
                 context.add(anim);
                 _animContextMap.set(el, context);
                 result.animations.set(el as Node as TElement, anim);

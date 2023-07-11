@@ -107,11 +107,11 @@ function execScroll(el: HTMLElement | SVGElement, options: DOMScrollOptions): vo
     if (!duration) {
         let notify = false;
         if (enableTop && top !== initialTop) {
-            el.scrollTop = top as number;
+            el.scrollTop = top!;
             notify = true;
         }
         if (enableLeft && left !== initialLeft) {
-            el.scrollLeft = left as number;
+            el.scrollLeft = left!;
             notify = true;
         }
         if (notify && isFunction(callback)) {
@@ -129,8 +129,8 @@ function execScroll(el: HTMLElement | SVGElement, options: DOMScrollOptions): vo
         return { max: maxValue, new: newValue, initial: initialValue };
     };
 
-    const metricsTop = calcMetrics(enableTop, top as number, initialTop, 'height');
-    const metricsLeft = calcMetrics(enableLeft, left as number, initialLeft, 'width');
+    const metricsTop = calcMetrics(enableTop, top!, initialTop, 'height');
+    const metricsLeft = calcMetrics(enableLeft, left!, initialLeft, 'width');
 
     if (enableTop && metricsTop.new === metricsTop.initial) {
         enableTop = false;
@@ -180,7 +180,7 @@ function execScroll(el: HTMLElement | SVGElement, options: DOMScrollOptions): vo
                 callback();
             }
             // release reference immediately.
-            el = null!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+            el = null!;
             return;
         }
 

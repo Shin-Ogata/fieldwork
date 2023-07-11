@@ -184,7 +184,7 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
     pageCloned(info: RouteChangeInfo): void | Promise<void> {
         const { to, from } = info;
         this[_properties].route = to;
-        return this.onPageCloned(to, from as Route);
+        return this.onPageCloned(to, from!);
     }
 
     /**
@@ -216,8 +216,8 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      */
     pageBeforeLeave(info: RouteChangeInfo): void | Promise<void> {
         const { to, from, direction, intent } = info;
-        this[_properties].route = from as Route;
-        return this.onPageBeforeLeave(from as Route, to, direction, intent);
+        this[_properties].route = from!;
+        return this.onPageBeforeLeave(from!, to, direction, intent);
     }
 
     /**
@@ -227,8 +227,8 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
      */
     pageAfterLeave(info: RouteChangeInfo): void | Promise<void> {
         const { to, from, direction, intent } = info;
-        this[_properties].route = from as Route;
-        return this.onPageAfterLeave(from as Route, to, direction, intent);
+        this[_properties].route = from!;
+        return this.onPageAfterLeave(from!, to, direction, intent);
     }
 
     /**

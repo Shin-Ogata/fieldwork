@@ -13,10 +13,6 @@ export interface State {
     inputText: string;
 }
 
-export interface RenderAppContext {
-    (): TemplateResult;
-}
+export type RenderAppContext = () => TemplateResult;
 
-export interface Store {
-    (update?: Partial<State>): State;
-}
+export type Store = (update?: Partial<State>) => State;

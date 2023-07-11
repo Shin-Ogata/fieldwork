@@ -75,8 +75,8 @@ const stopAll = (): void => {
 
 /** @internal */
 export const detectify = <T extends Node>(node: T, observed?: Node): T => {
-    const observedNode = observed || (node.ownerDocument?.body && node.ownerDocument) || document;
-    const context = _observerMap.get(observedNode) || start(observedNode);
+    const observedNode = observed ?? (node.ownerDocument?.body && node.ownerDocument) ?? document;
+    const context = _observerMap.get(observedNode) ?? start(observedNode);
     context.targets.add(node);
     return node;
 };
@@ -88,7 +88,7 @@ export const undetectify = <T extends Node>(node?: T): void => {
     } else {
         const observedNode = queryObservedNode(node);
         if (observedNode) {
-            const context = _observerMap.get(observedNode) as ObserverContext;
+            const context = _observerMap.get(observedNode)!;
             context.targets.delete(node);
             if (!context.targets.size) {
                 context.observer.disconnect();

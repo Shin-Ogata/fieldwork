@@ -51,7 +51,7 @@ class PageSubFlowB extends PageView {
 
     protected onPageBeforeEnter(thisPage: Route): void {
         console.log(`${thisPage.url}: before-enter`);
-        this._mode = (thisPage.params['mode'] || 'normal') as 'normal' | 'subflow';
+        this._mode = (thisPage.params['mode'] ?? 'normal') as 'normal' | 'subflow'; // eslint-disable-line @typescript-eslint/dot-notation
         this.render();
     }
 
@@ -81,20 +81,20 @@ class PageSubFlowB extends PageView {
     private onButton1(event: UIEvent): void {
         console.log(`onButton1(${event.type})`);
         if ('subflow' === this._mode) {
-            this._router?.commitSubFlow(this.commitOptions);
+            void this._router?.commitSubFlow(this.commitOptions);
         } else {
-            this._router?.beginSubFlow('/subflow-a/subflow', { base: '/subflow-a' }, { transition: 'slide-up' });
+            void this._router?.beginSubFlow('/subflow-a/subflow', { base: '/subflow-a' }, { transition: 'slide-up' });
         }
     }
 
     private onButton2(event: UIEvent): void {
         console.log(`onButton2(${event.type})`);
-        this._router?.beginSubFlow('/subflow-a/subflow', {}, { transition: 'slide-up' });
+        void this._router?.beginSubFlow('/subflow-a/subflow', {}, { transition: 'slide-up' });
     }
 
     private onButton3(event: UIEvent): void {
         console.log(`onButton3(${event.type})`);
-        this._router?.beginSubFlow(
+        void this._router?.beginSubFlow(
             '/subflow-a/subflow',
             {
                 base: '/view',
@@ -128,7 +128,7 @@ class PageSubFlowB extends PageView {
     private get commitOptions(): PageTransitionParams {
         switch (this.querySubFlowDestination()) {
             case '/subflow-c': {
-                const { default: transition } = this._router?.transitionSettings() || {};
+                const { default: transition } = this._router?.transitionSettings() ?? {};
                 return { transition, reverse: true };
             }
             default:

@@ -21,9 +21,9 @@ describe('promise/promise-manager spec', () => {
 
     it('check PromiseManager#promises', () => {
         const manager = new PromiseManager();
-        manager.add(resolve100());
-        manager.add(resolve50());
-        manager.add(resolve0());
+        void manager.add(resolve100());
+        void manager.add(resolve50());
+        void manager.add(resolve0());
 
         expect(manager.promises().length).toBe(3);
         manager.release();
@@ -34,9 +34,9 @@ describe('promise/promise-manager spec', () => {
         const manager = new PromiseManager();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(resolve0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(resolve0());
 
             const results = await manager.all();
 
@@ -50,9 +50,9 @@ describe('promise/promise-manager spec', () => {
         manager.release();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(reject0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(reject0());
 
             await manager.all();
 
@@ -77,9 +77,9 @@ describe('promise/promise-manager spec', () => {
         const manager = new PromiseManager();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(resolve0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(resolve0());
 
             const result = await manager.race();
 
@@ -91,9 +91,9 @@ describe('promise/promise-manager spec', () => {
         manager.release();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(reject0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(reject0());
 
             await manager.race();
 
@@ -107,12 +107,12 @@ describe('promise/promise-manager spec', () => {
         const manager = new PromiseManager();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(resolve0());
-            manager.add(reject100());
-            manager.add(reject50());
-            manager.add(reject0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(resolve0());
+            void manager.add(reject100());
+            void manager.add(reject50());
+            void manager.add(reject0());
 
             const results = await manager.wait();
 
@@ -132,12 +132,12 @@ describe('promise/promise-manager spec', () => {
         const manager = new PromiseManager();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(resolve0());
-            manager.add(reject100());
-            manager.add(reject50());
-            manager.add(reject0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(resolve0());
+            void manager.add(reject100());
+            void manager.add(reject50());
+            void manager.add(reject0());
 
             const results = await manager.allSettled();
 
@@ -166,10 +166,10 @@ describe('promise/promise-manager spec', () => {
         const manager = new PromiseManager();
 
         try {
-            manager.add(resolve100());
-            manager.add(resolve50());
-            manager.add(reject50());
-            manager.add(reject0());
+            void manager.add(resolve100());
+            void manager.add(resolve50());
+            void manager.add(reject50());
+            void manager.add(reject0());
 
             const result = await manager.any();
             expect(result).toBe('resolve:50');
@@ -182,8 +182,8 @@ describe('promise/promise-manager spec', () => {
         const manager = new PromiseManager();
 
         try {
-            manager.add(reject50());
-            manager.add(reject0());
+            void manager.add(reject50());
+            void manager.add(reject0());
 
             await manager.any();
             fail('UNEXPECTED FLOW');
@@ -201,9 +201,9 @@ describe('promise/promise-manager spec', () => {
 
             const promise1 = resolve100(s1.token);
             const promise2 = resolve50(s2.token);
-            manager.add(promise1, s1);
-            manager.add(promise2, s2);
-            manager.add(reject50());
+            void manager.add(promise1, s1);
+            void manager.add(promise2, s2);
+            void manager.add(reject50());
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const results = await manager.abort() as any[];
@@ -236,7 +236,7 @@ describe('promise/promise-manager spec', () => {
             const source = CancelToken.source();
             const promise = resolve50(source.token);
 
-            manager.add(promise, source);
+            void manager.add(promise, source);
 
             const results = await manager.abort('cancel');
 

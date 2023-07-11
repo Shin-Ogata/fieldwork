@@ -262,7 +262,7 @@ describe('storage/attributes spec', () => {
 
         // 変換して取り出す
         const blob = await _storage.getItem('bin', { dataType: 'blob' });
-        expect(await blobToBase64(blob as Blob)).toBe(base64);
+        expect(await blobToBase64(blob!)).toBe(base64);
         const buff = await _storage.getItem('bin', { dataType: 'buffer' });
         expect(deepEqual(buff, base64ToBuffer(base64))).toBe(true);
         const bin = await _storage.getItem('bin', { dataType: 'binary' });

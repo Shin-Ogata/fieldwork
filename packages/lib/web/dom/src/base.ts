@@ -79,7 +79,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
                 } else {
                     return {
                         done: true,
-                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        value: undefined!,
                     };
                 }
             },
@@ -130,7 +130,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
                 } else {
                     return {
                         done: true,
-                        value: undefined!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                        value: undefined!,
                     };
                 }
             },

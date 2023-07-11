@@ -31,7 +31,7 @@ class DevStateComponent extends ComponentElement {
 
     protected onComponentInit(): void {
         console.log(`onComponentInit(${this.getAttribute('name')})`);
-        this._state = { count: Number(this.getAttribute('val') || 0) };
+        this._state = { count: Number(this.getAttribute('val') ?? 0) };
         this.render();
     }
 

@@ -34,7 +34,7 @@ export class Writer implements TemplateWriter {
      * that is generated from the parse.
      */
     parse(template: string, tags?: TemplateDelimiters): { tokens: Token[]; cacheKey: string; } {
-        const cacheKey = buildCacheKey(template, tags || globalSettings.tags);
+        const cacheKey = buildCacheKey(template, tags ?? globalSettings.tags);
         let tokens = cache[cacheKey] as Token[];
         if (null == tokens) {
             tokens = cache[cacheKey] = parseTemplate(template, tags);
@@ -138,7 +138,7 @@ export class Writer implements TemplateWriter {
             // Extract the portion of the original template that the section contains.
             value = value.call(context.view, originalTemplate.slice(token[$.END], token[$.TAG_INDEX]), subRender);
             if (null != value) {
-                buffer += value;
+                buffer += value as number;
             }
         } else {
             buffer += this.renderTokens(token[$.TOKEN_LIST] as Token[], context, partials, originalTemplate);
@@ -179,7 +179,7 @@ export class Writer implements TemplateWriter {
             const indentation     = token[$.TOKEN_LIST];
             let indentedValue = value;
             if (0 === tagIndex && indentation) {
-                indentedValue = this.indentPartial(value, indentation as string, lineHasNonSpace as boolean);
+                indentedValue = this.indentPartial(value, indentation as string, lineHasNonSpace!);
             }
             const { tokens } = this.parse(indentedValue, tags);
             return this.renderTokens(tokens, context, partials, indentedValue);

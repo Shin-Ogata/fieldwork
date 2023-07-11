@@ -91,7 +91,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
         assignValue(attrs = {}, key, value);
     }
 
-    if (options && options.data) {
+    if (options?.data) {
         attrs = Object.assign(attrs || {}, options.data);
     }
 
@@ -489,7 +489,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
     /** @internal validate */
     private [_validate]<A extends T>(attributes: ModelAttributeInput<A>, options?: ModelSetOptions): Result | never {
-        const { validate, silent, noThrow } = options || {};
+        const { validate, silent, noThrow } = options ?? {};
         if (validate) {
             const attrs = { ...this._attrs, ...attributes };
             const result = this.validateAttributes(attrs, options);
@@ -538,7 +538,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `ja` 属性更新用オプション
      */
     public setAttributes<A extends T>(attributes: ModelAttributeInput<A>, options?: ModelSetOptions): this {
-        const { silent, extend } = options || {};
+        const { silent, extend } = options ?? {};
 
         try {
             if (silent) {
@@ -833,5 +833,5 @@ export function isModel(x: unknown): x is Model {
  * @ja {@link Model} の `id-attribute` を取得
  */
 export function idAttribute(x: unknown, fallback = ''): string {
-    return isObject(x) ? ((x.constructor as any)['idAttribute'] || fallback) : fallback;
+    return isObject(x) ? ((x.constructor as any)['idAttribute'] || fallback) : fallback; // eslint-disable-line @typescript-eslint/dot-notation
 }

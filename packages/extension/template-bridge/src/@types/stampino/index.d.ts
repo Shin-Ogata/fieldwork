@@ -4,22 +4,17 @@ import type { TemplateBridgeArg, TemplateBridgeEndine } from '@bridge/interfaces
  * A TemplateRenderer is responsible for rendering a block call, like
  * <template name="foo">
  */
-export interface TemplateRenderer {
-    (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers): unknown;
-}
+export declare type TemplateRenderer = (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
 
-export interface TemplateRenderers {
-    [name: string]: TemplateRenderer;
-}
+export declare type TemplateRenderers = Record<string, TemplateRenderer>;
+
 /**
  * A TemplateHandlers is responsible for rendering control flow like
  * <template type="if" if="{{x}}">
  */
 export declare type TemplateHandler = (template: HTMLTemplateElement, view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
 
-export interface TemplateHandlers {
-    [name: string]: TemplateHandler;
-}
+export declare type TemplateHandlers = Record<string, TemplateHandler>;
 
 export declare const ifHandler: TemplateHandler;
 export declare const repeatHandler: TemplateHandler;

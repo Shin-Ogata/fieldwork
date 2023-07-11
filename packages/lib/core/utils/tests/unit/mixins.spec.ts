@@ -73,7 +73,6 @@ describe('utils/mixins spec', () => {
             this.super(ClassB, bId, bName);
         }
         public sum(): number {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             return this.aId + this.bId;
         }
     }
@@ -84,7 +83,6 @@ describe('utils/mixins spec', () => {
             this.super(ClassA, aId, aName);
         }
         public sum(): number {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             return this.aId + this.bId;
         }
     }
@@ -95,7 +93,6 @@ describe('utils/mixins spec', () => {
             this.super(ClassD, dId, dName, dAlias);
         }
         public sum(): number {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             return this.aId + this.bId;
         }
     }
@@ -107,7 +104,6 @@ describe('utils/mixins spec', () => {
             this.super(ClassB, bId, bName);
         }
         public sum(): number {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             return this.aId + this.bId + this.cId;
         }
     }
@@ -328,7 +324,6 @@ describe('utils/mixins spec', () => {
                 this.super(ClassE, bId, bName); // 間違った呼び出し (no effect)
             }
             public sum(): number {
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                 return this.aId + this.bId;
             }
         }

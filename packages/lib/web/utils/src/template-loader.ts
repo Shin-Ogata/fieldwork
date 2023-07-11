@@ -8,26 +8,22 @@ interface TemplateProvider {
 }
 
 /** @internal */
-interface TemplateProviderMap {
-    [url: string]: TemplateProvider;
-}
+type TemplateProviderMap = Record<string, TemplateProvider>;
 
 /** @internal */
-interface TemplateSourceMap {
-    [key: string]: string | HTMLTemplateElement;
-}
+type TemplateSourceMap = Record<string, string | HTMLTemplateElement>;
 
 /** @internal */ let _mapProvider: TemplateProviderMap = {};
 /** @internal */ let _mapSource: TemplateSourceMap = {};
 
 /** @internal */
 function queryTemplateSource(selector: string, provider: TemplateProvider | null, noCache: boolean): string | HTMLTemplateElement | undefined {
-    const { fragment, html } = provider || {};
+    const { fragment, html } = provider ?? {};
     const key = `${selector}${html ? `::${html}` : ''}`;
     if (_mapSource[key]) {
         return _mapSource[key];
     }
-    const context = fragment || document;
+    const context = fragment ?? document;
     const target = context.querySelector(selector);
     const source = target instanceof HTMLTemplateElement ? target : target?.innerHTML;
     !noCache && source && (_mapSource[key] = source);

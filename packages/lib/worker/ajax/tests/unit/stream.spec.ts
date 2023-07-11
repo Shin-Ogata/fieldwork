@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/unbound-method,
+ */
+
 import { sleep } from '@cdp/core-utils';
 import {
     AjaxDataStreamEventProgresArg,

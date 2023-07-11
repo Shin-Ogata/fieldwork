@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-unused-vars,
-    @typescript-eslint/no-non-null-assertion,
     @typescript-eslint/explicit-function-return-type,
  */
 

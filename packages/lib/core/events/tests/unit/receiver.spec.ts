@@ -1,4 +1,5 @@
 /* eslint-disable
+    @typescript-eslint/await-thenable,
     @typescript-eslint/no-empty-function,
  */
 

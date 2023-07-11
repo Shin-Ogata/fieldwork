@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/dot-notation,
  */
 
 import { Accessible } from '@cdp/core-utils';
@@ -286,7 +287,7 @@ describe('observable/object spec', () => {
     it('check advanced', () => {
         const model = new Model(1, 1);
         const invalid = {} as any;
-        invalid.suspend = model.suspend;
+        invalid.suspend = model.suspend; // eslint-disable-line @typescript-eslint/unbound-method
         expect(() => {
             invalid.suspend();
         }).toThrow(new TypeError(`The object passed is not an IObservable.`));

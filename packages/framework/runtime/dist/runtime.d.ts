@@ -1186,7 +1186,7 @@ export declare function findIndex<T>(this: unknown, array: T[], callback: (value
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export declare function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean>;
+export declare function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean>;
 /**
  * @en Substitution method of `Array.prototype.every()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.every()` の代替メソッド
@@ -1204,7 +1204,7 @@ export declare function some<T>(this: unknown, array: T[], callback: (value: T, 
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export declare function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean>;
+export declare function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean>;
 /**
  * @en Substitution method of `Array.prototype.reduce()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.reduce()` の代替メソッド
@@ -6263,10 +6263,10 @@ export type TemplateTag = (strings: TemplateStringsArray, ...values: unknown[]) 
 export type TransformDirective = (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult;
 export type TransformTester = (input: string, config: TransformConfig) => boolean;
 export type TransformExecutor = (input: string, config: TransformConfig) => TemplateResult | SVGTemplateResult | undefined;
-export type TransformeContext = {
+export interface TransformeContext {
     test: TransformTester;
     transform: TransformExecutor;
-};
+}
 export interface TransformConfig {
     html: TemplateTag;
     transformVariable: TransformExecutor;
@@ -6290,20 +6290,14 @@ export declare const transformer: {
  * A TemplateRenderer is responsible for rendering a block call, like
  * `<template name='foo'>`
  */
-export interface TemplateRenderer {
-    (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers): unknown;
-}
-export interface TemplateRenderers {
-    [name: string]: TemplateRenderer;
-}
+export declare type TemplateRenderer = (view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
+export declare type TemplateRenderers = Record<string, TemplateRenderer>;
 /**
  * A TemplateHandlers is responsible for rendering control flow like
  * `<template type='if' if='{{x}}'>`
  */
 export declare type TemplateHandler = (template: HTMLTemplateElement, view: TemplateBridgeArg, handlers: TemplateHandlers, renderers: TemplateRenderers) => unknown;
-export interface TemplateHandlers {
-    [name: string]: TemplateHandler;
-}
+export declare type TemplateHandlers = Record<string, TemplateHandler>;
 /**
  * @returns {Function} a template function of the form (view) => TemplateResult
  */
@@ -8227,9 +8221,7 @@ export declare const dom: DOMStatic;
  * @en DOM relation event map hash.
  * @ja DOM イベントに関連付けるハッシュ定義
  */
-export interface ViewEventsHash<TElement extends Node = HTMLElement, TFuncName = string> {
-    [selector: string]: TFuncName | DOMEventListener<TElement>;
-}
+export type ViewEventsHash<TElement extends Node = HTMLElement, TFuncName = string> = Record<string, TFuncName | DOMEventListener<TElement>>;
 /**
  * @en {@link View} construction options.
  * @ja {@link View} 構築に指定するオプション
@@ -8440,7 +8432,7 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      * }
      * ```
      */
-    abstract render(...args: unknown[]): Promise<any | void> | any | void;
+    abstract render(...args: unknown[]): any;
 }
 /**
  * @en Base class definition for view that manages the layout and a DOM events.
@@ -8716,10 +8708,8 @@ export interface I18NOptions extends i18n.InitOptions, I18NDetectErrorBehaviour 
     backend?: i18n.AjaxBackendOptions | PlainObject;
     /** short-cut for backend.loadPath */
     resourcePath?: string;
-    /** fallback resource name mapping */
-    fallbackResources?: {
-        [lng: string]: string;
-    };
+    /** fallback resource name mapping [lng, locale]*/
+    fallbackResources?: Record<string, string>;
     /** dom-localizer options */
     dom?: i18n.DomLocalizerOptions;
 }
@@ -11309,9 +11299,7 @@ export declare abstract class Hook<P extends unknown[] = unknown[], R = unknown,
  * @en Interface definition for custom hooks.
  * @ja カスタムフックのインターフェイス定義
  */
-export interface CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> {
-    new (id: number, state: IHookState<H>, ...args: P): Hook<P, R, H>;
-}
+export type CustomHook<P extends unknown[] = unknown[], R = unknown, H = unknown> = new (id: number, state: IHookState<H>, ...args: P) => Hook<P, R, H>;
 /**
  * @en Factory function for creating custom hooks.
  * @ja カスタムフック作成用ファクトリ関数
@@ -12865,9 +12853,7 @@ declare namespace CDP_DECLARE {
      * @en Access to error message map.
      * @ja エラーメッセージマップの取得
      */
-    function ERROR_MESSAGE_MAP(): {
-        [code: string]: string;
-    };
+    function ERROR_MESSAGE_MAP(): Record<string, string>;
     /**
      * @en Generate success code.
      * @ja 成功コードを生成

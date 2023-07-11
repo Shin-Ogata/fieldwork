@@ -64,11 +64,11 @@ export class TemplateEngine implements ITemplateEngine {
             throw new TypeError(`Invalid template! the first argument should be a "string" but "${typeString(template)}" was given for TemplateEngine.compile(template, options)`);
         }
 
-        const { tags } = options || globalSettings;
+        const { tags } = options ?? globalSettings;
         const { writer } = globalSettings;
 
         const jst = (view?: PlainObject, partials?: PlainObject): string => {
-            return writer.render(template, view || {}, partials, tags);
+            return writer.render(template, view ?? {}, partials, tags);
         };
 
         const { tokens, cacheKey } = writer.parse(template, tags);

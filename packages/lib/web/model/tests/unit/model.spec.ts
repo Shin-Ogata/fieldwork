@@ -1,10 +1,10 @@
 /*
  eslint-disable
-    @typescript-eslint/no-explicit-any
- ,  @typescript-eslint/no-empty-function
- ,  @typescript-eslint/no-useless-constructor
- ,  @typescript-eslint/require-await
- ,  @typescript-eslint/await-thenable
+    @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-useless-constructor,
+    @typescript-eslint/require-await,
+    @typescript-eslint/await-thenable,
+    @typescript-eslint/no-empty-function,
  */
 
 import {
@@ -901,8 +901,8 @@ describe('model/model spec', () => {
 
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
 
-        const entries = JSON.parse(localStorage.getItem('test') as string);
-        const data = JSON.parse(localStorage.getItem(`test::${entries[0]}`) as string);
+        const entries = JSON.parse(localStorage.getItem('test')!);
+        const data = JSON.parse(localStorage.getItem(`test::${entries[0]}`)!);
         expect(data.uri).toBe('aaa.html');
         expect(data.size).toBe(10);
         expect(content.cookie).toBe('from:save');
@@ -924,8 +924,8 @@ describe('model/model spec', () => {
 
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
 
-        const entries = JSON.parse(localStorage.getItem('test') as string);
-        const data = JSON.parse(localStorage.getItem(`test::${entries[0]}`) as string);
+        const entries = JSON.parse(localStorage.getItem('test')!);
+        const data = JSON.parse(localStorage.getItem(`test::${entries[0]}`)!);
         expect(data.uri).toBe('aaa.html');
         expect(data.size).toBe(10);
         expect(content.cookie?.startsWith('test:')).toBe(true);
@@ -947,8 +947,8 @@ describe('model/model spec', () => {
 
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
 
-        const entries = JSON.parse(localStorage.getItem('test') as string);
-        const data = JSON.parse(localStorage.getItem(`test::${entries[0]}`) as string);
+        const entries = JSON.parse(localStorage.getItem('test')!);
+        const data = JSON.parse(localStorage.getItem(`test::${entries[0]}`)!);
         expect(data.uri).toBe('bbb.html');
         expect(data.size).toBe(10);
         expect(content.cookie).toBe('from:save');
@@ -970,8 +970,8 @@ describe('model/model spec', () => {
 
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
 
-        const ids  = JSON.parse(localStorage.getItem('test') as string);
-        const data = JSON.parse(localStorage.getItem('test::from:constructor') as string);
+        const ids  = JSON.parse(localStorage.getItem('test')!);
+        const data = JSON.parse(localStorage.getItem('test::from:constructor')!);
         expect(ids).toEqual(['from:constructor']);
         expect(data.uri).toBe('bbb.html');
         expect(data.size).toBe(10);
@@ -994,8 +994,8 @@ describe('model/model spec', () => {
 
         expect(stub.onCallback).toHaveBeenCalledWith(content, resp, jasmine.anything());
 
-        const ids  = JSON.parse(localStorage.getItem('test') as string);
-        const data = JSON.parse(localStorage.getItem('test::from:constructor') as string);
+        const ids  = JSON.parse(localStorage.getItem('test')!);
+        const data = JSON.parse(localStorage.getItem('test::from:constructor')!);
         expect(ids).toEqual(['from:constructor']);
         expect(data.uri).toBe('bbb.html');
         expect(data.size).toBe(10);

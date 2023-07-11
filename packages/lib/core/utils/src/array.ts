@@ -193,8 +193,8 @@ export function groupBy<
     TGROUPKEY extends string = 'items'
 >(array: T[], options: GroupByOptions<T, TKEYS, TSUMKEYS, TGROUPKEY>): GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[] {
     const { keys, sumKeys, groupKey } = options;
-    const _groupKey = groupKey || 'items';
-    const _sumKeys: string[] = sumKeys || [];
+    const _groupKey = groupKey ?? 'items';
+    const _sumKeys: string[] = sumKeys ?? [];
     _sumKeys.push(_groupKey);
 
     const hash = array.reduce((res: Accessible<T>, data: Accessible<T>) => {
@@ -222,7 +222,7 @@ export function groupBy<
                 resKey[k] = resKey[k] || [];
                 resKey[k].push(data);
             } else {
-                resKey[k] += data[k];
+                resKey[k] += data[k] as number;
             }
         }
 
@@ -552,7 +552,7 @@ export async function findIndex<T>(this: unknown, array: T[], callback: (value: 
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export async function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean> {
+export async function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean> {
     for (const [i, v] of array.entries()) {
         if (await callback.call(thisArg || this, v, i, array)) {
             return true;
@@ -578,7 +578,7 @@ export async function some<T>(this: unknown, array: T[], callback: (value: T, in
  *  - `en` Returns a Promise with the resultant boolean value.
  *  - `ja` 真偽値を格納した Promise オブジェクト
  */
-export async function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown | Promise<unknown>, thisArg?: unknown): Promise<boolean> {
+export async function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean> {
     for (const [i, v] of array.entries()) {
         if (!await callback.call(thisArg || this, v, i, array)) {
             return false;

@@ -54,9 +54,9 @@ describe('router/history/session spec', () => {
         let context: Window = window;
         if ('iframe' === type) {
             const iframe = await prepareIFrameElements();
-            const { history } = iframe.contentWindow as Window;
+            const { history } = iframe.contentWindow!;
             history.replaceState(null, '', webRoot);
-            context = iframe.contentWindow as Window;
+            context = iframe.contentWindow!;
         }
 
         const instance = createSessionHistory('one', { index: 0 }, { context });
@@ -96,9 +96,9 @@ describe('router/history/session spec', () => {
 
     it('check no hash', async () => {
         const iframe = await prepareIFrameElements();
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
-        const instance = createSessionHistory<PlainObject>('', undefined, { context: iframe.contentWindow as Window });
+        const instance = createSessionHistory<PlainObject>('', undefined, { context: iframe.contentWindow! });
 
         expect(instance).toBeDefined();
         expect(instance.length).toBe(1);
@@ -118,7 +118,7 @@ describe('router/history/session spec', () => {
 
     it('check other window', async () => {
         const iframe = await prepareIFrameElements();
-        const instance = createSessionHistory('iframe', { from: 'iframe' }, { context: iframe.contentWindow as Window });
+        const instance = createSessionHistory('iframe', { from: 'iframe' }, { context: iframe.contentWindow! });
         expect(instance).toBeDefined();
         expect(instance.length).toBe(1);
         expect(instance.index).toBe(0);
@@ -130,10 +130,10 @@ describe('router/history/session spec', () => {
 
     it('check SessionHistory#push()', async () => {
         const iframe = await prepareIFrameElements();
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
         // auto remove '/'
-        const instance = createSessionHistory<PlainObject>('/one/', undefined, { context: iframe.contentWindow as Window });
+        const instance = createSessionHistory<PlainObject>('/one/', undefined, { context: iframe.contentWindow! });
 
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -166,10 +166,10 @@ describe('router/history/session spec', () => {
 
     it('check SessionHistory#replace()', async () => {
         const iframe = await prepareIFrameElements();
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
         // auto remove '#'
-        const instance = createSessionHistory<PlainObject>('#one', undefined, { context: iframe.contentWindow as Window });
+        const instance = createSessionHistory<PlainObject>('#one', undefined, { context: iframe.contentWindow! });
 
         const stub = { onCallback };
         spyOn(stub, 'onCallback').and.callThrough();
@@ -382,9 +382,9 @@ describe('router/history/session spec', () => {
         const stub = { onCallback };
         const instance = await preparePackedHistory(stub);
 
-        instance.back();
-        instance.back();
-        instance.back();
+        void instance.back();
+        void instance.back();
+        void instance.back();
 
         await waitFrame(instance, WAIT_FRAME_MARGINE);
         expect(instance.id).toBe('four');
@@ -452,10 +452,10 @@ describe('router/history/session spec', () => {
 
     it('check SessionHistory#direct()', async () => {
         const iframe = await prepareIFrameElements();
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
 
-        const instance = createSessionHistory<PlainObject>('origin', { index: 0 }, { context: iframe.contentWindow as Window });
+        const instance = createSessionHistory<PlainObject>('origin', { index: 0 }, { context: iframe.contentWindow! });
         void instance.push('target', { index: 1 }, { silent: true });
         void instance.push('base1',  { index: 2 }, { silent: true });
         void instance.push('base2',  { index: 3 }, { silent: true });
@@ -593,10 +593,10 @@ describe('router/history/session spec', () => {
         spyOn(stub, 'onCallback').and.callThrough();
 
         const iframe = await prepareIFrameElements();
-        const { location, history } = iframe.contentWindow as Window;
+        const { location, history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
 
-        const instance = createSessionHistory('', { from: 'iframe' }, { context: iframe.contentWindow as Window, mode: 'history' });
+        const instance = createSessionHistory('', { from: 'iframe' }, { context: iframe.contentWindow!, mode: 'history' });
         instance.on('changing', stub.onCallback);
         instance.on('refresh', stub.onCallback);
 

@@ -18,9 +18,9 @@ import { Props } from '../props';
 entry('PAGE_CONTEXT_TEMPLATE_MUSTACHE_BRIDGE');
 
 const prepareTemplate = async (): Promise<CompiledTemplate> => {
-    const content =  toTemplateElement(
+    const content = toTemplateElement(
         await loadTemplateSource('#template-mustache-bridge-content', { url: toUrl('/tpl/variations.tpl') })
-    ) as HTMLTemplateElement;
+    )!;
     $(content).localize();
     return TemplateBridge.compile(content.innerHTML);
 };

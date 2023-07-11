@@ -107,7 +107,7 @@ export const queryPlatform = (
         devicePixelRatio?: number;
     }
 ): Platform => {
-    context = context || { navigator, screen, devicePixelRatio };
+    context = context ?? { navigator, screen, devicePixelRatio };
     const info = {
         ios: false,
         android: false,
@@ -125,12 +125,12 @@ export const queryPlatform = (
         firefox: false,
         macos: false,
         windows: false,
-        cordova: !!((getGlobal() as Record<string, unknown>)['cordova']),
+        cordova: !!((getGlobal() as Record<string, unknown>)['cordova']), // eslint-disable-line @typescript-eslint/dot-notation
         electron: false,
     } as unknown as Writable<Platform>;
 
-    const { userAgent: ua, platform: os, standalone } = context.navigator || navigator as { userAgent: string; platform: string; standalone?: boolean; };
-    const { width: screenWidth, height: screenHeight } = context.screen || screen;
+    const { userAgent: ua, platform: os, standalone } = context.navigator ?? navigator as { userAgent: string; platform: string; standalone?: boolean; };
+    const { width: screenWidth, height: screenHeight } = context.screen ?? screen;
     const pixelRatio = context.devicePixelRatio;
 
     const android  = /(Android);?[\s/]+([\d.]+)?/.exec(ua);
@@ -184,7 +184,7 @@ export const queryPlatform = (
             info.tablet = true;
         }
     }
-    if (ipad || iphone || ipod) {
+    if (ipad ?? iphone ?? ipod) {
         info.os = 'ios';
         info.ios = true;
     }
@@ -235,7 +235,7 @@ export const queryPlatform = (
     }
 
     // Pixel Ratio
-    info.pixelRatio = pixelRatio || 1;
+    info.pixelRatio = pixelRatio ?? 1;
 
     return info;
 };

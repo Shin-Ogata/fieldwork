@@ -51,11 +51,11 @@ export class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = K
     constructor(seeds: DynamicConditionSeed<TItem, TKey> = { operators: [] }) {
         const { operators, combination, sumKeys, limit, random, sortKeys } = seeds;
         this._operators     = operators;
-        this._combination   = null != combination ? combination : DynamicCombination.AND;
-        this._sumKeys       = null != sumKeys ? sumKeys : [];
+        this._combination   = combination ?? DynamicCombination.AND;
+        this._sumKeys       = sumKeys ?? [];
         this._limit         = limit;
         this._random        = !!random;
-        this._sortKeys      = sortKeys || [];
+        this._sortKeys      = sortKeys ?? [];
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -213,6 +213,6 @@ export class DynamicCondition<TItem extends object, TKey extends Keys<TItem> = K
             }
         }
 
-        return fltr || ((/* item */) => true);
+        return fltr ?? ((/* item */) => true);
     }
 }

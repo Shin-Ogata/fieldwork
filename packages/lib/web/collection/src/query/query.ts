@@ -161,7 +161,7 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
     const targets = noSearch ? cached.slice() : searchItems(cached, filter, ...comparators);
 
     const results: TItem[] = [];
-    let index: number = (null != baseIndex) ? baseIndex : 0;
+    let index: number = baseIndex ?? 0;
 
     while (true) {
         await cc(token);
@@ -236,7 +236,7 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
         return hasCond || resp.total === resp.items.length;
     };
 
-    let index: number = (null != baseIndex) ? baseIndex : 0;
+    let index: number = baseIndex ?? 0;
 
     while (true) {
         await cc(token);

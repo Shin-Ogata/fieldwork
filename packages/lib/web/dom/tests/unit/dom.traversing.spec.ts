@@ -704,7 +704,7 @@ describe('dom/traversing spec', () => {
   </li>
   <li class="item-iii">III</li>
 </ul>`);
-        const fragment = $dom[0].parentNode as ParentNode;
+        const fragment = $dom[0].parentNode!;
 
         {// standard
             const $parents1 = $('.item-i', fragment).parents();

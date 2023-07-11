@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/dot-notation,
  */
 
 import {
@@ -28,7 +29,7 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
         return [];
     }
 
-    context = context || document;
+    context = context ?? document;
     const elements: Element[] = [];
 
     try {
@@ -132,13 +133,13 @@ const _scriptsAttrs: (keyof EvalOptions)[] = [
 
 /** @internal */
 export function evaluate(code: string, options?: Element | EvalOptions, context?: Document | null): any {
-    const doc: Document = context || document;
+    const doc: Document = context ?? document;
     const script = doc.createElement('script');
     script.text = `CDP_DOM_EVAL_RETURN_VALUE_BRIDGE = (() => { return ${code}; })();`;
 
     if (options) {
         for (const attr of _scriptsAttrs) {
-            const val = (options as Record<string, string>)[attr] || ((options as Element).getAttribute && (options as Element).getAttribute(attr));
+            const val = (options as Record<string, string>)[attr] || (options as Element)?.getAttribute?.(attr);
             if (val) {
                 script.setAttribute(attr, val);
             }
@@ -148,7 +149,7 @@ export function evaluate(code: string, options?: Element | EvalOptions, context?
     // execute
     try {
         getGlobalNamespace('CDP_DOM_EVAL_RETURN_VALUE_BRIDGE');
-        doc.head.appendChild(script).parentNode!.removeChild(script); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        doc.head.appendChild(script).parentNode!.removeChild(script);
         const retval = (globalThis as any)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
         return retval;
     } finally {

@@ -200,7 +200,7 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
      * }
      * ```
      */
-    abstract render(...args: unknown[]): Promise<any | void> | any | void;
+    abstract render(...args: unknown[]): any;
 }
 /**
  * @en Base class definition for view that manages the layout and a DOM events.

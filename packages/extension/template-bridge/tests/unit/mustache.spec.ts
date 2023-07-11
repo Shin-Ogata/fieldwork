@@ -36,9 +36,7 @@ describe('bridge-mustache spec', () => {
     describe('basic', () => {
         const convert = createMustacheTransformer(html, directives.unsafeHTML);
 
-        interface Updater {
-            (view?: TemplateBridgeArg): DOM;
-        }
+        type Updater = (view?: TemplateBridgeArg) => DOM;
 
         class TemplateEngine {
             static compile(template: string | HTMLTemplateElement): Updater {
@@ -361,7 +359,7 @@ Curly`;
                     transform: (remainingTmplStr: string, config: TransformConfig) => {
                         return config?.transformers?.unsafeVariable.transform(insert3rdBraceForUnsaveVariable(remainingTmplStr), config);
                         function insert3rdBraceForUnsaveVariable(remainingTmplStr: string): string {
-                            const i = remainingTmplStr.indexOf(config?.delimiter?.end as string);
+                            const i = remainingTmplStr.indexOf(config?.delimiter?.end!); // eslint-disable-line @typescript-eslint/no-non-null-asserted-optional-chain
                             return `${remainingTmplStr.substring(0, i)}}${remainingTmplStr.substring(i)}`;
                         }
                     },
@@ -369,9 +367,7 @@ Curly`;
             },
         });
 
-        interface Updater {
-            (view?: TemplateBridgeArg): DOM;
-        }
+        type Updater = (view?: TemplateBridgeArg) => DOM;
 
         class TemplateEngine {
             static compile(template: string): Updater {

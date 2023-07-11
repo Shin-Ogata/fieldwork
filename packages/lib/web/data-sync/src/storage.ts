@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/dot-notation,
+ */
+
 import {
     Accessible,
     PlainObject,
@@ -86,15 +90,15 @@ function genId(url: string): string {
 }
 
 /** @internal resolve key for localStorage */
-function parseContext(context: Accessible<SyncContext>, separator: string): { model: boolean; key: string; url: string; data: { [idAttr: string]: string; }; } {
+function parseContext(context: Accessible<SyncContext>, separator: string): { model: boolean; key: string; url: string; data: Record<string, string>; } {
     const model  = isModel(context);
     const url    = resolveURL(context);
     const idAttr = (context.constructor as unknown as Record<string, string>)['idAttribute'];
     const data = (() => {
-        const retval = {} as { [idAttr: string]: string; };
+        const retval = {} as Record<string, string>;
         if (model) {
             const valid    = !isFunction(context['has']) ? false : context['has'](idAttr) as boolean;
-            retval[idAttr] = valid ? context.id as string : genId(url);
+            retval[idAttr] = valid ? context.id! : genId(url);
         }
         return retval;
     })();
@@ -128,7 +132,7 @@ class StorageDataSync implements IStorageDataSync {
      */
     constructor(storage: IStorage, options?: StorageDataSyncConstructionOptions) {
         this._storage = storage;
-        this._separator = options?.separator || Const.SEPARATOR;
+        this._separator = options?.separator ?? Const.SEPARATOR;
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -224,7 +228,7 @@ class StorageDataSync implements IStorageDataSync {
                 throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, `unknown method: ${method}`);
         }
 
-        context.trigger('@request', context, Promise.resolve(responce as PlainObject));
+        context.trigger('@request', context, Promise.resolve(responce!));
         return responce as SyncResult<K>;
     }
 
@@ -279,7 +283,7 @@ class StorageDataSync implements IStorageDataSync {
 
     /** @internal */
     private async update(key: string, context: SyncContext, url: string, id?: string, options?: StorageDataSyncOptions): Promise<PlainObject | null> {
-        const { data } = options || {};
+        const { data } = options ?? {};
         const attrs = Object.assign(context.toJSON(), data);
         await this._storage.setItem(key, attrs, options);
         if (key !== url) {

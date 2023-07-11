@@ -13,7 +13,11 @@ export type TransformDirective = (value: string | typeof noChange | typeof nothi
 
 export type TransformTester = (input: string, config: TransformConfig) => boolean;
 export type TransformExecutor = (input: string, config: TransformConfig) => TemplateResult | SVGTemplateResult | undefined;
-export type TransformeContext = { test: TransformTester; transform: TransformExecutor; };
+
+export interface TransformeContext {
+    test: TransformTester;
+    transform: TransformExecutor;
+}
 
 export interface TransformConfig {
     html: TemplateTag;

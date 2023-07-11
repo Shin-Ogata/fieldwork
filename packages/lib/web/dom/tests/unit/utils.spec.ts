@@ -1,6 +1,7 @@
 /* eslint-disable
     block-spacing,
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/unbound-method,
  */
 
 import { dom as $ } from '@cdp/dom';
@@ -238,7 +239,7 @@ describe('dom/utils spec', () => {
             expect(isArray(elems1)).toBe(true);
             expect(elems1.length).toBe(0);
 
-            const elems2 = elementify('.test-dom-child', divs[0].parentNode as ParentNode);
+            const elems2 = elementify('.test-dom-child', divs[0].parentNode);
             expect(elems2).toBeDefined();
             expect(isArray(elems2)).toBe(true);
             expect(elems2.length).toBe(3);

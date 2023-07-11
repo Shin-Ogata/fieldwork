@@ -25,7 +25,7 @@ export function getGlobal(): typeof globalThis {
  *  - `ja` 保証するオブジェクトの名前
  */
 export function ensureObject<T extends object = UnknownObject>(parent: object | null, ...names: string[]): T {
-    let root = (parent || getGlobal()) as UnknownObject;
+    let root = (parent ?? getGlobal()) as UnknownObject;
     for (const name of names) {
         root[name] = root[name] || {};
         root = root[name] as UnknownObject;

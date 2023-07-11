@@ -63,7 +63,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
             $el.data(dataAttr, translated);
             $el.attr(attr, translated);
         } else {
-            $el.attr(attr, i18next.t(key, extendDefault(opts, $el.attr(attr) as string)));
+            $el.attr(attr, i18next.t(key, extendDefault(opts, $el.attr(attr)!)));
         }
     };
 
@@ -117,7 +117,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
     }
 
     // selector function $(mySelector).localize(opts);
-    $.fn['localize'] = handle;
+    $.fn['localize'] = handle; // eslint-disable-line @typescript-eslint/dot-notation
 }
 
 /**

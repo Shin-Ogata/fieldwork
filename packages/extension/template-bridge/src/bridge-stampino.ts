@@ -30,7 +30,7 @@ function ensure(template: HTMLTemplateElement | string): HTMLTemplateElement {
 }
 
 function createStampinoTransformer(options?: CreateStampinoTemplateOptions): TemplateTransformer {
-    const { handlers, renderers, superTemplate } = options || {};
+    const { handlers, renderers, superTemplate } = options ?? {};
     return (template: HTMLTemplateElement | string) => {
         return prepareTemplate(ensure(template), handlers, renderers, superTemplate);
     };

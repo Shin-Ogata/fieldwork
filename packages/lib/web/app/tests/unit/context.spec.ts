@@ -1,6 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/no-non-null-assertion,
+    @typescript-eslint/await-thenable,
  */
 
 import { safe, sleep } from '@cdp/core-utils';
@@ -49,7 +49,7 @@ describe('context spec', () => {
 
     const prepareQueryContext = async (additionalStyle?: string): Promise<{ el: Document | null; window: Window | null; }> => {
         const iframe = await prepareIFrameElements(additionalStyle);
-        const { history } = iframe.contentWindow as Window;
+        const { history } = iframe.contentWindow!;
         history.replaceState(null, '', webRoot);
         return { el: iframe.contentDocument, window: iframe.contentWindow };
     };

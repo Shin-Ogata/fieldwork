@@ -46,5 +46,7 @@ function hide(this: DOM): DOM {
     });
 }
 
+/* eslint-disable @typescript-eslint/dot-notation */
 $.fn['show'] = show;
 $.fn['hide'] = hide;
+/* eslint-enable @typescript-eslint/dot-notation */

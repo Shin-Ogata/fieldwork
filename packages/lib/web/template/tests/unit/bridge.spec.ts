@@ -159,7 +159,7 @@ describe('template/bridge spec', () => {
                     transform: (remainingTmplStr: string, config: TransformConfig) => {
                         return config?.transformers?.unsafeVariable.transform(insert3rdBraceForUnsaveVariable(remainingTmplStr), config);
                         function insert3rdBraceForUnsaveVariable(remainingTmplStr: string): string {
-                            const i = remainingTmplStr.indexOf(config?.delimiter?.end as string);
+                            const i = remainingTmplStr.indexOf(config?.delimiter?.end!); // eslint-disable-line @typescript-eslint/no-non-null-asserted-optional-chain
                             return `${remainingTmplStr.substring(0, i)}}${remainingTmplStr.substring(i)}`;
                         }
                     },
@@ -219,7 +219,7 @@ describe('template/bridge spec', () => {
     });
 
     describe('stampino transformer', () => {
-        const stampino = TemplateBridge.getBuitinTransformer('stampino') as TemplateTransformer;
+        const stampino = TemplateBridge.getBuitinTransformer('stampino')!;
         let oldTransformer: TemplateTransformer;
 
         beforeEach(() => {

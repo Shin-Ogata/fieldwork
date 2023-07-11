@@ -23,8 +23,8 @@ export interface I18NOptions extends i18n.InitOptions, I18NDetectErrorBehaviour 
     backend?: i18n.AjaxBackendOptions | PlainObject;
     /** short-cut for backend.loadPath */
     resourcePath?: string;
-    /** fallback resource name mapping */
-    fallbackResources?: { [lng: string]: string; };
+    /** fallback resource name mapping [lng, locale]*/
+    fallbackResources?: Record<string, string>;
     /** dom-localizer options */
     dom?: i18n.DomLocalizerOptions;
 }

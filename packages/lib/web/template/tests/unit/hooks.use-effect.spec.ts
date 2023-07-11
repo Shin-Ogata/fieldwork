@@ -139,7 +139,7 @@ describe('hooks/use-effect spec', () => {
 
     it('can be async functions', async () => {
         function App(): void {
-            useEffect(async () => { /* noop */ });
+            useEffect(async () => { /* noop */ }); // eslint-disable-line @typescript-eslint/no-misused-promises
         }
 
         try {

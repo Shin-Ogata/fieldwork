@@ -102,7 +102,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
      */
     get id(): string {
         const { cid, id } = this[_properties];
-        return id || cid;
+        return id ?? cid;
     }
 
     /**
@@ -173,7 +173,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
      *  - `ja` {@link ViewEventsHash} オブジェクト. 既定値は `this.events()`
      */
     public delegateEvents(events?: ViewEventsHash<TElement>): this {
-        const hash = events || this.events();
+        const hash = events ?? this.events();
         if (isEmptyObject(hash)) {
             return this;
         }
@@ -188,7 +188,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
             if (!method) {
                 continue;
             }
-            const match = /^(\S+)\s*(.*)$/.exec(key) as RegExpExecArray;
+            const match = /^(\S+)\s*(.*)$/.exec(key)!;
             this.delegate<any>(match[1], match[2], method.bind(this));
         }
 
@@ -200,7 +200,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
      * @ja `delegate` されたイベントをすべて削除
      */
     public undelegateEvents(): this {
-        this.$el && this.$el.off<any>(`.${this._cid}`);
+        this.$el?.off<any>(`.${this._cid}`);
         return this;
     }
 
@@ -367,14 +367,14 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
      * }
      * ```
      */
-    abstract render(...args: unknown[]): Promise<any | void> | any | void;
+    abstract render(...args: unknown[]): any;
 
 ///////////////////////////////////////////////////////////////////////
 // internal:
 
     /** @internal */
     protected [_initialize](options?: ViewConstructionOptions<TElement>): void {
-        const { el, tagName, id, attributes, className, events } = options || {};
+        const { el, tagName, id, attributes, className, events } = options ?? {};
 
         (this[_properties] as Writable<Property<TElement>>) = {
             cid: luid('view:', 8),
@@ -382,7 +382,7 @@ export abstract class ViewCore<TElement extends Node = HTMLElement> {
             id,
             className,
             attributes,
-            tagName: tagName || 'div',
+            tagName: tagName ?? 'div',
         } as Property<TElement>;
 
         this[_ensureElement](el);

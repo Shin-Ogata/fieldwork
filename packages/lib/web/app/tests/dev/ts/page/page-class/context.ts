@@ -63,7 +63,7 @@ class RouterPage implements Page {
 
         // トランジション設定
         const { default: transition } = app.router.transitionSettings();
-        this._$el.find('#page-class-select-transition').val(transition || 'none');
+        this._$el.find('#page-class-select-transition').val(transition ?? 'none');
         this._$el.find('#page-class-select-transition').on('change', (ev: UIEvent) => {
             app.router.transitionSettings({ default: $(ev.target as Element).val() });
         });

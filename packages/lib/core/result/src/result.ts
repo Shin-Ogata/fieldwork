@@ -55,10 +55,10 @@ export class Result extends Error {
      */
     constructor(code?: number, message?: string, options?: ErrorOptions) {
         code = isNullish(code) ? RESULT_CODE.SUCCESS : isNumber(code) ? Math.trunc(code) : RESULT_CODE.FAIL;
-        super(message || toHelpString(code), options);
+        super(message ?? toHelpString(code), options);
         const cause = options?.cause;
         let time = isError(cause) ? (cause as Result).time : undefined;
-        isNumber(time as number) || (time = Date.now());
+        isNumber(time!) || (time = Date.now());
         Object.defineProperties(this, { code: desc(code), time: desc(time), cause: desc(cause) });
     }
 

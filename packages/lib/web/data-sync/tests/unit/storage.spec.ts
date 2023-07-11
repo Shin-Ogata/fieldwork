@@ -5,7 +5,6 @@
 
 import {
     SyncEvent,
-    IStorageDataSync,
     createStorageDataSync,
     dataSyncSTORAGE,
 } from '@cdp/data-sync';
@@ -27,7 +26,7 @@ describe('data-sync/storage spec', () => {
         bool: boolean;
     }
 
-    type StorageDataSchema = { id: string; num: number; str: string; bool: boolean; };
+    interface StorageDataSchema { id: string; num: number; str: string; bool: boolean; }
 
     class Model extends EventBroker<SyncEvent<Schema>> {
         static idAttribute = 'id';
@@ -137,7 +136,7 @@ describe('data-sync/storage spec', () => {
     });
 
     it('check setStorage', () => {
-        const storageSync = dataSyncSTORAGE as IStorageDataSync;
+        const storageSync = dataSyncSTORAGE;
         const defaultStorage = storageSync.getStorage();
         storageSync.setStorage(memoryStorage);
         expect(storageSync.getStorage()).toBe(memoryStorage);
@@ -155,7 +154,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
+        const storage = dataSyncSTORAGE.getStorage();
         const json = await storage.getItem<object>('aaa::000A');
         expect(json).toEqual({
             id: '000A',
@@ -178,7 +177,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
+        const storage = dataSyncSTORAGE.getStorage();
         const json = await storage.getItem<object>('aaa::000A');
         expect(json).toEqual({
             id: '000A',
@@ -201,7 +200,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
+        const storage = dataSyncSTORAGE.getStorage();
         const entries = await storage.getItem<object>('aaa') as PlainObject;
         const json = await storage.getItem<object>(`aaa::${entries[0]}`) as StorageDataSchema;
 
@@ -224,7 +223,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const storage = (dataSyncSTORAGE as IStorageDataSync).getStorage();
+        const storage = dataSyncSTORAGE.getStorage();
         const entries = await storage.getItem<object>('aaa') as PlainObject;
         const json = await storage.getItem<object>(`aaa::${entries[0]}`) as StorageDataSchema;
 
@@ -257,7 +256,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa$$000A') as string);
+        const value = JSON.parse(localStorage.getItem('aaa$$000A')!);
         expect(value).toEqual({
             id: '000A',
             num: 1000,
@@ -288,7 +287,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa::000A') as string);
+        const value = JSON.parse(localStorage.getItem('aaa::000A')!);
         expect(value).toEqual({
             id: '000A',
             num: 1000,
@@ -317,7 +316,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa') as string);
+        const value = JSON.parse(localStorage.getItem('aaa')!);
         expect(value).toEqual({
             id: '000A',
             num: 1000,
@@ -348,7 +347,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa::000A') as string);
+        const value = JSON.parse(localStorage.getItem('aaa::000A')!);
         expect(value).toEqual({
             id: '000A',
             num: 1000,
@@ -356,7 +355,7 @@ describe('data-sync/storage spec', () => {
             bool: true,
         });
 
-        const value2 = JSON.parse(localStorage.getItem('aaa') as string);
+        const value2 = JSON.parse(localStorage.getItem('aaa')!);
         expect(value2).toEqual([{ id: '000A' }]);
 
         localStorage.clear();
@@ -507,7 +506,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa') as string);
+        const value = JSON.parse(localStorage.getItem('aaa')!);
         expect(value).toEqual([]);
 
         localStorage.clear();
@@ -563,7 +562,7 @@ describe('data-sync/storage spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith(context, jasmine.anything());
         expect(count).toBe(1);
 
-        const value = JSON.parse(localStorage.getItem('aaa') as string);
+        const value = JSON.parse(localStorage.getItem('aaa')!);
         expect(value).toEqual([{ id: '000A' }]);
 
         localStorage.clear();

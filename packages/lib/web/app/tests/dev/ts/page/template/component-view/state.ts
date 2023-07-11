@@ -10,9 +10,9 @@ import { ViewEventsHash } from '@cdp/view';
 import { ComponentViewBase } from './base';
 
 const prepareTemplate = async (): Promise<JST> => {
-    const content =  toTemplateElement(
+    const content = toTemplateElement(
         await loadTemplateSource('#template-component-view-state', { url: toUrl('/tpl/variations.tpl') })
-    ) as HTMLTemplateElement;
+    )!;
     $(content).localize();
     return TemplateEngine.compile(content.innerHTML);
 };
@@ -29,7 +29,7 @@ export class StateComponentView extends ComponentViewBase {
 
     constructor({ initVal }: { initVal?: number; } = {}) {
         super();
-        this._initVal = initVal || 0;
+        this._initVal = initVal ?? 0;
     }
 
 ///////////////////////////////////////////////////////////////////////
