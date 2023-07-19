@@ -15,9 +15,9 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
         project: [
-            resolve(process.cwd(), 'tsconfig.json'),
-            resolve(process.cwd(), './tests/tsconfig.json'),
-            resolve(process.cwd(), './tests/dev/tsconfig.json'),
+            resolve('tsconfig.json'),
+            resolve('./tests/tsconfig.json'),
+            resolve('./tests/dev/tsconfig.json'),
         ],
         createDefaultProgram: true,
     },
@@ -150,6 +150,14 @@ module.exports = {
         // patch: @typescript-eslint/stylistic-type-checked
         ////////////////////////////////////////////////////////
 
+        '@typescript-eslint/dot-notation': [
+            'error',
+            {
+                allowPrivateClassPropertyAccess: true,
+                allowProtectedClassPropertyAccess: true,
+                allowIndexSignaturePropertyAccess: true,
+            },
+        ],
         '@typescript-eslint/prefer-for-of': 'warn',
         '@typescript-eslint/prefer-string-starts-ends-with': 'warn',
         '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],

@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/dot-notation,
- */
-
 import {
     TemplateResult,
     html,
@@ -70,8 +66,8 @@ export const innerHTML = (dom: DOM): string => stripExpressionMarkers(dom[0].inn
 
 export function ensureCleanI18N(): void {
     const context: Partial<typeof i18n> = i18n;
-    delete context['options'];
-    delete context['language'];
-    delete context['languages'];
-    delete context['isInitialized'];
+    delete context.options;
+    delete context.language;
+    delete context.languages;
+    delete context.isInitialized;
 }

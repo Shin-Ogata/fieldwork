@@ -442,7 +442,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const method = camelize(`page-${event}`);
         if (isFunction((target as Page & Record<string, UnknownFunction> | undefined)?.[method])) {
             const retval = (target as Page & Record<string, UnknownFunction> | undefined)?.[method](arg);
-            if (retval instanceof NativePromise && (arg as Route & Record<string, unknown>)['asyncProcess']) { // eslint-disable-line @typescript-eslint/dot-notation
+            if (retval instanceof NativePromise && (arg as Route & Record<string, unknown>)['asyncProcess']) {
                 (arg as RouteChangeInfoContext).asyncProcess.register(retval);
             }
         }

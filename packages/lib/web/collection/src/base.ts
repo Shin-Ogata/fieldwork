@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/dot-notation,
  */
 
 import {
@@ -99,7 +98,7 @@ const ensureSortOptions = <T extends object, K extends Keys<T>>(options: Collect
 
 /** @internal */
 const modelIdAttribute = <T extends object>(ctor: Constructor<T> | undefined): string => {
-    return (ctor as any)?.['idAttribute'] || 'id';
+    return (ctor as any)?.idAttribute || 'id';
 };
 
 /** @internal */
@@ -123,7 +122,7 @@ const getChangedIds = <T extends object>(obj: object, ctor: Constructor<T> | und
 
 /** @internal */
 const modelConstructor = <T extends object, E extends CollectionEvent<T>, K extends Keys<T>>(self: Collection<T, E, K>): Class | undefined => {
-    return (self.constructor as any)['model'];
+    return (self.constructor as any).model;
 };
 
 /** @internal */

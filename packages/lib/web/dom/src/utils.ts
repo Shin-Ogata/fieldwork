@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/dot-notation,
  */
 
 import {
@@ -150,9 +149,9 @@ export function evaluate(code: string, options?: Element | EvalOptions, context?
     try {
         getGlobalNamespace('CDP_DOM_EVAL_RETURN_VALUE_BRIDGE');
         doc.head.appendChild(script).parentNode!.removeChild(script);
-        const retval = (globalThis as any)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
+        const retval = (globalThis as Record<string, unknown>)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
         return retval;
     } finally {
-        delete (globalThis as any)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
+        delete (globalThis as Record<string, unknown>)['CDP_DOM_EVAL_RETURN_VALUE_BRIDGE'];
     }
 }

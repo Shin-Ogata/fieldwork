@@ -5159,6 +5159,7 @@ export declare namespace i18n {
      * T function declaration *
      **************************/
     export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = undefined> {
+        $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
         <Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(...args: [
             key: Key | Key[],
             options?: TOpt & InterpolationMap<Ret>
@@ -5571,7 +5572,7 @@ export declare namespace i18n {
         /**
          * Emit event
          */
-        emit(eventName: string): void;
+        emit(eventName: string, ...args: any[]): void;
     }
 }
 export interface DirectiveClass {

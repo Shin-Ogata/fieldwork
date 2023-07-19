@@ -359,7 +359,7 @@ Curly`;
                     transform: (remainingTmplStr: string, config: TransformConfig) => {
                         return config?.transformers?.unsafeVariable.transform(insert3rdBraceForUnsaveVariable(remainingTmplStr), config);
                         function insert3rdBraceForUnsaveVariable(remainingTmplStr: string): string {
-                            const i = remainingTmplStr.indexOf(config?.delimiter?.end!); // eslint-disable-line @typescript-eslint/no-non-null-asserted-optional-chain
+                            const i = remainingTmplStr.indexOf(config.delimiter!.end);
                             return `${remainingTmplStr.substring(0, i)}}${remainingTmplStr.substring(i)}`;
                         }
                     },

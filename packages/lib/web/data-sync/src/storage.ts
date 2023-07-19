@@ -1,7 +1,3 @@
-/* eslint-disable
-    @typescript-eslint/dot-notation,
- */
-
 import {
     Accessible,
     PlainObject,

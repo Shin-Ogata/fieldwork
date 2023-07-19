@@ -117,7 +117,7 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
     }
 
     // selector function $(mySelector).localize(opts);
-    $.fn['localize'] = handle; // eslint-disable-line @typescript-eslint/dot-notation
+    $.fn['localize'] = handle;
 }
 
 /**

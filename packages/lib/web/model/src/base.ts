@@ -833,5 +833,5 @@ export function isModel(x: unknown): x is Model {
  * @ja {@link Model} の `id-attribute` を取得
  */
 export function idAttribute(x: unknown, fallback = ''): string {
-    return isObject(x) ? ((x.constructor as any)['idAttribute'] || fallback) : fallback; // eslint-disable-line @typescript-eslint/dot-notation
+    return isObject(x) ? ((x.constructor as any).idAttribute || fallback) : fallback;
 }
