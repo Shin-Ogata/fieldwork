@@ -432,7 +432,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 
             const ensure = (src: Accessible<unknown>): unknown => {
                 const ctx = { ...src };
-                delete ctx['router'];  // eslint-disable-line @typescript-eslint/dot-notation
+                delete ctx['router'];
                 delete ctx['@params'];
                 return JSON.parse(JSON.stringify(ctx));
             };

@@ -1,7 +1,6 @@
 /*
  eslint-disable
     max-len,
-    @typescript-eslint/no-non-null-asserted-optional-chain,
  */
 
 import {
@@ -73,8 +72,8 @@ describe('template-loader spec', () => {
         expect(stripWhiteSpace(toTemplateString(src)!)).toBe(validator);
         expect(stripWhiteSpace(toTemplateString(tpl)!)).toBe(validator);
 
-        expect(stripWhiteSpace(toTemplateElement(src)?.innerHTML!)).toBe(validator);
-        expect(stripWhiteSpace(toTemplateElement(tpl)?.innerHTML!)).toBe(validator);
+        expect(stripWhiteSpace(toTemplateElement(src)!.innerHTML)).toBe(validator);
+        expect(stripWhiteSpace(toTemplateElement(tpl)!.innerHTML)).toBe(validator);
     });
 
 });

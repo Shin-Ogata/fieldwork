@@ -51,7 +51,7 @@ class PageSubFlowB extends PageView {
 
     protected onPageBeforeEnter(thisPage: Route): void {
         console.log(`${thisPage.url}: before-enter`);
-        this._mode = (thisPage.params['mode'] ?? 'normal') as 'normal' | 'subflow'; // eslint-disable-line @typescript-eslint/dot-notation
+        this._mode = (thisPage.params['mode'] ?? 'normal') as 'normal' | 'subflow';
         this.render();
     }
 

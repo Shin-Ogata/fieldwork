@@ -1,6 +1,5 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/dot-notation,
  */
 
 import { sleep } from '@cdp/core-utils';
@@ -148,7 +147,7 @@ describe('storage/registry spec', () => {
         expect(_reg.read('trade/check')).toBe(true);
         expect(_reg.read('extra/user', { field: 'pim' })).toBe('test-user');
 
-        expect((await _reg.storage.getItem('@test'))['common']['check']).toBeUndefined();
+        expect((await _reg.storage.getItem('@test')).common.check).toBeUndefined();
 
         // delete
         _reg.write('common/mode', null);
