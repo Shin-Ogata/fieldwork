@@ -7,8 +7,11 @@
     "inlineSourceMap": true,
     "outDir": "built",
     "rootDir": "src/ts",
+    "types": [
+      "import-assertions-css"
+    ],
     "typeRoots": [
-      "./node_modules/@types"
+      "./node_modules/@cdp/ui-utils/@types"
     ]
   },
   "include": [

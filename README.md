@@ -102,7 +102,7 @@ npm run install:all
 
 | module                                                 | description                     |
 |:-------------------------------------------------------|:--------------------------------|
-| [ui-core](./packages/lib/ui/core/README.md)            | ui common logic                 |
+| [ui-utils](./packages/lib/ui/core/README.md)           | ui common utility               |
 | [ui-forms](./packages/lib/ui/forms/README.md)          | forms collection                |
 | [ui-listview](./packages/lib/ui/listview/README.md)    | list view component             |
 

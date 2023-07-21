@@ -7,7 +7,7 @@
     "@cdp/runtime": "file:../runtime"
   },
   "devDependencies": {
-    "@cdp/ui-core": "file:../../lib/ui/core",
+    "@cdp/ui-utils": "file:../../lib/ui/utils",
     "@cdp/ui-forms": "file:../../lib/ui/forms",
     "@cdp/ui-listview": "file:../../lib/ui/listview"
   },

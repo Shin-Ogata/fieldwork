@@ -15,6 +15,9 @@ module.exports = {
         },
     }),
     testem: config.testem({
+        external: {
+            '@cdp/runtime': 'node_modules/@cdp/runtime/dist/runtime.min',
+        },
         requirejs: {
             map: {
                 specs: {
