@@ -12,11 +12,8 @@
       "common-interface": [ "@bridge" ],
       "lit-transformer": [ "lit-transformer" ],
       "stampino": [ "stampino" ]
-    },
-    "typeRoots": [
-        "./node_modules/@types"
-      ]
-    },
+    }
+  },
   "include": [
     "src/**/*",
     "dist/*.d.ts"

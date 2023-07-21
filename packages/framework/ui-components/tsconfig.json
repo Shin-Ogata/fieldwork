@@ -6,10 +6,7 @@
     "inlineSources": true,
     "inlineSourceMap": true,
     "outDir": "built",
-    "rootDir": "src/ts",
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "rootDir": "src/ts"
   },
   "include": [
     "src/ts/**/*",

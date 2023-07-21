@@ -5,7 +5,7 @@
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/runtime": "file:../../../framework/runtime",
-    "@cdp/ui-core": "file:../core"
+    "@cdp/ui-utils": "file:../utils"
   },
   "keywords": [
     "CDP",
@@ -40,7 +40,9 @@
     "compile:src": "run-p compile:src:*",
     "compile:src:scss": "run-s compile:src:scss:*",
     "compile:src:scss:compile": "sass --style=expanded --source-map --embed-source-map src/scss:.temp/src/scss",
-    "compile:src:scss:prefix": "postcss .temp/src/scss/**/*.css --use autoprefixer -d dist",
+    "compile:src:scss:prefix": "run-p compile:src:scss:prefix:*",
+    "compile:src:scss:prefix:structure": "postcss .temp/src/scss/structure*.css --use autoprefixer -d built/@css || exit 0",
+    "compile:src:scss:prefix:theme": "postcss .temp/src/scss/**/!(*structure*).css --use autoprefixer -d dist",
     "compile:src:ts": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
     "debug": "npm run compile && run-p unit-test watch",

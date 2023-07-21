@@ -5,6 +5,7 @@ const { nodeResolve }    = require('@rollup/plugin-node-resolve');
 const commonjs           = require('@rollup/plugin-commonjs');
 const alias              = require('@rollup/plugin-alias');
 const replacer           = require('@rollup/plugin-replace');
+const css                = require('rollup-plugin-import-css');
 const sourcemapDetect    = require('@cdp/tasks/rollup-plugin/source-map-detect');
 const sourcemapRoot      = require('@cdp/tasks/rollup-plugin/source-map-root');
 const postProcesser      = require('@cdp/tasks/rollup-plugin/post-process');
@@ -32,6 +33,9 @@ function getConfig(options) {
         commonjs: {
             include: 'node_modules/**',
         },
+        css: {
+            minify: true,
+        },
     }, options);
     const {
         sourcemap,
@@ -40,6 +44,7 @@ function getConfig(options) {
         commonjs: cjsOptions,
         replace,
         alias: aliasOptions,
+        css: cssOptions,
         exports,
         postproc,
         domain,
@@ -57,6 +62,7 @@ function getConfig(options) {
         plugins: [
             replace && replacer(replace),
             aliasOptions && alias(aliasOptions),
+            css(cssOptions),
             nodeResolve({
                 mainFields: ['module', 'main', 'jsnext:main'],
                 preferBuiltins: true,

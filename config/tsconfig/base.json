@@ -20,6 +20,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "types": []
   }
 }
