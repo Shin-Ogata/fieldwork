@@ -29,6 +29,63 @@ export declare function noop(...args: unknown[]): any;
  */
 export declare function sleep(elapse: number): Promise<void>;
 /**
+ * @en Option interface for {@link debounce}().
+ * @ja {@link debounce}() に指定するオプションインターフェイス
+ */
+export interface DebounceOptions {
+    /**
+     * @en the maximum time `func` is allowed to be delayed before it's invoked.
+     * @ja コールバックの呼び出しを待つ最大時間
+     */
+    maxWait?: number;
+    /**
+     * @en Specify `true` if you want to call the callback leading edge of the waiting time. (default: false)
+     * @ja 待ち時間に対してコールバックを先呼び実行する場合は `true` を指定. (default: false)
+     */
+    leading?: boolean;
+    /**
+     * @en Specify `true` if you want to call the callback trailing edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを後呼び実行する場合は `true` を指定. (default: true)
+     */
+    trailing?: boolean;
+}
+export type DebouncedFunction<T extends UnknownFunction> = T & {
+    cancel(): void;
+    flush(): ReturnType<T>;
+    pending(): boolean;
+};
+/**
+ * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
+ * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param wait
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param options
+ *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
+ *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
+ */
+export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
+/**
+ * @en Option interface for {@link throttle}().
+ * @ja {@link throttle}() に指定するオプションインターフェイス
+ */
+export interface ThrottleOptions {
+    /**
+     * @en Specify `true` if you want to call the callback leading edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを先呼び実行する場合は `true` を指定. (default: true)
+     */
+    leading?: boolean;
+    /**
+     * @en Specify `true` if you want to call the callback trailing edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを後呼び実行する場合は `true` を指定. (default: true)
+     */
+    trailing?: boolean;
+}
+/**
  * @en Returns a function, that, when invoked, will only be triggered at most once during a given time.
  * @ja 関数の実行を wait [msec] に1回に制限
  *
@@ -47,29 +104,7 @@ export declare function sleep(elapse: number): Promise<void>;
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: {
-    leading?: boolean;
-    trailing?: boolean;
-}): T & {
-    cancel(): void;
-};
-/**
- * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
- * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
- *
- * @param executor
- *  - `en` seed function.
- *  - `ja` 対象の関数
- * @param wait
- *  - `en` wait elapse [msec].
- *  - `ja` 待機時間 [msec]
- * @param immediate
- *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
- *  - `ja` `true` の場合, 初回のコールは即時実行
- */
-export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & {
-    cancel(): void;
-};
+export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
 /**
  * @en Returns a function that will be executed at most one time, no matter how often you call it.
  * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
