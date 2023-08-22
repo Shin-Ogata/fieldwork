@@ -3,6 +3,7 @@ import {
     Primitive,
     TypedData,
     isString,
+    isBoolean,
     isObject,
 } from './types';
 import { invert } from './object';
@@ -51,6 +52,172 @@ export function sleep(elapse: number): Promise<void> {
 }
 
 /**
+ * @en Option interface for {@link debounce}().
+ * @ja {@link debounce}() に指定するオプションインターフェイス
+ */
+export interface DebounceOptions {
+    /**
+     * @en the maximum time `func` is allowed to be delayed before it's invoked.
+     * @ja コールバックの呼び出しを待つ最大時間
+     */
+    maxWait?: number;
+    /**
+     * @en Specify `true` if you want to call the callback leading edge of the waiting time. (default: false)
+     * @ja 待ち時間に対してコールバックを先呼び実行する場合は `true` を指定. (default: false)
+     */
+    leading?: boolean;
+    /**
+     * @en Specify `true` if you want to call the callback trailing edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを後呼び実行する場合は `true` を指定. (default: true)
+     */
+    trailing?: boolean;
+}
+
+export type DebouncedFunction<T extends UnknownFunction> = T & { cancel(): void; flush(): ReturnType<T>; pending(): boolean; };
+
+/**
+ * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
+ * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param wait
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param options
+ *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
+ *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
+ */
+export function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T> {
+    type Result = ReturnType<T> | undefined;
+
+    let lastArgs: unknown;
+    let lastThis: unknown;
+    let result: Result;
+    let lastCallTime: number | undefined;
+    let timerId: TimerHandle | undefined;
+    let lastInvokeTime = 0;
+
+    const waitValue = Number(wait) || 0;
+
+    const opts = Object.assign({ leading: false, trailing: true }, (isBoolean(options) ? { leading: options, trailing: !options } : options));
+    const { leading, trailing } = opts;
+    const maxWait = null != opts.maxWait ? Math.max(Number(opts.maxWait) || 0, waitValue) : null;
+
+    const invokeFunc = (time: number): Result => {
+        const args = lastArgs;
+        const thisArg = lastThis;
+
+        lastArgs = lastThis = undefined;
+        lastInvokeTime = time;
+        result = executor.apply(thisArg, args);
+        return result;
+    };
+
+    const remainingWait = (time: number): number => {
+        const timeSinceLastCall = time - lastCallTime!;
+        const timeSinceLastInvoke = time - lastInvokeTime;
+        const timeWaiting = waitValue - timeSinceLastCall;
+        return null != maxWait ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
+    };
+
+    const shouldInvoke = (time: number): boolean => {
+        if (undefined === lastCallTime) {
+            return true;
+        }
+        const timeSinceLastCall = time - lastCallTime;
+        const timeSinceLastInvoke = time - lastInvokeTime;
+        return timeSinceLastCall >= waitValue || timeSinceLastCall < 0 || (maxWait !== null && timeSinceLastInvoke >= maxWait);
+    };
+
+    const trailingEdge = (time: number): Result => {
+        timerId = undefined;
+        if (trailing && lastArgs) {
+            return invokeFunc(time);
+        }
+        lastArgs = lastThis = undefined;
+        return result;
+    };
+
+    const timerExpired = (): Result | void => {
+        const time = Date.now();
+        if (shouldInvoke(time)) {
+            return trailingEdge(time);
+        }
+        timerId = setTimeout(timerExpired, remainingWait(time));
+    };
+
+    const leadingEdge = (time: number): Result => {
+        lastInvokeTime = time;
+        timerId = setTimeout(timerExpired, waitValue);
+        return leading ? invokeFunc(time) : result;
+    };
+
+    const cancel = (): void => {
+        if (undefined !== timerId) {
+            clearTimeout(timerId);
+        }
+        lastInvokeTime = 0;
+        lastArgs = lastCallTime = lastThis = timerId = undefined;
+    };
+
+    const flush = (): Result => {
+        return undefined === timerId ? result : trailingEdge(Date.now());
+    };
+
+    const pending = (): boolean => {
+        return null != timerId;
+    };
+
+    function debounced(this: unknown, ...args: unknown[]): Result {
+        const time = Date.now();
+        const isInvoking = shouldInvoke(time);
+
+        lastArgs = args;
+        lastThis = this;    // eslint-disable-line no-invalid-this, @typescript-eslint/no-this-alias
+        lastCallTime = time;
+
+        if (isInvoking) {
+            if (null == timerId) {
+                return leadingEdge(lastCallTime);
+            }
+            if (maxWait) {
+                timerId = setTimeout(timerExpired, waitValue);
+                return invokeFunc(lastCallTime);
+            }
+        }
+        if (null == timerId) {
+            timerId = setTimeout(timerExpired, waitValue);
+        }
+        return result;
+    }
+
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+    debounced.pending = pending;
+
+    return debounced as DebouncedFunction<T>;
+}
+
+/**
+ * @en Option interface for {@link throttle}().
+ * @ja {@link throttle}() に指定するオプションインターフェイス
+ */
+export interface ThrottleOptions {
+    /**
+     * @en Specify `true` if you want to call the callback leading edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを先呼び実行する場合は `true` を指定. (default: true)
+     */
+    leading?: boolean;
+    /**
+     * @en Specify `true` if you want to call the callback trailing edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを後呼び実行する場合は `true` を指定. (default: true)
+     */
+    trailing?: boolean;
+}
+
+/**
  * @en Returns a function, that, when invoked, will only be triggered at most once during a given time.
  * @ja 関数の実行を wait [msec] に1回に制限
  *
@@ -69,105 +236,13 @@ export function sleep(elapse: number): Promise<void> {
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: { leading?: boolean; trailing?: boolean; }): T & { cancel(): void; } {
-    const opts = options ?? {};
-    let handle: TimerHandle | undefined;
-    let args: unknown[] | undefined;
-    let context: unknown, result: unknown;
-    let previous = 0;
-
-    const later = function (): void {
-        previous = false === opts.leading ? 0 : Date.now();
-        handle = undefined;
-        result = executor.apply(context, args);
-        if (!handle) {
-            context = args = undefined;
-        }
-    };
-
-    const throttled = function (this: unknown, ...arg: unknown[]): unknown {
-        const now = Date.now();
-        if (!previous && false === opts.leading) {
-            previous = now;
-        }
-        const remaining = elapse - (now - previous);
-        // eslint-disable-next-line no-invalid-this, @typescript-eslint/no-this-alias
-        context = this;
-        args = [...arg];
-        if (remaining <= 0 || remaining > elapse) {
-            if (handle) {
-                clearTimeout(handle);
-                handle = undefined;
-            }
-            previous = now;
-            result = executor.apply(context, args);
-            if (!handle) {
-                context = args = undefined;
-            }
-        } else if (!handle && false !== opts.trailing) {
-            handle = setTimeout(later, remaining);
-        }
-        return result;
-    };
-
-    throttled.cancel = function (): void {
-        clearTimeout(handle!);
-        previous = 0;
-        handle = context = args = undefined;
-    };
-
-    return throttled as (T & { cancel(): void; });
-}
-
-/**
- * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
- * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
- *
- * @param executor
- *  - `en` seed function.
- *  - `ja` 対象の関数
- * @param wait
- *  - `en` wait elapse [msec].
- *  - `ja` 待機時間 [msec]
- * @param immediate
- *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
- *  - `ja` `true` の場合, 初回のコールは即時実行
- */
-export function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & { cancel(): void; } {
-    /* eslint-disable no-invalid-this */
-    let handle: TimerHandle | undefined;
-    let result: undefined;
-
-    const later = function (context: undefined, args: undefined[]): void {
-        handle = undefined;
-        if (args) {
-            result = executor.apply(context, args);
-        }
-    };
-
-    const debounced = function (this: undefined, ...args: undefined[]): undefined {
-        if (handle) {
-            clearTimeout(handle);
-        }
-        if (immediate) {
-            const callNow = !handle;
-            handle = setTimeout(later, wait);
-            if (callNow) {
-                result = executor.apply(this, args);
-            }
-        } else {
-            handle = setTimeout(later, wait, this, [...args]);
-        }
-        return result;
-    };
-
-    debounced.cancel = function (): void {
-        clearTimeout(handle!);
-        handle = undefined;
-    };
-
-    return debounced as (T & { cancel(): void; });
-    /* eslint-enable no-invalid-this */
+export function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T> {
+    const { leading, trailing } = Object.assign({ leading: true, trailing: true }, options);
+    return debounce(executor, elapse, {
+        leading,
+        trailing,
+        maxWait: elapse,
+    });
 }
 
 /**

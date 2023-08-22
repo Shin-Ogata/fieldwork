@@ -1443,6 +1443,63 @@ export declare function noop(...args: unknown[]): any;
  */
 export declare function sleep(elapse: number): Promise<void>;
 /**
+ * @en Option interface for {@link debounce}().
+ * @ja {@link debounce}() に指定するオプションインターフェイス
+ */
+export interface DebounceOptions {
+    /**
+     * @en the maximum time `func` is allowed to be delayed before it's invoked.
+     * @ja コールバックの呼び出しを待つ最大時間
+     */
+    maxWait?: number;
+    /**
+     * @en Specify `true` if you want to call the callback leading edge of the waiting time. (default: false)
+     * @ja 待ち時間に対してコールバックを先呼び実行する場合は `true` を指定. (default: false)
+     */
+    leading?: boolean;
+    /**
+     * @en Specify `true` if you want to call the callback trailing edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを後呼び実行する場合は `true` を指定. (default: true)
+     */
+    trailing?: boolean;
+}
+export type DebouncedFunction<T extends UnknownFunction> = T & {
+    cancel(): void;
+    flush(): ReturnType<T>;
+    pending(): boolean;
+};
+/**
+ * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
+ * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
+ *
+ * @param executor
+ *  - `en` seed function.
+ *  - `ja` 対象の関数
+ * @param wait
+ *  - `en` wait elapse [msec].
+ *  - `ja` 待機時間 [msec]
+ * @param options
+ *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
+ *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
+ */
+export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
+/**
+ * @en Option interface for {@link throttle}().
+ * @ja {@link throttle}() に指定するオプションインターフェイス
+ */
+export interface ThrottleOptions {
+    /**
+     * @en Specify `true` if you want to call the callback leading edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを先呼び実行する場合は `true` を指定. (default: true)
+     */
+    leading?: boolean;
+    /**
+     * @en Specify `true` if you want to call the callback trailing edge of the waiting time. (default: true)
+     * @ja 待ち時間に対してコールバックを後呼び実行する場合は `true` を指定. (default: true)
+     */
+    trailing?: boolean;
+}
+/**
  * @en Returns a function, that, when invoked, will only be triggered at most once during a given time.
  * @ja 関数の実行を wait [msec] に1回に制限
  *
@@ -1461,29 +1518,7 @@ export declare function sleep(elapse: number): Promise<void>;
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: {
-    leading?: boolean;
-    trailing?: boolean;
-}): T & {
-    cancel(): void;
-};
-/**
- * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
- * @ja 呼び出されてから wait [msec] 経過するまで実行しない関数を返却
- *
- * @param executor
- *  - `en` seed function.
- *  - `ja` 対象の関数
- * @param wait
- *  - `en` wait elapse [msec].
- *  - `ja` 待機時間 [msec]
- * @param immediate
- *  - `en` If `true` is passed, trigger the function on the leading edge, instead of the trailing.
- *  - `ja` `true` の場合, 初回のコールは即時実行
- */
-export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, immediate?: boolean): T & {
-    cancel(): void;
-};
+export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
 /**
  * @en Returns a function that will be executed at most one time, no matter how often you call it.
  * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
@@ -4450,25 +4485,16 @@ export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, Wo
 export declare function thread<T, U>(executor: (...args: U[]) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T>;
 export declare const i18n: i18n.i18n;
 export declare namespace i18n {
-    // Internal Helpers
     export type $MergeBy<T, K> = Omit<T, keyof K> & K;
     export type $Dictionary<T = any> = {
         [key: string]: T;
     };
-    export type $Value<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
     export type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof any[]> : Arr;
     export type $PreservedValue<Value, Fallback> = [
         Value
     ] extends [
         never
     ] ? Fallback : Value;
-    export type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
-    export type $IsResourcesDefined = [
-        keyof _Resources
-    ] extends [
-        never
-    ] ? false : true;
-    export type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true ? Value : Fallback;
     export type $SpecialObject = object | Array<string | object>;
     /**
      * This interface can be augmented by users to add types to `i18next` default TypeOptions.
@@ -4520,9 +4546,13 @@ export declare namespace i18n {
          */
         nsSeparator: ':';
         /**
-         * Char to split namespace from key
+         * Char to split plural from key
          */
         pluralSeparator: '_';
+        /**
+         * Char to split context from key
+         */
+        contextSeparator: '_';
         /**
          * Default namespace used if not passed to translation function
          */
@@ -4752,6 +4782,15 @@ export declare namespace i18n {
          */
         unescape?(str: string): string;
     }
+    export type ResourceKey = string | {
+        [key: string]: any;
+    };
+    export interface ResourceLanguage {
+        [namespace: string]: ResourceKey;
+    }
+    export interface Resource {
+        [language: string]: ResourceLanguage;
+    }
     export interface InitOptions<T = object> extends PluginOptions<T> {
         /**
          * Logs info level to console output. Helps finding issues with loading not working.
@@ -4925,7 +4964,7 @@ export declare namespace i18n {
          */
         overloadTranslationOptionHandler?(args: string[]): TOptions;
         /**
-         * @see https://www.i18next.com/interpolation.html
+         * @see https://www.i18next.com/translation-function/interpolation
          */
         interpolation?: InterpolationOptions;
         /**
@@ -5100,22 +5139,30 @@ export declare namespace i18n {
          */
         interpolation?: InterpolationOptions;
     }
+    export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase & TInterpolationMap;
+    export type FlatNamespace = $PreservedValue<keyof TypeOptions['resources'], string>;
+    export type Namespace<T = FlatNamespace> = T | readonly T[];
+    export type DefaultNamespace = TypeOptions['defaultNS'];
+    export type $IsResourcesDefined = [
+        keyof _Resources
+    ] extends [
+        never
+    ] ? false : true;
+    export type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true ? Value : Fallback;
+    export type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
     // Type Options
     export type _ReturnObjects = TypeOptions['returnObjects'];
     export type _ReturnNull = TypeOptions['returnNull'];
     export type _KeySeparator = TypeOptions['keySeparator'];
     export type _NsSeparator = TypeOptions['nsSeparator'];
     export type _PluralSeparator = TypeOptions['pluralSeparator'];
-    export type _DefaultNamespace = TypeOptions['defaultNS'];
+    export type _ContextSeparator = TypeOptions['contextSeparator'];
     export type _FallbackNamespace = TypeOptions['fallbackNS'];
     export type _Resources = TypeOptions['resources'];
     export type _JSONFormat = TypeOptions['jsonFormat'];
     export type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
     export type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
     export type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
-    export type FlatNamespace = $PreservedValue<keyof _Resources, string>;
-    export type Namespace<T = FlatNamespace> = T | readonly T[];
-    export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase & TInterpolationMap;
     export type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
     export type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? KeyWithoutOrdinalPlural | Key : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}` ? KeyWithoutPlural | Key : Key : Key;
     export type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
@@ -5141,48 +5188,20 @@ export declare namespace i18n {
     export type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeySeparator}${infer Key}` ? Key : never : Keys;
     export type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (infer UnionNsps)[] ? UnionNsps extends keyof Keys ? AppendNamespace<UnionNsps, Keys[UnionNsps]> : never : never;
     export type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false ? never : _FallbackNamespace extends (infer UnionFallbackNs extends string)[] ? Keys[UnionFallbackNs] : Keys[_FallbackNamespace & string];
-    export type ParseKeys<Ns extends Namespace = _DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>> = $IsResourcesDefined extends true ? ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys> : string;
+    export type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${TOpt['context']}${infer Suffix}` ? `${Prefix}${Suffix}` : never : Keys;
+    export type ParseKeys<Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>> = $IsResourcesDefined extends true ? FilterKeysByContext<ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>, TOpt> : string;
     /*********************************************************
      * Parse t function return type and interpolation values *
      *********************************************************/
     export type ParseInterpolationValues<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${string}` ? ActualValue : Value) | ParseInterpolationValues<Rest> : never;
     export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
-    export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = KeyWithOrdinalPlural extends keyof Res ? Res[KeyWithOrdinalPlural] : KeyWithPlural extends keyof Res ? Res[KeyWithPlural] : $Value<Res, Key>;
-    export type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, $Value<Res, K1>> : ParseTReturnPlural<Res, Key>;
+    export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | KeyWithPlural | Key) & keyof Res];
+    export type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res]> : ParseTReturnPlural<Res, Key>;
     export type TReturnOptionalNull = _ReturnNull extends true ? null : never;
     export type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true ? $SpecialObject | string : TOpt['returnObjects'] extends true ? $SpecialObject : string;
     export type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
-    export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>> = $IsResourcesDefined extends true ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, $Value<Resources, Nsp>> : ParseTReturn<Key, Resources[$FirstNamespace<ActualNS>]> : DefaultTReturn<TOpt>;
-    export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret> : Ret;
-    export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
-    /**************************
-     * T function declaration *
-     **************************/
-    export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = undefined> {
-        $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
-        <Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(...args: [
-            key: Key | Key[],
-            options?: TOpt & InterpolationMap<Ret>
-        ] | [
-            key: Key | Key[],
-            defaultValue: string,
-            options?: TOpt & InterpolationMap<Ret>
-        ] | [
-            key: string | string[],
-            options: TOpt & InterpolationMap<Ret> & {
-                defaultValue: string;
-            }
-        ] | [
-            key: string | string[],
-            defaultValue: string,
-            options?: TOpt & InterpolationMap<Ret>
-        ]): TFunctionReturnOptionalDetails<Ret, TOpt>;
-    }
-    export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
-    export interface WithT<Ns extends Namespace = _DefaultNamespace> {
-        // Expose parameterized t in the i18next interface hierarchy
-        t: TFunction<Ns>;
-    }
+    export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
+    export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources]> : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>]> : DefaultTReturn<TOpt>;
     export type TFunctionDetailedResult<T = string> = {
         /**
          * The plain used key
@@ -5205,15 +5224,32 @@ export declare namespace i18n {
          */
         usedNS: string;
     };
-    export interface Resource {
-        [language: string]: ResourceLanguage;
+    export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret> : Ret;
+    export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
+    /**************************
+     * T function declaration *
+     **************************/
+    export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+        $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>>(...args: [
+            key: Key | Key[],
+            options?: ActualOptions
+        ] | [
+            key: string | string[],
+            options: TOpt & $Dictionary & {
+                defaultValue: string;
+            }
+        ] | [
+            key: string | string[],
+            defaultValue: string,
+            options?: TOpt & $Dictionary
+        ]): TFunctionReturnOptionalDetails<Ret, TOpt>;
     }
-    export interface ResourceLanguage {
-        [namespace: string]: ResourceKey;
+    export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+    export interface WithT<Ns extends Namespace = DefaultNamespace> {
+        // Expose parameterized t in the i18next interface hierarchy
+        t: TFunction<Ns>;
     }
-    export type ResourceKey = string | {
-        [key: string]: any;
-    };
     export interface Interpolator {
         init(options: InterpolationOptions, reset: boolean): undefined;
         reset(): undefined;
@@ -5363,8 +5399,8 @@ export declare namespace i18n {
     export interface i18n {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<[
-            _DefaultNamespace,
-            ...Exclude<FlatNamespace, _DefaultNamespace>[]
+            DefaultNamespace,
+            ...Exclude<FlatNamespace, DefaultNamespace>[]
         ]>;
         /**
          * The default of the i18next module is an i18next instance ready to be initialized by calling init.
@@ -5414,7 +5450,7 @@ export declare namespace i18n {
          *
          * Accepts optional keyPrefix that will be automatically applied to returned t function.
          */
-        getFixedT<Ns extends Namespace | null = _DefaultNamespace, TKPrefix extends KeyPrefix<ActualNs> = undefined, ActualNs extends Namespace = Ns extends null ? _DefaultNamespace : Ns>(...args: [
+        getFixedT<Ns extends Namespace | null = DefaultNamespace, TKPrefix extends KeyPrefix<ActualNs> = undefined, ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(...args: [
             lng: string | readonly string[],
             ns?: Ns,
             keyPrefix?: TKPrefix
