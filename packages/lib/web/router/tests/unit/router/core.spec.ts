@@ -199,7 +199,7 @@ describe('router/context spec', () => {
 
         it('Router#register', async () => {
             const router = await createRouterWrap({ start: false });
-            router.register({ path: '/', });
+            void router.register({ path: '/', });
             await router.go();
 
             expect(router.currentRoute).toEqual(jasmine.objectContaining({
@@ -1413,7 +1413,7 @@ describe('router/context spec', () => {
     });
 
     describe('refresh method', () => {
-        it('Router#refresh(level1)', async () => {
+        it('Router#refresh(1, 2, 3)', async () => {
             const router = await createRouterWrap({
                 initialPath: '/',
                 routes: [
@@ -1444,6 +1444,137 @@ describe('router/context spec', () => {
             } catch (e) {
                 fail(e);
             }
+        });
+    });
+
+    describe('prefetch method', () => {
+        it('check prefetch from anchor data-prefetch="true"', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="/next" id="to-next" data-prefetch="true">Next Page</a>
+</div>`,
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            const loaded = $(router.el).children().length;
+            expect(loaded).toBe(3); // `test-initial-page`, `/`, `/next`
+
+            const $button = $(router.el).find('#to-next');
+            expect($button.length).toBe(1);
+
+            $button[0].dispatchEvent(evClick);
+            await waitFrame(router);
+
+            expect(router.currentRoute.path).toBe('/next');
+
+            await router.back();
+            expect(router.currentRoute.path).toBe('/');
+        });
+
+        it('check prefetch from anchor data-prefetch="false"', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="/next" id="to-next" data-prefetch="false">Next Page</a>
+</div>`,
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            const loaded = $(router.el).children().length;
+            expect(loaded).toBe(2); // `test-initial-page`, `/`
+
+            const $button = $(router.el).find('#to-next');
+            expect($button.length).toBe(1);
+
+            $button[0].dispatchEvent(evClick);
+            await waitFrame(router);
+
+            expect(router.currentRoute.path).toBe('/next');
+        });
+
+        it('check prefetch from anchor data-prefetch & duplicate, invalid case', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: `
+<div class="router-page">
+    first page
+    <a href="/next" id="to-next" data-prefetch>Next Page</a>
+    <a href="/next" id="to-next-duplicate" data-prefetch>Next Page</a>
+    <a href="/invalid" id="to-next-invalid" data-prefetch>Next Page</a>
+</div>`,
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            const loaded = $(router.el).children().length;
+            expect(loaded).toBe(3); // `test-initial-page`, `/`, `/next`
+
+            const $button = $(router.el).find('#to-next-duplicate');
+            expect($button.length).toBe(1);
+
+            $button[0].dispatchEvent(evClick);
+            await waitFrame(router);
+
+            expect(router.currentRoute.path).toBe('/next');
+        });
+
+        it('check prefetch from register', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    {
+                        path: '/',
+                        content: '<div class="router-page">first page</div>'
+                    },
+                    {
+                        path: '/next',
+                        content: '<div class="router-page">second page</div>',
+                        prefetch: '/next',
+                    },
+                ],
+            });
+
+            await waitFrame(router);
+
+            const loaded = $(router.el).children().length;
+            expect(loaded).toBe(3); // `test-initial-page`, `/`, `/next`
+
+            await router.navigate('/next');
+            expect(router.currentRoute.path).toBe('/next');
         });
     });
 });

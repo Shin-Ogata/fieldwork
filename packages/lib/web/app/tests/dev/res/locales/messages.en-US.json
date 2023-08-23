@@ -9,7 +9,7 @@
       "factory": "To Page Factory",
       "pageView": "To Page View",
       "settings": "To Settings"
-  },
+    },
     "pageRoot": {
       "title": "Page: Root"
     },
@@ -35,7 +35,8 @@
         "description": "By Function",
         "to": {
           "subflow": "to Sub Flow Examples",
-          "template": "to Template Examples"
+          "template": "to Template Examples",
+          "prefetch": "to Prefetch Examples"
         }
       }
     },
@@ -153,6 +154,24 @@
           },
           "noItem": "Please add list item"
         }
+      }
+    },
+    "prefetch": {
+      "root": {
+        "title": "Prefetch: Root",
+        "description": "Prefetch Examples",
+        "navigateTo": {
+          "anchor": "Prefetching by anchor tags",
+          "register": "Prefetching by Router#register"
+        }
+      },
+      "anchor": {
+        "title": "Prefetching by <a>",
+        "description": "This page was prefetched by anchor tags"
+      },
+      "register": {
+        "title": "Prefetching by register()",
+        "description": "This page was prefetched by Router#register"
       }
     }
   }

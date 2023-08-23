@@ -85,6 +85,7 @@ class RouterPageView extends PageView {
             <fieldset class="control-group">
                 <button data-navigate-to="/subflow-a" @click=${this._onNavigate}>${t(i18nKey.app.pageView.functions.to.subflow)}</button>
                 <button data-navigate-to="/template" @click=${this._onNavigate}>${t(i18nKey.app.pageView.functions.to.template)}</button>
+                <button data-navigate-to="/prefetch" @click=${this._onNavigate}>${t(i18nKey.app.pageView.functions.to.prefetch)}</button>
            </fieldset>
         `;
     }

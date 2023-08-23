@@ -78,6 +78,12 @@ export abstract class PageView<TElement extends Element = HTMLElement, TEvent ex
     }
 
 ///////////////////////////////////////////////////////////////////////
+// implements: View
+
+    /** @overridable */
+    render(...args: unknown[]): any { /* overridable */ } // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+
+///////////////////////////////////////////////////////////////////////
 // event handlers: utilized page event
 
     /* eslint-disable @typescript-eslint/no-unused-vars */

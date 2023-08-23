@@ -36,6 +36,8 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
      * @ja {@link Router} インスタンス
      */
     protected get _router(): Router | undefined;
+    /** @overridable */
+    render(...args: unknown[]): any;
     /**
      * @overridable
      * @en Triggered when the page's HTMLElement is newly constructed by router.

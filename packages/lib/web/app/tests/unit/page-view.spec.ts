@@ -40,9 +40,6 @@ describe('page-view spec', () => {
         get router(): Router | undefined {
             return this._router;
         }
-        render(): this {
-            return this;
-        }
     }
 
     it('check instance', () => {
@@ -189,7 +186,12 @@ describe('page-view spec', () => {
             el: app.router.el,
         };
 
-        const view = new TestView(route, { el: app.router.el });
-        (view as any).pageInit({ to: route });
+        try {
+            const view = new TestView(route, { el: app.router.el });
+            (view as any).pageInit({ to: route });
+            view.render();
+        } catch {
+            fail();
+        }
     });
 });
