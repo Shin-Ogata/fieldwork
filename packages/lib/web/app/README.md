@@ -17,11 +17,12 @@
   - ☆ onHardwareBackButton
   - ☆ getOrientation
   - ☆ custom document ready
+- Router
+  - ☆ prefetch の見直し
 - environment
   - prefers-color-scheme
 
 ## 覚書
-
 - AppContext は main の router を管理する必要最低限のメンバを定義する
   - そのため,　ルート `#app` の element アクセスや配下の component instance アクセスを既定では提供しない
   - リッチなメンバアクセスがほしい場合、(panel等)はクライアント側でクラスでラップする or context インスタンスにメンバを追加(root elementアクセス等)する

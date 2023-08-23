@@ -228,7 +228,7 @@ export interface RouteParameters {
     path: string;
 
     /**
-     * @en Array with nested routes
+     * @en Array with nested routes.
      * @ja ネストされたルート
      */
     routes?: RouteParameters[];
@@ -252,10 +252,16 @@ export interface RouteParameters {
     componentOptions?: unknown;
 
     /**
-     * @en Creates dynamic page from specified content string
+     * @en Creates dynamic page from specified content string.
      * @ja DOM コンテント構築のシードパラメータ
      */
     content?: RouteContentSeed;
+
+    /**
+     * @en Specify `URL` to prefetch the DOM content.
+     * @ja DOM コンテントを prefetch しておく場合は `URL` を指定
+     */
+    prefetch?: string;
 }
 
 //__________________________________________________________________________________________________//
@@ -273,7 +279,7 @@ export type RoutePathParams = Record<string, string | number | boolean | null | 
 export interface Route {
     /**
      * @en Page's URL.
-     * @ja ページの URL
+     * @ja ページの URL.
      */
     readonly url: string;
 
@@ -531,7 +537,7 @@ export interface Router extends Subscribable<RouterEvent> {
      *  - `en` Specify `true` to reload after registration. default: `false`
      *  - `ja` 登録後, 再読み込みを行う場合は `true` を指定. default: `false`
      */
-    register(routes: RouteParameters | RouteParameters[], refersh?: boolean): this;
+    register(routes: RouteParameters | RouteParameters[], refersh?: boolean): Promise<this>;
 
     /**
      * @en Navigate to new page.

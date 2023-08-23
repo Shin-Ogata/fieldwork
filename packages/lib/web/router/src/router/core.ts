@@ -120,7 +120,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         this._transitionSettings = Object.assign({ default: 'none', reload: 'none' }, transition);
         this._navigationSettings = Object.assign({ method: 'push' }, navigation);
 
-        this.register(routes!, start);
+        void this.register(routes!, start);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -152,11 +152,17 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** Route registration */
-    register(routes: RouteParameters | RouteParameters[], refresh = false): this {
+    async register(routes: RouteParameters | RouteParameters[], refresh = false): Promise<this> {
+        const prefetchParams: RouteContextParameters[] = [];
         for (const context of toRouteContextParameters(routes)) {
             this._routes[context.path] = context;
+            const { content, prefetch } = context;
+            content && prefetch && prefetchParams.push(context);
         }
-        refresh && void this.go();
+
+        prefetchParams.length && await this.setPrefetchContents(prefetchParams);
+        refresh && await this.go();
+
         return this;
     }
 
@@ -193,7 +199,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             const routes = stacks.filter(s => !!s.route).map(s => s.route!);
 
             // ensrue Route
-            this.register(routes, false);
+            await this.register(routes, false);
 
             await this.suppressEventListenerScope(async () => {
                 // push history
@@ -335,19 +341,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 return this.go();
             case RouterRefreshLevel.DOM_CLEAR: {
                 for (const route of this._history.stack) {
-                    const $el = $(route.el);
-                    const page = route['@params'].page;
-                    if ($el.isConnected) {
-                        $el.detach();
-                        this.publish('unmounted', route);
-                        this.triggerPageCallback('unmounted', page, route);
-                    }
-                    if (route.el) {
-                        route.el = null!;
-                        this.publish('unloaded', route);
-                        this.triggerPageCallback('removed', page, route);
-                    }
+                    this.unmountContent(route);
                 }
+                this.unsetPrefetchContents();
                 this._prevRoute && (this._prevRoute.el = null!);
                 return this.go();
             }
@@ -397,7 +393,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
 ///////////////////////////////////////////////////////////////////////
-// private methods: transition
+// private methods: transition utils
 
     /** @internal common `RouterEventArg` maker */
     private makeRouteChangeInfo(newState: HistoryState<RouteContext>, oldState: HistoryState<RouteContext> | undefined): RouteChangeInfoContext {
@@ -453,6 +449,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return waitFrame(1, this._raf);
     }
 
+///////////////////////////////////////////////////////////////////////
+// private methods: transition entrance
+
     /** @internal change page main procedure */
     private async changePage(nextRoute: HistoryState<RouteContext>, prevRoute: HistoryState<RouteContext> | undefined): Promise<void> {
         try {
@@ -479,11 +478,17 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 await this._history.clearForward();
             }
 
+            // prefetch content のケア
+            await this.treatPrefetchContents();
+
             this.publish('changed', changeInfo);
         } finally {
             this._inChangingPage = false;
         }
     }
+
+///////////////////////////////////////////////////////////////////////
+// private methods: transition prepare
 
     /** @internal */
     private async prepareChangeContext(changeInfo: RouteChangeInfoContext): Promise<[Page, DOM, Page, DOM]> {
@@ -504,24 +509,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         // page $el
         if (!nextRoute.el) {
             if (!reload && samePageInstance) {
-                nextRoute.el  = prevRoute!.el;
-                prevRoute!.el = nextRoute.el?.cloneNode(true) as HTMLElement;
-                $(prevRoute!.el).insertBefore(nextRoute.el);
-                $(nextRoute.el).attr('aria-hidden', true).removeClass([`${this._cssPrefix}-${CssName.PAGE_CURRENT}`, `${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`]);
-                this.publish('cloned', changeInfo);
-                this.triggerPageCallback('cloned', nextParams.page, changeInfo);
-                await asyncProcess.complete();
+                await this.cloneContent(nextRoute, nextParams, prevRoute!, changeInfo, asyncProcess);
             } else {
-                if (nextParams.$template?.isConnected) {
-                    nextRoute.el         = nextParams.$template[0];
-                    nextParams.$template = nextParams.$template.clone();
-                } else {
-                    nextRoute.el = nextParams.$template!.clone()[0];
-                }
-                this.publish('loaded', changeInfo);
-                await asyncProcess.complete();
-                this.triggerPageCallback('init', nextParams.page, changeInfo);
-                await asyncProcess.complete();
+                await this.loadContent(nextRoute, nextParams, changeInfo, asyncProcess);
             }
         }
 
@@ -530,11 +520,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         // mount
         if (!$elNext.isConnected) {
-            $elNext.attr('aria-hidden', true);
-            this._$el.append($elNext);
-            this.publish('mounted', changeInfo);
-            this.triggerPageCallback('mounted', pageNext, changeInfo);
-            await asyncProcess.complete();
+            await this.mountContent($elNext, pageNext, changeInfo, asyncProcess);
         }
 
         return [
@@ -542,6 +528,77 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             (reload && {} || (prevParams?.page ?? {})), (reload && $(null) || $(prevRoute?.el)), // prev
         ];
     }
+
+    /** @internal */
+    private async cloneContent(
+        nextRoute: HistoryState<RouteContext>, nextParams: RouteContextParameters,
+        prevRoute: HistoryState<RouteContext>,
+        changeInfo: RouteChangeInfoContext,
+        asyncProcess: RouteAyncProcessContext,
+    ): Promise<void> {
+        nextRoute.el = prevRoute.el;
+        prevRoute.el = nextRoute.el?.cloneNode(true) as HTMLElement;
+        $(prevRoute.el).insertBefore(nextRoute.el);
+        $(nextRoute.el).attr('aria-hidden', true).removeClass([`${this._cssPrefix}-${CssName.PAGE_CURRENT}`, `${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`]);
+        this.publish('cloned', changeInfo);
+        this.triggerPageCallback('cloned', nextParams.page, changeInfo);
+        await asyncProcess.complete();
+    }
+
+    /** @internal */
+    private async loadContent(
+        route: HistoryState<RouteContext>, params: RouteContextParameters,
+        changeInfo: RouteChangeInfoContext,
+        asyncProcess: RouteAyncProcessContext,
+    ): Promise<void> {
+        let fireEvents = true;
+        if (params.$template?.isConnected) {
+            fireEvents       = !params.page?.['@route']?.el; // off: prefetch case
+            route.el         = params.$template[0];
+            params.$template = params.$template.clone();
+        } else {
+            route.el = params.$template!.clone()[0];
+        }
+
+        if (fireEvents) {
+            this.publish('loaded', changeInfo);
+            await asyncProcess.complete();
+            this.triggerPageCallback('init', params.page, changeInfo);
+            await asyncProcess.complete();
+        }
+    }
+
+    /** @internal */
+    private async mountContent(
+        $el: DOM, page: Page | undefined,
+        changeInfo: RouteChangeInfoContext,
+        asyncProcess: RouteAyncProcessContext,
+    ): Promise<void> {
+        $el.attr('aria-hidden', true);
+        this._$el.append($el);
+        this.publish('mounted', changeInfo);
+        this.triggerPageCallback('mounted', page, changeInfo);
+        await asyncProcess.complete();
+    }
+
+    /** @internal */
+    private unmountContent(route: RouteContext): void {
+        const $el = $(route.el);
+        const page = route['@params'].page;
+        if ($el.isConnected) {
+            $el.detach();
+            this.publish('unmounted', route);
+            this.triggerPageCallback('unmounted', page, route);
+        }
+        if (route.el) {
+            route.el = null!;
+            this.publish('unloaded', route);
+            this.triggerPageCallback('removed', page, route);
+        }
+    }
+
+///////////////////////////////////////////////////////////////////////
+// private methods: transition core
 
     /** @internal */
     private async transitionPage(
@@ -641,6 +698,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         await changeInfo.asyncProcess.complete();
     }
 
+///////////////////////////////////////////////////////////////////////
+// private methods: transition finalize
+
     /** @internal update page status after transition */
     private updateChangeContext(
         $elNext: DOM,
@@ -698,6 +758,76 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         this._lastRoute = this.currentRoute as RouteContext;
         'forward' === direction && transition && (this._lastRoute.transition = transition);
+    }
+
+///////////////////////////////////////////////////////////////////////
+// private methods: prefetch
+
+    /** @internal set dom prefetched contents */
+    private async setPrefetchContents(params: RouteContextParameters[]): Promise<void> {
+        const toRoute = (param: RouteContextParameters, el: HTMLElement): RouteContext => {
+            const ctx = toRouteContext(param.prefetch!, this, param);
+            ctx.el = el;
+            return ctx;
+        };
+
+        const toRouteChangeInfo = (route: RouteContext): RouteChangeInfoContext => {
+            return {
+                router: this,
+                to: route,
+                direction: 'none',
+                asyncProcess: new RouteAyncProcessContext(),
+                reload: false,
+            };
+        };
+
+        for (const param of params) {
+            const elPage = param.page?.['@route']?.el;
+            if (!elPage || (this.currentRoute.el !== elPage && this._lastRoute?.el !== elPage && this._prevRoute?.el !== elPage)) {
+                await ensureRouterPageTemplate(param);
+                const el = param.$template![0];
+                if (!el.isConnected) {
+                    const route = toRoute(param, el);
+                    await ensureRouterPageInstance(route);
+                    const changeInfo = toRouteChangeInfo(route);
+                    const { asyncProcess } = changeInfo;
+                    // load & init
+                    this.publish('loaded', changeInfo);
+                    await asyncProcess.complete();
+                    this.triggerPageCallback('init', param.page, changeInfo);
+                    await asyncProcess.complete();
+                    // mount
+                    await this.mountContent($(el), param.page, changeInfo, asyncProcess);
+                }
+            }
+        }
+    }
+
+    /** @internal unset dom prefetched contents */
+    private unsetPrefetchContents(): void {
+        for (const key of Object.keys(this._routes)) {
+            const route = this._routes[key].page?.['@route'];
+            route && this.unmountContent(route as RouteContext);
+        }
+    }
+
+    /** @internal load prefetch dom contents */
+    private async treatPrefetchContents(): Promise<void> {
+        // 遷移先から prefetch content を検出
+        const prefetchParams: RouteContextParameters[] = [];
+        const targets = this.currentRoute.el?.querySelectorAll(`[data-${LinkData.PREFETCH}]`) ?? [];
+        for (const el of targets) {
+            const $el = $(el);
+            if (false !== $el.data(LinkData.PREFETCH)) {
+                const url = $el.attr('href');
+                const params = this.findRouteContextParams(url!);
+                if (params) {
+                    params.prefetch = url;
+                    prefetchParams.push(params);
+                }
+            }
+        }
+        await this.setPrefetchContents(prefetchParams);
     }
 
 ///////////////////////////////////////////////////////////////////////

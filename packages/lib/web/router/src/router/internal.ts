@@ -70,6 +70,7 @@ export const enum DomCache {
 export const enum LinkData {
     TRANSITION       = 'transition',
     NAVIAGATE_METHOD = 'navigate-method',
+    PREFETCH         = 'prefetch',
     PREVENT_ROUTER   = 'prevent-router',
 }
 

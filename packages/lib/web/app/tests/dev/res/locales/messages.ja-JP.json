@@ -35,7 +35,8 @@
         "description": "機能別",
         "to": {
           "subflow": "Sub Flow の実装例へ",
-          "template": "Template の実装例へ"
+          "template": "Template の実装例へ",
+          "prefetch": "Prefetch の実装例へ"
         }
       }
     },
@@ -153,6 +154,24 @@
           },
           "noItem": "リストアイテムを追加してください"
         }
+      }
+    },
+    "prefetch": {
+      "root": {
+        "title": "Prefetch: ルート",
+        "description": "Prefetch 実装例",
+        "navigateTo": {
+          "anchor": "anchor タグによるプリフェッチ",
+          "register": "Router#register によるプリフェッチ"
+        }
+      },
+      "anchor": {
+        "title": "<a> タグによるプリフェッチ",
+        "description": "anchor タグによってプリフェッチされたページ"
+      },
+      "register": {
+        "title": "register() によるプリフェッチ",
+        "description": "Router#register によってプリフェッチされたページ"
       }
     }
   }

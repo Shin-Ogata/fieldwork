@@ -308,8 +308,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
         _window.addEventListener('orientationchange', this.onHandleOrientationChanged.bind(this));
 
         this._router.on('loaded', this.onPageLoaded.bind(this));
-        this._router.register(_initialPages, false);
-        await this._router.go();
+        await this._router.register(_initialPages, true);
 
         // remove splash screen
         $(splash, _window.document).remove();
