@@ -1445,6 +1445,25 @@ describe('router/context spec', () => {
                 fail(e);
             }
         });
+
+        it('treat w/ history', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/',
+                routes: [
+                    { path: '/', content: '<div class="router-page"></div>' },
+                    { path: '/cache', content: '<div class="router-page" data-dom-cache="connect"></div>' },
+                ],
+            });
+
+            await waitFrame(router);
+            await router.navigate('/cache');
+            await router.refresh(RouterRefreshLevel.DOM_CLEAR);
+            await router.back();
+            await router.navigate('/cache');
+            await router.refresh(RouterRefreshLevel.DOM_CLEAR);
+            await router.back();
+            expect(router.currentRoute.path).toBe('/');
+        });
     });
 
     describe('prefetch method', () => {

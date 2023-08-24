@@ -112,42 +112,42 @@ class RouterPage implements Page {
     }
 
     static template = /* html */`
-<div id="page-class" class="router-page">
-    <h2 data-i18n="${i18nKey.app.pageClass.title}">🌐</h2>
-    <hr/>
-    <label>👈</label>
-    <button><a href="#" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
-    <br/>
-    <h3 data-i18n="${i18nKey.app.pageClass.refresh.title}">🌐</h3>
-    <fieldset>
-        <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv1}">
-            <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv1" value="1" checked="checked">
-        </label>
-        <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv2}">
-            <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv2" value="2">
-        </label>
-        <button id="page-class-refresh" data-i18n="${i18nKey.app.common.reload}">🌐</button>
-    </fieldset>
-    <br/>
-    <h3 data-i18n="${i18nKey.app.pageClass.transition.title}">🌐</h3>
-    <fieldset>
-        <select id="page-class-select-transition">
-            <option value="fade">Fade</option>
-            <option value="float-up">Float Up</option>
-            <option value="slide">Slide</option>
-            <option value="slide-up">Slide Up</option>
-            <option value="slide-fade">Slide Fade</option>
-            <option value="bounce">Bounce</option>
-            <option value="none">None</option>
-        </select>
-    </fieldset>
-    <br/>
-    <h3 data-i18n="${i18nKey.app.pageClass.language.title}">🌐</h3>
-    <fieldset>
-        <button id="page-class-change-lng">🌐</button>
-    </fieldset>
-</div>
-`;
+    <div id="page-class" class="router-page" data-dom-cache="connect">
+        <h2 data-i18n="${i18nKey.app.pageClass.title}">🌐</h2>
+        <hr/>
+        <label>👈</label>
+        <button><a href="#" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
+        <br/>
+        <h3 data-i18n="${i18nKey.app.pageClass.refresh.title}">🌐</h3>
+        <fieldset>
+            <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv1}">
+                <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv1" value="1" checked="checked">
+            </label>
+            <label data-i18n="[append]${i18nKey.app.pageClass.refresh.lv2}">
+                <input type="radio" name="page-class-refresh-lv" id="page-class-refresh-lv2" value="2">
+            </label>
+            <button id="page-class-refresh" data-i18n="${i18nKey.app.common.reload}">🌐</button>
+        </fieldset>
+        <br/>
+        <h3 data-i18n="${i18nKey.app.pageClass.transition.title}">🌐</h3>
+        <fieldset>
+            <select id="page-class-select-transition">
+                <option value="fade">Fade</option>
+                <option value="float-up">Float Up</option>
+                <option value="slide">Slide</option>
+                <option value="slide-up">Slide Up</option>
+                <option value="slide-fade">Slide Fade</option>
+                <option value="bounce">Bounce</option>
+                <option value="none">None</option>
+            </select>
+        </fieldset>
+        <br/>
+        <h3 data-i18n="${i18nKey.app.pageClass.language.title}">🌐</h3>
+        <fieldset>
+            <button id="page-class-change-lng">🌐</button>
+        </fieldset>
+    </div>
+    `;
 }
 
 registerPage({
