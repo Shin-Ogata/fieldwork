@@ -19,6 +19,13 @@
   - ☆ custom document ready
 - Router
   - ☆ prefetch の見直し
+  - ☆ DOM Cache バグ (履歴に無いと増える)
+    - キャッシュオブジェクト必要
+      - path (this._routes) と el の紐づけ
+    - loadContent() の 2番目の判定でキャッシュから引っ張る
+    - refresh lv2 で破棄
+    - API 見直し
+      - https://demos.jquerymobile.com/1.1.2/docs/pages/page-cache.html
 - environment
   - prefers-color-scheme
 

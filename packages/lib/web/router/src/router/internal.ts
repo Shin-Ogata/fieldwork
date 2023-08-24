@@ -100,6 +100,8 @@ export type RouteContextParameters = Omit<RouteParameters, 'routes'> & {
     $template?: DOM;
     /** router page instance from `component` property */
     page?: Page;
+    /** latest route context cache */
+    '@route'?: Route;
 };
 
 /** @internal */
