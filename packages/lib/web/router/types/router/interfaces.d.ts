@@ -1,7 +1,7 @@
 import type { Constructor } from '@cdp/core-utils';
 import type { Subscribable } from '@cdp/events';
 import type { Result } from '@cdp/result';
-import type { DOM } from '@cdp/dom';
+import type { DOMSelector } from '@cdp/dom';
 import type { IHistory, HistoryDirection } from '../history';
 /**
  * @en Page transition parameters definition.
@@ -181,12 +181,17 @@ export interface Page {
  * @en {@link Page} factory function.
  * @ja {@link Page} 構築関数
  */
-export type PageFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
-export type RouteComponentSeed = Constructor<Page> | PageFactory | Page | string;
+export type RouteComponentFactory = (route: Route, options?: unknown) => Page | Promise<Page>;
+/**
+ * @en Template factory function.
+ * @ja テンプレート構築関数
+ */
+export type RouteContentFactory = () => DOMSelector | string | Promise<DOMSelector | string>;
+export type RouteComponentSeed = Constructor<Page> | RouteComponentFactory | Page | string;
 export type RouteContentSeed = {
     selector: string;
     url?: string;
-} | HTMLElement | HTMLTemplateElement | DOM | string;
+} | RouteContentFactory | DOMSelector | string;
 /**
  * @en Route parameters interface. It is also a construction option.
  * @ja ルートパラメータ. 構築オプションとしても使用.

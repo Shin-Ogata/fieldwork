@@ -257,9 +257,10 @@ export const ensureRouterPageTemplate = async (params: RouteContextParameters): 
             throw Error(`template load failed. [selector: ${selector}, url: ${url}]`);
         }
         params.$template = ensureInstance(template);
+    } else if (isFunction(content)) {
+        params.$template = ensureInstance($(await content())[0]);
     } else {
-        const $el = $(content as DOMSelector);
-        params.$template = ensureInstance($el[0]);
+        params.$template = ensureInstance($(content as DOMSelector)[0]);
     }
 
     return true; // newly created

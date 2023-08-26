@@ -23,7 +23,7 @@ void (async () => {
         splash: '#splash-screen',
         waitForReady: customInit,
         i18n: {
-            lng: 'ja',
+            lng: /^[a-z]{2}/.exec(navigator.language)![0],
             fallbackLng: 'en',
             namespace: 'messages',
             resourcePath: '/res/locales/{{ns}}.{{lng}}.json',
