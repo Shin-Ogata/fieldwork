@@ -554,6 +554,12 @@ describe('router/context spec', () => {
                         content: $('<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from DOM</div>'),
                     },
                     {
+                        path: '/function',
+                        content: function () {
+                            return '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from function</div>';
+                        },
+                    },
+                    {
                         path: '/template-el',
                         content: elTemplate,
                     },
@@ -610,6 +616,19 @@ describe('router/context spec', () => {
             expect($el).toBeDefined();
             expect($el.length).toBe(1);
             expect($el.text()).toBe('template from DOM');
+            expect($el !== $template).toBe(true);
+
+            await router.navigate('/function');
+
+            $template = (router.currentRoute as any)['@params'].$template;
+            $el = $(router.currentRoute.el);
+
+            expect($template).toBeDefined();
+            expect($template.length).toBe(1);
+            expect($template.text()).toBe('template from function');
+            expect($el).toBeDefined();
+            expect($el.length).toBe(1);
+            expect($el.text()).toBe('template from function');
             expect($el !== $template).toBe(true);
 
             await router.navigate('/template-el');
