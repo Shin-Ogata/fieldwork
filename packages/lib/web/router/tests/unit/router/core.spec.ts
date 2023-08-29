@@ -555,7 +555,7 @@ describe('router/context spec', () => {
                     },
                     {
                         path: '/function',
-                        content: function () {
+                        content () {
                             return '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">template from function</div>';
                         },
                     },
