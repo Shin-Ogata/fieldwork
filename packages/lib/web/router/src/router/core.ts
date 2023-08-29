@@ -75,7 +75,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private _navigationSettings: Required<NavigationSettings>;
     private _lastRoute?: RouteContext;
     private _prevRoute?: RouteContext;
-    private _tempTransitionParams?: PageTransitionParams;
+    private _subflowTransitionParams?: PageTransitionParams;
     private _inChangingPage = false;
 
     /**
@@ -289,7 +289,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         const { transition, reverse } = subflow.params;
 
-        this._tempTransitionParams = Object.assign({ transition, reverse }, params);
+        this._subflowTransitionParams = Object.assign({ transition, reverse }, params);
         const { additionalDistance, additinalStacks } = subflow.params;
         const distance = subflow.distance + additionalDistance;
 
@@ -313,7 +313,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         const { transition, reverse } = subflow.params;
 
-        this._tempTransitionParams = Object.assign({ transition, reverse }, params);
+        this._subflowTransitionParams = Object.assign({ transition, reverse }, params);
         await this.go(-1 * subflow.distance);
         await this._history.clearForward();
 
@@ -340,7 +340,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             case RouterRefreshLevel.RELOAD:
                 return this.go();
             case RouterRefreshLevel.DOM_CLEAR: {
-                this.destructCachedContents();
+                this.releaseCacheContents(undefined);
                 this._prevRoute && (this._prevRoute.el = null!);
                 return this.go();
             }
@@ -402,7 +402,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const asyncProcess = new RouteAyncProcessContext();
         const reload = newState.url === from?.url;
         const { transition, reverse }
-            = this._tempTransitionParams ?? (reload
+            = this._subflowTransitionParams ?? (reload
                 ? { transition: this._transitionSettings.reload, reverse: false }
                 : ('back' !== direction ? newState : from as RouteContext));
 
@@ -457,7 +457,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             parseUrlParams(nextRoute);
 
             const changeInfo = this.makeRouteChangeInfo(nextRoute, prevRoute);
-            this._tempTransitionParams = undefined;
+            this._subflowTransitionParams = undefined;
 
             const [
                 pageNext, $elNext,
@@ -504,12 +504,10 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const { reload, samePageInstance, asyncProcess } = changeInfo;
 
         // page $el
-        if (!nextRoute.el) {
-            if (!reload && samePageInstance) {
-                await this.cloneContent(nextRoute, nextParams, prevRoute!, changeInfo, asyncProcess);
-            } else {
-                await this.loadContent(nextRoute, nextParams, changeInfo, asyncProcess);
-            }
+        if (!reload && samePageInstance) {
+            await this.cloneContent(nextRoute, nextParams, prevRoute!, changeInfo, asyncProcess);
+        } else if (!nextRoute.el) {
+            await this.loadContent(nextRoute, nextParams, changeInfo, asyncProcess);
         }
 
         const $elNext = $(nextRoute.el);
@@ -563,6 +561,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             }
         }
 
+        // update master cache
         if (route !== this._routes[route.path]['@route']) {
             this._routes[route.path]['@route'] = route;
         }
@@ -751,15 +750,20 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 ///////////////////////////////////////////////////////////////////////
 // private methods: prefetch & dom cache
 
-    /** @internal unset dom prefetched contents */
-    private destructCachedContents(): void {
+    /** @internal unset dom cached contents */
+    private releaseCacheContents(el: HTMLElement | undefined): void {
         for (const key of Object.keys(this._routes)) {
-            const route = this._routes[key]['@route'];
-            route && this.unmountContent(route as RouteContext);
+            const route = this._routes[key]['@route'] as RouteContext | undefined;
+            if (route) {
+                if (null == el) {
+                    this.unmountContent(route);
+                } else if (route.el === el) {
+                    route.el = null!;
+                }
+            }
         }
-
         for (const route of this._history.stack) {
-            if (route.el) {
+            if ((null == el && route.el) || route.el === el) {
                 route.el = null!;
             }
         }
@@ -779,6 +783,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                     this.triggerPageCallback('unmounted', page, prevRoute);
                 }
                 if (DomCache.CACHE_LEVEL_MEMORY !== cacheLv) {
+                    this.releaseCacheContents(prevRoute.el);
                     prevRoute.el = null!;
                     if (fireEvents) {
                         this.publish('unloaded', prevRoute);

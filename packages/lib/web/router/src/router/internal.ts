@@ -221,8 +221,7 @@ export const ensureRouterPageInstance = async (route: RouteContext): Promise<boo
     const { component, componentOptions } = params;
     if (isFunction(component)) {
         try {
-            // eslint-disable-next-line @typescript-eslint/await-thenable
-            params.page = await new (component as unknown as Class)(route, componentOptions);
+            params.page = new (component as unknown as Class)(route, componentOptions);
         } catch {
             params.page = await component(route, componentOptions);
         }
