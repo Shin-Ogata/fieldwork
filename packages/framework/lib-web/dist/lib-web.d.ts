@@ -25,7 +25,7 @@ declare const i18n: i18n.i18n;
 
 declare namespace i18n {
     export type $MergeBy<T, K> = Omit<T, keyof K> & K;
-    export type $Dictionary<T = any> = {
+    export type $Dictionary<T = unknown> = {
         [key: string]: T;
     };
     export type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof any[]> : Arr;
@@ -616,7 +616,7 @@ declare namespace i18n {
         /**
          * Default value to return if a translation was not found
          */
-        defaultValue?: any;
+        defaultValue?: unknown;
         /**
          * Count value used for plurals
          */
@@ -733,7 +733,7 @@ declare namespace i18n {
      * Parse t function return type and interpolation values *
      *********************************************************/
     export type ParseInterpolationValues<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${string}` ? ActualValue : Value) | ParseInterpolationValues<Rest> : never;
-    export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
+    export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, unknown>;
     export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | KeyWithPlural | Key) & keyof Res];
     export type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res]> : ParseTReturnPlural<Res, Key>;
     export type TReturnOptionalNull = _ReturnNull extends true ? null : never;
