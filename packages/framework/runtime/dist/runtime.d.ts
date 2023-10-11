@@ -5618,7 +5618,7 @@ export interface DirectiveClass {
  * This utility type extracts the signature of a directive class's render()
  * method so we can use it for the type of the generated directive function.
  */
-export declare type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
+export type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
 /**
  * A generated directive function doesn't evaluate the directive, but just
  * returns a DirectiveResult object that captures the arguments.
@@ -5633,7 +5633,7 @@ export declare const PartType: {
     readonly EVENT: 5;
     readonly ELEMENT: 6;
 };
-export declare type PartType = (typeof PartType)[keyof typeof PartType];
+export type PartType = (typeof PartType)[keyof typeof PartType];
 export interface ChildPartInfo {
     readonly type: typeof PartType.CHILD;
 }
@@ -5652,7 +5652,7 @@ export interface ElementPartInfo {
  * This is useful for checking that a directive is attached to a valid part,
  * such as with directive that can only be used on attribute bindings.
  */
-export declare type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
+export type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
 /**
  * Creates a user-facing directive function from a Directive class. This
  * function has the same parameters as the directive's render() method.
@@ -5690,7 +5690,7 @@ export declare abstract class Directive implements Disconnectable {
  *     be to a property or a node.
  * @return A function that will sanitize this class of writes.
  */
-export declare type SanitizerFactory = (node: Node, name: string, type: 'property' | 'attribute') => ValueSanitizer;
+export type SanitizerFactory = (node: Node, name: string, type: 'property' | 'attribute') => ValueSanitizer;
 /**
  * A function which can sanitize values that will be written to a specific kind
  * of DOM sink.
@@ -5702,10 +5702,10 @@ export declare type SanitizerFactory = (node: Node, name: string, type: 'propert
  * @return The value to write to the DOM. Usually the same as the input value,
  *     unless sanitization is needed.
  */
-export declare type ValueSanitizer = (value: unknown) => unknown;
+export type ValueSanitizer = (value: unknown) => unknown;
 declare const HTML_RESULT = 1;
 declare const SVG_RESULT = 2;
-export declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+export type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
 declare const ATTRIBUTE_PART = 1;
 declare const CHILD_PART = 2;
 declare const ELEMENT_PART = 6;
@@ -5723,13 +5723,13 @@ declare const COMMENT_PART = 7;
  * [Rendering](https://lit.dev/docs/components/rendering) for more information.
  *
  */
-export declare type TemplateResult<T extends ResultType = ResultType> = {
+export type TemplateResult<T extends ResultType = ResultType> = {
     ['_$litType$']: T;
     strings: TemplateStringsArray;
     values: unknown[];
 };
-export declare type HTMLTemplateResult = TemplateResult<typeof HTML_RESULT>;
-export declare type SVGTemplateResult = TemplateResult<typeof SVG_RESULT>;
+export type HTMLTemplateResult = TemplateResult<typeof HTML_RESULT>;
+export type SVGTemplateResult = TemplateResult<typeof SVG_RESULT>;
 /**
  * Interprets a template literal as an HTML template that can efficiently
  * render to and update a container.
@@ -5855,22 +5855,22 @@ declare class TemplateInstance implements Disconnectable {
     _clone(options: RenderOptions | undefined): Node;
     _update(values: Array<unknown>): void;
 }
-export declare type AttributeTemplatePart = {
+export type AttributeTemplatePart = {
     readonly type: typeof ATTRIBUTE_PART;
     readonly index: number;
     readonly name: string;
     readonly ctor: typeof AttributePart;
     readonly strings: ReadonlyArray<string>;
 };
-export declare type ChildTemplatePart = {
+export type ChildTemplatePart = {
     readonly type: typeof CHILD_PART;
     readonly index: number;
 };
-export declare type ElementTemplatePart = {
+export type ElementTemplatePart = {
     readonly type: typeof ELEMENT_PART;
     readonly index: number;
 };
-export declare type CommentTemplatePart = {
+export type CommentTemplatePart = {
     readonly type: typeof COMMENT_PART;
     readonly index: number;
 };
@@ -5879,8 +5879,8 @@ export declare type CommentTemplatePart = {
  * is instantiated. When a template is instantiated Parts are created from
  * TemplateParts.
  */
-export declare type TemplatePart = ChildTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
-export declare type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
+export type TemplatePart = ChildTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
+export type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
 declare class ChildPart implements Disconnectable {
     readonly type = 2;
     readonly options: RenderOptions | undefined;
@@ -6076,7 +6076,7 @@ export declare class Ref<T = Element> {
      */
     readonly value?: T;
 }
-export declare type RefOrCallback<T = Element> = Ref<T> | ((el: T | undefined) => void);
+export type RefOrCallback<T = Element> = Ref<T> | ((el: T | undefined) => void);
 declare class RefDirective extends AsyncDirective {
     private _element?;
     private _ref?;
@@ -6089,7 +6089,7 @@ declare class RefDirective extends AsyncDirective {
     reconnected(): void;
 }
 declare const _directive_ref: (_ref?: RefOrCallback<Element> | undefined) => DirectiveResult<typeof RefDirective>;
-export declare type Mapper<T> = (v: T, index?: number) => unknown;
+export type Mapper<T> = (v: T, index?: number) => unknown;
 declare class AsyncReplaceDirective extends AsyncDirective {
     private __value?;
     private __weakThis;
@@ -6162,8 +6162,8 @@ declare const _directive_live: (value: unknown) => DirectiveResult<typeof LiveDi
 declare function _directive_map<T>(items: Iterable<T> | undefined, f: (value: T, index: number) => unknown): Generator<unknown, void, unknown>;
 declare function _directive_range(end: number): Iterable<number>;
 declare function _directive_range(start: number, end: number, step?: number): Iterable<number>;
-export declare type KeyFn<T> = (item: T, index: number) => unknown;
-export declare type ItemTemplate<T> = (item: T, index: number) => unknown;
+export type KeyFn<T> = (item: T, index: number) => unknown;
+export type ItemTemplate<T> = (item: T, index: number) => unknown;
 export interface RepeatDirectiveFn {
     <T>(items: Iterable<T>, keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>, template?: ItemTemplate<T>): unknown;
     <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
@@ -6181,7 +6181,7 @@ export interface StyleInfo {
     [name: string]: string | number | undefined | null;
 }
 declare class StyleMapDirective extends Directive {
-    _previousStyleProperties?: Set<string>;
+    private _previousStyleProperties?;
     constructor(partInfo: PartInfo);
     render(styleInfo: Readonly<StyleInfo>): string;
     update(part: AttributePart, [styleInfo]: DirectiveParameters<this>): string | typeof noChange;
@@ -6199,7 +6199,7 @@ declare class UnsafeHTMLDirective extends Directive {
     private _value;
     private _templateResult?;
     constructor(partInfo: PartInfo);
-    render(value: string | typeof nothing | typeof noChange | undefined | null): typeof noChange | typeof nothing | TemplateResult<1 | 2> | null | undefined;
+    render(value: string | typeof nothing | typeof noChange | undefined | null): typeof noChange | typeof nothing | TemplateResult | null | undefined;
 }
 declare const unsafeHTML: (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult<typeof UnsafeHTMLDirective>;
 declare class UnsafeSVGDirective extends UnsafeHTMLDirective {
