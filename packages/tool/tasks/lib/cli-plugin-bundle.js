@@ -179,8 +179,10 @@ async function bundleDTS(cwd, silent, config, validate) {
     mkdirSync(dirname(tempConfigPath), { recursive: true });
     writeFileSync(tempConfigPath, JSON.stringify(bundle, null, 4));
 
+    const cmdOptions = `--config ${tempConfigPath}${settings.verbose ? ' --verbose' : ''}`;
+
     try {
-        await command('dts-bundle-generator', `--config ${tempConfigPath}`);
+        await command('dts-bundle-generator', cmdOptions);
     } catch (e) {
         console.log(colors.cyan.underline(`↑  "dts-bundle-generator" validate faild. You should fix it manually.`));
     }

@@ -510,8 +510,8 @@ declare class CacheDirective extends Directive {
     update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
 }
 declare const _directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
-declare const _directive_choose: <T, V>(value: T, cases: [
-    T,
+declare const _directive_choose: <T, V, K extends T = T>(value: T, cases: [
+    K,
     () => V
 ][], defaultCase?: (() => V) | undefined) => V | undefined;
 /**
@@ -612,9 +612,15 @@ declare class UntilDirective extends AsyncDirective {
     reconnected(): void;
 }
 declare const _directive_until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
-declare function _directive_when<T, F>(condition: true, trueCase: () => T, falseCase?: () => F): T;
-declare function _directive_when<T, F = undefined>(condition: false, trueCase: () => T, falseCase?: () => F): F;
-declare function _directive_when<T, F = undefined>(condition: unknown, trueCase: () => T, falseCase?: () => F): T | F;
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+export type Falsy = null | undefined | false | 0 | -0 | 0n | '';
+declare function _directive_when<C extends Falsy, T, F = undefined>(condition: C, trueCase: (c: C) => T, falseCase?: (c: C) => F): F;
+declare function _directive_when<C, T, F>(condition: C extends Falsy ? never : C, trueCase: (c: C) => T, falseCase?: (c: C) => F): T;
+declare function _directive_when<C, T, F = undefined>(condition: C, trueCase: (c: Exclude<C, Falsy>) => T, falseCase?: (c: Extract<C, Falsy>) => F): C extends Falsy ? F : T;
 export declare const _Σ: {
     AttributePart: AttributePart;
     PropertyPart: PropertyPart;

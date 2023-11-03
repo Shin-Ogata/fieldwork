@@ -155,6 +155,9 @@ const bundleOptions = {
     // devDependencies 内の含めないライブラリ
     excludeLibraries: [],
 
+    // debug
+    verbose: false,
+
     // other `banner` options
 };
 

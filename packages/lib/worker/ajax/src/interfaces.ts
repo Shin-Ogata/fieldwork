@@ -9,7 +9,7 @@ import type { Cancelable } from '@cdp/promise';
 export interface AjaxDataStreamEventProgresArg {
     /**
      * @en Whether progress is measurable or not
-     * @ja 進捗を産出可能か否か
+     * @ja 進捗を算出可能か否か
      */
     readonly computable: boolean;
     /**

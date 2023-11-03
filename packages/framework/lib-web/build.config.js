@@ -188,6 +188,7 @@ module.exports = {
     dts: bundle_dts({
         excludeLibraries: ['@cdp/dom', '@cdp/view'], // special treat
         postProcess: patch,
+        verbose: false,
     }),
     minify: {
         js: minify_js(),

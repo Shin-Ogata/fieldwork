@@ -726,7 +726,7 @@ declare namespace i18n {
     export type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
     export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
     export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources]> : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>]> : DefaultTReturn<TOpt>;
-    export type TFunctionDetailedResult<T = string> = {
+    export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
         /**
          * The plain used key
          */
@@ -747,8 +747,14 @@ declare namespace i18n {
          * The used namespace for this translation.
          */
         usedNS: string;
+        /**
+         * The parameters used for interpolation.
+         */
+        usedParams: InterpolationMap<T> & {
+            count?: TOpt['count'];
+        };
     };
-    export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret> : Ret;
+    export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret, TOpt> : Ret;
     export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
     /**************************
      * T function declaration *
