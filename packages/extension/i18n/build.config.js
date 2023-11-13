@@ -18,7 +18,13 @@ function patch(index, code) {
         .replace(/^([ ]+)constructor([^\n]+)/gm, '')
         .replace(/public/gm, '')
         // i18next `BackendModule#create` patch
-        .replace(/^([ ]+)(create)(\([^\n]+\): void;)/gm, '$1create?$3');
+        .replace(/^([ ]+)(create)(\([^\n]+\): void;)/gm, '$1create?$3')
+        // drop tslint comment
+        .replace(/^.*\/\/ tslint:.*$/gm, '')
+        // drop `interface i18n extends i18nextMod.i18n {}`
+        .replace(/export interface i18n extends i18nextMod.i18n([\s\S]+)}\n/g, '')
+        // drop definition from `i18nextMod`
+        .replace(/^.*i18nextMod.*$/gm, '')
     ;
     // set indent
     code = code.split('\n').map(line => `    ${line}`).join('\n');
