@@ -926,7 +926,9 @@ declare namespace i18n {
          */
         forkResourceStore?: boolean;
     }
-    export interface i18n {
+    export interface CustomInstanceExtenstions {
+    }
+    export interface i18n extends CustomInstanceExtenstions {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<[
             DefaultNamespace,
