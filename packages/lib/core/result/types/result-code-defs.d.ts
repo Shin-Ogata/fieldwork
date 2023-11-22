@@ -55,7 +55,7 @@ declare namespace CDP_DECLARE {
      * ```
      */
     const enum RESULT_CODE_BASE {
-        DECLARE = 9007199254740991,
+        DECLARE = 9007199254740991,// Number.MAX_SAFE_INTEGER
         COMMON = 0,
         CDP = 100
     }

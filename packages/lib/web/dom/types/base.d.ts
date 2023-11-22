@@ -1,4 +1,4 @@
-import { Nullish } from '@cdp/core-utils';
+import type { Nullish } from '@cdp/core-utils';
 import { ElementBase, SelectorBase, DOM, DOMSelector } from './static';
 /**
  * @en Base abstraction class of {@link DOMClass}. This class provides iterator methods.

@@ -1,4 +1,4 @@
-import { Nullish } from '@cdp/core-utils';
+import type { Nullish, Writable } from '@cdp/core-utils';
 import { isWindowContext } from './utils';
 import {
     ElementBase,
@@ -35,7 +35,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
      *  - `ja` 操作対象の `Element` 配列
      */
     constructor(elements: T[]) {
-        const self: DOMAccess<T> = this;
+        const self: Writable<DOMAccess<T>> = this;
         for (const [index, elem] of elements.entries()) {
             self[index] = elem;
         }
