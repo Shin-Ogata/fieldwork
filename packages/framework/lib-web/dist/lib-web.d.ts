@@ -22,7 +22,6 @@
  */
 
 declare const i18n: i18n.i18n;
-
 declare namespace i18n {
     export type $MergeBy<T, K> = Omit<T, keyof K> & K;
     export type $Dictionary<T = unknown> = {
@@ -1158,7 +1157,6 @@ declare namespace i18n {
         emit(eventName: string, ...args: any[]): void;
     }
 }
-
 export { i18n };
 export interface DirectiveClass {
     new (part: PartInfo): Directive;
@@ -1867,7 +1865,6 @@ export declare const directives: TemplateDirectives;
  *  - `ja` プレーン文字列 / 文字列配列. ex) {@link JST} の戻り値などを想定
  */
 export declare const toTemplateStringsArray: (src: string | string[] | TemplateStringsArray) => TemplateStringsArray;
-
 export type TemplateBridgeArg = Record<string, {} | null | undefined>;
 export type TemplateBridgeEndine = (view?: TemplateBridgeArg) => TemplateResult | SVGTemplateResult;
 export type TemplateTransformer = (template: HTMLTemplateElement | string) => TemplateBridgeEndine;
@@ -1933,9 +1930,7 @@ export interface CreateStampinoTemplateOptions {
     superTemplate?: HTMLTemplateElement | undefined;
 }
 export declare function createStampinoTransformer(options?: CreateStampinoTemplateOptions): TemplateTransformer;
-
 declare namespace path2regexp {
-
 export interface ParseOptions {
     /**
      * Set the default delimiter for repeat parameters. (default: `'/'`)
@@ -2038,13 +2033,10 @@ export function tokensToRegexp(tokens: Token[], keys?: Key[], options?: TokensTo
  */
 export type Path = string | RegExp | Array<string | RegExp>;
 export function pathToRegexp(path: Path, keys?: Key[], options?: TokensToRegexpOptions & ParseOptions): RegExp;
-
 }
-
 export { path2regexp };
 import { $cdp, Accessible, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateCompileOptions, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
 import { AjaxGetRequestShortcutOptions, AjaxOptions, AjaxRequestOptions, Serializable } from '@cdp/lib-worker';
-
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export type SelectorBase = Node | Window | string | Nullish;
@@ -3837,11 +3829,9 @@ export interface DOMStatic {
     };
 }
 export declare const dom: DOMStatic;
-
 export {
     dom as default,
 };
-
 /**
  * @en DOM relation event map hash.
  * @ja DOM イベントに関連付けるハッシュ定義
@@ -4111,7 +4101,6 @@ export declare const View: {
     readonly prototype: View<any, any>;
     new <TElement extends Node = HTMLElement, TEvent extends object = object>(options?: ViewConstructionOptions<TElement>): View<TElement, TEvent>;
 };
-
 /**
  * @en Get the directory to which `url` belongs.
  * @ja 指定 `url` の所属するディレクトリを取得

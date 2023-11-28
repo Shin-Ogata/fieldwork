@@ -3,6 +3,7 @@
 const { resolve }      = require('node:path');
 const { readFileSync } = require('node:fs');
 const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
+const { dropAlias } = require('@cdp/tasks/lib/misc');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
@@ -47,7 +48,7 @@ function patch(index, code, includes) {
     };
 
     {// prepend
-        let prepend = '';
+        let prepend = '\n';
         prepend += read(resolve('../../extension/i18n/dist/extension-i18n.d.ts'));
         prepend += read(resolve('../../extension/template/dist/extension-template.d.ts'));
         prepend += read(resolve('../../extension/template-bridge/dist/extension-template-bridge.d.ts'));
@@ -137,7 +138,12 @@ function patch(index, code, includes) {
             .replace(`export * from '@cdp/view';\n`, '')
             // dynamic import: import('@cdp/core-utils') → import('@cdp/lib-core')
             .replace(/import\('@cdp\/core-utils'\)/g, `import('@cdp/lib-core')`)
+            // 'declare const directives' → 'export declare const directives'
+            .replace(/^declare const directives/gm, 'export declare const directives')
         ;
+
+        // directives$1 → directives
+        code = dropAlias(code, 'directives');
     }
 
     {// module-extends

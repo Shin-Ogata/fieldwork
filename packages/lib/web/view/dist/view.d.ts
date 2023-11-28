@@ -8,10 +8,10 @@
  *     - @cdp/data-sync
  *     - @cdp/model
  */
+
 import { Nullish, PlainObject } from '@cdp/core-utils';
 import { DOM, DOMEventListener, DOMEventMap, DOMResult, DOMSelector, EventType, EventTypeOrNamespace } from '@cdp/dom';
 import { EventSource } from '@cdp/events';
-
 /**
  * @en DOM relation event map hash.
  * @ja DOM イベントに関連付けるハッシュ定義

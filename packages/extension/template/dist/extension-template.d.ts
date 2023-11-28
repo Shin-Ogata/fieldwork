@@ -5,6 +5,7 @@
  *   - includes:
  *     - lit-html
  */
+
 export interface DirectiveClass {
     new (part: PartInfo): Directive;
 }
@@ -691,7 +692,7 @@ export interface TemplateDirectives {
     until: directives.until;
     when: directives.when;
 }
-export declare const directives: TemplateDirectives;
+declare const directives$1: TemplateDirectives;
 /**
  * @en Convert from `string` to `TemplateStringsArray`. <br>
  *     This method is helper brigdge for the {@link html} or the {@link svg} are able to received plain string.
@@ -712,3 +713,6 @@ export declare const directives: TemplateDirectives;
  *  - `ja` プレーン文字列 / 文字列配列. ex) {@link JST} の戻り値などを想定
  */
 export declare const toTemplateStringsArray: (src: string | string[] | TemplateStringsArray) => TemplateStringsArray;
+export {
+    directives$1 as directives,
+};

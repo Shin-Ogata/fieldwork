@@ -1,5 +1,7 @@
 'use strict';
 
+const { dropAlias } = require('@cdp/tasks/lib/misc');
+
 const config     = require('../../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../../config/bundle/dts-bundle');
 
@@ -16,6 +18,9 @@ function patch(index, code) {
         // 'declare const EventSource' → 'export declare const EventSource'
         .replace(/^declare const EventSource/gm, 'export declare const EventSource')
     ;
+
+    // EventSource$1 → EventSource
+    code = dropAlias(code, 'EventSource');
 
     return code;
 }

@@ -1,5 +1,7 @@
 'use strict';
 
+const { dropAlias } = require('@cdp/tasks/lib/misc');
+
 const config = require('../../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../../config/bundle/dts-bundle');
 
@@ -16,6 +18,9 @@ function patch(index, code) {
         // 'declare const View' → 'export declare const View'
         .replace(/^declare const View/gm, 'export declare const View')
     ;
+
+    // View$1 → View
+    code = dropAlias(code, 'View');
 
     return code;
 }

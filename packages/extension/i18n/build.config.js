@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolve } = require('node:path');
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
 const minify_js  = require('../../../config/minify/terser');
@@ -21,10 +22,12 @@ function patch(index, code) {
         .replace(/^([ ]+)(create)(\([^\n]+\): void;)/gm, '$1create?$3')
         // drop tslint comment
         .replace(/^.*\/\/ tslint:.*$/gm, '')
-        // drop `interface i18n extends i18nextMod.i18n {}`
-        .replace(/export interface i18n extends i18nextMod.i18n([\s\S]+)}\n/g, '')
-        // drop definition from `i18nextMod`
-        .replace(/^.*i18nextMod.*$/gm, '')
+        // drop `export namespace i18n$1`
+        .replace(/export namespace i18n\$1([\s\S]+)}\n/g, '')
+        // drop definition from `i18n$1`
+        .replace(/^.*i18n\$1.*$/gm, '')
+        // drop export {}
+        .replace(/export {\s*};/g, '')
     ;
     // set indent
     code = code.split('\n').map(line => `    ${line}`).join('\n');
@@ -53,7 +56,7 @@ module.exports = {
             entries: [
                 {
                     find: 'i18next',
-                    replacement: 'node_modules/i18next/src/index.js',
+                    replacement: resolve('node_modules/i18next/src/index.js'),
                 },
             ],
         },
