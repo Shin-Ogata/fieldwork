@@ -11,6 +11,7 @@
  *     - @cdp/observable
  *     - @cdp/core-storage
  */
+
 /**
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
@@ -3747,6 +3748,9 @@ export declare class TemplateEngine implements ITemplateEngine {
      */
     static setGlobalSettings(setiings: TemplateGlobalSettings): TemplateGlobalSettings;
 }
+export {
+    CancelablePromise as Promise,
+};
 declare namespace CDP_DECLARE {
     /**
      * @en Constant definition about range of the result code.

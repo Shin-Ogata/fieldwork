@@ -30,6 +30,7 @@
  *     - @cdp/app
  *     - @cdp/collection
  */
+
 /**
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
@@ -12813,6 +12814,9 @@ export interface DOMPlugin {
      */
     localize(options?: i18n.TOptions): this;
 }
+export {
+    CancelablePromise as Promise,
+};
 declare namespace CDP_DECLARE {
     /**
      * @en Constant definition about range of the result code.

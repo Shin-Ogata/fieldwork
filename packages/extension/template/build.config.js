@@ -42,7 +42,7 @@ function patch(index, code) {
 
 // 内部の相対パス指定も置換対象に含めることで重複コードを避ける
 function resolveEntries(list) {
-    const { join } = require('node:path');
+    const { resolve } = require('node:path');
     const SOURCE_ROOT = 'node_modules/lit-html/development';
 
     const relativeModuleName = (module) => {
@@ -64,7 +64,7 @@ function resolveEntries(list) {
     for (const module of list) {
         const moduleName  = relativeModuleName(module);
         const fileName    = moduleFileName(moduleName);
-        const replacement = join(SOURCE_ROOT, moduleName);
+        const replacement = resolve(SOURCE_ROOT, moduleName);
         entries.push({
             find: module,
             replacement,

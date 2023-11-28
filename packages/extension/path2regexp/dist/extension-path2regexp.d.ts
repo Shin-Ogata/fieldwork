@@ -7,7 +7,6 @@
  */
 
 declare namespace path2regexp {
-
 export interface ParseOptions {
     /**
      * Set the default delimiter for repeat parameters. (default: `'/'`)
@@ -110,7 +109,5 @@ export function tokensToRegexp(tokens: Token[], keys?: Key[], options?: TokensTo
  */
 export type Path = string | RegExp | Array<string | RegExp>;
 export function pathToRegexp(path: Path, keys?: Key[], options?: TokensToRegexpOptions & ParseOptions): RegExp;
-
 }
-
 export { path2regexp };

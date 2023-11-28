@@ -3,6 +3,7 @@
 const { resolve }      = require('node:path');
 const { readFileSync } = require('node:fs');
 const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
+const { dropAlias } = require('@cdp/tasks/lib/misc');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
@@ -54,9 +55,14 @@ function patch(index, code, includes) {
             .replace(/import\('@cdp\/lib-core'\)\./g, '')
             // export declare namespace CDP_DECLARE { {...}' → ''
             .replace(/^export declare namespace CDP_DECLARE {[\s\S]*?^\}\n/gm, '')
+            // 'declare const directives' → 'export declare const directives'
+            .replace(/^declare const directives/gm, 'export declare const directives')
             //'/*!...*/ → ''
             .replace(/^\/\*\![\s\S]*?\*\/\n/gm, '')
         ;
+
+        // directives$1 → directives
+        code = dropAlias(code, 'directives');
     }
 
     {// result-code-defs.d.ts

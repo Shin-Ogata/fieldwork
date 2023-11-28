@@ -3,6 +3,7 @@
 const { resolve }      = require('node:path');
 const { readFileSync } = require('node:fs');
 const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
+const { dropAlias } = require('@cdp/tasks/lib/misc');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');

@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolve } = require('node:path');
 const config = require('../../../../config/bundle/rollup-core');
 
 module.exports = {
@@ -9,11 +10,11 @@ module.exports = {
             entries: [
                 {
                     find: '@css/structure.css',
-                    replacement: 'built/@css/structure.css',
+                    replacement: resolve('built/@css/structure.css'),
                 },
                 {
                     find: '@css/structure-button.css',
-                    replacement: 'built/@css/structure-button.css',
+                    replacement: resolve('built/@css/structure-button.css'),
                 },
             ],
         },

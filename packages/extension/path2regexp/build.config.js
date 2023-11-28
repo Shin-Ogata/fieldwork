@@ -1,5 +1,7 @@
 'use strict';
 
+const { resolve } = require('node:path');
+
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
 const minify_js  = require('../../../config/minify/terser');
@@ -42,7 +44,7 @@ module.exports = {
             entries: [
                 {
                     find: 'path-to-regexp',
-                    replacement: 'node_modules/path-to-regexp/dist.es2015/index.js',
+                    replacement: resolve('node_modules/path-to-regexp/dist.es2015/index.js'),
                 },
             ],
         },

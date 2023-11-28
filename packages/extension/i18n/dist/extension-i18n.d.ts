@@ -7,7 +7,6 @@
  */
 
 declare const i18n: i18n.i18n;
-
 declare namespace i18n {
     export type $MergeBy<T, K> = Omit<T, keyof K> & K;
     export type $Dictionary<T = unknown> = {
@@ -1143,5 +1142,4 @@ declare namespace i18n {
         emit(eventName: string, ...args: any[]): void;
     }
 }
-
 export { i18n };
