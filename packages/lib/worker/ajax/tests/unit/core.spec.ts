@@ -132,6 +132,7 @@ describe('ajax/core spec', () => {
         expect(propNumber).toBe(100);
         expect(propBoolean).toBe(true);
         expect(propString).toBe('hoge');
+        expect(json.xReqWith).toBeFalsy();
 
         // 後から型変換は不可
         await expectAsync(response.text()).toBeRejected();
@@ -177,6 +178,21 @@ describe('ajax/core spec', () => {
         const data = await ajax('/api-ajax', { method: 'POST', dataType: 'json' });
         expect(data).toBeDefined();
         expect(data.API).toBe('JSON response');
+        expect(data.xReqWith).toBeFalsy();
+    });
+
+    it('check ajax() post json w/ same-origin', async () => {
+        const data = await ajax('/api-ajax', { method: 'POST', dataType: 'json', mode: 'same-origin' });
+        expect(data).toBeDefined();
+        expect(data.API).toBe('JSON response');
+        expect(data.xReqWith).toBe(true);
+    });
+
+    it('check ajax() post json w/ xHead', async () => {
+        const data = await ajax('/api-ajax', { method: 'POST', dataType: 'json', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        expect(data).toBeDefined();
+        expect(data.API).toBe('JSON response');
+        expect(data.xReqWith).toBe(true);
     });
 
     it('check ajax() post with data', async () => {
