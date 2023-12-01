@@ -182,6 +182,14 @@ export declare const convertUrlParamType: (value: string) => string | number | b
  */
 export declare const parseUrlQuery: <T = Record<string, string | number | boolean | null>>(url: string) => T;
 export declare const toAjaxDataStream: (seed: Blob | ReadableStream<Uint8Array>, length?: number) => AjaxDataStream;
+export declare const request: {
+    get: <T extends object | keyof AjaxDataTypeList<PlainObject> = 'json'>(url: string, data?: PlainObject, dataType?: (T extends keyof AjaxDataTypeList<PlainObject> ? T : 'json') | undefined, options?: AjaxRequestOptions) => Promise<AjaxResult<T>>;
+    text: (url: string, options?: AjaxGetRequestShortcutOptions) => Promise<AjaxResult<'text'>>;
+    json: <T_1 extends object | 'json' = 'json'>(url: string, options?: AjaxGetRequestShortcutOptions) => Promise<AjaxResult<T_1>>;
+    blob: (url: string, options?: AjaxGetRequestShortcutOptions) => Promise<AjaxResult<'blob'>>;
+    post: <T_2 extends object | keyof AjaxDataTypeList<PlainObject> = 'json'>(url: string, data: PlainObject, dataType?: (T_2 extends keyof AjaxDataTypeList<PlainObject> ? T_2 : 'json') | undefined, options?: AjaxRequestOptions) => Promise<AjaxResult<T_2>>;
+    resource: <T_3 extends object | 'json' | 'text' = 'json'>(url: string, dataType?: (T_3 extends 'json' | 'text' ? T_3 : 'json') | undefined, data?: PlainObject) => AjaxResult<T_3>;
+};
 /**
  * @en `base64` utility for independent charactor code.
  * @ja 文字コードに依存しない `base64` ユーティリティ

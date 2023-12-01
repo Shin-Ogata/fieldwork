@@ -12,9 +12,9 @@ import { toQueryStrings } from './params';
 import { XMLHttpRequest } from './ssr';
 
 /** @internal */
-function ensureDataType(dataType?: AjaxDataTypes): AjaxDataTypes {
+const ensureDataType = (dataType?: AjaxDataTypes): AjaxDataTypes => {
     return dataType ?? 'json';
-}
+};
 
 /**
  * @en `GET` request shortcut.
@@ -33,14 +33,14 @@ function ensureDataType(dataType?: AjaxDataTypes): AjaxDataTypes {
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function get<T extends AjaxDataTypes | object = 'json'>(
+const get = <T extends AjaxDataTypes | object = 'json'>(
     url: string,
     data?: PlainObject,
     dataType?: T extends AjaxDataTypes ? T : 'json',
     options?: AjaxRequestOptions
-): Promise<AjaxResult<T>> {
+): Promise<AjaxResult<T>> => {
     return ajax(url, { ...options, method: 'GET', data, dataType: ensureDataType(dataType) } as AjaxOptions<T>);
-}
+};
 
 /**
  * @en `GET` text request shortcut.
@@ -53,9 +53,9 @@ export function get<T extends AjaxDataTypes | object = 'json'>(
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function text(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'text'>> {
+const text = (url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'text'>> => {
     return get(url, undefined, 'text', options);
-}
+};
 
 /**
  * @en `GET` JSON request shortcut.
@@ -68,9 +68,9 @@ export function text(url: string, options?: AjaxGetRequestShortcutOptions): Prom
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function json<T extends 'json' | object = 'json'>(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<T>> {
+const json = <T extends 'json' | object = 'json'>(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<T>> => {
     return get<T>(url, undefined, ('json' as T extends AjaxDataTypes ? T : 'json'), options);
-}
+};
 
 /**
  * @en `GET` Blob request shortcut.
@@ -83,9 +83,9 @@ export function json<T extends 'json' | object = 'json'>(url: string, options?: 
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function blob(url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'blob'>> {
+const blob = (url: string, options?: AjaxGetRequestShortcutOptions): Promise<AjaxResult<'blob'>> => {
     return get(url, undefined, 'blob', options);
-}
+};
 
 /**
  * @en `POST` request shortcut.
@@ -104,14 +104,14 @@ export function blob(url: string, options?: AjaxGetRequestShortcutOptions): Prom
  *  - `en` request settings.
  *  - `ja` リクエスト設定
  */
-export function post<T extends AjaxDataTypes | object = 'json'>(
+const post = <T extends AjaxDataTypes | object = 'json'>(
     url: string,
     data: PlainObject,
     dataType?: T extends AjaxDataTypes ? T : 'json',
     options?: AjaxRequestOptions
-): Promise<AjaxResult<T>> {
+): Promise<AjaxResult<T>> => {
     return ajax(url, { ...options, method: 'POST', data, dataType: ensureDataType(dataType) } as AjaxOptions<T>);
-}
+};
 
 /**
  * @en Synchronous `GET` request for resource access. <br>
@@ -129,11 +129,11 @@ export function post<T extends AjaxDataTypes | object = 'json'>(
  *  - `en` Data to be sent to the server.
  *  - `ja` サーバーに送信されるデータ.
  */
-export function resource<T extends 'text' | 'json' | object = 'json'>(
+const resource = <T extends 'text' | 'json' | object = 'json'>(
     url: string,
     dataType?: T extends 'text' | 'json' ? T : 'json',
     data?: PlainObject,
-): AjaxResult<T> {
+): AjaxResult<T> => {
     const xhr = new XMLHttpRequest();
 
     if (null != data && !url.includes('?')) {
@@ -155,4 +155,13 @@ export function resource<T extends 'text' | 'json' | object = 'json'>(
     }
 
     return 'json' === type ? JSON.parse(xhr.response) : xhr.response;
-}
+};
+
+export const request = {
+    get,
+    text,
+    json,
+    blob,
+    post,
+    resource,
+};

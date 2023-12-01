@@ -22,12 +22,15 @@ module.exports = (port) => {
                     }
                     return parse(data);
                 })();
-                if (headers['content-type'] && headers['content-type'].includes('application/json')) {
+
+                const xReqWith = headers['x-requested-with']?.includes('XMLHttpRequest');
+
+                if (headers['content-type']?.includes('application/json')) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ API: 'JSON response', data: params }));
+                    res.end(JSON.stringify({ API: 'JSON response', data: params, xReqWith }));
                 } else {
                     res.writeHead(200, { 'Content-Type': 'text/plain' });
-                    res.end(JSON.stringify({ API: req.method, data: params }));
+                    res.end(JSON.stringify({ API: req.method, data: params, xReqWith }));
                 }
             }, 200);
         },

@@ -59,8 +59,12 @@ export function setupHeaders(options: AjaxHeaderOptions): Headers {
         headers.set('Accept', _acceptHeaderMap[dataType!] || '*/*');
     }
 
-    // X-Requested-With
-    if ('cors' !== mode && !headers.get('X-Requested-With')) {
+    /*
+     * X-Requested-With
+     * 非標準ヘッダーであるため, 既定では cors の preflight response で許可されない
+     * また mode の既定値は cors であるため, 有効にするには mode の明示的指定が必要となる
+     */
+    if (mode && 'cors' !== mode && !headers.get('X-Requested-With')) {
         headers.set('X-Requested-With', 'XMLHttpRequest');
     }
 
