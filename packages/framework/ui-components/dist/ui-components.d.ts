@@ -7,7 +7,6 @@
  *     - @cdp/ui-listview
  *     - @cdp/ui-forms
  */
-
 export declare const UI_UTILS_STATUS = 'UNDER CONSTRUCTION';
 export declare const UI_FORMS_STATUS = 'UNDER CONSTRUCTION';
 export declare const UI_LISTVIEW_STATUS = 'UNDER CONSTRUCTION';

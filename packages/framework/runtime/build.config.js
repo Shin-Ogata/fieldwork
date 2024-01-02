@@ -65,6 +65,24 @@ function patch(index, code, includes) {
         code = dropAlias(code, 'directives');
     }
 
+    {// adjust stuffs of same name as global
+        // add 'export' key word
+        code = code
+            .replace(/^declare const setTimeout/gm, 'export declare const setTimeout')
+            .replace(/^declare const clearTimeout/gm, 'export declare const clearTimeout')
+            .replace(/^declare const setInterval/gm, 'export declare const setInterval')
+            .replace(/^declare const clearInterval/gm, 'export declare const clearInterval')
+            .replace(/^type EventSource/gm, 'export type EventSource')
+            .replace(/^declare const EventSource/gm, 'export declare const EventSource')
+        ;
+
+        code = dropAlias(code, 'clearInterval');
+        code = dropAlias(code, 'clearTimeout');
+        code = dropAlias(code, 'setInterval');
+        code = dropAlias(code, 'setTimeout');
+        code = dropAlias(code, 'EventSource');
+    }
+
     {// result-code-defs.d.ts
         const read = (dts) => {
             // trim banner

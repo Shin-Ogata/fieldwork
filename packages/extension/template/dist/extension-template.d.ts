@@ -5,7 +5,6 @@
  *   - includes:
  *     - lit-html
  */
-
 export interface DirectiveClass {
     new (part: PartInfo): Directive;
 }

@@ -132,10 +132,20 @@ function patch(index, code, includes) {
         }
 
         code = code
+            // drop 'export * from '@cdp/extension-i18n';'
+            .replace(`export * from '@cdp/extension-i18n';\n`, '')
+            // drop 'export * from '@cdp/extension-template';'
+            .replace(`export * from '@cdp/extension-template';\n`, '')
+            // drop 'export * from '@cdp/extension-template-bridge';'
+            .replace(`export * from '@cdp/extension-template-bridge';\n`, '')
+            // drop 'export * from '@cdp/extension-path2regexp';'
+            .replace(`export * from '@cdp/extension-path2regexp';\n`, '')
             // drop 'export * from '@cdp/dom';'
             .replace(`export * from '@cdp/dom';\n`, '')
             // drop 'export * from '@cdp/view';'
             .replace(`export * from '@cdp/view';\n`, '')
+            // drop multi re-export. 改行の有無で重複する re-export 構文を判定
+            .replace(/export\s*{[^}]*\n[^}]*};/gm, '')
             // dynamic import: import('@cdp/core-utils') → import('@cdp/lib-core')
             .replace(/import\('@cdp\/core-utils'\)/g, `import('@cdp/lib-core')`)
             // 'declare const directives' → 'export declare const directives'
@@ -144,6 +154,8 @@ function patch(index, code, includes) {
 
         // directives$1 → directives
         code = dropAlias(code, 'directives');
+        // EventSource$1 → EventSource
+        code = dropAlias(code, 'EventSource');
     }
 
     {// module-extends
