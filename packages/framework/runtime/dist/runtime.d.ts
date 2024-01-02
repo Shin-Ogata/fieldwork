@@ -30,7 +30,6 @@
  *     - @cdp/app
  *     - @cdp/collection
  */
-
 /**
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型
@@ -2141,50 +2140,6 @@ export declare class EventReceiver {
      */
     stopListening<T extends Subscribable, Event extends EventSchema<T> = EventSchema<T>, Channel extends keyof Event = keyof Event>(target?: T, channel?: Channel | Channel[], listener?: (...args: Arguments<Event[Channel]>) => unknown): this;
 }
-/**
- * @en The class which have I/F of {@link EventBroker} and {@link EventReceiver}. <br>
- *     `Events` class of `Backbone.js` equivalence.
- * @ja {@link EventBroker} と {@link EventReceiver} の I/F をあわせ持つクラス <br>
- *     `Backbone.js` の `Events` クラス相当
- *
- * @example <br>
- *
- * ```ts
- * import { EventSource } from '@cdp/runtime';
- *
- * // declare event interface
- * interface TargetEvent {
- *   hoge: [number, string];        // callback function's args type tuple
- *   foo: [void];                   // no args
- *   hoo: void;                     // no args (same the upon)
- *   bar: [Error];                  // any class is available.
- *   baz: Error | Number;           // if only one argument, `[]` is not required.
- * }
- *
- * interface SampleEvent {
- *   fuga: [number, string];        // callback function's args type tuple
- * }
- *
- * // declare client class
- * class SampleSource extends EventSource<SampleEvent> {
- *   constructor(target: EventSource<TargetEvent>) {
- *     super();
- *     this.listenTo(broker, 'hoge', (num: number, str: string) => { ... });
- *     this.listenTo(broker, 'bar', (e: Error) => { ... });
- *     this.listenTo(broker, ['foo', 'hoo'], () => { ... });
- *   }
- *
- *   release(): void {
- *     this.stopListening();
- *   }
- * }
- *
- * const sample = new SampleSource();
- *
- * sample.on('fuga', (a: number, b: string) => { ... });    // OK. standard usage.
- * sample.trigger('fuga', 100, 'test');                     // OK. standard usage.
- * ```
- */
 export type EventSource<T extends object> = EventBroker<T> & EventReceiver;
 export declare const EventSource: {
     readonly prototype: EventSource<any>;
@@ -4616,7 +4571,7 @@ export declare namespace i18n {
          */
         i18nFormat?: object;
     }, CustomPluginOptions>;
-    export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & $Dictionary) => string;
+    export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & $Dictionary<any>) => string;
     export interface InterpolationOptions {
         /**
          * Format function see formatting for details
@@ -5172,8 +5127,8 @@ export declare namespace i18n {
     export type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
     export type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
     export type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
-    export type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
-    export type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? KeyWithoutOrdinalPlural | Key : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}` ? KeyWithoutPlural | Key : Key : Key;
+    export type PluralSuffix = _JSONFormat extends 'v4' ? 'zero' | 'one' | 'two' | 'few' | 'many' | 'other' : number | 'plural';
+    export type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' | 'v3' ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? KeyWithoutOrdinalPlural | Key : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}` ? KeyWithoutPlural | Key : Key : Key;
     export type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
     export type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
     /******************************************************
@@ -5204,13 +5159,14 @@ export declare namespace i18n {
      *********************************************************/
     export type ParseInterpolationValues<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${string}` ? ActualValue : Value) | ParseInterpolationValues<Rest> : never;
     export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, unknown>;
-    export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | KeyWithPlural | Key) & keyof Res];
-    export type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res]> : ParseTReturnPlural<Res, Key>;
+    export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithPlural | Key) & keyof Res];
+    export type ParseTReturnPluralOrdinal<Res, Key, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
+    export type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt> : TOpt['count'] extends number ? TOpt['ordinal'] extends boolean ? ParseTReturnPluralOrdinal<Res, Key> : ParseTReturnPlural<Res, Key> : Res[Key & keyof Res];
     export type TReturnOptionalNull = _ReturnNull extends true ? null : never;
     export type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true ? $SpecialObject | string : TOpt['returnObjects'] extends true ? $SpecialObject : string;
     export type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
     export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
-    export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources]> : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>]> : DefaultTReturn<TOpt>;
+    export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt> : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt> : DefaultTReturn<TOpt>;
     export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
         /**
          * The plain used key
@@ -5622,6 +5578,14 @@ export declare namespace i18n {
          * Is initialized
          */
         isInitialized: boolean;
+        /**
+         * Store was initialized
+         */
+        initializedStoreOnce: boolean;
+        /**
+         * Language was initialized
+         */
+        initializedLanguageOnce: boolean;
         /**
          * Emit event
          */

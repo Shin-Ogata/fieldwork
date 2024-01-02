@@ -11,7 +11,6 @@
  *     - @cdp/observable
  *     - @cdp/core-storage
  */
-
 /**
  * @en Primitive type of JavaScript.
  * @ja JavaScript のプリミティブ型

@@ -7,7 +7,6 @@
  *     - @cdp/binary
  *     - @cdp/ajax
  */
-
 import { Keys, PlainObject, TypeToKey, Types, UnknownFunction } from '@cdp/lib-core';
 import { Subscribable } from '@cdp/lib-core';
 import { Cancelable } from '@cdp/lib-core';

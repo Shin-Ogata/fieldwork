@@ -478,7 +478,7 @@
     hooks.createContext = createContext;
     hooks.useContext = useContext;
 
-    Object.defineProperty(exports, 'clearTemplateCache', {
+    Object.defineProperty(exports, "clearTemplateCache", {
         enumerable: true,
         get: function () { return webUtils.clearTemplateCache; }
     });

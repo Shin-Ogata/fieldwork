@@ -3156,7 +3156,7 @@
     exports.AsyncDirective = AsyncDirective;
     exports.Directive = Directive;
     exports.PartType = PartType;
-    exports["_Σ"] = _Σ;
+    exports._Σ = _Σ;
     exports.createRef = createRef;
     exports.directive = directive;
     exports.directives = directives;

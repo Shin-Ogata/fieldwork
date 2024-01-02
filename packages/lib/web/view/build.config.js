@@ -11,6 +11,8 @@ function patch(index, code) {
     }
 
     code = code
+        // replace `EventSource as EventSource$1` → `EventSource`
+        .replace('EventSource as EventSource$1', 'EventSource')
         // rename `_View` → `View`
         .replace(/_View/gm, 'View')
         // 'declare type View' → 'export declare type View'
@@ -21,6 +23,8 @@ function patch(index, code) {
 
     // View$1 → View
     code = dropAlias(code, 'View');
+    // EventSource$1 → EventSource
+    code = dropAlias(code, 'EventSource');
 
     return code;
 }
