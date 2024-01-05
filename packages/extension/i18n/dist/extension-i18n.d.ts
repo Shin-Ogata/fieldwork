@@ -666,13 +666,8 @@ declare namespace i18n {
     export type FlatNamespace = $PreservedValue<keyof TypeOptions['resources'], string>;
     export type Namespace<T = FlatNamespace> = T | readonly T[];
     export type DefaultNamespace = TypeOptions['defaultNS'];
-    export type $IsResourcesDefined = [
-        keyof _Resources
-    ] extends [
-        never
-    ] ? false : true;
-    export type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true ? Value : Fallback;
-    export type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
+    /** @todo consider to replace {} with Record<string, never> */
+    /* eslint @typescript-eslint/ban-types: ['error', { types: { '{}': false } }] */
     // Type Options
     export type _ReturnObjects = TypeOptions['returnObjects'];
     export type _ReturnNull = TypeOptions['returnNull'];
@@ -685,16 +680,23 @@ declare namespace i18n {
     export type _JSONFormat = TypeOptions['jsonFormat'];
     export type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
     export type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
+    export type $IsResourcesDefined = [
+        keyof _Resources
+    ] extends [
+        never
+    ] ? false : true;
+    export type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true ? Value : Fallback;
+    export type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
     export type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
     export type PluralSuffix = _JSONFormat extends 'v4' ? 'zero' | 'one' | 'two' | 'few' | 'many' | 'other' : number | 'plural';
     export type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' | 'v3' ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? KeyWithoutOrdinalPlural | Key : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}` ? KeyWithoutPlural | Key : Key : Key;
     export type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
     export type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
-    /******************************************************
+    /** ****************************************************
      * Build all keys and key prefixes based on Resources *
-     ******************************************************/
-    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res ? Res[Key] extends $Dictionary ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
-    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res ? Res[Key] extends $Dictionary ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
+     ***************************************************** */
+    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
+    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
     export type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true ? WithReturnObjects extends true ? keyof Res | KeysBuilderWithReturnObjects<Res> : KeysBuilderWithoutReturnObjects<Res> : string;
     export type KeysWithReturnObjects = {
         [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], true>>;
@@ -703,9 +705,9 @@ declare namespace i18n {
         [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], false>>;
     };
     export type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extends true ? KeysWithReturnObjects : KeysWithoutReturnObjects;
-    /************************************************************************
+    /** **********************************************************************
      * Parse t function keys based on the namespace, options and key prefix *
-     ************************************************************************/
+     *********************************************************************** */
     export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true ? ResourceKeys<true> : ResourceKeys;
     export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace ? TOpt['ns'] : Ns;
     export type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeySeparator}${infer Key}` ? Key : never : Keys;
@@ -713,14 +715,14 @@ declare namespace i18n {
     export type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false ? never : _FallbackNamespace extends (infer UnionFallbackNs extends string)[] ? Keys[UnionFallbackNs] : Keys[_FallbackNamespace & string];
     export type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${TOpt['context']}${infer Suffix}` ? `${Prefix}${Suffix}` : never : Keys;
     export type ParseKeys<Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>> = $IsResourcesDefined extends true ? FilterKeysByContext<ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>, TOpt> : string;
-    /*********************************************************
+    /** *******************************************************
      * Parse t function return type and interpolation values *
-     *********************************************************/
+     ******************************************************** */
     export type ParseInterpolationValues<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${string}` ? ActualValue : Value) | ParseInterpolationValues<Rest> : never;
     export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, unknown>;
     export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithPlural | Key) & keyof Res];
     export type ParseTReturnPluralOrdinal<Res, Key, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
-    export type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt> : TOpt['count'] extends number ? TOpt['ordinal'] extends boolean ? ParseTReturnPluralOrdinal<Res, Key> : ParseTReturnPlural<Res, Key> : Res[Key & keyof Res];
+    export type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt> : TOpt['count'] extends number ? TOpt['ordinal'] extends boolean ? ParseTReturnPluralOrdinal<Res, Key> : ParseTReturnPlural<Res, Key> : Res extends readonly unknown[] ? Key extends `${infer NKey extends number}` ? Res[NKey] : never : Res[Key & keyof Res];
     export type TReturnOptionalNull = _ReturnNull extends true ? null : never;
     export type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true ? $SpecialObject | string : TOpt['returnObjects'] extends true ? $SpecialObject : string;
     export type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
@@ -756,9 +758,9 @@ declare namespace i18n {
     };
     export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret, TOpt> : Ret;
     export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
-    /**************************
+    /** ************************
      * T function declaration *
-     **************************/
+     ************************* */
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
         $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
         <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>>(...args: [
@@ -829,9 +831,9 @@ declare namespace i18n {
      * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
      * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
      */
-    export interface BackendModule<TOptions = object> extends Module {
+    export interface BackendModule<Options = object> extends Module {
         type: 'backend';
-        init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
+        init(services: Services, backendOptions: Options, i18nextOptions: InitOptions): void;
         read(language: string, namespace: string, callback: ReadCallback): void;
         /** Save the missing translation */
         create?(languages: readonly string[], namespace: string, key: string, fallbackValue: string): void;
@@ -862,7 +864,7 @@ declare namespace i18n {
         /** Set to true to enable async detection */
         async: true;
         init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
-        /** Must call callback passing detected language or return a Promise*/
+        /** Must call callback passing detected language or return a Promise */
         detect(callback: (lng: string | readonly string[] | undefined) => void | undefined): void | Promise<string | readonly string[] | undefined>;
         cacheUserLanguage?(lng: string): void | Promise<void>;
     }
@@ -928,6 +930,7 @@ declare namespace i18n {
     }
     export interface CustomInstanceExtenstions {
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     export interface i18n extends CustomInstanceExtenstions {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<[
