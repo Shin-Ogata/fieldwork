@@ -2415,6 +2415,24 @@ export declare class Deferred<T = void> extends CancelablePromise<T> {
      *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
      */
     constructor(cancelToken?: CancelToken | null);
+    /**
+     * constructor
+     *
+     * @param executor
+     *  - `en` A callback used to initialize the promise. This callback is passed two arguments `resolve` and `reject`.
+     *  - `ja` promise の初期化に使用するコールバックを指定. `resolve` と `reject` の2つの引数を持つ
+     * @param cancelToken
+     *  - `en` {@link CancelToken} instance create from {@link CancelToken.source | CancelToken.source}().
+     *  - `ja` {@link CancelToken.source | CancelToken.source}() より作成した {@link CancelToken} インスタンスを指定
+     */
+    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void, cancelToken?: CancelToken | null);
+    /**
+     * @en Check the status of this instance. <br>
+     *     It's practicable by `async function`.
+     * @ja Deferred インスタンスの状態を確認 <br>
+     *     `async function` で使用可能
+     */
+    status(): Promise<'pending' | 'fulfilled' | 'rejected'>;
 }
 /**
  * @en The class manages lumping multiple `Promise` objects. <br>
@@ -2451,9 +2469,9 @@ export declare class PromiseManager {
     promises(): Promise<unknown>[];
     /**
      * @en Call `Promise.all()` for under the management. <br>
-     *     Wait for all `fullfilled`.
+     *     Wait for all `fulfilled`.
      * @ja 管理対象に対して `Promise.all()` <br>
-     *     すべてが `fullfilled` になるまで待機
+     *     すべてが `fulfilled` になるまで待機
      */
     all(): Promise<unknown[]>;
     /**
@@ -2479,9 +2497,9 @@ export declare class PromiseManager {
     allSettled(): Promise<PromiseSettledResult<unknown>[]>;
     /**
      * @en Call `Promise.any()` for under the management. <br>
-     *     Wait for any `fullfilled`.
+     *     Wait for any `fulfilled`.
      * @ja 管理対象に対して `Promise.any()` <br>
-     *     いずれかが `fullfilled` になるまで待機
+     *     いずれかが `fulfilled` になるまで待機
      */
     any(): Promise<unknown>;
     /**
@@ -6098,7 +6116,7 @@ declare class AsyncReplaceDirective extends AsyncDirective {
     private __weakThis;
     private __pauser;
     render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
-    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
+    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): symbol;
     protected commitValue(value: unknown, _index: number): void;
     disconnected(): void;
     reconnected(): void;
@@ -6107,7 +6125,7 @@ declare const asyncReplace: (value: AsyncIterable<unknown>, _mapper?: Mapper<unk
 declare class AsyncAppendDirective extends AsyncReplaceDirective {
     private __childPart;
     constructor(partInfo: PartInfo);
-    update(part: ChildPart, params: DirectiveParameters<this>): typeof noChange | undefined;
+    update(part: ChildPart, params: DirectiveParameters<this>): symbol;
     protected commitValue(value: unknown, index: number): void;
 }
 declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => DirectiveResult<typeof AsyncAppendDirective>;

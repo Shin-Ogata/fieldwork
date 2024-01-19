@@ -59,9 +59,9 @@ export class PromiseManager {
 
     /**
      * @en Call `Promise.all()` for under the management. <br>
-     *     Wait for all `fullfilled`.
+     *     Wait for all `fulfilled`.
      * @ja 管理対象に対して `Promise.all()` <br>
-     *     すべてが `fullfilled` になるまで待機
+     *     すべてが `fulfilled` になるまで待機
      */
     public all(): Promise<unknown[]> {
         return Promise.all(this.promises());
@@ -99,9 +99,9 @@ export class PromiseManager {
 
     /**
      * @en Call `Promise.any()` for under the management. <br>
-     *     Wait for any `fullfilled`.
+     *     Wait for any `fulfilled`.
      * @ja 管理対象に対して `Promise.any()` <br>
-     *     いずれかが `fullfilled` になるまで待機
+     *     いずれかが `fulfilled` になるまで待機
      */
     public any(): Promise<unknown> {
         return Promise.any(this.promises());

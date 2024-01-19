@@ -1,4 +1,5 @@
-import { Deferred, CancelToken } from '@cdp/promise';
+import { Deferred, CancelToken, /*checkStatus*/ } from '@cdp/promise';
+// import { post, noop } from '@cdp/core-utils';
 
 describe('promise/deferred spec', () => {
     it('check instance', () => {
@@ -40,5 +41,12 @@ describe('promise/deferred spec', () => {
         } catch (e) {
             expect(e.message).toBe('cancel');
         }
+    });
+
+    it('check status', async () => {
+        const df = new Deferred();
+        df.resolve();
+        const status = await df.status();
+        expect(status).toBe('fulfilled');
     });
 });
