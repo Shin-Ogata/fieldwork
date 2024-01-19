@@ -1673,7 +1673,7 @@ declare class AsyncReplaceDirective extends AsyncDirective {
     private __weakThis;
     private __pauser;
     render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
-    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
+    update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): symbol;
     protected commitValue(value: unknown, _index: number): void;
     disconnected(): void;
     reconnected(): void;
@@ -1682,7 +1682,7 @@ declare const asyncReplace: (value: AsyncIterable<unknown>, _mapper?: Mapper<unk
 declare class AsyncAppendDirective extends AsyncReplaceDirective {
     private __childPart;
     constructor(partInfo: PartInfo);
-    update(part: ChildPart, params: DirectiveParameters<this>): typeof noChange | undefined;
+    update(part: ChildPart, params: DirectiveParameters<this>): symbol;
     protected commitValue(value: unknown, index: number): void;
 }
 declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => DirectiveResult<typeof AsyncAppendDirective>;

@@ -72,6 +72,10 @@ export function checkCanceled(token: CancelToken | undefined): Promise<void> {
  */
 export function checkStatus(promise: Promise<unknown>): Promise<'pending' | 'fulfilled' | 'rejected'> {
     const pending = {};
-    return Promise.race([promise, pending])
+    /*
+     * Promise 派生クラスでも使用するためには, `instance.constructor.race` でアクセスする必要がある
+     * promise が派生クラスである場合, Promise.race() を使用すると必ず `pending` object が返されてしまう
+     */
+    return (promise.constructor as PromiseConstructor).race([promise, pending])
         .then(v => (v === pending) ? 'pending' : 'fulfilled', () => 'rejected');
 }
