@@ -1,7 +1,7 @@
 {
   "name": "@cdp/extension-i18n",
   "description": "extension for internationalization",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {
@@ -21,7 +21,7 @@
   "main": "dist/extension-i18n",
   "module": "dist/extension-i18n.mjs",
   "peerDependencies": {
-    "i18next": "23.7.16"
+    "i18next": "23.7.18"
   },
   "private": true,
   "repository": {
@@ -62,7 +62,7 @@
     "set-version": "cdp-task set-version",
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc dist/extension-i18n.d.ts --options ../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc dist/extension-i18n.d.ts --options ../../../config/doc/typedoc-bundle.js",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s -i true",
     "ut": "npm run unit-test",

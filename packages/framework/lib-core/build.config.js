@@ -1,15 +1,14 @@
 'use strict';
 
-const { resolve }      = require('node:path');
-const { readFileSync } = require('node:fs');
-const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
-const { dropAlias } = require('@cdp/tasks/lib/misc');
+const { resolve } = require('node:path');
+const resolveDepends = require('@cdp/tasks/lib/resolve-dependency');
+const { makeResultCodeDefs } = require('@cdp/tasks/lib/bundle-utils');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
 const minify_js  = require('../../../config/minify/terser');
 
-function patch(index, code, includes) {
+async function patch(index, code, includes) {
     if (0 !== index) {
         return code;
     }
@@ -27,13 +26,19 @@ function patch(index, code, includes) {
         includes.push(...packages.filter(pkg => modules.includes(pkg.name)).map(pkg => pkg.name));
     }
 
-    // global namespace: `@cdp/result result-code-defs.d.ts`
-    code += readFileSync(resolve(__dirname, 'node_modules/@cdp/result/types/result-code-defs.d.ts')).toString();
-
-    // re-export global constant
-    const globalConstant = readFileSync(resolve(__dirname, 'node_modules/@cdp/result/types/result-code.d.ts')).toString();
-    // 先頭の import から 最初の export
-    code += globalConstant.match(/^import[\s\S]+export {[\s\S]+};/)[0];
+    {// result-code-defs.d.ts
+        const { imports, exports } = await makeResultCodeDefs(
+            './dist/result-code-defs.d.ts',
+            [
+                {
+                    name: '@cdp/result/result-code-defs',
+                    path: '../../lib/core/result/types/result-code-defs.d.ts',
+                },
+            ],
+            '../../lib/core/result/types/result-code.d.ts',
+        );
+        code += `${imports}\n${exports}`;
+    }
 
     return code;
 }

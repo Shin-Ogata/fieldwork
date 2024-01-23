@@ -229,19 +229,6 @@ function formatXML(src, options) {
     return normalizeText(xml, opts);
 }
 
-function dropAlias(code, values) {
-    values = Array.isArray(values) ? values : [values];
-    const drop = (text, val) => {
-        const reg1 = new RegExp(`\\s*${val}\\$\\d as ${val}(,)`, 'g');
-        const reg2 = new RegExp(`${val}\\$\\d`, 'g');
-        return text.replace(reg1, '').replace(reg2, val);
-    };
-    for (const value of values) {
-        code = drop(code, value);
-    }
-    return code;
-}
-
 module.exports = {
     toPOSIX,
     cleanEmptyDir,
@@ -252,5 +239,4 @@ module.exports = {
     gzip,
     normalizeText,
     formatXML,
-    dropAlias,
 };

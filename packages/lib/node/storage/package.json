@@ -1,7 +1,7 @@
 {
   "name": "@cdp/fs-storage",
   "description": "file-system storage utility module",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/core-storage": "file:../../core/storage",
@@ -49,7 +49,7 @@
     "set-version": "cdp-task set-version",
     "start": "jasmine --config=../../../../config/test/jasmine.js",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js",
     "unit-test": "jasmine --config=../../../../config/test/jasmine.js",
     "unit-test:ci": "cdp-task unit-test run:unit-test -s",
     "ut": "npm run unit-test",

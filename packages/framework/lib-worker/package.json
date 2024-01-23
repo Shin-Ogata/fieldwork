@@ -1,7 +1,7 @@
 {
   "name": "@cdp/lib-worker",
   "description": "worker library collection",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/lib-core": "file:../lib-core"
@@ -54,7 +54,7 @@
     "set-version": "cdp-task set-version",
     "setup": "cdp-task bundle setup-ut",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc dist/lib-worker.d.ts --options ../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc dist/lib-worker.d.ts --options ../../../config/doc/typedoc-bundle.js",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
     "ut": "npm run unit-test",

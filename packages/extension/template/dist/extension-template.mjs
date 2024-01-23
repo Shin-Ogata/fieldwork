@@ -1,5 +1,5 @@
 /*!
- * @cdp/extension-template 0.9.17
+ * @cdp/extension-template 0.9.18
  *   extension for template engine
  */
 

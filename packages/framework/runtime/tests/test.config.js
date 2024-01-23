@@ -4,7 +4,7 @@ const { join }             = require('node:path');
 const { includes }         = require('@cdp/tasks');
 const { packageName, src } = require('@cdp/tasks/config').build;
 const config               = require('../../../../config/bundle/rollup-test');
-const { replace }          = require('../../../lib/core/result/build.config');
+const { makeEnumReplacer } = require('@cdp/tasks/lib/bundle-utils');
 const testee               = require('../build.config').default;
 
 const externals = ['extension'];
@@ -38,7 +38,7 @@ module.exports = {
             '@cdp/app': 'CDP',
         },
         // for result tests
-        replace,
+        replace: makeEnumReplacer(),
     }),
     testem: config.testem({
         random: false,

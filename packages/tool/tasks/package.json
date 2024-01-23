@@ -1,7 +1,7 @@
 {
   "name": "@cdp/tasks",
   "description": "provide for development task scripts and commands",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "bin": {
     "cdp-task": "bin/index.js"

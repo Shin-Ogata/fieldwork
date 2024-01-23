@@ -1,19 +1,36 @@
 /*!
- * @cdp/ui-utils 0.9.17
+ * @cdp/ui-utils 0.9.18
  *   UI components common utilities
  */
 
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CDP = global.CDP || {}));
-})(this, (function (exports) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@cdp/runtime')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@cdp/runtime'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CDP = global.CDP || {}, global.CDP));
+})(this, (function (exports, runtime) { 'use strict';
 
-	const UI_UTILS_STATUS = 'UNDER CONSTRUCTION';
+    /* eslint-disable
+        @typescript-eslint/no-namespace,
+        @typescript-eslint/no-unused-vars,
+     */
+    (function () {
+        /**
+         * @en Extends error code definitions.
+         * @ja 拡張エラーコード定義
+         */
+        let RESULT_CODE = CDP_DECLARE.RESULT_CODE;
+        (function () {
+            RESULT_CODE[RESULT_CODE["UI_UTILS_DECLARE"] = 9007199254740991] = "UI_UTILS_DECLARE";
+            RESULT_CODE[RESULT_CODE["ERROR_UI_UTILS_FATAL"] = CDP_DECLARE.DECLARE_ERROR_CODE(100 /* RESULT_CODE_BASE.CDP */, 120 /* LOCAL_CODE_BASE.UI_UTILS */ + 1, 'UI utils something wrong.')] = "ERROR_UI_UTILS_FATAL";
+        })();
+    })();
 
-	exports.UI_UTILS_STATUS = UI_UTILS_STATUS;
+    const UI_UTILS_STATUS = 'UNDER CONSTRUCTION';
+    runtime.isFunction(runtime.i18n.t) && console.log('okok');
 
-	Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+    exports.UI_UTILS_STATUS = UI_UTILS_STATUS;
+
+    Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 
 }));
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidWktdXRpbHMuanMiLCJzb3VyY2VzIjpbImluZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBVSV9VVElMU19TVEFUVVMgPSAnVU5ERVIgQ09OU1RSVUNUSU9OJztcbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7OztBQUFPLE9BQU0sZUFBZSxHQUFHOzs7Ozs7Ozs7OyIsInNvdXJjZVJvb3QiOiJjZHA6Ly8vQGNkcC91aS11dGlscy8ifQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidWktdXRpbHMuanMiLCJzb3VyY2VzIjpbInJlc3VsdC1jb2RlLWRlZnMudHMiLCJpbmRleC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvKiBlc2xpbnQtZGlzYWJsZVxuICAgIEB0eXBlc2NyaXB0LWVzbGludC9uby1uYW1lc3BhY2UsXG4gICAgQHR5cGVzY3JpcHQtZXNsaW50L25vLXVudXNlZC12YXJzLFxuICovXG5cbm5hbWVzcGFjZSBDRFBfREVDTEFSRSB7XG5cbiAgICBjb25zdCBlbnVtIENEUF9LTk9XTl9VSV9NT0RVTEUge1xuICAgICAgICAvKiogYEBjZHAvdWktdXRpbHNgICovXG4gICAgICAgIFVUSUxTICA9IDEsXG4gICAgICAgIE9GRlNFVCA9IDIsXG4gICAgfVxuXG4gICAgY29uc3QgZW51bSBMT0NBTF9DT0RFX0JBU0Uge1xuICAgICAgICBVSV9VVElMUyA9IChDRFBfS05PV05fTU9EVUxFLk9GRlNFVCArIENEUF9LTk9XTl9VSV9NT0RVTEUuVVRJTFMpICogTE9DQUxfQ09ERV9SQU5HRV9HVUlERS5GVU5DVElPTixcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiBAZW4gRXh0ZW5kcyBlcnJvciBjb2RlIGRlZmluaXRpb25zLlxuICAgICAqIEBqYSDmi6HlvLXjgqjjg6njg7zjgrPjg7zjg4nlrprnvqlcbiAgICAgKi9cbiAgICBleHBvcnQgZW51bSBSRVNVTFRfQ09ERSB7XG4gICAgICAgIFVJX1VUSUxTX0RFQ0xBUkUgPSBSRVNVTFRfQ09ERV9CQVNFLkRFQ0xBUkUsXG4gICAgICAgIEVSUk9SX1VJX1VUSUxTX0ZBVEFMID0gREVDTEFSRV9FUlJPUl9DT0RFKFJFU1VMVF9DT0RFX0JBU0UuQ0RQLCBMT0NBTF9DT0RFX0JBU0UuVUlfVVRJTFMgKyAxLCAnVUkgdXRpbHMgc29tZXRoaW5nIHdyb25nLicpLFxuICAgIH1cbn1cbiIsImV4cG9ydCBjb25zdCBVSV9VVElMU19TVEFUVVMgPSAnVU5ERVIgQ09OU1RSVUNUSU9OJztcblxuLy8gVE9ETzogdGVzdFxuaW1wb3J0ICcuL3Jlc3VsdC1jb2RlLWRlZnMnO1xuaW1wb3J0IHsgaTE4biwgaXNGdW5jdGlvbiB9IGZyb20gJ0BjZHAvcnVudGltZSc7XG5cbmlzRnVuY3Rpb24oaTE4bi50KSAmJiAgY29uc29sZS5sb2coJ29rb2snKTtcbiJdLCJuYW1lcyI6WyJpc0Z1bmN0aW9uIiwiaTE4biJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7SUFBQTs7O0lBR0c7SUFFSCxDQUFBLFlBQXFCO0lBWWpCOzs7SUFHRztJQUNILElBQUEsSUFHQyxXQUFBLEdBQUEsV0FBQSxDQUFBLFdBQUEsQ0FBQTtJQUhELElBQUEsQ0FBQSxZQUF1QjtJQUNuQixRQUFBLFdBQUEsQ0FBQSxXQUFBLENBQUEsa0JBQUEsQ0FBQSxHQUFBLGdCQUFBLENBQUEsR0FBQSxrQkFBMkMsQ0FBQTtZQUMzQyxXQUF1QixDQUFBLFdBQUEsQ0FBQSxzQkFBQSxDQUFBLEdBQUEsV0FBQSxDQUFBLGtCQUFrQixDQUF1QixHQUFBLDZCQUFBLEdBQUEsa0NBQTJCLENBQUMsRUFBRSwyQkFBMkIsQ0FBQyxDQUFBLEdBQUEsc0JBQUEsQ0FBQTtJQUM5SCxLQUFDLEdBQUEsQ0FBQTtJQUNMLENBQUMsR0FBQTs7QUN6Qk0sVUFBTSxlQUFlLEdBQUcscUJBQXFCO0FBTXBEQSxzQkFBVSxDQUFDQyxZQUFJLENBQUMsQ0FBQyxDQUFDLElBQUssT0FBTyxDQUFDLEdBQUcsQ0FBQyxNQUFNLENBQUM7Ozs7Ozs7Ozs7Iiwic291cmNlUm9vdCI6ImNkcDovLy9AY2RwL3VpLXV0aWxzLyJ9

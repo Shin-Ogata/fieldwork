@@ -1,7 +1,8 @@
 'use strict';
 
 const config = require('../../../../config/bundle/rollup-core');
-const { replace } = require('@cdp/result/build.config');
+const { makeEnumReplacer } = require('@cdp/tasks/lib/bundle-utils');
+const replace = makeEnumReplacer();
 
 module.exports = {
     __esModule: true,
