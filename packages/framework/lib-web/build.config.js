@@ -1,9 +1,9 @@
 'use strict';
 
-const { resolve }      = require('node:path');
+const { resolve } = require('node:path');
 const { readFileSync } = require('node:fs');
-const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
-const { dropAlias } = require('@cdp/tasks/lib/misc');
+const resolveDepends = require('@cdp/tasks/lib/resolve-dependency');
+const { dropAlias, makeResultCodeDefs } = require('@cdp/tasks/lib/bundle-utils');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
@@ -14,7 +14,7 @@ const coreModules = Object.keys(require('../lib-core/package.json').devDependenc
 // '@cdp/lib-worker' modules
 const workerModules = Object.keys(require('../lib-worker/package.json').devDependencies);
 
-function patch(index, code, includes) {
+async function patch(index, code, includes) {
     if (0 !== index) {
         return code;
     }
@@ -163,17 +163,42 @@ function patch(index, code, includes) {
         // namespace i18n { ～ } を検出. 対象の `}` の分だけ `([^}]+})` を追加
         const pluginI18N = i18n.match(/( {4}namespace i18n {)([^}]+})([^}]+})([^}]+})([^}]+})([^}]+})([^}]+})([^}]+})/)[0].replace('namespace', 'declare namespace');
         code += pluginI18N.split('\n').map(s => s.replace('    ', '')).join('\n');
+        code += '\n';
         const pluginDOM = i18n.match(/( {4}interface DOMPlugin {)[\s\S]*?(}\n)/)[0].replace('interface', 'export interface');
         code += pluginDOM.split('\n').map(s => s.replace('    ', '')).join('\n');
     }
 
     {// result-code-defs.d.ts
-        code += read(resolve('../../lib/web/i18n/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/data-sync/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/model/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/collection/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/router/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/app/types/result-code-defs.d.ts'));
+        const { imports } = await makeResultCodeDefs(
+            './dist/result-code-defs.d.ts',
+            [
+                {
+                    name: '@cdp/i18n/result-code-defs',
+                    path: '../../lib/web/i18n/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/data-sync/result-code-defs',
+                    path: '../../lib/web/data-sync/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/model/result-code-defs',
+                    path: '../../lib/web/model/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/collection/result-code-defs',
+                    path: '../../lib/web/collection/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/router/result-code-defs',
+                    path: '../../lib/web/router/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/app/result-code-defs',
+                    path: '../../lib/web/app/types/result-code-defs.d.ts',
+                },
+            ],
+        );
+        code += `${imports}\n`;
     }
 
     return code;

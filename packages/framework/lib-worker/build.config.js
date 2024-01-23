@@ -1,8 +1,8 @@
 'use strict';
 
-const { resolve }      = require('node:path');
-const { readFileSync } = require('node:fs');
-const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
+const { resolve } = require('node:path');
+const resolveDepends = require('@cdp/tasks/lib/resolve-dependency');
+const { makeResultCodeDefs } = require('@cdp/tasks/lib/bundle-utils');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
@@ -11,7 +11,7 @@ const minify_js  = require('../../../config/minify/terser');
 // '@cdp/lib-core' modules
 const coreModules = Object.keys(require('../lib-core/package.json').devDependencies);
 
-function patch(index, code, includes) {
+async function patch(index, code, includes) {
     if (0 !== index) {
         return code;
     }
@@ -37,8 +37,18 @@ function patch(index, code, includes) {
         .replace(regexCoreModules, '@cdp/lib-core')
     ;
 
-    // global namespace: `@cdp/ajax result-code-defs.d.ts`
-    code += readFileSync(resolve(__dirname, 'node_modules/@cdp/ajax/types/result-code-defs.d.ts')).toString();
+    {// result-code-defs.d.ts
+        const { imports } = await makeResultCodeDefs(
+            './dist/result-code-defs.d.ts',
+            [
+                {
+                    name: '@cdp/ajax/result-code-defs',
+                    path: '../../lib/worker/ajax/types/result-code-defs.d.ts',
+                },
+            ],
+        );
+        code += `${imports}\n`;
+    }
 
     return code;
 }

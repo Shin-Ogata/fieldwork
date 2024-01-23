@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.17
+ * @cdp/lib-web 0.9.18
  *   web api library collection
  */
 
@@ -7,7 +7,7 @@ import { safe, setMixClassAttribute, mixins, isFunction, className, isArray as i
 import { request, deserialize, serialize, ajax, toQueryStrings, parseUrlQuery, convertUrlParamType } from '@cdp/lib-worker';
 
 /*!
- * @cdp/web-utils 0.9.17
+ * @cdp/web-utils 0.9.18
  *   web domain utilities
  */
 
@@ -191,7 +191,7 @@ function toTemplateElement(src) {
 }
 
 /*!
- * @cdp/dom 0.9.17
+ * @cdp/dom 0.9.18
  *   dom utility module
  */
 
@@ -3748,7 +3748,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.17
+ * @cdp/environment 0.9.18
  *   environment resolver module
  */
 
@@ -3918,7 +3918,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.17
+ * @cdp/extension-i18n 0.9.18
  *   extension for internationalization
  */
 
@@ -6799,7 +6799,7 @@ instance.loadLanguages;
 const i18n = instance;
 
 /*!
- * @cdp/i18n 0.9.17
+ * @cdp/i18n 0.9.18
  *   internationalization module
  */
 
@@ -7097,7 +7097,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.17
+ * @cdp/web-storage 0.9.18
  *   web storage utility module
  */
 
@@ -7230,7 +7230,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.17
+ * @cdp/data-sync 0.9.18
  *   web storage utility module
  */
 
@@ -7609,7 +7609,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.17
+ * @cdp/model 0.9.18
  *   generic model scheme
  */
 
@@ -8306,7 +8306,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.17
+ * @cdp/collection 0.9.18
  *   generic collection scheme
  */
 
@@ -10452,7 +10452,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.17
+ * @cdp/view 0.9.18
  *   generic view scheme
  */
 
@@ -10707,7 +10707,7 @@ class View extends (mixins(EventSource, ViewCore)) {
 const _View = View;
 
 /*!
- * @cdp/extension-template 0.9.17
+ * @cdp/extension-template 0.9.18
  *   extension for template engine
  */
 
@@ -13856,7 +13856,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-bridge 0.9.17
+ * @cdp/extension-template-bridge 0.9.18
  *   extension for HTML templates bridge.
  */
 
@@ -15252,7 +15252,7 @@ function createStampinoTransformer(options) {
 }
 
 /*!
- * @cdp/template 0.9.17
+ * @cdp/template 0.9.18
  *   HTML template library
  */
 
@@ -15727,7 +15727,7 @@ hooks.createContext = createContext;
 hooks.useContext = useContext;
 
 /*!
- * @cdp/extension-path2regexp 0.9.17
+ * @cdp/extension-path2regexp 0.9.18
  *   extension for conversion path to regexp library
  */
 
@@ -16145,7 +16145,7 @@ const path2regexp = {
 };
 
 /*!
- * @cdp/router 0.9.17
+ * @cdp/router 0.9.18
  *   generic router scheme
  */
 
@@ -17892,7 +17892,7 @@ function createRouter(selector, options) {
 }
 
 /*!
- * @cdp/app 0.9.17
+ * @cdp/app 0.9.18
  *   application context
  */
 

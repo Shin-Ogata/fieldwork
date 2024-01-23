@@ -1,5 +1,5 @@
 /*!
- * @cdp/runtime 0.9.17
+ * @cdp/runtime 0.9.18
  *   runtime core framework
  */
 
@@ -10,12 +10,12 @@
 })(this, (function (exports) { 'use strict';
 
     /*!
-     * @cdp/lib-core 0.9.17
+     * @cdp/lib-core 0.9.18
      *   core library collection
      */
 
     /*!
-     * @cdp/core-utils 0.9.17
+     * @cdp/core-utils 0.9.18
      *   core domain utilities
      */
 
@@ -2390,7 +2390,7 @@
     }
 
     /*!
-     * @cdp/events 0.9.17
+     * @cdp/events 0.9.18
      *   pub/sub framework
      */
 
@@ -2879,7 +2879,7 @@
     const _EventSource = EventSource;
 
     /*!
-     * @cdp/promise 0.9.17
+     * @cdp/promise 0.9.18
      *   promise utility module
      */
 
@@ -3506,7 +3506,7 @@
     }
 
     /*!
-     * @cdp/observable 0.9.17
+     * @cdp/observable 0.9.18
      *   observable utility module
      */
 
@@ -4143,7 +4143,7 @@
     }
 
     /*!
-     * @cdp/result 0.9.17
+     * @cdp/result 0.9.18
      *   result utility module
      */
 
@@ -4478,7 +4478,7 @@
     }
 
     /*!
-     * @cdp/core-storage 0.9.17
+     * @cdp/core-storage 0.9.18
      *   core storage utility module
      */
 
@@ -4846,7 +4846,7 @@
     }
 
     /*!
-     * @cdp/core-template 0.9.17
+     * @cdp/core-template 0.9.18
      *   template engine
      */
 
@@ -5570,13 +5570,13 @@
     }
 
     /*!
-     * @cdp/lib-worker 0.9.17
+     * @cdp/lib-worker 0.9.18
      *   worker library collection
      */
 
 
     /*!
-     * @cdp/binary 0.9.17
+     * @cdp/binary 0.9.18
      *   binary utility module
      */
 
@@ -6245,7 +6245,7 @@
     }
 
     /*!
-     * @cdp/ajax 0.9.17
+     * @cdp/ajax 0.9.18
      *   ajax utility module
      */
 
@@ -6679,7 +6679,7 @@
     };
 
     /*!
-     * @cdp/inline-worker 0.9.17
+     * @cdp/inline-worker 0.9.18
      *   inline web worker utility module
      */
 
@@ -6794,13 +6794,13 @@
     }
 
     /*!
-     * @cdp/lib-web 0.9.17
+     * @cdp/lib-web 0.9.18
      *   web api library collection
      */
 
 
     /*!
-     * @cdp/web-utils 0.9.17
+     * @cdp/web-utils 0.9.18
      *   web domain utilities
      */
 
@@ -6984,7 +6984,7 @@
     }
 
     /*!
-     * @cdp/dom 0.9.17
+     * @cdp/dom 0.9.18
      *   dom utility module
      */
 
@@ -10541,7 +10541,7 @@
     setup(DOMClass.prototype, DOMClass.create);
 
     /*!
-     * @cdp/environment 0.9.17
+     * @cdp/environment 0.9.18
      *   environment resolver module
      */
 
@@ -10711,7 +10711,7 @@
     const platform = queryPlatform();
 
     /*!
-     * @cdp/extension-i18n 0.9.17
+     * @cdp/extension-i18n 0.9.18
      *   extension for internationalization
      */
 
@@ -13592,7 +13592,7 @@
     const i18n = instance;
 
     /*!
-     * @cdp/i18n 0.9.17
+     * @cdp/i18n 0.9.18
      *   internationalization module
      */
 
@@ -13890,7 +13890,7 @@
     };
 
     /*!
-     * @cdp/web-storage 0.9.17
+     * @cdp/web-storage 0.9.18
      *   web storage utility module
      */
 
@@ -14023,7 +14023,7 @@
     const webStorage = new WebStorage(localStorage);
 
     /*!
-     * @cdp/data-sync 0.9.17
+     * @cdp/data-sync 0.9.18
      *   web storage utility module
      */
 
@@ -14402,7 +14402,7 @@
     }
 
     /*!
-     * @cdp/model 0.9.17
+     * @cdp/model 0.9.18
      *   generic model scheme
      */
 
@@ -15099,7 +15099,7 @@
     }
 
     /*!
-     * @cdp/collection 0.9.17
+     * @cdp/collection 0.9.18
      *   generic collection scheme
      */
 
@@ -17245,7 +17245,7 @@
     }
 
     /*!
-     * @cdp/view 0.9.17
+     * @cdp/view 0.9.18
      *   generic view scheme
      */
 
@@ -17500,7 +17500,7 @@
     const _View = View;
 
     /*!
-     * @cdp/extension-template 0.9.17
+     * @cdp/extension-template 0.9.18
      *   extension for template engine
      */
 
@@ -20649,7 +20649,7 @@
     };
 
     /*!
-     * @cdp/extension-template-bridge 0.9.17
+     * @cdp/extension-template-bridge 0.9.18
      *   extension for HTML templates bridge.
      */
 
@@ -22045,7 +22045,7 @@
     }
 
     /*!
-     * @cdp/template 0.9.17
+     * @cdp/template 0.9.18
      *   HTML template library
      */
 
@@ -22520,7 +22520,7 @@
     hooks.useContext = useContext;
 
     /*!
-     * @cdp/extension-path2regexp 0.9.17
+     * @cdp/extension-path2regexp 0.9.18
      *   extension for conversion path to regexp library
      */
 
@@ -22938,7 +22938,7 @@
     };
 
     /*!
-     * @cdp/router 0.9.17
+     * @cdp/router 0.9.18
      *   generic router scheme
      */
 
@@ -24685,7 +24685,7 @@
     }
 
     /*!
-     * @cdp/app 0.9.17
+     * @cdp/app 0.9.18
      *   application context
      */
 

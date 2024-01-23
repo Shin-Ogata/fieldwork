@@ -1,6 +1,6 @@
 'use strict';
 
-const { dropAlias } = require('@cdp/tasks/lib/misc');
+const { dropAlias } = require('@cdp/tasks/lib/bundle-utils');
 
 const config = require('../../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../../config/bundle/dts-bundle');

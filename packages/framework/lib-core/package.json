@@ -1,7 +1,7 @@
 {
   "name": "@cdp/lib-core",
   "description": "core library collection",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "devDependencies": {
     "@cdp/core-storage": "file:../../lib/core/storage",
@@ -55,7 +55,7 @@
     "set-version": "cdp-task set-version",
     "setup": "cdp-task bundle setup-ut",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc dist/lib-core.d.ts --options ../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc dist/lib-core.d.ts --options ../../../config/doc/typedoc-bundle.js",
     "unit-test": "cdp-task ut -c ./tests/test.config.js",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -s",
     "ut": "npm run unit-test",

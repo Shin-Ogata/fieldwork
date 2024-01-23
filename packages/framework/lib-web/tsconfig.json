@@ -9,7 +9,6 @@
     "rootDir": "src"
   },
   "include": [
-    "src/**/*",
-    "dist/*.d.ts"
+    "src/**/*"
   ]
 }

@@ -1,5 +1,5 @@
 /*!
- * @cdp/dom 0.9.17
+ * @cdp/dom 0.9.18
  *   dom utility module
  */
 

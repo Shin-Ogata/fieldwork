@@ -1,7 +1,7 @@
 {
   "name": "@cdp/template",
   "description": "HTML template library",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "browserslist": [
     "defaults"
@@ -67,7 +67,7 @@
     "set-version": "cdp-task set-version",
     "start": "http-server . -a localhost -p 8080 -s -c-1 -o .temp/dev",
     "test": "run-s -l lint unit-test:ci",
-    "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js --excludeExternals",
+    "typedoc": "npm run clean:doc:a && typedoc src --options ../../../../config/doc/typedoc.js",
     "unit-test": "cdp-task ut -c ./tests/test.config.js -r ./tests/res",
     "unit-test:ci": "cdp-task ut ci -c ./tests/test.config.js -r ./tests/res -s",
     "ut": "npm run unit-test",

@@ -1,15 +1,14 @@
 'use strict';
 
-const { resolve }      = require('node:path');
-const { readFileSync } = require('node:fs');
-const resolveDepends   = require('@cdp/tasks/lib/resolve-dependency');
-const { dropAlias } = require('@cdp/tasks/lib/misc');
+const { resolve } = require('node:path');
+const resolveDepends = require('@cdp/tasks/lib/resolve-dependency');
+const { dropAlias, makeResultCodeDefs } = require('@cdp/tasks/lib/bundle-utils');
 
 const bundle_src = require('../../../config/bundle/rollup-core');
 const bundle_dts = require('../../../config/bundle/dts-bundle');
 const minify_js  = require('../../../config/minify/terser');
 
-function patch(index, code, includes) {
+async function patch(index, code, includes) {
     if (0 !== index) {
         return code;
     }
@@ -84,26 +83,45 @@ function patch(index, code, includes) {
     }
 
     {// result-code-defs.d.ts
-        const read = (dts) => {
-            // trim banner
-            return readFileSync(dts).toString().replace(/\/\*\![\s\S]*?\*\/\n/, '');
-        };
-    
-        // global namespace: `@cdp/result result-code-defs.d.ts`
-        code += read(resolve('../../lib/core/result/types/result-code-defs.d.ts'));
-
-        code += read(resolve('../../lib/worker/ajax/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/i18n/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/data-sync/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/model/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/collection/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/router/types/result-code-defs.d.ts'));
-        code += read(resolve('../../lib/web/app/types/result-code-defs.d.ts'));
-
-        // re-export global constant
-        const globalConstant = read(resolve('../../lib/core/result/types/result-code.d.ts'));
-        // 先頭の import から 最初の export
-        code += globalConstant.match(/^import[\s\S]+export {[\s\S]+};/)[0];
+        const { imports, exports } = await makeResultCodeDefs(
+            './dist/result-code-defs.d.ts',
+            [
+                {
+                    name: '@cdp/result/result-code-defs',
+                    path: '../../lib/core/result/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/ajax/result-code-defs',
+                    path: '../../lib/worker/ajax/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/i18n/result-code-defs',
+                    path: '../../lib/web/i18n/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/data-sync/result-code-defs',
+                    path: '../../lib/web/data-sync/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/model/result-code-defs',
+                    path: '../../lib/web/model/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/collection/result-code-defs',
+                    path: '../../lib/web/collection/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/router/result-code-defs',
+                    path: '../../lib/web/router/types/result-code-defs.d.ts',
+                },
+                {
+                    name: '@cdp/app/result-code-defs',
+                    path: '../../lib/web/app/types/result-code-defs.d.ts',
+                },
+            ],
+            '../../lib/core/result/types/result-code.d.ts',
+        );
+        code += `${imports}\n${exports}`;
     }
 
     return code;

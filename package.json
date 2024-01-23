@@ -1,7 +1,7 @@
 {
   "name": "fieldwork",
   "description": "feasibility study",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "author": "Shin Ogata",
   "bugs": {
     "url": "https://github.com/Shin-Ogata/fieldwork/issues"
@@ -39,7 +39,7 @@
     "postcss": "8.4.33",
     "postcss-cli": "11.0.0",
     "requirejs": "2.3.6",
-    "rollup": "4.9.5",
+    "rollup": "4.9.6",
     "rollup-plugin-import-css": "3.4.0",
     "sass": "1.70.0",
     "semver": "7.5.4",
