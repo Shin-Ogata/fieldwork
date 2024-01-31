@@ -4521,6 +4521,10 @@ export declare namespace i18n {
          */
         returnNull: false;
         /**
+         * Allows empty string as valid translation
+         */
+        returnEmptyString: true;
+        /**
          * Allows objects as valid translation result
          */
         returnObjects: false;
@@ -5134,6 +5138,7 @@ export declare namespace i18n {
     /* eslint @typescript-eslint/ban-types: ['error', { types: { '{}': false } }] */
     // Type Options
     export type _ReturnObjects = TypeOptions['returnObjects'];
+    export type _ReturnEmptyString = TypeOptions['returnEmptyString'];
     export type _ReturnNull = TypeOptions['returnNull'];
     export type _KeySeparator = TypeOptions['keySeparator'];
     export type _NsSeparator = TypeOptions['nsSeparator'];
@@ -5186,7 +5191,8 @@ export declare namespace i18n {
     export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, unknown>;
     export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithPlural | Key) & keyof Res];
     export type ParseTReturnPluralOrdinal<Res, Key, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
-    export type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt> : TOpt['count'] extends number ? TOpt['ordinal'] extends boolean ? ParseTReturnPluralOrdinal<Res, Key> : ParseTReturnPlural<Res, Key> : Res extends readonly unknown[] ? Key extends `${infer NKey extends number}` ? Res[NKey] : never : Res[Key & keyof Res];
+    export type ParseTReturnWithFallback<Key, Val> = Val extends '' ? _ReturnEmptyString extends true ? '' : Key : Val extends null ? _ReturnNull extends true ? null : Key : Val;
+    export type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallback<Key, Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt> : TOpt['count'] extends number ? TOpt['ordinal'] extends boolean ? ParseTReturnPluralOrdinal<Res, Key> : ParseTReturnPlural<Res, Key> : Res extends readonly unknown[] ? Key extends `${infer NKey extends number}` ? Res[NKey] : never : Res[Key & keyof Res]>;
     export type TReturnOptionalNull = _ReturnNull extends true ? null : never;
     export type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true ? $SpecialObject | string : TOpt['returnObjects'] extends true ? $SpecialObject : string;
     export type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
