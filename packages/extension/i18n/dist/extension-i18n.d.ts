@@ -25,6 +25,40 @@ declare namespace i18n {
         T
     ];
     /**
+     * @typeParam T
+     * @example
+     * ```
+     * $UnionToIntersection<{foo: {bar: string} | {asd: boolean}}> = {foo: {bar: string} & {asd: boolean}}
+     * ```
+     *
+     * @see https://stackoverflow.com/questions/50374908/transform-union-type-to-intersection-type
+     */
+    export type $UnionToIntersection<T> = (T extends unknown ? (k: T) => void : never) extends (k: infer I) => void ? I : never;
+    /**
+     * @typeParam TPath union of strings
+     * @typeParam TValue value of the record
+     * @example
+     * ```
+     * $StringKeyPathToRecord<'foo.bar' | 'asd'> = {foo: {bar: string} | {asd: boolean}}
+     * ```
+     */
+    export type $StringKeyPathToRecordUnion<TPath extends string, TValue> = TPath extends `${infer TKey}.${infer Rest}` ? {
+        [Key in TKey]: $StringKeyPathToRecord<Rest, TValue>;
+    } : {
+        [Key in TPath]: TValue;
+    };
+    /**
+     * Used to intersect output of {@link $StringKeyPathToRecordUnion}
+     *
+     * @typeParam TPath union of strings
+     * @typeParam TValue value of the record
+     * @example
+     * ```
+     * $StringKeyPathToRecord<'foo.bar' | 'asd'> = {foo: {bar: string} & {asd: boolean}}
+     * ```
+     */
+    export type $StringKeyPathToRecord<TPath extends string, TValue> = $UnionToIntersection<$StringKeyPathToRecordUnion<TPath, TValue>>;
+    /**
      * This interface can be augmented by users to add types to `i18next` default TypeOptions.
      *
      * Usage:
@@ -729,7 +763,7 @@ declare namespace i18n {
      * Parse t function return type and interpolation values *
      ******************************************************** */
     export type ParseInterpolationValues<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${string}` ? ActualValue : Value) | ParseInterpolationValues<Rest> : never;
-    export type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, unknown>;
+    export type InterpolationMap<Ret> = $PreservedValue<$StringKeyPathToRecord<ParseInterpolationValues<Ret>, unknown>, Record<string, unknown>>;
     export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithPlural | Key) & keyof Res];
     export type ParseTReturnPluralOrdinal<Res, Key, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
     export type ParseTReturnWithFallback<Key, Val> = Val extends '' ? _ReturnEmptyString extends true ? '' : Key : Val extends null ? _ReturnNull extends true ? null : Key : Val;
@@ -1155,6 +1189,10 @@ declare namespace i18n {
          * Is initialized
          */
         isInitialized: boolean;
+        /**
+         * Is initializing
+         */
+        isInitializing: boolean;
         /**
          * Store was initialized
          */
