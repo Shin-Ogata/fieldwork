@@ -2166,6 +2166,10 @@ export declare class EventReceiver {
  * ```
  */
 export type EventSource<T extends object> = EventBroker<T> & EventReceiver;
+/**
+ * @en Constructor of {@link EventSource}
+ * @ja {@link EventSource} のコンストラクタ実体
+ */
 export declare const EventSource: {
     readonly prototype: EventSource<any>;
     new <T extends object>(): EventSource<T>;

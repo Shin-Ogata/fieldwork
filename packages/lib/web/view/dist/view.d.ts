@@ -276,6 +276,10 @@ export declare abstract class ViewCore<TElement extends Node = HTMLElement> {
  * ```
  */
 export type View<TElement extends Node = HTMLElement, TEvent extends object = object> = ViewCore<TElement> & EventSource<TEvent>;
+/**
+ * @en Constructor of {@link View}
+ * @ja {@link View} のコンストラクタ実体
+ */
 export declare const View: {
     readonly prototype: View<any, any>;
     new <TElement extends Node = HTMLElement, TEvent extends object = object>(options?: ViewConstructionOptions<TElement>): View<TElement, TEvent>;
