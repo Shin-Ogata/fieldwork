@@ -369,10 +369,10 @@ export type DOMEventMap<T>
 
 export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown
 
-export type EventWithNamespace<T extends DOMEventMap<unknown>> = keyof T | `${string & keyof T}.${string}`;
+export type EventWithNamespace<T extends DOMEventMap<any>> = keyof T | `${string & keyof T}.${string}`;
 export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
-export type EventType<T extends DOMEventMap<unknown>> = MakeEventType<EventWithNamespace<T>, T>;
-export type EventTypeOrNamespace<T extends DOMEventMap<unknown>> = EventType<T> | `.${string}`;
+export type EventType<T extends DOMEventMap<any>> = MakeEventType<EventWithNamespace<T>, T>;
+export type EventTypeOrNamespace<T extends DOMEventMap<any>> = EventType<T> | `.${string}`;
 
 //__________________________________________________________________________________________________//
 
