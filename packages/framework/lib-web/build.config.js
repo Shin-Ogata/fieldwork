@@ -146,6 +146,8 @@ async function patch(index, code, includes) {
             .replace(`export * from '@cdp/view';\n`, '')
             // drop multi re-export. 改行の有無で重複する re-export 構文を判定
             .replace(/export\s*{[^}]*\n[^}]*};/gm, '')
+            // dynamic import deep case: import('@cdp/core-utils/types/type') → import('@cdp/core-utils')
+            .replace(/import\('(@cdp\/[^']+)\/types\/[^']+'\)/g, `import('$1')`)
             // dynamic import: import('@cdp/core-utils') → import('@cdp/lib-core')
             .replace(/import\('@cdp\/core-utils'\)/g, `import('@cdp/lib-core')`)
             // 'declare const directives' → 'export declare const directives'

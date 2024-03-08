@@ -366,10 +366,10 @@ export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<
             for (const el of this) {
                 if (isArray(value) && isMultiSelectElement(el)) {
                     for (const option of el.options) {
-                        option.selected = (value as string[]).includes(option.value);
+                        option.selected = value.includes(option.value);
                     }
                 } else if (isInputElement(el)) {
-                    el.value = value;
+                    el.value = value as string;
                 }
             }
             return this;

@@ -19,7 +19,12 @@ void (async () => {
 
     await AppContext({
         main: '#app > .view-main',
-        initialPath: '/root',   // `http://localhost:8080/.temp/dev/#/other` の URL を入力しても `initialPath` に強制できる
+        /*
+         * initialPath 指定すると, `http://localhost:8080/.temp/dev/#/other` の URL を入力しても `initialPath` に強制する参考実装
+         * 「戻る」に router.back() をアサインしているときなど, 都合が悪いときに採用可能
+         * root path を '/' にすれば initialPath は不要となり, あらゆる root でブックマークされることを想定した実装が求められる
+         */
+        initialPath: '/root',
         splash: '#splash-screen',
         waitForReady: customInit,
         i18n: {
