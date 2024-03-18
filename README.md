@@ -57,54 +57,54 @@ npm run install:all
 
 - Core
 
-| module                                                 | description                  |
-|:-------------------------------------------------------|:-----------------------------|
-| [core-utils](./packages/lib/core/utils/README.md)      | core utility                 |
-| [events](./packages/lib/core/events/README.md)         | publish/subscribe library    |
-| [promise](./packages/lib/core/promise/README.md)       | cancelable promise utility   |
-| [observable](./packages/lib/core/observable/README.md) | observable object/array      |
-| [result](./packages/lib/core/result/README.md)         | error w/ result code utility |
-| [core-storage](./packages/lib/core/storage/README.md)  | core storage I/F defs        |
-| [core-template](./packages/lib/core/storage/README.md) | core template library        |
+| module                                       | description                  |
+|:---------------------------------------------|:-----------------------------|
+| [core-utils](./packages/lib/core/utils)      | core utility                 |
+| [events](./packages/lib/core/events)         | publish/subscribe library    |
+| [promise](./packages/lib/core/promise)       | cancelable promise utility   |
+| [observable](./packages/lib/core/observable) | observable object/array      |
+| [result](./packages/lib/core/result)         | error w/ result code utility |
+| [core-storage](./packages/lib/core/storage)  | core storage I/F defs        |
+| [core-template](./packages/lib/core/storage) | core template library        |
 
 - Node
 
-| module                                                 | description                         |
-|:-------------------------------------------------------|:------------------------------------|
-| [fs-storage](./packages/lib/node/storage/README.md)    | storage implementation w/ `node:fs` |
+| module                                       | description                         |
+|:---------------------------------------------|:------------------------------------|
+| [fs-storage](./packages/lib/node/storage)    | storage implementation w/ `node:fs` |
 
 - Worker
 
-| module                                                         | description                  |
-|:---------------------------------------------------------------|:-----------------------------|
-| [binary](./packages/lib/worker/binary/README.md)               | binary utility               |
-| [ajax](./packages/lib/worker/ajax/README.md)                   | ajax utility                 |
-| [inline-worker](./packages/lib/worker/inline-worker/README.md) | inline-worker utility        |
+| module                                               | description                  |
+|:-----------------------------------------------------|:-----------------------------|
+| [binary](./packages/lib/worker/binary)               | binary utility               |
+| [ajax](./packages/lib/worker/ajax)                   | ajax utility                 |
+| [inline-worker](./packages/lib/worker/inline-worker) | inline-worker utility        |
 
 - Web/DOM
 
-| module                                                     | description                                |
-|:-----------------------------------------------------------|:-------------------------------------------|
-| [web-utils](./packages/lib/web/utils/README.md)            | web  utility                               |
-| [dom](./packages/lib/web/dom/README.md)                    | dom manipulation library                   |
-| [environment](./packages/lib/web/environment/README.md)    | judge for environment                      |
-| [i18n](./packages/lib/web/i18n/README.md)                  | wrapper of `i18next`                       |
-| [web-storage](./packages/web/window/storage/README.md)     | storage implementation w/ `localStorage`   |
-| [data-sync](./packages/web/window/data-sync/README.md)     | web api entry point I/F defs               |
-| [model](./packages/lib/web/model/README.md)                | abstract model class                       |
-| [collection](./packages/lib/web/collection/README.md)      | abstract collection class                  |
-| [view](./packages/lib/web/view/README.md)                  | abstract view class                        |
-| [template](./packages/lib/web/template/README.md)          | template library collection                |
-| [router](./packages/lib/web/router/README.md)              | router class                               |
-| [app](./packages/lib/web/app/README.md)                    | application context                        |
+| module                                           | description                                |
+|:-------------------------------------------------|:-------------------------------------------|
+| [web-utils](./packages/lib/web/utils)            | web  utility                               |
+| [dom](./packages/lib/web/dom)                    | dom manipulation library                   |
+| [environment](./packages/lib/web/environment)    | judge for environment                      |
+| [i18n](./packages/lib/web/i18n)                  | wrapper of `i18next`                       |
+| [web-storage](./packages/web/window/storage)     | storage implementation w/ `localStorage`   |
+| [data-sync](./packages/web/window/data-sync)     | web api entry point I/F defs               |
+| [model](./packages/lib/web/model)                | abstract model class                       |
+| [collection](./packages/lib/web/collection)      | abstract collection class                  |
+| [view](./packages/lib/web/view)                  | abstract view class                        |
+| [template](./packages/lib/web/template)          | template library collection                |
+| [router](./packages/lib/web/router)              | router class                               |
+| [app](./packages/lib/web/app)                    | application context                        |
 
 - UI componets
 
-| module                                                 | description                     |
-|:-------------------------------------------------------|:--------------------------------|
-| [ui-utils](./packages/lib/ui/core/README.md)           | ui common utility               |
-| [ui-forms](./packages/lib/ui/forms/README.md)          | forms collection                |
-| [ui-listview](./packages/lib/ui/listview/README.md)    | list view component             |
+| module                                       | description                     |
+|:---------------------------------------------|:--------------------------------|
+| [ui-utils](./packages/lib/ui/core)           | ui common utility               |
+| [ui-forms](./packages/lib/ui/forms)          | forms collection                |
+| [ui-listview](./packages/lib/ui/listview)    | list view component             |
 
 
 ## License

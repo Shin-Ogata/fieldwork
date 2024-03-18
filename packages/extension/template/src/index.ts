@@ -10,21 +10,7 @@ export {
     nothing,
 } from 'lit-html';
 
-import {
-    _$LH,
-    AttributePart,
-    PropertyPart,
-    BooleanAttributePart,
-    EventPart,
-    ElementPart,
-} from 'lit-html';
-export const _Σ = {
-    AttributePart: _$LH._AttributePart as unknown as AttributePart,
-    PropertyPart: _$LH._PropertyPart as unknown as PropertyPart,
-    BooleanAttributePart: _$LH._BooleanAttributePart as unknown as BooleanAttributePart,
-    EventPart: _$LH._EventPart as unknown as EventPart,
-    ElementPart: _$LH._ElementPart as unknown as ElementPart,
-};
+export { _$LH } from 'lit-html/private-ssr-support';
 
 export {
     Directive,

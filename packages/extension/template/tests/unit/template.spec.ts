@@ -31,7 +31,7 @@ import {
     directive,
     directives,
     createRef,
-    _Σ,
+    _$LH,
     toTemplateStringsArray as bridge,
 } from '@cdp/extension-template';
 // rollup v3+:  multi import w/ default
@@ -51,7 +51,7 @@ describe('extention-template spec', () => {
         BooleanAttributePart,
         EventPart,
         ElementPart,
-    } = _Σ;
+    } = _$LH;
 
     const {
         asyncAppend,
@@ -113,7 +113,7 @@ describe('extention-template spec', () => {
             expect(svg).toBeDefined();
             expect(render).toBeDefined();
             expect(directive).toBeDefined();
-            expect(_Σ).toBeDefined();
+            expect(_$LH).toBeDefined();
             expect(AttributePart).toBeDefined();
             expect(PropertyPart).toBeDefined();
             expect(BooleanAttributePart).toBeDefined();
