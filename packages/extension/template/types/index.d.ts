@@ -1,12 +1,5 @@
 export { TemplateResult, HTMLTemplateResult, SVGTemplateResult, RenderOptions, html, svg, render, noChange, nothing, } from 'lit-html';
-import { AttributePart, PropertyPart, BooleanAttributePart, EventPart, ElementPart } from 'lit-html';
-export declare const _Σ: {
-    AttributePart: AttributePart;
-    PropertyPart: PropertyPart;
-    BooleanAttributePart: BooleanAttributePart;
-    EventPart: EventPart;
-    ElementPart: ElementPart;
-};
+export { _$LH } from 'lit-html/private-ssr-support';
 export { Directive, DirectiveParameters, Part, PartInfo, PartType, directive, } from 'lit-html/directive';
 export { AsyncDirective } from 'lit-html/async-directive';
 export { Ref, createRef } from 'lit-html/directives/ref';
