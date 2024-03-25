@@ -146,6 +146,7 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
             Number(response.headers.get('content-length')),
         ) as AjaxResult<T>;
     } else {
+        // eslint-disable-next-line
         return Promise.resolve(response[dataType as Exclude<AjaxDataTypes, 'response' | 'stream'>](), token);
     }
 }
