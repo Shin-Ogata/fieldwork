@@ -208,7 +208,7 @@ export abstract class EventPublisher<Event extends object> implements Subscribab
             get enable() {
                 for (const ch of channels) {
                     const list = map.get(ch);
-                    if (!list || !list.has(listener)) {
+                    if (!list?.has(listener)) {
                         this.unsubscribe();
                         return false;
                     }

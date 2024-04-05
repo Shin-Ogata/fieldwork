@@ -66,7 +66,7 @@ describe('ajax/stream spec', () => {
 
         // progress example
         let result: ReadableStreamReadResult<Uint8Array> | undefined;
-        while (!result || !result.done) {
+        while (!result?.done) {
             result = await reader.read();
         }
 
