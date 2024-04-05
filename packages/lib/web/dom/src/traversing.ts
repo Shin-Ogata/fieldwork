@@ -59,7 +59,7 @@ function winnow<T extends SelectorBase, U extends ElementBase>(
                 }
             }
         } else if (isStringSelector(selector)) {
-            if ((el as Node as Element).matches && (el as Node as Element).matches(selector)) {
+            if ((el as Node as Element).matches?.(selector)) {
                 retval = validCallback(el);
                 if (undefined !== retval) {
                     return retval;

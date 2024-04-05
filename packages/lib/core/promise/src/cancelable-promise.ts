@@ -103,7 +103,7 @@ class CancelablePromise<T> extends Promise<T> {
         if (thenArgs) {
             p = nativeThen.apply(p, thenArgs);
         }
-        if (token && token.cancelable) {
+        if (token?.cancelable) {
             _tokens.set(p, token);
         }
 
