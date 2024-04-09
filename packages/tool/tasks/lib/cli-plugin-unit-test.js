@@ -106,7 +106,7 @@ function testem(ciMode) {
 
 function nycHook(mode) {
     const script = mode.replace('run:', '');
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic:js/max-len
     return command('nyc', `--source-map=false -s --report-dir=${doc}/${report}/${coverage} --temp-dir=${doc}/${report}/${coverage} -n=${temp}/** -x=${temp}/*-spec.js npm run ${script}`);
 }
 
@@ -129,7 +129,7 @@ function resolveCoverageFile(options) {
 }
 
 function result() {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic:js/max-len
     return command('nyc', `report --reporter=lcov --reporter=html --reporter=text --report-dir=${doc}/${report}/${coverage} --temp-dir=${doc}/${report}/${coverage} --exclude-node-modules=false`);
 }
 

@@ -20,8 +20,9 @@ function detectSourceMap(src) {
                 return fs.readFileSync(path.resolve(path.dirname(src), file), 'utf-8');
             }).toObject();
         }
-    } catch (error) {
+    } catch (e) {
         console.log(colors.red(`    ERROR: cannot detect source-map for ${src}.`));
+        console.log(colors.red(`    ${e}.`));
     }
 }
 
@@ -29,8 +30,9 @@ function dropSourceMap(src) {
     try {
         const code = src.includes('\n') ? src : fs.readFileSync(src).toString();
         return convert.removeMapFileComments(convert.removeComments(code)).replace(/[\n\s]*$/, '\n');
-    } catch (error) {
+    } catch (e) {
         console.log(colors.red(`    ERROR: cannot drop source-map for ${src}.`));
+        console.log(colors.red(`    ${e}.`));
     }
 }
 

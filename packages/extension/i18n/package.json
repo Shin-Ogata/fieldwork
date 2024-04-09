@@ -52,7 +52,7 @@
     "debug": "npm run compile && run-p unit-test watch",
     "i18next:install": "npm i ./node_modules/i18next.tar.gz --no-save --no-audit --no-bin-links --no-optional --no-update-notifier --no-package-lock --loglevel=error --progress=false",
     "i18next:prepare": "node ./tasks/prepare-package.js",
-    "lint": "eslint src tests/unit -c ../../../config/lint/tslint.js --ext .ts",
+    "lint": "eslint src tests/unit -c ../../../config/lint/tslint.mjs",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../config/lint/eslint.js",
     "metrics:module": "cdp-task metrics -r module -l ../../../config/lint/eslint.js",

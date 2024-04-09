@@ -1,21 +1,12 @@
-// https://zenn.dev/keita_hino/articles/798bf62c6db663
-// export ESLINT_USE_FLAT_CONFIG=true
-
 import globals from 'globals';
-import js from '@eslint/js';
+import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin-js';
 
-// plugins
-import eslintComment from 'eslint-plugin-eslint-comments';
-
 export default [
-    js.configs.recommended,
+    eslint.configs.recommended,
     {
         plugins: {
             '@stylistic:js': stylistic,
-            // ※ `eslint-comments` は flat-config 下で機能しない.代替実装が提供される?
-            // https://github.com/eslint-community/eslint-plugin-eslint-comments/issues/133
-            'eslint-comments': eslintComment,
         },
         languageOptions: {
             globals: {
@@ -32,6 +23,9 @@ export default [
                 sourceType: 'module',
                 ecmaVersion: 2022,
             },
+        },
+        linterOptions: {
+            reportUnusedDisableDirectives: 'warn',
         },
         rules: {
             'prefer-const': 'error',
@@ -128,26 +122,6 @@ export default [
             'no-extra-boolean-cast': 'off',
             'no-bitwise': 'off',
             'no-console': 'off',
-            // v8.53.0+ 非推奨となるフォーマット系ルール
-            'array-bracket-spacing': 'off',
-            'arrow-spacing': 'off',
-            'block-spacing': 'off',
-            'brace-style': 'off',
-            'comma-spacing': 'off',
-            'computed-property-spacing': 'off',
-            'eol-last': 'off',
-            'func-call-spacing': 'off',
-            'keyword-spacing': 'off',
-            'max-len': 'off',
-            'no-multiple-empty-lines': 'off',
-            'no-trailing-spaces': 'off',
-            'object-curly-spacing': 'off',
-            'quotes': 'off',
-            'semi': 'off',
-            'semi-spacing': 'off',
-            'space-in-parens': 'off',
-            'space-infix-ops': 'off',
-            'space-unary-ops': 'off',
             // @stylistic/js
             '@stylistic:js/array-bracket-spacing': [
                 'error',
@@ -207,8 +181,6 @@ export default [
             '@stylistic:js/space-in-parens': 'error',
             '@stylistic:js/space-infix-ops': 'error',
             '@stylistic:js/space-unary-ops': 'error',
-            // eslint-comments (機能していない)
-            'eslint-comments/no-unused-disable': 'warn',
         },
     },
 ];

@@ -75,7 +75,7 @@ function query(cwd = process.cwd()) {
             if (rootDir) {
                 return rootDir;
             }
-        } catch (e) {
+        } catch {
             // noop
         }
         return config.dir.src;
@@ -106,8 +106,8 @@ function query(cwd = process.cwd()) {
         try {
             merge(pkg['cdp-config']);
             merge(require(path.join(cwd, 'project.config')));
-        } catch (e) {
-            // no reaction
+        } catch {
+            // noop
         }
     }
 

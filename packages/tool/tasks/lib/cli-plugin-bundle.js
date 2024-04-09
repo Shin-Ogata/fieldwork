@@ -185,6 +185,7 @@ async function bundleDTS(cwd, silent, config, validate) {
         await command('dts-bundle-generator', cmdOptions);
     } catch (e) {
         console.log(colors.cyan.underline(`↑  "dts-bundle-generator" validate faild. You should fix it manually.`));
+        console.log(colors.cyan.underline(`   ${e}`));
     }
 
     const tsVersion = await queryTSVersion();

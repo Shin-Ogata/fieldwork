@@ -1,8 +1,8 @@
 /* eslint-disable
-    block-spacing,
+    @stylistic:js/block-spacing,
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/await-thenable,
     @typescript-eslint/unbound-method,
+    @typescript-eslint/await-thenable,
     @typescript-eslint/no-unused-vars,
     @typescript-eslint/indent,
     @typescript-eslint/explicit-function-return-type,

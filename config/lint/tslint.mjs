@@ -1,27 +1,17 @@
-// export ESLINT_USE_FLAT_CONFIG=true
-
 import { resolve } from 'node:path';
-import { FlatCompat } from '@eslint/eslintrc';
-import baseRules from './eslint.mjs';
-import typeScriptESLint from '@typescript-eslint/eslint-plugin';
-import typeScriptESLintParser from '@typescript-eslint/parser';
-
-const compat = new FlatCompat();
+import eslint from './eslint.mjs';
+import tslint from 'typescript-eslint';
 
 export default [
-    ...baseRules,
-    ...compat.extends(
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended-type-checked',
-        'plugin:@typescript-eslint/stylistic-type-checked',
-    ),
+    ...eslint,
+    ...tslint.configs.recommendedTypeChecked,
+    ...tslint.configs.stylisticTypeChecked,
     {
         plugins: {
-            typeScriptESLint,
-            // '@typescript-eslint': typeScriptESLint,
+            '@typescript-eslint': tslint.plugin,
         },
         languageOptions: {
-            parser: typeScriptESLintParser,
+            parser: tslint.parser,
             parserOptions: {
                 project: [
                     resolve('tsconfig.json'),

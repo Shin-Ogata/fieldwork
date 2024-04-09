@@ -1,6 +1,6 @@
 /*
  eslint-disable
-    max-len,
+    @stylistic:js/max-len,
  */
 
 import {

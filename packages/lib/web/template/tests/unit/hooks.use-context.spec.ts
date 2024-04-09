@@ -60,7 +60,7 @@ describe('hooks/use-context spec', () => {
     it('check provider update', async () => {
         let setter!: UnknownFunction;
 
-        // eslint-disable-next-line func-call-spacing
+        // eslint-disable-next-line @stylistic:js/func-call-spacing
         const ThemeContext = createContext<{ theme: 'dark' | 'light'; setTheme: (theme: 'dark' | 'light') => void; }>({ theme: 'dark', setTheme: noop });
 
         function Provider(callback: (value: string) => DirectiveResult): DirectiveResult {
