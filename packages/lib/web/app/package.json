@@ -69,7 +69,7 @@
     "copy:dev:template": "cdp-task copy ./tpl/*.tpl ../../.temp/dev -w ./tests/dev",
     "debug": "npm run compile && run-p unit-test watch",
     "gents:i18n": "cdp-task i18n genkey -i ./tests/dev/res/locales/messages.en-US.json -o ./tests/dev/ts/types/i18nkey.ts",
-    "lint": "eslint src tests/unit -c ../../../../config/lint/tslint.mjs",
+    "lint": "eslint src tests/unit tests/dev/ts -c ../../../../config/lint/tslint.mjs",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../../config/lint/eslint.js",
     "metrics:module": "cdp-task metrics -r module -l ../../../../config/lint/eslint.js",

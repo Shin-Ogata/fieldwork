@@ -1,3 +1,5 @@
 {
+    "eslint.experimental.useFlatConfig": true,
+    "eslint.lintTask.options": "-c config/lint/tslint.mjs",
     "typescript.tsdk": "node_modules/typescript/lib"
 }
