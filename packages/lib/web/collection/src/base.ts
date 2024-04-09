@@ -882,7 +882,7 @@ export abstract class Collection<
                     set.push(existing);
                 }
                 items[i] = existing;
-            } // eslint-disable-line brace-style
+            } // eslint-disable-line @stylistic:js/brace-style
 
             // If this is a new, valid model, push it to the `toAdd` list.
             else if (add) {

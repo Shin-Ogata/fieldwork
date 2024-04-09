@@ -82,7 +82,7 @@ async function exec(options) {
         let name = cwd;
         try {
             name = require(resolve(cwd, 'package.json')).name;
-        } catch (e) {
+        } catch {
             // noop
         }
         return name;

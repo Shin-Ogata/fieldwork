@@ -269,7 +269,7 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
             }
 
             return queryFromCache(resp.items, Object.assign(opts, { noSearch }));
-        }// eslint-disable-line brace-style
+        }// eslint-disable-line @stylistic:js/brace-style
 
         else {
             results.push(...resp.items);

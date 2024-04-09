@@ -8,7 +8,7 @@ import { wait } from './utils';
  *     異なる {@link CancelToken} を扱う複数の `Promise` を一括でキャンセルさせることが可能
  */
 export class PromiseManager {
-    // eslint-disable-next-line func-call-spacing
+    // eslint-disable-next-line @stylistic:js/func-call-spacing
     private readonly _pool = new Map<Promise<unknown>, ((reason: unknown) => unknown) | undefined>();
 
     /**

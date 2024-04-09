@@ -1,4 +1,5 @@
 /* eslint-disable
+    no-global-assign,
     @typescript-eslint/no-explicit-any,
  */
 

@@ -1,5 +1,4 @@
 /* eslint-disable
-    no-inner-declarations,
     @typescript-eslint/no-namespace,
     @typescript-eslint/no-unused-vars,
     @typescript-eslint/no-duplicate-enum-values,

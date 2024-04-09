@@ -1,5 +1,5 @@
 /* eslint-disable
-    block-spacing,
+    @stylistic:js/block-spacing,
  */
 
 import { dom as $ } from '@cdp/dom';

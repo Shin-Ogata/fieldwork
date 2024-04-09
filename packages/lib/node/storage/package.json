@@ -42,7 +42,7 @@
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
     "debug": "node --inspect --inspect-brk ../../../../node_modules/jasmine/bin/jasmine.js --config=../../../../config/test/jasmine.js",
-    "lint": "eslint src tests/unit -c ../../../../config/lint/tslint.js --ext .ts",
+    "lint": "eslint src tests/unit -c ../../../../config/lint/tslint.mjs",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file -l ../../../../config/lint/eslint.js",
     "metrics:module": "cdp-task metrics -r module -l ../../../../config/lint/eslint.js",
