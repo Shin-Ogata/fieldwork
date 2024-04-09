@@ -1,4 +1,3 @@
-import { resolve } from 'node:path';
 import eslint from './eslint.mjs';
 import tslint from 'typescript-eslint';
 
@@ -13,12 +12,8 @@ export default [
         languageOptions: {
             parser: tslint.parser,
             parserOptions: {
-                project: [
-                    resolve('tsconfig.json'),
-                    resolve('./tests/tsconfig.json'),
-                    resolve('./tests/dev/tsconfig.json'),
-                ],
-                createDefaultProgram: true,
+                project: true,
+                sourceType: 'module',
             },
         },
         rules: {
