@@ -1,0 +1,23 @@
+{
+    /*
+     * ESLint プラグイン設定
+     * https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
+     * https://github.com/microsoft/vscode-eslint/blob/main/history/settings_1_9_x.md
+     */
+    "eslint.experimental.useFlatConfig": true,
+
+    /*
+     * mono-repo ごとにルールを分けたい場合は `eslint.options` の代わりに以下を設定
+     * 各 sub-repository の root に eslint.config.js を配置する
+     */
+    // https://qiita.com/mysticatea/items/3f306470e8262e50bb70
+    // "eslint.workingDirectories": [
+    //     { "mode": "auto" },
+    // ],
+
+    /* 共通設定: tsconfig を使用するため JS には適用できない */
+    "eslint.options": {
+        "overrideConfigFile": "config/lint/tslint.mjs",
+        "ignorePatterns": ["**/*.js"]
+    }
+}

@@ -1,5 +1,8 @@
 {
     "eslint.experimental.useFlatConfig": true,
-    "eslint.lintTask.options": "-c config/lint/tslint.mjs",
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "eslint.options": {
+        "overrideConfigFile": "./config/lint/tslint.mjs",
+        "ignorePatterns": ["**/*.js"],
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }
