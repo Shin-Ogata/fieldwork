@@ -757,8 +757,8 @@ declare namespace i18n {
     export type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeySeparator}${infer Key}` ? Key : never : Keys;
     export type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (infer UnionNsps)[] ? UnionNsps extends keyof Keys ? AppendNamespace<UnionNsps, Keys[UnionNsps]> : never : never;
     export type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false ? never : _FallbackNamespace extends (infer UnionFallbackNs extends string)[] ? Keys[UnionFallbackNs] : Keys[_FallbackNamespace & string];
-    export type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${TOpt['context']}${infer Suffix}` ? `${Prefix}${Suffix}` : never : Keys;
-    export type ParseKeys<Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>> = $IsResourcesDefined extends true ? FilterKeysByContext<ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>, TOpt> : string;
+    export type FilterKeysByContext<Keys, Context> = Context extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${Context}${infer Suffix}` ? `${Prefix}${Suffix}` : never : Keys;
+    export type ParseKeys<Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, Context extends TOpt['context'] = TOpt['context']> = $IsResourcesDefined extends true ? FilterKeysByContext<ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>, Context> : string;
     /** *******************************************************
      * Parse t function return type and interpolation values *
      ******************************************************** */
