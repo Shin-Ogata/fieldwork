@@ -21,7 +21,7 @@
   "main": "dist/extension-i18n",
   "module": "dist/extension-i18n.mjs",
   "peerDependencies": {
-    "i18next": "23.11.1"
+    "i18next": "23.11.2"
   },
   "private": true,
   "repository": {
@@ -54,8 +54,8 @@
     "i18next:prepare": "node ./tasks/prepare-package.js",
     "lint": "eslint src tests/unit -c ../../../config/lint/tslint.mjs",
     "metrics": "run-s -l metrics:*",
-    "metrics:file": "cdp-task metrics -r file -l ../../../config/lint/eslint.js",
-    "metrics:module": "cdp-task metrics -r module -l ../../../config/lint/eslint.js",
+    "metrics:file": "cdp-task metrics -r file",
+    "metrics:module": "cdp-task metrics -r module",
     "minify": "run-p minify:*",
     "minify:src": "cdp-task minify js --config ./build.config.js",
     "preinstall": "run-s i18next:prepare i18next:install",
