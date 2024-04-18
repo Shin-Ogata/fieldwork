@@ -2,7 +2,7 @@
     "eslint.experimental.useFlatConfig": true,
     "eslint.options": {
         "overrideConfigFile": "./config/lint/tslint.mjs",
-        "ignorePatterns": ["**/*.js"],
+        "ignorePatterns": ["**/*.js", "**/*.mjs"],
     },
     "typescript.tsdk": "./node_modules/typescript/lib"
 }

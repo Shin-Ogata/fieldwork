@@ -1,6 +1,6 @@
 {
   "extends": "./base",
   "compilerOptions": {
-    "lib": ["es2022", "webworker", "webworker.iterable"]
+    "lib": ["es2023", "webworker", "webworker.iterable"]
   }
 }
