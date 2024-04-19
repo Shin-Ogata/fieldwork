@@ -13,7 +13,11 @@ function exec(command, args, options) {
         }
     }
 
-    const { shell, trimArgs } = Object.assign({ trimArgs: true }, options);
+    const exe = path.extname(command) || options?.exe;
+
+    // default call as "shell" (for 2024 security release)
+    // https://nodejs.org/en/blog/vulnerability/april-2024-security-releases-2
+    const { trimArgs, shell } = Object.assign({ trimArgs: true, shell: !exe }, options);
 
     // trim quotation
     // https://stackoverflow.com/questions/48014957/quotes-in-node-js-spawn-arguments
@@ -27,12 +31,12 @@ function exec(command, args, options) {
 
     return new Promise((resolve, reject) => {
         const opt = Object.assign({}, {
+            shell,
             stdio: 'inherit',
             stdout: (data) => { /* noop */ },
             stderr: (data) => { /* noop */ },
         }, options);
 
-        const exe = path.extname(command) || opt.exe;
         const resolveCmd = (exe || process.platform !== 'win32') ? command : `${command}.cmd`;
 
         const child = spawn(resolveCmd, args, opt)
