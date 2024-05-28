@@ -12,6 +12,7 @@ module.exports = {
     testem: config.testem({
         external: {
             '@cdp/runtime': 'node_modules/@cdp/runtime/dist/runtime.min',
+            '@cdp/ui-utils': 'node_modules/@cdp/ui-utils/dist/ui-utils',
         },
     }),
 };

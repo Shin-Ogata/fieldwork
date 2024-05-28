@@ -7,7 +7,693 @@
  *     - @cdp/ui-listview
  *     - @cdp/ui-forms
  */
+import { DOM, DOMEventListener, DOMSelector, UnknownObject } from '@cdp/runtime';
+/**
+ * @en CSS vendor prefix string definition.
+ * @ja CSS ベンダープリフィックス文字列定義
+ */
+export declare const cssPrefixes: string[];
+/**
+ * @en Stores the value specified in css `transform(3d)`.
+ * @ja css `transform(3d)` に指定される値を格納
+ */
+export interface TransformMatrixValues {
+    translateX: number;
+    translateY: number;
+    translateZ: number;
+    scaleX: number;
+    scaleY: number;
+    scaleZ: number;
+}
+/**
+ * @en Get the value of the transform matrix specified in `Element`.
+ * @ja `Element` に指定された transform 行列の値を取得
+ *
+ * @param el
+ *  - `en` target `Element` instance
+ *  - `ja` 対象 `Element` インスタンス
+ */
+export declare const getTransformMatrixValues: (el: Element) => TransformMatrixValues;
 export declare const UI_UTILS_STATUS = 'UNDER CONSTRUCTION';
 export declare const UI_FORMS_STATUS = 'UNDER CONSTRUCTION';
+/**
+ * @en Factory interface for {@link IListScroller}.
+ * @ja {@link IListScroller} のファクトリインターフェイス
+ */
+export interface ListScrollerFactory {
+    /**
+     * @en Factory function.
+     * @ja ファクトリ関数
+     */
+    (element: DOMSelector, options: ListViewOptions): IListScroller;
+    /**
+     * @en {@link IListScroller} identifier.
+     * @ja {@link IListScroller} の識別子
+     */
+    readonly type: string;
+}
+/**
+ * @en List view option definition.
+ * @ja リストビューオプション定義
+ */
+export interface ListViewOptions {
+    /**
+     * @en Specify factory method if you want to use custom {@link IListScroller}.
+     * @ja カスタム {@link IListScroller} を使用したい場合にファクトリメソッドを指定
+     */
+    scrollerFactory?: ListScrollerFactory;
+    /**
+     * @en Specify true to set the preload target to visibility: 'hidden'. [default: false]
+     * @ja preload 対象を visibility: 'hidden' にする場合は true を指定 [default: false]
+     */
+    enableHiddenPage?: boolean;
+    /**
+     * @en Set offset of list item with transform property. (not very good) [default: false]
+     * @ja list item の offset を transform で設定する (あまりよくない) [default: false]
+     */
+    enableTransformOffset?: boolean;
+    /**
+     * @en Update check interval for scroll-map area. Used during non-DOM operations such as iscroll. [default: 200]
+     * @ja scroll-map 領域の更新確認間隔. iscroll 等, 非 DOM 操作時に使用 [default: 200]
+     */
+    scrollMapRefreshInterval?: number;
+    /**
+     * @en list view scroll movement amount for update processing (TODO: intersctionRect) [default: 200]
+     * @ja list view 更新処理を行う scroll 移動量 (TODO: intersctionRect) [default: 200]
+     */
+    scrollRefreshDistance?: number;
+    /**
+     * @en Number of pages added completely outside the display area (twice the number of pages forward and backward) [default: 3]
+     * @ja 表示領域外で完全な状態で追加される page 数 (前方・後方合わせて 2倍) [default: 3]
+     */
+    pagePrepareCount?: number;
+    /**
+     * @en Number of pages added in hidden state outside the display area (twice the total of forward and backward) [default: 1]
+     * @ja 表示領域外で hidden 状態で追加される page 数 (前方・後方合わせて 2倍) [default: 1]
+     */
+    pagePreloadCount?: number;
+    /**
+     * @en Specify true to enable animation. [default: true]
+     * @ja アニメーションを有効にする場合は true を指定 [default: true]
+     */
+    enableAnimation?: boolean;
+    /**
+     * @en Animation time [msec, default: 0]
+     * @ja アニメーションの費やす時間 [msec, default: 0]
+     */
+    animationDuration?: number;
+    /**
+     * @en Reference z-index. Used during 'collapse' animation. [default: auto]
+     * @ja 基準とする z-index. 'collapse' 時のアニメーション時に使用 [default: auto]
+     */
+    baseDepth?: string;
+    /**
+     * @en Tag name used by {@link ListItemView} (TODO: need to review) [default: li]
+     * @ja {@link ListItemView} が使用するタグ名 (TODO: 見直し予定) [default: li]
+     */
+    itemTagName?: string;
+    /**
+     * @en Specify true if you want to automatically apply a transition as necessary during removeItem(). [default: true]
+     * @ja removeItem() 時に必要に応じて自動で transition をかける場合は true を指定 [default: true]
+     */
+    removeItemWithTransition?: boolean;
+    /**
+     * @en Specify true if you want to use Dummy for an inactive scroll map. (When switching flipsnap, etc. There is not much effect.) [default: false]
+     * @ja 非アクティブな scroll map に対して Dummy を使用する場合は true を指定. (flipsnap 切り替え時等. 効果はあまりなし) [default: false]
+     */
+    useDummyInactiveScrollMap?: boolean;
+}
+/**
+ * @en List core context interface.
+ * @ja リストのコンテキストインターフェイス定義
+ */
+export interface IListContext {
+    /** get scroll-map element */
+    readonly $scrollMap: DOM;
+    /** get scroll-map height [px] */
+    readonly scrollMapHeight: number;
+    /** get {@link ListContextOptions} */
+    readonly options: Required<ListViewOptions>;
+    /** update scroll-map height (delta [px]) */
+    updateScrollMapHeight(delta: number): void;
+    /**
+     * update internal profile
+     * @param from specify update start index
+     */
+    updateProfiles(from: number): void;
+    /** get recyclable element */
+    findRecycleElements(): DOM;
+}
+/**
+ * @en Interface definition for list scroll component.
+ * @ja リストのスクロールコンポーネントのインターフェイス定義
+ */
+export interface IListScroller {
+    /**
+     * @en Get scroller type information.
+     * @ja Scroller の型情報を取得
+     *
+     * @returns
+     *  - `en` type identification string
+     *  - `ja` タイプ識別文字
+     */
+    readonly type: string;
+    /**
+     * @en Get scroll position value.
+     * @ja スクロール位置取得
+     */
+    readonly pos: number;
+    /**
+     * @en Get maximum scroll position.
+     * @ja スクロール最大値位置を取得
+     */
+    readonly posMax: number;
+    /**
+     * @en Register scroll event.
+     * @ja スクロールイベント登録
+     *
+     * @param type
+     *  - `en` event type ('scroll' | 'scrollstop')
+     *  - `ja` イベント型 ('scroll' | 'scrollstop')
+     * @param callback
+     *  - `en` event handler
+     *  - `ja` イベントハンドラー
+     */
+    on(type: 'scroll' | 'scrollstop', callback: DOMEventListener): void;
+    /**
+     * @en Unregister scroll event.
+     * @ja スクロールイベント登録解除
+     *
+     * @param type
+     *  - `en` event type ('scroll' | 'scrollstop')
+     *  - `ja` イベント型 ('scroll' | 'scrollstop')
+     * @param callback
+     *  - `en` event handler
+     *  - `ja` イベントハンドラー
+     */
+    off(type: 'scroll' | 'scrollstop', callback: DOMEventListener): void;
+    /**
+     * @en Set scroll position.
+     * @ja スクロール位置を指定
+     *
+     * @param pos
+     *  - `en` new scroll position value [0 - posMax]
+     *  - `ja` 新しいスクロール位置を指定 [0 - posMax]
+     * @param animate
+     *  - `en` enable/disable animation
+     *  - `ja` アニメーションの有無
+     * @param time
+     *  - `en` time spent on animation [msec]
+     *  - `ja` アニメーションに費やす時間 [msec]
+     */
+    scrollTo(pos: number, animate?: boolean, time?: number): Promise<void>;
+    /**
+     * @en Scroller state update.
+     * @ja Scroller の状態更新
+     */
+    update(): void;
+    /**
+     * @en Destroy a Scroller.
+     * @ja Scroller の破棄
+     */
+    destroy(): void;
+}
+/**
+ * @en List operation interface.
+ * @ja リスト操作のインターフェイス
+ */
+export interface IListOperation {
+    /**
+     * @en Determine whether it has been initialized.
+     * @ja 初期化済みか判定
+     *
+     * @returns
+     *  - `en` true: initialized / false: uninitialized
+     *  - `ja` true: 初期化済み / false: 未初期化
+     */
+    isInitialized(): boolean;
+    /**
+     * @en Item registration.
+     * @ja item 登録
+     *
+     * @param height
+     *  - `en` initial item's height
+     *  - `ja` item の高さ
+     * @param initializer
+     *  - `en` constructor for {@link IListItemView}'s subclass
+     *  - `ja` {@link IListItemView} のサブクラスのコンストラクタ
+     * @param info
+     *  - `en` init parameters for {@link IListItemView}'s subclass
+     *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
+     * @param insertTo
+     *  - `en` specify the insertion position of item by index
+     *  - `ja` item の挿入位置をインデックスで指定
+     */
+    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void;
+    /**
+     * @en Delete the specified Item.
+     * @ja 指定した Item を削除
+     *
+     * @param index
+     *  - `en` specify the index to start releasing
+     *  - `ja` 解除開始のインデックスを指定
+     * @param size
+     *  - `en` total number of items to release
+     *  - `ja` 解除する item の総数 [default: 1]
+     * @param delay
+     *  - `en` delay time to actually delete the element [default: 0 (immediate deletion)
+     *  - `ja` 実際に要素を削除する delay time [default: 0 (即時削除)]
+     */
+    removeItem(index: number, size?: number, delay?: number): void;
+    /**
+     * @en Delete the specified Item.
+     * @ja 指定した Item を削除
+     *
+     * @param index
+     *  - `en` specify target index array. it is more efficient to specify reverse index.
+     *  - `ja` 対象インデックス配列を指定. reverse index を指定するほうが効率的
+     * @param delay
+     *  - `en` delay time to actually delete the element [default: 0 (immediate deletion)
+     *  - `ja` 実際に要素を削除する delay time [default: 0 (即時削除)]
+     */
+    removeItem(index: number[], delay?: number): void;
+    /**
+     * @en Get the information set for the specified item.
+     * @ja 指定した item に設定した情報を取得
+     *
+     * @param target
+     *  - `en` identifier [index | event object]
+     *  - `ja` 識別子. [index | event object]
+     */
+    getItemInfo(target: number | Event): UnknownObject;
+    /**
+     * @en Refresh active pages.
+     * @ja アクティブページを更新
+     */
+    refresh(): void;
+    /**
+     * @en Build unassigned pages.
+     * @ja 未アサインページを構築
+     */
+    update(): void;
+    /**
+     * @en Rebuild page assignments.
+     * @ja ページアサインを再構成
+     */
+    rebuild(): void;
+    /**
+     * @en Destroy internal data.
+     * @ja 管轄データを破棄
+     */
+    release(): void;
+}
+/**
+ * @en Option definition to pass to `ensureVisible()` method.
+ * @ja `ensureVisible()` メソッドに渡すオプション定義
+ */
+export interface ListEnsureVisibleOptions {
+    /**
+     * @en Specify true to allow partial display. [default: true]
+     * @ja 部分的表示を許可する場合 true を指定 [default: true]
+     */
+    partialOK?: boolean;
+    /**
+     * @en Specify true to forcibly move to the top of the scroll area. [default: false]
+     * @ja 強制的にスクロール領域の上部に移動する場合 true を指定 [default: false]
+     */
+    setTop?: boolean;
+    /**
+     * @en Specify true to animate. [default: setting and synchronizing {@link ListContextOptions}`.enableAnimation`]
+     * @ja アニメーションする場合 true を指定 [default: {@link ListContextOptions}`.enableAnimation` の設定と同期]
+     */
+    animate?: boolean;
+    /**
+     * @en time spent on animation. [msec]
+     * @ja アニメーションに費やす時間 [msec]
+     */
+    time?: number;
+    /**
+     * @en Called when the animation stops. (pseudo)
+     * @ja アニメーション終了のタイミングでコールされる (疑似的)
+     */
+    callback?: () => void;
+}
+/**
+ * @en Interface definition for list scrollable area.
+ * @ja リストのスクロール可能領域のインターフェイス定義
+ */
+export interface IListScrollable {
+    /**
+    * @en Get scroll position.
+    * @ja スクロール位置を取得
+    */
+    readonly scrollPos: number;
+    /**
+     * @en Get maximum scroll position.
+     * @ja スクロール位置の最大値を取得
+     */
+    readonly scrollPosMax: number;
+    /**
+    * @en Scroll event handler setting/cancellation.
+    * @ja スクロールイベントハンドラ設定/解除
+    *
+    * @param handler
+    *  - `en` event handler function
+    *  - `ja` イベントハンドラー関数
+    * @param method
+    *  - `en` on: setting / off: canceling
+    *  - `ja` on: 設定 / off: 解除
+    */
+    setScrollHandler(handler: DOMEventListener, method: 'on' | 'off'): void;
+    /**
+     * @en Setting/cancelling scroll stop event handler.
+     * @ja スクロール終了イベントハンドラ設定/解除
+     *
+     * @param handler
+     *  - `en` event handler function
+     *  - `ja` イベントハンドラー関数
+     * @param method
+     *  - `en` on: setting / off: canceling
+     *  - `ja` on: 設定 / off: 解除
+     */
+    setScrollStopHandler(handler: DOMEventListener, method: 'on' | 'off'): void;
+    /**
+     * @en Set scroll position.
+     * @ja スクロール位置を指定
+     *
+     * @param pos
+     *  - `en` new scroll position value [0 - posMax]
+     *  - `ja` 新しいスクロール位置を指定 [0 - posMax]
+     * @param animate
+     *  - `en` enable/disable animation
+     *  - `ja` アニメーションの有無
+     * @param time
+     *  - `en` time spent on animation [msec]
+     *  - `ja` アニメーションに費やす時間 [msec]
+     */
+    scrollTo(pos: number, animate?: boolean, time?: number): Promise<void>;
+    /**
+     * @en Ensure visibility of item by index.
+     * @ja インデックス指定された item の表示を保証
+     *
+     * @param index
+     *  - `en` specify index of item
+     *  - `ja` item のインデックスを指定
+     * @param options
+     *  - `en` specify {@link ListEnsureVisibleOptions} object
+     *  - `ja` {@link ListEnsureVisibleOptions} オブジェクトを指定
+     */
+    ensureVisible(index: number, options?: ListEnsureVisibleOptions): Promise<void>;
+}
+/**
+ * @en Interface definition for list internal data backup/restore function.
+ * @ja リスト内部データのバックアップ・リストア機能のインターフェイス定義
+ */
+export interface IListBackupRestore {
+    /**
+     * @en Execute a backup of internal data.
+     * @ja 内部データのバックアップを実行
+     *
+     * @param key
+     *  - `en` specify backup key (any identifier)
+     *  - `ja` バックアップキー(任意の識別子)を指定
+     * @returns
+     *  - `en` true: success / false: failure
+     *  - `ja` true: 成功 / false: 失敗
+     */
+    backup(key: string): boolean;
+    /**
+     * @en Execute a backup of internal data.
+     * @ja 内部データのバックアップを実行
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @param rebuild
+     *  - `en` specify true to rebuild the list structure
+     *  - `ja` リスト構造を再構築する場合は true を指定
+     * @returns
+     *  - `en` true: success / false: failure
+     *  - `ja` true: 成功 / false: 失敗
+     */
+    restore(key: string, rebuild: boolean): boolean;
+    /**
+     * @en Check whether backup data exists.
+     * @ja バックアップデータの有無を確認
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: exists / false: not exists
+     *  - `ja` true: 有 / false: 無
+     */
+    hasBackup(key: string): boolean;
+    /**
+     * @en Discard backup data.
+     * @ja バックアップデータの破棄
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: discard existing data / false: specified data does not exist
+     *  - `ja` true: 存在したデータを破棄 / false: 指定されたデータは存在しない
+     */
+    clearBackup(key?: string): boolean;
+    /**
+     * @en Access backup data.
+     * @ja バックアップデータにアクセス
+     */
+    readonly backupData: UnknownObject;
+}
+/**
+ * @en Interface definition for list view.
+ * @ja リストビューインターフェイス
+ */
+export interface IListView extends IListOperation, IListScrollable, IListBackupRestore {
+    /** context accessor */
+    readonly context: IListContext;
+}
+/**
+ * @en Options to pass to {@link IListItemView}`.updateHeight()`.
+ * @ja {@link IListItemView}`.updateHeight()` に渡すオプション
+ */
+export interface ListItemUpdateHeightOptions {
+    /**
+     * @en Specify true to recalculate all items affected when updating the height of {@link IListItemView}.
+     * @ja {@link IListItemView} の高さ更新時に影響するすべての item の再計算を行う場合は true を指定
+     */
+    reflectAll?: boolean;
+}
+/**
+ * @en Child view interface that configures the elements of the list view.
+ * @ja リストビューの要素を構成する Child View インターフェイス
+ */
+export interface IListItemView {
+    /**
+     * @en Get own item index.
+     * @ja 自身の item インデックスを取得
+     */
+    getIndex(): number;
+    /**
+     * @en Get specified height.
+     * @ja 指定された高さを取得
+     */
+    getHeight(): number;
+    /**
+     * @en Check if child node exists.
+     * @ja child node が存在するか判定
+     */
+    hasChildNode(): boolean;
+    /**
+     * @en Update item's height.
+     * @ja item の高さを更新
+     *
+     * @param newHeight
+     *  - `en` new item's height
+     *  - `ja` item の新しい高さ
+     * @param options
+     *  - `en` update options object
+     *  - `ja` 更新オプション
+     */
+    updateHeight(newHeight: number, options?: ListItemUpdateHeightOptions): this;
+    /**
+     * @en Implement this function with your code that renders the view template from model data, and updates `this.el` with the new HTML.
+     * @ja `this.el` 更新時の新しい HTML をレンダリングロジックの実装関数. モデル更新と View テンプレートを連動させる.
+     */
+    render(...args: unknown[]): any;
+    /**
+     * @en Remove this view by taking the element out of the DOM with release all listeners.
+     * @ja View から DOM を切り離し, リスナーを解除
+     */
+    remove(): this;
+}
+/**
+ * @en Global configuration definition for list views.
+ * @ja リストビューのグローバルコンフィグレーション定義
+ */
+export interface ListViewGlobalConfig {
+    NAMESPACE: string;
+    WRAPPER_CLASS: string;
+    WRAPPER_SELECTOR: string;
+    SCROLL_MAP_CLASS: string;
+    SCROLL_MAP_SELECTOR: string;
+    INACTIVE_CLASS: string;
+    INACTIVE_CLASS_SELECTOR: string;
+    RECYCLE_CLASS: string;
+    RECYCLE_CLASS_SELECTOR: string;
+    LISTITEM_BASE_CLASS: string;
+    LISTITEM_BASE_CLASS_SELECTOR: string;
+    DATA_PAGE_INDEX: string;
+    DATA_CONTAINER_INDEX: string;
+}
+/**
+ * @en Get/Update global configuration of list view.
+ * @ja リストビューのグローバルコンフィグレーションの取得/更新
+ */
+export declare const ListViewGlobalConfig: (newConfig?: Partial<ListViewGlobalConfig>) => ListViewGlobalConfig;
+/**
+ * @en A class that stores UI structure information for list items.
+ * @ja リストアイテムの UI 構造情報を格納するクラス
+ */
+export declare class ItemProfile {
+    /**
+     * constructor
+     *
+     * @param owner
+     *  - `en` {@link IListViewContext} instance
+     *  - `ja` {@link IListViewContext} インスタンス
+     * @param height
+     *  - `en` initial item's height
+     *  - `ja` item の初期の高さ
+     * @param initializer
+     *  - `en` constructor for {@link IListItemView}'s subclass
+     *  - `ja` {@link IListItemView} のサブクラスのコンストラクタ
+     * @param info
+     *  - `en` init parameters for {@link IListItemView}'s subclass
+     *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
+     */
+    constructor(owner: IListContext, height: number, initializer: new (options?: UnknownObject) => IListItemView, _info: UnknownObject);
+    /**
+     * @en Activate of the item.
+     * @ja item の活性化
+     */
+    activate(): void;
+    /**
+     * @en Make the item invisible.
+     * @ja item の不可視化
+     */
+    hide(): void;
+    /**
+     * @en Deactivate of the item.
+     * @ja item の非活性化
+     */
+    deactivate(): void;
+    /**
+     * @en Refresh the item.
+     * @ja item の更新
+     */
+    refresh(): void;
+    /**
+     * @en Check the activation status of the item.
+     * @ja item の活性状態判定
+     */
+    isActive(): boolean;
+    /**
+     * @en Update height information of the item. Called from {@link ListItemView}.
+     * @ja item の高さ情報の更新. {@link ListItemView} からコールされる。
+     */
+    updateHeight(newHeight: number, options?: ListItemUpdateHeightOptions): void;
+    /**
+     * @en Reset z-index. Called from {@link ScrollManager}`.removeItem()`.
+     * @ja z-index のリセット. {@link ScrollManager}`.removeItem()` からコールされる。
+     */
+    resetDepth(): void;
+    /** Get the item's height. */
+    get height(): number;
+    /** Get the item's global index. */
+    get index(): number;
+    /** Set the item's global index. */
+    set index(index: number);
+    /** Get belonging the page index. */
+    get pageIndex(): number;
+    /** Set belonging the page index. */
+    set pageIndex(index: number);
+    /** Get global offset. */
+    get offset(): number;
+    /** Set global offset. */
+    set offset(offset: number);
+    /** Get init parameters. */
+    get info(): UnknownObject;
+}
+/**
+ * @en A class that stores UI structure information for one page of the list.
+ * @ja リスト1ページ分の UI 構造情報を格納するクラス
+ */
+export declare class PageProfile {
+    /** page index */
+    private _index;
+    /** page offset from top */
+    private _offset;
+    /** page's height */
+    private _height;
+    /** item's profile managed with in page */
+    private _items;
+    /** page status */
+    private _status;
+    /**
+     * @en Activate of the page.
+     * @ja page の活性化
+     */
+    activate(): void;
+    /**
+     * @en Make the page invisible.
+     * @ja page の不可視化
+     */
+    hide(): void;
+    /**
+     * @en Deactivate of the page.
+     * @ja page の非活性化
+     */
+    deactivate(): void;
+    /**
+     * @en Add {@link ItemProfile} to the page.
+     * @ja {@link ItemProfile} の追加
+     */
+    push(item: ItemProfile): void;
+    /**
+     * @en If all {@link ItemProfile} under the page are not valid, disable the page's status.
+     * @ja 配下の {@link ItemProfile} すべてが有効でない場合, page ステータスを無効にする
+     */
+    normalize(): void;
+    /**
+     * @en Get {@link ItemProfile} by index.
+     * @ja インデックスを指定して {@link ItemProfile} を取得
+     */
+    getItem(index: number): ItemProfile;
+    /**
+     * @en Get first {@link ItemProfile}.
+     * @ja 最初の {@link ItemProfile} を取得
+     */
+    getItemFirst(): ItemProfile;
+    /**
+     * @en Get last {@link ItemProfile}.
+     * @ja 最後の {@link ItemProfile} を取得
+     */
+    getItemLast(): ItemProfile;
+    /** Get the page index */
+    get index(): number;
+    /** Set the page index */
+    set index(index: number);
+    /** Get the page offset */
+    get offset(): number;
+    /** Set the page offset */
+    set offset(offset: number);
+    /** Get the page height */
+    get height(): number;
+    /** Get the page status */
+    get status(): string;
+}
 export declare const UI_LISTVIEW_STATUS = 'UNDER CONSTRUCTION';
 import './result-code-defs';

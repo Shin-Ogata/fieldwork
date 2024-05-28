@@ -255,7 +255,7 @@ export function getOffsetSize(el: HTMLOrSVGElement, type: 'width' | 'height'): n
 export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
+// implements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;

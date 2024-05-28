@@ -111,7 +111,7 @@ class PageSubFlowB extends PageView {
     }
 
 ///////////////////////////////////////////////////////////////////////
-// internal methods
+// internal:
 
     private querySubFlowDestination(): string | undefined {
         // eslint-disable-next-line

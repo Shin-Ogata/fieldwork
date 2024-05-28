@@ -1,4 +1,12 @@
 declare namespace CDP_DECLARE {
+    const enum CDP_KNOWN_UI_MODULE {
+        /** `@cdp/ui-utils` */
+        UTILS = 1,
+        /** `@cdp/ui-listview` */
+        LISTVIEW = 2,
+        /** offset for unknown ui-module */
+        OFFSET = 3
+    }
     /**
      * @en Extends error code definitions.
      * @ja 拡張エラーコード定義

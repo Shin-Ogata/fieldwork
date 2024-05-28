@@ -35,6 +35,10 @@ async function patch(index, code, includes) {
                     name: '@cdp/ui-utils/result-code-defs',
                     path: '../../lib/ui/utils/types/result-code-defs.d.ts',
                 },
+                {
+                    name: '@cdp/ui-listview/result-code-defs',
+                    path: '../../lib/ui/listview/types/result-code-defs.d.ts',
+                },
             ],
         );
         code += `${imports}\n`;

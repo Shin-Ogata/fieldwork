@@ -186,7 +186,7 @@ function retrieveSiblings<
 export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
+// implements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;
