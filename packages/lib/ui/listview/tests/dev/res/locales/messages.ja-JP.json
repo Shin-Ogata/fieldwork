@@ -1,0 +1,9 @@
+{
+  "app": {
+    "name": "Dev List View",
+    "common": {
+      "back": "戻る",
+      "reload": "再読み込み"
+    }
+  }
+}

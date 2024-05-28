@@ -5,10 +5,13 @@
 
 namespace CDP_DECLARE {
 
-    const enum CDP_KNOWN_UI_MODULE {
+    export const enum CDP_KNOWN_UI_MODULE {
         /** `@cdp/ui-utils` */
-        UTILS  = 1,
-        OFFSET = 2,
+        UTILS     = 1,
+        /** `@cdp/ui-listview` */
+        LISTVIEW  = 2,
+        /** offset for unknown ui-module */
+        OFFSET,
     }
 
     const enum LOCAL_CODE_BASE {

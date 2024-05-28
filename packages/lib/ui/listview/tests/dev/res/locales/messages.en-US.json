@@ -1,0 +1,9 @@
+{
+  "app": {
+    "name": "Dev List View",
+    "common": {
+      "back": "Back",
+      "reload": "Reload"
+    }
+  }
+}

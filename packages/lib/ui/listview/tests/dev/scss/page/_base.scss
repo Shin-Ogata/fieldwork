@@ -1,0 +1,38 @@
+.view-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 80px;
+}
+
+.control-group {
+    display:flex;
+    flex-direction: column;
+}
+
+button {
+    a {
+        display: block;
+    };
+    cursor: pointer;
+}
+
+.router-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: 0 10px;
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    &.cdp-transition-running {
+        pointer-events: none;
+    }
+    &[aria-hidden=true] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+}

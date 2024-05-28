@@ -203,7 +203,7 @@ function execScroll(el: HTMLElement | SVGElement, options: DOMScrollOptions): vo
 export class DOMScroll<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
+// implements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;

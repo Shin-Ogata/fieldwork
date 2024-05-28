@@ -383,7 +383,7 @@ export type EventTypeOrNamespace<T extends DOMEventMap<any>> = EventType<T> | `.
 export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
+// implements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;

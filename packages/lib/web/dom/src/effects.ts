@@ -59,7 +59,7 @@ export interface DOMEffectContext<TElement extends ElementBase> {
 export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
+// implements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;

@@ -46,7 +46,7 @@ function isInputElement(el: ElementBase): el is HTMLInputElement {
 export class DOMAttributes<TElement extends ElementBase> implements DOMIterable<TElement> {
 
 ///////////////////////////////////////////////////////////////////////
-// imprements: DOMIterable<T>
+// implements: DOMIterable<T>
 
     readonly [n: number]: TElement;
     readonly length!: number;
