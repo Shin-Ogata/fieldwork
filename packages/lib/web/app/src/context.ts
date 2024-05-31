@@ -17,6 +17,7 @@ import {
     i18n,
 } from '@cdp/i18n';
 import {
+    HistoryState,
     Route,
     RouteChangeInfo,
     RouteParameters,
@@ -25,6 +26,7 @@ import {
     Router,
     Page,
     createRouter,
+    toRouterPath,
 } from '@cdp/router';
 import { window } from './ssr';
 import {
@@ -177,11 +179,21 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      *  - `ja` エラー時の振る舞いを指定
      */
     changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction>;
+
+    /**
+     * @en Determines if a given URL is the router's current path.
+     * @ja 指定した URL がルーターの現在のパスであるか判定
+     *
+     * @param url
+     *  - `en` specify the URL you want to identify
+     *  - `ja` 判別したい URL を指定
+     */
+    isCurrentPath(url: string): boolean;
 }
 
 //__________________________________________________________________________________________________//
 
-const _initialPages: RouteParameters[] = [];
+const _initialRoutes: RouteParameters[] = [];
 
 /**
  * @en Route parameters for page registration. Need to describe `path`, `content`.
@@ -232,7 +244,7 @@ export type PageRouteParameters = Required<Pick<RouteParameters, 'content'>> & R
  *  - `ja` ルートパラメータ
  */
 export const registerPage = (params: PageRouteParameters): void => {
-    _initialPages.push(params);
+    _initialRoutes.push(params);
 };
 
 //__________________________________________________________________________________________________//
@@ -246,9 +258,10 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
 
     constructor(options: AppContextOptions) {
         super();
-        const { main, window: win } = options;
+        const { main, window: win, routes: _routes } = options;
+        const routerOpts = Object.assign({}, options, { routes: _routes!.concat(..._initialRoutes), start: false });
         this._window = win ?? window;
-        this._router = createRouter(main as string, options);
+        this._router = createRouter(main as string, routerOpts);
         void this.initialize(options);
     }
 
@@ -287,11 +300,17 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
         return t;
     }
 
+    isCurrentPath(url: string): boolean {
+        const srcPath = toRouterPath(url);
+        const curPath = toRouterPath((this._router.currentRoute as HistoryState<Route>)['@id']);
+        return srcPath === curPath;
+    }
+
 ///////////////////////////////////////////////////////////////////////
 // private methods:
 
     private async initialize(options: AppContextOptions): Promise<void> {
-        const { splash, i18n, waitForReady, documentEventReady, documentEventBackButton } = options;
+        const { splash, i18n, waitForReady, documentEventReady, documentEventBackButton, start } = options;
         const { _window } = this;
 
         _window.addEventListener('error', this.onGlobalError.bind(this));
@@ -308,7 +327,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
         _window.addEventListener('orientationchange', this.onHandleOrientationChanged.bind(this));
 
         this._router.on('loaded', this.onPageLoaded.bind(this));
-        await this._router.register(_initialPages, true);
+        start && await this._router.refresh();
 
         // remove splash screen
         $(splash, _window.document).remove();
@@ -384,7 +403,8 @@ let _appContext: AppContext | undefined;
 export const AppContext = (options?: AppContextOptions): AppContext => {
     const opts = getAppConfig(Object.assign({
         main: '#app',
-        start: false,
+        start: true,
+        routes: [],
         documentEventBackButton: 'backbutton',
     }, options) as AppContextOptions);
 

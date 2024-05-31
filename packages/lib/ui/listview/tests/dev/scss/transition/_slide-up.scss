@@ -1,0 +1,39 @@
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.slide-up-leave-active {
+    animation: fade 250ms forwards reverse;
+    z-index: 0;
+}
+
+.slide-up-enter-active {
+    transform: translateY(0);
+    animation: slide-up 250ms forwards normal;
+}
+
+.cdp-transition-direction-back {
+    .slide-up-enter-active {
+        animation: fade 200ms forwards normal;
+        z-index: 0;
+    }
+    .slide-up-leave-active {
+        transform: translateY(100%);
+        animation: slide-up 200ms forwards reverse;
+        z-index: 10;
+    }
+}

@@ -104,7 +104,7 @@ describe('router/context spec', () => {
             await router.go();
 
             expect(stub.onCallback).toHaveBeenCalledWith(jasmine.objectContaining({
-                message: 'Route cannot be resolved. [url: /]',
+                message: 'Route cannot be resolved. [path: /]',
                 code: RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED,
                 cause: {
                     '@id': '',
@@ -169,6 +169,25 @@ describe('router/context spec', () => {
                 method: 'replace',
             });
         });
+
+        it('additionalStack settings', async () => {
+            const router = await createRouterWrap({
+                routes: [
+                    { path: '/' },
+                    { path: '/one' },
+                    { path: '/two' },
+                ],
+                additionalStacks: [
+                    { url: '/one' },
+                    { url: '/two' }
+                ]
+            });
+
+            await waitFrame(router);
+
+            expect(router.currentRoute.path).toBe('/two');
+            expect((router as any)._history.stack.length).toBe(3);
+        });
     });
 
     describe('assistance method', () => {
@@ -201,6 +220,20 @@ describe('router/context spec', () => {
             const router = await createRouterWrap({ start: false });
             void router.register({ path: '/', });
             await router.go();
+
+            expect(router.currentRoute).toEqual(jasmine.objectContaining({
+                url: '/',
+                path: '/',
+                query: {},
+                params: {},
+                '@id': '',
+                '@origin': true,
+            } as unknown as Route));
+        });
+
+        it('Router#register w/ refresh', async () => {
+            const router = await createRouterWrap({ start: false });
+            void router.register({ path: '/', }, true);
 
             expect(router.currentRoute).toEqual(jasmine.objectContaining({
                 url: '/',
@@ -777,6 +810,26 @@ describe('router/context spec', () => {
             expect(page['@options']).toEqual({ className: 'test' });
             expect(changes.length).toBe(3);
         });
+
+        it('illegal case', async () => {
+            const stub = { onCallback };
+            const router = await createRouterWrap({
+                routes: [
+                    { path: '/' },
+                    { path: '/one' },
+                ],
+            });
+            router.on('error', stub.onCallback);
+
+            await waitFrame(router);
+            expect(router.currentRoute.path).toBe('/');
+
+            // for coverage
+            delete (router as any)._lastRoute['@params'].page;
+
+            await router.navigate('/one');
+            expect(router.currentRoute.path).toBe('/one');
+        });
     });
 
     describe('navigate transition', () => {
@@ -1224,7 +1277,22 @@ describe('router/context spec', () => {
             await router.pushPageStack({
                 url: '/next',
                 route: { path: '/next' }
-            }, true);
+            }, { noNavigate: true });
+
+            expect(router.currentRoute.path).toBe('/next');
+            expect((router as any)._history.stack.length).toBe(2);
+        });
+
+        it('traverseTo', async () => {
+            const router = await createRouterWrap({
+                initialPath: '/first',
+                routes: [{ path: '/first' }],
+            });
+
+            await router.pushPageStack({
+                url: '/next',
+                route: { path: '/next' }
+            }, { traverseTo: '/first' });
 
             expect(router.currentRoute.path).toBe('/first');
             expect((router as any)._history.stack.length).toBe(2);
@@ -1316,7 +1384,7 @@ describe('router/context spec', () => {
 
             await router.beginSubFlow('/sub/a', {
                 base: '/main/A',
-                additinalStacks: [
+                additionalStacks: [
                     {
                         url: 'add/one',
                         route: { path: 'add/one' }
@@ -1369,7 +1437,7 @@ describe('router/context spec', () => {
 
             await router.beginSubFlow('/sub/a', {
                 base: '/main/A',
-                additinalStacks: [
+                additionalStacks: [
                     {
                         url: 'add/one',
                         route: { path: 'add/one' }

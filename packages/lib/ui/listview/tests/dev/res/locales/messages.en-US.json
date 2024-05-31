@@ -1,9 +1,31 @@
 {
   "app": {
-    "name": "Dev List View",
+    "name": "Dev ListView",
     "common": {
       "back": "Back",
       "reload": "Reload"
+    },
+    "pageRoot": {
+      "title": "List view implementation samples",
+      "navigateTo": {
+        "settings": "to Settings"
+      }
+    },
+    "pageSettings": {
+      "title": "Application Settings",
+      "refresh": {
+        "title": "Reload Confirmation",
+        "lv1": "Level 1: Reload",
+        "lv2": "Level 2: DOM reconstruction"
+      },
+      "transition": {
+        "title": "Transition"
+      },
+      "language": {
+        "title": "Change Language",
+        "ja": "To Japanese",
+        "en": "To English"
+      }
     }
   }
 }

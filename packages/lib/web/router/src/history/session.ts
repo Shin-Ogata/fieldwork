@@ -11,7 +11,8 @@ import {
 } from '@cdp/core-utils';
 import { Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
-import { toUrl, webRoot } from '@cdp/web-utils';
+import { toUrl } from '@cdp/web-utils';
+import { toRouterStackId as toId } from '../utils';
 import { window } from '../ssr';
 import type {
     IHistory,
@@ -22,7 +23,6 @@ import type {
 } from './interfaces';
 import {
     HistoryStack,
-    normalizeId,
     createData,
     createUncancellableDeferred,
     assignStateElement,
@@ -44,18 +44,6 @@ const enum Const {
 }
 
 //__________________________________________________________________________________________________//
-
-/** @internal remove url path section */
-const toHash = (url: string): string => {
-    const id = /#.*$/.exec(url)?.[0];
-    return id ? normalizeId(id) : '';
-};
-
-/** @internal remove url path section */
-const toPath = (url: string): string => {
-    const id = url.substring(webRoot.length);
-    return id ? normalizeId(id) : url;
-};
 
 /** @internal */
 const setDispatchInfo = <T>(state: Accessible<T>, additional: DispatchInfo<T>): T => {
@@ -103,7 +91,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         this._window.addEventListener('popstate', this._popStateHandler);
 
         // initialize
-        void this.replace(id ?? this.toId(this._window.location.href), state, { silent: true });
+        void this.replace(id ?? toId(this._window.location.href), state, { silent: true });
     }
 
     /**
@@ -137,8 +125,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         if (!silent) {
             const additional: DispatchInfo<T> = {
                 df: createUncancellableDeferred('SessionHistory#reset() is uncancellable method.'),
-                newId: this.toId(newURL),
-                oldId: this.toId(oldURL),
+                newId: toId(newURL),
+                oldId: toId(oldURL),
                 postproc: 'noop',
                 prevState,
             };
@@ -308,11 +296,6 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         this._stack.index = idx;
     }
 
-    /** @internal convert to ID */
-    private toId(src: string): string {
-        return 'hash' === this._mode ? toHash(src) : toPath(src);
-    }
-
     /** @internal convert to URL */
     private toUrl(id: string): string {
         return ('hash' === this._mode) ? `${Const.HASH_PREFIX}${id}` : toUrl(id);
@@ -349,8 +332,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         if (!silent) {
             const additional: DispatchInfo<T> = {
                 df: new Deferred(cancel),
-                newId: this.toId(newURL),
-                oldId: this.toId(oldURL),
+                newId: toId(newURL),
+                oldId: toId(oldURL),
                 postproc: method,
                 nextState: data,
             };
@@ -452,7 +435,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
     private async onPopState(ev: PopStateEvent): Promise<void> {
         const { location } = this._window;
         const [newState, additional] = parseDispatchInfo(ev.state);
-        const newId   = additional?.newId ?? this.toId(location.href);
+        const newId   = additional?.newId ?? toId(location.href);
         const method  = additional?.postproc ?? 'seek';
         const df      = additional?.df ?? this._dfGo ?? new Deferred();
         const oldData = additional?.prevState || this.state;

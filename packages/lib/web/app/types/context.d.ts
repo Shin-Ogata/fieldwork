@@ -122,6 +122,15 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      *  - `ja` エラー時の振る舞いを指定
      */
     changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction>;
+    /**
+     * @en Determines if a given URL is the router's current path.
+     * @ja 指定した URL がルーターの現在のパスであるか判定
+     *
+     * @param url
+     *  - `en` specify the URL you want to identify
+     *  - `ja` 判別したい URL を指定
+     */
+    isCurrentPath(url: string): boolean;
 }
 /**
  * @en Route parameters for page registration. Need to describe `path`, `content`.

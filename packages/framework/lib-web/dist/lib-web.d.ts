@@ -7260,6 +7260,24 @@ export interface Hooks {
 }
 export declare const hooks: Hooks;
 /**
+ * @en Generates an ID to be used by the stack inside the router.
+ * @ja ルーター内部の stack が使用する ID を生成
+ *
+ * @param src
+ *  - `en` specifies where the path string is created from [ex: `location.hash`, `location.href`, `#path`, `path`, `/path`]
+ *  - `ja` path 文字列の作成元を指定 [ex: `location.hash`, `location.href`, `#path`, `path`, `/path`]
+ */
+export declare const toRouterStackId: (src: string) => string;
+/**
+ * @en Get the normalized `/<id>` string from the url / path.
+ * @ja url / path を指定して, 正規化した `/<stack id>` 文字列を取得
+ *
+ * @param src
+ *  - `en` specifies where the path string is created from [ex: `location.hash`, `location.href`, `#path`, `path`, `/path`]
+ *  - `ja` path 文字列の作成元を指定 [ex: `location.hash`, `location.href`, `#path`, `path`, `/path`]
+ */
+export declare const toRouterPath: (src: string) => string;
+/**
  * @en History state object.
  * @ja 履歴状態オブジェクト
  */
@@ -7851,6 +7869,11 @@ export interface RouterConstructionOptions {
      */
     initialPath?: string;
     /**
+     * @en Specifies an additional {@link PageStack} from `initialPath`. The last page in `additionalStacks` is the initial page.
+     * @ja `initialPath` からの追加 {@link PageStack} を指定. `additionalStacks` の末尾が初期ページとなる.
+     */
+    additionalStacks?: PageStack[];
+    /**
      * @en Read the router element from the passed parent node.
      * @ja 渡された親ノードから ルーターエレメントを読み込む.
      */
@@ -7893,6 +7916,22 @@ export interface PageStack extends PageTransitionParams {
     route?: RouteParameters;
 }
 /**
+ * @en Page stack add option definition.
+ * @ja ページスタック追加オプション定義
+ */
+export interface PushPageStackOptions {
+    /**
+     * @en Specify true to suppress navigation.
+     * @ja ナビゲートを抑止する場合は true を指定
+     */
+    noNavigate?: boolean;
+    /**
+     * @en If you want to explicitly specify a history location, specify a path string. If not specified, it will be moved to the end of the additional stack.
+     * @ja 明示的に history 位置をを指定する場合に path 文字列を指定. 未指定の場合は追加スタックの末尾に移動.
+     */
+    traverseTo?: string;
+}
+/**
  * @en Router's sub-flow parameters.
  * @ja ルーターの sub-flow に指定するパラメータ
  */
@@ -7901,14 +7940,14 @@ export interface RouteSubFlowParams {
      * @en Specify the page root path that is the base point of sub-flow. <br>
      *     If not specified, the path of the starting point of sub-flow is assigned.
      * @ja sub-flow の基点となるページルートパスを指定 <br>
-     *     指定がない場合は sub-flow を開始地点の path がアサインされる。
+     *     指定がない場合は sub-flow を開始地点の path がアサインされる
      */
     base?: string;
     /**
      * @en Specify {@link PageStack} to add from `base` that transitions at the end of sub-flow. If not specified, transition to `base`.
-     * @ja sub-flow 終了時に遷移する `base` からの追加 {@link PageStack} を指定。指定がない場合は、`base` に遷移する。
+     * @ja sub-flow 終了時に遷移する `base` からの追加 {@link PageStack} を指定. 指定がない場合は `base` に遷移する.
      */
-    additinalStacks?: PageStack[];
+    additionalStacks?: PageStack[];
 }
 /**
  * @en Route navigation options definition.
@@ -8007,13 +8046,13 @@ export interface Router extends Subscribable<RouterEvent> {
      * @ja 現在の履歴を起点にページスタックを追加
      *
      * @param stack
-     *  - `en` Specify {@link PageStack} object / object array
+     *  - `en` specify {@link PageStack} object / object array
      *  - `ja` {@link PageStack} オブジェクト / オブジェクト配列を指定
-     * @param noNavigate
-     *  - `en` false(`default`): After stack registration, page transition to the last stack / true: Only perform stack registration and do not page transition.
-     *  - `ja` false(`default`): スタック登録後, 最後のスタックに対してページ遷移する / true: スタック登録のみ行いページ遷移しない.
+     * @param options
+     *  - `en` specify {@link PushPageStackOptions}
+     *  - `ja` {@link PushPageStackOptions} を指定
      */
-    pushPageStack(stack: PageStack | PageStack[], noNavigate?: boolean): Promise<this>;
+    pushPageStack(stack: PageStack | PageStack[], options?: PushPageStackOptions): Promise<this>;
     /**
      * @en To move backward through history.
      * @ja 履歴の前のページに戻る
@@ -8036,14 +8075,14 @@ export interface Router extends Subscribable<RouterEvent> {
      */
     go(delta?: number): Promise<this>;
     /**
-     * @en To move a specific point in history by stack ID.
-     * @ja スタックIDを指定して履歴内の特定のポイントへ移動
+     * @en To move a specific point in history by path string.
+     * @ja path を指定して履歴内の特定のポイントへ移動
      *
-     * @param id
-     *  - `en` Specified stack ID
-     *  - `ja` スタックIDを指定
+     * @param src
+     *  - `en` Specified url / path string
+     *  - `ja` url / path 文字列を指定
      */
-    traverseTo(id: string): Promise<this>;
+    traverseTo(src: string): Promise<this>;
     /**
      * @en Begin sub-flow transaction. <br>
      *     Syntactic sugar for `navigate ()`.
@@ -8251,6 +8290,15 @@ export interface AppContext extends Subscribable<AppContextEvent> {
      *  - `ja` エラー時の振る舞いを指定
      */
     changeLanguage(lng: string, options?: I18NDetectErrorBehaviour): Promise<i18n.TFunction>;
+    /**
+     * @en Determines if a given URL is the router's current path.
+     * @ja 指定した URL がルーターの現在のパスであるか判定
+     *
+     * @param url
+     *  - `en` specify the URL you want to identify
+     *  - `ja` 判別したい URL を指定
+     */
+    isCurrentPath(url: string): boolean;
 }
 /**
  * @en Route parameters for page registration. Need to describe `path`, `content`.
@@ -8429,6 +8477,7 @@ export declare abstract class PageView<TElement extends Element = HTMLElement, T
      */
     protected onPageRemoved(thisPage: Route): void;
 }
+/** re-export */
 declare namespace i18n {
     /**
      * @en {@link AjaxBackend} options interface.

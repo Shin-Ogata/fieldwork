@@ -1,0 +1,22 @@
+#page-settings {
+    color: #cc1313;
+    padding: 0 20px;
+    margin: 0 -10px;
+    overflow-x: hidden;
+
+    &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0 -10px;
+        box-sizing: border-box;
+        z-index: -1;
+        background: #c1beda;
+    }
+}
+
+#page-settings-change-lng {
+    min-width: 100px;
+}

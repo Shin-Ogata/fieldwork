@@ -181,6 +181,25 @@ describe('context spec', () => {
         expect(stub.onCallback).toHaveBeenCalledWith('en', t);
     });
 
+    it('check url is current path', async () => {
+        registerPage({
+            path: '/first',
+            component: {},
+            content: '<div></div>',
+        });
+
+        const { el, window } = await prepareQueryContext();
+
+        const app = AppContext({
+            main: '#test-app', el, window,
+            initialPath: '/first',
+        });
+        await app.ready;
+
+        expect(app.isCurrentPath('http://localhost:8080/.temp/dev/#/first')).toBe(true);
+        expect(app.isCurrentPath('http://localhost:8080/.temp/dev/#/second')).toBe(false);
+    });
+
     it('check remove splash screen', async () => {
         const { el, window } = await prepareQueryContext();
         const app = AppContext({ main: '#test-app', el, window, splash: '#splash', routes: [{ path: '/' }], reset: true } as AppContextOptions);
