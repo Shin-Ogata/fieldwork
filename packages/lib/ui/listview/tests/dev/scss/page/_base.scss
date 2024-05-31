@@ -12,10 +12,17 @@
 }
 
 button {
+    cursor: pointer;
+
     a {
         display: block;
     };
-    cursor: pointer;
+
+    &.header-button {
+        position: absolute;
+        top: 14px;
+        right: 0;
+    }
 }
 
 .router-page {

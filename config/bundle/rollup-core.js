@@ -35,6 +35,7 @@ function getConfig(options) {
         },
         css: {
             minify: true,
+            modules: true, // enabling CSSStyleSheet
         },
     }, options);
     const {

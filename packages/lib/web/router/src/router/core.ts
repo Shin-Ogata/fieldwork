@@ -18,6 +18,7 @@ import {
     DOMSelector,
 } from '@cdp/dom';
 import { waitFrame } from '@cdp/web-utils';
+import { toRouterPath } from '../utils';
 import { window } from '../ssr';
 import { normalizeId } from '../history/internal';
 import type { IHistory, HistoryState } from '../history';
@@ -30,6 +31,7 @@ import {
     TransitionSettings,
     NavigationSettings,
     PageStack,
+    PushPageStackOptions,
     RouterConstructionOptions,
     RouteSubFlowParams,
     RouteNavigationOptions,
@@ -92,6 +94,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             window: context,
             history,
             initialPath,
+            additionalStacks,
             cssPrefix,
             transition,
             navigation,
@@ -121,7 +124,13 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         this._transitionSettings = Object.assign({ default: 'none', reload: 'none' }, transition);
         this._navigationSettings = Object.assign({ method: 'push' }, navigation);
 
-        void this.register(routes!, start);
+        void (async () => {
+            await this.register(routes!, false);
+            if (additionalStacks?.length) {
+                await this.pushPageStack(additionalStacks, { noNavigate: true });
+            }
+            start && await this.refresh();
+        })();
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -162,7 +171,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         }
 
         prefetchParams.length && await this.setPrefetchContents(prefetchParams);
-        refresh && await this.go();
+        refresh && await this.refresh();
 
         return this;
     }
@@ -194,8 +203,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** Add page stack starting from the current history. */
-    async pushPageStack(stack: PageStack | PageStack[], noNavigate?: boolean): Promise<this> {
+    async pushPageStack(stack: PageStack | PageStack[], options?: PushPageStackOptions): Promise<this> {
         try {
+            const { noNavigate, traverseTo } = options ?? {};
             const stacks = isArray(stack) ? stack : [stack];
             const routes = stacks.filter(s => !!s.route).map(s => s.route!);
 
@@ -206,26 +216,27 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 // push history
                 for (const page of stacks) {
                     const { url, transition, reverse } = page;
-                    const params = this.findRouteContextParams(url);
+                    const path = toRouterPath(url);
+                    const params = this.findRouteContextParams(path);
                     if (null == params) {
                         throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [url: ${url}]`, page);
                     }
                     // silent registry
-                    const route = toRouteContext(url, this, params, { intent: undefined });
+                    const route = toRouteContext(path, this, params, { intent: undefined });
                     route.transition = transition;
                     route.reverse    = reverse;
-                    void this._history.push(url, route, { silent: true });
+                    void this._history.push(path, route, { silent: true });
                 }
 
                 await this.waitFrame();
 
-                if (noNavigate) {
-                    await this._history.go(-1 * stacks.length);
+                if (traverseTo) {
+                    await this._history.traverseTo(toRouterPath(traverseTo));
                 }
             });
 
             if (!noNavigate) {
-                await this.go();
+                await this.refresh();
             }
         } catch (e) {
             this.onHandleError(e);
@@ -250,9 +261,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         return this;
     }
 
-    /** To move a specific point in history by stack ID. */
-    async traverseTo(id: string): Promise<this> {
-        await this._history.traverseTo(id);
+    /** To move a specific point in history by path string. */
+    async traverseTo(src: string): Promise<this> {
+        await this._history.traverseTo(toRouterPath(src));
         return this;
     }
 
@@ -291,12 +302,12 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const { transition, reverse } = subflow.params;
 
         this._subflowTransitionParams = Object.assign({ transition, reverse }, params);
-        const { additionalDistance, additinalStacks } = subflow.params;
+        const { additionalDistance, additionalStacks } = subflow.params;
         const distance = subflow.distance + additionalDistance;
 
-        if (additinalStacks?.length) {
+        if (additionalStacks?.length) {
             await this.suppressEventListenerScope(() => this.go(-1 * distance));
-            await this.pushPageStack(additinalStacks);
+            await this.pushPageStack(additionalStacks);
         } else {
             await this.go(-1 * distance);
         }
@@ -401,7 +412,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const from = (oldState ?? this._lastRoute) as Accessible<RouteContext, string> | undefined;
         const direction = this._history.direct(newState['@id'], from?.['@id']).direction;
         const asyncProcess = new RouteAyncProcessContext();
-        const reload = newState.url === from?.url;
+        const reload = from ? newState.url === from.url : true;
         const { transition, reverse }
             = this._subflowTransitionParams ?? (reload
                 ? { transition: this._transitionSettings.reload, reverse: false }
@@ -421,8 +432,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     }
 
     /** @internal find route by url */
-    private findRouteContextParams(url: string): RouteContextParameters | void {
-        const key = `/${normalizeId(url.split('?')[0])}`;
+    private findRouteContextParams(path: string): RouteContextParameters | void {
+        const key = `/${normalizeId(path.split('?')[0])}`;
         for (const path of Object.keys(this._routes)) {
             const { regexp } = this._routes[path];
             if (regexp.test(key)) {
@@ -868,14 +879,14 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** @internal `history` `refresh` handler */
     private onHistoryRefresh(newState: HistoryState<Partial<RouteContext>>, oldState: HistoryState<RouteContext> | undefined, promises: Promise<unknown>[]): void {
         const ensure = (state: HistoryState<Partial<RouteContext>>): HistoryState<RouteContext> => {
-            const url  = `/${state['@id']}`;
-            const params = this.findRouteContextParams(url);
+            const path  = `/${state['@id']}`;
+            const params = this.findRouteContextParams(path);
             if (null == params) {
-                throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [url: ${url}]`, state);
+                throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [path: ${path}]`, state);
             }
             if (null == state['@params']) {
                 // RouteContextParameter を assign
-                Object.assign(state, toRouteContext(url, this, params));
+                Object.assign(state, toRouteContext(path, this, params));
             }
             if (!state.el) {
                 // id に紐づく要素がすでに存在する場合は割り当て

@@ -88,7 +88,7 @@ class PageSubFlowA extends PageView {
             '/subflow-a/subflow',
             {
                 base: '/subflow-a',
-                additinalStacks: [
+                additionalStacks: [
                     {
                         url: '/subflow-b',
                     }
@@ -106,7 +106,7 @@ class PageSubFlowA extends PageView {
             '/subflow-a/subflow',
             {
                 base: '/view',
-                additinalStacks: [
+                additionalStacks: [
                     {
                         url: '/subflow-c',
                     }

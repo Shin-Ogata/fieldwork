@@ -1,9 +1,31 @@
 {
   "app": {
-    "name": "Dev List View",
+    "name": "Dev ListView",
     "common": {
       "back": "戻る",
       "reload": "再読み込み"
+    },
+    "pageRoot": {
+      "title": "リストビュー実装サンプル集",
+      "navigateTo": {
+        "settings": "設定へ"
+      }
+    },
+    "pageSettings": {
+      "title": "アプリケーション設定",
+      "refresh": {
+        "title": "読み込み確認",
+        "lv1": "レベル1: リロード",
+        "lv2": "レベル2: DOM の再構築"
+      },
+      "transition": {
+        "title": "トランジション"
+      },
+      "language": {
+        "title": "言語切り替え",
+        "ja": "日本語へ",
+        "en": "英語へ"
+      }
     }
   }
 }

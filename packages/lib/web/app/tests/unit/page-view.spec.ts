@@ -59,7 +59,7 @@ describe('page-view spec', () => {
 
     it('check life-cycle', async () => {
         const { el, window } = await prepareQueryContext();
-        const app = await AppContext({
+        const app = AppContext({
             initialPath: '/one',
             main: '#test-app',
             el,
@@ -84,9 +84,7 @@ describe('page-view spec', () => {
             reset: true,
         } as AppContextOptions);
 
-        await new Promise(resolve => {
-            app.router.on('changed', () => resolve());
-        });
+        await app.ready;
 
         const view1 = app.activePage as TestView;
         expect(view1.path).toBe('/one');
@@ -122,7 +120,7 @@ describe('page-view spec', () => {
 
     it('check same page instance', async () => {
         const { el, window } = await prepareQueryContext();
-        const app = await AppContext({
+        const app = AppContext({
             initialPath: '/one',
             main: '#test-app',
             el,
@@ -142,9 +140,7 @@ describe('page-view spec', () => {
             reset: true,
         } as AppContextOptions);
 
-        await new Promise(resolve => {
-            app.router.on('changed', () => resolve());
-        });
+        await app.ready;
 
         const view1 = app.activePage as TestView;
         expect(view1.path).toBe('/one');
@@ -176,7 +172,7 @@ describe('page-view spec', () => {
 
     it('for coverage', async () => {
         const { el, window } = await prepareQueryContext();
-        const app = await AppContext({ main: '#test-app', el, window, reset: true } as AppContextOptions);
+        const app = AppContext({ main: '#test-app', el, window, reset: true } as AppContextOptions);
         const route: Route = {
             url: 'test://test.com',
             path: 'temp',

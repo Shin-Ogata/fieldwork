@@ -3,6 +3,7 @@ import {
     DOM,
     dom as $,
 } from '@cdp/dom';
+import { PageStack, toRouterPath } from '@cdp/router';
 import { AppContext } from '@cdp/app';
 import './page';
 
@@ -17,14 +18,22 @@ void (async () => {
         return sleep(1000);
     };
 
+    const additionalStacks = ((url: string): PageStack[] | undefined => {
+        const path = toRouterPath(url);
+        return ('/class' === path) ? [{ url }] : undefined;
+    })(location.href);
+
     await AppContext({
         main: '#app > .view-main',
         /*
-         * initialPath 指定すると, `http://localhost:8080/.temp/dev/#/other` の URL を入力しても `initialPath` に強制する参考実装
-         * 「戻る」に router.back() をアサインしているときなど, 都合が悪いときに採用可能
-         * root path を '/' にすれば initialPath は不要となり, あらゆる root でブックマークされることを想定した実装が求められる
+         * - initialPath 指定すると, `http://localhost:8080/.temp/dev/#/other` の URL を入力しても `initialPath` に強制する参考実装
+         *   「戻る」に router.back() をアサインしているときなど, 都合が悪いときに採用可能.
+         *   また additionalStacks を設定すれば, 例外的に initialPath を起点とした pageStack を積むことができる
+         *
+         * - root path を '/' にすれば initialPath は不要となるが, あらゆる page でブックマークされることを想定した実装が求められる
          */
         initialPath: '/root',
+        additionalStacks,
         splash: '#splash-screen',
         waitForReady: customInit,
         i18n: {
