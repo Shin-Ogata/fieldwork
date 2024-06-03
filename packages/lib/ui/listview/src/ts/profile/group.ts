@@ -5,7 +5,7 @@ import {
     toHelpString,
 } from '@cdp/runtime';
 import type { ListEnsureVisibleOptions } from '../interfaces/base';
-import type { IListItemView } from '../interfaces/list-item-view';
+import type { IListItemViewConstructor } from '../interfaces/list-item-view';
 import type { IExpandableListContext } from '../interfaces/expandable-context';
 import { ItemProfile } from './item';
 
@@ -140,7 +140,7 @@ export class GroupProfile {
      */
     public addItem(
         height: number,
-        initializer: new (options?: UnknownObject) => IListItemView,
+        initializer: IListItemViewConstructor,
         info: UnknownObject,
         layoutKey?: string,
     ): GroupProfile {

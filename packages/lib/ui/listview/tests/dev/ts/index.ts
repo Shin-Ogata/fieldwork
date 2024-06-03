@@ -1,13 +1,32 @@
-import { AppContext, t } from '@cdp/runtime';
+import {
+    type PageStack,
+    toRouterPath,
+    AppContext,
+    t,
+} from '@cdp/runtime';
 import './page';
 import { i18nKey } from './types';
+import { Toast } from './utils';
 
 void (async () => {
-    const { hash: url } = location;
-    const app = AppContext({
+    const t0 = performance.now();
+
+    const makeStacks = (): PageStack[] => {
+        const path = toRouterPath(location.href);
+        switch (path) {
+            case '/settings':
+                return [{ path, transition: 'slide-up' }];
+            case '/simple-list-class':
+                return [{ path }];
+            default:
+                return [];
+        }
+    };
+
+    await AppContext({
         main: '#app > .view-main',
         initialPath: '/',
-        start: false,
+        additionalStacks: makeStacks(),
         i18n: {
             lng: /^[a-z]{2}/.exec(navigator.language)![0],
             fallbackLng: 'en',
@@ -21,14 +40,9 @@ void (async () => {
         transition: {
             default: 'slide',
         },
-    });
-    await app.ready;
+    }).ready;
 
-    // TODO: AppContext のオプションにする
-    if (!app.isCurrentPath(url)) {
-        await app.router.pushPageStack([
-            { url, transition: 'slide-up' },
-        ]);
-    }
-    console.log(`"${t(i18nKey.app.name)}" ready`);
+    const tb = performance.now() - t0;
+    void Toast.show(`"${t(i18nKey.app.name)}" ready\nBoot time: ${tb.toFixed(3)} msec.`);
+    console.log(`Time spent booting: ${tb} milliseconds.`);
 })();

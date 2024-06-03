@@ -5,7 +5,11 @@ import {
 } from '@cdp/runtime';
 import { getTransformMatrixValues } from '@cdp/ui-utils';
 import type { IListContext } from '../interfaces/base';
-import type { IListItemView, ListItemUpdateHeightOptions } from '../interfaces/list-item-view';
+import type {
+    IListItemView,
+    IListItemViewConstructor,
+    ListItemUpdateHeightOptions,
+} from '../interfaces/list-item-view';
 import { ListViewGlobalConfig } from '../global-config';
 
 /**
@@ -18,7 +22,7 @@ export class ItemProfile {
     /** @internal */
     private _height: number;
     /** @internal */
-    private readonly _initializer: new (options?: UnknownObject) => IListItemView;
+    private readonly _initializer: IListItemViewConstructor;
     /** @internal */
     private readonly _info: UnknownObject;
     /** @internal global index */
@@ -48,7 +52,7 @@ export class ItemProfile {
      *  - `en` init parameters for {@link IListItemView}'s subclass
      *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
      */
-    constructor(owner: IListContext, height: number, initializer: new (options?: UnknownObject) => IListItemView, _info: UnknownObject) {
+    constructor(owner: IListContext, height: number, initializer: IListItemViewConstructor, _info: UnknownObject) {
         this._owner       = owner;
         this._height      = height;
         this._initializer = initializer;
@@ -111,10 +115,12 @@ export class ItemProfile {
     public activate(): void {
         if (null == this._instance) {
             this._$base = this.prepareBaseElement();
+            this.updateIndex();
+            this.updateOffset();
             const options = Object.assign({
                 el: this._$base,
                 owner: this._owner,
-                lineProfile: this,
+                item: this,
             }, this._info);
             this._instance = new this._initializer(options);
             if ('none' === this._$base.css('display')) {
@@ -219,7 +225,7 @@ export class ItemProfile {
             $base.removeAttr('z-index');
             $base.removeClass(this._config.RECYCLE_CLASS);
         } else {
-            // TODO:  要件等. <li> 全般は <slot> と同強調するか?
+            // TODO:  要検討. <li> 全般は <slot> とどのように協調するか?
             $base = $(`<${itemTagName} class="${this._config.LISTITEM_BASE_CLASS}"></"${itemTagName}">`);
             $base.css('display', 'none');
             this._owner.$scrollMap.append($base);
@@ -230,18 +236,13 @@ export class ItemProfile {
             $base.height(this._height);
         }
 
-        // index の設定
-        this.updateIndex();
-        // offset の更新
-        this.updateOffset();
-
         return $base;
     }
 
     /** @internal */
     private updateIndex(): void {
-        if (this._$base && this._$base.attr(this._config.DATA_CONTAINER_INDEX) !== String(this._index)) {
-            this._$base.attr(this._config.DATA_CONTAINER_INDEX, this._index);
+        if (this._$base && this._$base.attr(this._config.DATA_ITEM_INDEX) !== String(this._index)) {
+            this._$base.attr(this._config.DATA_ITEM_INDEX, this._index);
         }
     }
 

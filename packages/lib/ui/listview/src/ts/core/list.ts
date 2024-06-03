@@ -22,7 +22,7 @@ import type {
     IListOperation,
     IListScrollable,
     IListBackupRestore,
-    IListItemView,
+    IListItemViewConstructor,
 } from '../interfaces';
 import { ListViewGlobalConfig } from '../global-config';
 import { ItemProfile, PageProfile } from '../profile';
@@ -263,7 +263,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
     }
 
     /** item 登録 */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void {
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, insertTo?: number): void {
         this._addItem(new ItemProfile(this, Math.trunc(height), initializer, info), insertTo);
     }
 
@@ -437,7 +437,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
 
         const parser = ($target: DOM): number => {
             if ($target.hasClass(_config.LISTITEM_BASE_CLASS)) {
-                return Number($target.attr(_config.DATA_CONTAINER_INDEX));
+                return Number($target.attr(_config.DATA_ITEM_INDEX));
             } else if ($target.hasClass(_config.SCROLL_MAP_CLASS) || $target.length <= 0) {
                 console.warn('cannot ditect item from event object.');
                 return NaN;

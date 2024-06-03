@@ -178,8 +178,8 @@ describe('router/context spec', () => {
                     { path: '/two' },
                 ],
                 additionalStacks: [
-                    { url: '/one' },
-                    { url: '/two' }
+                    { path: '/one' },
+                    { path: '/two' }
                 ]
             });
 
@@ -1239,16 +1239,16 @@ describe('router/context spec', () => {
 
             await router.pushPageStack([
                 {
-                    url: '/one',
+                    path: '/one',
                     route: { path: '/one' },
                 },
                 {
-                    url: '/two/user/100',
+                    path: '/two/user/100',
                     route: { path: '/two/user/:userId' },
                     transition: 'fade',
                 },
                 {
-                    url: '/three',
+                    path: '/three',
                     route: { path: '/three' },
                 },
             ]);
@@ -1275,7 +1275,7 @@ describe('router/context spec', () => {
             });
 
             await router.pushPageStack({
-                url: '/next',
+                path: '/next',
                 route: { path: '/next' }
             }, { noNavigate: true });
 
@@ -1290,7 +1290,7 @@ describe('router/context spec', () => {
             });
 
             await router.pushPageStack({
-                url: '/next',
+                path: '/next',
                 route: { path: '/next' }
             }, { traverseTo: '/first' });
 
@@ -1312,12 +1312,12 @@ describe('router/context spec', () => {
             });
             router.on('error', stub.onCallback);
 
-            await router.pushPageStack({ url: '/next' });
+            await router.pushPageStack({ path: '/next' });
 
             expect(stub.onCallback).toHaveBeenCalled();
             const e = callbackArgs[0];
-            expect(e.message).toBe('Route cannot be resolved. [url: /next]');
-            expect(e.cause).toEqual({ url: '/next' });
+            expect(e.message).toBe('Route cannot be resolved. [path: /next]');
+            expect(e.cause).toEqual({ path: '/next' });
         });
     });
 
@@ -1386,11 +1386,11 @@ describe('router/context spec', () => {
                 base: '/main/A',
                 additionalStacks: [
                     {
-                        url: 'add/one',
+                        path: 'add/one',
                         route: { path: 'add/one' }
                     },
                     {
-                        url: 'add/two',
+                        path: 'add/two',
                         route: { path: 'add/two' }
                     },
                 ],
@@ -1439,11 +1439,11 @@ describe('router/context spec', () => {
                 base: '/main/A',
                 additionalStacks: [
                     {
-                        url: 'add/one',
+                        path: 'add/one',
                         route: { path: 'add/one' }
                     },
                     {
-                        url: 'add/two',
+                        path: 'add/two',
                         route: { path: 'add/two' }
                     },
                 ],

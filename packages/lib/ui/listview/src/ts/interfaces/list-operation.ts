@@ -1,6 +1,6 @@
 import type { UnknownObject } from '@cdp/runtime';
 import type { ItemProfile } from '../profile/item';
-import type { IListItemView } from './list-item-view';
+import type { IListItemViewConstructor } from './list-item-view';
 
 /**
  * @en List operation interface.
@@ -34,7 +34,7 @@ export interface IListOperation {
      *  - `en` specify the insertion position of item by index
      *  - `ja` item の挿入位置をインデックスで指定
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, insertTo?: number): void;
 
     /**
      * @internal

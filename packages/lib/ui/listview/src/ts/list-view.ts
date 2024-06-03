@@ -13,7 +13,7 @@ import type {
     IListContext,
     IListView,
     ListEnsureVisibleOptions,
-    IListItemView,
+    IListItemViewConstructor,
 } from './interfaces';
 import { ListCore } from './core/list';
 import { ItemProfile } from './profile';
@@ -56,11 +56,9 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
             context: new ListCore(opt),
         } as Property;
 
-        if (opt.$el) {
-            this.setElement(opt.$el as DOMSelector<TElement>);
-        } else {
-            const height = opt.initialHeight ?? this.$el.height();
-            this[_properties].context.initialize(this.$el as DOM<Node> as DOM, height);
+        this.setElement((opt.$el ?? this.$el) as DOMSelector<TElement>);
+        if (opt.initialHeight) {
+            this[_properties].context.setBaseHeight(opt.initialHeight);
         }
     }
 
@@ -85,10 +83,12 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
      *  - `ja` 要素のもとになるオブジェクトまたはセレクタ文字列
      */
     override setElement(el: DOMSelector<TElement | string>): this {
-        const { context } = this[_properties];
-        const $el = $(el);
-        context.destroy();
-        context.initialize($el as DOM<Node> as DOM, $el.height());
+        if (this[_properties]) {
+            const { context } = this[_properties];
+            const $el = $(el);
+            context.destroy();
+            context.initialize($el as DOM<Node> as DOM, $el.height());
+        }
         return super.setElement(el);
     }
 
@@ -134,7 +134,7 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
      *  - `en` specify the insertion position of item by index
      *  - `ja` item の挿入位置をインデックスで指定
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void {
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, insertTo?: number): void {
         this._addItem(new ItemProfile(this.context, Math.trunc(height), initializer, info), insertTo);
     }
 

@@ -1,5 +1,5 @@
 import { type UnknownObject, type DOM, type DOMSelector, type DOMEventListener, type ViewConstructionOptions, View } from '@cdp/runtime';
-import type { ListContextOptions, IListContext, IListView, ListEnsureVisibleOptions, IListItemView } from './interfaces';
+import type { ListContextOptions, IListContext, IListView, ListEnsureVisibleOptions, IListItemViewConstructor } from './interfaces';
 /**
  * @en Interface class that stores {@link ListView} initialization information.
  * @ja {@link ListView} の初期化情報を格納するインターフェイスクラス
@@ -61,7 +61,7 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
      *  - `en` specify the insertion position of item by index
      *  - `ja` item の挿入位置をインデックスで指定
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, insertTo?: number): void;
     /**
      * @en Delete the specified Item.
      * @ja 指定した Item を削除

@@ -2,14 +2,31 @@
   "app": {
     "name": "Dev ListView",
     "common": {
-      "back": "戻る",
-      "reload": "再読み込み"
-    },
-    "pageRoot": {
-      "title": "リストビュー実装サンプル集",
+      "control": {
+        "back": "戻る",
+        "reload": "再読み込み"
+      },
+      "message": {
+        "listview": {
+          "loadComplete": "リストアイテムのロードが完了しました"
+        }
+      },
       "navigateTo": {
         "settings": "設定へ"
       }
+    },
+    "pageRoot": {
+      "title": "リストビュー実装サンプル集",
+      "category": {
+        "class": "クラスベース実装"
+      },
+      "navigateTo": {
+        "simpleListClass": "シンプルなリストビュー"
+      }
+    },
+    "pageSimpleListClass": {
+      "title": "シンプルなリストビュー実装例",
+      "description": "例: element の overflow を用いた実装"
     },
     "pageSettings": {
       "title": "アプリケーション設定",

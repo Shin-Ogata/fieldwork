@@ -11,10 +11,11 @@ import { i18nKey } from '../types';
 const template = (): TemplateResult => {
     return html`
         <h2>${t(i18nKey.app.pageRoot.title)}</h2>
-        <button class="header-button"><a href="/settings" data-transition="slide-up">⚙️${t(i18nKey.app.pageRoot.navigateTo.settings)}</a></button>
+        <button class="header-button"><a href="/settings" data-transition="slide-up">⚙️${t(i18nKey.app.common.navigateTo.settings)}</a></button>
         <hr/>
+        <h3>${t(i18nKey.app.pageRoot.category.class)}</h3>
         <ul>
-            <li><a href="/xxx">🌐</a></li>
+            <li><a href="/simple-list-class">${t(i18nKey.app.pageRoot.navigateTo.simpleListClass)}</a></li>
         </ul>
     `;
 };

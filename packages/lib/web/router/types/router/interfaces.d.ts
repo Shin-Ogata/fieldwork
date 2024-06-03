@@ -371,10 +371,10 @@ export interface RouterConstructionOptions {
  */
 export interface PageStack extends PageTransitionParams {
     /**
-     * @en Page's URL.
-     * @ja ページの URL
+     * @en Page's URL / Path.
+     * @ja ページの URL / Path
      */
-    url: string;
+    path: string;
     /**
      * @en The route parameter used when registering a new route.
      * @ja 新規ルート登録を行うときに使用するルートパラメータ.

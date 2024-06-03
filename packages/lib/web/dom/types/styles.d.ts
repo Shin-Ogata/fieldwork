@@ -59,7 +59,7 @@ export declare class DOMStyles<TElement extends ElementBase> implements DOMItera
      *  - `en` An object of property-value pairs to set.
      *  - `ja` CSS プロパティを格納したオブジェクト
      */
-    css(properties: PlainObject<string | null>): this;
+    css(properties: PlainObject<string | number | boolean | null>): this;
     /**
      * @en Get the current computed width for the first element in the set of matched elements or set the width of every matched element.
      * @ja 最初の要素の計算済み横幅をピクセル単位で取得

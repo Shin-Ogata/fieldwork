@@ -80,7 +80,7 @@ class SettingsPageView extends PageView {
         <h2 data-i18n="${i18nKey.app.pageSettings.title}">🌐</h2>
         <hr/>
         <label>👈</label>
-        <button><a href="#" data-i18n="${i18nKey.app.common.back}">🌐</a></button>
+        <button><a href="#" data-i18n="${i18nKey.app.common.control.back}">🌐</a></button>
         <br/>
         <h3 data-i18n="${i18nKey.app.pageSettings.refresh.title}">🌐</h3>
         <fieldset>
@@ -90,7 +90,7 @@ class SettingsPageView extends PageView {
             <label data-i18n="[append]${i18nKey.app.pageSettings.refresh.lv2}">
                 <input type="radio" name="page-settings-refresh-lv" id="page-settings-refresh-lv2" value="2">
             </label>
-            <button id="page-settings-refresh" data-i18n="${i18nKey.app.common.reload}">🌐</button>
+            <button id="page-settings-refresh" data-i18n="${i18nKey.app.common.control.reload}">🌐</button>
         </fieldset>
         <br/>
         <h3 data-i18n="${i18nKey.app.pageSettings.transition.title}">🌐</h3>
