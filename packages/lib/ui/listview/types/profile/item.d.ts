@@ -1,6 +1,6 @@
 import { UnknownObject } from '@cdp/runtime';
 import type { IListContext } from '../interfaces/base';
-import type { IListItemView, ListItemUpdateHeightOptions } from '../interfaces/list-item-view';
+import type { IListItemViewConstructor, ListItemUpdateHeightOptions } from '../interfaces/list-item-view';
 /**
  * @en A class that stores UI structure information for list items.
  * @ja リストアイテムの UI 構造情報を格納するクラス
@@ -22,7 +22,7 @@ export declare class ItemProfile {
      *  - `en` init parameters for {@link IListItemView}'s subclass
      *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
      */
-    constructor(owner: IListContext, height: number, initializer: new (options?: UnknownObject) => IListItemView, _info: UnknownObject);
+    constructor(owner: IListContext, height: number, initializer: IListItemViewConstructor, _info: UnknownObject);
     /** Get the item's height. */
     get height(): number;
     /** Get the item's global index. */

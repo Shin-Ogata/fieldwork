@@ -1,3 +1,5 @@
+@use '../utils';
+
 .view-main {
     position: absolute;
     top: 0;
@@ -34,6 +36,8 @@ button {
     margin: 0 10px;
     overflow-y: auto;
     box-sizing: border-box;
+    @include utils.webkit-scrollbar;
+    -webkit-overflow-scrolling: touch;
 
     &.cdp-transition-running {
         pointer-events: none;

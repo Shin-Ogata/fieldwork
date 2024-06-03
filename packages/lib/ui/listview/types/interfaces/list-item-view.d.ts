@@ -1,3 +1,4 @@
+import type { AnyObject } from '@cdp/runtime';
 /**
  * @en Options to pass to {@link IListItemView}`.updateHeight()`.
  * @ja {@link IListItemView}`.updateHeight()` に渡すオプション
@@ -52,3 +53,7 @@ export interface IListItemView {
      */
     remove(): this;
 }
+/**
+ * {@link IListItemView} constructor alias.
+ */
+export type IListItemViewConstructor = new (options?: AnyObject) => IListItemView;

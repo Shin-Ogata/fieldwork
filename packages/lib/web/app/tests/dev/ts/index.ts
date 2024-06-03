@@ -20,7 +20,7 @@ void (async () => {
 
     const additionalStacks = ((url: string): PageStack[] | undefined => {
         const path = toRouterPath(url);
-        return ('/class' === path) ? [{ url }] : undefined;
+        return ('/class' === path) ? [{ path }] : undefined;
     })(location.href);
 
     await AppContext({

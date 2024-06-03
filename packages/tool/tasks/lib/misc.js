@@ -7,6 +7,9 @@ const {
     rmdirSync,
     mkdirSync,
     copyFileSync,
+    existsSync,
+    symlinkSync,
+    unlinkSync,
 } = require('node:fs');
 const { resolve, dirname } = require('node:path');
 const { globSync } = require('glob');
@@ -109,6 +112,22 @@ function copy(globs, dest, options) {
         }
     }
     return retval;
+}
+
+function link(src, dst, options) {
+    const opts = options || {};
+    const cwd  = toPOSIX(opts.cwd || process.cwd());
+
+    const srcPath = resolve(cwd, src);
+    const dstPath = resolve(cwd, dst);
+    mkdirSync(dirname(dstPath), { recursive: true });
+
+    if (existsSync(dstPath)) {
+        unlinkSync(dstPath);
+    }
+
+    const type = statSync(srcPath).isFile() ? 'file' : ('win32' === process.platform) ? 'junction' : 'dir';
+    symlinkSync(srcPath, dstPath, type);
 }
 
 function del(globs, options) {
@@ -235,6 +254,7 @@ module.exports = {
     merge,
     includes,
     copy,
+    link,
     del,
     gzip,
     normalizeText,

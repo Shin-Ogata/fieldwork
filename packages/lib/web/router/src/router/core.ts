@@ -215,11 +215,11 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
             await this.suppressEventListenerScope(async () => {
                 // push history
                 for (const page of stacks) {
-                    const { url, transition, reverse } = page;
+                    const { path: url, transition, reverse } = page;
                     const path = toRouterPath(url);
                     const params = this.findRouteContextParams(path);
                     if (null == params) {
-                        throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [url: ${url}]`, page);
+                        throw makeResult(RESULT_CODE.ERROR_MVC_ROUTER_ROUTE_CANNOT_BE_RESOLVED, `Route cannot be resolved. [path: ${url}]`, page);
                     }
                     // silent registry
                     const route = toRouteContext(path, this, params, { intent: undefined });

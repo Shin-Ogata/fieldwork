@@ -23,7 +23,7 @@ import {
 import { window } from './ssr';
 
 /** @internal helper for `css()` */
-function ensureChainCaseProperies(props: PlainObject<string | null>): PlainObject<string | null> {
+function ensureChainCaseProperies(props: PlainObject<string | number | boolean | null>): PlainObject<string | null> {
     const retval = {};
     for (const key in props) {
         assignValue(retval, dasherize(key), props[key]);
@@ -312,9 +312,9 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `en` An object of property-value pairs to set.
      *  - `ja` CSS プロパティを格納したオブジェクト
      */
-    public css(properties: PlainObject<string | null>): this;
+    public css(properties: PlainObject<string | number | boolean | null>): this;
 
-    public css(name: string | string[] | PlainObject<string | null>, value?: string | null): string | PlainObject<string> | this {
+    public css(name: string | string[] | PlainObject<string | number | boolean | null>, value?: string | null): string | PlainObject<string> | this {
         // valid elements
         if (!isTypeHTMLOrSVGElement(this)) {
             if (isString(name)) {

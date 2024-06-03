@@ -1,5 +1,7 @@
 import {
-    getTransformMatrixValues
+    getTransformMatrixValues,
+    setTransformTransition,
+    clearTransition,
 } from '@cdp/ui-utils';
 import { dom as $ } from '@cdp/runtime';
 import { prepareTestElements, cleanupTestElements } from './tools';
@@ -31,5 +33,24 @@ describe('ui-utils/css spec', () => {
         expect(scaleX).toBe(0.5);
         expect(scaleY).toBe(0.25);
         expect(scaleZ).toBe(0.75);
+    });
+
+    it('check setTransformTransition & clearTransition', async () => {
+        prepareTestElements();
+        const $el = $('#d1');
+        $el.css('height', '10px').reflow();
+
+        const promise = new Promise(resolve => {
+            $el.transitionEnd(() => {
+                clearTransition($el[0]);
+                resolve('called');
+            });
+        });
+        setTransformTransition($el[0], 'height', 100);
+
+        $el.css('height', '100px');
+
+        const status = await promise;
+        expect(status).toBe('called');
     });
 });

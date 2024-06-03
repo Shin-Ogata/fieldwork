@@ -15,7 +15,7 @@ export interface ListViewGlobalConfig {
     LISTITEM_BASE_CLASS: string;
     LISTITEM_BASE_CLASS_SELECTOR: string;
     DATA_PAGE_INDEX: string;
-    DATA_CONTAINER_INDEX: string;
+    DATA_ITEM_INDEX: string;
 }
 /**
  * @en Get/Update global configuration of list view.

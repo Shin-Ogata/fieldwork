@@ -1,6 +1,6 @@
 import { type UnknownObject } from '@cdp/runtime';
 import type { ListEnsureVisibleOptions } from '../interfaces/base';
-import type { IListItemView } from '../interfaces/list-item-view';
+import type { IListItemViewConstructor } from '../interfaces/list-item-view';
 import type { IExpandableListContext } from '../interfaces/expandable-context';
 /**
  * @en UI structure information storage class for group management of list items. <br>
@@ -76,7 +76,7 @@ export declare class GroupProfile {
      *  - `en` identifier for each layout
      *  - `ja` レイアウト毎の識別子
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, layoutKey?: string): GroupProfile;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, layoutKey?: string): GroupProfile;
     /**
      * @en Add {@link GroupProfile} as child element.
      * @ja 子要素として {@link GroupProfile} を追加

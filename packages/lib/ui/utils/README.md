@@ -1,3 +1,3 @@
-# @cdp/ui-forms
+# @cdp/ui-utils
 
 [description]

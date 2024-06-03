@@ -23,3 +23,33 @@ body {
     margin: 0 auto;
     -webkit-font-smoothing: antialiased;
 }
+
+@mixin font-content() {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+@mixin declare-font($el) {
+    #{$el} {
+        @content;
+    }
+}
+
+@include declare-font(h2) {
+    @include font-content();
+    margin: 0.83em 0;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+@include declare-font(h3) {
+    @include font-content();
+    margin: 1em 0;
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+@include declare-font(p) {
+    @include font-content();
+    margin: 1em 0;
+}

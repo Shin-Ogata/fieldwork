@@ -1,0 +1,12 @@
+.cdp-ui-listview-scroll-map {
+    position:   relative;
+    width:      100%;
+    overflow:   hidden;
+    // hardware-accelerator
+    transform: scale3d(1,1,1) translate3d(0,0,0);
+    > .cdp-ui-listview-item-base {
+        position:   absolute;
+        width:      100%;
+        top:        0;
+    }
+}

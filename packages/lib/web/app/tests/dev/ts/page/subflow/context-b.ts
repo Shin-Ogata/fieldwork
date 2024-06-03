@@ -100,7 +100,7 @@ class PageSubFlowB extends PageView {
                 base: '/view',
                 additionalStacks: [
                     {
-                        url: '/subflow-c',
+                        path: '/subflow-c',
                     }
                 ],
             },
@@ -117,7 +117,7 @@ class PageSubFlowB extends PageView {
         // eslint-disable-next-line
         const { params } = (this._router as any)?.findSubFlowParams(false) as { params: RouteSubFlowParams; };
         if (params?.additionalStacks) {
-            return params.additionalStacks[params.additionalStacks.length - 1].url;
+            return params.additionalStacks[params.additionalStacks.length - 1].path;
         } else if (params?.base) {
             return params.base;
         } else {

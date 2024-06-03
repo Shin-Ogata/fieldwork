@@ -2,14 +2,31 @@
   "app": {
     "name": "Dev ListView",
     "common": {
-      "back": "Back",
-      "reload": "Reload"
-    },
-    "pageRoot": {
-      "title": "List view implementation samples",
+      "control": {
+        "back": "Back",
+        "reload": "Reload"
+      },
+      "message": {
+        "listview": {
+          "loadComplete": "List items have finished loading."
+        }
+      },
       "navigateTo": {
         "settings": "to Settings"
       }
+    },
+    "pageRoot": {
+      "title": "List view implementation samples",
+      "category": {
+        "class": "Class-based implementation"
+      },
+      "navigateTo": {
+        "simpleListClass": "Go to Simple ListView"
+      }
+    },
+    "pageSimpleListClass": {
+      "title": "Simple ListView Implementation Example",
+      "description": "Ex) Implement by using element overflow."
     },
     "pageSettings": {
       "title": "Application Settings",
