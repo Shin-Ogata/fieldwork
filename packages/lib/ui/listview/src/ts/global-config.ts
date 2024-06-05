@@ -4,8 +4,6 @@
  */
 export interface ListViewGlobalConfig {
     NAMESPACE: string;
-    WRAPPER_CLASS: string;
-    WRAPPER_SELECTOR: string;
     SCROLL_MAP_CLASS: string;
     SCROLL_MAP_SELECTOR: string;
     INACTIVE_CLASS: string;
@@ -21,8 +19,6 @@ export interface ListViewGlobalConfig {
 /** @internal */
 const enum DefaultV {
     NAMESPACE                    = 'cdp-ui',
-    WRAPPER_CLASS                = `${NAMESPACE}-listview-wrapper`,
-    WRAPPER_SELECTOR             = `.${WRAPPER_CLASS}`,
     SCROLL_MAP_CLASS             = `${NAMESPACE}-listview-scroll-map`,
     SCROLL_MAP_SELECTOR          = `.${SCROLL_MAP_CLASS}`,
     INACTIVE_CLASS               = 'inactive',
@@ -37,8 +33,6 @@ const enum DefaultV {
 
 const _config = {
     NAMESPACE: DefaultV.NAMESPACE,
-    WRAPPER_CLASS: DefaultV.WRAPPER_CLASS,
-    WRAPPER_SELECTOR: DefaultV.WRAPPER_SELECTOR,
     SCROLL_MAP_CLASS: DefaultV.SCROLL_MAP_CLASS,
     SCROLL_MAP_SELECTOR: DefaultV.SCROLL_MAP_SELECTOR,
     INACTIVE_CLASS: DefaultV.INACTIVE_CLASS,

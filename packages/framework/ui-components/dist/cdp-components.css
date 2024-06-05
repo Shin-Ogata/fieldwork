@@ -2,79 +2,58 @@
  * cdp-components 0.9.18
  *   ui-componets collection
  */
-/* Box sizing rules */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-/* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote,
-dl,
-dd {
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
   margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role=list],
-ol[role=list] {
-  list-style: none;
-}
-
-/* Set core root defaults */
-html:focus-within {
-  scroll-behavior: smooth;
-}
-
-/* Set core body defaults */
-body {
-  min-height: 100vh;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
-}
-
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  -webkit-text-decoration-skip: ink;
-          text-decoration-skip-ink: auto;
-}
-
-/* Make images easier to work with */
-img,
-picture {
-  max-width: 100%;
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
-/* Inherit fonts for inputs and buttons */
-input,
-button,
-textarea,
-select {
-  font: inherit;
+body {
+  line-height: 1;
 }
 
-/* Remove all animations and transitions for people that prefer not to see them */
-@media (prefers-reduced-motion: reduce) {
-  html:focus-within {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+ol, ul {
+  list-style: none;
 }
 
-/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9zY3NzL2NkcC1jb21wb25lbnRzLnNjc3MiLCIuLi8uLi8uLi9saWIvdWkvdXRpbHMvc3JjL3Njc3MvX3Jlc2V0LnNjc3MiLCIuLi8udGVtcC9zcmMvc2Nzcy9jZHAtY29tcG9uZW50cy5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7OztFQUFBO0FDQUMscUJBQUE7QUFDRDs7O0VBR0ksc0JBQUE7QUNLSjs7QURGQSwwQkFBQTtBQUNBOzs7Ozs7Ozs7O0VBVUksU0FBQTtBQ0tKOztBREZBLDJHQUFBO0FBQ0E7O0VBRUksZ0JBQUE7QUNLSjs7QURGQSwyQkFBQTtBQUNBO0VBQ0ksdUJBQUE7QUNLSjs7QURGQSwyQkFBQTtBQUNBO0VBQ0ksaUJBQUE7RUFDQSw2QkFBQTtFQUNBLGdCQUFBO0FDS0o7O0FERkEsMERBQUE7QUFDQTtFQUNJLGlDQUFBO1VBQUEsOEJBQUE7QUNLSjs7QURGQSxvQ0FBQTtBQUNBOztFQUVJLGVBQUE7RUFDQSxjQUFBO0FDS0o7O0FERkEseUNBQUE7QUFDQTs7OztFQUlJLGFBQUE7QUNLSjs7QURGQSxpRkFBQTtBQUNBO0VBQ0k7SUFDSSxxQkFBQTtFQ0tOO0VESEU7OztJQUdJLHFDQUFBO0lBQ0EsdUNBQUE7SUFDQSxzQ0FBQTtJQUNBLGdDQUFBO0VDS047QUFDRiIsImZpbGUiOiJjZHAtY29tcG9uZW50cy5jc3MifQ== */
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9zY3NzL2NkcC1jb21wb25lbnRzLnNjc3MiLCIuLi8uLi8uLi9saWIvdWkvdXRpbHMvc3JjL3Njc3MvX3Jlc2V0LnNjc3MiLCIuLi8udGVtcC9zcmMvc2Nzcy9jZHAtY29tcG9uZW50cy5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7OztFQUFBO0FDQUE7OztDQUFBO0FBS0E7Ozs7Ozs7Ozs7Ozs7RUFhSSxTQUFBO0VBQ0EsVUFBQTtFQUNBLFNBQUE7RUFDQSxlQUFBO0VBQ0EsYUFBQTtFQUNBLHdCQUFBO0FDSUo7O0FERkEsZ0RBQUE7QUFDQTs7RUFFSSxjQUFBO0FDS0o7O0FESEE7RUFDSSxjQUFBO0FDTUo7O0FESkE7RUFDSSxnQkFBQTtBQ09KOztBRExBO0VBQ0ksWUFBQTtBQ1FKOztBRE5BOztFQUVJLFdBQUE7RUFDQSxhQUFBO0FDU0o7O0FEUEE7RUFDSSx5QkFBQTtFQUNBLGlCQUFBO0FDVUoiLCJmaWxlIjoiY2RwLWNvbXBvbmVudHMuY3NzIn0= */

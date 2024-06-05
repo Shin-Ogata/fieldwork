@@ -17,6 +17,7 @@ void (async () => {
             case '/settings':
                 return [{ path, transition: 'slide-up' }];
             case '/simple-list-class':
+            case '/expand-list-class':
                 return [{ path }];
             default:
                 return [];

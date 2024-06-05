@@ -21,12 +21,21 @@
         "class": "Class-based implementation"
       },
       "navigateTo": {
-        "simpleListClass": "Go to Simple ListView"
+        "simpleListClass": "Go to Simple ListView",
+        "expandListClass": "Go to Expandable ListView"
       }
     },
     "pageSimpleListClass": {
       "title": "Simple ListView Implementation Example",
       "description": "Ex) Implement by using element overflow."
+    },
+    "pageExpandListClass": {
+      "title": "Expandable ListView Implementation Example",
+      "description": "Click on an element to expand or collapse it.",
+      "control": {
+        "expandAll": "Expand All",
+        "collapseAll": "Collapse All"
+      }
     },
     "pageSettings": {
       "title": "Application Settings",

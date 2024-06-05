@@ -29,17 +29,17 @@ export declare abstract class ListItemView<TElement extends Node = HTMLElement, 
      * @en Get own item index.
      * @ja 自身の item インデックスを取得
      */
-    getIndex(): number;
+    get index(): number;
     /**
      * @en Get specified height.
      * @ja 指定された高さを取得
      */
-    getHeight(): number;
+    get height(): number;
     /**
      * @en Check if child node exists.
      * @ja child node が存在するか判定
      */
-    hasChildNode(): boolean;
+    get hasChildNode(): boolean;
     /**
      * @en Update item's height.
      * @ja item の高さを更新

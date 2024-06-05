@@ -446,7 +446,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
             }
         };
 
-        const index = target instanceof Event ? parser($(target.currentTarget as HTMLElement)) : Number(target);
+        const index = target instanceof Event ? parser($(target.target as HTMLElement)) : Number(target);
 
         if (Number.isNaN(index)) {
             throw makeResult(

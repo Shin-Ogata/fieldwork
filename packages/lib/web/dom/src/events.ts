@@ -441,6 +441,9 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
         const { type: events, selector, listener, options } = parseEventArgs(...args);
 
         function handleLiveEvent(e: Event): void {
+            if (e.defaultPrevented) {
+                return;
+            }
             const eventData = queryEventData(e);
             const $target = $(e.target as Element | null) as DOM<Element>;
             if ($target.is(selector)) {

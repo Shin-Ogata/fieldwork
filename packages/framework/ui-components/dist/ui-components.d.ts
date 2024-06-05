@@ -7,7 +7,7 @@
  *     - @cdp/ui-listview
  *     - @cdp/ui-forms
  */
-import { DOM, DOMEventListener, DOMSelector, UnknownObject, View, ViewConstructionOptions } from '@cdp/runtime';
+import { AnyObject, DOM, DOMEventListener, DOMSelector, UnknownObject, View, ViewConstructionOptions } from '@cdp/runtime';
 /**
  * @en CSS vendor prefix string definition.
  * @ja CSS ベンダープリフィックス文字列定義
@@ -61,7 +61,6 @@ export declare const setTransformTransition: (el: HTMLElement, prop: string, mse
  *  - `ja` 対象 `HTMLElement` インスタンス
  */
 export declare const clearTransition: (el: HTMLElement) => void;
-export declare const UI_UTILS_STATUS = 'UNDER CONSTRUCTION';
 export declare const UI_FORMS_STATUS = 'UNDER CONSTRUCTION';
 /**
  * @en Factory interface for {@link IListScroller}.
@@ -497,17 +496,17 @@ export interface IListItemView {
      * @en Get own item index.
      * @ja 自身の item インデックスを取得
      */
-    getIndex(): number;
+    readonly index: number;
     /**
      * @en Get specified height.
      * @ja 指定された高さを取得
      */
-    getHeight(): number;
+    readonly height: number;
     /**
      * @en Check if child node exists.
      * @ja child node が存在するか判定
      */
-    hasChildNode(): boolean;
+    readonly hasChildNode: boolean;
     /**
      * @en Update item's height.
      * @ja item の高さを更新
@@ -531,6 +530,10 @@ export interface IListItemView {
      */
     remove(): this;
 }
+/**
+ * {@link IListItemView} constructor alias.
+ */
+export type IListItemViewConstructor = new (options?: AnyObject) => IListItemView;
 /**
  * @en List operation interface.
  * @ja リスト操作のインターフェイス
@@ -562,7 +565,7 @@ export interface IListOperation {
      *  - `en` specify the insertion position of item by index
      *  - `ja` item の挿入位置をインデックスで指定
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, insertTo?: number): void;
     /**
      * @en Delete the specified Item.
      * @ja 指定した Item を削除
@@ -699,7 +702,7 @@ export declare class GroupProfile {
      *  - `en` identifier for each layout
      *  - `ja` レイアウト毎の識別子
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, layoutKey?: string): GroupProfile;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, layoutKey?: string): GroupProfile;
     /**
      * @en Add {@link GroupProfile} as child element.
      * @ja 子要素として {@link GroupProfile} を追加
@@ -861,8 +864,6 @@ export type IExpandableListView = IListView & IExpandableListContext & IExpandOp
  */
 export interface ListViewGlobalConfig {
     NAMESPACE: string;
-    WRAPPER_CLASS: string;
-    WRAPPER_SELECTOR: string;
     SCROLL_MAP_CLASS: string;
     SCROLL_MAP_SELECTOR: string;
     INACTIVE_CLASS: string;
@@ -872,7 +873,7 @@ export interface ListViewGlobalConfig {
     LISTITEM_BASE_CLASS: string;
     LISTITEM_BASE_CLASS_SELECTOR: string;
     DATA_PAGE_INDEX: string;
-    DATA_CONTAINER_INDEX: string;
+    DATA_ITEM_INDEX: string;
 }
 /**
  * @en Get/Update global configuration of list view.
@@ -900,7 +901,7 @@ export declare class ItemProfile {
      *  - `en` init parameters for {@link IListItemView}'s subclass
      *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
      */
-    constructor(owner: IListContext, height: number, initializer: new (options?: UnknownObject) => IListItemView, _info: UnknownObject);
+    constructor(owner: IListContext, height: number, initializer: IListItemViewConstructor, _info: UnknownObject);
     /** Get the item's height. */
     get height(): number;
     /** Get the item's global index. */
@@ -1039,17 +1040,17 @@ export declare abstract class ListItemView<TElement extends Node = HTMLElement, 
      * @en Get own item index.
      * @ja 自身の item インデックスを取得
      */
-    getIndex(): number;
+    get index(): number;
     /**
      * @en Get specified height.
      * @ja 指定された高さを取得
      */
-    getHeight(): number;
+    get height(): number;
     /**
      * @en Check if child node exists.
      * @ja child node が存在するか判定
      */
-    hasChildNode(): boolean;
+    get hasChildNode(): boolean;
     /**
      * @en Update item's height.
      * @ja item の高さを更新
@@ -1124,7 +1125,7 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
      *  - `en` specify the insertion position of item by index
      *  - `ja` item の挿入位置をインデックスで指定
      */
-    addItem(height: number, initializer: new (options?: UnknownObject) => IListItemView, info: UnknownObject, insertTo?: number): void;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, insertTo?: number): void;
     /**
      * @en Delete the specified Item.
      * @ja 指定した Item を削除

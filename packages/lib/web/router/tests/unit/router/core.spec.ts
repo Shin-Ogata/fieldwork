@@ -55,7 +55,7 @@ describe('router/context spec', () => {
         await _waitFrame(frameCount, requestAnimationFrame);
     };
 
-    const evClick = new Event('click', { cancelable: true, bubbles: true });
+    const evClick = (): Event => new Event('click', { cancelable: true, bubbles: true });
 
     const prepareQueryContext = async (): Promise<{ el: Document | null; window: Window | null; }> => {
         const iframe = await prepareIFrameElements();
@@ -1016,7 +1016,7 @@ describe('router/context spec', () => {
             const $button = $(router.el).find('#to-next');
             expect($button.length).toBe(1);
 
-            $button[0].dispatchEvent(evClick);
+            $button[0].dispatchEvent(evClick());
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/next');
@@ -1047,7 +1047,7 @@ describe('router/context spec', () => {
             const $button = $(router.el).find('#to-back');
             expect($button.length).toBe(1);
 
-            $button[0].dispatchEvent(evClick);
+            $button[0].dispatchEvent(evClick());
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/first');
@@ -1077,7 +1077,7 @@ describe('router/context spec', () => {
             const $button = $(router.el).find('#nav-replace');
             expect($button.length).toBe(1);
 
-            $button[0].dispatchEvent(evClick);
+            $button[0].dispatchEvent(evClick());
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/second');
@@ -1109,7 +1109,7 @@ describe('router/context spec', () => {
             const $preventRouter = $(router.el).find('#to-outside');
             expect($preventRouter.length).toBe(1);
 
-            $preventRouter[0].dispatchEvent(evClick);
+            $preventRouter[0].dispatchEvent(evClick());
 
             await waitFrame(router);
 
@@ -1581,7 +1581,7 @@ describe('router/context spec', () => {
             const $button = $(router.el).find('#to-next');
             expect($button.length).toBe(1);
 
-            $button[0].dispatchEvent(evClick);
+            $button[0].dispatchEvent(evClick());
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/next');
@@ -1617,7 +1617,7 @@ describe('router/context spec', () => {
             const $button = $(router.el).find('#to-next');
             expect($button.length).toBe(1);
 
-            $button[0].dispatchEvent(evClick);
+            $button[0].dispatchEvent(evClick());
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/next');
@@ -1652,7 +1652,7 @@ describe('router/context spec', () => {
             const $button = $(router.el).find('#to-next-duplicate');
             expect($button.length).toBe(1);
 
-            $button[0].dispatchEvent(evClick);
+            $button[0].dispatchEvent(evClick());
             await waitFrame(router);
 
             expect(router.currentRoute.path).toBe('/next');

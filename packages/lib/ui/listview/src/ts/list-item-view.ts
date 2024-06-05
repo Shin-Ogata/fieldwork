@@ -90,7 +90,7 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
      * @en Get own item index.
      * @ja 自身の item インデックスを取得
      */
-    getIndex(): number {
+    get index(): number {
         return this[_properties].item.index;
     }
 
@@ -98,7 +98,7 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
      * @en Get specified height.
      * @ja 指定された高さを取得
      */
-    getHeight(): number {
+    get height(): number {
         return this[_properties].item.height;
     }
 
@@ -106,7 +106,7 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
      * @en Check if child node exists.
      * @ja child node が存在するか判定
      */
-    hasChildNode(): boolean {
+    get hasChildNode(): boolean {
         return !!this.$el?.children().length;
     }
 
@@ -122,7 +122,7 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
      *  - `ja` 更新オプション
      */
     updateHeight(newHeight: number, options?: ListItemUpdateHeightOptions): this {
-        if (this.$el && this.getHeight() !== newHeight) {
+        if (this.$el && this.height !== newHeight) {
             this[_properties].item.updateHeight(newHeight, options);
             this.$el.height(newHeight);
         }

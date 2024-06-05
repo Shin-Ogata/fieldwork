@@ -953,4 +953,33 @@ describe('dom/events spec', () => {
             expect(count).toBe(2);
         });
     });
+
+    describe('cases that are often overlooked', () => {
+        it('when to ignore live event processing', async () => {
+            prepareTestElements();
+
+            let expand = false;
+            const onExpand = (e: Event): void => {
+                e.preventDefault();
+                $(e.target as HTMLElement).removeClass('to-expand').addClass('to-collapse');
+                expand = true;
+            };
+
+            let collapse = false;
+            const onCollapse = (e: Event): void => {
+                e.preventDefault();
+                collapse = true;
+            };
+
+            const $dom = $('#d1');
+            $dom.addClass('to-expand');
+
+            $dom.on('click', '#d1.to-expand', onExpand);
+            $dom.on('click', '#d1.to-collapse', onCollapse);
+
+            await $dom.trigger('click');
+            expect(expand).toBe(true);
+            expect(collapse).toBe(false);
+        });
+    });
 });

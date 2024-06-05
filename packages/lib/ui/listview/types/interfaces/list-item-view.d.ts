@@ -19,17 +19,17 @@ export interface IListItemView {
      * @en Get own item index.
      * @ja 自身の item インデックスを取得
      */
-    getIndex(): number;
+    readonly index: number;
     /**
      * @en Get specified height.
      * @ja 指定された高さを取得
      */
-    getHeight(): number;
+    readonly height: number;
     /**
      * @en Check if child node exists.
      * @ja child node が存在するか判定
      */
-    hasChildNode(): boolean;
+    readonly hasChildNode: boolean;
     /**
      * @en Update item's height.
      * @ja item の高さを更新

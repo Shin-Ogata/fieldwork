@@ -29,7 +29,7 @@ export class SimpleListItemView extends ListItemView {
 // implements: ListItemView
 
     render(): this {
-        if (null != this.$el && !this.hasChildNode()) {
+        if (null != this.$el && !this.hasChildNode) {
             const $item = $(this._template(this.makeTemplateParam()));
             $item.height(this.$el.height());
             this.$el.append($item);
@@ -54,7 +54,7 @@ export class SimpleListItemView extends ListItemView {
 
     /** template に設定する JSON オブジェクトを作成 */
     private makeTemplateParam(): object {
-        const index = this._index ?? this.getIndex();
+        const index = this._index ?? this.index;
         return {
             devId: this._devId,
             index: String(index).padStart(3, '0'),
