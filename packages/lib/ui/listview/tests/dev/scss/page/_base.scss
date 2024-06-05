@@ -46,4 +46,8 @@ button {
         visibility: hidden;
         pointer-events: none;
     }
+
+    button.header-button {
+        margin-right: 20px;
+    }
 }

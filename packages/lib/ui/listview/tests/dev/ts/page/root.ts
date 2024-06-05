@@ -16,6 +16,7 @@ const template = (): TemplateResult => {
         <h3>${t(i18nKey.app.pageRoot.category.class)}</h3>
         <ul>
             <li><a href="/simple-list-class">${t(i18nKey.app.pageRoot.navigateTo.simpleListClass)}</a></li>
+            <li><a href="/expand-list-class">${t(i18nKey.app.pageRoot.navigateTo.expandListClass)}</a></li>
         </ul>
     `;
 };

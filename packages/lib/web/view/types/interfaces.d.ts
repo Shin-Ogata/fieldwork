@@ -10,7 +10,7 @@ export type ViewEventsHash<TElement extends Node = HTMLElement, TFuncName = stri
  * @ja {@link View} 構築に指定するオプション
  */
 export interface ViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string> {
-    el?: DOMSelector<TElement | string>;
+    el?: DOMSelector<TElement | string> | TElement;
     events?: ViewEventsHash<TElement, TFuncName>;
     id?: string;
     className?: string;

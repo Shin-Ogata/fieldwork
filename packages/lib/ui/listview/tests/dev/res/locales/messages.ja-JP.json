@@ -21,12 +21,21 @@
         "class": "クラスベース実装"
       },
       "navigateTo": {
-        "simpleListClass": "シンプルなリストビュー"
+        "simpleListClass": "シンプルなリストビュー",
+        "expandListClass": "開閉リストビュー"
       }
     },
     "pageSimpleListClass": {
       "title": "シンプルなリストビュー実装例",
       "description": "例: element の overflow を用いた実装"
+    },
+    "pageExpandListClass": {
+      "title": "開閉可能なリストビュー実装例",
+      "description": "要素をクリックして開閉",
+      "control": {
+        "expandAll": "すべて展開",
+        "collapseAll": "すべて収束"
+      }
     },
     "pageSettings": {
       "title": "アプリケーション設定",

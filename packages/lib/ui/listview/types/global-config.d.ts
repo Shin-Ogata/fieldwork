@@ -4,8 +4,6 @@
  */
 export interface ListViewGlobalConfig {
     NAMESPACE: string;
-    WRAPPER_CLASS: string;
-    WRAPPER_SELECTOR: string;
     SCROLL_MAP_CLASS: string;
     SCROLL_MAP_SELECTOR: string;
     INACTIVE_CLASS: string;

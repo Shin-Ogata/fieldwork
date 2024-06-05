@@ -96,7 +96,7 @@ export interface GenerateImageItemsOptions extends Cancelable {
     /** 進捗単位 */
     unit?: number;
     /** プロパティコールバック */
-    callback?: (item: ImageItemInfo | ImageItemInfo[], index: number) => void;
+    callback?: (item: ImageItemInfo | ImageItemInfo[], index: number) => void | Promise<void>;
     /** プロパティコールバックの発火条件 [default: both] */
     callbackType?: 'item' | 'unit' | 'both';
 }
@@ -134,15 +134,50 @@ export const generateImageItems = async (num: number, options?: GenerateImageIte
 
         for (let i = 0; i < size; i++) {
             const item = await createImageItem();
-            fireItem && callback(item, index);
+            fireItem && await callback(item, index);
             index++;
             itemsUnit.push(item);
             itemsAll.push(item);
         }
 
-        fireUnit && callback(itemsUnit, unitIndex);
+        fireUnit && await callback(itemsUnit, unitIndex);
         unitIndex++;
     }
 
     return itemsAll;
+};
+
+/**
+ * グループ化した ImageItemInfo のインターフェイス
+ */
+export interface ImageItemInfoGroup {
+    preview: ImageItemInfo[];  // 1 - 5
+    extra: ImageItemInfo[];   // 0 - 40
+}
+
+/**
+ * 指定した数だけ ImageItemInfo を生成
+ *
+ * @param previewNum preview 生成数の基準値
+ * @param extraNum   extra 生成数の最大値
+ * @param unit       preview と extra に振り分ける基準値
+ * @returns ImageItemInfo[]
+ */
+export const generateImageItemGroupList = async (previewNum: number, extraNum: number, unit: number, options?: Cancelable): Promise<ImageItemInfoGroup[]> => {
+    const group: ImageItemInfoGroup[] = [];
+    let groupCount = Math.floor(Math.random() * (previewNum - 1)) + 1;
+
+    while (0 < groupCount) {
+        await cc(options?.cancel);
+        groupCount--;
+        const imageCount = Math.floor(Math.random() * (extraNum - 1)) + 1;
+        const images = await generateImageItems(imageCount, options);
+        const groupInfo: ImageItemInfoGroup = {
+            preview: images.slice(0, unit),
+            extra: images.slice(unit),
+        };
+        group.push(groupInfo);
+    }
+
+    return group;
 };

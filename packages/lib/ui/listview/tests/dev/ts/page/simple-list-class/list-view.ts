@@ -14,7 +14,7 @@ import { Toast } from '../../utils';
 import { type ImageItemInfo, generateImageItems } from '../../model/image-item';
 import { SimpleListItemView } from './item-view';
 
-export interface SimpleListItemViewConstructionOptions extends ListViewConstructOptions {
+export interface SimpleListViewConstructionOptions extends ListViewConstructOptions {
     itemNum?: number;
     itemHeight?: number;
 }
@@ -23,7 +23,7 @@ export class SimpleListView extends ListView {
 
     private _abort?: (reason: Result) => void;
 
-    constructor(options?: SimpleListItemViewConstructionOptions) {
+    constructor(options?: SimpleListViewConstructionOptions) {
         const opts = Object.assign({ itemNum: 1000, itemHeight: 100 }, options);
         super(opts);
         void this.fetch(opts.itemNum, opts.itemHeight);
@@ -31,14 +31,6 @@ export class SimpleListView extends ListView {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: ListView
-
-    override events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<SimpleListView>> {
-        /* eslint-disable @typescript-eslint/unbound-method */
-        return {
-            'click .simple-listitem': this.onContentSelected,
-        };
-        /* eslint-enable @typescript-eslint/unbound-method */
-    }
 
     render(): this {
         return this.update();
@@ -48,6 +40,25 @@ export class SimpleListView extends ListView {
         this._abort?.(makeCanceledResult('list removed'));
         this._abort = undefined;
         return super.remove();
+    }
+
+///////////////////////////////////////////////////////////////////////
+// implements: ListView event handler
+
+    override events(): ViewEventsHash<HTMLElement, FunctionPropertyNames<SimpleListView>> {
+        /* eslint-disable @typescript-eslint/unbound-method */
+        return {
+            'click .simple-listitem': this.onContentSelected,
+        };
+        /* eslint-enable @typescript-eslint/unbound-method */
+    }
+
+    private onContentSelected(ev: UIEvent): void {
+        const devId = $(ev.target as HTMLElement).data('dev-id');
+        const devIndex = $(ev.target as HTMLElement).data('dev-index');
+        if (isString(devId) && null != devIndex) {
+            void Toast.show(`[${devIndex as number | string}] ${devId}`);
+        }
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -70,13 +81,5 @@ export class SimpleListView extends ListView {
 
         await generateImageItems(itemNum, { cancel: token, callback: progress, callbackType: 'unit' });
         void Toast.show(t(i18nKey.app.common.message.listview.loadComplete));
-    }
-
-    private onContentSelected(ev: UIEvent): void {
-        const devId = $(ev.target as HTMLElement).data('dev-id');
-        const devIndex = $(ev.target as HTMLElement).data('dev-index');
-        if (isString(devId) && isString(devIndex)) {
-            void Toast.show(`[${devIndex}] ${devId}`);
-        }
     }
 }
