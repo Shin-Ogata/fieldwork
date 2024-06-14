@@ -68,15 +68,11 @@ class ExpandListPageView extends PageView {
 // event handlers:
 
     private onExpandAll(): void {
-        if (this._listview) {
-            void this._listview.expandAll();
-        }
+        void this._listview?.expandAll();
     }
 
     private onCollapseAll(): void {
-        if (this._listview) {
-            void this._listview.collapseAll();
-        }
+        void this._listview?.collapseAll();
     }
 }
 

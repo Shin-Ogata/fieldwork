@@ -1,4 +1,5 @@
-import type { IExpandableListView } from './interfaces';
+import type { UnknownObject } from '@cdp/runtime';
+import type { IExpandableListView, IExpandOperation } from './interfaces';
 import type { GroupProfile } from './profile';
 import { type ListViewConstructOptions, ListView } from './list-view';
 /**
@@ -8,6 +9,8 @@ import { type ListViewConstructOptions, ListView } from './list-view';
 export declare abstract class ExpandableListView<TElement extends Node = HTMLElement, TEvent extends object = object> extends ListView<TElement, TEvent> implements IExpandableListView {
     /** constructor */
     constructor(options?: ListViewConstructOptions<TElement>);
+    /** context accessor */
+    get expandContext(): IExpandOperation;
     /**
      * @en Create a new {@link GroupProfile}. Return the object if it is already registered.
      * @ja 新規 {@link GroupProfile} を作成. 登録済みの場合はそのオブジェクトを返却
@@ -154,4 +157,49 @@ export declare abstract class ExpandableListView<TElement extends Node = HTMLEle
      *  - `ja` true: 成功 / false: 失敗
      */
     restore(key: string, rebuild?: boolean): boolean;
+    /**
+     * @en Check whether backup data exists.
+     * @ja バックアップデータの有無を確認
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: exists / false: not exists
+     *  - `ja` true: 有 / false: 無
+     */
+    hasBackup(key: string): boolean;
+    /**
+     * @en Discard backup data.
+     * @ja バックアップデータの破棄
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: discard existing data / false: specified data does not exist
+     *  - `ja` true: 存在したデータを破棄 / false: 指定されたデータは存在しない
+     */
+    clearBackup(key?: string): boolean;
+    /**
+     * @en Access backup data.
+     * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     */
+    getBackupData(key: string): UnknownObject | undefined;
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean;
 }

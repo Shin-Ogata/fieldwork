@@ -71,7 +71,7 @@ export interface ListScrollerFactory {
      * @en Factory function.
      * @ja ファクトリ関数
      */
-    (element: DOMSelector, options: ListContextOptions): IListScroller;
+    (target: DOMSelector, map: DOMSelector, options: ListContextOptions): IListScroller;
     /**
      * @en {@link IListScroller} identifier.
      * @ja {@link IListScroller} の識別子
@@ -281,13 +281,18 @@ export interface ListEnsureVisibleOptions {
      * @en Called when the animation stops. (pseudo)
      * @ja アニメーション終了のタイミングでコールされる (疑似的)
      */
-    callback?: () => void;
+    callback?: (newPos: number) => void;
 }
 /**
  * @en Interface definition for list scrollable area.
  * @ja リストのスクロール可能領域のインターフェイス定義
  */
 export interface IListScrollable {
+    /**
+     * @en Get type information for {@link IListScroller}.
+     * @ja {@link IListScroller} の型情報を取得
+     */
+    readonly scrollerType?: string;
     /**
     * @en Get scroll position.
     * @ja スクロール位置を取得
@@ -409,8 +414,24 @@ export interface IListBackupRestore {
     /**
      * @en Access backup data.
      * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
      */
-    readonly backupData: UnknownObject;
+    getBackupData(key: string): UnknownObject | undefined;
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean;
 }
 /**
  * @en List state management interface.
@@ -469,12 +490,6 @@ export interface IListStatusManager {
      *  - `ja` `true`: 状態内 / `false`: 状態外
      */
     isStatusIn(status: string): boolean;
-}
-/**
- * @en Interface that provides layout information accessors. (for internal use)
- * @ja レイアウト情報アクセッサを提供するインターフェイス (内部用)
- */
-export interface IListLayoutKeyHolder {
 }
 /**
  * @en Options to pass to {@link IListItemView}`.updateHeight()`.
@@ -547,7 +562,7 @@ export interface IListOperation {
      *  - `en` true: initialized / false: uninitialized
      *  - `ja` true: 初期化済み / false: 未初期化
      */
-    isInitialized(): boolean;
+    readonly isInitialized: boolean;
     /**
      * @en Item registration.
      * @ja item 登録
@@ -627,7 +642,7 @@ export interface IListOperation {
  * @en Expandable list context interface definition.
  * @ja 開閉リストのコンテキストインターフェイス定義
  */
-export type IExpandableListContext = IListContextHolder & IListScrollable & IListBackupRestore & IListStatusManager & IListLayoutKeyHolder & IListOperation;
+export type IExpandableListContext = IListContextHolder & IListScrollable & IListBackupRestore & IListStatusManager & IListOperation;
 /**
  * @en UI structure information storage class for group management of list items. <br>
  *     This class does not directly manipulate the DOM.
@@ -698,11 +713,8 @@ export declare class GroupProfile {
      * @param info
      *  - `en` init parameters for {@link IListItemView}'s subclass
      *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      */
-    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, layoutKey?: string): GroupProfile;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject): GroupProfile;
     /**
      * @en Add {@link GroupProfile} as child element.
      * @ja 子要素として {@link GroupProfile} を追加
@@ -711,31 +723,14 @@ export declare class GroupProfile {
      */
     addChildren(target: GroupProfile | GroupProfile[]): this;
     /**
-     * @en Determine if it has a child {@link GroupProfile}. <br>
-     *     If `layoutKey` is specified, whether the layout information matches is also added to the judgment condition.
-     * @ja 子 {@link GroupProfile} を持っているか判定 <br>
-     *     `layoutKey` が指定されれば、layout 情報が一致しているかも判定条件に加える
+     * @en Determine if it has a child {@link GroupProfile}.
+     * @ja 子 {@link GroupProfile} を持っているか判定
      *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      * @returns
      *  - `en` true: exists, false: unexists
      *  - `ja` true: 有, false: 無
      */
-    hasChildren(layoutKey?: string): boolean;
-    /**
-     * @en Determine if the specified `layoutKey` exists.
-     * @ja 指定された `layoutKey` が存在するか判定
-     *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
-     * @returns
-     *  - `en` true: exists, false: unexists
-     *  - `ja` true: 有, false: 無
-     */
-    hasLayoutKeyOf(layoutKey: string): boolean;
+    get hasChildren(): boolean;
     /**
      * @en Group expansion.
      * @ja グループ展開
@@ -865,21 +860,18 @@ export type IExpandableListView = IListView & IExpandableListContext & IExpandOp
 export interface ListViewGlobalConfig {
     NAMESPACE: string;
     SCROLL_MAP_CLASS: string;
-    SCROLL_MAP_SELECTOR: string;
     INACTIVE_CLASS: string;
-    INACTIVE_CLASS_SELECTOR: string;
     RECYCLE_CLASS: string;
-    RECYCLE_CLASS_SELECTOR: string;
     LISTITEM_BASE_CLASS: string;
-    LISTITEM_BASE_CLASS_SELECTOR: string;
     DATA_PAGE_INDEX: string;
     DATA_ITEM_INDEX: string;
 }
+export type ListViewGlobalConfigArg = Partial<Pick<ListViewGlobalConfig, 'NAMESPACE' | 'SCROLL_MAP_CLASS' | 'INACTIVE_CLASS' | 'RECYCLE_CLASS' | 'LISTITEM_BASE_CLASS' | 'DATA_PAGE_INDEX' | 'DATA_ITEM_INDEX'>>;
 /**
  * @en Get/Update global configuration of list view.
  * @ja リストビューのグローバルコンフィグレーションの取得/更新
  */
-export declare const ListViewGlobalConfig: (newConfig?: Partial<ListViewGlobalConfig>) => ListViewGlobalConfig;
+export declare const ListViewGlobalConfig: (newConfig?: ListViewGlobalConfigArg) => ListViewGlobalConfig;
 /**
  * @en A class that stores UI structure information for list items.
  * @ja リストアイテムの UI 構造情報を格納するクラス
@@ -905,11 +897,11 @@ export declare class ItemProfile {
     /** Get the item's height. */
     get height(): number;
     /** Get the item's global index. */
-    get index(): number;
+    get index(): number | undefined;
     /** Set the item's global index. */
     set index(index: number);
     /** Get belonging the page index. */
-    get pageIndex(): number;
+    get pageIndex(): number | undefined;
     /** Set belonging the page index. */
     set pageIndex(index: number);
     /** Get global offset. */
@@ -1018,7 +1010,6 @@ export declare class PageProfile {
  */
 export interface ListItemViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string> extends ViewConstructionOptions<TElement, TFuncName> {
     owner: IListView;
-    $el?: DOM<TElement>;
     item: ItemProfile;
 }
 /**
@@ -1037,7 +1028,7 @@ export declare abstract class ListItemView<TElement extends Node = HTMLElement, 
      */
     remove(): this;
     /**
-     * @en Get own item index.
+     * @en Get own item index
      * @ja 自身の item インデックスを取得
      */
     get index(): number;
@@ -1069,7 +1060,6 @@ export declare abstract class ListItemView<TElement extends Node = HTMLElement, 
  * @ja {@link ListView} の初期化情報を格納するインターフェイスクラス
  */
 export interface ListViewConstructOptions<TElement extends Node = HTMLElement, TFuncName = string> extends ListContextOptions, ViewConstructionOptions<TElement, TFuncName> {
-    $el?: DOM<TElement>;
     initialHeight?: number;
 }
 /**
@@ -1081,6 +1071,8 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
     constructor(options?: ListViewConstructOptions<TElement>);
     /** context accessor */
     get context(): IListContext;
+    /** construct option accessor */
+    get options(): ListViewConstructOptions<TElement>;
     /** `this.el` 更新時の新しい HTML をレンダリングロジックの実装関数. モデル更新と View テンプレートを連動させる. */
     abstract render(...args: unknown[]): any;
     /**
@@ -1107,7 +1099,7 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
      *  - `en` true: initialized / false: uninitialized
      *  - `ja` true: 初期化済み / false: 未初期化
      */
-    isInitialized(): boolean;
+    get isInitialized(): boolean;
     /**
      * @en Item registration.
      * @ja item 登録
@@ -1270,7 +1262,7 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
      *  - `en` true: success / false: failure
      *  - `ja` true: 成功 / false: 失敗
      */
-    restore(key: string, rebuild: boolean): boolean;
+    restore(key: string, rebuild?: boolean): boolean;
     /**
      * @en Check whether backup data exists.
      * @ja バックアップデータの有無を確認
@@ -1298,8 +1290,24 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
     /**
      * @en Access backup data.
      * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
      */
-    get backupData(): UnknownObject;
+    getBackupData(key: string): UnknownObject | undefined;
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean;
 }
 /**
  * @en Options to pass to {@link ExpandableListItemView} construction.
@@ -1342,19 +1350,14 @@ export declare abstract class ExpandableListItemView<TElement extends Node = HTM
      */
     protected get isSwitching(): boolean;
     /**
-     * @en Determine if it has a child {@link GroupProfile}. <br>
-     *     If `layoutKey` is specified, whether the layout information matches is also added to the judgment condition.
-     * @ja 子 {@link GroupProfile} を持っているか判定 <br>
-     *     `layoutKey` が指定されれば、layout 情報が一致しているかも判定条件に加える
+     * @en Determine if it has a child {@link GroupProfile}.
+     * @ja 子 {@link GroupProfile} を持っているか判定
      *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      * @returns
      *  - `en` true: exists, false: unexists
      *  - `ja` true: 有, false: 無
      */
-    protected hasChildren(layoutKey?: string): boolean;
+    protected get hasChildren(): boolean;
 }
 /**
  * @en Virtual list view class with expanding / collapsing functionality.
@@ -1363,6 +1366,8 @@ export declare abstract class ExpandableListItemView<TElement extends Node = HTM
 export declare abstract class ExpandableListView<TElement extends Node = HTMLElement, TEvent extends object = object> extends ListView<TElement, TEvent> implements IExpandableListView {
     /** constructor */
     constructor(options?: ListViewConstructOptions<TElement>);
+    /** context accessor */
+    get expandContext(): IExpandOperation;
     /**
      * @en Create a new {@link GroupProfile}. Return the object if it is already registered.
      * @ja 新規 {@link GroupProfile} を作成. 登録済みの場合はそのオブジェクトを返却
@@ -1509,6 +1514,50 @@ export declare abstract class ExpandableListView<TElement extends Node = HTMLEle
      *  - `ja` true: 成功 / false: 失敗
      */
     restore(key: string, rebuild?: boolean): boolean;
+    /**
+     * @en Check whether backup data exists.
+     * @ja バックアップデータの有無を確認
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: exists / false: not exists
+     *  - `ja` true: 有 / false: 無
+     */
+    hasBackup(key: string): boolean;
+    /**
+     * @en Discard backup data.
+     * @ja バックアップデータの破棄
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: discard existing data / false: specified data does not exist
+     *  - `ja` true: 存在したデータを破棄 / false: 指定されたデータは存在しない
+     */
+    clearBackup(key?: string): boolean;
+    /**
+     * @en Access backup data.
+     * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     */
+    getBackupData(key: string): UnknownObject | undefined;
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean;
 }
-export declare const UI_LISTVIEW_STATUS = 'UNDER CONSTRUCTION';
 import './result-code-defs';

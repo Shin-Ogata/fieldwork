@@ -14,7 +14,7 @@ export interface ListScrollerFactory {
      * @en Factory function.
      * @ja ファクトリ関数
      */
-    (element: DOMSelector, options: ListContextOptions): IListScroller;
+    (target: DOMSelector, map: DOMSelector, options: ListContextOptions): IListScroller;
 
     /**
      * @en {@link IListScroller} identifier.
@@ -260,7 +260,7 @@ export interface ListEnsureVisibleOptions {
      * @en Called when the animation stops. (pseudo)
      * @ja アニメーション終了のタイミングでコールされる (疑似的)
      */
-    callback?: () => void;
+    callback?: (newPos: number) => void;
 }
 
 /**
@@ -268,6 +268,12 @@ export interface ListEnsureVisibleOptions {
  * @ja リストのスクロール可能領域のインターフェイス定義
  */
 export interface IListScrollable {
+    /**
+     * @en Get type information for {@link IListScroller}.
+     * @ja {@link IListScroller} の型情報を取得
+     */
+    readonly scrollerType?: string;
+
      /**
      * @en Get scroll position.
      * @ja スクロール位置を取得
@@ -401,8 +407,25 @@ export interface IListBackupRestore {
     /**
      * @en Access backup data.
      * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
      */
-    readonly backupData: UnknownObject;
+    getBackupData(key: string): UnknownObject | undefined;
+
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean;
 }
 
 //__________________________________________________________________________________________________//
@@ -467,19 +490,4 @@ export interface IListStatusManager {
      *  - `ja` `true`: 状態内 / `false`: 状態外
      */
     isStatusIn(status: string): boolean;
-}
-
-//__________________________________________________________________________________________________//
-
-/**
- * @en Interface that provides layout information accessors. (for internal use)
- * @ja レイアウト情報アクセッサを提供するインターフェイス (内部用)
- */
-export interface IListLayoutKeyHolder {
-    /**
-     * @internal
-     * @en Stores layout access keys for each portlate and landscape. (for internal use)
-     * @ja portlate, landscape ごとのレイアウトアクセスキーを格納 (内部用)
-     */
-    layoutKey?: string;
 }

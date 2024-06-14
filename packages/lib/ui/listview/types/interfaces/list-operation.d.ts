@@ -13,7 +13,7 @@ export interface IListOperation {
      *  - `en` true: initialized / false: uninitialized
      *  - `ja` true: 初期化済み / false: 未初期化
      */
-    isInitialized(): boolean;
+    readonly isInitialized: boolean;
     /**
      * @en Item registration.
      * @ja item 登録

@@ -1,7 +1,5 @@
 import {
     type Writable,
-    type DOM,
-    type DOMSelector,
     type ViewConstructionOptions,
     View,
 } from '@cdp/runtime';
@@ -29,7 +27,6 @@ interface Property {
 export interface ListItemViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string>
     extends ViewConstructionOptions<TElement, TFuncName> {
     owner: IListView;
-    $el?: DOM<TElement>;
     item: ItemProfile;
 }
 
@@ -47,15 +44,11 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
     constructor(options: ListItemViewConstructionOptions<TElement>) {
         super(options);
 
-        const { owner, $el, item } = options;
+        const { owner, item } = options;
         (this[_properties] as Writable<Property>) = {
             owner,
             item,
         } as Property;
-
-        if ($el) {
-            this.setElement($el as DOMSelector<TElement>);
-        }
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -87,11 +80,11 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
 // implements: IListItemView
 
     /**
-     * @en Get own item index.
+     * @en Get own item index
      * @ja 自身の item インデックスを取得
      */
     get index(): number {
-        return this[_properties].item.index;
+        return this[_properties].item.index!;
     }
 
     /**

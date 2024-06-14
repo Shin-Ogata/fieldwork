@@ -33,7 +33,6 @@ interface Property {
  */
 export interface ListViewConstructOptions<TElement extends Node = HTMLElement, TFuncName = string>
     extends ListContextOptions, ViewConstructionOptions<TElement, TFuncName> {
-    $el?: DOM<TElement>;
     initialHeight?: number;
 }
 
@@ -51,20 +50,21 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
     constructor(options?: ListViewConstructOptions<TElement>) {
         super(options);
 
-        const opt = options ?? {};
         (this[_properties] as Writable<Property>) = {
-            context: new ListCore(opt),
+            context: new ListCore(options),
         } as Property;
 
-        this.setElement((opt.$el ?? this.$el) as DOMSelector<TElement>);
-        if (opt.initialHeight) {
-            this[_properties].context.setBaseHeight(opt.initialHeight);
-        }
+        this.setElement(this.$el as DOMSelector<TElement>);
     }
 
     /** context accessor */
     get context(): IListContext {
         return this[_properties].context;
+    }
+
+    /** construct option accessor */
+    get options(): ListViewConstructOptions<TElement> {
+        return this.context.options;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
             const { context } = this[_properties];
             const $el = $(el);
             context.destroy();
-            context.initialize($el as DOM<Node> as DOM, $el.height());
+            context.initialize($el as DOM<Node> as DOM, this.options.initialHeight ?? $el.height());
         }
         return super.setElement(el);
     }
@@ -113,8 +113,8 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
      *  - `en` true: initialized / false: uninitialized
      *  - `ja` true: 初期化済み / false: 未初期化
      */
-    isInitialized(): boolean {
-        return this[_properties].context.isInitialized();
+    get isInitialized(): boolean {
+        return this[_properties].context.isInitialized;
     }
 
     /**
@@ -350,7 +350,7 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
      *  - `en` true: success / false: failure
      *  - `ja` true: 成功 / false: 失敗
      */
-    restore(key: string, rebuild: boolean): boolean {
+    restore(key: string, rebuild = true): boolean {
         return this[_properties].context.restore(key, rebuild);
     }
 
@@ -387,8 +387,28 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
     /**
      * @en Access backup data.
      * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
      */
-    get backupData(): UnknownObject {
-        return this[_properties].context.backupData;
+    getBackupData(key: string): UnknownObject | undefined {
+        return this[_properties].context.getBackupData(key);
+    }
+
+
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean {
+        return this[_properties].context.setBackupData(key, data as { items: ItemProfile[]; });
     }
 }

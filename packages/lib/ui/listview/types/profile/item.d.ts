@@ -26,11 +26,11 @@ export declare class ItemProfile {
     /** Get the item's height. */
     get height(): number;
     /** Get the item's global index. */
-    get index(): number;
+    get index(): number | undefined;
     /** Set the item's global index. */
     set index(index: number);
     /** Get belonging the page index. */
-    get pageIndex(): number;
+    get pageIndex(): number | undefined;
     /** Set belonging the page index. */
     set pageIndex(index: number);
     /** Get global offset. */

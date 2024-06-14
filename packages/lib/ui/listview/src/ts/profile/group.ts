@@ -9,10 +9,6 @@ import type { IListItemViewConstructor } from '../interfaces/list-item-view';
 import type { IExpandableListContext } from '../interfaces/expandable-context';
 import { ItemProfile } from './item';
 
-const enum LayoutKey {
-    DEFAULT = 'layout-default',
-}
-
 /**
  * @en UI structure information storage class for group management of list items. <br>
  *     This class does not directly manipulate the DOM.
@@ -33,7 +29,7 @@ export class GroupProfile {
     /** @internal registration status for _owner */
     private _status: 'registered' | 'unregistered' = 'unregistered';
     /** @internal stored {@link ItemProfile} information */
-    private readonly _mapItems: Record<string, ItemProfile[]> = {};
+    private readonly _items: ItemProfile[] = [];
 
     /**
      * constructor
@@ -48,7 +44,6 @@ export class GroupProfile {
     constructor(owner: IExpandableListContext, id: string) {
         this._id    = id;
         this._owner = owner;
-        this._mapItems[LayoutKey.DEFAULT] = [];
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -134,31 +129,21 @@ export class GroupProfile {
      * @param info
      *  - `en` init parameters for {@link IListItemView}'s subclass
      *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      */
     public addItem(
         height: number,
         initializer: IListItemViewConstructor,
         info: UnknownObject,
-        layoutKey?: string,
     ): GroupProfile {
-        layoutKey = layoutKey ?? LayoutKey.DEFAULT;
-        const options = Object.assign({ groupProfile: this }, info);
-
-        if (null == this._mapItems[layoutKey]) {
-            this._mapItems[layoutKey] = [];
-        }
-
+        const options = Object.assign({ group: this }, info);
         const item = new ItemProfile(this._owner.context, Math.trunc(height), initializer, options);
 
         // _owner の管理下にあるときは速やかに追加
-        if (('registered' === this._status) && (null == this._owner.layoutKey || layoutKey === this._owner.layoutKey)) {
+        if ('registered' === this._status) {
             this._owner._addItem(item, this.getNextItemIndex());
             this._owner.update();
         }
-        this._mapItems[layoutKey].push(item);
+        this._items.push(item);
 
         return this;
     }
@@ -179,41 +164,15 @@ export class GroupProfile {
     }
 
     /**
-     * @en Determine if it has a child {@link GroupProfile}. <br>
-     *     If `layoutKey` is specified, whether the layout information matches is also added to the judgment condition.
-     * @ja 子 {@link GroupProfile} を持っているか判定 <br>
-     *     `layoutKey` が指定されれば、layout 情報が一致しているかも判定条件に加える
+     * @en Determine if it has a child {@link GroupProfile}.
+     * @ja 子 {@link GroupProfile} を持っているか判定
      *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      * @returns
      *  - `en` true: exists, false: unexists
      *  - `ja` true: 有, false: 無
      */
-    public hasChildren(layoutKey?: string): boolean {
-        if (this._children.length <= 0) {
-            return false;
-        } else if (null != layoutKey) {
-            return this._children.some(child => child.hasLayoutKeyOf(layoutKey));
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * @en Determine if the specified `layoutKey` exists.
-     * @ja 指定された `layoutKey` が存在するか判定
-     *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
-     * @returns
-     *  - `en` true: exists, false: unexists
-     *  - `ja` true: 有, false: 無
-     */
-    public hasLayoutKeyOf(layoutKey: string): boolean {
-        return (null != this._mapItems[layoutKey]);
+    get hasChildren(): boolean {
+        return !!this._children.length;
     }
 
     /**
@@ -258,7 +217,7 @@ export class GroupProfile {
                         item.refresh();
                     }
                     // 配下を更新
-                    this._owner.removeItem(items[0].index, items.length, delay);
+                    items[0].index && this._owner.removeItem(items[0].index, items.length, delay);
                     this._owner.update();
                 });
             }
@@ -277,9 +236,9 @@ export class GroupProfile {
      */
     async ensureVisible(options?: ListEnsureVisibleOptions): Promise<void> {
         if (0 < this._items.length) {
-            await this._owner.ensureVisible(this._items[0].index, options);
+            (null != this._items[0].index) && await this._owner.ensureVisible(this._items[0].index, options);
         } else {
-            options?.callback?.();
+            options?.callback?.(this._owner.scrollPos);
         }
     }
 
@@ -339,16 +298,6 @@ export class GroupProfile {
 
 ///////////////////////////////////////////////////////////////////////
 // internal:
-
-    /** @internal 自身の管理するアクティブな LineProfie を取得 */
-    private get _items(): ItemProfile[] {
-        const key = this._owner.layoutKey;
-        if (null != key) {
-            return this._mapItems[key];
-        } else {
-            return this._mapItems[LayoutKey.DEFAULT];
-        }
-    }
 
     /** @internal 親 Group 指定 */
     private setParent(parent: GroupProfile): void {
