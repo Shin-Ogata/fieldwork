@@ -7,24 +7,30 @@ import {
 } from '@cdp/runtime';
 import { type ExpandableListItemViewConstructionOptions, ExpandableListItemView } from '@cdp/ui-listview';
 
-export interface GroupViewChildPreviewConstructionOptions extends ExpandableListItemViewConstructionOptions {
+export interface TestExpandItemViewConstructionOptions extends ExpandableListItemViewConstructionOptions {
     devId: string;
     devIndex: string;
 }
 
-/** リストビュープレビュー子要素 */
-export class GroupViewChildPreview extends ExpandableListItemView {
+export class TestExpandItemView extends ExpandableListItemView {
 
     private _template: CompiledTemplate;
     private _devId: string;
     private _devIndex: string;
 
-    constructor(options: GroupViewChildPreviewConstructionOptions) {
+    constructor(options: TestExpandItemViewConstructionOptions) {
         super(options);
         this._template = TemplateBridge.compile(this.template);
         this._devId = options.devId;
         this._devIndex = options.devIndex;
         this.render();
+    }
+
+///////////////////////////////////////////////////////////////////////
+// test method
+
+    is(method: 'Expanded' | 'Expanding' | 'Collapsing' | 'Switching'): boolean {
+        return this[`is${method}`];
     }
 
 ///////////////////////////////////////////////////////////////////////

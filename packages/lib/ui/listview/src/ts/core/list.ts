@@ -40,7 +40,7 @@ const _defaultOpts: Required<ListContextOptions> = {
     enableAnimation: true,
     animationDuration: 0,
     baseDepth: 'auto',
-    itemTagName: 'li',  // TODO: 見極め
+    itemTagName: 'div',
     removeItemWithTransition: true,
     useDummyInactiveScrollMap: false,
 };
@@ -53,6 +53,26 @@ function verify<T>(x: T | undefined): asserts x is T {
     if (null == x) {
         throw makeResult(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_INITIALIZATION);
     }
+}
+
+/** overflow-y を保証 */
+function ensureOverflowY($el: DOM): DOM {
+    const overflowY = $el.css('overflow-y');
+    if ('hidden' === overflowY || 'visible' === overflowY) {
+        $el.css('overflow-y', 'auto');
+    }
+    return $el;
+}
+
+/** scroll-map element を保証 */
+function ensureScrollMap($root: DOM, mapClass: string): DOM {
+    let $map = $root.find(`.${mapClass}`);
+    // $map が無い場合は作成する
+    if ($map.length <= 0) {
+        $map = $(`<div class="${mapClass}"></div>`);
+        $root.append($map);
+    }
+    return $map;
 }
 
 /** @internal アイテム削除情報 */
@@ -99,7 +119,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         pos: 0,    // scroll position
     };
 
-    /** データの backup 領域. key と _lines を格納 */
+    /** データの backup 領域. key と _items を格納 */
     private readonly _backup: Record<string, { items: ItemProfile[]; }> = {};
 
     /** constructor */
@@ -125,16 +145,8 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
             this.destroy();
         }
 
-        this._$root = $root;
-        this._$map = $root.hasClass(this._config.SCROLL_MAP_CLASS) ? $root : $root.find(this._config.SCROLL_MAP_SELECTOR);
-        // _$map が無い場合は初期化しない
-        if (this._$map.length <= 0) {
-            this.destroy();
-            throw makeResult(
-                RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM,
-                `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} [${this._config.SCROLL_MAP_CLASS} not found]`
-            );
-        }
+        this._$root = ensureOverflowY($root);
+        this._$map  = ensureScrollMap(this._$root, this._config.SCROLL_MAP_CLASS);
 
         this._scroller = this.createScroller();
         this.setBaseHeight(height);
@@ -171,11 +183,6 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
     /** active 状態判定 */
     get active(): boolean {
         return this._active;
-    }
-
-    /** scroller の種類を取得 */
-    get scrollerType(): string {
-        return this._settings.scrollerFactory.type;
     }
 
     /** スクロール位置の保存/復元 */
@@ -240,7 +247,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         for (let i = from, n = _items.length; i < n; i++) {
             if (0 < i) {
                 const last = _items[i - 1];
-                _items[i].index = last.index + 1;
+                _items[i].index = last.index! + 1;
                 _items[i].offset = last.offset + last.height;
             } else {
                 _items[i].index = 0;
@@ -251,14 +258,14 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
 
     /** get recyclable element */
     findRecycleElements(): DOM {
-        return this._$map.find(this._config.RECYCLE_CLASS_SELECTOR);
+        return this._$map.find(`.${this._config.RECYCLE_CLASS}`);
     }
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IListView
 
     /** 初期化済みか判定 */
-    isInitialized(): boolean {
+    get isInitialized(): boolean {
         return !!this._scroller;
     }
 
@@ -393,11 +400,11 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         delay = delay ?? 0;
         indexes.sort((lhs, rhs) => rhs - lhs); // 降順ソート
 
-        for (let i = 0, n = indexes.length; i < n; i++) {
-            if (i < 0 || this._items.length < i) {
+        for (const index of indexes) {
+            if (index < 0 || this._items.length < index) {
                 throw makeResult(
                     RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM,
-                    `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} [removeItem(), invalid index: ${i}]`
+                    `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} [removeItem(), invalid index: ${index}]`
                 );
             }
         }
@@ -456,7 +463,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         } else if (index < 0 || _items.length <= index) {
             throw makeResult(
                 RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM,
-                `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} getItemInfo() [invalid index: ${typeof index}]`
+                `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} getItemInfo() [invalid index: ${index}]`
             );
         }
 
@@ -540,7 +547,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         // 優先 page の activate
         for (const idx of highPriorityIndex.sort((lhs, rhs) => lhs - rhs)) { // 昇順ソート
             void post(() => {
-                this.isInitialized() && _pages[idx]?.activate();
+                this.isInitialized && _pages[idx]?.activate();
             });
         }
 
@@ -549,7 +556,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
             const index = Number(key);
             const action = targets[index];
             void post(() => {
-                this.isInitialized() && _pages[index]?.[action]?.();
+                this.isInitialized && _pages[index]?.[action]?.();
             });
         }
 
@@ -557,8 +564,8 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         this.findRecycleElements().remove();
 
         const pageCurrent = _pages[currentPageIndex];
-        _lastActivePageContext.from  = pageCurrent.getItemFirst()?.index ?? 0;
-        _lastActivePageContext.to    = pageCurrent.getItemLast()?.index ?? 0;
+        _lastActivePageContext.from  = pageCurrent?.getItemFirst()?.index ?? 0;
+        _lastActivePageContext.to    = pageCurrent?.getItemLast()?.index ?? 0;
         _lastActivePageContext.index = currentPageIndex;
 
         return this;
@@ -566,7 +573,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
 
     /** 未アサインページを構築 */
     update(): this {
-        this.assignPage(this._pages.length);
+        this.assignPage(Math.max(this._pages.length - 1, 0));
         this.refresh();
         return this;
     }
@@ -593,6 +600,11 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IListScrollable
+
+    /** scroller の種類を取得 */
+    get scrollerType(): string | undefined {
+        return this._scroller?.type;
+    }
 
     /** スクロール位置を取得 */
     get scrollPos(): number {
@@ -622,7 +634,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
             pos = 0;
         } else if (this._scroller.posMax < pos) {
             console.warn(`invalid position, too big. [pos: ${pos}]`);
-            pos = this._scroller.pos;
+            pos = this._scroller.posMax;
         }
         // pos のみ先駆けて更新
         this._lastActivePageContext.pos = pos;
@@ -639,11 +651,11 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         if (index < 0 || _items.length <= index) {
             throw makeResult(
                 RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM,
-                `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} ensureVisible() [invalid index: ${typeof index}]`
+                `${toHelpString(RESULT_CODE.ERROR_UI_LISTVIEW_INVALID_PARAM)} ensureVisible() [invalid index: ${index}]`
             );
         }
 
-        const operation = Object.assign({
+        const { partialOK, setTop, animate, time, callback } = Object.assign({
             partialOK: true,
             setTop: false,
             animate: _settings.enableAnimation,
@@ -664,7 +676,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         };
 
         const isInScope = (): boolean => {
-            if (operation.partialOK) {
+            if (partialOK) {
                 if (targetScope.from <= currentScope.from) {
                     return currentScope.from <= targetScope.to;
                 } else {
@@ -683,24 +695,17 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         };
 
         let pos: number;
-        if (operation.setTop) {
+        if (setTop) {
             pos = targetScope.from;
         } else if (isInScope()) {
-            operation.callback();
+            callback(_scroller.pos);
             return; // noop
         } else {
             pos = detectPosition();
         }
 
-        // 補正
-        if (pos < 0) {
-            pos = 0;
-        } else if (_scroller.posMax < pos) {
-            pos = _scroller.posMax;
-        }
-
-        await this.scrollTo(pos, operation.animate, operation.time);
-        operation.callback();
+        await this.scrollTo(pos, animate, time);
+        callback(pos);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -708,9 +713,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
 
     /** 内部データのバックアップを実行 */
     backup(key: string): boolean {
-        if (null == this._backup[key]) {
-            this._backup[key] = { items: this._items };
-        }
+        this._backup[key] = { items: this._items };
         return true;
     }
 
@@ -753,8 +756,17 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
     }
 
     /** バックアップデータにアクセス */
-    get backupData(): UnknownObject {
-        return this._backup;
+    getBackupData(key: string): { items: ItemProfile[]; } | undefined {
+        return this._backup[key];
+    }
+
+    /** バックアップデータを外部より設定 */
+    setBackupData(key: string, data: { items: ItemProfile[]; }): boolean {
+        if (Array.isArray(data.items)) {
+            this._backup[key] = data;
+            return true;
+        }
+        return false;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -779,7 +791,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
 
     /** 既定の Scroller オブジェクトの作成 */
     private createScroller(): IListScroller {
-        return this._settings.scrollerFactory(this._$root[0], this._settings);
+        return this._settings.scrollerFactory(this._$root, this._$map, this._settings);
     }
 
     /** 現在の Page Index を取得 */
@@ -802,7 +814,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
             }
         })();
 
-        const validRange = (page: PageProfile): boolean => {
+        const validRange = (page: PageProfile | undefined): boolean => {
             if (null == page) {
                 return false;
             } else if (page.offset <= pos && pos <= page.offset + page.height) {
@@ -813,14 +825,14 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         };
 
         let candidate = Math.floor(pos / _baseHeight);
-        if (_pages.length <= candidate) {
+        if (0 !== candidate && _pages.length <= candidate) {
             candidate = _pages.length - 1;
         }
 
         let page = _pages[candidate];
         if (validRange(page)) {
             return page.index;
-        } else if (pos < page.offset) {
+        } else if (pos < page?.offset) {
             for (let i = candidate - 1; i >= 0; i--) {
                 page = _pages[i];
                 if (validRange(page)) {
@@ -837,7 +849,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
         }
 
         console.warn(`cannot detect page index. fallback: ${_pages.length - 1}`);
-        return _pages.length - 1;
+        return Math.max(0, _pages.length - 1);
     }
 
     /** 最後のページを取得 */
@@ -916,19 +928,19 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
     private prepareInactiveMap(): DOM {
         const { _config, _$map, _mapHeight } = this;
         const $parent = _$map.parent();
-        let $inactiveMap = $parent.find(_config.INACTIVE_CLASS_SELECTOR);
+        let $inactiveMap = $parent.find(`.${_config.INACTIVE_CLASS}`);
 
         if ($inactiveMap.length <= 0) {
             const currentPageIndex = this.getPageIndex();
             const $listItemViews = _$map.clone().children().filter((_, element: HTMLElement) => {
                 const pageIndex = Number($(element).attr(_config.DATA_PAGE_INDEX));
-                if (currentPageIndex - 1 <= pageIndex || pageIndex <= currentPageIndex + 1) {
+                if (currentPageIndex - 1 <= pageIndex && pageIndex <= currentPageIndex + 1) {
                     return true;
                 } else {
                     return false;
                 }
             });
-            $inactiveMap = $(`<section class="${_config.SCROLL_MAP_CLASS}" "${_config.INACTIVE_CLASS}"></section>`)
+            $inactiveMap = $(`<section class="${_config.SCROLL_MAP_CLASS} ${_config.INACTIVE_CLASS}"></section>`)
                 .append($listItemViews)
                 .height(_mapHeight);
             $parent.append($inactiveMap);

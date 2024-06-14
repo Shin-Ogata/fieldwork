@@ -72,11 +72,8 @@ export declare class GroupProfile {
      * @param info
      *  - `en` init parameters for {@link IListItemView}'s subclass
      *  - `ja` {@link IListItemView} のサブクラスの初期化パラメータ
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      */
-    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject, layoutKey?: string): GroupProfile;
+    addItem(height: number, initializer: IListItemViewConstructor, info: UnknownObject): GroupProfile;
     /**
      * @en Add {@link GroupProfile} as child element.
      * @ja 子要素として {@link GroupProfile} を追加
@@ -85,31 +82,14 @@ export declare class GroupProfile {
      */
     addChildren(target: GroupProfile | GroupProfile[]): this;
     /**
-     * @en Determine if it has a child {@link GroupProfile}. <br>
-     *     If `layoutKey` is specified, whether the layout information matches is also added to the judgment condition.
-     * @ja 子 {@link GroupProfile} を持っているか判定 <br>
-     *     `layoutKey` が指定されれば、layout 情報が一致しているかも判定条件に加える
+     * @en Determine if it has a child {@link GroupProfile}.
+     * @ja 子 {@link GroupProfile} を持っているか判定
      *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      * @returns
      *  - `en` true: exists, false: unexists
      *  - `ja` true: 有, false: 無
      */
-    hasChildren(layoutKey?: string): boolean;
-    /**
-     * @en Determine if the specified `layoutKey` exists.
-     * @ja 指定された `layoutKey` が存在するか判定
-     *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
-     * @returns
-     *  - `en` true: exists, false: unexists
-     *  - `ja` true: 有, false: 無
-     */
-    hasLayoutKeyOf(layoutKey: string): boolean;
+    get hasChildren(): boolean;
     /**
      * @en Group expansion.
      * @ja グループ展開

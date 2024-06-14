@@ -1,11 +1,5 @@
-import {
-    type Writable,
-    statusAddRef,
-    statusRelease,
-    statusScope,
-    isStatusIn,
-} from '@cdp/runtime';
-import type { IExpandableListView } from './interfaces';
+import type { Writable, UnknownObject } from '@cdp/runtime';
+import type { IExpandableListView, IExpandOperation } from './interfaces';
 import { ExpandCore } from './core';
 import type { GroupProfile } from './profile';
 import { type ListViewConstructOptions, ListView } from './list-view';
@@ -35,6 +29,11 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
         (this[_properties] as Writable<Property>) = {
             context: new ExpandCore(this),
         } as Property;
+    }
+
+    /** context accessor */
+    get expandContext(): IExpandOperation {
+        return this[_properties].context;
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -138,7 +137,7 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
      *  - `ja` 参照カウントの値
      */
     statusAddRef(status: string): number {
-        return statusAddRef(status);
+        return this[_properties].context.statusAddRef(status);
     }
 
     /**
@@ -153,7 +152,7 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
      *  - `ja` 参照カウントの値
      */
     statusRelease(status: string): number {
-        return statusRelease(status);
+        return this[_properties].context.statusRelease(status);
     }
 
     /**
@@ -171,7 +170,7 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
      *  - `ja` 対象の関数の戻り値
      */
     statusScope<T>(status: string, executor: () => T | Promise<T>): Promise<T> {
-        return statusScope(status, executor);
+        return this[_properties].context.statusScope(status, executor);
     }
 
     /**
@@ -187,17 +186,7 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
      *  - `ja` `true`: 状態内 / `false`: 状態外
      */
     isStatusIn(status: string): boolean {
-        return isStatusIn(status);
-    }
-
-    /** @internal layout key を取得 */
-    get layoutKey(): string | undefined {
-        return this[_properties].context.layoutKey;
-    }
-
-    /** @internal layout key を設定 */
-    set layoutKey(key: string) {
-        this[_properties].context.layoutKey = key;
+        return this[_properties].context.isStatusIn(status);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -247,5 +236,63 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
      */
     override restore(key: string, rebuild = true): boolean {
         return this[_properties].context.restore(key, rebuild);
+    }
+
+    /**
+     * @en Check whether backup data exists.
+     * @ja バックアップデータの有無を確認
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: exists / false: not exists
+     *  - `ja` true: 有 / false: 無
+     */
+    override hasBackup(key: string): boolean {
+        return this[_properties].context.hasBackup(key);
+    }
+
+    /**
+     * @en Discard backup data.
+     * @ja バックアップデータの破棄
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     * @returns
+     *  - `en` true: discard existing data / false: specified data does not exist
+     *  - `ja` true: 存在したデータを破棄 / false: 指定されたデータは存在しない
+     */
+    override clearBackup(key?: string): boolean {
+        return this[_properties].context.clearBackup(key);
+    }
+
+    /**
+     * @en Access backup data.
+     * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
+     */
+    override getBackupData(key: string): UnknownObject | undefined {
+        return this[_properties].context.getBackupData(key);
+    }
+
+
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    override setBackupData(key: string, data: UnknownObject): boolean {
+        return this[_properties].context.setBackupData(key, data as { map: Record<string, GroupProfile>; tops: GroupProfile[]; });
     }
 }

@@ -1,11 +1,10 @@
-import { type UnknownObject, type DOM, type DOMSelector, type DOMEventListener, type ViewConstructionOptions, View } from '@cdp/runtime';
+import { type UnknownObject, type DOMSelector, type DOMEventListener, type ViewConstructionOptions, View } from '@cdp/runtime';
 import type { ListContextOptions, IListContext, IListView, ListEnsureVisibleOptions, IListItemViewConstructor } from './interfaces';
 /**
  * @en Interface class that stores {@link ListView} initialization information.
  * @ja {@link ListView} の初期化情報を格納するインターフェイスクラス
  */
 export interface ListViewConstructOptions<TElement extends Node = HTMLElement, TFuncName = string> extends ListContextOptions, ViewConstructionOptions<TElement, TFuncName> {
-    $el?: DOM<TElement>;
     initialHeight?: number;
 }
 /**
@@ -17,6 +16,8 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
     constructor(options?: ListViewConstructOptions<TElement>);
     /** context accessor */
     get context(): IListContext;
+    /** construct option accessor */
+    get options(): ListViewConstructOptions<TElement>;
     /** `this.el` 更新時の新しい HTML をレンダリングロジックの実装関数. モデル更新と View テンプレートを連動させる. */
     abstract render(...args: unknown[]): any;
     /**
@@ -43,7 +44,7 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
      *  - `en` true: initialized / false: uninitialized
      *  - `ja` true: 初期化済み / false: 未初期化
      */
-    isInitialized(): boolean;
+    get isInitialized(): boolean;
     /**
      * @en Item registration.
      * @ja item 登録
@@ -206,7 +207,7 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
      *  - `en` true: success / false: failure
      *  - `ja` true: 成功 / false: 失敗
      */
-    restore(key: string, rebuild: boolean): boolean;
+    restore(key: string, rebuild?: boolean): boolean;
     /**
      * @en Check whether backup data exists.
      * @ja バックアップデータの有無を確認
@@ -234,6 +235,22 @@ export declare abstract class ListView<TElement extends Node = HTMLElement, TEve
     /**
      * @en Access backup data.
      * @ja バックアップデータにアクセス
+     *
+     * @param key
+     *  - `en` specify backup key (the one used for `backup()`)
+     *  - `ja` バックアップキーを指定 (`backup()` に使用したもの)
      */
-    get backupData(): UnknownObject;
+    getBackupData(key: string): UnknownObject | undefined;
+    /**
+     * @en Backup data can be set externally.
+     * @ja バックアップデータを外部より設定
+     *
+     * @param key
+     *  - `en` specify backup key
+     *  - `ja` バックアップキーを指定
+     * @returns
+     *  - `en` true: succeeded / false: schema invalid
+     *  - `ja` true: 成功 / false: スキーマが不正
+     */
+    setBackupData(key: string, data: UnknownObject): boolean;
 }

@@ -3,7 +3,6 @@ import type {
     IListScrollable,
     IListBackupRestore,
     IListStatusManager,
-    IListLayoutKeyHolder,
 } from './base';
 import type { IListOperation } from './list-operation';
 
@@ -16,6 +15,5 @@ export type IExpandableListContext
     & IListScrollable
     & IListBackupRestore
     & IListStatusManager
-    & IListLayoutKeyHolder
     & IListOperation
 ;

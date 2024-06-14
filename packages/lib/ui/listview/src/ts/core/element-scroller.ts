@@ -37,8 +37,8 @@ export class ElementScroller implements IListScroller {
     private _scrollDuration?: number;
 
     /** constructor */
-    constructor(element: DOMSelector, options: ListContextOptions) {
-        this._$target = $(element);
+    constructor(target: DOMSelector, map: DOMSelector, options: ListContextOptions) {
+        this._$target = $(target);
         this._$scrollMap = this._$target.children().first();
         this._options = options;
 
@@ -69,8 +69,8 @@ export class ElementScroller implements IListScroller {
 
     /** factory 取得 */
     static getFactory(): ListScrollerFactory {
-        const factory = (element: DOMSelector, options: ListContextOptions): IListScroller => {
-            return new ElementScroller(element, options);
+        const factory = (target: DOMSelector, map: DOMSelector, options: ListContextOptions): IListScroller => {
+            return new ElementScroller(target, map, options);
         };
         // set type signature.
         Object.defineProperties(factory, {
@@ -114,8 +114,11 @@ export class ElementScroller implements IListScroller {
 
     /** スクロール位置を指定 */
     scrollTo(pos: number, animate?: boolean, time?: number): Promise<void> {
+        if (pos === this._$target.scrollTop()) {
+            return Promise.resolve();
+        }
         return new Promise(resolve => {
-            this._scrollDuration = (this._options.enableAnimation ?? animate) ? time ?? this._options.animationDuration : undefined;
+            this._scrollDuration = (animate ?? this._options.enableAnimation) ? time ?? this._options.animationDuration : undefined;
             this._$target.scrollTop(pos, this._scrollDuration, undefined, () => {
                 this._scrollDuration = undefined;
                 resolve();

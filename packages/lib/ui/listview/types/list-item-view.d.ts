@@ -1,4 +1,4 @@
-import { type DOM, type ViewConstructionOptions, View } from '@cdp/runtime';
+import { type ViewConstructionOptions, View } from '@cdp/runtime';
 import type { IListView, ListItemUpdateHeightOptions, IListItemView } from './interfaces';
 import type { ItemProfile } from './profile';
 /**
@@ -7,7 +7,6 @@ import type { ItemProfile } from './profile';
  */
 export interface ListItemViewConstructionOptions<TElement extends Node = HTMLElement, TFuncName = string> extends ViewConstructionOptions<TElement, TFuncName> {
     owner: IListView;
-    $el?: DOM<TElement>;
     item: ItemProfile;
 }
 /**
@@ -26,7 +25,7 @@ export declare abstract class ListItemView<TElement extends Node = HTMLElement, 
      */
     remove(): this;
     /**
-     * @en Get own item index.
+     * @en Get own item index
      * @ja 自身の item インデックスを取得
      */
     get index(): number;

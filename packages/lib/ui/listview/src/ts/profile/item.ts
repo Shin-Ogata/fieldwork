@@ -26,9 +26,9 @@ export class ItemProfile {
     /** @internal */
     private readonly _info: UnknownObject;
     /** @internal global index */
-    private _index = 0;
+    private _index?: number;
     /** @internal belonging page index */
-    private _pageIndex = 0;
+    private _pageIndex?: number;
     /** @internal global offset */
     private _offset = 0;
     /** @internal base dom instance */
@@ -68,7 +68,7 @@ export class ItemProfile {
     }
 
     /** Get the item's global index. */
-    get index(): number {
+    get index(): number | undefined {
         return this._index;
     }
 
@@ -79,7 +79,7 @@ export class ItemProfile {
     }
 
     /** Get belonging the page index. */
-    get pageIndex(): number {
+    get pageIndex(): number | undefined {
         return this._pageIndex;
     }
 
@@ -187,7 +187,7 @@ export class ItemProfile {
         this._height = newHeight;
         this._owner.updateScrollMapHeight(delta);
         if (options?.reflectAll) {
-            this._owner.updateProfiles(this._index);
+            this._owner.updateProfiles(this._index ?? 0);
         }
     }
 
@@ -242,14 +242,14 @@ export class ItemProfile {
     /** @internal */
     private updateIndex(): void {
         if (this._$base && this._$base.attr(this._config.DATA_ITEM_INDEX) !== String(this._index)) {
-            this._$base.attr(this._config.DATA_ITEM_INDEX, this._index);
+            this._$base.attr(this._config.DATA_ITEM_INDEX, this._index!);
         }
     }
 
     /** @internal */
     private updatePageIndex(): void {
         if (this._$base && this._$base.attr(this._config.DATA_PAGE_INDEX) !== String(this._pageIndex)) {
-            this._$base.attr(this._config.DATA_PAGE_INDEX, this._pageIndex);
+            this._$base.attr(this._config.DATA_PAGE_INDEX, this._pageIndex!);
         }
     }
 

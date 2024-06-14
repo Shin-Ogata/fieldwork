@@ -29,10 +29,11 @@ import {
 } from './group-view';
 
 const enum Const {
-    PREVIEW_BASE = 5,
-    EXTRA_MAX    = 40,
-    UNIT_COUNT   = 5,   // eslint-disable-line @typescript-eslint/no-duplicate-enum-values
-    BASE_HEIGHT  = 80,
+    PREVIEW_BASE     = 5,
+    EXTRA_MAX        = 40,
+    UNIT_COUNT       = 5,   // eslint-disable-line @typescript-eslint/no-duplicate-enum-values
+    BASE_HEIGHT      = 80,
+    GROUPS_OPERATION = 'operation:groupAll',
 }
 
 export interface ExpandListViewConstructionOptions extends ListViewConstructOptions {
@@ -44,7 +45,7 @@ export class ExpandListView extends ExpandableListView {
 
     private readonly _prmsManager: PromiseManager;
 
-    constructor(options?: ListViewConstructOptions) {
+    constructor(options?: ExpandListViewConstructionOptions) {
         const opts = Object.assign({ itemNum: 1000, itemHeight: 100 }, options);
         super(opts);
         this._prmsManager = new PromiseManager();
@@ -67,44 +68,58 @@ export class ExpandListView extends ExpandableListView {
 
     /** すべてのグループを展開 (1階層) 実験実装. topGroup の子要素の準備(時間がかかる) */
     override async expandAll(): Promise<void> {
-        const t0 = performance.now();
+        if (!this.isStatusIn(Const.GROUPS_OPERATION)) {
+            this. statusAddRef(Const.GROUPS_OPERATION);
+            const t0 = performance.now();
 
-        const source = CancelToken.source();
-        const prepareTopGroups = async (): Promise<void> => {
-            const topGroups = this.getTopGroups();
-            let group: GroupProfile | undefined;
+            try {
+                const source = CancelToken.source();
+                const prepareTopGroups = async (): Promise<void> => {
+                    const topGroups = this.getTopGroups();
+                    let group: GroupProfile | undefined;
 
-            let devIndex = 0;
-            while (group = topGroups.shift()) { // eslint-disable-line no-cond-assign
-                await cc(source.token);
-                if (!group.hasChildren()) {
-                    const children = await this._prmsManager.add(
-                        this.fetchChildGroups(group.id, devIndex, Const.BASE_HEIGHT, source.token),
-                        source,
-                    );
-                    group.addChildren(children);
-                }
-                devIndex++;
+                    let devIndex = 0;
+                    while (group = topGroups.shift()) { // eslint-disable-line no-cond-assign
+                        await cc(source.token);
+                        if (!group.hasChildren) {
+                            const children = await this._prmsManager.add(
+                                this.fetchChildGroups(group.id, devIndex, Const.BASE_HEIGHT, source.token),
+                                source,
+                            );
+                            group.addChildren(children);
+                        }
+                        devIndex++;
+                    }
+                };
+
+                await this._prmsManager.add(prepareTopGroups(), source);
+                await super.expandAll();
+            } finally {
+                this.statusRelease(Const.GROUPS_OPERATION);
+
+                const tb = performance.now() - t0;
+                void Toast.show(`expandAll time: ${tb.toFixed(3)} msec.`);
+                console.log(`Time spent expandAll: ${tb} milliseconds.`);
             }
-        };
-
-        await this._prmsManager.add(prepareTopGroups(), source);
-        await super.expandAll();
-
-        const tb = performance.now() - t0;
-        void Toast.show(`expandAll time: ${tb.toFixed(3)} msec.`);
-        console.log(`Time spent expandAll: ${tb} milliseconds.`);
+        }
     }
 
     /** すべてのグループを収束 */
     override async collapseAll(): Promise<void> {
-        const t0 = performance.now();
+        if (!this.isStatusIn(Const.GROUPS_OPERATION)) {
+            this. statusAddRef(Const.GROUPS_OPERATION);
+            const t0 = performance.now();
 
-        await super.collapseAll();
+            try {
+                await super.collapseAll();
+            } finally {
+                this.statusRelease(Const.GROUPS_OPERATION);
 
-        const tb = performance.now() - t0;
-        void Toast.show(`collapseAll time: ${tb.toFixed(3)} msec.`);
-        console.log(`Time spent collapseAll: ${tb} milliseconds.`);
+                const tb = performance.now() - t0;
+                void Toast.show(`collapseAll time: ${tb.toFixed(3)} msec.`);
+                console.log(`Time spent collapseAll: ${tb} milliseconds.`);
+            }
+        }
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -135,7 +150,7 @@ export class ExpandListView extends ExpandableListView {
                 if (!group) {
                     return;
                 }
-                if (group.hasChildren()) {
+                if (group.hasChildren) {
                     await group.toggle();
                     if (group.isExpanded) {
                         await group.ensureVisible({ setTop: true });
@@ -239,7 +254,6 @@ export class ExpandListView extends ExpandableListView {
             previewIndex++;
             const preview = this.newGroup(previewId);
             preview.addItem(baseHeight, GroupViewChildPreview, {
-                group: preview,
                 devId: previewId,
                 images: info.preview,
                 parentIndex,
@@ -254,7 +268,6 @@ export class ExpandListView extends ExpandableListView {
                 const extraFormatIndex = `${previewFormatIndex}-${String(extraIndex).padStart(2, '0')}`;
                 const extra = this.newGroup(extraId);
                 extra.addItem(baseHeight, GroupViewChildExtra, {
-                    group: extra,
                     devId: extraId,
                     images,
                     parentIndex,

@@ -80,19 +80,14 @@ export abstract class ExpandableListItemView<TElement extends Node = HTMLElement
     }
 
     /**
-     * @en Determine if it has a child {@link GroupProfile}. <br>
-     *     If `layoutKey` is specified, whether the layout information matches is also added to the judgment condition.
-     * @ja 子 {@link GroupProfile} を持っているか判定 <br>
-     *     `layoutKey` が指定されれば、layout 情報が一致しているかも判定条件に加える
+     * @en Determine if it has a child {@link GroupProfile}.
+     * @ja 子 {@link GroupProfile} を持っているか判定
      *
-     * @param layoutKey
-     *  - `en` identifier for each layout
-     *  - `ja` レイアウト毎の識別子
      * @returns
      *  - `en` true: exists, false: unexists
      *  - `ja` true: 有, false: 無
      */
-    protected hasChildren(layoutKey?: string): boolean {
-        return this[_properties].group.hasChildren(layoutKey);
+    protected get hasChildren(): boolean {
+        return this[_properties].group.hasChildren;
     }
 }

@@ -1,7 +1,12 @@
-import { type UnknownObject, luid } from '@cdp/runtime';
+import {
+    luid,
+    statusAddRef,
+    statusRelease,
+    statusScope,
+    isStatusIn,
+} from '@cdp/runtime';
 import type {
     IExpandOperation,
-    IListLayoutKeyHolder,
     IListStatusManager,
     IListBackupRestore,
     IExpandableListContext,
@@ -15,19 +20,18 @@ import { GroupProfile } from '../profile';
  */
 export class ExpandCore implements
     IExpandOperation,
-    IListLayoutKeyHolder,
     IListStatusManager,
     IListBackupRestore {
 
     private readonly _owner: IExpandableListContext;
 
-    // TODO: owner との各データの所有権の見直し (backupData?)
     /** { id: GroupProfile } */
     private _mapGroups: Record<string, GroupProfile> = {};
     /** 第1階層 GroupProfile を格納 */
     private _aryTopGroups: GroupProfile[] = [];
-    /** layoutKey を格納 */
-    private _layoutKey?: string;
+
+    /** データの backup 領域. key と { map, tops } を格納 */
+    private readonly _backup: Record<string, { map: Record<string, GroupProfile>; tops: GroupProfile[]; }> = {};
 
     /**
      * constructor
@@ -104,12 +108,12 @@ export class ExpandCore implements
 
     /** 展開中か判定 */
     get isExpanding(): boolean {
-        return this._owner.isStatusIn('expanding');
+        return this.isStatusIn('expanding');
     }
 
     /** 収束中か判定 */
     get isCollapsing(): boolean {
-        return this._owner.isStatusIn('collapsing');
+        return this.isStatusIn('collapsing');
     }
 
     /** 開閉中か判定 */
@@ -118,39 +122,26 @@ export class ExpandCore implements
     }
 
 ///////////////////////////////////////////////////////////////////////
-// implements: IListLayoutKeyHolder
-
-    /** layout key を取得 */
-    get layoutKey(): string | undefined {
-        return this._layoutKey;
-    }
-
-    /** layout key を設定 */
-    set layoutKey(key: string) {
-        this._layoutKey = key;
-    }
-
-///////////////////////////////////////////////////////////////////////
 // implements: IListStatusManager
 
     /** 状態変数の参照カウントのインクリメント */
     statusAddRef(status: string): number {
-        return this._owner.statusAddRef(status);
+        return statusAddRef(status);
     }
 
     /** 状態変数の参照カウントのデクリメント */
     statusRelease(status: string): number {
-        return this._owner.statusRelease(status);
+        return statusRelease(status);
     }
 
     /** 処理スコープ毎に状態変数を設定 */
     statusScope<T>(status: string, executor: () => T | Promise<T>): Promise<T> {
-        return this._owner.statusScope(status, executor);
+        return statusScope(status, executor);
     }
 
     /** 指定した状態中であるか確認 */
     isStatusIn(status: string): boolean {
-        return this._owner.isStatusIn(status);
+        return isStatusIn(status);
     }
 
 ///////////////////////////////////////////////////////////////////////
@@ -158,7 +149,7 @@ export class ExpandCore implements
 
     /** 内部データをバックアップ */
     backup(key: string): boolean {
-        const _backup = this.backupData;
+        const { _backup } = this;
         if (null == _backup[key]) {
             _backup[key] = {
                 map: this._mapGroups,
@@ -169,8 +160,8 @@ export class ExpandCore implements
     }
 
     /** 内部データをリストア */
-    restore(key: string, rebuild = true): boolean {
-        const backup = this.backupData[key] as UnknownObject;
+    restore(key: string, rebuild: boolean): boolean {
+        const backup = this.getBackupData(key);
         if (null == backup) {
             return false;
         }
@@ -179,13 +170,8 @@ export class ExpandCore implements
             this.release();
         }
 
-        this._mapGroups = backup.map as Record<string, GroupProfile>;
-        this._aryTopGroups = backup.tops as GroupProfile[];
-
-        // layout 情報の確認
-        if (!this._aryTopGroups[0]?.hasLayoutKeyOf(this.layoutKey!)) {
-            return false;
-        }
+        Object.assign(this._mapGroups, backup.map);
+        this._aryTopGroups = backup.tops.slice();
 
         // 展開しているものを登録
         for (const group of this._aryTopGroups) {
@@ -199,16 +185,35 @@ export class ExpandCore implements
 
     /** バックアップデータの有無 */
     hasBackup(key: string): boolean {
-        return this._owner.hasBackup(key);
+        return null != this._backup[key];
     }
 
     /** バックアップデータの破棄 */
     clearBackup(key?: string): boolean {
-        return this._owner.clearBackup(key);
+        if (null == key) {
+            for (const key of Object.keys(this._backup)) {
+                delete this._backup[key];
+            }
+            return true;
+        } else if (null != this._backup[key]) {
+            delete this._backup[key];
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /** バックアップデータにアクセス */
-    get backupData(): UnknownObject {
-        return this._owner.backupData;
+    getBackupData(key: string): { map: Record<string, GroupProfile>; tops: GroupProfile[]; } {
+        return this._backup[key];
+    }
+
+    /** バックアップデータを外部より設定 */
+    setBackupData(key: string, data: { map: Record<string, GroupProfile>; tops: GroupProfile[]; }): boolean {
+        if (data.map && Array.isArray(data.tops)) {
+            this._backup[key] = data;
+            return true;
+        }
+        return false;
     }
 }
