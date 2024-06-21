@@ -14,7 +14,7 @@ export interface ListViewGlobalConfig {
 
 /** @internal */
 const enum DefaultV {
-    NAMESPACE                    = 'cdp-ui',
+    NAMESPACE                    = 'cdp-ui', // TODO: namespace は utils に移す
     SCROLL_MAP_CLASS             = `${NAMESPACE}-listview-scroll-map`,
     INACTIVE_CLASS               = `${NAMESPACE}-inactive`,
     RECYCLE_CLASS                = `${NAMESPACE}-listview-recycle`,

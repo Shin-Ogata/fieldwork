@@ -22,7 +22,8 @@
       },
       "navigateTo": {
         "simpleListClass": "シンプルなリストビュー",
-        "expandListClass": "開閉リストビュー"
+        "expandListClass": "開閉リストビュー",
+        "sortListClass": "ソートリストビュー"
       }
     },
     "pageSimpleListClass": {
@@ -35,6 +36,16 @@
       "control": {
         "expandAll": "すべて展開",
         "collapseAll": "すべて収束"
+      }
+    },
+    "pageSortListClass": {
+      "title": "ソート可能なリストビュー実装例",
+      "description": "フェッチで100要素ずつ追加 / ソート指定で昇順・降順切り替え",
+      "control": {
+        "sort": "ソート",
+        "fetch": "フェッチ",
+        "reset": "リセット",
+        "requery": "リクエリ"
       }
     },
     "pageSettings": {

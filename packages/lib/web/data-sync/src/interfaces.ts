@@ -31,13 +31,13 @@ export interface SyncMethodList<T extends object = PlainObject> {
  * @en {@link IDataSync.sync | IDataSync.sync}() method list.
  * @ja {@link IDataSync.sync | IDataSync.sync}() に指定するメソッド一覧
  */
-export type SyncMethods = keyof SyncMethodList;
+export type SyncMethods<T extends object = PlainObject> = keyof SyncMethodList<T>;
 
 /**
  * @en Return type of {@link IDataSync.sync | IDataSync.sync}().
  * @ja {@link IDataSync.sync | IDataSync.sync}() の戻り値の型
  */
-export type SyncResult<K extends SyncMethods, T extends object = PlainObject> = KeyToType<SyncMethodList<T>, K>;
+export type SyncResult<T extends object = PlainObject, M extends SyncMethodList<object> = SyncMethodList<T>> = KeyToType<M, keyof M>;
 
 /**
  * @en Default {@link SyncContext} type.
@@ -93,5 +93,5 @@ export interface IDataSync<T extends object = SyncObject> {
      *  - `en` option object
      *  - `ja` オプション
      */
-    sync<K extends SyncMethods>(method: K, context: SyncContext<T>, options?: IDataSyncOptions): Promise<SyncResult<K, T>>;
+    sync(method: SyncMethods, context: SyncContext<T>, options?: IDataSyncOptions): Promise<SyncResult<T>>;
 }

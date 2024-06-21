@@ -22,19 +22,30 @@
       },
       "navigateTo": {
         "simpleListClass": "Go to Simple ListView",
-        "expandListClass": "Go to Expandable ListView"
+        "expandListClass": "Go to Expandable ListView",
+        "sortListClass": "Go to Sortable ListView"
       }
     },
     "pageSimpleListClass": {
-      "title": "Simple ListView Implementation Example",
+      "title": "Simple ListView Implementation",
       "description": "Ex) Implement by using element overflow."
     },
     "pageExpandListClass": {
-      "title": "Expandable ListView Implementation Example",
+      "title": "Expandable ListView Implementation",
       "description": "Click on an element to expand or collapse it.",
       "control": {
         "expandAll": "Expand All",
         "collapseAll": "Collapse All"
+      }
+    },
+    "pageSortListClass": {
+      "title": "Sortable ListView Implementation",
+      "description": "Fetch and Add 100 elements, Toggle Sort.",
+      "control": {
+        "sort": "Sort",
+        "fetch": "Fetch",
+        "reset": "Reset",
+        "requery": "Requery"
       }
     },
     "pageSettings": {
