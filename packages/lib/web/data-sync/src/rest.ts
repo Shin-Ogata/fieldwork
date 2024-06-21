@@ -5,6 +5,7 @@ import type {
     SyncMethods,
     SyncContext,
     SyncResult,
+    SyncObject,
 } from './interfaces';
 import { resolveURL } from './internal';
 
@@ -31,7 +32,7 @@ const _methodMap = {
  * @en The {@link IDataSync} implemant class which compliant RESTful.
  * @ja REST に準拠した {@link IDataSync} 実装クラス
  */
-class RestDataSync implements IDataSync {
+class RestDataSync<T extends object = SyncObject> implements IDataSync<T> {
 
 ///////////////////////////////////////////////////////////////////////
 // implements: IDataSync
@@ -58,7 +59,7 @@ class RestDataSync implements IDataSync {
      *  - `en` rest option object
      *  - `ja` REST オプション
      */
-    sync<K extends SyncMethods>(method: K, context: SyncContext, options?: RestDataSyncOptions): Promise<SyncResult<K>> {
+    sync(method: SyncMethods, context: SyncContext, options?: RestDataSyncOptions): Promise<SyncResult<T>> {
         const params = Object.assign({ dataType: 'json' }, options);
 
         const url = params.url ?? resolveURL(context);
@@ -74,9 +75,9 @@ class RestDataSync implements IDataSync {
         }
 
         // Ajax request
-        const responce = ajax(url, params);
-        context.trigger('@request', context, responce);
-        return responce as Promise<SyncResult<K>>;
+        const response = ajax(url, params);
+        context.trigger('@request', context, response);
+        return response;
     }
 }
 

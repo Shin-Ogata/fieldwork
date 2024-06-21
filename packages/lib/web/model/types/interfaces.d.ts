@@ -142,7 +142,7 @@ export interface ModelSetOptions extends Validable, ModelValidateAttributeOption
 export type ModelConstructionOptions = ModelSetOptions & Parseable;
 /** re-exports */
 export type ModelSyncMethods = SyncMethods;
-export type ModelSyncResult<K extends SyncMethods, T extends object = ModelSeed> = SyncResult<K, T>;
+export type ModelSyncResult<T extends object = ModelSeed> = SyncResult<T>;
 export type ModelDataSyncOptions = RestDataSyncOptions;
 /**
  * @en {@link Model} fetch options.

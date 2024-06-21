@@ -7,9 +7,14 @@ import {
     PageView,
     registerPage,
     t,
+    type CollectionItemQueryResult,
+    type CollectionUpdateOptions,
 } from '@cdp/runtime';
 import { i18nKey } from '../../types';
 import { ExpandListView } from './list-view';
+// TODO: test
+import { ImageCollection, type ImageModel } from '../../model';
+let _collection: ImageCollection;
 
 class ExpandListPageView extends PageView {
     private _listview?: ExpandListView;
@@ -37,8 +42,8 @@ class ExpandListPageView extends PageView {
             <br/>
             <p class="description text-2l">${t(`${i18nKey.app.pageExpandListClass.description}`)}</p>
             <section class="list-control-area">
-                <button class="to-expand-all" @click=${this._expandAllHandler}>${t(`${i18nKey.app.pageExpandListClass.control.expandAll}`)}</button>
-                <button class="to-collapse-all" @click=${this._collapseAllHandler}>${t(`${i18nKey.app.pageExpandListClass.control.collapseAll}`)}</button>
+                <button @click=${this._expandAllHandler}>${t(`${i18nKey.app.pageExpandListClass.control.expandAll}`)}</button>
+                <button @click=${this._collapseAllHandler}>${t(`${i18nKey.app.pageExpandListClass.control.collapseAll}`)}</button>
             </section>
             <div id="expand-listview-area" class="dev-listview">
                 <ul class="cdp-ui-listview-scroll-map expandable-listview"></ul>
@@ -68,7 +73,26 @@ class ExpandListPageView extends PageView {
 // event handlers:
 
     private onExpandAll(): void {
-        void this._listview?.expandAll();
+        // void this._listview?.expandAll();
+        // TODO: test
+        void (async () => {
+            if (!_collection) {
+                _collection = new ImageCollection();
+                _collection.on('@update', (context: ImageCollection, received: CollectionUpdateOptions<ImageModel>) => {
+                    console.log(received.changes.added.length);
+                });
+            }
+            const seeds = await _collection.fetch({
+                reset: true,
+                progress: (result: CollectionItemQueryResult<ImageModel>) => {
+                    console.log(`total: ${result.total}`);
+                    console.log(`items: ${result.items.length}`);
+                },
+            });
+            console.log(`model seeds: ${seeds.length}`);
+            const models = seeds.map(s => _collection.get(s));
+            console.log(`models: ${models.length}`);
+        })();
     }
 
     private onCollapseAll(): void {

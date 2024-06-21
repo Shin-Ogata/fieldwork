@@ -1,4 +1,4 @@
-import { UnknownObject, Class, Keys } from '@cdp/core-utils';
+import { UnknownObject, AnyObject, Class, Keys } from '@cdp/core-utils';
 import { Silenceable, EventSource } from '@cdp/events';
 import { ModelSaveOptions } from '@cdp/model';
 import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionSeed, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
@@ -296,7 +296,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` option object
      *  - `ja` オプション
      */
-    protected sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<object>>;
+    protected sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<AnyObject>>;
     /**
      * @en Fetch the {@link Model} from the server, merging the response with the model's local attributes.
      * @ja {@link Model} 属性のサーバー同期. レスポンスのマージを実行
@@ -305,7 +305,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` fetch options.
      *  - `ja` フェッチオプション
      */
-    fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<object[]>;
+    fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<TModel[] | CollectionSeed[]>;
     /**
      * @en Execute `fetch()` with last query options.
      * @ja 前回と同条件で `fetch()` を実行
@@ -314,7 +314,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` requery options.
      *  - `ja` リクエリオプション
      */
-    requery(options?: CollectionRequeryOptions): Promise<object[]>;
+    requery(options?: CollectionRequeryOptions): Promise<TModel[] | CollectionSeed[]>;
     /**
      * @en "Smart" update method of the collection with the passed list of models.
      *       - if the model is already in the collection its attributes will be merged.
@@ -350,7 +350,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    set(seed: TModel | UnknownObject, options?: CollectionSetOptions): TModel;
+    set(seed: TModel | UnknownObject, options?: CollectionSetOptions): TModel | CollectionSeed;
     /**
      * @en "Smart" update method of the collection with the passed list of models.
      *       - if the model is already in the collection its attributes will be merged.
@@ -368,7 +368,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[];
+    set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[] | CollectionSeed[];
     /**
      * @en Replace a collection with a new list of models (or attribute hashes), triggering a single `reset` event on completion.
      * @ja Collection を新しい Model 一覧で置換. 完了時に `reset` イベントを発行
@@ -380,7 +380,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` reset options.
      *  - `ja` リセットオプション
      */
-    reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[];
+    reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[] | CollectionSeed[];
     /**
      * @en Add model to the collection.
      * @ja Collection への Model の追加
@@ -392,7 +392,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    add(seed: TModel | UnknownObject, options?: CollectionAddOptions): TModel;
+    add(seed: TModel | UnknownObject, options?: CollectionAddOptions): TModel | CollectionSeed;
     /**
      * @en Add to the collection with the passed list of models.
      * @ja Model リスト指定による Collection への追加
@@ -404,7 +404,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[];
+    add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[] | CollectionSeed[];
     /**
      * @en Remove a model from the set.
      * @ja Collection から Model を削除
@@ -440,7 +440,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel;
+    push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel | CollectionSeed;
     /**
      * @en Remove a model from the end of the collection.
      * @ja 末尾の Model を削除
@@ -461,7 +461,7 @@ export declare abstract class Collection<TModel extends object = any, TEvent ext
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel;
+    unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel | CollectionSeed;
     /**
      * @en Remove a model from the beginning of the collection.
      * @ja 先頭の Model を削除

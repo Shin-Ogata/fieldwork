@@ -329,7 +329,7 @@ export declare abstract class Model<T extends object = any, TEvent extends Model
      *  - `en` option object
      *  - `ja` オプション
      */
-    protected sync<K extends ModelSyncMethods>(method: K, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<K, T>>;
+    protected sync(method: ModelSyncMethods, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<T>>;
     /**
      * @en Fetch the {@link Model} from the server, merging the response with the model's local attributes.
      * @ja {@link Model} 属性のサーバー同期. レスポンスのマージを実行

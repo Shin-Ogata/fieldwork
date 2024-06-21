@@ -1,0 +1,22 @@
+#page-sort-list {
+    .list-control-area {
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        width: 310px;
+        height: 26px;
+        top: 63px;
+        right: 0;
+        margin-right: 20px;
+        button {
+            flex: 1 1 auto;
+            margin: 0 5px; // ボタン間のスペースを調整
+            &:first-child {
+                margin-left: 0; // 最初のボタンの左マージンを削除
+            }
+            &:last-child {
+                margin-right: 0; // 最後のボタンの右マージンを削除
+            }
+        }
+    }
+}

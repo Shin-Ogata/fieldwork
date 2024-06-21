@@ -677,8 +677,8 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `en` option object
      *  - `ja` オプション
      */
-    protected sync<K extends ModelSyncMethods>(method: K, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<K, T>> {
-        return defaultSync().sync(method, context as SyncContext<T>, options) as unknown as Promise<ModelSyncResult<K, T>>;
+    protected sync(method: ModelSyncMethods, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<T>> {
+        return defaultSync().sync(method, context as SyncContext<T>, options) as Promise<ModelSyncResult<T>>;
     }
 
     /**
@@ -689,7 +689,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
         const opts = Object.assign({ parse: true }, options, { syncMethod: 'read' });
 
         try {
-            const resp = await this.sync('read', this as Model<T>, opts);
+            const resp = await this.sync('read', this as Model<T>, opts) as T;
             this.setAttributes(opts.parse ? this.parse(resp as ModelSeed, opts) as T : resp, opts);
             (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
             return resp;
@@ -755,7 +755,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                 }
             }
 
-            const resp = await this.sync(method, this as Model<T>, opts);
+            const resp = await this.sync(method, this as Model<T>, opts) as ModelSeed;
 
             let serverAttrs = opts.parse ? this.parse(resp, opts) : resp;
             if (attrs && wait) {
@@ -766,7 +766,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                 this[_properties].baseAttrs = { ...this._attrs } as T;
             }
 
-            (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
+            (this as Model).trigger('@sync', this as Model, resp, opts);
             return resp as T;
         } catch (e) {
             (this as Model).trigger('@error', this as Model, e, opts);
@@ -795,17 +795,17 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
             !wait && destruct();
 
-            let resp: ModelSeed | void | undefined;
+            let resp: T | void | undefined;
             if (!exists) {
                 await cc(cancel);
             } else {
-                resp = await this.sync('delete', this as Model<T>, opts);
+                resp = await this.sync('delete', this as Model<T>, opts) as T;
             }
 
             wait && destruct();
             exists && (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
 
-            return resp as T;
+            return resp;
         } catch (e) {
             (this as Model).trigger('@error', this as Model, e, opts);
             throw e;

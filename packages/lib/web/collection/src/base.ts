@@ -4,6 +4,7 @@
 
 import {
     UnknownObject,
+    AnyObject,
     Accessible,
     Constructor,
     Class,
@@ -685,13 +686,13 @@ export abstract class Collection<
      *  - `en` option object
      *  - `ja` オプション
      */
-    protected async sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<object>> {
+    protected async sync(options?: CollectionItemQueryOptions<TModel, TKey>): Promise<CollectionItemQueryResult<AnyObject>> {
         const items = await defaultSync().sync('read', this as SyncContext, options) as TModel[];
         return {
             total: items.length,
             items,
             options,
-        } as CollectionItemQueryResult<object>;
+        } as CollectionItemQueryResult<AnyObject>;
     }
 
     /**
@@ -702,8 +703,8 @@ export abstract class Collection<
      *  - `en` fetch options.
      *  - `ja` フェッチオプション
      */
-    public async fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<object[]> {
-        const opts = Object.assign({ progress: noop }, this._defaultQueryOptions, options);
+    public async fetch(options?: CollectionQueryOptions<TModel, TKey>): Promise<TModel[] | CollectionSeed[]> {
+        const opts = Object.assign({ progress: noop, parse: this._defaultParse }, this._defaultQueryOptions, options);
 
         try {
             const { progress: original, limit, reset, noCache } = opts;
@@ -745,7 +746,7 @@ export abstract class Collection<
      *  - `en` requery options.
      *  - `ja` リクエリオプション
      */
-    public requery(options?: CollectionRequeryOptions): Promise<object[]> {
+    public requery(options?: CollectionRequeryOptions): Promise<TModel[] | CollectionSeed[]> {
         const opts = Object.assign({}, this._lastQueryOptions, options, { reset: true });
         return this.fetch(opts);
     }
@@ -789,7 +790,7 @@ export abstract class Collection<
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    public set(seed: TModel | UnknownObject, options?: CollectionSetOptions): TModel;
+    public set(seed: TModel | UnknownObject, options?: CollectionSetOptions): TModel | CollectionSeed;
 
     /**
      * @en "Smart" update method of the collection with the passed list of models.
@@ -808,9 +809,9 @@ export abstract class Collection<
      *  - `en` set options.
      *  - `ja` 設定オプション
      */
-    public set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[];
+    public set(seeds: (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel[] | CollectionSeed[];
 
-    public set(seeds?: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel | TModel[] | void {
+    public set(seeds?: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionSetOptions): TModel | CollectionSeed | TModel[] | CollectionSeed[] | void {
         if (isNullish(seeds)) {
             return;
         }
@@ -970,7 +971,7 @@ export abstract class Collection<
      *  - `en` reset options.
      *  - `ja` リセットオプション
      */
-    public reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[] {
+    public reset(seeds?: (TModel | CollectionSeed)[], options?: CollectionOperationOptions): TModel[] | CollectionSeed[] {
         const opts = Object.assign({}, options) as CollectionOperationOptions & { previous: TModel[]; };
         const { store } = this[_properties];
         for (const model of store) {
@@ -1000,7 +1001,7 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public add(seed: TModel | UnknownObject, options?: CollectionAddOptions): TModel;
+    public add(seed: TModel | UnknownObject, options?: CollectionAddOptions): TModel | CollectionSeed;
 
     /**
      * @en Add to the collection with the passed list of models.
@@ -1013,9 +1014,9 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[];
+    public add(seeds: (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel[] | CollectionSeed[];
 
-    public add(seeds: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel | TModel[] {
+    public add(seeds: TModel | UnknownObject | (TModel | CollectionSeed)[], options?: CollectionAddOptions): TModel | CollectionSeed | TModel[] | CollectionSeed[] {
         return this.set(seeds as UnknownObject, Object.assign({ merge: false }, options, _addOptions));
     }
 
@@ -1068,7 +1069,7 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel {
+    public push(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel | CollectionSeed {
         const { store } = this[_properties];
         return this.add(seed, Object.assign({ at: store.length }, options));
     }
@@ -1097,7 +1098,7 @@ export abstract class Collection<
      *  - `en` add options.
      *  - `ja` 追加オプション
      */
-    public unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel {
+    public unshift(seed: TModel | CollectionSeed, options?: CollectionAddOptions): TModel | CollectionSeed {
         return this.add(seed, Object.assign({ at: 0 }, options));
     }
 

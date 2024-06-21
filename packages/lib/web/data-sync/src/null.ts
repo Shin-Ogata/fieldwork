@@ -40,12 +40,12 @@ class NullDataSync implements IDataSync<object> {
      *  - `en` option object
      *  - `ja` オプション
      */
-    async sync<K extends SyncMethods>(method: K, context: SyncContext<object>, options?: Cancelable): Promise<SyncResult<K, object>> {
+    async sync(method: SyncMethods, context: SyncContext<object>, options?: Cancelable): Promise<SyncResult<object>> {
         const { cancel } = options ?? {};
         await cc(cancel);
-        const responce = Promise.resolve('read' === method ? {} : undefined);
-        context.trigger('@request', context, responce);
-        return responce as Promise<SyncResult<K, object>>;
+        const response = Promise.resolve('read' === method ? {} : undefined);
+        context.trigger('@request', context, response);
+        return response;
     }
 }
 

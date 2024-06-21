@@ -112,7 +112,7 @@ function parseContext(context: Accessible<SyncContext>, separator: string): { mo
  * @en The {@link IDataSync} implemant class which target is {@link IStorage}. Default storage is {@link WebStorage}.
  * @ja {@link IStorage} を対象とした {@link IDataSync} 実装クラス. 既定値は {@link WebStorage}
  */
-class StorageDataSync implements IStorageDataSync {
+class StorageDataSync<T extends object = SyncObject> implements IStorageDataSync<T> {
     private _storage: IStorage;
     private _separator: string;
 
@@ -193,39 +193,40 @@ class StorageDataSync implements IStorageDataSync {
      *  - `en` storage option object
      *  - `ja` ストレージオプション
      */
-    async sync<K extends SyncMethods>(method: K, context: SyncContext, options?: StorageDataSyncOptions): Promise<SyncResult<K>> {
+    async sync(method: SyncMethods, context: SyncContext, options?: StorageDataSyncOptions): Promise<SyncResult<T>> {
         const { model, key, url, data } = parseContext(context as Accessible<SyncContext>, this._separator);
         if (!url) {
             throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, 'A "url" property or function must be specified.');
         }
 
-        let responce: PlainObject | void | null;
+        let response: PlainObject | void | null;
         switch (method) {
             case 'create': {
                 const opts = deepMerge({ data }, options);
-                responce = await this.update(key, context, url, data[Object.keys(data)[0]], opts);
+                response = await this.update(key, context, url, data[Object.keys(data)[0]], opts);
                 break;
             }
             case 'update':
             case 'patch': {
-                responce = await this.update(key, context, url, context.id, options);
+                response = await this.update(key, context, url, context.id, options);
                 break;
             }
             case 'delete':
-                responce = await this.destroy(key, context, url, options);
+                response = await this.destroy(key, context, url, options);
                 break;
             case 'read':
-                responce = await this.find(model, key, url, options) as PlainObject;
-                if (null == responce) {
+                response = await this.find(model, key, url, options) as PlainObject;
+                if (null == response) {
                     throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_STORAGE_DATA_NOT_FOUND, `method: ${method}`);
                 }
                 break;
             default:
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 throw makeResult(RESULT_CODE.ERROR_MVC_INVALID_SYNC_PARAMS, `unknown method: ${method}`);
         }
 
-        context.trigger('@request', context, Promise.resolve(responce!));
-        return responce as SyncResult<K>;
+        context.trigger('@request', context, Promise.resolve(response!));
+        return response as SyncResult<T>;
     }
 
 ///////////////////////////////////////////////////////////////////////
