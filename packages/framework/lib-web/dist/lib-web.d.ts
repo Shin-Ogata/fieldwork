@@ -2040,81 +2040,33 @@ export interface CreateStampinoTemplateOptions {
 }
 export declare function createStampinoTransformer(options?: CreateStampinoTemplateOptions): TemplateTransformer;
 declare namespace path2regexp {
+/**
+ * Encode a string into another string.
+ */
+export type Encode = (value: string) => string;
+/**
+ * Decode a string into another string.
+ */
+export type Decode = (value: string) => string;
 export interface ParseOptions {
     /**
      * Set the default delimiter for repeat parameters. (default: `'/'`)
      */
     delimiter?: string;
     /**
-     * List of characters to automatically consider prefixes when parsing.
+     * Function for encoding input strings for output into path.
      */
-    prefixes?: string;
+    encodePath?: Encode;
 }
-export function parse(str: string, options?: ParseOptions): Token[];
-export interface TokensToFunctionOptions {
+export interface PathToRegexpOptions extends ParseOptions {
     /**
      * When `true` the regexp will be case sensitive. (default: `false`)
      */
     sensitive?: boolean;
     /**
-     * Function for encoding input strings for output.
+     * Allow delimiter to be arbitrarily repeated. (default: `true`)
      */
-    encode?: (value: string, token: Key) => string;
-    /**
-     * When `false` the function can produce an invalid (unmatched) path. (default: `true`)
-     */
-    validate?: boolean;
-}
-export function compile<P extends object = object>(str: string, options?: ParseOptions & TokensToFunctionOptions): PathFunction<P>;
-export type PathFunction<P extends object = object> = (data?: P) => string;
-export function tokensToFunction<P extends object = object>(tokens: Token[], options?: TokensToFunctionOptions): PathFunction<P>;
-export interface RegexpToFunctionOptions {
-    /**
-     * Function for decoding strings for params.
-     */
-    decode?: (value: string, token: Key) => string;
-}
-/**
- * A match result contains data about the path match.
- */
-export interface MatchResult<P extends object = object> {
-    path: string;
-    index: number;
-    params: P;
-}
-/**
- * A match is either `false` (no match) or a match result.
- */
-export type Match<P extends object = object> = false | MatchResult<P>;
-/**
- * The match function takes a string and returns whether it matched the path.
- */
-export type MatchFunction<P extends object = object> = (path: string) => Match<P>;
-export function match<P extends object = object>(str: Path, options?: ParseOptions & TokensToRegexpOptions & RegexpToFunctionOptions): MatchFunction<P>;
-export function regexpToFunction<P extends object = object>(re: RegExp, keys: Key[], options?: RegexpToFunctionOptions): MatchFunction<P>;
-/**
- * Metadata about a key.
- */
-export interface Key {
-    name: string | number;
-    prefix: string;
-    suffix: string;
-    pattern: string;
-    modifier: string;
-}
-/**
- * A token is a string (nothing special) or key metadata (capture group).
- */
-export type Token = string | Key;
-export interface TokensToRegexpOptions {
-    /**
-     * When `true` the regexp will be case sensitive. (default: `false`)
-     */
-    sensitive?: boolean;
-    /**
-     * When `true` the regexp won't allow an optional trailing delimiter to match. (default: `false`)
-     */
-    strict?: boolean;
+    loose?: boolean;
     /**
      * When `true` the regexp will match to the end of the string. (default: `true`)
      */
@@ -2124,24 +2076,84 @@ export interface TokensToRegexpOptions {
      */
     start?: boolean;
     /**
-     * Sets the final character for non-ending optimistic matches. (default: `/`)
+     * When `true` the regexp allows an optional trailing delimiter to match. (default: `true`)
      */
-    delimiter?: string;
-    /**
-     * List of characters that can also be 'end' characters.
-     */
-    endsWith?: string;
-    /**
-     * Encode path tokens for use in the `RegExp`.
-     */
-    encode?: (value: string) => string;
+    trailing?: boolean;
 }
-export function tokensToRegexp(tokens: Token[], keys?: Key[], options?: TokensToRegexpOptions): RegExp;
+export interface MatchOptions extends PathToRegexpOptions {
+    /**
+     * Function for decoding strings for params, or `false` to disable entirely. (default: `decodeURIComponent`)
+     */
+    decode?: Decode | false;
+}
+export interface CompileOptions extends ParseOptions {
+    /**
+     * When `true` the validation will be case sensitive. (default: `false`)
+     */
+    sensitive?: boolean;
+    /**
+     * Allow delimiter to be arbitrarily repeated. (default: `true`)
+     */
+    loose?: boolean;
+    /**
+     * When `false` the function can produce an invalid (unmatched) path. (default: `true`)
+     */
+    validate?: boolean;
+    /**
+     * Function for encoding input strings for output into the path, or `false` to disable entirely. (default: `encodeURIComponent`)
+     */
+    encode?: Encode | false;
+}
+export interface TokenData {
+    readonly tokens: Token[];
+    readonly delimiter: string;
+}
+export function parse(str: string, options?: ParseOptions): TokenData;
+export function compile<P extends object = object>(path: Path, options?: CompileOptions): PathFunction<P>;
+export type ParamData = Partial<Record<string, string | string[]>>;
+export type PathFunction<P extends ParamData> = (data?: P) => string;
 /**
- * Supported `path-to-regexp` input types.
+ * A match result contains data about the path match.
  */
-export type Path = string | RegExp | Array<string | RegExp>;
-export function pathToRegexp(path: Path, keys?: Key[], options?: TokensToRegexpOptions & ParseOptions): RegExp;
+export interface MatchResult<P extends ParamData> {
+    path: string;
+    index: number;
+    params: P;
+}
+/**
+ * A match is either `false` (no match) or a match result.
+ */
+export type Match<P extends ParamData> = false | MatchResult<P>;
+/**
+ * The match function takes a string and returns whether it matched the path.
+ */
+export type MatchFunction<P extends ParamData> = (path: string) => Match<P>;
+export function match<P extends ParamData>(path: Path, options?: MatchOptions): MatchFunction<P>;
+/**
+ * A key is a capture group in the regex.
+ */
+export interface Key {
+    name: string;
+    prefix?: string;
+    suffix?: string;
+    pattern?: string;
+    modifier?: string;
+    separator?: string;
+}
+/**
+ * A token is a string (nothing special) or key metadata (capture group).
+ */
+export type Token = string | Key;
+/**
+ * Repeated and simple input types.
+ */
+export type Path = string | TokenData;
+export type PathRegExp = RegExp & {
+    keys: Key[];
+};
+export function pathToRegexp(path: Path, options?: PathToRegexpOptions): RegExp & {
+    keys: Key[];
+};
 }
 export { path2regexp };
 import { $cdp, Accessible, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateCompileOptions, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';

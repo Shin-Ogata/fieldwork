@@ -3,54 +3,51 @@
  */
 
 import {
+    Encode as p2rEncode,
+    Decode as p2rDecode,
     ParseOptions as p2rParseOptions,
-    TokensToFunctionOptions as p2rTokensToFunctionOptions,
+    PathToRegexpOptions as p2rPathToRegexpOptions,
+    MatchOptions as p2rMatchOptions,
+    CompileOptions as p2rCompileOptions,
+    TokenData as p2rTokenData,
+    ParamData as p2rParamData,
     PathFunction as p2rPathFunction,
-    RegexpToFunctionOptions as p2rRegexpToFunctionOptions,
     MatchResult as p2rMatchResult,
     Match as p2rMatch,
     MatchFunction as p2rMatchFunction,
     Key as p2rKey,
     Token as p2rToken,
-    TokensToRegexpOptions as p2rTokensToRegexpOptions,
     Path as p2rPath,
+    PathRegExp as p2rPathRegExp,
     parse,
     compile,
-    tokensToFunction,
     match,
-    regexpToFunction,
-    tokensToRegexp,
     pathToRegexp,
 } from 'path-to-regexp';
 
 declare namespace path2regexp {
+    export type Encode = p2rEncode;
+    export type Decode = p2rDecode;
     export type ParseOptions = p2rParseOptions;
-    export type TokensToFunctionOptions = p2rTokensToFunctionOptions;
-    export type PathFunction = p2rPathFunction;
-    export type RegexpToFunctionOptions = p2rRegexpToFunctionOptions;
-    export type MatchResult = p2rMatchResult;
-    export type Match = p2rMatch;
-    export type MatchFunction = p2rMatchFunction;
+    export type PathToRegexpOptions = p2rPathToRegexpOptions;
+    export type MatchOptions = p2rMatchOptions;
+    export type CompileOptions = p2rCompileOptions;
+    export type TokenData = p2rTokenData;
+    export type ParamData = p2rParamData;
+    export type PathFunction<P extends ParamData> = p2rPathFunction<P>;
+    export type MatchResult<P extends ParamData> = p2rMatchResult<P>;
+    export type Match<P extends ParamData> = p2rMatch<P>;
+    export type MatchFunction<P extends ParamData> = p2rMatchFunction<P>;
     export type Key = p2rKey;
     export type Token = p2rToken;
-    export type TokensToRegexpOptions = p2rTokensToRegexpOptions;
     export type Path = p2rPath;
-    export type parse = typeof parse;
-    export type compile = typeof compile;
-    export type tokensToFunction = typeof tokensToFunction;
-    export type match = typeof match;
-    export type regexpToFunction = typeof regexpToFunction;
-    export type tokensToRegexp = typeof tokensToRegexp;
-    export type pathToRegexp = typeof pathToRegexp;
+    export type PathRegExp = p2rPathRegExp;
 }
 
 const path2regexp = {
     parse,
     compile,
-    tokensToFunction,
     match,
-    regexpToFunction,
-    tokensToRegexp,
     pathToRegexp,
 };
 

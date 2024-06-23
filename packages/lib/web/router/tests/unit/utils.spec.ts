@@ -8,9 +8,6 @@ describe('router/utils spec', () => {
         expect(path2regexp.match).toBeDefined();
         expect(path2regexp.parse).toBeDefined();
         expect(path2regexp.pathToRegexp).toBeDefined();
-        expect(path2regexp.regexpToFunction).toBeDefined();
-        expect(path2regexp.tokensToFunction).toBeDefined();
-        expect(path2regexp.tokensToRegexp).toBeDefined();
     });
 
     it('check toRouterPath', () => {

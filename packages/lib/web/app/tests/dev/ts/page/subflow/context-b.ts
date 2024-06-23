@@ -138,7 +138,7 @@ class PageSubFlowB extends PageView {
 }
 
 registerPage({
-    path: '/subflow-b/:mode?',
+    path: '/subflow-b{/:mode}?',
     component: PageSubFlowB,
     content: {
         selector: '#subflow-b',
