@@ -18,7 +18,7 @@ const colors = require('@cdp/tasks/colors');
 
 const LIBRARY_NAME = 'path-to-regexp';
 
-const MODULE_ROOT = resolve(__dirname, '..', `node_modules/${LIBRARY_NAME}/dist.es2015`);
+const MODULE_ROOT = resolve(__dirname, '..', `node_modules/${LIBRARY_NAME}/dist`);
 const SOURCE_ROOT = resolve(__dirname, '..', `node_modules/${LIBRARY_NAME}/src`);
 const cwd = process.cwd();
 

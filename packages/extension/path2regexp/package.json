@@ -9,7 +9,7 @@
     }
   },
   "devDependencies": {
-    "path-to-regexp": "6.2.2"
+    "path-to-regexp": "7.0.0"
   },
   "keywords": [
     "CDP",

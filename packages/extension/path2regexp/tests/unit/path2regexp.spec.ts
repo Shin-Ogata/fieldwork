@@ -1,2762 +1,2909 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
     @typescript-eslint/array-type,
+    @typescript-eslint/restrict-template-expressions,
+    @typescript-eslint/no-empty-interface,
  */
 
 import { path2regexp } from '@cdp/extension-path2regexp';
 
-type Test = [
-    path2regexp.Path,
-    (path2regexp.TokensToRegexpOptions & path2regexp.ParseOptions) | undefined,
-    path2regexp.Token[],
-    Array<[
-        string,
-        (string | undefined)[] | null,
-        path2regexp.Match?,
-        path2regexp.RegexpToFunctionOptions?
-    ]>,
-    Array<[any, string | null, path2regexp.TokensToFunctionOptions?]>
+interface TestOptions { /* reserved */ }
+
+interface ParserTestSet {
+    path: string;
+    options?: path2regexp.ParseOptions;
+    expected: path2regexp.Token[];
+    testOptions?: TestOptions;
+}
+
+interface CompileTestSet {
+    path: string;
+    options?: path2regexp.CompileOptions;
+    testOptions?: TestOptions;
+    tests: Array<{
+        input: path2regexp.ParamData | undefined;
+        expected: string | null;
+    }>;
+}
+
+interface MatchTestSet {
+    path: path2regexp.Path;
+    options?: path2regexp.MatchOptions;
+    testOptions?: TestOptions;
+    tests: Array<{
+        input: string;
+        matches: (string | undefined)[] | null;
+        expected: path2regexp.Match<any>;
+    }>;
+}
+
+const PARSER_TESTS: ParserTestSet[] = [
+    {
+        path: '/',
+        expected: ['/'],
+    },
+    {
+        path: '/:test',
+        expected: ['/', { name: 'test' }],
+    },
+    {
+        path: '/:0',
+        expected: ['/', { name: '0' }],
+    },
+    {
+        path: '/:_',
+        expected: ['/', { name: '_' }],
+    },
+    {
+        path: '/:café',
+        expected: ['/', { name: 'café' }],
+    },
 ];
 
-//__________________________________________________________________________________________________//
+const COMPILE_TESTS: CompileTestSet[] = [
+    {
+        path: '/',
+        tests: [
+            { input: undefined, expected: '/' },
+            { input: {}, expected: '/' },
+            { input: { id: '123' }, expected: '/' },
+        ],
+    },
+    {
+        path: '/test',
+        tests: [
+            { input: undefined, expected: '/test' },
+            { input: {}, expected: '/test' },
+            { input: { id: '123' }, expected: '/test' },
+        ],
+    },
+    {
+        path: '/test/',
+        tests: [
+            { input: undefined, expected: '/test/' },
+            { input: {}, expected: '/test/' },
+            { input: { id: '123' }, expected: '/test/' },
+        ],
+    },
+    {
+        path: '/:0',
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { 0: '123' }, expected: '/123' },
+        ],
+    },
+    {
+        path: '/:test',
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: '/123%2Fxyz' },
+        ],
+    },
+    {
+        path: '/:test',
+        options: { validate: false },
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: '/123%2Fxyz' },
+        ],
+    },
+    {
+        path: '/:test',
+        options: { validate: false, encode: false },
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: '/123/xyz' },
+        ],
+    },
+    {
+        path: '/:test',
+        options: { encode: encodeURIComponent },
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: '/123%2Fxyz' },
+        ],
+    },
+    {
+        path: '/:test',
+        options: { encode: () => 'static' },
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { test: '123' }, expected: '/static' },
+            { input: { test: '123/xyz' }, expected: '/static' },
+        ],
+    },
+    {
+        path: '{/:test}?',
+        options: { encode: false },
+        tests: [
+            { input: undefined, expected: '' },
+            { input: {}, expected: '' },
+            { input: { test: undefined }, expected: '' },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: null },
+        ],
+    },
+    {
+        path: '/:test(.*)',
+        options: { encode: false },
+        tests: [
+            { input: undefined, expected: null },
+            { input: {}, expected: null },
+            { input: { test: '' }, expected: '/' },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: '/123/xyz' },
+        ],
+    },
+    {
+        path: '{/:test}*',
+        tests: [
+            { input: undefined, expected: '' },
+            { input: {}, expected: '' },
+            { input: { test: [] }, expected: '' },
+            { input: { test: [''] }, expected: null },
+            { input: { test: ['123'] }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: null },
+            { input: { test: ['123', 'xyz'] }, expected: '/123/xyz' },
+        ],
+    },
+    {
+        path: '{/:test}*',
+        options: { encode: false },
+        tests: [
+            { input: undefined, expected: '' },
+            { input: {}, expected: '' },
+            { input: { test: '' }, expected: null },
+            { input: { test: '123' }, expected: '/123' },
+            { input: { test: '123/xyz' }, expected: '/123/xyz' },
+            { input: { test: ['123', 'xyz'] }, expected: null },
+        ],
+    },
+];
 
 /**
  * An array of test cases with expected inputs and outputs.
  */
-const TESTS: Test[] = [
+const MATCH_TESTS: MatchTestSet[] = [
     /**
      * Simple paths.
      */
-    [
-        '/',
-        undefined,
-        ['/'],
-        [
-            ['/', ['/'], { path: '/', index: 0, params: {} }],
-            ['/route', null, false],
+    {
+        path: '/',
+        tests: [
+            {
+                input: '/',
+                matches: ['/'],
+                expected: { path: '/', index: 0, params: {} },
+            },
+            { input: '/route', matches: null, expected: false },
         ],
-        [
-            [null, '/'],
-            [{}, '/'],
-            [{ id: 123 }, '/'],
+    },
+    {
+        path: '/test',
+        tests: [
+            {
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            { input: '/route', matches: null, expected: false },
+            { input: '/test/route', matches: null, expected: false },
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
         ],
-    ],
-    [
-        '/test',
-        undefined,
-        ['/test'],
-        [
-            ['/test', ['/test'], { path: '/test', index: 0, params: {} }],
-            ['/route', null, false],
-            ['/test/route', null, false],
-            ['/test/', ['/test/'], { path: '/test/', index: 0, params: {} }],
+    },
+    {
+        path: '/test/',
+        tests: [
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            { input: '/route', matches: null, expected: false },
+            { input: '/test', matches: null, expected: false },
+            {
+                input: '/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 0, params: {} },
+            },
         ],
-        [
-            [null, '/test'],
-            [{}, '/test'],
+    },
+    {
+        path: '/:test',
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route.json',
+                matches: ['/route.json', 'route.json'],
+                expected: {
+                    path: '/route.json',
+                    index: 0,
+                    params: { test: 'route.json' },
+                },
+            },
+            {
+                input: '/route.json/',
+                matches: ['/route.json/', 'route.json'],
+                expected: {
+                    path: '/route.json/',
+                    index: 0,
+                    params: { test: 'route.json' },
+                },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '///route',
+                matches: ['///route', 'route'],
+                expected: { path: '///route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/caf%C3%A9',
+                matches: ['/caf%C3%A9', 'caf%C3%A9'],
+                expected: {
+                    path: '/caf%C3%A9',
+                    index: 0,
+                    params: { test: 'café' },
+                },
+            },
+            {
+                input: '/;,:@&=+$-_.!~*()',
+                matches: ['/;,:@&=+$-_.!~*()', ';,:@&=+$-_.!~*()'],
+                expected: {
+                    path: '/;,:@&=+$-_.!~*()',
+                    index: 0,
+                    params: { test: ';,:@&=+$-_.!~*()' },
+                },
+            },
         ],
-    ],
-    [
-        '/test/',
-        undefined,
-        ['/test/'],
-        [
-            ['/test', null],
-            ['/test/', ['/test/']],
-            ['/test//', ['/test//']],
-        ],
-        [[null, '/test/']],
-    ],
+    },
 
     /**
      * Case-sensitive paths.
      */
-    [
-        '/test',
-        {
+    {
+        path: '/test',
+        options: {
             sensitive: true,
         },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/TEST', null],
+        tests: [
+            {
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            { input: '/TEST', matches: null, expected: false },
         ],
-        [[null, '/test']],
-    ],
-    [
-        '/TEST',
-        {
+    },
+    {
+        path: '/TEST',
+        options: {
             sensitive: true,
         },
-        ['/TEST'],
-        [
-            ['/test', null],
-            ['/TEST', ['/TEST']],
+        tests: [
+            {
+                input: '/TEST',
+                matches: ['/TEST'],
+                expected: { path: '/TEST', index: 0, params: {} },
+            },
+            { input: '/test', matches: null, expected: false },
         ],
-        [[null, '/TEST']],
-    ],
+    },
 
     /**
-     * Strict mode.
+     * Non-trailing mode.
      */
-    [
-        '/test',
-        {
-            strict: true,
+    {
+        path: '/test',
+        options: {
+            trailing: false,
         },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/test/', null],
-            ['/TEST', ['/TEST']],
+        tests: [
+            {
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/test/',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test/route',
+                matches: null,
+                expected: false,
+            },
         ],
-        [[null, '/test']],
-    ],
-    [
-        '/test/',
-        {
-            strict: true,
+    },
+    {
+        path: '/test/',
+        options: {
+            trailing: false,
         },
-        ['/test/'],
-        [
-            ['/test', null],
-            ['/test/', ['/test/']],
-            ['/test//', null],
+        tests: [
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 0, params: {} },
+            },
         ],
-        [[null, '/test/']],
-    ],
+    },
+    {
+        path: '/:test',
+        options: {
+            trailing: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '///route',
+                matches: ['///route', 'route'],
+                expected: { path: '///route', index: 0, params: { test: 'route' } },
+            },
+        ],
+    },
+    {
+        path: '/:test/',
+        options: {
+            trailing: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route//',
+                matches: ['/route//', 'route'],
+                expected: { path: '/route//', index: 0, params: { test: 'route' } },
+            },
+        ],
+    },
 
     /**
      * Non-ending mode.
      */
-    [
-        '/test',
-        {
+    {
+        path: '/test',
+        options: {
             end: false,
         },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/test/', ['/test/']],
-            ['/test/route', ['/test']],
-            ['/route', null],
-        ],
-        [[null, '/test']],
-    ],
-    [
-        '/test/',
-        {
-            end: false,
-        },
-        ['/test/'],
-        [
-            ['/test', null],
-            ['/test/route', ['/test/']],
-            ['/test//', ['/test//']],
-            ['/test//route', ['/test/']],
-        ],
-        [[null, '/test/']],
-    ],
-    [
-        '/:test',
-        {
-            end: false,
-        },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test////',
+                matches: ['/test////'],
+                expected: { path: '/test////', index: 0, params: {} },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test/route',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            [
-                '/route',
-                ['/route', 'route'],
-                { path: '/route', index: 0, params: { test: 'route' } },
-            ],
-            [
-                '/caf%C3%A9',
-                ['/caf%C3%A9', 'caf%C3%A9'],
-                { path: '/caf%C3%A9', index: 0, params: { test: 'caf%C3%A9' } },
-            ],
-            [
-                '/caf%C3%A9',
-                ['/caf%C3%A9', 'caf%C3%A9'],
-                { path: '/caf%C3%A9', index: 0, params: { test: 'café' } },
-                { decode: decodeURIComponent },
-            ],
-        ],
-        [
-            [{}, null],
-            [{ test: 'abc' }, '/abc'],
-            [{ test: 'a+b' }, '/a+b'],
-            [{ test: 'a+b' }, '/test', { encode: (_, token) => String(token.name) }],
-            [{ test: 'a+b' }, '/a%2Bb', { encode: encodeURIComponent }],
-        ],
-    ],
-    [
-        '/:test/',
-        {
+    },
+    {
+        path: '/test/',
+        options: {
             end: false,
         },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test',
+                matches: null,
+                expected: false,
             },
-            '/',
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/deep',
+                matches: null,
+                expected: false,
+            },
         ],
-        [
-            ['/route', null],
-            ['/route/', ['/route/', 'route']],
-        ],
-        [[{ test: 'abc' }, '/abc/']],
-    ],
-    [
-        '',
-        {
+    },
+    {
+        path: '/:test',
+        options: {
             end: false,
         },
-        [],
-        [
-            ['', ['']],
-            ['/', ['/']],
-            ['route', ['']],
-            ['/route', ['']],
-            ['/route/', ['']],
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route.json',
+                matches: ['/route.json', 'route.json'],
+                expected: {
+                    path: '/route.json',
+                    index: 0,
+                    params: { test: 'route.json' },
+                },
+            },
+            {
+                input: '/route.json/',
+                matches: ['/route.json/', 'route.json'],
+                expected: {
+                    path: '/route.json/',
+                    index: 0,
+                    params: { test: 'route.json' },
+                },
+            },
+            {
+                input: '/route/test',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route.json/test',
+                matches: ['/route.json', 'route.json'],
+                expected: {
+                    path: '/route.json',
+                    index: 0,
+                    params: { test: 'route.json' },
+                },
+            },
+            {
+                input: '///route///test',
+                matches: ['///route//', 'route'],
+                expected: { path: '///route//', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/caf%C3%A9',
+                matches: ['/caf%C3%A9', 'caf%C3%A9'],
+                expected: {
+                    path: '/caf%C3%A9',
+                    index: 0,
+                    params: { test: 'café' },
+                },
+            },
         ],
-        [[null, '']],
-    ],
+    },
+    {
+        path: '/:test/',
+        options: {
+            end: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route//test',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+        ],
+    },
+    {
+        path: '',
+        options: {
+            end: false,
+        },
+        tests: [
+            {
+                input: '',
+                matches: [''],
+                expected: { path: '', index: 0, params: {} },
+            },
+            {
+                input: '/',
+                matches: ['/'],
+                expected: { path: '/', index: 0, params: {} },
+            },
+            {
+                input: 'route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route',
+                matches: [''],
+                expected: { path: '', index: 0, params: {} },
+            },
+            {
+                input: '/route/',
+                matches: [''],
+                expected: { path: '', index: 0, params: {} },
+            },
+        ],
+    },
 
     /**
      * Non-starting mode.
      */
-    [
-        '/test',
-        {
+    {
+        path: '/test',
+        options: {
             start: false,
         },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/test/', ['/test/']],
-            ['/route/test', ['/test']],
-            ['/test/route', null],
-            ['/route/test/deep', null],
-            ['/route', null],
-        ],
-        [[null, '/test']],
-    ],
-    [
-        '/test/',
-        {
-            start: false,
-        },
-        ['/test/'],
-        [
-            ['/test', null],
-            ['/test/route', null],
-            ['/test//route', null],
-            ['/test//', ['/test//']],
-            ['/route/test/', ['/test/']],
-        ],
-        [[null, '/test/']],
-    ],
-    [
-        '/:test',
-        {
-            start: false,
-        },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/route/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 6, params: {} },
+            },
+            {
+                input: '/route/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 6, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/deep',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
             },
         ],
-        [['/route', ['/route', 'route']]],
-        [
-            [{}, null],
-            [{ test: 'abc' }, '/abc'],
-            [{ test: 'a+b' }, '/a+b'],
-            [{ test: 'a+b' }, '/test', { encode: (_, token) => String(token.name) }],
-            [{ test: 'a+b' }, '/a%2Bb', { encode: encodeURIComponent }],
-        ],
-    ],
-    [
-        '/:test/',
-        {
+    },
+    {
+        path: '/test/',
+        options: {
             start: false,
         },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test',
+                matches: null,
+                expected: false,
             },
-            '/',
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 6, params: {} },
+            },
+            {
+                input: '/route/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 6, params: {} },
+            },
+            {
+                input: '/route/test/deep',
+                matches: null,
+                expected: false,
+            },
         ],
-        [
-            ['/route', null],
-            ['/route/', ['/route/', 'route']],
-        ],
-        [[{ test: 'abc' }, '/abc/']],
-    ],
-    [
-        '',
-        {
+    },
+    {
+        path: '/:test',
+        options: {
             start: false,
         },
-        [],
-        [
-            ['', ['']],
-            ['/', ['/']],
-            ['route', ['']],
-            ['/route', ['']],
-            ['/route/', ['/']],
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: ['/test', 'test'],
+                expected: { path: '/test', index: 6, params: { test: 'test' } },
+            },
+            {
+                input: '/route/test/',
+                matches: ['/test/', 'test'],
+                expected: { path: '/test/', index: 6, params: { test: 'test' } },
+            },
         ],
-        [[null, '']],
-    ],
+    },
+    {
+        path: '/:test/',
+        options: {
+            start: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: ['/test/', 'test'],
+                expected: { path: '/test/', index: 6, params: { test: 'test' } },
+            },
+            {
+                input: '/route/test//',
+                matches: ['/test//', 'test'],
+                expected: { path: '/test//', index: 6, params: { test: 'test' } },
+            },
+        ],
+    },
+    {
+        path: '',
+        options: {
+            start: false,
+        },
+        tests: [
+            {
+                input: '',
+                matches: [''],
+                expected: { path: '', index: 0, params: {} },
+            },
+            {
+                input: '/',
+                matches: ['/'],
+                expected: { path: '/', index: 0, params: {} },
+            },
+            {
+                input: 'route',
+                matches: [''],
+                expected: { path: '', index: 5, params: {} },
+            },
+            {
+                input: '/route',
+                matches: [''],
+                expected: { path: '', index: 6, params: {} },
+            },
+            {
+                input: '/route/',
+                matches: ['/'],
+                expected: { path: '/', index: 6, params: {} },
+            },
+        ],
+    },
 
     /**
-     * Combine modes.
+     * Non-ending and non-trailing modes.
      */
-    [
-        '/test',
-        {
+    {
+        path: '/test',
+        options: {
             end: false,
-            strict: true,
+            trailing: false,
         },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/test/', ['/test']],
-            ['/test/route', ['/test']],
-        ],
-        [[null, '/test']],
-    ],
-    [
-        '/test/',
-        {
-            end: false,
-            strict: true,
-        },
-        ['/test/'],
-        [
-            ['/test', null],
-            ['/test/', ['/test/']],
-            ['/test//', ['/test/']],
-            ['/test/route', ['/test/']],
-        ],
-        [[null, '/test/']],
-    ],
-    [
-        '/test.json',
-        {
-            end: false,
-            strict: true,
-        },
-        ['/test.json'],
-        [
-            ['/test.json', ['/test.json']],
-            ['/test.json.hbs', null],
-            ['/test.json/route', ['/test.json']],
-        ],
-        [[null, '/test.json']],
-    ],
-    [
-        '/:test',
-        {
-            end: false,
-            strict: true,
-        },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
             },
         ],
-        [
-            ['/route', ['/route', 'route']],
-            ['/route/', ['/route', 'route']],
-        ],
-        [
-            [{}, null],
-            [{ test: 'abc' }, '/abc'],
-        ],
-    ],
-    [
-        '/:test/',
-        {
+    },
+    {
+        path: '/test/',
+        options: {
             end: false,
-            strict: true,
+            trailing: false,
         },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
             },
-            '/',
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/deep',
+                matches: null,
+                expected: false,
+            },
         ],
-        [
-            ['/route', null],
-            ['/route/', ['/route/', 'route']],
+    },
+    {
+        path: '/:test',
+        options: {
+            end: false,
+            trailing: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test/',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
         ],
-        [[{ test: 'foobar' }, '/foobar/']],
-    ],
-    [
-        '/test',
-        {
+    },
+    {
+        path: '/:test/',
+        options: {
+            end: false,
+            trailing: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test//',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route//test',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+        ],
+    },
+
+    /**
+     * Non-starting and non-ending modes.
+     */
+    {
+        path: '/test',
+        options: {
             start: false,
             end: false,
         },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/test/', ['/test/']],
-            ['/test/route', ['/test']],
-            ['/route/test/deep', ['/test']],
+        tests: [
+            {
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '/route/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 6, params: {} },
+            },
         ],
-        [[null, '/test']],
-    ],
-    [
-        '/test/',
-        {
+    },
+    {
+        path: '/test/',
+        options: {
             start: false,
             end: false,
         },
-        ['/test/'],
-        [
-            ['/test', null],
-            ['/test/', ['/test/']],
-            ['/test//', ['/test//']],
-            ['/test/route', ['/test/']],
-            ['/route/test/deep', ['/test/']],
+        tests: [
+            {
+                input: '/test/',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test//',
+                matches: ['/test//'],
+                expected: { path: '/test//', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/deep',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test//deep',
+                matches: ['/test/'],
+                expected: { path: '/test/', index: 6, params: {} },
+            },
         ],
-        [[null, '/test/']],
-    ],
-    [
-        '/test.json',
-        {
+    },
+    {
+        path: '/:test',
+        options: {
             start: false,
             end: false,
         },
-        ['/test.json'],
-        [
-            ['/test.json', ['/test.json']],
-            ['/test.json.hbs', null],
-            ['/test.json/route', ['/test.json']],
-            ['/route/test.json/deep', ['/test.json']],
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test/',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
         ],
-        [[null, '/test.json']],
-    ],
-    [
-        '/:test',
-        {
+    },
+    {
+        path: '/:test/',
+        options: {
             start: false,
             end: false,
         },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/',
+                matches: ['/route/', 'route'],
+                expected: { path: '/route/', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route/test/',
+                matches: ['/test/', 'test'],
+                expected: { path: '/test/', index: 6, params: { test: 'test' } },
+            },
+            {
+                input: '/route/test//',
+                matches: ['/test//', 'test'],
+                expected: { path: '/test//', index: 6, params: { test: 'test' } },
             },
         ],
-        [
-            ['/route', ['/route', 'route']],
-            ['/route/', ['/route/', 'route']],
-        ],
-        [
-            [{}, null],
-            [{ test: 'abc' }, '/abc'],
-        ],
-    ],
-    [
-        '/:test/',
-        {
-            end: false,
-            strict: true,
-        },
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '/',
-        ],
-        [
-            ['/route', null],
-            ['/route/', ['/route/', 'route']],
-        ],
-        [[{ test: 'foobar' }, '/foobar/']],
-    ],
+    },
 
     /**
-     * Arrays of simple paths.
+     * Optional.
      */
-    [
-        ['/one', '/two'],
-        undefined,
-        [],
-        [
-            ['/one', ['/one']],
-            ['/two', ['/two']],
-            ['/three', null],
-            ['/one/two', null],
+    {
+        path: '{/:test}?',
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '///route',
+                matches: ['///route', 'route'],
+                expected: { path: '///route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '///route///',
+                matches: ['///route///', 'route'],
+                expected: { path: '///route///', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/',
+                matches: ['/', undefined],
+                expected: { path: '/', index: 0, params: {} },
+            },
+            {
+                input: '///',
+                matches: ['///', undefined],
+                expected: { path: '///', index: 0, params: {} },
+            },
         ],
-        [],
-    ],
+    },
+    {
+        path: '{/:test}?',
+        options: {
+            trailing: false,
+        },
+        tests: [
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/',
+                matches: null,
+                expected: false,
+            },
+            { input: '/', matches: null, expected: false },
+            { input: '///', matches: null, expected: false },
+        ],
+    },
+    {
+        path: '{/:test}?/bar',
+        tests: [
+            {
+                input: '/bar',
+                matches: ['/bar', undefined],
+                expected: { path: '/bar', index: 0, params: {} },
+            },
+            {
+                input: '/foo/bar',
+                matches: ['/foo/bar', 'foo'],
+                expected: { path: '/foo/bar', index: 0, params: { test: 'foo' } },
+            },
+            {
+                input: '///foo///bar',
+                matches: ['///foo///bar', 'foo'],
+                expected: { path: '///foo///bar', index: 0, params: { test: 'foo' } },
+            },
+            {
+                input: '/foo/bar/',
+                matches: ['/foo/bar/', 'foo'],
+                expected: { path: '/foo/bar/', index: 0, params: { test: 'foo' } },
+            },
+        ],
+    },
+    {
+        path: '{/:test}?-bar',
+        tests: [
+            {
+                input: '-bar',
+                matches: ['-bar', undefined],
+                expected: { path: '-bar', index: 0, params: {} },
+            },
+            {
+                input: '/foo-bar',
+                matches: ['/foo-bar', 'foo'],
+                expected: { path: '/foo-bar', index: 0, params: { test: 'foo' } },
+            },
+            {
+                input: '/foo-bar/',
+                matches: ['/foo-bar/', 'foo'],
+                expected: { path: '/foo-bar/', index: 0, params: { test: 'foo' } },
+            },
+        ],
+    },
+    {
+        path: '/{:test}?-bar',
+        tests: [
+            {
+                input: '/-bar',
+                matches: ['/-bar', undefined],
+                expected: { path: '/-bar', index: 0, params: {} },
+            },
+            {
+                input: '/foo-bar',
+                matches: ['/foo-bar', 'foo'],
+                expected: { path: '/foo-bar', index: 0, params: { test: 'foo' } },
+            },
+            {
+                input: '/foo-bar/',
+                matches: ['/foo-bar/', 'foo'],
+                expected: { path: '/foo-bar/', index: 0, params: { test: 'foo' } },
+            },
+        ],
+    },
 
     /**
-     * Non-ending simple path.
+     * Zero or more times.
      */
-    [
-        '/test',
-        {
-            end: false,
-        },
-        ['/test'],
-        [['/test/route', ['/test']]],
-        [[null, '/test']],
-    ],
-
-    /**
-     * Single named parameter.
-     */
-    [
-        '/:test',
-        undefined,
-        [
+    {
+        path: '{/:test}*',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/',
+                matches: ['/', undefined],
+                expected: { path: '/', index: 0, params: {} },
             },
-        ],
-        [
-            ['/route', ['/route', 'route']],
-            ['/another', ['/another', 'another']],
-            ['/something/else', null],
-            ['/route.json', ['/route.json', 'route.json']],
-            ['/something%2Felse', ['/something%2Felse', 'something%2Felse']],
-            [
-                '/something%2Felse%2Fmore',
-                ['/something%2Felse%2Fmore', 'something%2Felse%2Fmore'],
-            ],
-            ['/;,:@&=+$-_.!~*()', ['/;,:@&=+$-_.!~*()', ';,:@&=+$-_.!~*()']],
-        ],
-        [
-            [{ test: 'route' }, '/route'],
-            [
-                { test: 'something/else' },
-                '/something%2Felse',
-                { encode: encodeURIComponent },
-            ],
-            [
-                { test: 'something/else/more' },
-                '/something%2Felse%2Fmore',
-                { encode: encodeURIComponent },
-            ],
-        ],
-    ],
-    [
-        '/:test',
-        {
-            strict: true,
-        },
-        [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '//',
+                matches: ['//', undefined],
+                expected: { path: '//', index: 0, params: {} },
             },
-        ],
-        [
-            ['/route', ['/route', 'route']],
-            ['/route/', null],
-        ],
-        [[{ test: 'route' }, '/route']],
-    ],
-    [
-        '/:test/',
-        {
-            strict: true,
-        },
-        [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: ['route'] } },
             },
-            '/',
-        ],
-        [
-            ['/route/', ['/route/', 'route']],
-            ['/route//', null],
-        ],
-        [[{ test: 'route' }, '/route/']],
-    ],
-    [
-        '/:test',
-        {
-            end: false,
-        },
-        [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-        ],
-        [
-            ['/route.json', ['/route.json', 'route.json']],
-            ['/route//', ['/route', 'route']],
-        ],
-        [[{ test: 'route' }, '/route']],
-    ],
-
-    /**
-     * Optional named parameter.
-     */
-    [
-        '/:test?',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-        ],
-        [
-            [
-                '/route',
-                ['/route', 'route'],
-                { path: '/route', index: 0, params: { test: 'route' } },
-            ],
-            ['/route/nested', null, false],
-            ['/', ['/', undefined], { path: '/', index: 0, params: {} }],
-            ['//', null],
-        ],
-        [
-            [null, ''],
-            [{ test: 'foobar' }, '/foobar'],
-        ],
-    ],
-    [
-        '/:test?',
-        {
-            strict: true,
-        },
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-        ],
-        [
-            ['/route', ['/route', 'route']],
-            ['/', null], // Questionable behaviour.
-            ['//', null],
-        ],
-        [
-            [null, ''],
-            [{ test: 'foobar' }, '/foobar'],
-        ],
-    ],
-    [
-        '/:test?/',
-        {
-            strict: true,
-        },
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '/',
-        ],
-        [
-            ['/route', null],
-            ['/route/', ['/route/', 'route']],
-            ['/', ['/', undefined]],
-            ['//', null],
-        ],
-        [
-            [null, '/'],
-            [{ test: 'foobar' }, '/foobar/'],
-        ],
-    ],
-    [
-        '/:test?/bar',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '/bar',
-        ],
-        [
-            ['/bar', ['/bar', undefined]],
-            ['/foo/bar', ['/foo/bar', 'foo']],
-        ],
-        [
-            [null, '/bar'],
-            [{ test: 'foo' }, '/foo/bar'],
-        ],
-    ],
-    [
-        '/:test?-bar',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '-bar',
-        ],
-        [
-            ['-bar', ['-bar', undefined]],
-            ['/-bar', null],
-            ['/foo-bar', ['/foo-bar', 'foo']],
-        ],
-        [
-            [undefined, '-bar'],
-            [{ test: 'foo' }, '/foo-bar'],
-        ],
-    ],
-    [
-        '/:test*-bar',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '*',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '-bar',
-        ],
-        [
-            ['-bar', ['-bar', undefined]],
-            ['/-bar', null],
-            ['/foo-bar', ['/foo-bar', 'foo']],
-            ['/foo/baz-bar', ['/foo/baz-bar', 'foo/baz']],
-        ],
-        [[{ test: 'foo' }, '/foo-bar']],
-    ],
-
-    /**
-     * Repeated one or more times parameters.
-     */
-    [
-        '/:test+',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '+',
-                pattern: '[^\\/#\\?]+?',
-            },
-        ],
-        [
-            ['/', null, false],
-            [
-                '/route',
-                ['/route', 'route'],
-                { path: '/route', index: 0, params: { test: ['route'] } },
-            ],
-            [
-                '/some/basic/route',
-                ['/some/basic/route', 'some/basic/route'],
-                {
+                input: '/some/basic/route',
+                matches: ['/some/basic/route', 'some/basic/route'],
+                expected: {
                     path: '/some/basic/route',
                     index: 0,
                     params: { test: ['some', 'basic', 'route'] },
                 },
-            ],
-            ['//', null, false],
-        ],
-        [
-            [{}, null],
-            [{ test: 'foobar' }, '/foobar'],
-            [{ test: ['a', 'b', 'c'] }, '/a/b/c'],
-        ],
-    ],
-    [
-        '/:test(\\d+)+',
-        undefined,
-        [
+            },
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '+',
-                pattern: '\\d+',
+                input: '///some///basic///route',
+                matches: ['///some///basic///route', 'some///basic///route'],
+                expected: {
+                    path: '///some///basic///route',
+                    index: 0,
+                    params: { test: ['some', 'basic', 'route'] },
+                },
             },
         ],
-        [
-            ['/abc/456/789', null],
-            ['/123/456/789', ['/123/456/789', '123/456/789']],
-        ],
-        [
-            [{ test: 'abc' }, null],
-            [{ test: 123 }, '/123'],
-            [{ test: [1, 2, 3] }, '/1/2/3'],
-        ],
-    ],
-    [
-        '/route.:ext(json|xml)+',
-        undefined,
-        [
-            '/route',
+    },
+    {
+        path: '{/:test}*-bar',
+        tests: [
             {
-                name: 'ext',
-                prefix: '.',
-                suffix: '',
-                modifier: '+',
-                pattern: 'json|xml',
+                input: '-bar',
+                matches: ['-bar', undefined],
+                expected: { path: '-bar', index: 0, params: {} },
+            },
+            {
+                input: '/-bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/foo-bar',
+                matches: ['/foo-bar', 'foo'],
+                expected: { path: '/foo-bar', index: 0, params: { test: ['foo'] } },
+            },
+            {
+                input: '/foo/baz-bar',
+                matches: ['/foo/baz-bar', 'foo/baz'],
+                expected: {
+                    path: '/foo/baz-bar',
+                    index: 0,
+                    params: { test: ['foo', 'baz'] },
+                },
             },
         ],
-        [
-            ['/route', null],
-            ['/route.json', ['/route.json', 'json']],
-            ['/route.xml.json', ['/route.xml.json', 'xml.json']],
-            ['/route.html', null],
-        ],
-        [
-            [{ ext: 'foobar' }, null],
-            [{ ext: 'xml' }, '/route.xml'],
-            [{ ext: ['xml', 'json'] }, '/route.xml.json'],
-        ],
-    ],
-    [
-        '/route.:ext(\\w+)/test',
-        undefined,
-        [
-            '/route',
-            {
-                name: 'ext',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '\\w+',
-            },
-            '/test',
-        ],
-        [
-            ['/route', null],
-            ['/route.json', null],
-            ['/route.xml/test', ['/route.xml/test', 'xml']],
-            ['/route.json.gz/test', null],
-        ],
-        [[{ ext: 'xml' }, '/route.xml/test']],
-    ],
+    },
 
     /**
-     * Repeated zero or more times parameters.
+     * One or more times.
      */
-    [
-        '/:test*',
-        undefined,
-        [
+    {
+        path: '{/:test}+',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '*',
-                pattern: '[^\\/#\\?]+?',
+                input: '/',
+                matches: null,
+                expected: false,
             },
-        ],
-        [
-            ['/', ['/', undefined], { path: '/', index: 0, params: {} }],
-            ['//', null, false],
-            [
-                '/route',
-                ['/route', 'route'],
-                { path: '/route', index: 0, params: { test: ['route'] } },
-            ],
-            [
-                '/some/basic/route',
-                ['/some/basic/route', 'some/basic/route'],
-                {
+            {
+                input: '//',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: ['route'] } },
+            },
+            {
+                input: '/some/basic/route',
+                matches: ['/some/basic/route', 'some/basic/route'],
+                expected: {
                     path: '/some/basic/route',
                     index: 0,
                     params: { test: ['some', 'basic', 'route'] },
                 },
-            ],
-        ],
-        [
-            [{}, ''],
-            [{ test: [] }, ''],
-            [{ test: 'foobar' }, '/foobar'],
-            [{ test: ['foo', 'bar'] }, '/foo/bar'],
-        ],
-    ],
-    [
-        '/route.:ext([a-z]+)*',
-        undefined,
-        [
-            '/route',
+            },
             {
-                name: 'ext',
-                prefix: '.',
-                suffix: '',
-                modifier: '*',
-                pattern: '[a-z]+',
+                input: '///some///basic///route',
+                matches: ['///some///basic///route', 'some///basic///route'],
+                expected: {
+                    path: '///some///basic///route',
+                    index: 0,
+                    params: { test: ['some', 'basic', 'route'] },
+                },
             },
         ],
-        [
-            ['/route', ['/route', undefined]],
-            ['/route.json', ['/route.json', 'json']],
-            ['/route.json.xml', ['/route.json.xml', 'json.xml']],
-            ['/route.123', null],
+    },
+    {
+        path: '{/:test}+-bar',
+        tests: [
+            {
+                input: '-bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/-bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/foo-bar',
+                matches: ['/foo-bar', 'foo'],
+                expected: { path: '/foo-bar', index: 0, params: { test: ['foo'] } },
+            },
+            {
+                input: '/foo/baz-bar',
+                matches: ['/foo/baz-bar', 'foo/baz'],
+                expected: {
+                    path: '/foo/baz-bar',
+                    index: 0,
+                    params: { test: ['foo', 'baz'] },
+                },
+            },
         ],
-        [
-            [{}, '/route'],
-            [{ ext: [] }, '/route'],
-            [{ ext: '123' }, null],
-            [{ ext: 'foobar' }, '/route.foobar'],
-            [{ ext: ['foo', 'bar'] }, '/route.foo.bar'],
-        ],
-    ],
+    },
 
     /**
-     * Custom named parameters.
+     * Custom parameters.
      */
-    [
-        '/:test(\\d+)',
-        undefined,
-        [
+    {
+        path: String.raw`/:test(\d+)`,
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+',
+                input: '/123',
+                matches: ['/123', '123'],
+                expected: { path: '/123', index: 0, params: { test: '123' } },
+            },
+            {
+                input: '/abc',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/123/abc',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/123', ['/123', '123']],
-            ['/abc', null],
-            ['/123/abc', null],
-        ],
-        [
-            [{ test: 'abc' }, null],
-            [{ test: 'abc' }, '/abc', { validate: false }],
-            [{ test: '123' }, '/123'],
-        ],
-    ],
-    [
-        '/:test(\\d+)',
-        {
-            end: false,
-        },
-        [
+    },
+    {
+        path: String.raw`/:test(\d+)-bar`,
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+',
+                input: '-bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/-bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/abc-bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/123-bar',
+                matches: ['/123-bar', '123'],
+                expected: { path: '/123-bar', index: 0, params: { test: '123' } },
+            },
+            {
+                input: '/123/456-bar',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/123', ['/123', '123']],
-            ['/abc', null],
-            ['/123/abc', ['/123', '123']],
-        ],
-        [[{ test: '123' }, '/123']],
-    ],
-    [
-        '/:test(.*)',
-        undefined,
-        [
+    },
+    {
+        path: String.raw`/:test(.*)`,
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '.*',
+                input: '/',
+                matches: ['/', ''],
+                expected: { path: '/', index: 0, params: { test: '' } },
+            },
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route/123',
+                matches: ['/route/123', 'route/123'],
+                expected: {
+                    path: '/route/123',
+                    index: 0,
+                    params: { test: 'route/123' },
+                },
+            },
+            {
+                input: '/;,:@&=/+$-_.!/~*()',
+                matches: ['/;,:@&=/+$-_.!/~*()', ';,:@&=/+$-_.!/~*()'],
+                expected: {
+                    path: '/;,:@&=/+$-_.!/~*()',
+                    index: 0,
+                    params: { test: ';,:@&=/+$-_.!/~*()' },
+                },
             },
         ],
-        [
-            ['/anything/goes/here', ['/anything/goes/here', 'anything/goes/here']],
-            ['/;,:@&=/+$-_.!/~*()', ['/;,:@&=/+$-_.!/~*()', ';,:@&=/+$-_.!/~*()']],
-        ],
-        [
-            [{ test: '' }, '/'],
-            [{ test: 'abc' }, '/abc'],
-            [{ test: 'abc/123' }, '/abc%2F123', { encode: encodeURIComponent }],
-            [
-                { test: 'abc/123/456' },
-                '/abc%2F123%2F456',
-                { encode: encodeURIComponent },
-            ],
-        ],
-    ],
-    [
-        '/:route([a-z]+)',
-        undefined,
-        [
+    },
+    {
+        path: '/:test([a-z]+)',
+        tests: [
             {
-                name: 'route',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[a-z]+',
+                input: '/abc',
+                matches: ['/abc', 'abc'],
+                expected: { path: '/abc', index: 0, params: { test: 'abc' } },
+            },
+            {
+                input: '/123',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/abc/123',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/abcde', ['/abcde', 'abcde']],
-            ['/12345', null],
-        ],
-        [
-            [{ route: '' }, null],
-            [{ route: '' }, '/', { validate: false }],
-            [{ route: '123' }, null],
-            [{ route: '123' }, '/123', { validate: false }],
-            [{ route: 'abc' }, '/abc'],
-        ],
-    ],
-    [
-        '/:route(this|that)',
-        undefined,
-        [
+    },
+    {
+        path: '/:test(this|that)',
+        tests: [
             {
-                name: 'route',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: 'this|that',
+                input: '/this',
+                matches: ['/this', 'this'],
+                expected: { path: '/this', index: 0, params: { test: 'this' } },
+            },
+            {
+                input: '/that',
+                matches: ['/that', 'that'],
+                expected: { path: '/that', index: 0, params: { test: 'that' } },
+            },
+            {
+                input: '/foo',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/this', ['/this', 'this']],
-            ['/that', ['/that', 'that']],
-            ['/foo', null],
-        ],
-        [
-            [{ route: 'this' }, '/this'],
-            [{ route: 'foo' }, null],
-            [{ route: 'foo' }, '/foo', { validate: false }],
-            [{ route: 'that' }, '/that'],
-        ],
-    ],
-    [
-        '/:path(abc|xyz)*',
-        undefined,
-        [
+    },
+    {
+        path: '{/:test(abc|xyz)}*',
+        tests: [
             {
-                name: 'path',
-                prefix: '/',
-                suffix: '',
-                modifier: '*',
-                pattern: 'abc|xyz',
+                input: '/',
+                matches: ['/', undefined],
+                expected: { path: '/', index: 0, params: { test: undefined } },
+            },
+            {
+                input: '/abc',
+                matches: ['/abc', 'abc'],
+                expected: { path: '/abc', index: 0, params: { test: ['abc'] } },
+            },
+            {
+                input: '/abc/abc',
+                matches: ['/abc/abc', 'abc/abc'],
+                expected: {
+                    path: '/abc/abc',
+                    index: 0,
+                    params: { test: ['abc', 'abc'] },
+                },
+            },
+            {
+                input: '/xyz/xyz',
+                matches: ['/xyz/xyz', 'xyz/xyz'],
+                expected: {
+                    path: '/xyz/xyz',
+                    index: 0,
+                    params: { test: ['xyz', 'xyz'] },
+                },
+            },
+            {
+                input: '/abc/xyz',
+                matches: ['/abc/xyz', 'abc/xyz'],
+                expected: {
+                    path: '/abc/xyz',
+                    index: 0,
+                    params: { test: ['abc', 'xyz'] },
+                },
+            },
+            {
+                input: '/abc/xyz/abc/xyz',
+                matches: ['/abc/xyz/abc/xyz', 'abc/xyz/abc/xyz'],
+                expected: {
+                    path: '/abc/xyz/abc/xyz',
+                    index: 0,
+                    params: { test: ['abc', 'xyz', 'abc', 'xyz'] },
+                },
+            },
+            {
+                input: '/xyzxyz',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/abc', ['/abc', 'abc']],
-            ['/abc/abc', ['/abc/abc', 'abc/abc']],
-            ['/xyz/xyz', ['/xyz/xyz', 'xyz/xyz']],
-            ['/abc/xyz', ['/abc/xyz', 'abc/xyz']],
-            ['/abc/xyz/abc/xyz', ['/abc/xyz/abc/xyz', 'abc/xyz/abc/xyz']],
-            ['/xyzxyz', null],
-        ],
-        [
-            [{ path: 'abc' }, '/abc'],
-            [{ path: ['abc', 'xyz'] }, '/abc/xyz'],
-            [{ path: ['xyz', 'abc', 'xyz'] }, '/xyz/abc/xyz'],
-            [{ path: 'abc123' }, null],
-            [{ path: 'abc123' }, '/abc123', { validate: false }],
-            [{ path: 'abcxyz' }, null],
-            [{ path: 'abcxyz' }, '/abcxyz', { validate: false }],
-        ],
-    ],
+    },
 
     /**
-     * Prefixed slashes could be omitted.
+     * No prefix characters.
      */
-    [
-        'test',
-        undefined,
-        ['test'],
-        [
-            ['test', ['test']],
-            ['/test', null],
-        ],
-        [[null, 'test']],
-    ],
-    [
-        ':test',
-        undefined,
-        [
+    {
+        path: 'test',
+        tests: [
             {
-                name: 'test',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: 'test',
+                matches: ['test'],
+                expected: { path: 'test', index: 0, params: {} },
+            },
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['route', ['route', 'route']],
-            ['/route', null],
-            ['route/', ['route/', 'route']],
+    },
+    {
+        path: ':test',
+        tests: [
+            {
+                input: 'route',
+                matches: ['route', 'route'],
+                expected: { path: 'route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: 'route/',
+                matches: ['route/', 'route'],
+                expected: { path: 'route/', index: 0, params: { test: 'route' } },
+            },
         ],
-        [
-            [{ test: '' }, null],
-            [{}, null],
-            [{ test: null }, null],
-            [{ test: 'route' }, 'route'],
+    },
+    {
+        path: '{:test}?',
+        tests: [
+            {
+                input: 'test',
+                matches: ['test', 'test'],
+                expected: { path: 'test', index: 0, params: { test: 'test' } },
+            },
+            {
+                input: '',
+                matches: ['', undefined],
+                expected: { path: '', index: 0, params: {} },
+            },
         ],
-    ],
-    [
-        ':test',
-        {
-            strict: true,
+    },
+/* skip
+    {
+        path: '{:test}*',
+        testOptions: {
+            skip: true,
         },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: 'test',
+                matches: ['test', 'test'],
+                expected: { path: 'test', index: 0, params: { test: ['test'] } },
+            },
+            {
+                input: 'test/test',
+                matches: ['test/test', 'test/test'],
+                expected: {
+                    path: 'test/test',
+                    index: 0,
+                    params: { test: ['test', 'test'] },
+                },
+            },
+            {
+                input: '',
+                matches: ['', undefined],
+                expected: { path: '', index: 0, params: { test: undefined } },
             },
         ],
-        [
-            ['route', ['route', 'route']],
-            ['/route', null],
-            ['route/', null],
-        ],
-        [[{ test: 'route' }, 'route']],
-    ],
-    [
-        ':test',
-        {
-            end: false,
+    },
+    {
+        path: '{:test}+',
+        testOptions: {
+            skip: true,
         },
-        [
+        tests: [
             {
-                name: 'test',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: 'test',
+                matches: ['test', 'test'],
+                expected: { path: 'test', index: 0, params: { test: ['test'] } },
+            },
+            {
+                input: 'test/test',
+                matches: ['test/test', 'test/test'],
+                expected: {
+                    path: 'test/test',
+                    index: 0,
+                    params: { test: ['test', 'test'] },
+                },
+            },
+            {
+                input: '',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['route', ['route', 'route']],
-            ['/route', null],
-            ['route/', ['route/', 'route']],
-            ['route/foobar', ['route', 'route']],
-        ],
-        [[{ test: 'route' }, 'route']],
-    ],
-    [
-        ':test?',
-        undefined,
-        [
+    },
+*/
+    {
+        path: '{:test/}+',
+        tests: [
             {
-                name: 'test',
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
+                input: 'route/',
+                matches: ['route/', 'route'],
+                expected: { path: 'route/', index: 0, params: { test: ['route'] } },
+            },
+            {
+                input: '/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: 'foo/bar/',
+                matches: ['foo/bar/', 'foo/bar'],
+                expected: {
+                    path: 'foo/bar/',
+                    index: 0,
+                    params: { test: ['foo', 'bar'] },
+                },
             },
         ],
-        [
-            ['route', ['route', 'route']],
-            ['/route', null],
-            ['', ['', undefined]],
-            ['route/foobar', null],
-        ],
-        [
-            [{}, ''],
-            [{ test: '' }, null],
-            [{ test: 'route' }, 'route'],
-        ],
-    ],
-    [
-        '{:test/}+',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '',
-                suffix: '/',
-                modifier: '+',
-                pattern: '[^\\/#\\?]+?',
-            },
-        ],
-        [
-            ['route/', ['route/', 'route']],
-            ['/route', null],
-            ['', null],
-            ['foo/bar/', ['foo/bar/', 'foo/bar']],
-        ],
-        [
-            [{}, null],
-            [{ test: '' }, null],
-            [{ test: ['route'] }, 'route/'],
-            [{ test: ['foo', 'bar'] }, 'foo/bar/'],
-        ],
-    ],
+    },
 
     /**
      * Formats.
      */
-    [
-        '/test.json',
-        undefined,
-        ['/test.json'],
-        [
-            ['/test.json', ['/test.json']],
-            ['/route.json', null],
-        ],
-        [[{}, '/test.json']],
-    ],
-    [
-        '/:test.json',
-        undefined,
-        [
+    {
+        path: '/test.json',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test.json',
+                matches: ['/test.json'],
+                expected: { path: '/test.json', index: 0, params: {} },
             },
-            '.json',
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
         ],
-        [
-            ['/.json', null],
-            ['/test.json', ['/test.json', 'test']],
-            ['/route.json', ['/route.json', 'route']],
-            ['/route.json.json', ['/route.json.json', 'route.json']],
+    },
+    {
+        path: '/:test.json',
+        tests: [
+            {
+                input: '/.json',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test.json',
+                matches: ['/test.json', 'test'],
+                expected: { path: '/test.json', index: 0, params: { test: 'test' } },
+            },
+            {
+                input: '/route.json',
+                matches: ['/route.json', 'route'],
+                expected: { path: '/route.json', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/route.json.json',
+                matches: ['/route.json.json', 'route.json'],
+                expected: {
+                    path: '/route.json.json',
+                    index: 0,
+                    params: { test: 'route.json' },
+                },
+            },
         ],
-        [
-            [{ test: '' }, null],
-            [{ test: 'foo' }, '/foo.json'],
-        ],
-    ],
+    },
 
     /**
      * Format params.
      */
-    [
-        '/test.:format(\\w+)',
-        undefined,
-        [
-            '/test',
+    {
+        path: '/test.:format(\\w+)',
+        tests: [
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '\\w+',
-            },
-        ],
-        [
-            ['/test.html', ['/test.html', 'html']],
-            ['/test.hbs.html', null],
-        ],
-        [
-            [{}, null],
-            [{ format: '' }, null],
-            [{ format: 'foo' }, '/test.foo'],
-        ],
-    ],
-    [
-        '/test.:format(\\w+).:format(\\w+)',
-        undefined,
-        [
-            '/test',
-            {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '\\w+',
+                input: '/test.html',
+                matches: ['/test.html', 'html'],
+                expected: { path: '/test.html', index: 0, params: { format: 'html' } },
             },
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '\\w+',
+                input: '/test',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/test.html', null],
-            ['/test.hbs.html', ['/test.hbs.html', 'hbs', 'html']],
-        ],
-        [
-            [{ format: 'foo.bar' }, null],
-            [{ format: 'foo' }, '/test.foo.foo'],
-        ],
-    ],
-    [
-        '/test{.:format}+',
-        undefined,
-        [
-            '/test',
+    },
+    {
+        path: '/test.:format(\\w+).:format(\\w+)',
+        tests: [
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '+',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test.html.json',
+                matches: ['/test.html.json', 'html', 'json'],
+                expected: {
+                    path: '/test.html.json',
+                    index: 0,
+                    params: { format: 'json' },
+                },
             },
-        ],
-        [
-            ['/test.html', ['/test.html', 'html']],
-            ['/test.hbs.html', ['/test.hbs.html', 'hbs.html']],
-        ],
-        [
-            [{ format: [] }, null],
-            [{ format: 'foo' }, '/test.foo'],
-            [{ format: ['foo', 'bar'] }, '/test.foo.bar'],
-        ],
-    ],
-    [
-        '/test.:format(\\w+)',
-        {
-            end: false,
-        },
-        [
-            '/test',
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '\\w+',
+                input: '/test.html',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/test.html', ['/test.html', 'html']],
-            ['/test.hbs.html', null],
-        ],
-        [[{ format: 'foo' }, '/test.foo']],
-    ],
-    [
-        '/test.:format.',
-        undefined,
-        [
-            '/test',
+    },
+    {
+        path: '/test{.:format(\\w+)}?',
+        tests: [
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test',
+                matches: ['/test', undefined],
+                expected: { path: '/test', index: 0, params: { format: undefined } },
             },
-            '.',
+            {
+                input: '/test.html',
+                matches: ['/test.html', 'html'],
+                expected: { path: '/test.html', index: 0, params: { format: 'html' } },
+            },
         ],
-        [
-            ['/test.html.', ['/test.html.', 'html']],
-            ['/test.hbs.html', null],
+    },
+    {
+        path: '/test{.:format(\\w+)}+',
+        tests: [
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test.html',
+                matches: ['/test.html', 'html'],
+                expected: {
+                    path: '/test.html',
+                    index: 0,
+                    params: { format: ['html'] },
+                },
+            },
+            {
+                input: '/test.html.json',
+                matches: ['/test.html.json', 'html.json'],
+                expected: {
+                    path: '/test.html.json',
+                    index: 0,
+                    params: { format: ['html', 'json'] },
+                },
+            },
         ],
-        [
-            [{ format: '' }, null],
-            [{ format: 'foo' }, '/test.foo.'],
+    },
+    {
+        path: '/test{.:format}+',
+        tests: [
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test.html',
+                matches: ['/test.html', 'html'],
+                expected: {
+                    path: '/test.html',
+                    index: 0,
+                    params: { format: ['html'] },
+                },
+            },
+            {
+                input: '/test.hbs.html',
+                matches: ['/test.hbs.html', 'hbs.html'],
+                expected: {
+                    path: '/test.hbs.html',
+                    index: 0,
+                    params: { format: ['hbs', 'html'] },
+                },
+            },
         ],
-    ],
+    },
 
     /**
      * Format and path params.
      */
-    [
-        '/:test.:format',
-        undefined,
-        [
+    {
+        path: '/:test.:format',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route.html',
+                matches: ['/route.html', 'route', 'html'],
+                expected: {
+                    path: '/route.html',
+                    index: 0,
+                    params: { test: 'route', format: 'html' },
+                },
             },
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-        ],
-        [
-            ['/route.html', ['/route.html', 'route', 'html']],
-            ['/route', null],
-            ['/route.html.json', ['/route.html.json', 'route', 'html.json']],
-        ],
-        [
-            [{}, null],
-            [{ test: 'route', format: 'foo' }, '/route.foo'],
-        ],
-    ],
-    [
-        '/:test{.:format}?',
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route',
+                matches: null,
+                expected: false,
             },
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route.html.json',
+                matches: ['/route.html.json', 'route', 'html.json'],
+                expected: {
+                    path: '/route.html.json',
+                    index: 0,
+                    params: { test: 'route', format: 'html.json' },
+                },
             },
         ],
-        [
-            ['/route', ['/route', 'route', undefined]],
-            ['/route.json', ['/route.json', 'route', 'json']],
-            ['/route.json.html', ['/route.json.html', 'route', 'json.html']],
-        ],
-        [
-            [{ test: 'route' }, '/route'],
-            [{ test: 'route', format: '' }, null],
-            [{ test: 'route', format: 'foo' }, '/route.foo'],
-        ],
-    ],
-    [
-        '/:test.:format?',
-        {
-            end: false,
-        },
-        [
+    },
+    {
+        path: '/:test{.:format}?',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route',
+                matches: ['/route', 'route', undefined],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
             },
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route.json',
+                matches: ['/route.json', 'route', 'json'],
+                expected: {
+                    path: '/route.json',
+                    index: 0,
+                    params: { test: 'route', format: 'json' },
+                },
             },
-        ],
-        [
-            ['/route', ['/route', 'route', undefined]],
-            ['/route.json', ['/route.json', 'route', 'json']],
-            ['/route.json.html', ['/route.json.html', 'route', 'json.html']],
-        ],
-        [
-            [{ test: 'route' }, '/route'],
-            [{ test: 'route', format: undefined }, '/route'],
-            [{ test: 'route', format: '' }, null],
-            [{ test: 'route', format: 'foo' }, '/route.foo'],
-        ],
-    ],
-    [
-        '/test.:format(.*)z',
-        {
-            end: false,
-        },
-        [
-            '/test',
             {
-                name: 'format',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '.*',
+                input: '/route.json.html',
+                matches: ['/route.json.html', 'route', 'json.html'],
+                expected: {
+                    path: '/route.json.html',
+                    index: 0,
+                    params: { test: 'route', format: 'json.html' },
+                },
             },
-            'z',
         ],
-        [
-            ['/test.abc', null],
-            ['/test.z', ['/test.z', '']],
-            ['/test.abcz', ['/test.abcz', 'abc']],
+    },
+    {
+        path: '/:test.:format\\z',
+        tests: [
+            {
+                input: '/route.htmlz',
+                matches: ['/route.htmlz', 'route', 'html'],
+                expected: {
+                    path: '/route.htmlz',
+                    index: 0,
+                    params: { test: 'route', format: 'html' },
+                },
+            },
+            {
+                input: '/route.html',
+                matches: null,
+                expected: false,
+            },
         ],
-        [
-            [{}, null],
-            [{ format: '' }, '/test.z'],
-            [{ format: 'foo' }, '/test.fooz'],
-        ],
-    ],
+    },
 
     /**
      * Unnamed params.
      */
-    [
-        '/(\\d+)',
-        undefined,
-        [
+    {
+        path: '/(\\d+)',
+        tests: [
             {
-                name: 0,
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+',
+                input: '/123',
+                matches: ['/123', '123'],
+                expected: { path: '/123', index: 0, params: { '0': '123' } },
+            },
+            {
+                input: '/abc',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/123/abc',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/123', ['/123', '123']],
-            ['/abc', null],
-            ['/123/abc', null],
-        ],
-        [
-            [{}, null],
-            [{ '0': '123' }, '/123'],
-        ],
-    ],
-    [
-        '/(\\d+)',
-        {
-            end: false,
-        },
-        [
+    },
+    {
+        path: '{/(\\d+)}?',
+        tests: [
             {
-                name: 0,
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+',
+                input: '/',
+                matches: ['/', undefined],
+                expected: { path: '/', index: 0, params: { '0': undefined } },
+            },
+            {
+                input: '/123',
+                matches: ['/123', '123'],
+                expected: { path: '/123', index: 0, params: { '0': '123' } },
             },
         ],
-        [
-            ['/123', ['/123', '123']],
-            ['/abc', null],
-            ['/123/abc', ['/123', '123']],
-            ['/123/', ['/123/', '123']],
-        ],
-        [[{ '0': '123' }, '/123']],
-    ],
-    [
-        '/(\\d+)?',
-        undefined,
-        [
+    },
+    {
+        path: '/route\\(\\\\(\\d+\\\\)\\)',
+        tests: [
             {
-                name: 0,
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '\\d+',
+                input: '/route(\\123\\)',
+                matches: ['/route(\\123\\)', '123\\'],
+                expected: {
+                    path: '/route(\\123\\)',
+                    index: 0,
+                    params: { '0': '123\\' },
+                },
+            },
+            {
+                input: '/route(\\123)',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/', ['/', undefined]],
-            ['/123', ['/123', '123']],
-        ],
-        [
-            [{}, ''],
-            [{ '0': '123' }, '/123'],
-        ],
-    ],
-    [
-        '/(.*)',
-        undefined,
-        [
+    },
+    {
+        path: '{/route}?',
+        tests: [
             {
-                name: 0,
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '.*',
+                input: '',
+                matches: [''],
+                expected: { path: '', index: 0, params: {} },
+            },
+            {
+                input: '/',
+                matches: ['/'],
+                expected: { path: '/', index: 0, params: {} },
+            },
+            {
+                input: '/foo',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/route',
+                matches: ['/route'],
+                expected: { path: '/route', index: 0, params: {} },
             },
         ],
-        [
-            ['/', ['/', '']],
-            ['/route', ['/route', 'route']],
-            ['/route/nested', ['/route/nested', 'route/nested']],
-        ],
-        [
-            [{ '0': '' }, '/'],
-            [{ '0': '123' }, '/123'],
-        ],
-    ],
-    [
-        '/route\\(\\\\(\\d+\\\\)\\)',
-        undefined,
-        [
-            '/route(\\',
+    },
+    {
+        path: '{/(.*)}',
+        tests: [
             {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+\\\\',
+                input: '/',
+                matches: ['/', ''],
+                expected: { path: '/', index: 0, params: { '0': '' } },
             },
-            ')',
-        ],
-        [['/route(\\123\\)', ['/route(\\123\\)', '123\\']]],
-        [],
-    ],
-    [
-        '{/login}?',
-        undefined,
-        [
             {
-                name: '',
-                prefix: '/login',
-                suffix: '',
-                modifier: '?',
-                pattern: '',
+                input: '/login',
+                matches: ['/login', 'login'],
+                expected: { path: '/login', index: 0, params: { '0': 'login' } },
             },
         ],
-        [
-            ['/', ['/']],
-            ['/login', ['/login']],
-        ],
-        [
-            [null, ''],
-            [{ '': '' }, '/login'],
-        ],
-    ],
-    [
-        '{/login}',
-        undefined,
-        [
-            {
-                name: '',
-                prefix: '/login',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [
-            ['/', null],
-            ['/login', ['/login']],
-        ],
-        [[{ '': '' }, '/login']],
-    ],
-    [
-        '{/(.*)}',
-        undefined,
-        [
-            {
-                name: 0,
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '.*',
-            },
-        ],
-        [
-            ['/', ['/', '']],
-            ['/login', ['/login', 'login']],
-        ],
-        [[{ 0: 'test' }, '/test']],
-    ],
+    },
 
     /**
-     * Regexps.
+     * Escaped characters.
      */
-    [/.*/, undefined, [], [['/match/anything', ['/match/anything']]], []],
-    [
-        /(.*)/,
-        undefined,
-        [
+    {
+        path: '/\\(testing\\)',
+        tests: [
             {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [['/match/anything', ['/match/anything', '/match/anything']]],
-        [],
-    ],
-    [
-        /\/(\d+)/,
-        undefined,
-        [
-            {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [
-            ['/abc', null],
-            ['/123', ['/123', '123']],
-        ],
-        [],
-    ],
-
-    /**
-     * Mixed arrays.
-     */
-    [
-        ['/test', /\/(\d+)/],
-        undefined,
-        [
-            {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [['/test', ['/test', undefined]]],
-        [],
-    ],
-    [
-        ['/:test(\\d+)', /(.*)/],
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+',
+                input: '/testing',
+                matches: null,
+                expected: false,
             },
             {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
+                input: '/(testing)',
+                matches: ['/(testing)'],
+                expected: { path: '/(testing)', index: 0, params: {} },
             },
         ],
-        [
-            ['/123', ['/123', '123', undefined]],
-            ['/abc', ['/abc', undefined, '/abc']],
-        ],
-        [],
-    ],
-
-    /**
-     * Correct names and indexes.
-     */
-    [
-        ['/:test', '/route/:test'],
-        undefined,
-        [
+    },
+    {
+        path: '/.\\+\\*\\?\\{\\}=^\\!\\:$[]\\|',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/.+*?{}=^!:$[]|',
+                matches: ['/.+*?{}=^!:$[]|'],
+                expected: { path: '/.+*?{}=^!:$[]|', index: 0, params: {} },
+            },
+        ],
+    },
+    {
+        path: '/test/{:uid(u\\d+)}?{:cid(c\\d+)}?',
+        tests: [
+            {
+                input: '/test/u123',
+                matches: ['/test/u123', 'u123', undefined],
+                expected: { path: '/test/u123', index: 0, params: { uid: 'u123' } },
             },
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/test/c123',
+                matches: ['/test/c123', undefined, 'c123'],
+                expected: { path: '/test/c123', index: 0, params: { cid: 'c123' } },
             },
         ],
-        [
-            ['/test', ['/test', 'test', undefined]],
-            ['/route/test', ['/route/test', undefined, 'test']],
-        ],
-        [],
-    ],
-    [
-        [/^\/([^/]+)$/, /^\/route\/([^/]+)$/],
-        undefined,
-        [
-            {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-            {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [
-            ['/test', ['/test', 'test', undefined]],
-            ['/route/test', ['/route/test', undefined, 'test']],
-        ],
-        [],
-    ],
-
-    /**
-     * Ignore non-matching groups in regexps.
-     */
-    [
-        /(?:.*)/,
-        undefined,
-        [],
-        [['/anything/you/want', ['/anything/you/want']]],
-        [],
-    ],
-
-    /**
-     * Respect escaped characters.
-     */
-    [
-        '/\\(testing\\)',
-        undefined,
-        ['/(testing)'],
-        [
-            ['/testing', null],
-            ['/(testing)', ['/(testing)']],
-        ],
-        [[null, '/(testing)']],
-    ],
-    [
-        '/.\\+\\*\\?\\{\\}=^!\\:$[]|',
-        undefined,
-        ['/.+*?{}=^!:$[]|'],
-        [['/.+*?{}=^!:$[]|', ['/.+*?{}=^!:$[]|']]],
-        [[null, '/.+*?{}=^!:$[]|']],
-    ],
-    [
-        '/test\\/:uid(u\\d+)?:cid(c\\d+)?',
-        undefined,
-        [
-            '/test/',
-            {
-                name: 'uid',
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: 'u\\d+',
-            },
-            {
-                name: 'cid',
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: 'c\\d+',
-            },
-        ],
-        [
-            ['/test', null],
-            ['/test/', ['/test/', undefined, undefined]],
-            ['/test/u123', ['/test/u123', 'u123', undefined]],
-            ['/test/c123', ['/test/c123', undefined, 'c123']],
-        ],
-        [
-            [{ uid: 'u123' }, '/test/u123'],
-            [{ cid: 'c123' }, '/test/c123'],
-            [{ cid: 'u123' }, null],
-        ],
-    ],
+    },
 
     /**
      * Unnamed group prefix.
      */
-    [
-        '/{apple-}?icon-:res(\\d+).png',
-        undefined,
-        [
-            '/',
+    {
+        path: '/{apple-}?icon-:res(\\d+).png',
+        tests: [
             {
-                name: '',
-                prefix: 'apple-',
-                suffix: '',
-                modifier: '?',
-                pattern: '',
+                input: '/icon-240.png',
+                matches: ['/icon-240.png', '240'],
+                expected: { path: '/icon-240.png', index: 0, params: { res: '240' } },
             },
-            'icon-',
             {
-                name: 'res',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+',
+                input: '/apple-icon-240.png',
+                matches: ['/apple-icon-240.png', '240'],
+                expected: {
+                    path: '/apple-icon-240.png',
+                    index: 0,
+                    params: { res: '240' },
+                },
             },
-            '.png',
         ],
-        [
-            ['/icon-240.png', ['/icon-240.png', '240']],
-            ['/apple-icon-240.png', ['/apple-icon-240.png', '240']],
-        ],
-        [],
-    ],
+    },
 
     /**
      * Random examples.
      */
-    [
-        '/:foo/:bar',
-        undefined,
-        [
+    {
+        path: '/:foo/:bar',
+        tests: [
             {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-            {
-                name: 'bar',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/match/route',
+                matches: ['/match/route', 'match', 'route'],
+                expected: {
+                    path: '/match/route',
+                    index: 0,
+                    params: { foo: 'match', bar: 'route' },
+                },
             },
         ],
-        [['/match/route', ['/match/route', 'match', 'route']]],
-        [[{ foo: 'a', bar: 'b' }, '/a/b']],
-    ],
-    [
-        '/:foo\\(test\\)/bar',
-        undefined,
-        [
+    },
+    {
+        path: '/:foo\\(test\\)/bar',
+        tests: [
             {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '(test)/bar',
-        ],
-        [],
-        [],
-    ],
-    [
-        '/:remote([\\w-.]+)/:user([\\w-]+)',
-        undefined,
-        [
-            {
-                name: 'remote',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[\\w-.]+',
+                input: '/foo(test)/bar',
+                matches: ['/foo(test)/bar', 'foo'],
+                expected: { path: '/foo(test)/bar', index: 0, params: { foo: 'foo' } },
             },
             {
-                name: 'user',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[\\w-]+',
+                input: '/foo/bar',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/endpoint/user', ['/endpoint/user', 'endpoint', 'user']],
-            ['/endpoint/user-name', ['/endpoint/user-name', 'endpoint', 'user-name']],
-            ['/foo.bar/user-name', ['/foo.bar/user-name', 'foo.bar', 'user-name']],
-        ],
-        [
-            [{ remote: 'foo', user: 'bar' }, '/foo/bar'],
-            [{ remote: 'foo.bar', user: 'uno' }, '/foo.bar/uno'],
-        ],
-    ],
-    [
-        '/:foo\\?',
-        undefined,
-        [
+    },
+    {
+        path: '/:remote([\\w-.]+)/:user([\\w-]+)',
+        tests: [
             {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '?',
-        ],
-        [['/route?', ['/route?', 'route']]],
-        [[{ foo: 'bar' }, '/bar?']],
-    ],
-    [
-        '/:foo+baz',
-        undefined,
-        [
-            {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '+',
-                pattern: '[^\\/#\\?]+?',
-            },
-            'baz',
-        ],
-        [
-            ['/foobaz', ['/foobaz', 'foo']],
-            ['/foo/barbaz', ['/foo/barbaz', 'foo/bar']],
-            ['/baz', null],
-        ],
-        [
-            [{ foo: 'foo' }, '/foobaz'],
-            [{ foo: 'foo/bar' }, '/foo%2Fbarbaz', { encode: encodeURIComponent }],
-            [{ foo: ['foo', 'bar'] }, '/foo/barbaz'],
-        ],
-    ],
-    [
-        '\\/:pre?baz',
-        undefined,
-        [
-            '/',
-            {
-                name: 'pre',
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-            'baz',
-        ],
-        [
-            ['/foobaz', ['/foobaz', 'foo']],
-            ['/baz', ['/baz', undefined]],
-        ],
-        [
-            [{}, '/baz'],
-            [{ pre: 'foo' }, '/foobaz'],
-        ],
-    ],
-    [
-        '/:foo\\(:bar?\\)',
-        undefined,
-        [
-            {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
-            },
-            '(',
-            {
-                name: 'bar',
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
-            },
-            ')',
-        ],
-        [
-            ['/hello(world)', ['/hello(world)', 'hello', 'world']],
-            ['/hello()', ['/hello()', 'hello', undefined]],
-        ],
-        [
-            [{ foo: 'hello', bar: 'world' }, '/hello(world)'],
-            [{ foo: 'hello' }, '/hello()'],
-        ],
-    ],
-    [
-        '/:postType(video|audio|text)(\\+.+)?',
-        undefined,
-        [
-            {
-                name: 'postType',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: 'video|audio|text',
+                input: '/endpoint/user',
+                matches: ['/endpoint/user', 'endpoint', 'user'],
+                expected: {
+                    path: '/endpoint/user',
+                    index: 0,
+                    params: { remote: 'endpoint', user: 'user' },
+                },
             },
             {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: '\\+.+',
-            },
-        ],
-        [
-            ['/video', ['/video', 'video', undefined]],
-            ['/video+test', ['/video+test', 'video', '+test']],
-            ['/video+', null],
-        ],
-        [
-            [{ postType: 'video' }, '/video'],
-            [{ postType: 'random' }, null],
-        ],
-    ],
-    [
-        '/:foo?/:bar?-ext',
-        undefined,
-        [
-            {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
+                input: '/endpoint/user-name',
+                matches: ['/endpoint/user-name', 'endpoint', 'user-name'],
+                expected: {
+                    path: '/endpoint/user-name',
+                    index: 0,
+                    params: { remote: 'endpoint', user: 'user-name' },
+                },
             },
             {
-                name: 'bar',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
+                input: '/foo.bar/user-name',
+                matches: ['/foo.bar/user-name', 'foo.bar', 'user-name'],
+                expected: {
+                    path: '/foo.bar/user-name',
+                    index: 0,
+                    params: { remote: 'foo.bar', user: 'user-name' },
+                },
             },
-            '-ext',
         ],
-        [
-            ['/-ext', null],
-            ['-ext', ['-ext', undefined, undefined]],
-            ['/foo-ext', ['/foo-ext', 'foo', undefined]],
-            ['/foo/bar-ext', ['/foo/bar-ext', 'foo', 'bar']],
-            ['/foo/-ext', null],
-        ],
-        [
-            [{}, '-ext'],
-            [{ foo: 'foo' }, '/foo-ext'],
-            [{ bar: 'bar' }, '/bar-ext'],
-            [{ foo: 'foo', bar: 'bar' }, '/foo/bar-ext'],
-        ],
-    ],
-    [
-        '/:required/:optional?-ext',
-        undefined,
-        [
+    },
+    {
+        path: '/:foo\\?',
+        tests: [
             {
-                name: 'required',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route?',
+                matches: ['/route?', 'route'],
+                expected: { path: '/route?', index: 0, params: { foo: 'route' } },
             },
             {
-                name: 'optional',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
-                pattern: '[^\\/#\\?]+?',
+                input: '/route',
+                matches: null,
+                expected: false,
             },
-            '-ext',
         ],
-        [
-            ['/foo-ext', ['/foo-ext', 'foo', undefined]],
-            ['/foo/bar-ext', ['/foo/bar-ext', 'foo', 'bar']],
-            ['/foo/-ext', null],
+    },
+    {
+        path: '{/:foo}+bar',
+        tests: [
+            {
+                input: '/foobar',
+                matches: ['/foobar', 'foo'],
+                expected: { path: '/foobar', index: 0, params: { foo: ['foo'] } },
+            },
+            {
+                input: '/foo/bar',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/foo/barbar',
+                matches: ['/foo/barbar', 'foo/bar'],
+                expected: {
+                    path: '/foo/barbar',
+                    index: 0,
+                    params: { foo: ['foo', 'bar'] },
+                },
+            },
         ],
-        [[{ required: 'foo' }, '/foo-ext']],
-    ],
+    },
+    {
+        path: '/{:pre}?baz',
+        tests: [
+            {
+                input: '/foobaz',
+                matches: ['/foobaz', 'foo'],
+                expected: { path: '/foobaz', index: 0, params: { pre: 'foo' } },
+            },
+            {
+                input: '/baz',
+                matches: ['/baz', undefined],
+                expected: { path: '/baz', index: 0, params: { pre: undefined } },
+            },
+        ],
+    },
+    {
+        path: '/:foo\\({:bar}?\\)',
+        tests: [
+            {
+                input: '/hello(world)',
+                matches: ['/hello(world)', 'hello', 'world'],
+                expected: {
+                    path: '/hello(world)',
+                    index: 0,
+                    params: { foo: 'hello', bar: 'world' },
+                },
+            },
+            {
+                input: '/hello()',
+                matches: ['/hello()', 'hello', undefined],
+                expected: {
+                    path: '/hello()',
+                    index: 0,
+                    params: { foo: 'hello', bar: undefined },
+                },
+            },
+        ],
+    },
+    {
+        path: '/:postType(video|audio|text){(\\+.+)}?',
+        tests: [
+            {
+                input: '/video',
+                matches: ['/video', 'video', undefined],
+                expected: { path: '/video', index: 0, params: { postType: 'video' } },
+            },
+            {
+                input: '/video+test',
+                matches: ['/video+test', 'video', '+test'],
+                expected: {
+                    path: '/video+test',
+                    index: 0,
+                    params: { 0: '+test', postType: 'video' },
+                },
+            },
+            {
+                input: '/video+',
+                matches: null,
+                expected: false,
+            },
+        ],
+    },
+    {
+        path: '{/:foo}?{/:bar}?-ext',
+        tests: [
+            {
+                input: '/-ext',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '-ext',
+                matches: ['-ext', undefined, undefined],
+                expected: {
+                    path: '-ext',
+                    index: 0,
+                    params: { foo: undefined, bar: undefined },
+                },
+            },
+            {
+                input: '/foo-ext',
+                matches: ['/foo-ext', 'foo', undefined],
+                expected: { path: '/foo-ext', index: 0, params: { foo: 'foo' } },
+            },
+            {
+                input: '/foo/bar-ext',
+                matches: ['/foo/bar-ext', 'foo', 'bar'],
+                expected: {
+                    path: '/foo/bar-ext',
+                    index: 0,
+                    params: { foo: 'foo', bar: 'bar' },
+                },
+            },
+            {
+                input: '/foo/-ext',
+                matches: null,
+                expected: false,
+            },
+        ],
+    },
+    {
+        path: '/:required{/:optional}?-ext',
+        tests: [
+            {
+                input: '/foo-ext',
+                matches: ['/foo-ext', 'foo', undefined],
+                expected: { path: '/foo-ext', index: 0, params: { required: 'foo' } },
+            },
+            {
+                input: '/foo/bar-ext',
+                matches: ['/foo/bar-ext', 'foo', 'bar'],
+                expected: {
+                    path: '/foo/bar-ext',
+                    index: 0,
+                    params: { required: 'foo', optional: 'bar' },
+                },
+            },
+            {
+                input: '/foo/-ext',
+                matches: null,
+                expected: false,
+            },
+        ],
+    },
 
     /**
-     * Unicode characters.
+     * Unicode matches.
      */
-    [
-        '/:foo',
-        undefined,
-        [
+    {
+        path: '/:foo',
+        tests: [
             {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/café',
+                matches: ['/café', 'café'],
+                expected: { path: '/café', index: 0, params: { foo: 'café' } },
             },
         ],
-        [['/café', ['/café', 'café']]],
-        [
-            [{ foo: 'café' }, '/café'],
-            [{ foo: 'café' }, '/caf%C3%A9', { encode: encodeURIComponent }],
+    },
+    {
+        path: '/:foo',
+        options: {
+            decode: false,
+        },
+        tests: [
+            {
+                input: '/caf%C3%A9',
+                matches: ['/caf%C3%A9', 'caf%C3%A9'],
+                expected: {
+                    path: '/caf%C3%A9',
+                    index: 0,
+                    params: { foo: 'caf%C3%A9' },
+                },
+            },
         ],
-    ],
-    ['/café', undefined, ['/café'], [['/café', ['/café']]], [[null, '/café']]],
-    [
-        '/café',
-        { encode: encodeURI },
-        ['/café'],
-        [['/caf%C3%A9', ['/caf%C3%A9']]],
-        [[null, '/café']],
-    ],
-    [
-        'packages/',
-        undefined,
-        ['packages/'],
-        [
-            ['packages', null],
-            ['packages/', ['packages/']],
+    },
+    {
+        path: '/café',
+        tests: [
+            {
+                input: '/café',
+                matches: ['/café'],
+                expected: { path: '/café', index: 0, params: {} },
+            },
         ],
-        [[null, 'packages/']],
-    ],
+    },
+    {
+        path: '/café',
+        options: {
+            encodePath: encodeURI,
+        },
+        tests: [
+            {
+                input: '/caf%C3%A9',
+                matches: ['/caf%C3%A9'],
+                expected: { path: '/caf%C3%A9', index: 0, params: {} },
+            },
+        ],
+    },
 
     /**
      * Hostnames.
      */
-    [
-        ':domain.com',
-        {
+    {
+        path: ':domain.com',
+        options: {
             delimiter: '.',
         },
-        [
+        tests: [
             {
-                name: 'domain',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\.]+?',
+                input: 'example.com',
+                matches: ['example.com', 'example'],
+                expected: {
+                    path: 'example.com',
+                    index: 0,
+                    params: { domain: 'example' },
+                },
             },
-            '.com',
+            {
+                input: 'github.com',
+                matches: ['github.com', 'github'],
+                expected: {
+                    path: 'github.com',
+                    index: 0,
+                    params: { domain: 'github' },
+                },
+            },
         ],
-        [
-            ['example.com', ['example.com', 'example']],
-            ['github.com', ['github.com', 'github']],
-        ],
-        [
-            [{ domain: 'example' }, 'example.com'],
-            [{ domain: 'github' }, 'github.com'],
-        ],
-    ],
-    [
-        'mail.:domain.com',
-        {
+    },
+    {
+        path: 'mail.:domain.com',
+        options: {
             delimiter: '.',
         },
-        [
-            'mail',
+        tests: [
             {
-                name: 'domain',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\.]+?',
+                input: 'mail.example.com',
+                matches: ['mail.example.com', 'example'],
+                expected: {
+                    path: 'mail.example.com',
+                    index: 0,
+                    params: { domain: 'example' },
+                },
             },
-            '.com',
-        ],
-        [
-            ['mail.example.com', ['mail.example.com', 'example']],
-            ['mail.github.com', ['mail.github.com', 'github']],
-        ],
-        [
-            [{ domain: 'example' }, 'mail.example.com'],
-            [{ domain: 'github' }, 'mail.github.com'],
-        ],
-    ],
-    [
-        'example.:ext',
-        {},
-        [
-            'example',
             {
-                name: 'ext',
-                prefix: '.',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: 'mail.github.com',
+                matches: ['mail.github.com', 'github'],
+                expected: {
+                    path: 'mail.github.com',
+                    index: 0,
+                    params: { domain: 'github' },
+                },
             },
         ],
-        [
-            ['example.com', ['example.com', 'com']],
-            ['example.org', ['example.org', 'org']],
+    },
+    {
+        path: 'mail{.:domain}?.com',
+        options: {
+            delimiter: '.',
+        },
+        tests: [
+            {
+                input: 'mail.com',
+                matches: ['mail.com', undefined],
+                expected: { path: 'mail.com', index: 0, params: { domain: undefined } },
+            },
+            {
+                input: 'mail.example.com',
+                matches: ['mail.example.com', 'example'],
+                expected: {
+                    path: 'mail.example.com',
+                    index: 0,
+                    params: { domain: 'example' },
+                },
+            },
+            {
+                input: 'mail.github.com',
+                matches: ['mail.github.com', 'github'],
+                expected: {
+                    path: 'mail.github.com',
+                    index: 0,
+                    params: { domain: 'github' },
+                },
+            },
         ],
-        [
-            [{ ext: 'com' }, 'example.com'],
-            [{ ext: 'org' }, 'example.org'],
+    },
+    {
+        path: 'example.:ext',
+        options: {
+            delimiter: '.',
+        },
+        tests: [
+            {
+                input: 'example.com',
+                matches: ['example.com', 'com'],
+                expected: { path: 'example.com', index: 0, params: { ext: 'com' } },
+            },
+            {
+                input: 'example.org',
+                matches: ['example.org', 'org'],
+                expected: { path: 'example.org', index: 0, params: { ext: 'org' } },
+            },
         ],
-    ],
-    [
-        'this is',
-        {
+    },
+    {
+        path: 'this is',
+        options: {
             delimiter: ' ',
             end: false,
         },
-        ['this is'],
-        [
-            ['this is a test', ['this is']],
-            [`this isn't`, null],
+        tests: [
+            {
+                input: 'this is a test',
+                matches: ['this is'],
+                expected: { path: 'this is', index: 0, params: {} },
+            },
+            {
+                input: `this isn't`,
+                matches: null,
+                expected: false,
+            },
         ],
-        [[null, 'this is']],
-    ],
+    },
 
     /**
-     * Ends with.
+     * Prefixes.
      */
-    [
-        '/test',
-        {
-            endsWith: '?',
-        },
-        ['/test'],
-        [
-            ['/test', ['/test']],
-            ['/test?query=string', ['/test']],
-            ['/test/?query=string', ['/test/']],
-            ['/testx', null],
-        ],
-        [[null, '/test']],
-    ],
-    [
-        '/test',
-        {
-            endsWith: '?',
-            strict: true,
-        },
-        ['/test'],
-        [
-            ['/test?query=string', ['/test']],
-            ['/test/?query=string', null],
-        ],
-        [[null, '/test']],
-    ],
-
-    /**
-     * Custom prefixes.
-     */
-    [
-        '{$:foo}{$:bar}?',
-        {},
-        [
+    {
+        path: '{$:foo}{$:bar}?',
+        tests: [
             {
-                name: 'foo',
-                pattern: '[^\\/#\\?]+?',
-                prefix: '$',
-                suffix: '',
-                modifier: '',
+                input: '$x',
+                matches: ['$x', 'x', undefined],
+                expected: { path: '$x', index: 0, params: { foo: 'x' } },
             },
             {
-                name: 'bar',
-                pattern: '[^\\/#\\?]+?',
-                prefix: '$',
-                suffix: '',
-                modifier: '?',
+                input: '$x$y',
+                matches: ['$x$y', 'x', 'y'],
+                expected: { path: '$x$y', index: 0, params: { foo: 'x', bar: 'y' } },
             },
         ],
-        [
-            ['$x', ['$x', 'x', undefined]],
-            ['$x$y', ['$x$y', 'x', 'y']],
-        ],
-        [
-            [{ foo: 'foo' }, '$foo'],
-            [{ foo: 'foo', bar: 'bar' }, '$foo$bar'],
-        ],
-    ],
-    [
-        'name/:attr1?{-:attr2}?{-:attr3}?',
-        {},
-        [
-            'name',
+    },
+    {
+        path: '{$:foo}+',
+        tests: [
             {
-                name: 'attr1',
-                pattern: '[^\\/#\\?]+?',
-                prefix: '/',
-                suffix: '',
-                modifier: '?',
+                input: '$x',
+                matches: ['$x', 'x'],
+                expected: { path: '$x', index: 0, params: { foo: ['x'] } },
             },
             {
-                name: 'attr2',
-                pattern: '[^\\/#\\?]+?',
-                prefix: '-',
-                suffix: '',
-                modifier: '?',
+                input: '$x$y',
+                matches: ['$x$y', 'x$y'],
+                expected: { path: '$x$y', index: 0, params: { foo: ['x', 'y'] } },
+            },
+        ],
+    },
+    {
+        path: 'name{/:attr1}?{-:attr2}?{-:attr3}?',
+        tests: [
+            {
+                input: 'name',
+                matches: ['name', undefined, undefined, undefined],
+                expected: { path: 'name', index: 0, params: {} },
             },
             {
-                name: 'attr3',
-                pattern: '[^\\/#\\?]+?',
-                prefix: '-',
-                suffix: '',
-                modifier: '?',
+                input: 'name/test',
+                matches: ['name/test', 'test', undefined, undefined],
+                expected: {
+                    path: 'name/test',
+                    index: 0,
+                    params: { attr1: 'test' },
+                },
             },
-        ],
-        [
-            ['name/test', ['name/test', 'test', undefined, undefined]],
-            ['name/1', ['name/1', '1', undefined, undefined]],
-            ['name/1-2', ['name/1-2', '1', '2', undefined]],
-            ['name/1-2-3', ['name/1-2-3', '1', '2', '3']],
-            ['name/foo-bar/route', null],
-            ['name/test/route', null],
-        ],
-        [
-            [{}, 'name'],
-            [{ attr1: 'test' }, 'name/test'],
-            [{ attr2: 'attr' }, 'name-attr'],
-        ],
-    ],
-
-    /**
-     * Case-sensitive compile tokensToFunction params.
-     */
-    [
-        '/:test(abc)',
-        {
-            sensitive: true,
-        },
-        [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: 'abc',
+                input: 'name/1',
+                matches: ['name/1', '1', undefined, undefined],
+                expected: {
+                    path: 'name/1',
+                    index: 0,
+                    params: { attr1: '1' },
+                },
             },
-        ],
-        [
-            ['/abc', ['/abc', 'abc']],
-            ['/ABC', null],
-        ],
-        [
-            [{ test: 'abc' }, '/abc'],
-            [{ test: 'ABC' }, null],
-        ],
-    ],
-    [
-        '/:test(abc)',
-        {},
-        [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: 'abc',
+                input: 'name/1-2',
+                matches: ['name/1-2', '1', '2', undefined],
+                expected: {
+                    path: 'name/1-2',
+                    index: 0,
+                    params: { attr1: '1', attr2: '2' },
+                },
+            },
+            {
+                input: 'name/1-2-3',
+                matches: ['name/1-2-3', '1', '2', '3'],
+                expected: {
+                    path: 'name/1-2-3',
+                    index: 0,
+                    params: { attr1: '1', attr2: '2', attr3: '3' },
+                },
+            },
+            {
+                input: 'name/foo-bar/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: 'name/test/route',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/abc', ['/abc', 'abc']],
-            ['/ABC', ['/ABC', 'ABC']],
+    },
+    {
+        path: 'name{/:attrs;-}*',
+        tests: [
+            {
+                input: 'name',
+                matches: ['name', undefined],
+                expected: { path: 'name', index: 0, params: {} },
+            },
+            {
+                input: 'name/1',
+                matches: ['name/1', '1'],
+                expected: {
+                    path: 'name/1',
+                    index: 0,
+                    params: { attrs: ['1'] },
+                },
+            },
+            {
+                input: 'name/1-2',
+                matches: ['name/1-2', '1-2'],
+                expected: {
+                    path: 'name/1-2',
+                    index: 0,
+                    params: { attrs: ['1', '2'] },
+                },
+            },
+            {
+                input: 'name/1-2-3',
+                matches: ['name/1-2-3', '1-2-3'],
+                expected: {
+                    path: 'name/1-2-3',
+                    index: 0,
+                    params: { attrs: ['1', '2', '3'] },
+                },
+            },
+            {
+                input: 'name/foo-bar/route',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: 'name/test/route',
+                matches: null,
+                expected: false,
+            },
         ],
-        [
-            [{ test: 'abc' }, '/abc'],
-            [{ test: 'ABC' }, '/ABC'],
-        ],
-    ],
+    },
 
     /**
      * Nested parentheses.
      */
-    [
-        '/:test(\\d+(?:\\.\\d+)?)',
-        undefined,
-        [
+    {
+        path: '/:test(\\d+(?:\\.\\d+)?)',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '\\d+(?:\\.\\d+)?',
+                input: '/123',
+                matches: ['/123', '123'],
+                expected: { path: '/123', index: 0, params: { test: '123' } },
+            },
+            {
+                input: '/abc',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/123/abc',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/123.123',
+                matches: ['/123.123', '123.123'],
+                expected: { path: '/123.123', index: 0, params: { test: '123.123' } },
+            },
+            {
+                input: '/123.abc',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/123', ['/123', '123']],
-            ['/abc', null],
-            ['/123/abc', null],
-            ['/123.123', ['/123.123', '123.123']],
-            ['/123.abc', null],
-        ],
-        [
-            [{ test: 123 }, '/123'],
-            [{ test: 123.123 }, '/123.123'],
-            [{ test: 'abc' }, null],
-            [{ test: '123' }, '/123'],
-            [{ test: '123.123' }, '/123.123'],
-            [{ test: '123.abc' }, null],
-        ],
-    ],
-    [
-        '/:test((?!login)[^/]+)',
-        undefined,
-        [
+    },
+    {
+        path: '/:test((?!login)[^/]+)',
+        tests: [
             {
-                name: 'test',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '(?!login)[^/]+',
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { test: 'route' } },
+            },
+            {
+                input: '/login',
+                matches: null,
+                expected: false,
             },
         ],
-        [
-            ['/route', ['/route', 'route']],
-            ['/login', null],
-        ],
-        [
-            [{ test: 'route' }, '/route'],
-            [{ test: 'login' }, null],
-        ],
-    ],
+    },
 
     /**
      * https://github.com/pillarjs/path-to-regexp/issues/206
      */
-    [
-        '/user(s)?/:user',
-        undefined,
-        [
-            '/user',
+    {
+        path: '/user{(s)}?/:user',
+        tests: [
             {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '?',
-                pattern: 's',
+                input: '/user/123',
+                matches: ['/user/123', undefined, '123'],
+                expected: { path: '/user/123', index: 0, params: { user: '123' } },
             },
             {
-                name: 'user',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/users/123',
+                matches: ['/users/123', 's', '123'],
+                expected: {
+                    path: '/users/123',
+                    index: 0,
+                    params: { 0: 's', user: '123' },
+                },
             },
         ],
-        [
-            ['/user/123', ['/user/123', undefined, '123']],
-            ['/users/123', ['/users/123', 's', '123']],
+    },
+    {
+        path: '/user{s}?/:user',
+        tests: [
+            {
+                input: '/user/123',
+                matches: ['/user/123', '123'],
+                expected: { path: '/user/123', index: 0, params: { user: '123' } },
+            },
+            {
+                input: '/users/123',
+                matches: ['/users/123', '123'],
+                expected: { path: '/users/123', index: 0, params: { user: '123' } },
+            },
         ],
-        [[{ user: '123' }, '/user/123']],
-    ],
+    },
 
     /**
-     * https://github.com/pillarjs/path-to-regexp/issues/209
+     * https://github.com/pillarjs/path-to-regexp/pull/270
      */
-    [
-        '/whatever/:foo\\?query=str',
-        undefined,
-        [
-            '/whatever',
+    {
+        path: '/files{/:path}*{.:ext}*',
+        tests: [
             {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/files/hello/world.txt',
+                matches: ['/files/hello/world.txt', 'hello/world', 'txt'],
+                expected: {
+                    path: '/files/hello/world.txt',
+                    index: 0,
+                    params: { path: ['hello', 'world'], ext: ['txt'] },
+                },
             },
-            '?query=str',
-        ],
-        [['/whatever/123?query=str', ['/whatever/123?query=str', '123']]],
-        [[{ foo: '123' }, '/whatever/123?query=str']],
-    ],
-    [
-        '/whatever/:foo',
-        {
-            end: false,
-        },
-        [
-            '/whatever',
             {
-                name: 'foo',
-                prefix: '/',
-                suffix: '',
-                modifier: '',
-                pattern: '[^\\/#\\?]+?',
+                input: '/files/my/photo.jpg/gif',
+                matches: ['/files/my/photo.jpg/gif', 'my/photo.jpg/gif', undefined],
+                expected: {
+                    path: '/files/my/photo.jpg/gif',
+                    index: 0,
+                    params: { path: ['my', 'photo.jpg', 'gif'], ext: undefined },
+                },
             },
         ],
-        [
-            ['/whatever/123', ['/whatever/123', '123']],
-            ['/whatever/123/path', ['/whatever/123', '123']],
-            ['/whatever/123#fragment', ['/whatever/123', '123']],
-            ['/whatever/123?query=str', ['/whatever/123', '123']],
+    },
+    {
+        path: '#/*',
+        tests: [
+            {
+                input: '#/',
+                matches: ['#/', undefined],
+                expected: { path: '#/', index: 0, params: {} },
+            },
         ],
-        [
-            [{ foo: '123' }, '/whatever/123'],
-            [{ foo: '#' }, null],
+    },
+    {
+        path: '/foo{/:bar}*',
+        tests: [
+            {
+                input: '/foo/test1//test2',
+                matches: ['/foo/test1//test2', 'test1//test2'],
+                expected: {
+                    path: '/foo/test1//test2',
+                    index: 0,
+                    params: { bar: ['test1', 'test2'] },
+                },
+            },
         ],
-    ],
+    },
+    {
+        path: '/entity/:id/*',
+        tests: [
+            {
+                input: '/entity/foo',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/entity/foo/',
+                matches: ['/entity/foo/', 'foo', undefined],
+                expected: { path: '/entity/foo/', index: 0, params: { id: 'foo' } },
+            },
+        ],
+    },
+    {
+        path: '/test/*',
+        tests: [
+            {
+                input: '/test',
+                matches: null,
+                expected: false,
+            },
+            {
+                input: '/test/',
+                matches: ['/test/', undefined],
+                expected: { path: '/test/', index: 0, params: {} },
+            },
+            {
+                input: '/test/route',
+                matches: ['/test/route', 'route'],
+                expected: { path: '/test/route', index: 0, params: { '0': ['route'] } },
+            },
+            {
+                input: '/test/route/nested',
+                matches: ['/test/route/nested', 'route/nested'],
+                expected: {
+                    path: '/test/route/nested',
+                    index: 0,
+                    params: { '0': ['route', 'nested'] },
+                },
+            },
+        ],
+    },
+
     /**
-     * https://github.com/pillarjs/path-to-regexp/issues/260
+     * Asterisk wildcard.
      */
-    [
-        ':name*',
-        undefined,
-        [
+    {
+        path: '/*',
+        tests: [
             {
-                name: 'name',
-                prefix: '',
-                suffix: '',
-                modifier: '*',
-                pattern: '[^\\/#\\?]+?',
+                input: '/',
+                matches: ['/', undefined],
+                expected: { path: '/', index: 0, params: { '0': undefined } },
+            },
+            {
+                input: '/route',
+                matches: ['/route', 'route'],
+                expected: { path: '/route', index: 0, params: { '0': ['route'] } },
+            },
+            {
+                input: '/route/nested',
+                matches: ['/route/nested', 'route/nested'],
+                expected: {
+                    path: '/route/nested',
+                    index: 0,
+                    params: { '0': ['route', 'nested'] },
+                },
             },
         ],
-        [['foobar', ['foobar', 'foobar']]],
-        [[{ name: 'foobar' }, 'foobar']],
-    ],
-    [
-        ':name+',
-        undefined,
-        [
+    },
+    {
+        path: '*',
+        tests: [
             {
-                name: 'name',
-                prefix: '',
-                suffix: '',
-                modifier: '+',
-                pattern: '[^\\/#\\?]+?',
+                input: '/',
+                matches: ['/', '/'],
+                expected: { path: '/', index: 0, params: { '0': ['', ''] } },
+            },
+            {
+                input: '/test',
+                matches: ['/test', '/test'],
+                expected: { path: '/test', index: 0, params: { '0': ['', 'test'] } },
             },
         ],
-        [['foobar', ['foobar', 'foobar']]],
-        [[{ name: 'foobar' }, 'foobar']],
-    ],
-    // for coverage
-    [
-        '/',
-        { prefixes: './' },
-        ['/'],
-        [
-            ['/', ['/'], { path: '/', index: 0, params: {} }],
-            ['/route', null, false],
+    },
+    {
+        path: '*',
+        options: { decode: false },
+        tests: [
+            {
+                input: '/',
+                matches: ['/', '/'],
+                expected: { path: '/', index: 0, params: { '0': '/' } },
+            },
+            {
+                input: '/test',
+                matches: ['/test', '/test'],
+                expected: { path: '/test', index: 0, params: { '0': '/test' } },
+            },
         ],
-        [
-            [null, '/'],
-            [{}, '/'],
-            [{ id: 123 }, '/'],
+    },
+
+    /**
+     * No loose.
+     */
+    {
+        path: '/test',
+        options: { loose: false },
+        tests: [
+            {
+                input: '/test',
+                matches: ['/test'],
+                expected: { path: '/test', index: 0, params: {} },
+            },
+            {
+                input: '//test',
+                matches: null,
+                expected: false,
+            },
         ],
-    ],
+    },
 ];
 
 /**
- * Named capturing groups (available from 1812 version 10)
+ * Dynamically generate the entire test suite.
  */
-TESTS.push(
-    [
-        /\/(?<groupname>.+)/,
-        undefined,
-        [
-            {
-                name: 'groupname',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [
-            ['/', null],
-            ['/foo', ['/foo', 'foo']],
-        ],
-        [],
-    ],
-    [
-        /\/(?<test>.*).(?<format>html|json)/,
-        undefined,
-        [
-            {
-                name: 'test',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-            {
-                name: 'format',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [
-            ['/route', null],
-            ['/route.txt', null],
-            ['/route.html', ['/route.html', 'route', 'html']],
-            ['/route.json', ['/route.json', 'route', 'json']],
-        ],
-        [],
-    ],
-    [
-        /\/(.+)\/(?<groupname>.+)\/(.+)/,
-        undefined,
-        [
-            {
-                name: 0,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-            {
-                name: 'groupname',
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-            {
-                name: 1,
-                prefix: '',
-                suffix: '',
-                modifier: '',
-                pattern: '',
-            },
-        ],
-        [
-            ['/test', null],
-            ['/test/testData', null],
-            [
-                '/test/testData/extraStuff',
-                ['/test/testData/extraStuff', 'test', 'testData', 'extraStuff'],
-            ],
-        ],
-        [],
-    ]
-);
-
-//__________________________________________________________________________________________________//
-
-describe('extention-path2regexp spec', () => {
-    it('check instance', () => {
-        expect(path2regexp).toBeDefined();
-        expect(path2regexp.parse).toBeDefined();
-        expect(path2regexp.compile).toBeDefined();
-        expect(path2regexp.tokensToFunction).toBeDefined();
-        expect(path2regexp.match).toBeDefined();
-        expect(path2regexp.regexpToFunction).toBeDefined();
-        expect(path2regexp.tokensToRegexp).toBeDefined();
-        expect(path2regexp.pathToRegexp).toBeDefined();
-    });
-
-    const TEST_PATH = '/user/:id';
-
-    const TEST_PARAM = {
-        name: 'id',
-        prefix: '/',
-        suffix: '',
-        modifier: '',
-        pattern: '[^\\/#\\?]+?',
-    };
-
+describe('path-to-regexp', () => {
     /**
      * Execute a regular expression and return a flat array for comparison.
      *
@@ -2764,38 +2911,47 @@ describe('extention-path2regexp spec', () => {
      * @param  {String} str
      * @return {Array}
      */
-    const exec = (re: RegExp, str: string): string[] => {
+    function exec(re: RegExp, str: string): string[] | void {
         const match = re.exec(str);
         return match && Array.prototype.slice.call(match);
-    };
+    }
+
+    function removeUndefined(src: Record<string, any>): object {
+        for (const key of Object.keys(src)) {
+            if (null == src[key]) {
+                delete src[key];
+            } else if ('object' === typeof src[key]) {
+                removeUndefined(src[key]);
+            }
+        }
+        return src;
+    }
 
     describe('arguments', () => {
-        it('should work without different call combinations', () => {
-            path2regexp.pathToRegexp('/test');
-            path2regexp.pathToRegexp('/test', []);
-            path2regexp.pathToRegexp('/test', undefined, {});
+        it('should accept an array of keys as the second argument', () => {
+            const re = path2regexp.pathToRegexp('/user/:id', { end: false });
 
-            path2regexp.pathToRegexp(/^\/test/);
-            path2regexp.pathToRegexp(/^\/test/, []);
-            path2regexp.pathToRegexp(/^\/test/, undefined, {});
+            const expectedKeys = [
+                {
+                    name: 'id',
+                    pattern: undefined,
+                },
+            ];
 
-            path2regexp.pathToRegexp(['/a', '/b']);
-            path2regexp.pathToRegexp(['/a', '/b'], []);
-            path2regexp.pathToRegexp(['/a', '/b'], undefined, {});
+            expect(re.keys).toEqual(expectedKeys);
+            expect(exec(re, '/user/123/show')).toEqual(['/user/123', '123']);
         });
 
-        it('should accept an array of keys as the second argument', () => {
-            const keys: path2regexp.Key[] = [];
-            const re = path2regexp.pathToRegexp(TEST_PATH, keys, { end: false });
-
-            expect(keys).toEqual([TEST_PARAM]);
-            expect(exec(re, '/user/123/show')).toEqual(['/user/123', '123']);
+        it('should accept parse result as input', () => {
+            const tokens = path2regexp.parse('/user/:id');
+            const re = path2regexp.pathToRegexp(tokens);
+            expect(exec(re, '/user/123')).toEqual(['/user/123', '123']);
         });
 
         it('should throw on non-capturing pattern', () => {
             expect(() => {
                 path2regexp.pathToRegexp('/:foo(?:\\d+(\\.\\d+)?)');
-            }).toThrow(new TypeError('Pattern cannot start with "?" at 6'));
+            }).toThrow(new TypeError(`Pattern cannot start with "?" at 6`));
         });
 
         it('should throw on nested capturing group', () => {
@@ -2819,154 +2975,129 @@ describe('extention-path2regexp spec', () => {
         it('should throw on missing name', () => {
             expect(() => {
                 path2regexp.pathToRegexp('/:(test)');
-            }).toThrow(new TypeError('Missing parameter name at 1'));
+            }).toThrow(new TypeError('Missing parameter name at 2'));
         });
 
         it('should throw on nested groups', () => {
             expect(() => {
                 path2regexp.pathToRegexp('/{a{b:foo}}');
-            }).toThrow(new TypeError('Unexpected OPEN at 3, expected CLOSE'));
-        });
-
-        it('should throw on misplaced modifier', () => {
-            expect(() => {
-                path2regexp.pathToRegexp('/foo?');
-            }).toThrow(new TypeError('Unexpected MODIFIER at 4, expected END'));
+            }).toThrow(
+                new TypeError(
+                    'Unexpected { at 3, expected }: https://git.new/pathToRegexpError',
+                ),
+            );
         });
     });
 
-    describe('tokens', () => {
-        const tokens = path2regexp.parse(TEST_PATH);
-
-        it('should expose method to compile tokens to regexp', () => {
-            const re = path2regexp.tokensToRegexp(tokens);
-            expect(exec(re, '/user/123')).toEqual(['/user/123', '123']);
-        });
-
-        it('should expose method to compile tokens to a path function', () => {
-            const fn = path2regexp.tokensToFunction(tokens);
-            expect(fn({ id: 123 })).toEqual('/user/123');
-        });
-    });
-
-    describe('rules', () => {
-        TESTS.forEach((test) => {
-            const [path, opts, tokens, matchCases, compileCases] = test;
-
-            describe(JSON.stringify(path), () => {
-                const keys: path2regexp.Key[] = [];
-                const re = path2regexp.pathToRegexp(path, keys, opts);
-
-                // Parsing and compiling is only supported with string input.
-                if ('string' === typeof path) {
-                    it('should parse', () => {
-                        expect(path2regexp.parse(path, opts)).toEqual(tokens);
-                    });
-
-                    describe('compile', () => {
-                        if (compileCases.length) {
-                            compileCases.forEach((io) => {
-                                const [params, result, options] = io;
-                                const toPath = path2regexp.compile(path, {
-                                    ...opts,
-                                    ...options,
-                                });
-
-                                if (result !== null) {
-                                    it(`should compile using ${JSON.stringify(params)}`, () => {
-                                        expect(toPath(params)).toEqual(result);
-                                    });
-                                } else {
-                                    it(
-                                        `should not compile using ${JSON.stringify(params)}`,
-                                        () => {
-//                                          expect(() => { toPath(params); }).toThrow(TypeError);
-                                            expect(() => { toPath(params); }).toThrow();
-                                        }
-                                    );
-                                }
-                            });
-                        } else {
-                            it('avoid empty assert : compileCases', () => expect(true).toBeTruthy());
-                        }
-                    });
-                } else {
-                    it('should parse keys', () => {
-                        expect(keys).toEqual(
-                            tokens.filter((token) => {
-                                return typeof token !== 'string';
-                            }) as any
-                        );
-                    });
+    describe('parse $path with $options', () => {
+        function normalizeTokens(src: path2regexp.Token[]): path2regexp.Token[] {
+            for (const token of src) {
+                if ('object' === typeof token) {
+                    removeUndefined(token);
                 }
+            }
+            return src;
+        }
 
-                describe(
-                    `match${(opts ? ` using ${JSON.stringify(opts)}` : '')}`,
-                    () => {
-                        if (matchCases.length) {
-                            matchCases.forEach((io) => {
-                                const [pathname, matches, params, options] = io;
-                                const message = `should ${matches ? '' : 'not '}match ${JSON.stringify(pathname)}`;
-                                it(message, () => {
-                                    expect(exec(re, pathname)).toEqual(matches as any);
-                                });
-
-                                if ('string' === typeof path && params !== undefined) {
-                                    const match = path2regexp.match(path, options);
-                                    it(`message ${params}`, () => { // eslint-disable-line @typescript-eslint/restrict-template-expressions
-                                        expect(match(pathname)).toEqual(params);
-                                    });
-                                }
-                            });
-                        } else {
-                            it('avoid empty assert : matchCases', () => expect(true).toBeTruthy());
-                        }
-                    }
-                );
+        for (const { path, options, expected } of PARSER_TESTS) {
+            it(`should parse the path: ${path}`, () => {
+                const data = path2regexp.parse(path, options);
+                expect(normalizeTokens(data.tokens)).toEqual(expected);
             });
-        });
+        }
+    });
+
+    describe('compile $path with $options', () => {
+        for (const { path, options, tests } of COMPILE_TESTS) {
+            for (const { input, expected } of tests) {
+                it(`should compile $input: ${input}`, () => {
+                    const toPath = path2regexp.compile(path, options);
+                    if (null === expected) {
+                        expect(() => toPath(input)).toThrow();
+                    } else {
+                        expect(toPath(input)).toEqual(expected);
+                    }
+                });
+            }
+        }
+    });
+
+    describe('match $path with $options', () => {
+        function normalizeResult(src: path2regexp.Match<path2regexp.ParamData>): path2regexp.Match<path2regexp.ParamData> {
+            if ('object' === typeof src) {
+                removeUndefined(src);
+            }
+            return src;
+        }
+
+        for (const { path, options, tests } of MATCH_TESTS) {
+            for (const { input, matches, expected } of tests) {
+                it(`should match $input: ${input}`, () => {
+                    const re = path2regexp.pathToRegexp(path, options);
+                    const match = path2regexp.match(path, options);
+
+                    expect(exec(re, input)).toEqual(matches as string[]);
+                    expect(normalizeResult(match(input))).toEqual(normalizeResult(expected));
+                });
+            }
+        }
     });
 
     describe('compile errors', () => {
         it('should throw when a required param is undefined', () => {
             const toPath = path2regexp.compile('/a/:b/c');
+
             expect(() => {
                 toPath();
-            }).toThrow(new TypeError('Expected "b" to be a string'));
+            }).toThrow(new TypeError(`Expected "b" to be a string`));
         });
 
         it('should throw when it does not match the pattern', () => {
             const toPath = path2regexp.compile('/:foo(\\d+)');
+
             expect(() => {
                 toPath({ foo: 'abc' });
-            }).toThrow(
-                new TypeError('Expected "foo" to match "\\d+", but got "abc"')
-            );
+            }).toThrow(new TypeError(`Invalid value for "foo": "abc"`));
         });
 
         it('should throw when expecting a repeated value', () => {
-            const toPath = path2regexp.compile('/:foo+');
+            const toPath = path2regexp.compile('{/:foo}+');
+
             expect(() => {
                 toPath({ foo: [] });
-            }).toThrow(new TypeError('Expected "foo" to not be empty'));
+            }).toThrow(new TypeError(`Invalid value for "foo": ""`));
         });
 
         it('should throw when not expecting a repeated value', () => {
             const toPath = path2regexp.compile('/:foo');
+
             expect(() => {
                 toPath({ foo: [] });
-            }).toThrow(
-                new TypeError('Expected "foo" to not repeat, but got an array')
-            );
+            }).toThrow(new TypeError(`Expected "foo" to be a string`));
+        });
+
+        it('should throw when a repeated param is not an array', () => {
+            const toPath = path2regexp.compile('{/:foo}+');
+
+            expect(() => {
+                toPath({ foo: 'a' });
+            }).toThrow(new TypeError(`Expected "foo" to be an array`));
+        });
+
+        it('should throw when an array value is not a string', () => {
+            const toPath = path2regexp.compile('{/:foo}+');
+
+            expect(() => {
+                toPath({ foo: [1, 'a'] });
+            }).toThrow(new TypeError(`Expected "foo/0" to be a string`));
         });
 
         it('should throw when repeated value does not match', () => {
-            const toPath = path2regexp.compile('/:foo(\\d+)+');
+            const toPath = path2regexp.compile('{/:foo(\\d+)}+');
+
             expect(() => {
-                toPath({ foo: [1, 2, 3, 'a'] });
-            }).toThrow(
-                new TypeError('Expected all "foo" to match "\\d+", but got "a"')
-            );
+                toPath({ foo: ['1', '2', '3', 'a'] });
+            }).toThrow(new TypeError(`Invalid value for "foo": "/1/2/3/a"`));
         });
     });
 });

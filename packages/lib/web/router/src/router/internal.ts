@@ -36,6 +36,7 @@ import type {
     PageTransitionParams,
     RouteChangeInfo,
     Page,
+    RoutePathParams,
     RouteParameters,
     Route,
     RouteSubFlowParams,
@@ -155,9 +156,8 @@ export const toRouteContextParameters = (routes: RouteParameters | RouteParamete
 
     return flatten('', isArray(routes) ? routes : routes ? [routes] : [])
         .map((seed: RouteContextParameters) => {
-            const keys: path2regexp.Key[] = [];
-            seed.regexp = path2regexp.pathToRegexp(seed.path, keys);
-            seed.paramKeys = keys.filter(k => isString(k.name)).map(k => k.name as string);
+            seed.regexp = path2regexp.pathToRegexp(seed.path);
+            seed.paramKeys = (seed.regexp as path2regexp.PathRegExp).keys.filter(k => isString(k.name)).map(k => k.name);
             return seed;
         });
 };
@@ -173,11 +173,22 @@ export const prepareHistory = (seed: 'hash' | 'history' | 'memory' | IHistory = 
 };
 
 /** @internal */
+const ensurePathParams = (params: RoutePathParams | undefined): path2regexp.ParamData => {
+    const pathParams: path2regexp.ParamData = {};
+    if (params) {
+        for (const key of Object.keys(params)) {
+            pathParams[key] = String(params[key]);
+        }
+    }
+    return pathParams;
+};
+
+/** @internal */
 export const buildNavigateUrl = (path: string, options: RouteNavigationOptions): string => {
     try {
         path = `/${normalizeId(path)}`;
         const { query, params } = options;
-        let url = path2regexp.compile(path)(params ?? {});
+        let url = path2regexp.compile(path)(ensurePathParams(params));
         if (query) {
             url += `?${toQueryStrings(query)}`;
         }

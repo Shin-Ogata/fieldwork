@@ -40,11 +40,12 @@ export { path2regexp };
 module.exports = {
     __esModule: true,
     default: bundle_src({
+        cjsSource: true,
         alias: {
             entries: [
                 {
                     find: 'path-to-regexp',
-                    replacement: resolve('node_modules/path-to-regexp/dist.es2015/index.js'),
+                    replacement: resolve('node_modules/path-to-regexp/dist/index.js'),
                 },
             ],
         },

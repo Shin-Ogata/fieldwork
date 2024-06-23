@@ -41,6 +41,7 @@ function getConfig(options) {
     const {
         sourcemap,
         format,
+        cjsSource,
         external: globals,
         commonjs: cjsOptions,
         replace,
@@ -55,7 +56,7 @@ function getConfig(options) {
     globals && external.push(...Object.keys(globals));
 
     const umd = 'umd' === format;
-    const cjs = 'cjs' === format;
+    const cjs = 'cjs' === format || cjsSource;
 
     return {
         input: `${BUILT}/${BASE}.js`,
