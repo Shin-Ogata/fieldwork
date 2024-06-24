@@ -42,7 +42,7 @@
     "tar": "7.4.0",
     "terser": "5.31.1",
     "testem": "3.14.0",
-    "typedoc": "0.26.1",
+    "typedoc": "0.26.2",
     "typescript": "5.5.2",
     "typescript-eslint": "7.13.1"
   },
