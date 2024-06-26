@@ -32,7 +32,7 @@ import { ElementScroller } from './element-scroller';
 const _defaultOpts: Required<ListContextOptions> = {
     scrollerFactory: ElementScroller.getFactory(),
     enableHiddenPage: false,
-    enableTransformOffset: false,
+    enableTransformOffset: true,
     scrollMapRefreshInterval: 200,
     scrollRefreshDistance: 200,
     pagePrepareCount: 3,

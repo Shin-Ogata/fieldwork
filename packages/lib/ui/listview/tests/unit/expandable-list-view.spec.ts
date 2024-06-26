@@ -114,12 +114,37 @@ describe('ui-listview/expandable-list-view spec', () => {
             expect(b).toBe(false);
         });
 
-        it('group operation advanced', async () => {
+        it('group operation enableTransformOffset=true', async () => {
             prepareTestElements();
             const $el = $('#d1');
             $el.height(100);
 
             const listview = new TestExpandListView({ el: $el[0], itemNum: 50, childPerParent: 5, enableTransformOffset: true });
+            await listview.ready;
+            expect(listview.scrollPosMax).toBe(4900);
+
+            const parents = listview.getTopGroups();
+            expect(parents.length).toBe(50);
+
+            await listview.scrollTo(4900);
+            expect(listview.scrollPos).toBe(4900);
+
+            await parents[49].expand();
+            expect(listview.scrollPosMax).toBe(5400);
+
+            await listview.scrollTo(5400);
+            expect(listview.scrollPos).toBe(5400);
+
+            await parents[49].collapse();
+            expect(listview.scrollPosMax).toBe(4900);
+        });
+
+        it('group operation enableTransformOffset=false', async () => {
+            prepareTestElements();
+            const $el = $('#d1');
+            $el.height(100);
+
+            const listview = new TestExpandListView({ el: $el[0], itemNum: 50, childPerParent: 5, enableTransformOffset: false });
             await listview.ready;
             expect(listview.scrollPosMax).toBe(4900);
 
