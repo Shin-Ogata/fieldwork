@@ -156,8 +156,9 @@ export const toRouteContextParameters = (routes: RouteParameters | RouteParamete
 
     return flatten('', isArray(routes) ? routes : routes ? [routes] : [])
         .map((seed: RouteContextParameters) => {
-            seed.regexp = path2regexp.pathToRegexp(seed.path);
-            seed.paramKeys = (seed.regexp as path2regexp.PathRegExp).keys.filter(k => isString(k.name)).map(k => k.name);
+            const regexp = path2regexp.pathToRegexp(seed.path);
+            seed.regexp = regexp;
+            seed.paramKeys = (regexp).keys.filter(k => isString(k.name)).map(k => k.name);
             return seed;
         });
 };

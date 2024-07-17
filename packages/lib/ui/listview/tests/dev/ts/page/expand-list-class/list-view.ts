@@ -228,6 +228,12 @@ export class ExpandListView extends ExpandableListView {
                     devId,
                     images,
                     devIndex: index,
+                    /*
+                     * Stacking context 対応
+                     * https://developer.mozilla.org/ja/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context
+                     * https://ics.media/entry/200609/
+                     */
+                    zIndex: '10',
                 });
                 this.registerTopGroup(group);
                 index++;
