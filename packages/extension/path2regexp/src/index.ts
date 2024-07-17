@@ -18,7 +18,6 @@ import {
     Key as p2rKey,
     Token as p2rToken,
     Path as p2rPath,
-    PathRegExp as p2rPathRegExp,
     parse,
     compile,
     match,
@@ -41,7 +40,6 @@ declare namespace path2regexp {
     export type Key = p2rKey;
     export type Token = p2rToken;
     export type Path = p2rPath;
-    export type PathRegExp = p2rPathRegExp;
 }
 
 const path2regexp = {

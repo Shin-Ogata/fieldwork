@@ -60,7 +60,12 @@ class ExpandListPageView extends PageView {
             el: thisPage.el.querySelector<HTMLElement>('#expand-listview-area')!,
             itemTagName: 'li',
             animationDuration: 400,
-            baseDepth: '0',
+            /*
+             * Stacking context 対応
+             * https://developer.mozilla.org/ja/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context
+             * https://ics.media/entry/200609/
+             */
+            baseDepth: '-1',
         });
     }
 
@@ -74,7 +79,7 @@ class ExpandListPageView extends PageView {
 
     private onExpandAll(): void {
         // void this._listview?.expandAll();
-        // TODO: test
+        // TODO: Temporarily Collection Check
         void (async () => {
             if (!_collection) {
                 _collection = new ImageCollection();

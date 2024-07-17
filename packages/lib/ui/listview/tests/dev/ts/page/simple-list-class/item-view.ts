@@ -9,6 +9,7 @@ import { type ListItemViewConstructionOptions, ListItemView } from '@cdp/ui-list
 export interface SimpleListItemViewConstructionOptions extends ListItemViewConstructionOptions{
     devId: string;
     devIndex?: number;
+    zIndex?: string;
 }
 
 export class SimpleListItemView extends ListItemView {
@@ -16,12 +17,14 @@ export class SimpleListItemView extends ListItemView {
     private readonly _template: JST;
     private readonly _devId: string;
     private readonly _index?: number;
+    private readonly _zIndex?: string;
 
     constructor(options: SimpleListItemViewConstructionOptions) {
         super(options);
         this._template = TemplateEngine.compile(this.template.innerHTML);
         this._devId = options.devId;
         this._index = options.devIndex;
+        this._zIndex = options.zIndex;
         this.render();
     }
 
@@ -32,6 +35,7 @@ export class SimpleListItemView extends ListItemView {
         if (null != this.$el && !this.hasChildNode) {
             const $item = $(this._template(this.makeTemplateParam()));
             $item.height(this.$el.height());
+            (null != this._zIndex) && this.$el.css('z-index', this._zIndex);
             this.$el.append($item);
         }
         return this;
