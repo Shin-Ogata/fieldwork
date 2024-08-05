@@ -162,7 +162,7 @@ export interface DOMIterable<T extends ElementBase = HTMLElement> extends Partia
  *   const dom: DOMAccess<TElement> = this as DOMIterable<TElement>;
  * ```
  */
-export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<DOM<T>> { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface DOMAccess<T extends ElementBase = HTMLElement> extends Partial<DOM<T>> { } // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 //__________________________________________________________________________________________________//
 

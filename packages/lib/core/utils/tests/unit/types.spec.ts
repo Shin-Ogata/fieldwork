@@ -1,8 +1,9 @@
 /* eslint-disable
+    @stylistic:js/indent,
     @typescript-eslint/restrict-template-expressions,
-    @typescript-eslint/ban-types,
-    @typescript-eslint/indent,
     @typescript-eslint/no-empty-function,
+    @typescript-eslint/no-wrapper-object-types,
+    @typescript-eslint/no-empty-object-type,
  */
 
 import {

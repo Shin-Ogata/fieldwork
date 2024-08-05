@@ -42,7 +42,7 @@ type DOMFeatures<T extends ElementBase>
  *  - https://github.com/microsoft/TypeScript/issues/33326
  *  - https://stackoverflow.com/questions/57848134/trouble-updating-an-interface-using-declaration-merging
  */
-export interface DOMPlugin { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface DOMPlugin { } // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 /**
  * @en This interface provides DOM operations like `jQuery` library.

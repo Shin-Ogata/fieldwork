@@ -9,7 +9,7 @@ import ERROR_MESSAGE_MAP        = CDP_DECLARE.ERROR_MESSAGE_MAP;
 
 /** @internal */
 const enum Description {
-    UNKNOWN_ERROR_NAME ='UNKNOWN',
+    UNKNOWN_ERROR_NAME = 'UNKNOWN',
 }
 
 export {

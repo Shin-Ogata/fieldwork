@@ -1,5 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/indent,
+    @stylistic:js/indent,
  */
 
 import {

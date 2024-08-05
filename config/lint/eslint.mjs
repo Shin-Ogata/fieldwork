@@ -1,6 +1,6 @@
 import globals from 'globals';
 import eslint from '@eslint/js';
-import stylistic from '@stylistic/eslint-plugin-js';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default [
     eslint.configs.recommended,
@@ -122,7 +122,7 @@ export default [
             'no-extra-boolean-cast': 'off',
             'no-bitwise': 'off',
             'no-console': 'off',
-            // @stylistic/js
+            // @stylistic
             '@stylistic:js/array-bracket-spacing': [
                 'error',
                 'never',
@@ -177,6 +177,15 @@ export default [
                 'error',
                 'always',
             ],
+            '@stylistic:js/indent': [
+                'error',
+                4,
+                {
+                    SwitchCase: 1,
+                    ignoreComments: true,
+                },
+            ],
+            '@stylistic:js/func-call-spacing': 'error',
             '@stylistic:js/semi-spacing': 'error',
             '@stylistic:js/space-in-parens': 'error',
             '@stylistic:js/space-infix-ops': 'error',

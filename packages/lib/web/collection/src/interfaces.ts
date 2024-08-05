@@ -493,7 +493,7 @@ export type CollectionRequeryOptions = Silenceable & Cancelable;
  * @ja Model 属性変更イベント定義
  */
 export type CollectionModelAttributeChangeEvent<T extends object>
-    = { [K in ChangedAttributeEvent<T>]: K extends `@change:${string}` ? [T, Collection<T>, CollectionOperationOptions] : never; }
+    = { [K in ChangedAttributeEvent<T>]: K extends `@change:${string}` ? [T, Collection<T>, CollectionOperationOptions] : never; };
 
 /**
  * @en Default {@link Collection} seed type.

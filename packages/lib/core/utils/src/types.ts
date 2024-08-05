@@ -1,6 +1,7 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
-    @typescript-eslint/ban-types,
+    @typescript-eslint/no-unsafe-function-type,
+    @typescript-eslint/no-empty-object-type,
  */
 
 /**

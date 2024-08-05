@@ -84,7 +84,7 @@ class TemplateLiteralView extends PageView {
          * https://marketplace.visualstudio.com/items?itemName=bierner.comment-tagged-templates
          */
 
-        /* eslint-disable @typescript-eslint/indent */
+        /* eslint-disable @stylistic:js/indent */
         return html`
             <header>
                 <label>👈</label>
@@ -138,7 +138,7 @@ class TemplateLiteralView extends PageView {
                 </fieldset>
             </section>
         `;
-        /* eslint-enable @typescript-eslint/indent */
+        /* eslint-enable @stylistic:js/indent */
     }
 
 ///////////////////////////////////////////////////////////////////////

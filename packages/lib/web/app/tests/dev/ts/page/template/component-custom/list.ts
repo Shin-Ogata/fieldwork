@@ -61,7 +61,7 @@ class DevListComponent extends ComponentElement {
 
     private template(): TemplateResult {
         const { list } = this._props;
-        /* eslint-disable @typescript-eslint/indent */
+        /* eslint-disable @stylistic:js/indent */
         return html`
             <fieldset class="template-control-group">
                 <p>${t(i18nKey.app.template.content.list.label)}${ list.length }</p>
@@ -88,7 +88,7 @@ class DevListComponent extends ComponentElement {
                 }
             </fieldset>
         `;
-        /* eslint-enable @typescript-eslint/indent */
+        /* eslint-enable @stylistic:js/indent */
     }
 
 ///////////////////////////////////////////////////////////////////////

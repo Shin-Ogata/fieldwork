@@ -43,7 +43,7 @@ describe('promise/promise-manager spec', () => {
             expect(results[0]).toBe('resolve:100');
             expect(results[1]).toBe('resolve:50');
             expect(results[2]).toBe('resolve:0');
-        } catch (e) {
+        } catch {
             fail('UNEXPECTED FLOW');
         }
 
@@ -84,7 +84,7 @@ describe('promise/promise-manager spec', () => {
             const result = await manager.race();
 
             expect(result).toBe('resolve:0');
-        } catch (e) {
+        } catch {
             fail('UNEXPECTED FLOW');
         }
 

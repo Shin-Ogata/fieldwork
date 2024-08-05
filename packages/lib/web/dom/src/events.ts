@@ -356,7 +356,7 @@ function handleSelfEvent<TElement extends ElementBase>(
 
 //__________________________________________________________________________________________________//
 
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @stylistic:js/indent */
 export type DOMEventMap<T>
     = T extends Window ? WindowEventMap
     : T extends Document ? DocumentEventMap
@@ -365,9 +365,9 @@ export type DOMEventMap<T>
     : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap
     : T extends Element ? ElementEventMap & ConnectEventMap
     : GlobalEventHandlersEventMap;
-/* eslint-enable @typescript-eslint/indent */
+/* eslint-enable @stylistic:js/indent */
 
-export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown
+export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
 
 export type EventWithNamespace<T extends DOMEventMap<any>> = keyof T | `${string & keyof T}.${string}`;
 export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);

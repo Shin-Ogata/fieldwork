@@ -6,7 +6,7 @@ import { safe } from './safe';
  * @en Type of handle for timer functions.
  * @ja タイマー関数に使用するハンドル型
  */
-export interface TimerHandle { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface TimerHandle { } // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 /**
  * @en Type of timer start functions.
