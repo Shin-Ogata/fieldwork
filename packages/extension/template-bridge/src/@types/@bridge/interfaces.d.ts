@@ -1,5 +1,5 @@
 /* eslint-disable
-    @typescript-eslint/ban-types,
+    @typescript-eslint/no-empty-object-type,
  */
 
 import { TemplateResult, SVGTemplateResult } from '@cdp/extension-template';

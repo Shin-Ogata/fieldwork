@@ -126,7 +126,7 @@ export function parseTemplate(template: string, tags?: Delimiters): Token[] {
     const stripSpace = (): void => {
         if (hasTag && !nonSpace) {
             while (spaces.length) {
-                delete tokens[spaces.pop()!];
+                delete tokens[spaces.pop()!];   // eslint-disable-line @typescript-eslint/no-array-delete
             }
         } else {
             spaces.length = 0;

@@ -745,7 +745,7 @@ describe('model/model spec', () => {
                     size: 11,
                 }, { validate: true, noThrow: true, silent: true });
             });
-        } catch (e) {
+        } catch {
             fail('UNEXPECTED FLOW');
         }
 

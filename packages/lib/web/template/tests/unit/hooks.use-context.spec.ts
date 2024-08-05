@@ -60,7 +60,6 @@ describe('hooks/use-context spec', () => {
     it('check provider update', async () => {
         let setter!: UnknownFunction;
 
-        // eslint-disable-next-line @stylistic:js/func-call-spacing
         const ThemeContext = createContext<{ theme: 'dark' | 'light'; setTheme: (theme: 'dark' | 'light') => void; }>({ theme: 'dark', setTheme: noop });
 
         function Provider(callback: (value: string) => DirectiveResult): DirectiveResult {
@@ -75,7 +74,7 @@ describe('hooks/use-context spec', () => {
             return theme;
         }
 
-        /* eslint-disable @typescript-eslint/indent */
+        /* eslint-disable @stylistic:js/indent */
         function App(): TemplateResult {
             return html`
                 ${Provider(() => html`
@@ -83,7 +82,7 @@ describe('hooks/use-context spec', () => {
                 )}
             `;
         }
-        /* eslint-enable @typescript-eslint/indent */
+        /* eslint-enable @stylistic:js/indent */
 
         render(hooks(App), _$dom[0]);
         await waitFrame();

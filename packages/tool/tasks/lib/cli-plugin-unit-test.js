@@ -1,3 +1,6 @@
+/* eslint-disable
+    @stylistic:js/indent,
+ */
 'use strict';
 
 const { resolve } = require('node:path');

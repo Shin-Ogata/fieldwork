@@ -14,13 +14,13 @@ export interface ListViewGlobalConfig {
 
 /** @internal */
 const enum DefaultV {
-    NAMESPACE                    = 'cdp-ui', // TODO: namespace は utils に移す
-    SCROLL_MAP_CLASS             = `${NAMESPACE}-listview-scroll-map`,
-    INACTIVE_CLASS               = `${NAMESPACE}-inactive`,
-    RECYCLE_CLASS                = `${NAMESPACE}-listview-recycle`,
-    LISTITEM_BASE_CLASS          = `${NAMESPACE}-listview-item-base`,
-    DATA_PAGE_INDEX              = 'data-page-index',
-    DATA_ITEM_INDEX              = 'data-item-index',
+    NAMESPACE           = 'cdp-ui', // TODO: namespace は utils に移す
+    SCROLL_MAP_CLASS    = `${NAMESPACE}-listview-scroll-map`,
+    INACTIVE_CLASS      = `${NAMESPACE}-inactive`,
+    RECYCLE_CLASS       = `${NAMESPACE}-listview-recycle`,
+    LISTITEM_BASE_CLASS = `${NAMESPACE}-listview-item-base`,
+    DATA_PAGE_INDEX     = 'data-page-index',
+    DATA_ITEM_INDEX     = 'data-item-index',
 }
 
 const _config = {
@@ -34,15 +34,16 @@ const _config = {
 };
 
 export type ListViewGlobalConfigArg = Partial<
-Pick<ListViewGlobalConfig
-, 'NAMESPACE'
-| 'SCROLL_MAP_CLASS'
-| 'INACTIVE_CLASS'
-| 'RECYCLE_CLASS'
-| 'LISTITEM_BASE_CLASS'
-| 'DATA_PAGE_INDEX'
-| 'DATA_ITEM_INDEX'
->>;
+    Pick<ListViewGlobalConfig
+        , 'NAMESPACE'
+        | 'SCROLL_MAP_CLASS'
+        | 'INACTIVE_CLASS'
+        | 'RECYCLE_CLASS'
+        | 'LISTITEM_BASE_CLASS'
+        | 'DATA_PAGE_INDEX'
+        | 'DATA_ITEM_INDEX'
+    >
+>;
 
 const ensureNewConfig = (newConfig: ListViewGlobalConfigArg): Partial<ListViewGlobalConfig> => {
     const {

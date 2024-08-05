@@ -6,21 +6,21 @@
         try {
             // eslint-disable-next-line no-undef
             Testem.afterTests(
-              (config, data, callback) => {
-                  const coverage = JSON.stringify(window.__coverage__);
-                  if (null != coverage) {
-                      const xhr = new XMLHttpRequest();
-                      xhr.onreadystatechange = () => {
-                          if (4 === xhr.readyState) {
-                              callback();
-                          }
-                      };
-                      xhr.open('POST', '/coverage', true);
-                      xhr.send(coverage);
-                  } else {
-                      callback();
-                  }
-              });
+                (config, data, callback) => {
+                    const coverage = JSON.stringify(window.__coverage__);
+                    if (null != coverage) {
+                        const xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = () => {
+                            if (4 === xhr.readyState) {
+                                callback();
+                            }
+                        };
+                        xhr.open('POST', '/coverage', true);
+                        xhr.send(coverage);
+                    } else {
+                        callback();
+                    }
+                });
         } catch (error) {
             console.log(error);
         }

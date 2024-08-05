@@ -1,5 +1,6 @@
 import eslint from './eslint.mjs';
 import tslint from 'typescript-eslint';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default [
     ...eslint,
@@ -8,6 +9,7 @@ export default [
     {
         plugins: {
             '@typescript-eslint': tslint.plugin,
+            '@stylistic:ts': stylistic,
         },
         languageOptions: {
             parser: tslint.parser,
@@ -21,15 +23,6 @@ export default [
             // added rules
             ////////////////////////////////////////////////////////
     
-            '@typescript-eslint/indent': [
-                'error',
-                4,
-                {
-                    SwitchCase: 1,
-                    ignoreComments: true,
-                },
-            ],
-            '@typescript-eslint/func-call-spacing': 'error',
             '@typescript-eslint/member-naming': [
                 'off',
                 {
@@ -43,15 +36,6 @@ export default [
                 {
                     allowExpressions: true,
                     allowTypedFunctionExpressions: true,
-                },
-            ],
-            '@typescript-eslint/member-delimiter-style': [
-                'error',
-                {
-                    singleline: {
-                        delimiter: 'semi',
-                        requireLast: true,
-                    },
                 },
             ],
             '@typescript-eslint/explicit-member-accessibility': [
@@ -104,21 +88,6 @@ export default [
                     ignoreStatic: true,
                 },
             ],
-            /*
-             * continue consideration
-             * https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/ban-types.md#default-options
-             * https://github.com/typescript-eslint/typescript-eslint/issues/2063#issuecomment-634318313
-             */
-            '@typescript-eslint/ban-types': [
-                'error',
-                {
-                    extendDefaults: true,
-                    types: {
-                        'object': false,
-                    }
-                },
-    
-            ],
             '@typescript-eslint/restrict-template-expressions': [
                 'error',
                 {
@@ -126,6 +95,13 @@ export default [
                     allowBoolean: true,
                     allowAny: true,
                     allowNullish: true,
+                },
+            ],
+            '@typescript-eslint/no-unused-expressions': [
+                'error',
+                {
+                    allowShortCircuit: true,
+                    allowTernary: true,
                 },
             ],
             '@typescript-eslint/no-for-in-array': 'warn',
@@ -140,6 +116,8 @@ export default [
             // v6.0+
             '@typescript-eslint/no-base-to-string': 'off',
             '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+            // v8.0+
+            '@typescript-eslint/prefer-promise-reject-errors': 'off',
     
             ////////////////////////////////////////////////////////
             // patch: @typescript-eslint/stylistic-type-checked
@@ -159,6 +137,16 @@ export default [
             '@typescript-eslint/prefer-optional-chain': 'warn',
             // prefer true read-only
             '@typescript-eslint/class-literal-property-style': 'off',
+            // @stylistic/ts
+            '@stylistic:ts/member-delimiter-style': [
+                'error',
+                {
+                    singleline: {
+                        delimiter: 'semi',
+                        requireLast: true,
+                    },
+                },
+            ],
         },
     },
 ];

@@ -167,7 +167,7 @@ export type TemplateEscaper = typeof escapeHTML;
  * @en {@link ITemplateEngine} base type definition.
  * @ja {@link ITemplateEngine} 基底型
  */
-export interface ITemplateEngine { } // eslint-disable-line @typescript-eslint/no-empty-interface
+export interface ITemplateEngine { } // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 /**
  * @en {@link TemplateEngine} internal I/F accssor.

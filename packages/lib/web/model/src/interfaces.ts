@@ -58,7 +58,7 @@ export type MakeEventArg<T extends object, K> = K extends `@change:${infer A}` ?
  * @en {@link Model} attribute change event definition.
  * @ja {@link Model} 属性変更イベント定義
  */
-export type ModelAttributeChangeEvent<T extends object> = { [K in ChangedAttributeEvent<T>]: MakeEventArg<T, K>; }
+export type ModelAttributeChangeEvent<T extends object> = { [K in ChangedAttributeEvent<T>]: MakeEventArg<T, K>; };
 
 /**
  * @en Default {@link Model} event definition.

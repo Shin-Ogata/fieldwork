@@ -11,7 +11,7 @@ const { repeat } = directives;
 
 export const List = (props: Props): TemplateResult => {
     const { list } = props;
-    /* eslint-disable @typescript-eslint/indent */
+    /* eslint-disable @stylistic:js/indent */
     return html`
         <fieldset class="template-control-group">
             <p>${t(i18nKey.app.template.content.list.label)}${ list.length }</p>
@@ -38,5 +38,5 @@ export const List = (props: Props): TemplateResult => {
             }
         </fieldset>
     `;
-    /* eslint-enable @typescript-eslint/indent */
+    /* eslint-enable @stylistic:js/indent */
 };
