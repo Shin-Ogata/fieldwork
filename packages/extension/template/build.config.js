@@ -30,6 +30,8 @@ function patch(index, code) {
     code = code
         // trim `import("xxx").`
         .replace(/import\('[\S]+'\)\./g, '')
+        // trim `import ... from from 'trusted-types/lib';`
+        .replace(/import[\S ]+from 'trusted-types\/lib';/g, '')
         // replace `TrustedHTML` -> `HTMLElement`
         .replace(/TrustedHTML/g, 'HTMLElement')
         // rename list
