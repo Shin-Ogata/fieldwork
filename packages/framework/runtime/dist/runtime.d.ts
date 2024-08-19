@@ -5765,7 +5765,7 @@ export type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
  * Creates a user-facing directive function from a Directive class. This
  * function has the same parameters as the directive's render() method.
  */
-export declare const directive: <C extends DirectiveClass>(c: C) => (...values: Parameters<InstanceType<C>['render']>) => DirectiveResult<C>;
+export declare const directive: <C extends DirectiveClass>(c: C) => (...values: DirectiveParameters<InstanceType<C>>) => DirectiveResult<C>;
 /**
  * Base class for creating custom directives. Users should extend this class,
  * implement `render` and/or `update`, and then pass their subclass to
@@ -5813,9 +5813,13 @@ export type SanitizerFactory = (node: Node, name: string, type: 'property' | 'at
 export type ValueSanitizer = (value: unknown) => unknown;
 declare const HTML_RESULT = 1;
 declare const SVG_RESULT = 2;
-export type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+declare const MATHML_RESULT = 3;
+export type ResultType = typeof HTML_RESULT | typeof SVG_RESULT | typeof MATHML_RESULT;
 declare const ATTRIBUTE_PART = 1;
 declare const CHILD_PART = 2;
+declare const PROPERTY_PART = 3;
+declare const BOOLEAN_ATTRIBUTE_PART = 4;
+declare const EVENT_PART = 5;
 declare const ELEMENT_PART = 6;
 declare const COMMENT_PART = 7;
 /**
@@ -5872,8 +5876,8 @@ export type SVGTemplateResult = TemplateResult<typeof SVG_RESULT>;
  */
 export declare const html: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<1>;
 /**
- * Interprets a template literal as an SVG fragment that can efficiently
- * render to and update a container.
+ * Interprets a template literal as an SVG fragment that can efficiently render
+ * to and update a container.
  *
  * ```ts
  * const rect = svg`<rect width='10' height='10'></rect>`;
@@ -5892,7 +5896,8 @@ export declare const html: (strings: TemplateStringsArray, ...values: unknown[])
  *
  * In LitElement usage, it's invalid to return an SVG fragment from the
  * `render()` method, as the SVG fragment will be contained within the element's
- * shadow root and thus cannot be used within an `<svg>` HTML element.
+ * shadow root and thus not be properly contained within an `<svg>` HTML
+ * element.
  */
 export declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<2>;
 /**
@@ -6074,7 +6079,7 @@ export interface RootPart extends ChildPart {
     setConnected(isConnected: boolean): void;
 }
 declare class AttributePart implements Disconnectable {
-    readonly type: 1 | 3 | 4 | 5;
+    readonly type: typeof ATTRIBUTE_PART | typeof PROPERTY_PART | typeof BOOLEAN_ATTRIBUTE_PART | typeof EVENT_PART;
     readonly element: HTMLElement;
     readonly name: string;
     readonly options: RenderOptions | undefined;
@@ -6156,9 +6161,9 @@ export declare const _$LH: {
     marker: string;
     markerMatch: string;
     HTML_RESULT: number;
-    getTemplateHtml: (strings: TemplateStringsArray, type: 1 | 2) => [
+    getTemplateHtml: (strings: TemplateStringsArray, type: 1 | 2 | 3) => [
         HTMLElement,
-        string[]
+        Array<string>
     ];
     overrideDirectiveResolve: (directiveClass: new (part: PartInfo) => Directive & {
         render(): unknown;
@@ -6167,21 +6172,21 @@ export declare const _$LH: {
             _$resolve(this: Directive, _part: Part, values: unknown[]): unknown;
             __part: Part;
             __attributeIndex: number | undefined;
-            __directive?: Directive | undefined;
+            __directive?: Directive;
             _$parent: Disconnectable;
-            _$disconnectableChildren?: Set<Disconnectable> | undefined;
+            _$disconnectableChildren?: Set<Disconnectable>;
             _$notifyDirectiveConnectionChanged?(isConnected: boolean): void;
             readonly _$isConnected: boolean;
             _$initialize(part: Part, parent: Disconnectable, attributeIndex: number | undefined): void;
-            render: ((...props: unknown[]) => unknown) & (() => unknown);
-            update(_part: Part, props: unknown[]): unknown;
+            render: ((...props: Array<unknown>) => unknown) & (() => unknown);
+            update(_part: Part, props: Array<unknown>): unknown;
         };
     };
     patchDirectiveResolve: (directiveClass: typeof Directive, resolveOverrideFn: (this: Directive, _part: Part, values: unknown[]) => unknown) => void;
     setDirectiveClass(value: DirectiveResult, directiveClass: DirectiveClass): void;
     getAttributePartCommittedValue: (part: AttributePart, value: unknown, index: number | undefined) => unknown;
     connectedDisconnectable: (props?: object) => Disconnectable;
-    resolveDirective: (part: ChildPart | AttributePart | ElementPart, value: unknown, parent?: DirectiveParent, attributeIndex?: number | undefined) => unknown;
+    resolveDirective: (part: ChildPart | AttributePart | ElementPart, value: unknown, parent?: DirectiveParent, attributeIndex?: number) => unknown;
     AttributePart: typeof AttributePart;
     PropertyPart: typeof PropertyPart;
     BooleanAttributePart: typeof BooleanAttributePart;
@@ -6285,7 +6290,7 @@ declare class AsyncAppendDirective extends AsyncReplaceDirective {
     update(part: ChildPart, params: DirectiveParameters<this>): symbol;
     protected commitValue(value: unknown, index: number): void;
 }
-declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => DirectiveResult<typeof AsyncAppendDirective>;
+declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number) => unknown) | undefined) => DirectiveResult<typeof AsyncAppendDirective>;
 declare class CacheDirective extends Directive {
     private _templateCache;
     private _value?;
@@ -6294,10 +6299,10 @@ declare class CacheDirective extends Directive {
     update(containerPart: ChildPart, [v]: DirectiveParameters<this>): unknown[];
 }
 declare const _directive_cache: (v: unknown) => DirectiveResult<typeof CacheDirective>;
-declare const _directive_choose: <T, V, K extends T = T>(value: T, cases: [
+declare const _directive_choose: <T, V, K extends T = T>(value: T, cases: Array<[
     K,
     () => V
-][], defaultCase?: (() => V) | undefined) => V | undefined;
+]>, defaultCase?: () => V) => V | undefined;
 /**
  * A key-value set of class names to truthy values.
  */
