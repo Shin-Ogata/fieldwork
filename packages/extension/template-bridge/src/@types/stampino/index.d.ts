@@ -26,7 +26,7 @@ export declare const prepareTemplate: (
     template: HTMLTemplateElement,
     handlers?: TemplateHandlers,
     renderers?: TemplateRenderers,
-    superTemplate?: HTMLTemplateElement | undefined
+    superTemplate?: HTMLTemplateElement
 ) => TemplateBridgeEndine;
 
 export interface EvaluateTemplateResult {

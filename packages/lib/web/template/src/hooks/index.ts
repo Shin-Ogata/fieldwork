@@ -199,7 +199,7 @@ export interface Hooks {
      *  - `en` An optional function that returns the initial state of the reducer
      *  - `ja` リデューサーの初期状態を返すオプションの関数
      */
-    useReducer: <S, I, A>(reducer: HookReducer<S, A>, initialState: I, init?: ((_: I) => S) | undefined) => readonly [S, (action: A) => void];
+    useReducer: <S, I, A>(reducer: HookReducer<S, A>, initialState: I, init?: ((_: I) => S)) => readonly [S, (action: A) => void];
 
     /**
      * @en Create a new context object. Context objects are used to share data that is considered "global".
