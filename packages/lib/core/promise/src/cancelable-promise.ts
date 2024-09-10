@@ -167,7 +167,7 @@ class CancelablePromise<T> extends Promise<T> {
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T> {
+    finally(onfinally?: (() => void) | null): Promise<T> {
         return CancelablePromise[_create](super.finally(onfinally), _tokens.get(this));
     }
 
