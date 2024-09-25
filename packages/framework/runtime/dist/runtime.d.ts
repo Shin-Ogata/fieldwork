@@ -4566,6 +4566,15 @@ export declare namespace i18n {
      */
     export type $StringKeyPathToRecord<TPath extends string, TValue> = $UnionToIntersection<$StringKeyPathToRecordUnion<TPath, TValue>>;
     /**
+     * We could use NoInfer typescript build-in utility,
+     * however this project still supports ts < 5.4.
+     *
+     * @see https://github.com/millsp/ts-toolbelt/blob/master/sources/Function/NoInfer.ts
+     */
+    export type $NoInfer<A> = [
+        A
+    ][A extends any ? 0 : never];
+    /**
      * This interface can be augmented by users to add types to `i18next` default TypeOptions.
      *
      * Usage:
@@ -5320,6 +5329,11 @@ export declare namespace i18n {
             count?: TOpt['count'];
         };
     };
+    export type TFunctionProcessReturnValue<Ret, DefaultValue> = Ret extends string | $SpecialObject | null ? Ret : [
+        DefaultValue
+    ] extends [
+        never
+    ] ? Ret : DefaultValue;
     export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret, TOpt> : Ret;
     export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
     /** ************************
@@ -5327,19 +5341,19 @@ export declare namespace i18n {
      ************************* */
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
         $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
-        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>>(...args: [
+        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>, DefaultValue extends string = never>(...args: [
             key: Key | Key[],
             options?: ActualOptions
         ] | [
             key: string | string[],
             options: TOpt & $Dictionary & {
-                defaultValue: string;
+                defaultValue: DefaultValue;
             }
         ] | [
             key: string | string[],
-            defaultValue: string,
+            defaultValue: DefaultValue,
             options?: TOpt & $Dictionary
-        ]): TFunctionReturnOptionalDetails<Ret, TOpt>;
+        ]): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
     }
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
