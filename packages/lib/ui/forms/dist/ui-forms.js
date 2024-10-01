@@ -9,9 +9,9 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CDP = global.CDP || {}, global.CDP));
 })(this, (function (exports, runtime) { 'use strict';
 
-  const sheet$1 = new CSSStyleSheet();sheet$1.replaceSync("div{display: block;-webkit-text-decoration-skip: ink;text-decoration-skip-ink: auto;}");
+  const sheet$1 = new CSSStyleSheet();sheet$1.replaceSync("div{display:block;-webkit-text-decoration-skip:ink;text-decoration-skip-ink:auto;}");
 
-  const sheet = new CSSStyleSheet();sheet.replaceSync("div{display: block;-webkit-text-decoration-skip: ink;text-decoration-skip-ink: auto;}");
+  const sheet = new CSSStyleSheet();sheet.replaceSync("div{display:block;-webkit-text-decoration-skip:ink;text-decoration-skip-ink:auto;}");
 
   const UI_FORMS_STATUS = 'UNDER CONSTRUCTION';
   void runtime.post(runtime.noop(sheet$1, sheet));
