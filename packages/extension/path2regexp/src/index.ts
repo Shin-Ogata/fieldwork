@@ -21,6 +21,7 @@ import {
     parse,
     compile,
     match,
+    stringify,
     pathToRegexp,
 } from 'path-to-regexp';
 
@@ -43,9 +44,11 @@ declare namespace path2regexp {
 }
 
 const path2regexp = {
+    TokenData: p2rTokenData,
     parse,
     compile,
     match,
+    stringify,
     pathToRegexp,
 };
 

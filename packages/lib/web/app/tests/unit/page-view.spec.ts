@@ -133,11 +133,16 @@ describe('page-view spec', () => {
                 },
                 {
                     /*
-                     * path-to-regexp v7+
                      * あいまいなパス表記の厳格化
-                     * https://github.com/pillarjs/path-to-regexp#errors
+                     *
+                     * path-to-regexp v8+
+                     * https://github.com/pillarjs/path-to-regexp/tree/v8.2.0?tab=readme-ov-file#unexpected--or-
+                     * 
+                     * path-to-regexp v7+
+                     * https://github.com/pillarjs/path-to-regexp/tree/v7.2.0?tab=readme-ov-file#unexpected---or-
                      */
-                    path: '/two{/:mode}?',
+                    path: '/two{/:mode}',
+//                  path: '/two{/:mode}?',
 //                  path: '/two/:mode?',
                     component: TestView,
                     content: '<div class="router-page" style="position: absolute; width: 10px; height: 10px;">TWO</div>',
@@ -157,7 +162,7 @@ describe('page-view spec', () => {
         await app.router.navigate('/two/normal');
 
         const view2 = app.activePage as TestView;
-        expect(view2.path).toBe('/two{/:mode}?');
+        expect(view2.path).toBe('/two{/:mode}');
         expect(view2.url).toBe('/two/normal');
         expect(view2.$el.text()).toBe('TWO');
         expect(view2.router === app.router).toBe(true);
@@ -167,7 +172,7 @@ describe('page-view spec', () => {
         await app.router.navigate('/two/alternative');
 
         const view3 = app.activePage as TestView;
-        expect(view3.path).toBe('/two{/:mode}?');
+        expect(view3.path).toBe('/two{/:mode}');
         expect(view3.url).toBe('/two/alternative');
         expect(view3.$el.text()).toBe('TWO');
         expect(view3.router === app.router).toBe(true);

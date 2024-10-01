@@ -481,8 +481,29 @@ describe('router/context spec', () => {
             const e = callbackArgs[0];
 
             expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED);
-            expect(e.message).toBe('Construct route destination failed. [path: /params/user/:userId/post/:postId, detail: TypeError: Expected "userId" to be a string]');
-            expect(e.cause.message).toBe('Expected "userId" to be a string');
+            expect(e.message).toBe('Construct route destination failed. [path: /params/user/:userId/post/:postId, detail: TypeError: Missing parameters: userId]');
+            expect(e.cause.message).toBe('Missing parameters: userId');
+        });
+
+        it('illegal path params2', async () => {
+            const stub = { onCallback };
+            const router = await createRouterWrap({
+                routes: [
+                    { path: '/' },
+                    { path: '/params{/:mode}?' }, // "?" is no longer supported.
+                ],
+            });
+            router.on('error', stub.onCallback);
+
+            await waitFrame(router);
+
+            await router.navigate('/params/normal');
+
+            const e = callbackArgs[0];
+
+            expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED);
+            expect(e.message).toBe('Route navigate failed.');
+            expect(e.cause.message).toBe(`Cannot read properties of undefined (reading 'test')`);
         });
 
         it('navigation cancellation', async () => {
