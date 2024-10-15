@@ -1,7 +1,3 @@
-/* eslint-disable
-    @stylistic:js/indent,
- */
-
 import { TemplateResult, html } from '@cdp/template';
 import { Task, TaskId } from './interfaces';
 import { TaskItem } from './task-item';
