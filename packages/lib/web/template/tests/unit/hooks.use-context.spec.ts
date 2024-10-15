@@ -74,7 +74,7 @@ describe('hooks/use-context spec', () => {
             return theme;
         }
 
-        /* eslint-disable @stylistic:js/indent */
+
         function App(): TemplateResult {
             return html`
                 ${Provider(() => html`
@@ -82,7 +82,7 @@ describe('hooks/use-context spec', () => {
                 )}
             `;
         }
-        /* eslint-enable @stylistic:js/indent */
+
 
         render(hooks(App), _$dom[0]);
         await waitFrame();

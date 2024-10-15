@@ -1,7 +1,3 @@
-/* eslint-disable
-    @stylistic:js/indent,
- */
-
 import {
     TemplateResult,
     html,
