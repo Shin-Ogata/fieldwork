@@ -36,16 +36,6 @@ const testem = {
                  * options:
                  * https://developer.chrome.com/docs/chromium/headless?hl=ja
                  */
-                // Chrome 129.0.6668.71 でウィンドウが出現中
-                // https://issues.chromium.org/issues/367764867
-                //
-                // 将来削除される可能性があるため非推奨
-                // '--headless=old',
-                //
-                // selenium の回避法
-                // https://github.com/SeleniumHQ/selenium/issues/14514#issuecomment-2363690036
-                '--window-position=-2400,-2400',
-                //
                 '--headless',
                 '--remote-debugging-port=9222',
                 '--disable-gpu'

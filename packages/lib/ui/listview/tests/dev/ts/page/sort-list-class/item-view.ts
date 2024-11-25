@@ -44,6 +44,7 @@ export class ImageListItemView extends ListItemView {
 
     /** inline mustache traditional template */
     private get template(): HTMLTemplateElement {
+        // TODO: image-listitem は未定義
         return toTemplateElement(/*html*/`
             <div class="image-listitem ui-ripple {{type}}" data-dev-id="{{devId}}" data-dev-index="{{index}}">
                 <figure class="thumbnail">&nbsp;</figure>
