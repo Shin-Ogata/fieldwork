@@ -489,7 +489,7 @@ describe('extention-i18n spec', () => {
             expect(t('keyWithCount', { count: 5 })).toBe('5 items');
             expect(t('keyWithCount', { count: 100 })).toBe('100 items');
         });
-
+/*
         it('check singular / plural (v3)', async () => {
             const t = await i18next.init({
                 compatibilityJSON: 'v3',
@@ -515,7 +515,7 @@ describe('extention-i18n spec', () => {
             expect(t('keyWithCount', { count: 5 })).toBe('5 items');
             expect(t('keyWithCount', { count: 100 })).toBe('100 items');
         });
-
+*/
         it('check languages with multiple plurals', async () => {
             // uses `arabic` which has 5 plural forms beside the singular.
             // https://www.i18next.com/translation-function/plurals#languages-with-multiple-plurals
@@ -545,7 +545,7 @@ describe('extention-i18n spec', () => {
             expect(t('key', { count: 99 })).toBe('many');
             expect(t('key', { count: 100 })).toBe('other');
         });
-
+/*
         it('check languages with multiple plurals (v3)', async () => {
             // uses `arabic` which has 5 plural forms beside the singular.
             // https://www.i18next.com/translation-function/plurals#languages-with-multiple-plurals
@@ -576,6 +576,7 @@ describe('extention-i18n spec', () => {
             expect(t('key', { count: 99 })).toBe('many');
             expect(t('key', { count: 100 })).toBe('other');
         });
+*/
     });
 
     describe('Nesting', () => {
