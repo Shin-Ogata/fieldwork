@@ -30,7 +30,9 @@ function parseCommand() {
         .option('-t, --target <path(s)>',   'specify target path')
         .option('-a, --all',                'preset target all')
         .option('-@, --debug',              'dump input command. (dry run)')
-        .version(pkg.version);
+        .version(pkg.version)
+        .allowExcessArguments() // version 13+
+    ;
 
     // setup subtask options
     const examples = [];
