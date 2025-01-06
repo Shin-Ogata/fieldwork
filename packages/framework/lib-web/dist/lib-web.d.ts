@@ -144,6 +144,11 @@ declare namespace i18n {
          */
         allowObjectInHTMLChildren: false;
         /**
+         * Flag that enables strict key checking even if a `defaultValue` has been provided.
+         * This ensures all calls of `t` function don't accidentally use implicitly missing keys.
+         */
+        strictKeyChecks: false;
+        /**
          * Prefix for interpolation
          */
         interpolationPrefix: '{{';
@@ -736,6 +741,7 @@ declare namespace i18n {
     export type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
     export type _UnescapePrefix = TypeOptions['unescapePrefix'];
     export type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
+    export type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
     export type $IsResourcesDefined = [
         keyof _Resources
     ] extends [
@@ -825,7 +831,12 @@ declare namespace i18n {
     /** ************************
      * T function declaration *
      ************************* */
-    export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+    export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+        $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+    }
+    export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
         $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
         <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>, DefaultValue extends string = never>(...args: [
             key: Key | Key[],
@@ -841,6 +852,7 @@ declare namespace i18n {
             options?: TOpt & $Dictionary
         ]): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
     }
+    export type TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
