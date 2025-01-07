@@ -852,7 +852,9 @@ declare namespace i18n {
             options?: TOpt & $Dictionary
         ]): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
     }
-    export type TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+    export type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+    export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends TFunctionSignature<Ns, KPrefix> {
+    }
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
