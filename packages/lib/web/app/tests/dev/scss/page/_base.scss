@@ -28,10 +28,11 @@ button {
     overflow-y: auto;
     box-sizing: border-box;
 
+    // TODO: framework 内部で完結できるか検討(拡張の余地は残す)
     &.cdp-transition-running {
         pointer-events: none;
     }
-    &[aria-hidden=true] {
+    &.cdp-hidden {
         visibility: hidden;
         pointer-events: none;
     }

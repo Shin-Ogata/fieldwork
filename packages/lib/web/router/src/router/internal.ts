@@ -52,6 +52,7 @@ export const enum CssName {
     TRANSITION_RUNNING   = 'transition-running',
     PAGE_CURRENT         = 'page-current',
     PAGE_PREVIOUS        = 'page-previous',
+    HIDDEN               = 'hidden',
     ENTER_FROM_CLASS     = 'enter-from',
     ENTER_ACTIVE_CLASS   = 'enter-active',
     ENTER_TO_CLASS       = 'enter-to',

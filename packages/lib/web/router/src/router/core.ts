@@ -546,7 +546,10 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         nextRoute.el = prevRoute.el;
         prevRoute.el = nextRoute.el?.cloneNode(true) as HTMLElement;
         $(prevRoute.el).removeAttr('id').insertBefore(nextRoute.el);
-        $(nextRoute.el).attr('aria-hidden', true).removeClass([`${this._cssPrefix}-${CssName.PAGE_CURRENT}`, `${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`]);
+        $(nextRoute.el)
+            .addClass(`${this._cssPrefix}-${CssName.HIDDEN}`)
+            .removeClass([`${this._cssPrefix}-${CssName.PAGE_CURRENT}`, `${this._cssPrefix}-${CssName.PAGE_PREVIOUS}`])
+        ;
         this.publish('cloned', changeInfo);
         this.triggerPageCallback('cloned', nextParams.page, changeInfo);
         await asyncProcess.complete();
@@ -592,7 +595,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         changeInfo: RouteChangeInfoContext,
         asyncProcess: RouteAyncProcessContext,
     ): Promise<void> {
-        $el.attr('aria-hidden', true);
+        $el.addClass(`${this._cssPrefix}-${CssName.HIDDEN}`);
         this._$el.append($el);
         this.publish('mounted', changeInfo);
         this.triggerPageCallback('mounted', page, changeInfo);
@@ -683,7 +686,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
 
         $elNext
             .addClass([enterFromClass, `${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`])
-            .removeAttr('aria-hidden')
+            .removeClass(`${this._cssPrefix}-${CssName.HIDDEN}`)
             .reflow()
             .addClass(enterActiveClass)
         ;
@@ -701,7 +704,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         pagePrev: Page, $elPrev: DOM,
         changeInfo: RouteChangeInfoContext,
     ): Promise<void> {
-        ($elNext[0] !== $elPrev[0]) && $elPrev.attr('aria-hidden', true);
+        ($elNext[0] !== $elPrev[0]) && $elPrev.addClass(`${this._cssPrefix}-${CssName.HIDDEN}`);
         $elNext.removeClass([`${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
         $elPrev.removeClass([`${this._cssPrefix}-${CssName.TRANSITION_RUNNING}`]);
 
