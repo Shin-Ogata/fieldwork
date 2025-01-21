@@ -268,6 +268,7 @@ describe('context spec', () => {
                             resolve();
                         }
                     },
+                    adoptedStyleSheets: [],
                 },
                 requestAnimationFrame: window?.requestAnimationFrame, // eslint-disable-line @typescript-eslint/unbound-method
             });

@@ -29,5 +29,5 @@ registerPage({
             render(template(), info.to.el);
         },
     },
-    content: /* html */`<div id="page-root" class="router-page cdp-hidden" data-dom-cache="connect"></div>`,
+    content: /* html */`<div id="page-root" class="router-page" data-dom-cache="connect"></div>`,
 });

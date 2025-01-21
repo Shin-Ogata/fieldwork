@@ -39,15 +39,6 @@ button {
     @include utils.webkit-scrollbar;
     -webkit-overflow-scrolling: touch;
 
-    // TODO: framework 内部で完結できるか検討(拡張の余地は残す)
-    &.cdp-transition-running {
-        pointer-events: none;
-    }
-    &.cdp-hidden {
-        visibility: hidden;
-        pointer-events: none;
-    }
-
     button.header-button {
         margin-right: 20px;
     }

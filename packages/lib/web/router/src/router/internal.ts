@@ -119,6 +119,27 @@ export type RouteContext = Writable<Route> & RouteNavigationOptions & {
 
 //__________________________________________________________________________________________________//
 
+/** @internal built-in css */
+export const applyBuiltInCss = (context: typeof globalThis, prefix: string): void => {
+    const styleText = `
+    .${prefix}-transition-running {
+        pointer-events: none;
+    }
+    .${prefix}-hidden {
+        visibility: hidden;
+        pointer-events: none;
+    }
+    `;
+    const sheet = new context.CSSStyleSheet();
+    sheet.replaceSync(styleText);
+
+    const { document: root } = context;
+    const defaults = root.adoptedStyleSheets;
+    root.adoptedStyleSheets = [...defaults, sheet];
+};
+
+//__________________________________________________________________________________________________//
+
 /** @internal RouteContextParameters to RouteContext */
 export const toRouteContext = (url: string, router: Router, params: RouteContextParameters, navOptions?: RouteNavigationOptions): RouteContext => {
     // omit unclonable props
