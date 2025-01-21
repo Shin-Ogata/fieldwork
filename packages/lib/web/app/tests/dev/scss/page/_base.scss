@@ -28,7 +28,7 @@ button {
     overflow-y: auto;
     box-sizing: border-box;
 
-    // TODO: framework 内部で完結できるか検討(拡張の余地は残す)
+    // 以下のクラスは built-in で定義されているが, CSS スコアを高くすれば上書き/拡張可能
     &.cdp-transition-running {
         pointer-events: none;
     }

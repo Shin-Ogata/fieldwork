@@ -47,6 +47,7 @@ import {
     RouteSubFlowParamsContext,
     RouteContext,
     RouteChangeInfoContext,
+    applyBuiltInCss,
     toRouteContextParameters,
     toRouteContext,
     prepareHistory,
@@ -123,6 +124,9 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         this._cssPrefix = cssPrefix ?? CssName.DEFAULT_PREFIX;
         this._transitionSettings = Object.assign({ default: 'none', reload: 'none' }, transition);
         this._navigationSettings = Object.assign({ method: 'push' }, navigation);
+
+        // built-in css
+        applyBuiltInCss((context ?? window) as unknown as typeof globalThis, this._cssPrefix);
 
         void (async () => {
             await this.register(routes!, false);
