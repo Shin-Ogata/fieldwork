@@ -17,6 +17,10 @@ const DIR_RUNNER     = 'res/test';
 function queryFrameWorkDir(name) {
     const dirs = dirname(require.resolve(name)).split(sep);
     dirs.splice(dirs.lastIndexOf(name) + 1);
+    // absolute path
+    if ('' === dirs[0]) {
+        dirs[0] = sep;
+    }
     return join(...dirs);
 }
 

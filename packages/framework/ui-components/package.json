@@ -1,7 +1,7 @@
 {
   "name": "@cdp/ui-components",
   "description": "ui-componets collection",
-  "version": "0.9.18",
+  "version": "0.9.19",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/runtime": "file:../runtime"

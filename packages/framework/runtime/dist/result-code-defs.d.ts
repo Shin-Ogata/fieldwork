@@ -1,5 +1,5 @@
 /*!
- * @cdp/runtime/result-code-defs 0.9.18
+ * @cdp/runtime/result-code-defs 0.9.19
  *   Common result code definitions.
  *   - includes:
  *     - @cdp/result/result-code-defs
