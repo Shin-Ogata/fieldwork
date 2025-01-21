@@ -1,7 +1,7 @@
 {
   "name": "@cdp/lib-core",
   "description": "core library collection",
-  "version": "0.9.18",
+  "version": "0.9.19",
   "author": "Shin Ogata",
   "devDependencies": {
     "@cdp/core-storage": "file:../../lib/core/storage",

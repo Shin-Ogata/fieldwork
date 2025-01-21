@@ -1,5 +1,5 @@
 /*!
- * @cdp/ui-components 0.9.18
+ * @cdp/ui-components 0.9.19
  *   ui-componets collection
  */
 
@@ -10,7 +10,7 @@
 })(this, (function (exports, runtime) { 'use strict';
 
     /*!
-     * @cdp/ui-utils 0.9.18
+     * @cdp/ui-utils 0.9.19
      *   UI components common utilities
      */
 
@@ -92,7 +92,7 @@
     };
 
     /*!
-     * @cdp/ui-forms 0.9.18
+     * @cdp/ui-forms 0.9.19
      *   UI form components
      */
 
@@ -105,7 +105,7 @@
     void runtime.post(runtime.noop(sheet$1, sheet));
 
     /*!
-     * @cdp/ui-listview 0.9.18
+     * @cdp/ui-listview 0.9.19
      *   web domain utilities
      */
 

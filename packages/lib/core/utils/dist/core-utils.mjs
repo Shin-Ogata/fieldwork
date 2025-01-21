@@ -1,5 +1,5 @@
 /*!
- * @cdp/core-utils 0.9.18
+ * @cdp/core-utils 0.9.19
  *   core domain utilities
  */
 

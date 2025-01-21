@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-web 0.9.18
+ * @cdp/lib-web 0.9.19
  *   web api library collection
  */
 
@@ -10,7 +10,7 @@
 })(this, (function (exports, libCore, libWorker) { 'use strict';
 
     /*!
-     * @cdp/web-utils 0.9.18
+     * @cdp/web-utils 0.9.19
      *   web domain utilities
      */
 
@@ -194,7 +194,7 @@
     }
 
     /*!
-     * @cdp/dom 0.9.18
+     * @cdp/dom 0.9.19
      *   dom utility module
      */
 
@@ -3754,7 +3754,7 @@
     setup(DOMClass.prototype, DOMClass.create);
 
     /*!
-     * @cdp/environment 0.9.18
+     * @cdp/environment 0.9.19
      *   environment resolver module
      */
 
@@ -3924,7 +3924,7 @@
     const platform = queryPlatform();
 
     /*!
-     * @cdp/extension-i18n 0.9.18
+     * @cdp/extension-i18n 0.9.19
      *   extension for internationalization
      */
 
@@ -6825,7 +6825,7 @@
     const i18n = instance;
 
     /*!
-     * @cdp/i18n 0.9.18
+     * @cdp/i18n 0.9.19
      *   internationalization module
      */
 
@@ -7123,7 +7123,7 @@
     };
 
     /*!
-     * @cdp/web-storage 0.9.18
+     * @cdp/web-storage 0.9.19
      *   web storage utility module
      */
 
@@ -7256,7 +7256,7 @@
     const webStorage = new WebStorage(localStorage);
 
     /*!
-     * @cdp/data-sync 0.9.18
+     * @cdp/data-sync 0.9.19
      *   web storage utility module
      */
 
@@ -7636,7 +7636,7 @@
     }
 
     /*!
-     * @cdp/model 0.9.18
+     * @cdp/model 0.9.19
      *   generic model scheme
      */
 
@@ -8333,7 +8333,7 @@
     }
 
     /*!
-     * @cdp/collection 0.9.18
+     * @cdp/collection 0.9.19
      *   generic collection scheme
      */
 
@@ -10479,7 +10479,7 @@
     }
 
     /*!
-     * @cdp/view 0.9.18
+     * @cdp/view 0.9.19
      *   generic view scheme
      */
 
@@ -10734,7 +10734,7 @@
     const _View = View;
 
     /*!
-     * @cdp/extension-template 0.9.18
+     * @cdp/extension-template 0.9.19
      *   extension for template engine
      */
 
@@ -13962,7 +13962,7 @@
     };
 
     /*!
-     * @cdp/extension-template-bridge 0.9.18
+     * @cdp/extension-template-bridge 0.9.19
      *   extension for HTML templates bridge.
      */
 
@@ -15471,7 +15471,7 @@
     }
 
     /*!
-     * @cdp/template 0.9.18
+     * @cdp/template 0.9.19
      *   HTML template library
      */
 
@@ -15946,7 +15946,7 @@
     hooks.useContext = useContext;
 
     /*!
-     * @cdp/extension-path2regexp 0.9.18
+     * @cdp/extension-path2regexp 0.9.19
      *   extension for conversion path to regexp library
      */
 
@@ -16377,7 +16377,7 @@
     };
 
     /*!
-     * @cdp/router 0.9.18
+     * @cdp/router 0.9.19
      *   generic router scheme
      */
 
@@ -18185,7 +18185,7 @@
     }
 
     /*!
-     * @cdp/app 0.9.18
+     * @cdp/app 0.9.19
      *   application context
      */
 
