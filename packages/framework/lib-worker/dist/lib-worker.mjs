@@ -3,7 +3,7 @@
  *   worker library collection
  */
 
-import { safe, checkCanceled, fromTypedData, restoreNullish, toTypedData, verify, CancelToken, assignValue, isNumeric, EventSource, makeResult, RESULT_CODE, isFunction, isNumber, isString, className } from '@cdp/lib-core';
+import { safe, checkCanceled, fromTypedData, restoreNullish, toTypedData, verify, CancelToken, makeResult, RESULT_CODE, isNumeric, EventSource, assignValue, isNumber, isFunction, isString, className } from '@cdp/lib-core';
 
 /*!
  * @cdp/binary 0.9.19

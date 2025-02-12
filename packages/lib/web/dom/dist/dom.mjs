@@ -3,7 +3,7 @@
  *   dom utility module
  */
 
-import { safe, isFunction, className, getGlobalNamespace, isNumber, setMixClassAttribute, isArray, isString, assignValue, toTypedData, camelize, fromTypedData, noop, dasherize, classify, combination, mixins } from '@cdp/core-utils';
+import { safe, isNumber, isFunction, className, getGlobalNamespace, setMixClassAttribute, isArray, isString, assignValue, toTypedData, camelize, fromTypedData, noop, dasherize, classify, combination, mixins } from '@cdp/core-utils';
 
 /*
  * SSR (Server Side Rendering) 環境においてもオブジェクト等の存在を保証する
