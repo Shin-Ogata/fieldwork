@@ -5,7 +5,7 @@
 
 import { html, directives, directive, AsyncDirective, noChange } from '@cdp/extension-template';
 export * from '@cdp/extension-template';
-import { createMustacheTransformer, createStampinoTransformer } from '@cdp/extension-template-bridge';
+import { createStampinoTransformer, createMustacheTransformer } from '@cdp/extension-template-bridge';
 export * from '@cdp/extension-template-bridge';
 import { isFunction, unescapeHTML, scheduler, noop, deepEqual } from '@cdp/core-utils';
 import { TemplateEngine } from '@cdp/core-template';
