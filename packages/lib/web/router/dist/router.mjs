@@ -4,7 +4,7 @@
  */
 
 import { webRoot, toUrl, toTemplateElement, loadTemplateSource, waitFrame } from '@cdp/web-utils';
-import { safe, at, sort, noop, $cdp, isObject, post, isArray, isString, assignValue, isFunction, sleep, camelize } from '@cdp/core-utils';
+import { safe, at, sort, noop, $cdp, isObject, post, isString, isArray, assignValue, isFunction, sleep, camelize } from '@cdp/core-utils';
 import { Deferred, CancelToken, NativePromise } from '@cdp/promise';
 import { path2regexp } from '@cdp/extension-path2regexp';
 export * from '@cdp/extension-path2regexp';

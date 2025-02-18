@@ -203,7 +203,7 @@ namespace CDP_DECLARE {
         }
         const signed = succeeded ? 1 : -1;
         const resultCode = signed * (base as number + code);
-        _code2message[resultCode] = message ? message : (`[CODE: ${resultCode}]`);
+        _code2message[resultCode] = message ?? (`[CODE: ${resultCode}]`);
         return resultCode;
     }
 }
