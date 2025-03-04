@@ -151,7 +151,7 @@ export function drop<T extends object>(base: T, ...dropValues: unknown[]): Parti
 export function result<T = any>(target: object | Nullish, property: string | string[], fallback?: T): T { // eslint-disable-line @typescript-eslint/no-explicit-any
     const props = isArray(property) ? property : [property];
     if (!props.length) {
-        return isFunction(fallback) ? fallback.call(target) : fallback;
+        return isFunction(fallback) ? fallback.call(target) : fallback as T;
     }
 
     const resolve = (o: unknown, p: unknown): unknown => {
