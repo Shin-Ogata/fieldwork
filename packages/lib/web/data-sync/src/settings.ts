@@ -1,4 +1,4 @@
-import { IDataSync } from './interfaces';
+import type { IDataSync } from './interfaces';
 import { dataSyncNULL } from './null';
 
 /** @internal */ let _default: IDataSync = dataSyncNULL;

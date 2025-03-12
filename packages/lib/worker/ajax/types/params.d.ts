@@ -1,4 +1,4 @@
-import { PlainObject } from '@cdp/core-utils';
+import { type PlainObject } from '@cdp/core-utils';
 /**
  * @en Convert `PlainObject` to query strings.
  * @ja `PlainObject` をクエリストリングに変換

@@ -1,4 +1,4 @@
-import { AjaxGetRequestShortcutOptions } from '@cdp/ajax';
+import { type AjaxGetRequestShortcutOptions } from '@cdp/ajax';
 /**
  * @en Load template options.
  * @ja ロードテンプレートオプション

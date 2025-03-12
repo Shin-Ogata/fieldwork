@@ -1,5 +1,5 @@
 import type { Nullish } from '@cdp/core-utils';
-import { ElementBase, SelectorBase, DOM, DOMSelector } from './static';
+import { type ElementBase, type SelectorBase, type DOM, type DOMSelector } from './static';
 /**
  * @en Base abstraction class of {@link DOMClass}. This class provides iterator methods.
  * @ja {@link DOMClass} の基底抽象クラス. iterator を提供.

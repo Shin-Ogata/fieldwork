@@ -1,4 +1,4 @@
-import { ElementBase, SelectorBase, ElementifySeed } from './utils';
+import { type ElementBase, type SelectorBase, type ElementifySeed } from './utils';
 import { DOMBase } from './base';
 import { DOMAttributes } from './attributes';
 import { DOMTraversing } from './traversing';

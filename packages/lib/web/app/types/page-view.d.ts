@@ -1,5 +1,5 @@
-import { ViewConstructionOptions, View } from '@cdp/view';
-import { Router, Route, HistoryDirection, Page } from '@cdp/router';
+import { type ViewConstructionOptions, View } from '@cdp/view';
+import type { Router, Route, HistoryDirection, Page } from '@cdp/router';
 /**
  * @en Base class definition of {@link View} that can be specified in as {@link Page} of {@link Router}.
  * @ja {@link Router} の {@link Page} に指定可能な {@link View} の基底クラス定義

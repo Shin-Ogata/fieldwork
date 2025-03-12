@@ -1,7 +1,7 @@
 import {
-    Keys,
-    Types,
-    KeyToType,
+    type Keys,
+    type Types,
+    type KeyToType,
     assignValue,
     deepEqual,
     isEmptyObject,
@@ -9,12 +9,12 @@ import {
     dropUndefined,
     restoreNullish,
 } from '@cdp/core-utils';
-import { Subscription, EventBroker } from '@cdp/events';
+import { type Subscription, EventBroker } from '@cdp/events';
 import {
-    Cancelable,
+    type Cancelable,
     checkCanceled as cc,
 } from '@cdp/promise';
-import {
+import type {
     StorageData,
     StorageDataTypeList,
     StorageInputDataTypeList,

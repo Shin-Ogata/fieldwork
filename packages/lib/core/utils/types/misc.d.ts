@@ -1,4 +1,4 @@
-import { UnknownFunction, Primitive, TypedData } from './types';
+import { type UnknownFunction, type Primitive, type TypedData } from './types';
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証

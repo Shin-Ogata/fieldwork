@@ -1,5 +1,5 @@
 import {
-    PlainObject,
+    type PlainObject,
     isString,
     isNumber,
     isArray,
@@ -9,11 +9,11 @@ import {
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
-    ElementBase,
+    type ElementBase,
     dom as $,
 } from './static';
 import {
-    DOMIterable,
+    type DOMIterable,
     isNodeHTMLOrSVGElement,
     isTypeHTMLOrSVGElement,
     isTypeDocument,

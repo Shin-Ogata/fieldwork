@@ -8,7 +8,7 @@
  */
 
 import {
-    Writable,
+    type Writable,
     post,
     $cdp,
 } from '@cdp/core-utils';
@@ -16,11 +16,11 @@ import {
     EventPublisher,
     EventBroker,
     EventReceiver,
-    Subscribable,
+    type Subscribable,
 } from '@cdp/events';
 import {
     RESULT_CODE,
-    Result,
+    type Result,
     makeResult,
 } from '@cdp/result';
 import { CancelToken } from '@cdp/promise';
@@ -30,14 +30,14 @@ import {
     dataSyncNULL,
 } from '@cdp/data-sync';
 import {
+    type ModelSeed,
+    type ModelEvent,
+    type ModelConstructor,
+    type ModelValidateAttributeOptions,
+    type ModelAttributeInput,
+    type ModelConstructionOptions,
+    type ModelSetOptions,
     Model,
-    ModelSeed,
-    ModelEvent,
-    ModelConstructor,
-    ModelValidateAttributeOptions,
-    ModelAttributeInput,
-    ModelConstructionOptions,
-    ModelSetOptions,
     isModel,
     idAttribute,
 } from '@cdp/model';

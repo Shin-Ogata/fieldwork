@@ -3,14 +3,14 @@
  */
 
 import {
-    PlainObject,
-    UnknownFunction,
+    type PlainObject,
+    type UnknownFunction,
     post,
 } from '@cdp/core-utils';
 import { Deferred } from '@cdp/promise';
 import { webRoot } from '@cdp/web-utils';
 import {
-    IHistory,
+    type IHistory,
     createSessionHistory,
     resetSessionHistory,
     disposeSessionHistory,

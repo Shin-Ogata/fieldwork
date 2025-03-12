@@ -11,18 +11,18 @@ import {
 import { document } from './ssr';
 import { isWindowContext } from './utils';
 import {
-    ElementBase,
-    SelectorBase,
-    QueryContext,
-    DOM,
-    DOMSelector,
-    DOMResult,
-    DOMIterateCallback,
+    type ElementBase,
+    type SelectorBase,
+    type QueryContext,
+    type DOM,
+    type DOMSelector,
+    type DOMResult,
+    type DOMIterateCallback,
     dom as $,
 } from './static';
 import {
+    type DOMIterable,
     DOMBase,
-    DOMIterable,
     isNode,
     isNodeElement,
     isNodeQueriable,

@@ -1,5 +1,5 @@
-import { Arguments } from '@cdp/core-utils';
-import { Subscription, Subscribable } from './interfaces';
+import { type Arguments } from '@cdp/core-utils';
+import type { Subscription, Subscribable } from './interfaces';
 /**
  * @en Eventing framework class with ensuring type-safe for TypeScript. <br>
  *     The client of this class can implement original Pub-Sub (Observer) design pattern.

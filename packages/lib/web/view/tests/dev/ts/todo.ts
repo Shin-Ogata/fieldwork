@@ -1,8 +1,8 @@
 import {
     Model,
-    ModelConstructor,
-    ModelConstructionOptions,
-    ModelEventSource,
+    type ModelConstructor,
+    type ModelConstructionOptions,
+    type ModelEventSource,
 } from '@cdp/model';
 import { nextOrder } from './utils';
 

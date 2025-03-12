@@ -1,6 +1,6 @@
-import { Keys, Types, TypeToKey } from '@cdp/core-utils';
-import { Cancelable } from '@cdp/promise';
-import { BlobReadOptions } from './blob-reader';
+import { type Keys, type Types, type TypeToKey } from '@cdp/core-utils';
+import { type Cancelable } from '@cdp/promise';
+import { type BlobReadOptions } from './blob-reader';
 /**
  * @en Convert string to binary-string. (not human readable string)
  * @ja バイナリ文字列に変換

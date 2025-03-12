@@ -1,7 +1,7 @@
 import { TemplateEngine } from '@cdp/core-template';
-import { DOM, dom as $ } from '@cdp/dom';
-import { View, ViewEventsHash } from '@cdp/view';
-import { ToDo } from './todo';
+import { type DOM, dom as $ } from '@cdp/dom';
+import { View, type ViewEventsHash } from '@cdp/view';
+import type { ToDo } from './todo';
 import { todos } from './todo-list';
 import { ToDoView } from './todo-view';
 import './utils';

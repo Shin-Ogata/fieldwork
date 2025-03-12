@@ -1,14 +1,14 @@
 import {
-    TemplateResult,
-    DirectiveResult,
+    type TemplateResult,
+    type DirectiveResult,
     html,
     render,
     hooks,
     noChange,
 } from '@cdp/template';
-import { UnknownFunction, noop } from '@cdp/core-utils';
+import { type UnknownFunction, noop } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
-import { DOM } from '@cdp/dom';
+import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
 
 describe('hooks/use-context spec', () => {

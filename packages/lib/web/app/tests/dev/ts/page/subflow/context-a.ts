@@ -1,7 +1,7 @@
-import { FunctionPropertyNames } from '@cdp/core-utils';
+import type { FunctionPropertyNames } from '@cdp/core-utils';
 import { t } from '@cdp/i18n';
-import { ViewEventsHash } from '@cdp/view';
-import { Route } from '@cdp/router';
+import type { ViewEventsHash } from '@cdp/view';
+import type { Route } from '@cdp/router';
 import { PageView, registerPage } from '@cdp/app';
 import { i18nKey } from '../../types';
 import { entry } from '../signature';

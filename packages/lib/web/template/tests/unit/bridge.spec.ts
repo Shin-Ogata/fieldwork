@@ -1,7 +1,7 @@
 import {
     TemplateBridge,
-    TransformConfig,
-    TemplateTransformer,
+    type TransformConfig,
+    type TemplateTransformer,
     render,
     html,
     directives,
@@ -9,7 +9,7 @@ import {
     createMustacheTransformer,
 } from '@cdp/template';
 import {
-    DOM,
+    type DOM,
     dom as $,
 } from '@cdp/dom';
 import {

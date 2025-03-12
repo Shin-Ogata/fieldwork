@@ -1,13 +1,13 @@
 import {
-    Class,
+    type Class,
     mixins,
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
-    ElementBase,
-    SelectorBase,
-    ElementifySeed,
-    QueryContext,
+    type ElementBase,
+    type SelectorBase,
+    type ElementifySeed,
+    type QueryContext,
     elementify,
 } from './utils';
 import { DOMBase } from './base';

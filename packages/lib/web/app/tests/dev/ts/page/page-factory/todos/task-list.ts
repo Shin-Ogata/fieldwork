@@ -1,5 +1,5 @@
-import { TemplateResult, html } from '@cdp/template';
-import { Task, TaskId } from './interfaces';
+import { type TemplateResult, html } from '@cdp/template';
+import type { Task, TaskId } from './interfaces';
 import { TaskItem } from './task-item';
 
 export const TaskList = (

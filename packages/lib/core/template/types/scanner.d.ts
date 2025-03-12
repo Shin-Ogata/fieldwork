@@ -1,4 +1,4 @@
-import { TemplateScanner } from './interfaces';
+import type { TemplateScanner } from './interfaces';
 /**
  * A simple string scanner that is used by the template parser to find
  * tokens in template strings.

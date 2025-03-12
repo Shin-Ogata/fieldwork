@@ -1,5 +1,5 @@
-import { TemplateContext } from './interfaces';
-import { PlainObject } from './utils';
+import type { TemplateContext } from './interfaces';
+import { type PlainObject } from './utils';
 /**
  * Represents a rendering context by wrapping a view object and
  * maintaining a reference to the parent context.

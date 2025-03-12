@@ -1,4 +1,4 @@
-import { PlainObject, luid } from '@cdp/core-utils';
+import { type PlainObject, luid } from '@cdp/core-utils';
 import { ObservableObject } from '@cdp/observable';
 
 interface Item {

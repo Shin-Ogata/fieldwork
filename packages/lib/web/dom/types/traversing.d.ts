@@ -1,5 +1,5 @@
-import { ElementBase, SelectorBase, QueryContext, DOM, DOMSelector, DOMResult, DOMIterateCallback } from './static';
-import { DOMIterable } from './base';
+import { type ElementBase, type SelectorBase, type QueryContext, type DOM, type DOMSelector, type DOMResult, type DOMIterateCallback } from './static';
+import { type DOMIterable } from './base';
 export type DOMModificationCallback<T extends ElementBase, U extends ElementBase> = (index: number, element: T) => U;
 /**
  * @en Mixin base class which concentrated the traversing methods.

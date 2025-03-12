@@ -1,5 +1,5 @@
-import { Arguments } from '@cdp/core-utils';
-import { Subscribable, Subscription, EventSchema } from './interfaces';
+import { type Arguments } from '@cdp/core-utils';
+import type { Subscribable, Subscription, EventSchema } from './interfaces';
 /**
  * @en The class to which the safe event register/unregister method is offered for the object which is a short life cycle than subscription target. <br>
  *     The advantage of using this form, instead of `on()`, is that `listenTo()` allows the object to keep track of the events,

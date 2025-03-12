@@ -1,5 +1,5 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
 } from '@cdp/runtime';

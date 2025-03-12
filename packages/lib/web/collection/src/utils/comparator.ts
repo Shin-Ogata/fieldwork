@@ -1,6 +1,6 @@
 import type { Accessible } from '@cdp/core-utils';
 import { getLanguage } from '@cdp/i18n';
-import {
+import type {
     SortOrder,
     SortCallback,
     SortKey,

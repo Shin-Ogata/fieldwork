@@ -5,7 +5,7 @@
 
 import {
     dom as $,
-    DOMEventMap,
+    type DOMEventMap,
 } from '@cdp/dom';
 import {
     prepareTestElements,

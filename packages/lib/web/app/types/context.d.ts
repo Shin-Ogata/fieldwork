@@ -1,7 +1,7 @@
-import { Subscribable } from '@cdp/events';
-import { DOMSelector } from '@cdp/dom';
-import { I18NOptions, I18NDetectErrorBehaviour, i18n } from '@cdp/i18n';
-import { RouteParameters, RouterConstructionOptions, Router, Page } from '@cdp/router';
+import { type Subscribable } from '@cdp/events';
+import { type DOMSelector } from '@cdp/dom';
+import { type I18NOptions, type I18NDetectErrorBehaviour, type i18n } from '@cdp/i18n';
+import { type RouteParameters, type RouterConstructionOptions, type Router, type Page } from '@cdp/router';
 /**
  * @en `orientation` identifier
  * @ja `orientation` 識別子

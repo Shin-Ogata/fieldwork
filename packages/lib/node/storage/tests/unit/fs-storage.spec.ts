@@ -8,7 +8,7 @@ import { resolve } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import { deepEqual } from '@cdp/core-utils';
 import { CancelToken } from '@cdp/promise';
-import { IStorage } from '@cdp/core-storage';
+import type { IStorage } from '@cdp/core-storage';
 import { FsStorage } from '@cdp/fs-storage';
 
 describe('storage/attributes spec', () => {

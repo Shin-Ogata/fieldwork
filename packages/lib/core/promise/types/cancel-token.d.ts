@@ -1,4 +1,4 @@
-import { Subscription } from '@cdp/events';
+import { type Subscription } from '@cdp/events';
 /**
  * @en Cancellation source interface.
  * @ja キャンセル管理インターフェイス

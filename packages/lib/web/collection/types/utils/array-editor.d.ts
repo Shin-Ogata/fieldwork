@@ -1,5 +1,5 @@
-import { CancelToken } from '@cdp/promise';
-import { ObservableArray, ArrayChangeRecord } from '@cdp/observable';
+import { type CancelToken } from '@cdp/promise';
+import { type ArrayChangeRecord, ObservableArray } from '@cdp/observable';
 /**
  * @en Clear all array elements.
  * @ja 配列の全削除

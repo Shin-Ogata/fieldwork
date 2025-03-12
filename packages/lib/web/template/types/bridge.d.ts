@@ -1,6 +1,6 @@
-import { TemplateResult, SVGTemplateResult } from '@cdp/extension-template';
-import { TemplateTransformer } from '@cdp/extension-template-bridge';
-import { PlainObject } from '@cdp/core-utils';
+import { type TemplateResult, type SVGTemplateResult } from '@cdp/extension-template';
+import { type TemplateTransformer } from '@cdp/extension-template-bridge';
+import type { PlainObject } from '@cdp/core-utils';
 /**
  * @en Compiled JavaScript template interface
  * @ja コンパイル済みテンプレート格納インターフェイス

@@ -1,4 +1,4 @@
-import { Constructor, mixins } from '@cdp/core-utils';
+import { type Constructor, mixins } from '@cdp/core-utils';
 import { EventReceiver } from '@cdp/events';
 import { ViewCore } from '@cdp/view';
 import type { Props } from '../props';

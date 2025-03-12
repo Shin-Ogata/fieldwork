@@ -1,4 +1,4 @@
-import { Route } from '@cdp/router';
+import type { Route } from '@cdp/router';
 import { PageView, registerPage } from '@cdp/app';
 import { i18nKey } from '../../types';
 import { entry } from '../signature';

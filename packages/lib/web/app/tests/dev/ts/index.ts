@@ -1,9 +1,9 @@
 import { getConfig, sleep } from '@cdp/core-utils';
 import {
-    DOM,
+    type DOM,
     dom as $,
 } from '@cdp/dom';
-import { PageStack, toRouterPath } from '@cdp/router';
+import { type PageStack, toRouterPath } from '@cdp/router';
 import { AppContext } from '@cdp/app';
 import './page';
 

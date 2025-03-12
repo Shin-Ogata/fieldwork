@@ -11,18 +11,18 @@ import {
     waitFrame,
 } from '@cdp/web-utils';
 import {
-    DOM,
+    type DOM,
     dom as $,
 } from '@cdp/dom';
 import { getLanguage } from '@cdp/i18n';
-import {
+import type {
     Page,
     Route,
     RouteChangeInfo,
 } from '@cdp/router';
 import {
+    type AppContextOptions,
     Orientation,
-    AppContextOptions,
     AppContext,
     registerPage,
 } from '@cdp/app';

@@ -1,5 +1,5 @@
 /* eslint-disable
-    @stylistic:js/indent,
+    @stylistic/indent,
  */
 'use strict';
 

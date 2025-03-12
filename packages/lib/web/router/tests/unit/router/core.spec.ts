@@ -10,16 +10,16 @@ import {
     waitFrame as _waitFrame,
 } from '@cdp/web-utils';
 import {
-    DOM,
+    type DOM,
     dom as $,
 } from '@cdp/dom';
 import {
-    RouteChangeInfo,
-    Page,
+    type RouteChangeInfo,
+    type Page,
+    type Route,
     RouterRefreshLevel,
-    Route,
-    RouterConstructionOptions,
-    Router,
+    type RouterConstructionOptions,
+    type Router,
     createRouter,
     createMemoryHistory,
 } from '@cdp/router';

@@ -1,3 +1,3 @@
-import { TransformeContext } from 'lit-transformer/src/interfaces';
+import type { TransformeContext } from 'lit-transformer/src/interfaces';
 declare const sectionTransformer: () => TransformeContext;
 export default sectionTransformer;

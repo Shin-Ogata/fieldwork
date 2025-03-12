@@ -1,17 +1,17 @@
 import {
-    Keys,
-    Types,
-    KeyToType,
+    type Keys,
+    type Types,
+    type KeyToType,
     verify,
     deepEqual,
     dropUndefined,
 } from '@cdp/core-utils';
-import { Subscription, EventBroker } from '@cdp/events';
+import { type Subscription, EventBroker } from '@cdp/events';
 import {
-    Cancelable,
+    type Cancelable,
     checkCanceled as cc,
 } from '@cdp/promise';
-import {
+import type {
     StorageDataTypeList,
     StorageInputDataTypeList,
     IStorageOptions,
@@ -21,7 +21,7 @@ import {
     IStorage,
 } from '@cdp/core-storage';
 import {
-    Serializable,
+    type Serializable,
     serialize,
     deserialize,
 } from '@cdp/binary';

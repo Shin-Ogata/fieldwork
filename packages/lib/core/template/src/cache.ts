@@ -1,9 +1,9 @@
 import {
-    PlainObject,
+    type PlainObject,
     ensureObject,
     getGlobalNamespace,
 } from '@cdp/core-utils';
-import { TemplateDelimiters } from './interfaces';
+import type { TemplateDelimiters } from './interfaces';
 
 /**
  * @en Cache location information.

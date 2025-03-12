@@ -1,9 +1,9 @@
 import { assignValue, deepEqual } from './deep-circuit';
 import {
-    UnknownObject,
-    Accessible,
-    Nullish,
-    Writable,
+    type UnknownObject,
+    type Accessible,
+    type Nullish,
+    type Writable,
     isArray,
     isObject,
     isFunction,

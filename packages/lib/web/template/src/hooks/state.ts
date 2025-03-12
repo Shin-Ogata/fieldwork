@@ -2,10 +2,10 @@ import type { IHookState } from './interfaces';
 import type { Hook } from './hook';
 import { setCurrent, clearCurrent } from './current';
 import {
+    type EffectsSymbols,
     hookSymbol,
     effectsSymbol,
     layoutEffectsSymbol,
-    EffectsSymbols,
 } from './symbols';
 
 /** @internal */

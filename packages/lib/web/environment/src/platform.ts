@@ -1,4 +1,4 @@
-import { Writable, getGlobal } from '@cdp/core-utils';
+import { type Writable, getGlobal } from '@cdp/core-utils';
 import { context as globalContext } from './ssr';
 
 /** @internal ts4.7+ patch */

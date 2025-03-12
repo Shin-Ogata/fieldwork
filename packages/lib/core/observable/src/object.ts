@@ -3,10 +3,10 @@
  */
 
 import {
-    UnknownObject,
-    Accessible,
-    NonFunctionProperties,
-    NonFunctionPropertyNames,
+    type UnknownObject,
+    type Accessible,
+    type NonFunctionProperties,
+    type NonFunctionPropertyNames,
     isString,
     isArray,
     verify,
@@ -14,7 +14,7 @@ import {
     deepMerge,
     deepEqual,
 } from '@cdp/core-utils';
-import { Subscription, EventBroker } from '@cdp/events';
+import type { Subscription, EventBroker } from '@cdp/events';
 import {
     EventBrokerProxy,
     _internal,
@@ -23,7 +23,7 @@ import {
     _notifyChanges,
     verifyObservable,
 } from './internal';
-import { ObservableState, IObservable } from './common';
+import { ObservableState, type IObservable } from './common';
 
 /** @internal */
 interface InternalProps {

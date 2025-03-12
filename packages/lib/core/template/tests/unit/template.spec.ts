@@ -5,8 +5,8 @@
 import { escapeHTML } from '@cdp/core-utils';
 import {
     TemplateEngine,
-    ITemplateEngine,
-    TemplateAccessor,
+    type ITemplateEngine,
+    type TemplateAccessor,
 } from '@cdp/core-template';
 
 describe('template/template spec', () => {

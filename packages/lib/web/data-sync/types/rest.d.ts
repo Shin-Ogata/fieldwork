@@ -1,4 +1,4 @@
-import { AjaxOptions } from '@cdp/ajax';
+import { type AjaxOptions } from '@cdp/ajax';
 import type { IDataSync } from './interfaces';
 /**
  * @en Options interface for {@link RestDataSync}.

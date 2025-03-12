@@ -1,5 +1,5 @@
-import { TemplateDelimiters, TemplateWriter, TemplateViewParam, TemplatePartialParam } from './interfaces';
-import { Token } from './internal';
+import type { TemplateDelimiters, TemplateWriter, TemplateViewParam, TemplatePartialParam } from './interfaces';
+import { type Token } from './internal';
 /**
  * A Writer knows how to take a stream of tokens and render them to a
  * string, given a context. It also maintains a cache of templates to

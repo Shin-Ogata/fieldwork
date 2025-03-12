@@ -1,12 +1,12 @@
-import { FunctionPropertyNames } from '@cdp/core-utils';
+import type { FunctionPropertyNames } from '@cdp/core-utils';
 import {
     toUrl,
     loadTemplateSource,
     toTemplateElement,
 } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
-import { JST, TemplateEngine } from '@cdp/core-template';
-import { ViewEventsHash } from '@cdp/view';
+import { type JST, TemplateEngine } from '@cdp/core-template';
+import type { ViewEventsHash } from '@cdp/view';
 import { ComponentViewBase } from './base';
 
 const prepareTemplate = async (): Promise<JST> => {

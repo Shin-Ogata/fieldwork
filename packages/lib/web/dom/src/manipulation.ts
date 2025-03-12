@@ -1,14 +1,14 @@
 import { isString, setMixClassAttribute } from '@cdp/core-utils';
 import {
-    ElementBase,
-    SelectorBase,
-    DOMSelector,
-    DOMResult,
-    DOM,
+    type ElementBase,
+    type SelectorBase,
+    type DOMSelector,
+    type DOMResult,
+    type DOM,
     dom as $,
 } from './static';
 import {
-    DOMIterable,
+    type DOMIterable,
     isNode,
     isNodeElement,
     isTypeElement,

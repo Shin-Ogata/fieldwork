@@ -1,4 +1,4 @@
-import { CancelToken } from './cancel-token';
+import type { CancelToken } from './cancel-token';
 import { CancelablePromise } from './cancelable-promise';
 /**
  * @en `Deferred` object class that can operate `reject` and` resolve` from the outside.

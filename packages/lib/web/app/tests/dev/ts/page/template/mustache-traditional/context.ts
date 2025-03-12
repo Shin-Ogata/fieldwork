@@ -1,12 +1,12 @@
-import { FunctionPropertyNames, debounce } from '@cdp/core-utils';
+import { type FunctionPropertyNames, debounce } from '@cdp/core-utils';
 import {
     toUrl,
     loadTemplateSource,
     toTemplateElement,
 } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
-import { JST, TemplateEngine } from '@cdp/core-template';
-import { ViewEventsHash } from '@cdp/view';
+import { type JST, TemplateEngine } from '@cdp/core-template';
+import type { ViewEventsHash } from '@cdp/view';
 import { PageView, registerPage } from '@cdp/app';
 import { entry } from '../../signature';
 import { Props } from '../props';

@@ -3,12 +3,12 @@
  */
 
 import {
-    UnknownObject,
-    AnyObject,
-    Accessible,
-    Constructor,
-    Class,
-    Keys,
+    type UnknownObject,
+    type AnyObject,
+    type Accessible,
+    type Constructor,
+    type Class,
+    type Keys,
     isNullish,
     isArray,
     isFunction,
@@ -19,26 +19,26 @@ import {
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
-    Silenceable,
-    Subscribable,
+    type Silenceable,
+    type Subscribable,
     EventBroker,
     EventSource,
     EventPublisher,
 } from '@cdp/events';
 import {
-    Result,
+    type Result,
     RESULT_CODE,
     FAILED,
     makeResult,
 } from '@cdp/result';
-import { SyncContext, defaultSync } from '@cdp/data-sync';
+import { type SyncContext, defaultSync } from '@cdp/data-sync';
 import {
-    Model,
-    ModelConstructionOptions,
-    ModelSaveOptions,
+    type Model,
+    type ModelConstructionOptions,
+    type ModelSaveOptions,
     isModel,
 } from '@cdp/model';
-import {
+import type {
     SortCallback,
     FilterCallback,
     CollectionSortOptions,
@@ -99,7 +99,7 @@ const ensureSortOptions = <T extends object, K extends Keys<T>>(options: Collect
 
 /** @internal */
 const modelIdAttribute = <T extends object>(ctor: Constructor<T> | undefined): string => {
-    return (ctor as any)?.idAttribute || 'id';
+    return (ctor as any)?.idAttribute ?? 'id';
 };
 
 /** @internal */
@@ -883,7 +883,7 @@ export abstract class Collection<
                     set.push(existing);
                 }
                 items[i] = existing;
-            } // eslint-disable-line @stylistic:js/brace-style
+            } // eslint-disable-line @stylistic/brace-style
 
             // If this is a new, valid model, push it to the `toAdd` list.
             else if (add) {

@@ -1,8 +1,8 @@
 import { isFunction, sort } from '@cdp/core-utils';
 import {
-    SortKey,
+    type SortKey,
     SortOrder,
-    CollatorProvider,
+    type CollatorProvider,
     defaultCollatorProvider,
     getStringComparator,
     getDateComparator,

@@ -1,10 +1,10 @@
 import {
-    UnknownFunction,
-    Accessible,
-    Keys,
+    type UnknownFunction,
+    type Accessible,
+    type Keys,
     isFunction,
 } from '@cdp/core-utils';
-import { Subscribable, EventSource } from '@cdp/events';
+import { type Subscribable, EventSource } from '@cdp/events';
 import type { AjaxDataStreamEvent, AjaxDataStream } from './interfaces';
 
 /** @internal ProxyHandler helper */

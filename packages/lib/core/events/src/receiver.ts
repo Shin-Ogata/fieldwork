@@ -1,9 +1,9 @@
 import {
-    UnknownFunction,
-    Arguments,
+    type UnknownFunction,
+    type Arguments,
     isArray,
 } from '@cdp/core-utils';
-import {
+import type {
     Subscribable,
     Subscription,
     EventSchema,

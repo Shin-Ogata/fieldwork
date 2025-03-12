@@ -1,7 +1,7 @@
-import { Nullish, PlainObject } from '@cdp/core-utils';
+import { type Nullish, type PlainObject } from '@cdp/core-utils';
 import { EventSource } from '@cdp/events';
-import { DOM, DOMSelector, DOMResult, DOMEventListener, DOMEventMap, EventType, EventTypeOrNamespace } from '@cdp/dom';
-import { ViewEventsHash, ViewConstructionOptions } from './interfaces';
+import { type DOM, type DOMSelector, type DOMResult, type DOMEventListener, type DOMEventMap, type EventType, type EventTypeOrNamespace } from '@cdp/dom';
+import type { ViewEventsHash, ViewConstructionOptions } from './interfaces';
 export type ViewFindSelector = Node | string | Nullish;
 /**
  * @en Core implementation of {@link View} without {@link EventSource} interface. <br>

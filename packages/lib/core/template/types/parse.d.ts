@@ -1,4 +1,4 @@
-import { Token, Delimiters } from './internal';
+import { type Token, type Delimiters } from './internal';
 /**
  * Breaks up the given `template` string into a tree of tokens. If the `tags`
  * argument is given here it must be an array with two string values: the

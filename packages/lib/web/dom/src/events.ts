@@ -4,7 +4,7 @@
  */
 
 import {
-    Accessible,
+    type Accessible,
     isFunction,
     isString,
     isArray,
@@ -13,11 +13,11 @@ import {
 } from '@cdp/core-utils';
 import { CustomEvent } from './ssr';
 import {
-    ElementBase,
-    DOM,
+    type ElementBase,
+    type DOM,
     dom as $,
 } from './static';
-import { DOMIterable, isTypeElement } from './base';
+import { type DOMIterable, isTypeElement } from './base';
 import type { ConnectEventMap } from './detection';
 
 /** @internal */
@@ -272,7 +272,7 @@ function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
     }
 
     type = !type ? [] : (isArray(type) ? type : [type]);
-    selector = selector || '';
+    selector = selector ?? '';
     if (!options) {
         options = {};
     } else if (true === options) {
@@ -356,7 +356,7 @@ function handleSelfEvent<TElement extends ElementBase>(
 
 //__________________________________________________________________________________________________//
 
-/* eslint-disable @stylistic:js/indent */
+/* eslint-disable @stylistic/indent */
 export type DOMEventMap<T>
     = T extends Window ? WindowEventMap
     : T extends Document ? DocumentEventMap
@@ -365,7 +365,7 @@ export type DOMEventMap<T>
     : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap
     : T extends Element ? ElementEventMap & ConnectEventMap
     : GlobalEventHandlersEventMap;
-/* eslint-enable @stylistic:js/indent */
+/* eslint-enable @stylistic/indent */
 
 export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
 

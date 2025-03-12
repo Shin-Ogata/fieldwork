@@ -1,12 +1,12 @@
-import {
+import type {
     PlainObject,
     UnknownFunction,
     FunctionPropertyNames,
 } from '@cdp/core-utils';
-import { Subscribable } from '@cdp/events';
-import { ViewEventsHash } from '@cdp/view';
+import type { Subscribable } from '@cdp/events';
+import type { ViewEventsHash } from '@cdp/view';
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
     directives,
@@ -14,7 +14,7 @@ import {
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
 import { ComponentElement } from './base';
-import { Props } from '../props';
+import type { Props } from '../props';
 
 const { repeat } = directives;
 
@@ -61,7 +61,7 @@ class DevListComponent extends ComponentElement {
 
     private template(): TemplateResult {
         const { list } = this._props;
-        /* eslint-disable @stylistic:js/indent */
+        /* eslint-disable @stylistic/indent */
         return html`
             <fieldset class="template-control-group">
                 <p>${t(i18nKey.app.template.content.list.label)}${ list.length }</p>
@@ -88,7 +88,7 @@ class DevListComponent extends ComponentElement {
                 }
             </fieldset>
         `;
-        /* eslint-enable @stylistic:js/indent */
+        /* eslint-enable @stylistic/indent */
     }
 
 ///////////////////////////////////////////////////////////////////////

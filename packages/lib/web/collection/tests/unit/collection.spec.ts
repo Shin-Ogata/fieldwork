@@ -3,48 +3,48 @@
  */
 
 import {
-    Accessible,
-    Constructor,
-    GroupByReturnValue,
+    type Accessible,
+    type Constructor,
+    type GroupByReturnValue,
     sleep,
     groupBy,
     computeDate,
     setMixClassAttribute,
 } from '@cdp/core-utils';
-import { Silenceable, EventSource } from '@cdp/events';
+import { type Silenceable, EventSource } from '@cdp/events';
 import {
-    Result,
+    type Result,
     RESULT_CODE,
     makeResult,
 } from '@cdp/result';
 import { CancelToken } from '@cdp/promise';
 import {
-    SyncContext,
-    IDataSyncOptions,
+    type SyncContext,
+    type IDataSyncOptions,
     defaultSync,
     dataSyncSTORAGE,
     dataSyncNULL,
 } from '@cdp/data-sync';
 import {
+    type ModelConstructor,
+    type ModelAttributeInput,
+    type ModelValidateAttributeOptions,
     Model,
-    ModelConstructor,
-    ModelAttributeInput,
-    ModelValidateAttributeOptions,
 } from '@cdp/model';
 import {
     SortOrder,
     DynamicOperator,
-    CollectionItemProvider,
-    CollectionItemQueryOptions,
-    CollectionItemQueryResult,
-    CollectionFetchProgress,
+    type CollectionItemProvider,
+    type CollectionItemQueryOptions,
+    type CollectionItemQueryResult,
+    type CollectionFetchProgress,
     Collection,
-    CollectionSeed,
-    CollectionConstructionOptions,
-    CollectionSetOptions,
-    CollectionReSortOptions,
-    CollectionAfterFilterOptions,
-    CollectionQueryOptions,
+    type CollectionSeed,
+    type CollectionConstructionOptions,
+    type CollectionSetOptions,
+    type CollectionReSortOptions,
+    type CollectionAfterFilterOptions,
+    type CollectionQueryOptions,
     searchItems,
     convertSortKeys,
 } from '@cdp/collection';

@@ -3,12 +3,12 @@
  */
 
 import {
-    Primitive,
-    Nullish,
-    Accessible,
-    Constructor,
-    Class,
-    Arguments,
+    type Primitive,
+    type Nullish,
+    type Accessible,
+    type Constructor,
+    type Class,
+    type Arguments,
     isObject,
     isEmptyObject,
     luid,
@@ -20,27 +20,27 @@ import {
     setMixClassAttribute,
 } from '@cdp/core-utils';
 import {
-    Subscription,
-    Silenceable,
-    EventBroker,
+    type Subscription,
+    type Silenceable,
+    type EventBroker,
+    type EventSource,
     EventReceiver,
-    EventSource,
 } from '@cdp/events';
 import { checkCanceled as cc } from '@cdp/promise';
 import {
-    IObservable,
-    IObservableEventBrokerAccess,
+    type IObservable,
+    type IObservableEventBrokerAccess,
     ObservableObject,
 } from '@cdp/observable';
 import {
+    type Result,
     RESULT_CODE,
-    Result,
     makeResult,
     SUCCEEDED,
     FAILED,
 } from '@cdp/result';
-import { SyncContext, defaultSync } from '@cdp/data-sync';
-import {
+import { type SyncContext, defaultSync } from '@cdp/data-sync';
+import type {
     ModelSeed,
     ModelEvent,
     ModelValidateAttributeOptions,
@@ -92,7 +92,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
     }
 
     if (options?.data) {
-        attrs = Object.assign(attrs || {}, options.data);
+        attrs = Object.assign(attrs ?? {}, options.data);
     }
 
     return { attrs, options };
@@ -163,7 +163,7 @@ function parseSaveArgs<A extends object>(...args: any[]): { attrs?: ModelAttribu
  * interface CustomEvent extends ModelEvent<ContentAttribute> {
  *   fire: [boolean, number];
  * }
- * 
+ *
  * :
  *
  * // early cast
@@ -833,5 +833,5 @@ export function isModel(x: unknown): x is Model {
  * @ja {@link Model} の `id-attribute` を取得
  */
 export function idAttribute(x: unknown, fallback = ''): string {
-    return isObject(x) ? ((x.constructor as any).idAttribute || fallback) : fallback;
+    return isObject(x) ? ((x.constructor as any).idAttribute ?? fallback) : fallback;
 }

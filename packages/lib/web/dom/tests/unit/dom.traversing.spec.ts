@@ -1,11 +1,11 @@
 /* eslint-disable
-    @stylistic:js/block-spacing,
+    @stylistic/block-spacing,
     @typescript-eslint/no-explicit-any,
  */
 
 import { dom as $ } from '@cdp/dom';
 import {
-    DOM,
+    type DOM,
     prepareTestElements,
     cleanupTestElements,
     mixedCollection,

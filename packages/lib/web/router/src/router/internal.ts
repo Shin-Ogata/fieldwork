@@ -1,7 +1,7 @@
 import { path2regexp } from '@cdp/extension-path2regexp';
 import {
-    Writable,
-    Class,
+    type Writable,
+    type Class,
     isString,
     isArray,
     isObject,
@@ -16,8 +16,8 @@ import {
     convertUrlParamType,
 } from '@cdp/ajax';
 import {
-    DOM,
-    DOMSelector,
+    type DOM,
+    type DOMSelector,
     dom as $,
 } from '@cdp/dom';
 import {
@@ -26,8 +26,8 @@ import {
     toTemplateElement,
 } from '@cdp/web-utils';
 import {
-    HistoryDirection,
-    IHistory,
+    type HistoryDirection,
+    type IHistory,
     createSessionHistory,
     createMemoryHistory,
 } from '../history';

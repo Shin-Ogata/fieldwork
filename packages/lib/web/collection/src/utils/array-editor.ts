@@ -1,9 +1,9 @@
 import { unique } from '@cdp/core-utils';
 import {
-    CancelToken,
+    type CancelToken,
     checkCanceled as cc,
 } from '@cdp/promise';
-import { ObservableArray, ArrayChangeRecord } from '@cdp/observable';
+import { type ArrayChangeRecord, ObservableArray } from '@cdp/observable';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 
 const {

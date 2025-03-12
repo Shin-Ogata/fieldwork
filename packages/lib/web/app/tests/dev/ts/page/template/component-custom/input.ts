@@ -1,13 +1,13 @@
-import { PlainObject, UnknownFunction } from '@cdp/core-utils';
+import type { PlainObject, UnknownFunction } from '@cdp/core-utils';
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
 } from '@cdp/template';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
 import { ComponentElement } from './base';
-import { Props } from '../props';
+import type { Props } from '../props';
 
 class DevInputComponent extends ComponentElement {
     private _handler!: PlainObject<UnknownFunction>;

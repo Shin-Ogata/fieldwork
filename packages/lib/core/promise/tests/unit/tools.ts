@@ -1,4 +1,4 @@
-import { CancelToken, Promise } from '@cdp/promise';
+import { type CancelToken, Promise } from '@cdp/promise';
 
 export function resolve100(token?: CancelToken): Promise<string> {
     return new Promise((resolve) => {

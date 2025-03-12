@@ -1,6 +1,6 @@
 import {
-    UnknownFunction,
-    Accessible,
+    type UnknownFunction,
+    type Accessible,
     isArray,
     isFunction,
     camelize,
@@ -13,9 +13,9 @@ import {
     makeResult,
 } from '@cdp/result';
 import {
-    DOM,
+    type DOM,
+    type DOMSelector,
     dom as $,
-    DOMSelector,
 } from '@cdp/dom';
 import { waitFrame } from '@cdp/web-utils';
 import { toRouterPath } from '../utils';
@@ -23,30 +23,30 @@ import { window } from '../ssr';
 import { normalizeId } from '../history/internal';
 import type { IHistory, HistoryState } from '../history';
 import {
-    PageTransitionParams,
-    RouterEvent,
-    Page,
-    RouteParameters,
-    Route,
-    TransitionSettings,
-    NavigationSettings,
-    PageStack,
-    PushPageStackOptions,
-    RouterConstructionOptions,
-    RouteSubFlowParams,
-    RouteNavigationOptions,
+    type PageTransitionParams,
+    type RouterEvent,
+    type Page,
+    type RouteParameters,
+    type Route,
+    type TransitionSettings,
+    type NavigationSettings,
+    type PageStack,
+    type PushPageStackOptions,
+    type RouteSubFlowParams,
+    type RouteNavigationOptions,
+    type RouterConstructionOptions,
+    type Router,
     RouterRefreshLevel,
-    Router,
 } from './interfaces';
 import {
     CssName,
     DomCache,
     LinkData,
-    PageEvent,
-    RouteContextParameters,
-    RouteSubFlowParamsContext,
-    RouteContext,
-    RouteChangeInfoContext,
+    type PageEvent,
+    type RouteContextParameters,
+    type RouteSubFlowParamsContext,
+    type RouteContext,
+    type RouteChangeInfoContext,
     applyBuiltInCss,
     toRouteContextParameters,
     toRouteContext,

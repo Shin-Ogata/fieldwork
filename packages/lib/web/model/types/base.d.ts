@@ -1,8 +1,8 @@
-import { Nullish, Accessible, Arguments } from '@cdp/core-utils';
-import { Subscription, Silenceable, EventReceiver, EventSource } from '@cdp/events';
+import { type Nullish, type Accessible, type Arguments } from '@cdp/core-utils';
+import { type Subscription, type Silenceable, type EventSource, EventReceiver } from '@cdp/events';
 import { ObservableObject } from '@cdp/observable';
-import { Result } from '@cdp/result';
-import { ModelSeed, ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions, ModelSyncMethods, ModelSyncResult, ModelDataSyncOptions, ModelFetchOptions, ModelSaveOptions, ModelDestroyOptions } from './interfaces';
+import { type Result } from '@cdp/result';
+import type { ModelSeed, ModelEvent, ModelValidateAttributeOptions, ModelAttributeInput, ModelSetOptions, ModelConstructionOptions, ModelSyncMethods, ModelSyncResult, ModelDataSyncOptions, ModelFetchOptions, ModelSaveOptions, ModelDestroyOptions } from './interfaces';
 /**
  * @en Valid attributes result.
  * @ja 属性検証の有効値

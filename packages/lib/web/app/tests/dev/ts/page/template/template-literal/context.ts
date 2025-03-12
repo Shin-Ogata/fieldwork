@@ -1,6 +1,6 @@
 import type { UnknownFunction, PlainObject } from '@cdp/core-utils';
 import {
-    TemplateResult,
+    type TemplateResult,
     render,
     html,
     directives,
@@ -79,12 +79,12 @@ class TemplateLiteralView extends PageView {
          *
          * lit-html
          * https://marketplace.visualstudio.com/items?itemName=bierner.lit-html
-         * 
+         *
          * Comment tagged templates
          * https://marketplace.visualstudio.com/items?itemName=bierner.comment-tagged-templates
          */
 
-        /* eslint-disable @stylistic:js/indent */
+        /* eslint-disable @stylistic/indent */
         return html`
             <header>
                 <label>👈</label>
@@ -138,7 +138,7 @@ class TemplateLiteralView extends PageView {
                 </fieldset>
             </section>
         `;
-        /* eslint-enable @stylistic:js/indent */
+        /* eslint-enable @stylistic/indent */
     }
 
 ///////////////////////////////////////////////////////////////////////

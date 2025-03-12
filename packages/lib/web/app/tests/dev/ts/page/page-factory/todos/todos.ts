@@ -1,5 +1,5 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     directives,
 } from '@cdp/template';

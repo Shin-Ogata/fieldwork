@@ -1,10 +1,10 @@
 import { verify } from '@cdp/core-utils';
-import { EventBroker, Subscription } from '@cdp/events';
+import { EventBroker, type Subscription } from '@cdp/events';
 import {
+    type CancelTokenContext,
     _cancel,
     _close,
     CancelTokenState,
-    CancelTokenContext,
     invalidSubscription,
 } from './internal';
 

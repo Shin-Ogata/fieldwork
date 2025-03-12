@@ -1,7 +1,7 @@
 import {
-    Token,
+    type Token,
     TokenAddress as $,
-    Delimiters,
+    type Delimiters,
     globalSettings,
 } from './internal';
 import {

@@ -1,5 +1,5 @@
-import { i18n } from '@cdp/extension-i18n';
-import { AjaxRequestOptions } from '@cdp/ajax';
+import type { i18n } from '@cdp/extension-i18n';
+import type { AjaxRequestOptions } from '@cdp/ajax';
 declare module '@cdp/extension-i18n' {
     namespace i18n {
         /**

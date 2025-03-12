@@ -1,6 +1,6 @@
 import {
     dom as $,
-    DOM,
+    type DOM,
 } from '@cdp/dom';
 import { defaultSync, dataSyncSTORAGE } from '@cdp/data-sync';
 

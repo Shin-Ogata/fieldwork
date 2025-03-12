@@ -6,7 +6,7 @@ import { sleep } from '@cdp/core-utils';
 import {
     MemoryStorage,
     Registry,
-    RegistrySchemaBase,
+    type RegistrySchemaBase,
 } from '@cdp/core-storage';
 
 interface Schema extends RegistrySchemaBase {

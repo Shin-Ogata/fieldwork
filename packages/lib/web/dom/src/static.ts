@@ -1,8 +1,8 @@
 import type { Writable } from '@cdp/core-utils';
 import {
+    type ElementifySeed,
+    type ElementResult,
     ElementBase,
-    ElementifySeed,
-    ElementResult,
     SelectorBase,
     QueryContext,
     EvalOptions,
@@ -13,9 +13,9 @@ import {
 } from './utils';
 import { detectify, undetectify } from './detection';
 import {
+    type DOMClass,
     DOM,
     DOMPlugin,
-    DOMClass,
     DOMSelector,
     DOMResult,
     DOMIterateCallback,

@@ -1,4 +1,4 @@
-import {
+import type {
     JST,
     TemplateDelimiters,
     ITemplateEngine,
@@ -10,7 +10,7 @@ import {
 import { globalSettings } from './internal';
 import { CacheLocation, clearCache } from './cache';
 import {
-    PlainObject,
+    type PlainObject,
     isString,
     typeString,
 } from './utils';

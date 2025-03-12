@@ -1,5 +1,5 @@
 import type { UnknownObject } from '@cdp/core-utils';
-import { Subscription, EventBroker } from '@cdp/events';
+import type { Subscription, EventBroker } from '@cdp/events';
 import { _internal } from './internal';
 
 /**

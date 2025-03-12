@@ -1,6 +1,6 @@
 import { CancelToken } from '@cdp/promise';
 import {
-    Result,
+    type Result,
     RESULT_CODE,
     makeCanceledResult,
 } from '@cdp/result';

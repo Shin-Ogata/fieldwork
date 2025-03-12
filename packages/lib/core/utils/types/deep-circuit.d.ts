@@ -1,4 +1,4 @@
-import { UnknownObject } from './types';
+import { type UnknownObject } from './types';
 /**
  * @en Set by specifying key and value for the object. (prototype pollution countermeasure)
  * @ja オブジェクトに key, value を指定して設定 (プロトタイプ汚染対策)

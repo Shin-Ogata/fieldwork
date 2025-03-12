@@ -1,5 +1,5 @@
 import {
-    PlainObject,
+    type PlainObject,
     isFunction,
     isNumeric,
     assignValue,

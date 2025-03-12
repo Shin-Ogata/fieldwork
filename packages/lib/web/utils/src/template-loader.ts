@@ -1,4 +1,4 @@
-import { AjaxGetRequestShortcutOptions, request } from '@cdp/ajax';
+import { type AjaxGetRequestShortcutOptions, request } from '@cdp/ajax';
 import { document } from './ssr';
 
 /** @internal */

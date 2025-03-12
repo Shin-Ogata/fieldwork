@@ -362,6 +362,7 @@ export function mixins<
         if (!desc || desc.writable) {
             const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
             setInstanceOf(srcClass, (inst: UnknownObject) => {
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 return orgInstanceOf.call(srcClass, inst) || ((inst?.[_isInherited]) ? (inst[_isInherited] as UnknownFunction)(srcClass) : false);
             });
         }

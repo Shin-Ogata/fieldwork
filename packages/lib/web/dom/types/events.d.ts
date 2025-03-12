@@ -1,5 +1,5 @@
-import { ElementBase, DOM } from './static';
-import { DOMIterable } from './base';
+import { type ElementBase, type DOM } from './static';
+import { type DOMIterable } from './base';
 import type { ConnectEventMap } from './detection';
 export type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap & ConnectEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap & ConnectEventMap : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap : T extends Element ? ElementEventMap & ConnectEventMap : GlobalEventHandlersEventMap;
 export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;

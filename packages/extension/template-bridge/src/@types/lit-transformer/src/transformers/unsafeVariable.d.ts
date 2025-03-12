@@ -1,3 +1,3 @@
-import { TransformeContext, TransformDirective } from 'lit-transformer/src/interfaces';
+import type { TransformeContext, TransformDirective } from 'lit-transformer/src/interfaces';
 declare const unsafeVariableTransformer: (unsafeHTML: TransformDirective) => TransformeContext;
 export default unsafeVariableTransformer;

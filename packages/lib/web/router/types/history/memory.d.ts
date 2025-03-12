@@ -1,4 +1,4 @@
-import { PlainObject } from '@cdp/core-utils';
+import { type PlainObject } from '@cdp/core-utils';
 import type { IHistory, HistorySetStateOptions } from './interfaces';
 /**
  * @en Create memory history management object.

@@ -1,4 +1,4 @@
-import { UnknownFunction } from './types';
+import type { UnknownFunction } from './types';
 import { getGlobal } from './config';
 import { safe } from './safe';
 

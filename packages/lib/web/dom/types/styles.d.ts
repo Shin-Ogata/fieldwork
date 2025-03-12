@@ -1,6 +1,6 @@
-import { PlainObject } from '@cdp/core-utils';
-import { ElementBase } from './static';
-import { DOMIterable } from './base';
+import { type PlainObject } from '@cdp/core-utils';
+import { type ElementBase } from './static';
+import { type DOMIterable } from './base';
 /**
  * @en Get offset[Width | Height]. This function will work SVGElement, too.
  * @ja offse[Width | Height] の取得. SVGElement にも適用可能

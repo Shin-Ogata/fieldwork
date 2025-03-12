@@ -9,7 +9,7 @@ export default [
     {
         plugins: {
             '@typescript-eslint': tslint.plugin,
-            '@stylistic:ts': stylistic,
+            '@stylistic': stylistic,
         },
         languageOptions: {
             parser: tslint.parser,
@@ -22,11 +22,17 @@ export default [
             ////////////////////////////////////////////////////////
             // added rules
             ////////////////////////////////////////////////////////
-    
+
             '@typescript-eslint/member-naming': [
                 'off',
                 {
                     private: '^_|^Symbol',
+                },
+            ],
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {
+                    fixStyle: 'inline-type-imports',
                 },
             ],
             '@typescript-eslint/no-require-imports': 'error',
@@ -68,11 +74,11 @@ export default [
             '@typescript-eslint/no-useless-constructor': 'warn',
             '@typescript-eslint/prefer-includes': 'warn',
             '@typescript-eslint/prefer-regexp-exec': 'warn',
-    
+
             ////////////////////////////////////////////////////////
             // patch: @typescript-eslint/recommended-type-checked
             ////////////////////////////////////////////////////////
-    
+
             '@typescript-eslint/no-this-alias': [
                 'error',
                 {
@@ -118,11 +124,11 @@ export default [
             '@typescript-eslint/no-unsafe-enum-comparison': 'off',
             // v8.0+
             '@typescript-eslint/prefer-promise-reject-errors': 'off',
-    
+
             ////////////////////////////////////////////////////////
             // patch: @typescript-eslint/stylistic-type-checked
             ////////////////////////////////////////////////////////
-    
+
             '@typescript-eslint/dot-notation': [
                 'error',
                 {
@@ -138,7 +144,7 @@ export default [
             // prefer true read-only
             '@typescript-eslint/class-literal-property-style': 'off',
             // @stylistic/ts
-            '@stylistic:ts/member-delimiter-style': [
+            '@stylistic/member-delimiter-style': [
                 'error',
                 {
                     singleline: {

@@ -1,15 +1,15 @@
 import {
-    TemplateResult,
-    SVGTemplateResult,
+    type TemplateResult,
+    type SVGTemplateResult,
     html,
     directives,
 } from '@cdp/extension-template';
 import {
-    TemplateTransformer,
+    type TemplateTransformer,
     createMustacheTransformer,
     createStampinoTransformer,
 } from '@cdp/extension-template-bridge';
-import { PlainObject } from '@cdp/core-utils';
+import type { PlainObject } from '@cdp/core-utils';
 
 /** @internal builtin transformers (default: mustache). */
 const _builtins: Record<string, TemplateTransformer> = {

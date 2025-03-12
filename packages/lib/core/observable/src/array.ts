@@ -3,14 +3,14 @@
  */
 
 import {
-    UnknownFunction,
-    Accessible,
-    Writable,
+    type UnknownFunction,
+    type Accessible,
+    type Writable,
     isNumber,
     verify,
     post,
 } from '@cdp/core-utils';
-import { Subscription, EventBroker } from '@cdp/events';
+import type { Subscription, EventBroker } from '@cdp/events';
 import {
     EventBrokerProxy,
     _internal,
@@ -19,7 +19,7 @@ import {
     _notifyChanges,
     verifyObservable,
 } from './internal';
-import { ObservableState, IObservable } from './common';
+import { ObservableState, type IObservable } from './common';
 
 /**
  * @en Array change type information. <br>

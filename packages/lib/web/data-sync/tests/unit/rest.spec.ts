@@ -1,6 +1,6 @@
 import {
-    SyncEvent,
-    RestDataSyncOptions,
+    type SyncEvent,
+    type RestDataSyncOptions,
     dataSyncREST,
 } from '@cdp/data-sync';
 import { EventBroker } from '@cdp/events';

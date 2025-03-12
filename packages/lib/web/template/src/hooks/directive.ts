@@ -1,12 +1,12 @@
 import {
-    PartInfo,
+    type PartInfo,
+    type DirectiveResult,
     AsyncDirective,
-    DirectiveResult,
     directive,
     noChange,
 } from '@cdp/extension-template';
 import {
-    UnknownFunction,
+    type UnknownFunction,
     noop,
     scheduler,
 } from '@cdp/core-utils';

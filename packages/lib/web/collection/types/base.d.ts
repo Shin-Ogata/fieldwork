@@ -1,7 +1,7 @@
-import { UnknownObject, AnyObject, Class, Keys } from '@cdp/core-utils';
-import { Silenceable, EventSource } from '@cdp/events';
-import { ModelSaveOptions } from '@cdp/model';
-import { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionSeed, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
+import { type UnknownObject, type AnyObject, type Class, type Keys } from '@cdp/core-utils';
+import { type Silenceable, EventSource } from '@cdp/events';
+import { type ModelSaveOptions } from '@cdp/model';
+import type { SortCallback, FilterCallback, CollectionItemQueryResult, CollectionItemQueryOptions, CollectionItemProvider, CollectionQueryInfo, CollectionSeed, CollectionEvent, CollectionConstructionOptions, CollectionOperationOptions, CollectionAddOptions, CollectionSetOptions, CollectionReSortOptions, CollectionQueryOptions, CollectionRequeryOptions, CollectionAfterFilterOptions } from './interfaces';
 /**
  * @en Base class definition for collection that is ordered sets of models.
  * @ja Model の集合を扱う Collection の基底クラス定義.

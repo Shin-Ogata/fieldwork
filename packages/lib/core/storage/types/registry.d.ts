@@ -1,5 +1,5 @@
 import { EventPublisher } from '@cdp/events';
-import { IStorage, IStorageOptions, RegistrySchemaBase, RegistryEvent, RegistryReadOptions, RegistryWriteOptions, RegistrySaveOptions } from './interfaces';
+import type { IStorage, IStorageOptions, RegistrySchemaBase, RegistryEvent, RegistryReadOptions, RegistryWriteOptions, RegistrySaveOptions } from './interfaces';
 /**
  * @en Registry management class for synchronous Read/Write accessible from any {@link IStorage} object.
  * @ja 任意の {@link IStorage} オブジェクトから同期 Read/Write アクセス可能なレジストリ管理クラス

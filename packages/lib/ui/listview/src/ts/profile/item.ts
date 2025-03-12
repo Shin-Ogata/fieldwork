@@ -1,6 +1,6 @@
 import {
-    UnknownObject,
-    DOM,
+    type UnknownObject,
+    type DOM,
     dom as $,
 } from '@cdp/runtime';
 import { getTransformMatrixValues } from '@cdp/ui-utils';

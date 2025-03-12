@@ -1,5 +1,5 @@
 /* eslint-disable
-    @stylistic:js/indent,
+    @stylistic/indent,
     @typescript-eslint/restrict-template-expressions,
     @typescript-eslint/no-empty-function,
     @typescript-eslint/no-wrapper-object-types,
@@ -7,11 +7,11 @@
  */
 
 import {
-    Nullable,
-    PlainObject,
-    UnknownObject,
-    Primitive,
-    AnyObject,
+    type Nullable,
+    type PlainObject,
+    type UnknownObject,
+    type Primitive,
+    type AnyObject,
     exists,
     isNullish,
     isString,

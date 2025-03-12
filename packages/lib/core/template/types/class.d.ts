@@ -1,4 +1,4 @@
-import { JST, TemplateDelimiters, ITemplateEngine, TemplateWriter, TemplateEscaper } from './interfaces';
+import type { JST, TemplateDelimiters, ITemplateEngine, TemplateWriter, TemplateEscaper } from './interfaces';
 /**
  * @en {@link TemplateEngine} global settng options
  * @ja {@link TemplateEngine} グローバル設定オプション

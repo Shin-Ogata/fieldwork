@@ -1,5 +1,5 @@
 import {
-    Nullish,
+    type Nullish,
     isNumber,
     isFunction,
     classify,
@@ -10,9 +10,9 @@ import {
     ensurePositiveNumber,
     swing,
 } from './utils';
-import { ElementBase } from './static';
+import type { ElementBase } from './static';
 import {
-    DOMIterable,
+    type DOMIterable,
     isNodeElement,
     isNodeHTMLOrSVGElement,
     isNodeDocument,

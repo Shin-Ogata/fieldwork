@@ -3,13 +3,13 @@
  */
 
 import {
-    Accessible,
-    PlainObject,
+    type Accessible,
+    type PlainObject,
     isObject,
     noop,
     $cdp,
 } from '@cdp/core-utils';
-import { Silenceable, EventPublisher } from '@cdp/events';
+import { type Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
 import { toUrl } from '@cdp/web-utils';
 import { toRouterStackId as toId } from '../utils';
@@ -438,8 +438,8 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         const newId   = additional?.newId ?? toId(location.href);
         const method  = additional?.postproc ?? 'seek';
         const df      = additional?.df ?? this._dfGo ?? new Deferred();
-        const oldData = additional?.prevState || this.state;
-        const newData = additional?.nextState || this.direct(newId).state || createData(newId, newState);
+        const oldData = additional?.prevState ?? this.state;
+        const newData = additional?.nextState ?? this.direct(newId).state ?? createData(newId, newState);
         const { cancel, token } = CancelToken.source(); // eslint-disable-line @typescript-eslint/unbound-method
 
         try {
@@ -470,7 +470,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
 /**
  * @en {@link createSessionHistory}() options.
  * @ja {@link createSessionHistory}() に渡すオプション
- * 
+ *
  */
 export interface SessionHistoryCreateOptions {
     context?: Window;

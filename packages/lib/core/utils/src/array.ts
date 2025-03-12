@@ -219,7 +219,7 @@ export function groupBy<
         // sum properties
         for (const k of _sumKeys) {
             if (_groupKey === k) {
-                resKey[k] = resKey[k] || [];
+                resKey[k] = resKey[k] || []; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
                 resKey[k].push(data);
             } else {
                 resKey[k] += data[k] as number;
@@ -439,7 +439,7 @@ export function combination<T>(array: T[], count: number): T[][] {
 /**
  * @en Substitution method of `Array.prototype.map()` which also accepts asynchronous callback.
  * @ja 非同期コールバックを指定可能な `Array.prototype.map()` の代替メソッド
- * 
+ *
  * @param array
  *  - `en` Array to iterate over.
  *  - `ja` 入力配列
@@ -456,7 +456,7 @@ export function combination<T>(array: T[], count: number): T[][] {
 export async function map<T, U>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => U | Promise<U>, thisArg?: unknown): Promise<U[]> {
     return Promise.all(
         array.map(async (v, i, a) => {
-            return await callback.call(thisArg || this, v, i, a);
+            return await callback.call(thisArg ?? this, v, i, a);
         })
     );
 }
@@ -479,7 +479,7 @@ export async function map<T, U>(this: unknown, array: T[], callback: (value: T, 
  *  - `ja` イテレーション結果配列を格納した Promise オブジェクト
  */
 export async function filter<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<T[]> {
-    const bits: boolean[] = await map(array, (v, i, a) => callback.call(thisArg || this, v, i, a));
+    const bits: boolean[] = await map(array, (v, i, a) => callback.call(thisArg ?? this, v, i, a));
     return array.filter(() => bits.shift());
 }
 
@@ -502,7 +502,7 @@ export async function filter<T>(this: unknown, array: T[], callback: (value: T, 
  */
 export async function find<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<T | undefined> {
     for (const [i, v] of array.entries()) {
-        if (await callback.call(thisArg || this, v, i, array)) {
+        if (await callback.call(thisArg ?? this, v, i, array)) {
             return v;
         }
     }
@@ -528,7 +528,7 @@ export async function find<T>(this: unknown, array: T[], callback: (value: T, in
  */
 export async function findIndex<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => boolean | Promise<boolean>, thisArg?: unknown): Promise<number> {
     for (const [i, v] of array.entries()) {
-        if (await callback.call(thisArg || this, v, i, array)) {
+        if (await callback.call(thisArg ?? this, v, i, array)) {
             return i;
         }
     }
@@ -554,7 +554,7 @@ export async function findIndex<T>(this: unknown, array: T[], callback: (value: 
  */
 export async function some<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean> {
     for (const [i, v] of array.entries()) {
-        if (await callback.call(thisArg || this, v, i, array)) {
+        if (await callback.call(thisArg ?? this, v, i, array)) {
             return true;
         }
     }
@@ -580,7 +580,7 @@ export async function some<T>(this: unknown, array: T[], callback: (value: T, in
  */
 export async function every<T>(this: unknown, array: T[], callback: (value: T, index: number, array: T[]) => unknown, thisArg?: unknown): Promise<boolean> {
     for (const [i, v] of array.entries()) {
-        if (!await callback.call(thisArg || this, v, i, array)) {
+        if (!await callback.call(thisArg ?? this, v, i, array)) {
             return false;
         }
     }
