@@ -1,6 +1,6 @@
 import type { HookReducer } from './interfaces';
 import { Hook, makeHook } from './hook';
-import { State } from './state';
+import type { State } from './state';
 
 /** @internal */
 export const useReducer = makeHook(class <S, I, A> extends Hook {

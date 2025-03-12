@@ -10,7 +10,7 @@ import {
     t,
 } from '@cdp/runtime';
 import {
-    GroupProfile,
+    type GroupProfile,
     type ListViewConstructOptions,
     ExpandableListView,
 } from '@cdp/ui-listview';

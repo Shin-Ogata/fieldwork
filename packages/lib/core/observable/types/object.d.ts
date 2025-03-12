@@ -1,6 +1,6 @@
-import { NonFunctionPropertyNames } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
-import { ObservableState, IObservable } from './common';
+import { type NonFunctionPropertyNames } from '@cdp/core-utils';
+import type { Subscription } from '@cdp/events';
+import { ObservableState, type IObservable } from './common';
 /**
  * @en Observable key type definition.
  * @ja 購読可能なキーの型定義

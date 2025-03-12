@@ -4,7 +4,7 @@
 
 import { sleep } from '@cdp/core-utils';
 import {
-    AjaxDataStreamEventProgresArg,
+    type AjaxDataStreamEventProgresArg,
     toAjaxDataStream,
     ajax,
 } from '@cdp/ajax';

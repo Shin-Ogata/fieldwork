@@ -1,13 +1,13 @@
-import { FunctionPropertyNames } from '@cdp/core-utils';
+import type { FunctionPropertyNames } from '@cdp/core-utils';
 import { dom as $ } from '@cdp/dom';
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
 } from '@cdp/template';
 import { t } from '@cdp/i18n';
-import { ViewConstructionOptions, ViewEventsHash } from '@cdp/view';
-import { Route } from '@cdp/router';
+import type { ViewConstructionOptions, ViewEventsHash } from '@cdp/view';
+import type { Route } from '@cdp/router';
 import { PageView, registerPage } from '@cdp/app';
 import { i18nKey } from '../../types';
 import { entry } from '../signature';

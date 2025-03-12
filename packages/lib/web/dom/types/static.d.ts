@@ -1,5 +1,5 @@
-import { ElementBase, ElementifySeed, ElementResult, SelectorBase, QueryContext, EvalOptions } from './utils';
-import { DOM, DOMPlugin, DOMClass, DOMSelector, DOMResult, DOMIterateCallback } from './class';
+import { type ElementifySeed, type ElementResult, ElementBase, SelectorBase, QueryContext, EvalOptions } from './utils';
+import { type DOMClass, DOM, DOMPlugin, DOMSelector, DOMResult, DOMIterateCallback } from './class';
 /**
  * @en Provides functionality equivalent to `jQuery` DOM manipulation.
  * @ja `jQuery` の DOM 操作と同等の機能を提供

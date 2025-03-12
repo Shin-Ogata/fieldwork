@@ -1,5 +1,5 @@
 import type { CancelToken } from '@cdp/promise';
-import { ArrayChangeRecord } from '@cdp/observable';
+import type { ArrayChangeRecord } from '@cdp/observable';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import type { ListChanged, ListEditOptions } from './interfaces';
 import {

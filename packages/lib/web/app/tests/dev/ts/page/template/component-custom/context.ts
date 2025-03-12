@@ -1,5 +1,5 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
 } from '@cdp/template';
@@ -9,7 +9,7 @@ import { PageView, registerPage } from '@cdp/app';
 import { i18nKey } from '../../../types';
 import { entry } from '../../signature';
 import { Props } from '../props';
-import { ComponentElement } from './base';
+import type { ComponentElement } from './base';
 import './state';
 import './effect';
 import './interval';

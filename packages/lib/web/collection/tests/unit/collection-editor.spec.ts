@@ -1,11 +1,11 @@
 import { ArrayChangeType } from '@cdp/observable';
 import { RESULT_CODE, toResult } from '@cdp/result';
-import { Model, ModelConstructor } from '@cdp/model';
+import { type ModelConstructor, Model } from '@cdp/model';
 import {
     Collection,
-    CollectionEvent,
-    ListChanged,
-    ListEditOptions,
+    type CollectionEvent,
+    type ListChanged,
+    type ListEditOptions,
     clearCollection,
     appendCollection,
     insertCollection,

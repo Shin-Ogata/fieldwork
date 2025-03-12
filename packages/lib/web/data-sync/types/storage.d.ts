@@ -1,5 +1,5 @@
-import { IStorage, IStorageOptions } from '@cdp/core-storage';
-import { IDataSyncOptions, IDataSync, SyncObject } from './interfaces';
+import type { IStorage, IStorageOptions } from '@cdp/core-storage';
+import type { IDataSyncOptions, IDataSync, SyncObject } from './interfaces';
 /**
  * @en {@link IDataSync} interface for {@link IStorage} accessor.
  * @ja {@link IStorage} アクセッサを備える {@link IDataSync} インターフェイス

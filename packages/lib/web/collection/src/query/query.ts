@@ -1,5 +1,5 @@
 import {
-    Keys,
+    type Keys,
     isFunction,
     sort,
     shuffle,
@@ -7,13 +7,13 @@ import {
 import { checkCanceled as cc } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import {
-    SortKey,
-    SortCallback,
-    FilterCallback,
-    CollectionItemQueryOptions,
-    CollectionItemQueryResult,
-    CollectionQueryInfo,
-    CollectionItemProvider,
+    type SortKey,
+    type SortCallback,
+    type FilterCallback,
+    type CollectionItemQueryOptions,
+    type CollectionItemQueryResult,
+    type CollectionQueryInfo,
+    type CollectionItemProvider,
     DynamicLimit,
 } from '../interfaces';
 import { convertSortKeys } from '../utils/comparator';
@@ -269,7 +269,7 @@ async function queryFromProvider<TItem extends object, TKey extends Keys<TItem>>
             }
 
             return queryFromCache(resp.items, Object.assign(opts, { noSearch }));
-        }// eslint-disable-line @stylistic:js/brace-style
+        }// eslint-disable-line @stylistic/brace-style
 
         else {
             results.push(...resp.items);

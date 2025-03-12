@@ -1,8 +1,8 @@
-import { TemplateContext } from './interfaces';
+import type { TemplateContext } from './interfaces';
 import {
-    UnknownFunction,
-    UnknownObject,
-    PlainObject,
+    type UnknownFunction,
+    type UnknownObject,
+    type PlainObject,
     isFunction,
     has,
     primitiveHasOwnProperty,

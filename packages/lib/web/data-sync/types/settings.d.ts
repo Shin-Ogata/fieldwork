@@ -1,4 +1,4 @@
-import { IDataSync } from './interfaces';
+import type { IDataSync } from './interfaces';
 /**
  * @en Get or update default {@link IDataSync} object.
  * @ja 既定の {@link IDataSync} オブジェクトの取得 / 更新

@@ -1,10 +1,10 @@
 import type { Nullish, Writable } from '@cdp/core-utils';
 import { isWindowContext } from './utils';
 import {
-    ElementBase,
-    SelectorBase,
-    DOM,
-    DOMSelector,
+    type ElementBase,
+    type SelectorBase,
+    type DOM,
+    type DOMSelector,
     dom as $,
 } from './static';
 
@@ -29,7 +29,7 @@ export class DOMBase<T extends ElementBase> implements ArrayLike<T>, Iterable<T>
 
     /**
      * constructor
-     * 
+     *
      * @param elements
      *  - `en` operation targets `Element` array.
      *  - `ja` 操作対象の `Element` 配列

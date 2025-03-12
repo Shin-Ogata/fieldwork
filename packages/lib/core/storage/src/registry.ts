@@ -9,7 +9,7 @@ import {
     dropUndefined,
 } from '@cdp/core-utils';
 import { EventPublisher } from '@cdp/events';
-import {
+import type {
     StorageData,
     IStorage,
     IStorageOptions,

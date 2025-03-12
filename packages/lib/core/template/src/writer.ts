@@ -1,17 +1,17 @@
-import {
+import type {
     TemplateDelimiters,
     TemplateWriter,
     TemplateViewParam,
     TemplatePartialParam,
 } from './interfaces';
 import {
-    Token,
+    type Token,
     TokenAddress as $,
     globalSettings,
 } from './internal';
 import { cache, buildCacheKey } from './cache';
 import {
-    PlainObject,
+    type PlainObject,
     isArray,
     isFunction,
 } from './utils';

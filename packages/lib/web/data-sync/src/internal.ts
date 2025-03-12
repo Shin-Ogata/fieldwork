@@ -1,5 +1,5 @@
 import { result } from '@cdp/core-utils';
-import { SyncContext } from './interfaces';
+import type { SyncContext } from './interfaces';
 
 /** @internal resolve lack property */
 export function resolveURL(context: SyncContext): string {

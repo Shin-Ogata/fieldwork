@@ -1,5 +1,5 @@
-import { Subscription } from '@cdp/events';
-import { ObservableState, IObservable } from './common';
+import type { Subscription } from '@cdp/events';
+import { ObservableState, type IObservable } from './common';
 /**
  * @en Array change type information. <br>
  *     The value is suitable for the number of fluctuation of the element.

@@ -1,7 +1,7 @@
 export * from '@cdp/extension-i18n';
 import { i18n } from '@cdp/extension-i18n';
-import { DOMSelector, DOMResult } from '@cdp/dom';
-import { I18NOptions, I18NDetectErrorBehaviour } from './interfaces';
+import { type DOMSelector, type DOMResult } from '@cdp/dom';
+import type { I18NOptions, I18NDetectErrorBehaviour } from './interfaces';
 /**
  * @en Translate funcion.
  * @ja 翻訳関数

@@ -1,14 +1,14 @@
 import {
-    UnknownFunction,
-    Primitive,
-    TypedData,
+    type UnknownFunction,
+    type Primitive,
+    type TypedData,
     isString,
     isBoolean,
     isObject,
 } from './types';
 import { invert } from './object';
 import {
-    TimerHandle,
+    type TimerHandle,
     setTimeout,
     clearTimeout,
 } from './timer';

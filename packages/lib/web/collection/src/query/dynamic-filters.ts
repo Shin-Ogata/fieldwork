@@ -1,5 +1,5 @@
-import { Keys, computeDate } from '@cdp/core-utils';
-import { FilterCallback, DynamicCombination } from '../interfaces';
+import { type Keys, computeDate } from '@cdp/core-utils';
+import { type FilterCallback, DynamicCombination } from '../interfaces';
 
 /** @internal */ export type ValueTypeALL<T extends object> = Extract<number | string | Date, T[Keys<T>]>;
 /** @internal */ export type ValueTypeComparable<T extends object> = Extract<number | Date, T[Keys<T>]>;

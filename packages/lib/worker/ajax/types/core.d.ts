@@ -1,4 +1,4 @@
-import { AjaxDataTypes, AjaxOptions, AjaxResult } from './interfaces';
+import type { AjaxDataTypes, AjaxOptions, AjaxResult } from './interfaces';
 /**
  * @en Perform an asynchronous HTTP (Ajax) request.
  * @ja HTTP (Ajax)リクエストの送信

@@ -5,7 +5,7 @@ import {
     render,
 } from '@cdp/template';
 import {
-    DOM,
+    type DOM,
     dom as $,
 } from '@cdp/dom';
 import {

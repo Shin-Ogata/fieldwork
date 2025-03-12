@@ -1,6 +1,6 @@
 /* eslint-disable
-    @stylistic:js/block-spacing,
-    @stylistic:js/indent,
+    @stylistic/block-spacing,
+    @stylistic/indent,
     @typescript-eslint/no-explicit-any,
     @typescript-eslint/unbound-method,
     @typescript-eslint/await-thenable,
@@ -14,17 +14,17 @@ import {
     sleep,
 } from '@cdp/core-utils';
 import {
-    TemplateResult,
-    SVGTemplateResult,
-    RenderOptions,
+    type TemplateResult,
+    type SVGTemplateResult,
+    type RenderOptions,
     Directive,
     AsyncDirective,
-    HTMLTemplateResult,
-    DirectiveParameters,
-    Part,
-    PartInfo,
+    type HTMLTemplateResult,
+    type DirectiveParameters,
+    type Part,
+    type PartInfo,
     PartType,
-    Ref,
+    type Ref,
     html,
     svg,
     render,
@@ -35,10 +35,10 @@ import {
     toTemplateStringsArray as bridge,
 } from '@cdp/extension-template';
 // rollup v3+:  multi import w/ default
-import { dom as $, DOM } from '@cdp/dom';
+import { dom as $, type DOM } from '@cdp/dom';
 // import $, { DOM } from '@cdp/dom';
 import {
-    TestListCustomElement,
+    type TestListCustomElement,
     prepareTestElements,
     cleanupTestElements,
     innerHTML,

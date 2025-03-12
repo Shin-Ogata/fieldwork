@@ -2,12 +2,12 @@
     @typescript-eslint/no-explicit-any,
  */
 
-import { Accessible } from '@cdp/core-utils';
+import type { Accessible } from '@cdp/core-utils';
 import {
     ObservableState,
     ObservableObject,
-    IObservable,
-    IObservableEventBrokerAccess,
+    type IObservable,
+    type IObservableEventBrokerAccess,
     isObservable,
 } from '@cdp/observable';
 

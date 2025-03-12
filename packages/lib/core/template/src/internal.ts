@@ -1,5 +1,5 @@
 import { escapeHTML } from '@cdp/core-utils';
-import {
+import type {
     TemplateDelimiters,
     TemplateWriter,
     TemplateEscaper,

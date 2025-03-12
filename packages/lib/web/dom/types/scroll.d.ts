@@ -1,5 +1,5 @@
-import { ElementBase } from './static';
-import { DOMIterable } from './base';
+import type { ElementBase } from './static';
+import { type DOMIterable } from './base';
 /**
  * @en {@link DOM}`.scrollTo()` options definition.
  * @ja {@link DOM}`.scrollTo()` に指定するオプション定義

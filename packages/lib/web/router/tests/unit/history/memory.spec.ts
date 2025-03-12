@@ -2,10 +2,10 @@
     @typescript-eslint/no-explicit-any
  */
 
-import { UnknownFunction } from '@cdp/core-utils';
+import type { UnknownFunction } from '@cdp/core-utils';
 import { Deferred } from '@cdp/promise';
 import {
-    IHistory,
+    type IHistory,
     createMemoryHistory,
     resetMemoryHistory,
     disposeMemoryHistory,

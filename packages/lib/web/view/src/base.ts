@@ -3,11 +3,11 @@
  */
 
 import {
-    Constructor,
-    Writable,
-    Nullish,
-    PlainObject,
-    UnknownFunction,
+    type Constructor,
+    type Writable,
+    type Nullish,
+    type PlainObject,
+    type UnknownFunction,
     isFunction,
     isEmptyObject,
     luid,
@@ -16,16 +16,16 @@ import {
 } from '@cdp/core-utils';
 import { EventSource } from '@cdp/events';
 import {
-    DOM,
-    DOMSelector,
-    DOMResult,
-    DOMEventListener,
-    DOMEventMap,
-    EventType,
-    EventTypeOrNamespace,
+    type DOM,
+    type DOMSelector,
+    type DOMResult,
+    type DOMEventListener,
+    type DOMEventMap,
+    type EventType,
+    type EventTypeOrNamespace,
     dom as $,
 } from '@cdp/dom';
-import { ViewEventsHash, ViewConstructionOptions } from './interfaces';
+import type { ViewEventsHash, ViewConstructionOptions } from './interfaces';
 import { document } from './ssr';
 
 /** @internal */ const _initialize    = Symbol('init-internal');

@@ -1,5 +1,5 @@
-import { Keys } from '@cdp/core-utils';
-import { SortCallback, FilterCallback, SortKey, DynamicConditionSeed, DynamicOperatorContext, DynamicLimitCondition, DynamicCombination } from '../interfaces';
+import type { Keys } from '@cdp/core-utils';
+import { type SortCallback, type FilterCallback, type SortKey, type DynamicConditionSeed, type DynamicOperatorContext, type DynamicLimitCondition, DynamicCombination } from '../interfaces';
 /**
  * @en Dynamic query condition manager class.
  * @ja ダイナミッククエリ状態管理クラス

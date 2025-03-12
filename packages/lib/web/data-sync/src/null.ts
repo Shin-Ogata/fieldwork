@@ -1,8 +1,8 @@
 import {
-    Cancelable,
+    type Cancelable,
     checkCanceled as cc,
 } from '@cdp/promise';
-import {
+import type {
     IDataSync,
     SyncMethods,
     SyncContext,

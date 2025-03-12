@@ -6,7 +6,7 @@ export default [
     eslint.configs.recommended,
     {
         plugins: {
-            '@stylistic:js': stylistic,
+            '@stylistic': stylistic,
         },
         languageOptions: {
             globals: {
@@ -123,49 +123,49 @@ export default [
             'no-bitwise': 'off',
             'no-console': 'off',
             // @stylistic
-            '@stylistic:js/array-bracket-spacing': [
+            '@stylistic/array-bracket-spacing': [
                 'error',
                 'never',
             ],
-            '@stylistic:js/arrow-spacing': 'error',
-            '@stylistic:js/block-spacing': 'error',
-            '@stylistic:js/brace-style': [
+            '@stylistic/arrow-spacing': 'error',
+            '@stylistic/block-spacing': 'error',
+            '@stylistic/brace-style': [
                 'error',
                 '1tbs',
                 {
                     allowSingleLine: true,
                 },
             ],
-            '@stylistic:js/comma-spacing': 'error',
-            '@stylistic:js/computed-property-spacing': 'error',
-            '@stylistic:js/eol-last': 'warn',
-            '@stylistic:js/func-call-spacing': 'error',
-            '@stylistic:js/keyword-spacing': 'error',
-            '@stylistic:js/max-len': [
+            '@stylistic/comma-spacing': 'error',
+            '@stylistic/computed-property-spacing': 'error',
+            '@stylistic/eol-last': 'warn',
+            '@stylistic/func-call-spacing': 'error',
+            '@stylistic/keyword-spacing': 'error',
+            '@stylistic/max-len': [
                 'error',
                 {
                     code: 180,
                     ignoreComments: true,
                 },
             ],
-            '@stylistic:js/no-multiple-empty-lines': [
+            '@stylistic/no-multiple-empty-lines': [
                 'error',
                 {
                     max: 2,
                     maxEOF: 1,
                 },
             ],
-            '@stylistic:js/no-trailing-spaces': [
+            '@stylistic/no-trailing-spaces': [
                 'error',
                 {
                     ignoreComments: true,
                 },
             ],
-            '@stylistic:js/object-curly-spacing': [
+            '@stylistic/object-curly-spacing': [
                 'error',
                 'always',
             ],
-            '@stylistic:js/quotes': [
+            '@stylistic/quotes': [
                 'error',
                 'single',
                 {
@@ -173,11 +173,11 @@ export default [
                     allowTemplateLiterals: true,
                 },
             ],
-            '@stylistic:js/semi': [
+            '@stylistic/semi': [
                 'error',
                 'always',
             ],
-            '@stylistic:js/indent': [
+            '@stylistic/indent': [
                 'error',
                 4,
                 {
@@ -185,11 +185,11 @@ export default [
                     ignoreComments: true,
                 },
             ],
-            '@stylistic:js/func-call-spacing': 'error',
-            '@stylistic:js/semi-spacing': 'error',
-            '@stylistic:js/space-in-parens': 'error',
-            '@stylistic:js/space-infix-ops': 'error',
-            '@stylistic:js/space-unary-ops': 'error',
+            '@stylistic/func-call-spacing': 'error',
+            '@stylistic/semi-spacing': 'error',
+            '@stylistic/space-in-parens': 'error',
+            '@stylistic/space-infix-ops': 'error',
+            '@stylistic/space-unary-ops': 'error',
         },
     },
 ];

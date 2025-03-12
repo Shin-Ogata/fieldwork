@@ -1,4 +1,4 @@
-import { SortOrder, SortCallback, SortKey } from '../interfaces';
+import type { SortOrder, SortCallback, SortKey } from '../interfaces';
 /**
  * @en `Intl.Collator` factory function type definition.
  * @ja `Intl.Collator` を返却する関数型定義

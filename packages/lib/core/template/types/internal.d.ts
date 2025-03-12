@@ -1,4 +1,4 @@
-import { TemplateDelimiters } from './interfaces';
+import type { TemplateDelimiters } from './interfaces';
 /** (string | Token[]) */
 export type TokenList = unknown;
 /**

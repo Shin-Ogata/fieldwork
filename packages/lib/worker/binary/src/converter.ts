@@ -1,18 +1,18 @@
 import {
-    Keys,
-    Types,
-    TypeToKey,
+    type Keys,
+    type Types,
+    type TypeToKey,
     toTypedData,
     fromTypedData,
     restoreNullish,
 } from '@cdp/core-utils';
 import {
-    Cancelable,
+    type Cancelable,
     checkCanceled as cc,
 } from '@cdp/promise';
 import { Base64 } from './base64';
 import {
-    BlobReadOptions,
+    type BlobReadOptions,
     readAsArrayBuffer,
     readAsDataURL,
     readAsText,

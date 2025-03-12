@@ -1,19 +1,19 @@
-import { Keys } from '@cdp/core-utils';
+import type { Keys } from '@cdp/core-utils';
 import { convertSortKeys } from '../utils';
 import {
-    SortCallback,
-    FilterCallback,
-    SortKey,
-    DynamicConditionSeed,
-    DynamicOperatorContext,
-    DynamicLimitCondition,
+    type SortCallback,
+    type FilterCallback,
+    type SortKey,
+    type DynamicConditionSeed,
+    type DynamicOperatorContext,
+    type DynamicLimitCondition,
     DynamicOperator,
     DynamicCombination,
 } from '../interfaces';
 import {
-    ValueTypeALL,
-    ValueTypeComparable,
-    ValueTypeString,
+    type ValueTypeALL,
+    type ValueTypeComparable,
+    type ValueTypeString,
     equal,
     notEqual,
     greater,

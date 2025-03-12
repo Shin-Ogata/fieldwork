@@ -2,7 +2,7 @@
     @typescript-eslint/require-await,
  */
 
-import {
+import type {
     Route,
     RouteChangeInfo,
     Page,

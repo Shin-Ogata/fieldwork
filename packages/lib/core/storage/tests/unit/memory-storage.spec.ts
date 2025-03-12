@@ -5,7 +5,7 @@
  */
 
 import { CancelToken } from '@cdp/promise';
-import { IStorage, MemoryStorage } from '@cdp/core-storage';
+import { type IStorage, MemoryStorage } from '@cdp/core-storage';
 
 describe('storage/memory-storage spec', () => {
 

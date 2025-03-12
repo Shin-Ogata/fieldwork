@@ -3,8 +3,8 @@
  */
 
 import {
-    UnknownFunction,
-    TypeKeys,
+    type UnknownFunction,
+    type TypeKeys,
     isArray,
     exists,
     className,

@@ -1,4 +1,4 @@
-import { Subscription, EventBroker } from '@cdp/events';
+import type { Subscription, EventBroker } from '@cdp/events';
 /**
  * @en Event observation state definition.
  * @ja イベント購読状態定義

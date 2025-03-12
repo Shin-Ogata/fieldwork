@@ -4,11 +4,11 @@
  */
 
 import {
-    SyncEvent,
+    type SyncEvent,
     createStorageDataSync,
     dataSyncSTORAGE,
 } from '@cdp/data-sync';
-import { PlainObject } from '@cdp/core-utils';
+import type { PlainObject } from '@cdp/core-utils';
 import { EventBroker } from '@cdp/events';
 import { CancelToken } from '@cdp/promise';
 import { RESULT_CODE, toResult } from '@cdp/result';

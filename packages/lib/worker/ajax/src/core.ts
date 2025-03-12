@@ -1,7 +1,7 @@
 import { CancelToken } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import { Base64 } from '@cdp/binary';
-import {
+import type {
     AjaxDataTypes,
     AjaxOptions,
     AjaxResult,

@@ -1,6 +1,6 @@
-import { PlainObject } from '@cdp/core-utils';
+import type { PlainObject } from '@cdp/core-utils';
 import { RESULT_CODE, makeResult } from '@cdp/result';
-import {
+import type {
     AjaxDataTypes,
     AjaxOptions,
     AjaxRequestOptions,

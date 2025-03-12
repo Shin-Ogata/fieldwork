@@ -1,4 +1,4 @@
-import { UnknownObject, Nullish, Writable } from './types';
+import { type UnknownObject, type Nullish, type Writable } from './types';
 /**
  * @en Check whether input source has a property.
  * @ja 入力元がプロパティを持っているか判定

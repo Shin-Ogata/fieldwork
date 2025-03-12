@@ -1,5 +1,5 @@
 import type { ElementBase, DOM } from './static';
-import { DOMIterable } from './base';
+import { type DOMIterable } from './base';
 /**
  * @en {@link DOM} effect parameter.
  * @ja {@link DOM} エフェクト効果のパラメータ

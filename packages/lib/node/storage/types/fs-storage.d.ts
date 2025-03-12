@@ -1,7 +1,7 @@
-import { Keys } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
-import { IStorage, IStorageOptions, StorageDataTypeList, MemoryStorageOptions, MemoryStorageResult, MemoryStorageDataTypes, MemoryStorageReturnType, MemoryStorageInputDataTypes, MemoryStorageEventCallback } from '@cdp/core-storage';
+import { type Keys } from '@cdp/core-utils';
+import type { Subscription } from '@cdp/events';
+import type { Cancelable } from '@cdp/promise';
+import { type IStorage, type IStorageOptions, type StorageDataTypeList, type MemoryStorageOptions, type MemoryStorageResult, type MemoryStorageDataTypes, type MemoryStorageReturnType, type MemoryStorageInputDataTypes, type MemoryStorageEventCallback } from '@cdp/core-storage';
 /** FsStorage I/O options */
 export type FsStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = MemoryStorageOptions<K>;
 /** FsStorage return value */

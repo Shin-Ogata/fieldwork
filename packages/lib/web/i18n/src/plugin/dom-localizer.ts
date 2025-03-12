@@ -1,8 +1,8 @@
-import { i18n } from '@cdp/extension-i18n';
-import { PlainObject } from '@cdp/core-utils';
+import type { i18n } from '@cdp/extension-i18n';
+import type { PlainObject } from '@cdp/core-utils';
 import {
     dom as $,
-    DOM,
+    type DOM,
 } from '@cdp/dom';
 import './module-extends';
 

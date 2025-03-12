@@ -3,10 +3,10 @@
  */
 
 import {
-    UnknownObject,
-    PlainObject,
-    NonFunctionPropertyNames,
-    TypedData,
+    type UnknownObject,
+    type PlainObject,
+    type NonFunctionPropertyNames,
+    type TypedData,
     isString,
     isArray,
     toTypedData,
@@ -15,9 +15,9 @@ import {
     camelize,
     setMixClassAttribute,
 } from '@cdp/core-utils';
-import { ElementBase } from './static';
+import type { ElementBase } from './static';
 import {
-    DOMIterable,
+    type DOMIterable,
     isNodeElement,
     isNodeHTMLOrSVGElement,
     isTypeElement,

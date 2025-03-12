@@ -1,4 +1,4 @@
-import { Encode as p2rEncode, Decode as p2rDecode, ParseOptions as p2rParseOptions, PathToRegexpOptions as p2rPathToRegexpOptions, MatchOptions as p2rMatchOptions, CompileOptions as p2rCompileOptions, TokenData as p2rTokenData, ParamData as p2rParamData, PathFunction as p2rPathFunction, MatchResult as p2rMatchResult, Match as p2rMatch, MatchFunction as p2rMatchFunction, Key as p2rKey, Token as p2rToken, Path as p2rPath, parse, compile, match, stringify, pathToRegexp } from 'path-to-regexp';
+import { type Encode as p2rEncode, type Decode as p2rDecode, type ParseOptions as p2rParseOptions, type PathToRegexpOptions as p2rPathToRegexpOptions, type MatchOptions as p2rMatchOptions, type CompileOptions as p2rCompileOptions, type ParamData as p2rParamData, type PathFunction as p2rPathFunction, type MatchResult as p2rMatchResult, type Match as p2rMatch, type MatchFunction as p2rMatchFunction, type Key as p2rKey, type Token as p2rToken, type Path as p2rPath, TokenData as p2rTokenData, parse, compile, match, stringify, pathToRegexp } from 'path-to-regexp';
 declare namespace path2regexp {
     type Encode = p2rEncode;
     type Decode = p2rDecode;

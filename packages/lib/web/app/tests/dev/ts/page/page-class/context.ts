@@ -1,11 +1,11 @@
 import {
-    DOM,
+    type DOM,
     dom as $,
 } from '@cdp/dom';
 import {
-    Route,
-    RouteChangeInfo,
-    Page,
+    type Route,
+    type RouteChangeInfo,
+    type Page,
     RouterRefreshLevel,
 } from '@cdp/router';
 import { t, getLanguage } from '@cdp/i18n';

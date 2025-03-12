@@ -8,7 +8,7 @@ import {
     verify,
     getConfig,
 } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
+import type { Subscription } from '@cdp/events';
 import { CancelToken } from './cancel-token';
 
 declare global {

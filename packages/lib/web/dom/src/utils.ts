@@ -3,7 +3,7 @@
  */
 
 import {
-    Nullish,
+    type Nullish,
     isNumber,
     isFunction,
     className,

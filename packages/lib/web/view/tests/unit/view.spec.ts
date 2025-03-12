@@ -3,8 +3,8 @@
  */
 
 import {
-    Constructor,
-    FunctionPropertyNames,
+    type Constructor,
+    type FunctionPropertyNames,
     className,
     sleep,
     mixins,
@@ -13,8 +13,8 @@ import { dom as $ } from '@cdp/dom';
 import {
     View,
     ViewCore,
-    ViewEventsHash,
-    ViewConstructionOptions,
+    type ViewEventsHash,
+    type ViewConstructionOptions,
 } from '@cdp/view';
 import { cleanupTestElements, prepareTestElements } from './tools';
 

@@ -1,14 +1,14 @@
 import { unescapeHTML, isFunction } from '@cdp/core-utils';
 import {
-    JST,
-    TemplateCompileOptions,
+    type JST,
+    type TemplateCompileOptions,
     TemplateEngine,
 } from '@cdp/core-template';
-import { LoadTemplateOptions, loadTemplateSource } from '@cdp/web-utils';
+import { type LoadTemplateOptions, loadTemplateSource } from '@cdp/web-utils';
 export { clearTemplateCache } from '@cdp/web-utils';
 import {
-    CompiledTemplate,
-    TemplateBridgeCompileOptions,
+    type CompiledTemplate,
+    type TemplateBridgeCompileOptions,
     TemplateBridge,
 } from './bridge';
 

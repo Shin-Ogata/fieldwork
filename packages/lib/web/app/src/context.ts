@@ -1,30 +1,30 @@
 import { isFunction } from '@cdp/core-utils';
-import { Subscribable, EventPublisher } from '@cdp/events';
+import { type Subscribable, EventPublisher } from '@cdp/events';
 import { Deferred } from '@cdp/promise';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import { waitFrame } from '@cdp/web-utils';
 import {
-    DOMSelector,
+    type DOMSelector,
     dom as $,
 } from '@cdp/dom';
 import {
-    I18NOptions,
-    I18NDetectErrorBehaviour,
+    type I18NOptions,
+    type I18NDetectErrorBehaviour,
+    type i18n,
     initializeI18N,
     localize,
     getLanguage,
     changeLanguage,
-    i18n,
 } from '@cdp/i18n';
 import {
-    HistoryState,
-    Route,
-    RouteChangeInfo,
-    RouteParameters,
-    RouterConstructionOptions,
+    type HistoryState,
+    type Route,
+    type RouteChangeInfo,
+    type RouteParameters,
+    type RouterConstructionOptions,
+    type Router,
+    type Page,
     RouterRefreshLevel,
-    Router,
-    Page,
     createRouter,
     toRouterPath,
 } from '@cdp/router';
@@ -220,7 +220,7 @@ export type PageRouteParameters = Required<Pick<RouteParameters, 'content'>> & R
  * const pageFactory = (router: Router, ...args: any[]): Page => {
  *   :
  * };
- * 
+ *
  * // pre-registration
  * registerPage({
  *     path: 'page-path',

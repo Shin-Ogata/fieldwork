@@ -1,5 +1,5 @@
-import { UnknownFunction, verify } from '@cdp/core-utils';
-import { CancelToken, Cancelable } from '@cdp/promise';
+import { type UnknownFunction, verify } from '@cdp/core-utils';
+import { type Cancelable, CancelToken } from '@cdp/promise';
 import { FileReader } from './ssr';
 
 /** @internal */

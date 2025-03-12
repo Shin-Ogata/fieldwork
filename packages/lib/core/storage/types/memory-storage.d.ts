@@ -1,7 +1,7 @@
-import { Keys, Types, KeyToType } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
-import { StorageData, StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
+import { type Keys, type Types, type KeyToType } from '@cdp/core-utils';
+import { type Subscription } from '@cdp/events';
+import { type Cancelable } from '@cdp/promise';
+import type { StorageData, StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from './interfaces';
 /** MemoryStorage I/O options */
 export type MemoryStorageOptions<K extends Keys<StorageDataTypeList> = Keys<StorageDataTypeList>> = IStorageDataOptions<StorageDataTypeList, K>;
 /** MemoryStorage return value */

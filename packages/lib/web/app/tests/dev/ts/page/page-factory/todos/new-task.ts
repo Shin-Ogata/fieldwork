@@ -1,4 +1,4 @@
-import { TemplateResult, html } from '@cdp/template';
+import { type TemplateResult, html } from '@cdp/template';
 
 export const NewTask = (
     inputText: string,

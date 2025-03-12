@@ -4,12 +4,12 @@
 
 import {
     ObservableState,
-    ArrayChangeRecord,
+    type ArrayChangeRecord,
     ArrayChangeType,
     ObservableArray,
     isObservable,
-    IObservable,
-    IObservableEventBrokerAccess,
+    type IObservable,
+    type IObservableEventBrokerAccess,
 } from '@cdp/observable';
 
 describe('observable/array spec', () => {

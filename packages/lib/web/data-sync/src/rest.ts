@@ -1,5 +1,5 @@
 import { RESULT_CODE, makeResult } from '@cdp/result';
-import { AjaxOptions, ajax } from '@cdp/ajax';
+import { type AjaxOptions, ajax } from '@cdp/ajax';
 import type {
     IDataSync,
     SyncMethods,

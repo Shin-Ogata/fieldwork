@@ -1,4 +1,4 @@
-import { CancelToken } from './cancel-token';
+import type { CancelToken } from './cancel-token';
 /**
  * @en Cancelable base option definition.
  * @ja キャンセル可能な基底オプション

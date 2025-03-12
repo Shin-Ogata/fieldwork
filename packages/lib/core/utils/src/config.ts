@@ -3,7 +3,7 @@ import type { UnknownObject } from './types';
 /**
  * @en Safe `global` accessor.
  * @ja `global` アクセッサ
- * 
+ *
  * @returns
  *  - `en` `global` object of the runtime environment
  *  - `ja` 環境に応じた `global` オブジェクト
@@ -27,7 +27,7 @@ export function getGlobal(): typeof globalThis {
 export function ensureObject<T extends object = UnknownObject>(parent: object | null, ...names: string[]): T {
     let root = (parent ?? getGlobal()) as UnknownObject;
     for (const name of names) {
-        root[name] = root[name] || {};
+        root[name] = root[name] ?? {};
         root = root[name] as UnknownObject;
     }
     return root as T;

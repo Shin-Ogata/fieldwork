@@ -3,10 +3,10 @@ import { i18n } from '@cdp/extension-i18n';
 import { RESULT_CODE, makeResult } from '@cdp/result';
 import {
     dom as $,
-    DOMSelector,
-    DOMResult,
+    type DOMSelector,
+    type DOMResult,
 } from '@cdp/dom';
-import { I18NOptions, I18NDetectErrorBehaviour } from './interfaces';
+import type { I18NOptions, I18NDetectErrorBehaviour } from './interfaces';
 import { navigator } from './ssr';
 import { AjaxBackend, DomLocalizer } from './plugin';
 

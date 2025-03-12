@@ -4,12 +4,12 @@ import {
     directives,
 } from '@cdp/extension-template';
 import {
-    TemplateBridgeArg,
-    TransformConfig,
+    type TemplateBridgeArg,
+    type TransformConfig,
     createMustacheTransformer,
     transformer,
 } from '@cdp/extension-template-bridge';
-import { DOM } from '@cdp/dom';
+import type { DOM } from '@cdp/dom';
 import {
     prepare,
     cleanup,

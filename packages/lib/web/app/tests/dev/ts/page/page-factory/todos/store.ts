@@ -1,4 +1,4 @@
-import { Store, State } from './interfaces';
+import type { Store, State } from './interfaces';
 import { renderTodos } from './render';
 
 const createStore = <T>(initialState: T): Store => {

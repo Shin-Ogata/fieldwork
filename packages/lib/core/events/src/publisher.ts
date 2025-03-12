@@ -3,14 +3,14 @@
  */
 
 import {
-    Arguments,
+    type Arguments,
     isString,
     isArray,
     isSymbol,
     className,
     verify,
 } from '@cdp/core-utils';
-import {
+import type {
     EventAll,
     Subscription,
     Subscribable,

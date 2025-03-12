@@ -6,7 +6,7 @@ import {
 } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
 import {
-    CompiledTemplate,
+    type CompiledTemplate,
     TemplateBridge,
     render,
 } from '@cdp/template';

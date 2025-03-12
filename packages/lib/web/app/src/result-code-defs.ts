@@ -1,5 +1,5 @@
 /* eslint-disable
-    @stylistic:js/max-len,
+    @stylistic/max-len,
     @typescript-eslint/no-namespace,
     @typescript-eslint/no-unused-vars,
  */

@@ -6,11 +6,11 @@ import {
 } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
 import {
-    CompiledTemplate,
+    type CompiledTemplate,
     TemplateBridge,
     render,
 } from '@cdp/template';
-import { ViewEventsHash } from '@cdp/view';
+import type { ViewEventsHash } from '@cdp/view';
 import { PageView, registerPage } from '@cdp/app';
 import { entry } from '../../signature';
 import { Props } from '../props';

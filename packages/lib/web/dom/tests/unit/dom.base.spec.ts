@@ -1,6 +1,6 @@
 /* eslint-disable
     no-duplicate-imports,
-    @stylistic:js/block-spacing,
+    @stylistic/block-spacing,
     @typescript-eslint/no-explicit-any,
  */
 

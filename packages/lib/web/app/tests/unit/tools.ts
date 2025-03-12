@@ -1,5 +1,5 @@
 /* eslint-disable
-    @stylistic:js/indent
+    @stylistic/indent
  */
 
 import { dom } from '@cdp/dom';

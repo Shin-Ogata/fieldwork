@@ -1,4 +1,4 @@
-import { DirectiveResult, noChange } from '@cdp/extension-template';
+import { type DirectiveResult, noChange } from '@cdp/extension-template';
 import { isFunction } from '@cdp/core-utils';
 import type { IHookContext } from './interfaces';
 

@@ -1,8 +1,8 @@
-import { Keys, Types, KeyToType } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
-import { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from '@cdp/core-storage';
-import { Serializable } from '@cdp/binary';
+import { type Keys, type Types, type KeyToType } from '@cdp/core-utils';
+import { type Subscription } from '@cdp/events';
+import { type Cancelable } from '@cdp/promise';
+import type { StorageDataTypeList, StorageInputDataTypeList, IStorageOptions, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorage } from '@cdp/core-storage';
+import { type Serializable } from '@cdp/binary';
 /**
  * @en Web storage data type set interface.
  * @ja Web storage に格納可能な型の集合

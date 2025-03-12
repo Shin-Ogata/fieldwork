@@ -5,9 +5,9 @@
 
 import { RESULT_CODE } from '@cdp/result';
 import { webRoot, clearTemplateCache } from '@cdp/web-utils';
-import { Route, Router } from '@cdp/router';
+import type { Route, Router } from '@cdp/router';
 import {
-    AppContextOptions,
+    type AppContextOptions,
     AppContext,
     PageView,
 } from '@cdp/app';
@@ -137,7 +137,7 @@ describe('page-view spec', () => {
                      *
                      * path-to-regexp v8+
                      * https://github.com/pillarjs/path-to-regexp/tree/v8.2.0?tab=readme-ov-file#unexpected--or-
-                     * 
+                     *
                      * path-to-regexp v7+
                      * https://github.com/pillarjs/path-to-regexp/tree/v7.2.0?tab=readme-ov-file#unexpected---or-
                      */

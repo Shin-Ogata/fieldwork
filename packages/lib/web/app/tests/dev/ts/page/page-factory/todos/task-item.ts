@@ -1,9 +1,9 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     directives
 } from '@cdp/template';
-import { Task } from './interfaces';
+import type { Task } from './interfaces';
 
 const { classMap } = directives;
 

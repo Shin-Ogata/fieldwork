@@ -1,15 +1,15 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
     hooks,
 } from '@cdp/template';
 import {
-    AnyObject,
+    type AnyObject,
     isFunction,
     noop,
 } from '@cdp/core-utils';
-import { DOM } from '@cdp/dom';
+import type { DOM } from '@cdp/dom';
 import {
     prepare,
     cleanup,

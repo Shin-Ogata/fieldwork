@@ -6,23 +6,23 @@ import {
     unlinkSync,
 } from 'node:fs';
 import {
-    Keys,
+    type Keys,
     dropUndefined,
     assignValue,
 } from '@cdp/core-utils';
-import { Subscription } from '@cdp/events';
-import { Cancelable } from '@cdp/promise';
+import type { Subscription } from '@cdp/events';
+import type { Cancelable } from '@cdp/promise';
 import {
-    IStorage,
-    IStorageOptions,
-    IStorageFormatOptions,
-    StorageDataTypeList,
-    MemoryStorageOptions,
-    MemoryStorageResult,
-    MemoryStorageDataTypes,
-    MemoryStorageReturnType,
-    MemoryStorageInputDataTypes,
-    MemoryStorageEventCallback,
+    type IStorage,
+    type IStorageOptions,
+    type IStorageFormatOptions,
+    type StorageDataTypeList,
+    type MemoryStorageOptions,
+    type MemoryStorageResult,
+    type MemoryStorageDataTypes,
+    type MemoryStorageReturnType,
+    type MemoryStorageInputDataTypes,
+    type MemoryStorageEventCallback,
     MemoryStorage,
 } from '@cdp/core-storage';
 

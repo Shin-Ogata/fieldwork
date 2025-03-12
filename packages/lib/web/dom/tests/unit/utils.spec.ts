@@ -1,5 +1,5 @@
 /* eslint-disable
-    @stylistic:js/block-spacing,
+    @stylistic/block-spacing,
     @typescript-eslint/no-explicit-any,
     @typescript-eslint/unbound-method,
  */

@@ -1,5 +1,5 @@
-import { RootPart, render } from '@cdp/template';
-import { RenderContext } from './interfaces';
+import { type RootPart, render } from '@cdp/template';
+import type { RenderContext } from './interfaces';
 
 let _context: RenderContext;
 let _el: HTMLElement;

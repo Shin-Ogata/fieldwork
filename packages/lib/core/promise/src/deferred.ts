@@ -1,9 +1,9 @@
 import {
-    UnknownFunction,
+    type UnknownFunction,
     isFunction,
     noop,
 } from '@cdp/core-utils';
-import { CancelToken } from './cancel-token';
+import type { CancelToken } from './cancel-token';
 import { CancelablePromise, NativePromise } from './cancelable-promise';
 import { checkStatus } from './utils';
 
@@ -14,7 +14,7 @@ import { checkStatus } from './utils';
  * - 2. static get [Symbol.species]() { return NativePromise; } を提供する
  * - 3. Deferred.prototype.constructor = NativePromise のように prototype.constructor を上書きする (Hacking)
  *
- * `Deferred` クラスでは以下の理由により, `1`, `2` の対応を行う. 
+ * `Deferred` クラスでは以下の理由により, `1`, `2` の対応を行う.
  * - checkStatus() を Promise 派生クラスでも使用するためには, `instance.constructor.race` でアクセスする必要がある
  *   - `TypeError: Promise resolve or reject function is not callable` 対策のための `1`
  * - `then`, `catch`, `finaly` 時に生成されるインスタンスは `Deferred` である必要は無いため `2`
@@ -32,14 +32,14 @@ const resolveArgs = (arg1?: UnknownFunction | CancelToken | null, arg2?: CancelT
 /**
  * @en `Deferred` object class that can operate `reject` and` resolve` from the outside.
  * @ja `reject`, ` resolve` を外部より操作可能な `Deferred` オブジェクトクラス
- * 
+ *
  * @example <br>
  *
  * ```ts
  * const df = new Deferred();
  * df.resolve();
  * df.reject('reason');
- * 
+ *
  * await df;
  * ```
  */

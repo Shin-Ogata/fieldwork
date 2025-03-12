@@ -1,5 +1,5 @@
 import {
-    UnknownFunction,
+    type UnknownFunction,
     setInterval,
     clearInterval,
 } from '@cdp/core-utils';

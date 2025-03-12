@@ -1,6 +1,6 @@
-import { PlainObject, NonFunctionPropertyNames, TypedData } from '@cdp/core-utils';
-import { ElementBase } from './static';
-import { DOMIterable } from './base';
+import { type PlainObject, type NonFunctionPropertyNames, type TypedData } from '@cdp/core-utils';
+import type { ElementBase } from './static';
+import { type DOMIterable } from './base';
 export type DOMValueType<T, K = 'value'> = T extends HTMLSelectElement ? (string | string[]) : K extends keyof T ? T[K] : string;
 export type DOMData = PlainObject<TypedData>;
 /**

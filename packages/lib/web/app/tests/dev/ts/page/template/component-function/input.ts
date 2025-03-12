@@ -1,4 +1,4 @@
-import { TemplateResult, html } from '@cdp/template';
+import { type TemplateResult, html } from '@cdp/template';
 import { t } from '@cdp/i18n';
 import { i18nKey } from '../../../types';
 import type { Props } from '../props';

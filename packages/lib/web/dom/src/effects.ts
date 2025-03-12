@@ -1,11 +1,11 @@
 import {
-    Writable,
+    type Writable,
     setMixClassAttribute,
     noop,
 } from '@cdp/core-utils';
 import type { ElementBase, DOM } from './static';
 import {
-    DOMIterable,
+    type DOMIterable,
     isNodeElement,
     isTypeElement,
 } from './base';

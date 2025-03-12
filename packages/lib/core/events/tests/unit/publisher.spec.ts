@@ -6,10 +6,10 @@
 
 import { noop } from '@cdp/core-utils';
 import {
-    EventAll,
+    type EventAll,
     EventPublisher,
     EventBroker,
-    EventArguments,
+    type EventArguments,
 } from '@cdp/events';
 
 const symbolKey = Symbol('symbol-key');

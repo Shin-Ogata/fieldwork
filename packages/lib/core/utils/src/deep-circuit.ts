@@ -1,7 +1,7 @@
 import {
-    UnknownObject,
-    TypedArray,
-    TypedArrayConstructor,
+    type UnknownObject,
+    type TypedArray,
+    type TypedArrayConstructor,
     isFunction,
     isArray,
     isObject,

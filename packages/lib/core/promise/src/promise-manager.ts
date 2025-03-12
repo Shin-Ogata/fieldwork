@@ -1,4 +1,4 @@
-import { CancelTokenSource } from './cancel-token';
+import type { CancelTokenSource } from './cancel-token';
 import { wait } from './utils';
 
 /**

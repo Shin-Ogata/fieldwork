@@ -1,7 +1,7 @@
-import { FunctionPropertyNames } from '@cdp/core-utils';
-import { ViewEventsHash } from '@cdp/view';
+import type { FunctionPropertyNames } from '@cdp/core-utils';
+import type { ViewEventsHash } from '@cdp/view';
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
 } from '@cdp/template';

@@ -4,7 +4,7 @@
 
 import { dom as $ } from '@cdp/dom';
 import {
-    DOM,
+    type DOM,
     prepareTestElements,
     cleanupTestElements,
     mixedCollection,

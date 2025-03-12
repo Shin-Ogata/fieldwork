@@ -1,12 +1,12 @@
 import {
-    Writable,
-    PlainObject,
+    type Writable,
+    type PlainObject,
     at,
     sort,
     noop,
 } from '@cdp/core-utils';
 import { Deferred } from '@cdp/promise';
-import { HistoryState, HistoryDirectReturnType } from './interfaces';
+import type { HistoryState, HistoryDirectReturnType } from './interfaces';
 
 /** @internal normalzie id string */
 export const normalizeId = (src: string): string => {

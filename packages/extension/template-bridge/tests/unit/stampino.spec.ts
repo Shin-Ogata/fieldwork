@@ -1,12 +1,12 @@
 import { render } from '@cdp/extension-template';
 import {
-    TemplateBridgeArg,
-    EvaluateTemplateResult,
+    type TemplateBridgeArg,
+    type EvaluateTemplateResult,
     createStampinoTransformer,
     prepareTemplate,
     evaluateTemplate,
 } from '@cdp/extension-template-bridge';
-import { DOM } from '@cdp/dom';
+import type { DOM } from '@cdp/dom';
 import {
     prepare,
     cleanup,

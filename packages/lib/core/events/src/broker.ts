@@ -2,8 +2,8 @@
     @typescript-eslint/no-explicit-any,
  */
 
-import { Arguments } from '@cdp/core-utils';
-import { Subscribable } from './interfaces';
+import type { Arguments } from '@cdp/core-utils';
+import type { Subscribable } from './interfaces';
 import { EventPublisher } from './publisher';
 
 /** re-export */

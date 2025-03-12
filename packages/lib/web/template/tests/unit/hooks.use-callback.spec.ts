@@ -1,12 +1,12 @@
 import {
-    TemplateResult,
+    type TemplateResult,
     html,
     render,
     hooks,
 } from '@cdp/template';
-import { UnknownFunction, noop } from '@cdp/core-utils';
+import { type UnknownFunction, noop } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
-import { DOM } from '@cdp/dom';
+import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
 
 describe('hooks/use-callback spec', () => {

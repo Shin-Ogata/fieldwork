@@ -1,6 +1,6 @@
 import {
-    Accessible,
-    PlainObject,
+    type Accessible,
+    type PlainObject,
     isArray,
     isString,
     isFunction,
@@ -11,9 +11,9 @@ import {
     makeResult,
     toResult,
 } from '@cdp/result';
-import { IStorage, IStorageOptions } from '@cdp/core-storage';
+import type { IStorage, IStorageOptions } from '@cdp/core-storage';
 import { webStorage } from '@cdp/web-storage';
-import {
+import type {
     IDataSyncOptions,
     IDataSync,
     SyncMethods,

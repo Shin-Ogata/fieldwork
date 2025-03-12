@@ -1,5 +1,5 @@
-import { Keys } from '@cdp/core-utils';
-import { SortCallback, FilterCallback, CollectionItemQueryOptions, CollectionItemQueryResult, CollectionQueryInfo, CollectionItemProvider } from '../interfaces';
+import { type Keys } from '@cdp/core-utils';
+import { type SortCallback, type FilterCallback, type CollectionItemQueryOptions, type CollectionItemQueryResult, type CollectionQueryInfo, type CollectionItemProvider } from '../interfaces';
 import { DynamicCondition } from './dynamic-condition';
 /**
  * @en Apply `filter` and `sort key` to the `items` from {@link queryItems}() result.

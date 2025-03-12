@@ -1,12 +1,12 @@
 import {
-    RootPart,
-    TemplateResult,
+    type RootPart,
+    type TemplateResult,
     html,
     render,
     hooks,
 } from '@cdp/template';
 import { t } from '@cdp/i18n';
-import { RouteChangeInfo } from '@cdp/router';
+import type { RouteChangeInfo } from '@cdp/router';
 import { registerPage } from '@cdp/app';
 import { i18nKey } from '../../../types';
 import { entry } from '../../signature';

@@ -1,4 +1,4 @@
-import { Cancelable } from '@cdp/promise';
+import { type Cancelable } from '@cdp/promise';
 /**
  * @en `Blob` read options
  * @ja `Blob` 読み取りオプション

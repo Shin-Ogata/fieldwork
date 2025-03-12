@@ -1,5 +1,5 @@
-import { UnknownFunction } from '@cdp/core-utils';
-import { Cancelable } from '@cdp/promise';
+import type { UnknownFunction } from '@cdp/core-utils';
+import { type Cancelable } from '@cdp/promise';
 /**
  * @en Thread options
  * @en スレッドオプション

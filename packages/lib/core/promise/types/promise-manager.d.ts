@@ -1,4 +1,4 @@
-import { CancelTokenSource } from './cancel-token';
+import type { CancelTokenSource } from './cancel-token';
 /**
  * @en The class manages lumping multiple `Promise` objects. <br>
  *     It's possible to make them cancel more than one `Promise` which handles different {@link CancelToken} by lumping.

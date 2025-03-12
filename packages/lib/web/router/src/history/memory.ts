@@ -2,8 +2,8 @@
     @typescript-eslint/no-explicit-any
  */
 
-import { PlainObject, post } from '@cdp/core-utils';
-import { Silenceable, EventPublisher } from '@cdp/events';
+import { type PlainObject, post } from '@cdp/core-utils';
+import { type Silenceable, EventPublisher } from '@cdp/events';
 import { Deferred, CancelToken } from '@cdp/promise';
 import type {
     IHistory,

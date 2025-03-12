@@ -1,5 +1,5 @@
-import { DOMSelector } from '@cdp/dom';
-import { RouterConstructionOptions, Router } from './interfaces';
+import { type DOMSelector } from '@cdp/dom';
+import { type RouterConstructionOptions, type Router } from './interfaces';
 /**
  * @en Create {@link Router} object.
  * @ja {@link Router} オブジェクトを構築

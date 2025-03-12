@@ -1,5 +1,5 @@
-import { ElementBase, SelectorBase, DOMSelector, DOMResult, DOM } from './static';
-import { DOMIterable } from './base';
+import { type ElementBase, type SelectorBase, type DOMSelector, type DOMResult, type DOM } from './static';
+import { type DOMIterable } from './base';
 /**
  * @en Mixin base class which concentrated the manipulation methods.
  * @ja マニピュレーションメソッドを集約した Mixin Base クラス

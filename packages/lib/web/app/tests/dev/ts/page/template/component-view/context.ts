@@ -4,11 +4,11 @@ import {
     toTemplateElement,
 } from '@cdp/web-utils';
 import { dom as $ } from '@cdp/dom';
-import { JST, TemplateEngine } from '@cdp/core-template';
+import { type JST, TemplateEngine } from '@cdp/core-template';
 import { PageView, registerPage } from '@cdp/app';
 import { entry } from '../../signature';
 import { Props } from '../props';
-import { ComponentViewBase } from './base';
+import type { ComponentViewBase } from './base';
 import { StateComponentView } from './state';
 import { EffectComponentView } from './effect';
 import { IntervalComponentView } from './interval';

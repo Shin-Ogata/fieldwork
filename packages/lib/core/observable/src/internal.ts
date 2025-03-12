@@ -1,5 +1,5 @@
 import {
-    UnknownObject,
+    type UnknownObject,
     isString,
     isSymbol,
     className,

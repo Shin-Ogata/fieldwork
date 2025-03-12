@@ -1,4 +1,4 @@
-import { UnknownFunction } from './types';
+import type { UnknownFunction } from './types';
 /**
  * @en Type of handle for timer functions.
  * @ja タイマー関数に使用するハンドル型

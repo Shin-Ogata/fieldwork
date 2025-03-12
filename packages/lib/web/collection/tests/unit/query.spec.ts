@@ -11,11 +11,11 @@ import { checkCanceled as cc } from '@cdp/promise';
 import { RESULT_CODE } from '@cdp/result';
 import {
     SortOrder,
-    FilterCallback,
-    SortCallback,
-    CollectionItemQueryOptions,
-    CollectionQueryInfo,
-    CollectionItemQueryResult,
+    type FilterCallback,
+    type SortCallback,
+    type CollectionItemQueryOptions,
+    type CollectionQueryInfo,
+    type CollectionItemQueryResult,
     DynamicCondition,
     DynamicOperator,
     DynamicLimit,

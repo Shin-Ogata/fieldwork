@@ -1,4 +1,4 @@
-import { Nullish } from '@cdp/core-utils';
+import { type Nullish } from '@cdp/core-utils';
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
 export type SelectorBase = Node | Window | string | Nullish;

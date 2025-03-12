@@ -1,4 +1,4 @@
-import { UnknownObject } from '@cdp/runtime';
+import { type UnknownObject } from '@cdp/runtime';
 import type { IListContext } from '../interfaces/base';
 import type { IListItemViewConstructor, ListItemUpdateHeightOptions } from '../interfaces/list-item-view';
 /**

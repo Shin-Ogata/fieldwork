@@ -1,5 +1,5 @@
-import { UnknownFunction } from '@cdp/core-utils';
-import { Cancelable, CancelToken } from '@cdp/promise';
+import type { UnknownFunction } from '@cdp/core-utils';
+import { type Cancelable, CancelToken } from '@cdp/promise';
 import { InlineWorker } from './inine-worker';
 
 /**

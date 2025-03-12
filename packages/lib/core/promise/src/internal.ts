@@ -1,4 +1,4 @@
-import { EventBroker, Subscription } from '@cdp/events';
+import type { EventBroker, Subscription } from '@cdp/events';
 
 /** @internal */ export const _cancel = Symbol('cancel');
 /** @internal */ export const _close  = Symbol('close');

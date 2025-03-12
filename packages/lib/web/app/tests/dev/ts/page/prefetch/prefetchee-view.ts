@@ -1,4 +1,4 @@
-import { Route } from '@cdp/router';
+import type { Route } from '@cdp/router';
 import { PageView } from '@cdp/app';
 
 export class PrefetcheePageView extends PageView {

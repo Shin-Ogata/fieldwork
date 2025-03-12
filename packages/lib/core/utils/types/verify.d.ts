@@ -1,4 +1,4 @@
-import { TypeKeys } from './types';
+import { type TypeKeys } from './types';
 /**
  * @en Type verifier interface definition. <br>
  *     If invalid value received, the method throws `TypeError`.

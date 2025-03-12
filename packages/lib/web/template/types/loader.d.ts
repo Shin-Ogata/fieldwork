@@ -1,7 +1,7 @@
-import { JST, TemplateCompileOptions } from '@cdp/core-template';
-import { LoadTemplateOptions } from '@cdp/web-utils';
+import { type JST, type TemplateCompileOptions } from '@cdp/core-template';
+import { type LoadTemplateOptions } from '@cdp/web-utils';
 export { clearTemplateCache } from '@cdp/web-utils';
-import { CompiledTemplate, TemplateBridgeCompileOptions } from './bridge';
+import { type CompiledTemplate, type TemplateBridgeCompileOptions } from './bridge';
 /**
  * @en Template query type list.
  * @ja テンプレート取得時に指定可能な型一覧

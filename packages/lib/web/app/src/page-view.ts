@@ -1,5 +1,5 @@
-import { ViewConstructionOptions, View } from '@cdp/view';
-import {
+import { type ViewConstructionOptions, View } from '@cdp/view';
+import type {
     Router,
     Route,
     RouteChangeInfo,
