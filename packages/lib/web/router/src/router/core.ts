@@ -895,10 +895,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
                 // RouteContextParameter を assign
                 Object.assign(state, toRouteContext(path, this, params));
             }
-            if (!state.el) {
-                // id に紐づく要素がすでに存在する場合は割り当て
-                state.el = this._history.direct(state['@id'])?.state?.el;
-            }
+            // id に紐づく要素がすでに存在する場合は割り当て
+            state.el ??= this._history.direct(state['@id'])?.state?.el;
             return state as HistoryState<RouteContext>;
         };
 

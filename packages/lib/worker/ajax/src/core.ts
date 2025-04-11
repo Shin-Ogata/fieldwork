@@ -129,8 +129,8 @@ async function ajax<T extends AjaxDataTypes | object = 'response'>(url: string, 
     if (null != data) {
         if (('GET' === method || 'HEAD' === method) && !url.includes('?')) {
             url += `?${toQueryStrings(data)}`;
-        } else if (null == opts.body) {
-            opts.body = new URLSearchParams(toAjaxParams(data));
+        } else {
+            opts.body ??= new URLSearchParams(toAjaxParams(data));
         }
     }
 
