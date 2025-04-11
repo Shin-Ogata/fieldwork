@@ -315,9 +315,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      * @ja 変更のあった属性を格納するインスタンス
      */
     protected get _changedAttrs(): Partial<T> {
-        if (null == this[_properties].changedAttrs) {
-            this[_properties].changedAttrs = diff(this._baseAttrs, this._attrs as unknown as Partial<T>);
-        }
+        this[_properties].changedAttrs ??= diff(this._baseAttrs, this._attrs as unknown as Partial<T>);
         return this[_properties].changedAttrs;
     }
 

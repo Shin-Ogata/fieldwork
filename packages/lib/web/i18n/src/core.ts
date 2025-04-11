@@ -29,6 +29,7 @@ export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> =
 
     const { namespace, resourcePath: loadPath, dom, noThrow } = opts;
 
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (!opts.lng) {
         opts.lng = navigator.language;
     }

@@ -150,12 +150,10 @@ export class ExpandCore implements
     /** 内部データをバックアップ */
     backup(key: string): boolean {
         const { _backup } = this;
-        if (null == _backup[key]) {
-            _backup[key] = {
-                map: this._mapGroups,
-                tops: this._aryTopGroups,
-            };
-        }
+        _backup[key] ??= {
+            map: this._mapGroups,
+            tops: this._aryTopGroups,
+        };
         return true;
     }
 

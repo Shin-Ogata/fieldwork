@@ -417,8 +417,6 @@ export const AppContext = (options?: AppContextOptions): AppContext => {
         clearI18NSettings();
     }
 
-    if (!_appContext) {
-        _appContext = new Application(opts);
-    }
+    _appContext ??= new Application(opts);
     return _appContext;
 };

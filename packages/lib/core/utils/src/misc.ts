@@ -187,9 +187,7 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, o
                 return invokeFunc(lastCallTime);
             }
         }
-        if (null == timerId) {
-            timerId = setTimeout(timerExpired, waitValue);
-        }
+        timerId ??= setTimeout(timerExpired, waitValue);
         return result;
     }
 
@@ -293,9 +291,7 @@ export function scheduler(): (exec: () => void) => void {
 
     return function(task: () => unknown): void {
         tasks.push(task);
-        if (null == id) {
-            id = post(runTasks);
-        }
+        id ??= post(runTasks);
     };
 }
 

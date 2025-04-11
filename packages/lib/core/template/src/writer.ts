@@ -36,9 +36,7 @@ export class Writer implements TemplateWriter {
     parse(template: string, tags?: TemplateDelimiters): { tokens: Token[]; cacheKey: string; } {
         const cacheKey = buildCacheKey(template, tags ?? globalSettings.tags);
         let tokens = cache[cacheKey] as Token[];
-        if (null == tokens) {
-            tokens = cache[cacheKey] = parseTemplate(template, tags);
-        }
+        tokens ??= cache[cacheKey] = parseTemplate(template, tags);
         return { tokens, cacheKey };
     }
 
