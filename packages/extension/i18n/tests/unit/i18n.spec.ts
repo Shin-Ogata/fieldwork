@@ -197,7 +197,7 @@ describe('extention-i18n spec', () => {
                 lowerCaseLng: true, // languages returns "ja-jp"
             });
 
-            expect(i18next.language).toBe('ja-JP');
+            expect(i18next.language).toBe('ja-jp');
             expect(i18next.languages).toEqual(['ja-jp', 'ja', 'en']);
         });
 
