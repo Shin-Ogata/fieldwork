@@ -199,7 +199,7 @@ describe('utils/object spec', () => {
         }
 
         {
-            /* eslint-disable object-shorthand,  no-invalid-this, @typescript-eslint/explicit-function-return-type */
+            /* eslint-disable object-shorthand, @typescript-eslint/explicit-function-return-type */
             const func = function () { return 'f'; };
             const context = function (this: any) { return this; };
 
@@ -241,7 +241,7 @@ describe('utils/object spec', () => {
             expect(result(nested, ['d', 'e'])).toEqual(obj);
             expect(result(nested, ['d', 'f']).e()).toEqual(obj);
             expect(result<any>(nested, ['d', 'x'], context).e()).toEqual(obj);
-            /* eslint-enable object-shorthand,  no-invalid-this, @typescript-eslint/no-empty-function, @typescript-eslint/explicit-function-return-type */
+            /* eslint-enable object-shorthand, @typescript-eslint/no-empty-function, @typescript-eslint/explicit-function-return-type */
         }
     });
 });

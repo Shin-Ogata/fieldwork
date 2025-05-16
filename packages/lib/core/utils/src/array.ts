@@ -1,7 +1,3 @@
-/* eslint-disable
-    no-invalid-this,
- */
-
 import type { UnknownObject, Accessible } from './types';
 import { assignValue } from './deep-circuit';
 import { randomInt } from './misc';
