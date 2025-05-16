@@ -101,7 +101,6 @@ function extend(domOptions: Required<i18n.DomLocalizerOptions>, i18next: i18n.i1
     };
 
     function handle(this: DOM, opts: i18n.TOptions): DOM {
-        // eslint-disable-next-line no-invalid-this
         return this.each((index: number, el: HTMLElement) => {
             for (const root of $.utils.rootify(el)) {
                 const $el = $(root);

@@ -49,7 +49,7 @@ document.adoptedStyleSheets = [...defaults, sheet];
 export interface DomRippleOptions {} // eslint-disable-line
 
 function ripple(this: DOM, options?: DomRippleOptions): DOM { // eslint-disable-line @typescript-eslint/no-unused-vars
-    const self = this; // eslint-disable-line no-invalid-this
+    const self = this;
     const $el = $(self);
     if ($el.length <= 0) {
         return $el;

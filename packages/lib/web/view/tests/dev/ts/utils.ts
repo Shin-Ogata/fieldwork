@@ -31,7 +31,6 @@ declare module '@cdp/dom' {
 }
 
 function show(this: DOM): DOM {
-    // eslint-disable-next-line no-invalid-this
     return this.each((index: number, el: HTMLElement) => {
         const $el = $(el);
         $el.css('display', 'block');
@@ -39,7 +38,6 @@ function show(this: DOM): DOM {
 }
 
 function hide(this: DOM): DOM {
-    // eslint-disable-next-line no-invalid-this
     return this.each((index: number, el: HTMLElement) => {
         const $el = $(el);
         $el.css('display', 'none');

@@ -175,7 +175,7 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, o
         const isInvoking = shouldInvoke(time);
 
         lastArgs = args;
-        lastThis = this;    // eslint-disable-line no-invalid-this, @typescript-eslint/no-this-alias
+        lastThis = this;    // eslint-disable-line @typescript-eslint/no-this-alias
         lastCallTime = time;
 
         if (isInvoking) {
@@ -252,7 +252,7 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
  *  - `ja` 対象の関数
  */
 export function once<T extends UnknownFunction>(executor: T): T {
-    /* eslint-disable no-invalid-this */
+
     let memo: unknown;
     return function (this: unknown, ...args: unknown[]): unknown {
         if (executor) {
@@ -261,7 +261,7 @@ export function once<T extends UnknownFunction>(executor: T): T {
         }
         return memo;
     } as T;
-    /* eslint-enable no-invalid-this */
+
 }
 
 /**

@@ -531,7 +531,7 @@ describe('utils/misc spec', () => {
 
             const debounced = debounce(
                 function (this: any, ...args: any) {
-                    actual = [this]; // eslint-disable-line no-invalid-this
+                    actual = [this];
                     Array.prototype.push.apply(actual, args);
                     return ++callCount !== 2;
                 },

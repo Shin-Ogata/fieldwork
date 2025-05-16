@@ -1,5 +1,4 @@
 /* eslint-disable
-    no-invalid-this,
     @typescript-eslint/no-explicit-any,
  */
 
