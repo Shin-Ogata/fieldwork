@@ -1,4 +1,8 @@
-import { atob, btoa } from './ssr';
+import {
+    TextEncoder,
+    atob,
+    btoa,
+} from './ssr';
 
 /**
  * @en `base64` utility for independent charactor code.
@@ -10,7 +14,11 @@ export class Base64 {
      * @ja 文字列を base64 形式でエンコード
      */
     public static encode(src: string): string {
-        return btoa(unescape(encodeURIComponent(src)));
+        const utf8Bytes = new TextEncoder().encode(src);
+        const binaryString = Array.from(utf8Bytes)
+            .map(byte => String.fromCharCode(byte))
+            .join('');
+        return btoa(binaryString);
     }
 
     /**
@@ -18,6 +26,8 @@ export class Base64 {
      * @ja base64 形式でエンコードされたデータの文字列をデコード
      */
     public static decode(encoded: string): string {
-        return decodeURIComponent(escape(atob(encoded)));
+        const binaryString = atob(encoded);
+        const utf8Bytes = Uint8Array.from(binaryString, char => char.charCodeAt(0));
+        return new TextDecoder().decode(utf8Bytes);
     }
 }
