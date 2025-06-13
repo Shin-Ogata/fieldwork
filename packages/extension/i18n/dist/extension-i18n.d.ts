@@ -638,6 +638,12 @@ declare namespace i18n {
          * @default 350
          */
         retryTimeout?: number;
+        /**
+         * Initializes the internal formatter for the in-built formats as cached version.
+         * Can be set to false for this type of issues: https://github.com/i18next/i18next/issues/2227
+         * @default true
+         */
+        cacheInBuiltFormats?: boolean;
     }
     export interface TOptionsBase {
         /**
@@ -671,7 +677,7 @@ declare namespace i18n {
         /**
          * Override language to lookup key if not found see fallbacks for details
          */
-        fallbackLng?: FallbackLng;
+        fallbackLng?: false | FallbackLng;
         /**
          * Override namespaces (string or array)
          */
