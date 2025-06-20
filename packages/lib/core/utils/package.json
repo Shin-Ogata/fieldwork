@@ -1,7 +1,7 @@
 {
   "name": "@cdp/core-utils",
   "description": "core domain utilities",
-  "version": "0.9.19",
+  "version": "0.9.20",
   "author": "Shin Ogata",
   "keywords": [
     "CDP",

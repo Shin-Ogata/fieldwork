@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-core 0.9.19
+ * @cdp/lib-core 0.9.20
  *   core library collection
  */
 
@@ -10,7 +10,7 @@
 })(this, (function (exports) { 'use strict';
 
     /*!
-     * @cdp/core-utils 0.9.19
+     * @cdp/core-utils 0.9.20
      *   core domain utilities
      */
 
@@ -2378,7 +2378,7 @@
     }
 
     /*!
-     * @cdp/events 0.9.19
+     * @cdp/events 0.9.20
      *   pub/sub framework
      */
 
@@ -2867,7 +2867,7 @@
     const _EventSource = EventSource;
 
     /*!
-     * @cdp/promise 0.9.19
+     * @cdp/promise 0.9.20
      *   promise utility module
      */
 
@@ -3493,7 +3493,7 @@
     }
 
     /*!
-     * @cdp/observable 0.9.19
+     * @cdp/observable 0.9.20
      *   observable utility module
      */
 
@@ -4130,7 +4130,7 @@
     }
 
     /*!
-     * @cdp/result 0.9.19
+     * @cdp/result 0.9.20
      *   result utility module
      */
 
@@ -4464,7 +4464,7 @@
     }
 
     /*!
-     * @cdp/core-storage 0.9.19
+     * @cdp/core-storage 0.9.20
      *   core storage utility module
      */
 
@@ -4832,7 +4832,7 @@
     }
 
     /*!
-     * @cdp/core-template 0.9.19
+     * @cdp/core-template 0.9.20
      *   template engine
      */
 

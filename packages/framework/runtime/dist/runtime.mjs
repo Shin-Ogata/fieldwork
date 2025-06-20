@@ -1,15 +1,15 @@
 /*!
- * @cdp/runtime 0.9.19
+ * @cdp/runtime 0.9.20
  *   runtime core framework
  */
 
 /*!
- * @cdp/lib-core 0.9.19
+ * @cdp/lib-core 0.9.20
  *   core library collection
  */
 
 /*!
- * @cdp/core-utils 0.9.19
+ * @cdp/core-utils 0.9.20
  *   core domain utilities
  */
 
@@ -2377,7 +2377,7 @@ function isStatusIn(status) {
 }
 
 /*!
- * @cdp/events 0.9.19
+ * @cdp/events 0.9.20
  *   pub/sub framework
  */
 
@@ -2866,7 +2866,7 @@ class EventSource extends mixins(EventBroker, EventReceiver) {
 const _EventSource = EventSource;
 
 /*!
- * @cdp/promise 0.9.19
+ * @cdp/promise 0.9.20
  *   promise utility module
  */
 
@@ -3492,7 +3492,7 @@ class PromiseManager {
 }
 
 /*!
- * @cdp/observable 0.9.19
+ * @cdp/observable 0.9.20
  *   observable utility module
  */
 
@@ -4129,7 +4129,7 @@ class ObservableArray extends Array {
 }
 
 /*!
- * @cdp/result 0.9.19
+ * @cdp/result 0.9.20
  *   result utility module
  */
 
@@ -4463,7 +4463,7 @@ function makeCanceledResult(message, cause) {
 }
 
 /*!
- * @cdp/core-storage 0.9.19
+ * @cdp/core-storage 0.9.20
  *   core storage utility module
  */
 
@@ -4831,7 +4831,7 @@ class Registry extends EventPublisher {
 }
 
 /*!
- * @cdp/core-template 0.9.19
+ * @cdp/core-template 0.9.20
  *   template engine
  */
 
@@ -5553,13 +5553,13 @@ class TemplateEngine {
 }
 
 /*!
- * @cdp/lib-worker 0.9.19
+ * @cdp/lib-worker 0.9.20
  *   worker library collection
  */
 
 
 /*!
- * @cdp/binary 0.9.19
+ * @cdp/binary 0.9.20
  *   binary utility module
  */
 
@@ -6235,7 +6235,7 @@ class BlobURL {
 }
 
 /*!
- * @cdp/ajax 0.9.19
+ * @cdp/ajax 0.9.20
  *   ajax utility module
  */
 
@@ -6670,7 +6670,7 @@ const request = {
 };
 
 /*!
- * @cdp/inline-worker 0.9.19
+ * @cdp/inline-worker 0.9.20
  *   inline web worker utility module
  */
 
@@ -6785,13 +6785,13 @@ function thread(executor, options) {
 }
 
 /*!
- * @cdp/lib-web 0.9.19
+ * @cdp/lib-web 0.9.20
  *   web api library collection
  */
 
 
 /*!
- * @cdp/web-utils 0.9.19
+ * @cdp/web-utils 0.9.20
  *   web domain utilities
  */
 
@@ -6975,7 +6975,7 @@ function toTemplateElement(src) {
 }
 
 /*!
- * @cdp/dom 0.9.19
+ * @cdp/dom 0.9.20
  *   dom utility module
  */
 
@@ -10534,7 +10534,7 @@ function isDOMClass(x) {
 setup(DOMClass.prototype, DOMClass.create);
 
 /*!
- * @cdp/environment 0.9.19
+ * @cdp/environment 0.9.20
  *   environment resolver module
  */
 
@@ -10704,7 +10704,7 @@ const queryPlatform = (context) => {
 const platform = queryPlatform();
 
 /*!
- * @cdp/extension-i18n 0.9.19
+ * @cdp/extension-i18n 0.9.20
  *   extension for internationalization
  */
 
@@ -13646,7 +13646,7 @@ instance.loadLanguages;
 const i18n = instance;
 
 /*!
- * @cdp/i18n 0.9.19
+ * @cdp/i18n 0.9.20
  *   internationalization module
  */
 
@@ -13944,7 +13944,7 @@ const localize = (selector, options) => {
 };
 
 /*!
- * @cdp/web-storage 0.9.19
+ * @cdp/web-storage 0.9.20
  *   web storage utility module
  */
 
@@ -14077,7 +14077,7 @@ class WebStorage {
 const webStorage = new WebStorage(localStorage);
 
 /*!
- * @cdp/data-sync 0.9.19
+ * @cdp/data-sync 0.9.20
  *   web storage utility module
  */
 
@@ -14457,7 +14457,7 @@ function defaultSync(newSync) {
 }
 
 /*!
- * @cdp/model 0.9.19
+ * @cdp/model 0.9.20
  *   generic model scheme
  */
 
@@ -15152,7 +15152,7 @@ function idAttribute(x, fallback = '') {
 }
 
 /*!
- * @cdp/collection 0.9.19
+ * @cdp/collection 0.9.20
  *   generic collection scheme
  */
 
@@ -17298,7 +17298,7 @@ async function removeCollection(collection, orders, options) {
 }
 
 /*!
- * @cdp/view 0.9.19
+ * @cdp/view 0.9.20
  *   generic view scheme
  */
 
@@ -17553,7 +17553,7 @@ class View extends (mixins(_EventSource, ViewCore)) {
 const _View = View;
 
 /*!
- * @cdp/extension-template 0.9.19
+ * @cdp/extension-template 0.9.20
  *   extension for template engine
  */
 
@@ -20775,7 +20775,7 @@ const toTemplateStringsArray = (src) => {
 };
 
 /*!
- * @cdp/extension-template-bridge 0.9.19
+ * @cdp/extension-template-bridge 0.9.20
  *   extension for HTML templates bridge.
  */
 
@@ -22284,7 +22284,7 @@ function createStampinoTransformer(options) {
 }
 
 /*!
- * @cdp/template 0.9.19
+ * @cdp/template 0.9.20
  *   HTML template library
  */
 
@@ -22759,7 +22759,7 @@ hooks.createContext = createContext;
 hooks.useContext = useContext;
 
 /*!
- * @cdp/extension-path2regexp 0.9.19
+ * @cdp/extension-path2regexp 0.9.20
  *   extension for conversion path to regexp library
  */
 
@@ -23190,7 +23190,7 @@ const path2regexp = {
 };
 
 /*!
- * @cdp/router 0.9.19
+ * @cdp/router 0.9.20
  *   generic router scheme
  */
 
@@ -24996,7 +24996,7 @@ function createRouter(selector, options) {
 }
 
 /*!
- * @cdp/app 0.9.19
+ * @cdp/app 0.9.20
  *   application context
  */
 

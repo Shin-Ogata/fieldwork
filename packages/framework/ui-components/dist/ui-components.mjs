@@ -1,12 +1,12 @@
 /*!
- * @cdp/ui-components 0.9.19
+ * @cdp/ui-components 0.9.20
  *   ui-componets collection
  */
 
 import { safe, post, noop, dom, makeResult, RESULT_CODE, toHelpString, View, at, luid, statusAddRef, statusRelease, statusScope, isStatusIn, setTimeout as setTimeout$1, clearTimeout } from '@cdp/runtime';
 
 /*!
- * @cdp/ui-utils 0.9.19
+ * @cdp/ui-utils 0.9.20
  *   UI components common utilities
  */
 
@@ -88,7 +88,7 @@ const clearTransition = (el) => {
 };
 
 /*!
- * @cdp/ui-forms 0.9.19
+ * @cdp/ui-forms 0.9.20
  *   UI form components
  */
 
@@ -101,7 +101,7 @@ const UI_FORMS_STATUS = 'UNDER CONSTRUCTION';
 void post(noop(sheet$1, sheet));
 
 /*!
- * @cdp/ui-listview 0.9.19
+ * @cdp/ui-listview 0.9.20
  *   web domain utilities
  */
 

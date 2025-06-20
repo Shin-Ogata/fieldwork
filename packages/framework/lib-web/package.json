@@ -1,7 +1,7 @@
 {
   "name": "@cdp/lib-web",
   "description": "web api library collection",
-  "version": "0.9.19",
+  "version": "0.9.20",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/lib-core": "file:../lib-core",
