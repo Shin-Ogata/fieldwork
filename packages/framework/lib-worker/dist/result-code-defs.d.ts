@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-worker/result-code-defs 0.9.19
+ * @cdp/lib-worker/result-code-defs 0.9.20
  *   Common result code definitions.
  *   - includes:
  *     - @cdp/ajax/result-code-defs
