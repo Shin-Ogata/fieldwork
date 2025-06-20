@@ -183,7 +183,7 @@ function cloneRegExp(regexp: RegExp): RegExp {
 }
 
 /** @internal clone ArrayBuffer */
-function cloneArrayBuffer(arrayBuffer: ArrayBuffer): ArrayBuffer {
+function cloneArrayBuffer(arrayBuffer: ArrayBufferLike): ArrayBuffer {
     const result = new ArrayBuffer(arrayBuffer.byteLength);
     new Uint8Array(result).set(new Uint8Array(arrayBuffer));
     return result;

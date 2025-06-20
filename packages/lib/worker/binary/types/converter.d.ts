@@ -152,7 +152,7 @@ export declare function binaryToBlob(binary: Uint8Array, mimeType?: string): Blo
  *  - `en` `Uint8Array` instance
  *  - `ja` `Uint8Array` インスタンスを指定
  */
-export declare function binaryToBuffer(binary: Uint8Array): ArrayBuffer;
+export declare function binaryToBuffer(binary: Uint8Array): ArrayBufferLike;
 /**
  * @en Convert `Uint8Array` to data-URL string.
  * @ja `Uint8Array` から data-URL 文字列に変換
@@ -203,7 +203,7 @@ export declare function base64ToBlob(base64: string, mimeType?: string): Blob;
  *  - `en` Base64 string data
  *  - `ja` Base64 文字列
  */
-export declare function base64ToBuffer(base64: string): ArrayBuffer;
+export declare function base64ToBuffer(base64: string): ArrayBufferLike;
 /**
  * @en Convert Base64 string to `Uint8Array`.
  * @ja Base64 文字列から `Uint8Array` に変換
@@ -254,7 +254,7 @@ export declare function textToBlob(text: string, mimeType?: string): Blob;
  *  - `en` text string data
  *  - `ja` テキスト文字列
  */
-export declare function textToBuffer(text: string): ArrayBuffer;
+export declare function textToBuffer(text: string): ArrayBufferLike;
 /**
  * @en Convert text string to `Uint8Array`.
  * @ja テキストから `Uint8Array` に変換
@@ -302,7 +302,7 @@ export declare function dataURLToBlob(dataURL: string): Blob;
  *  - `en` data-URL string data
  *  - `ja` data-URL 文字列
  */
-export declare function dataURLToBuffer(dataURL: string): ArrayBuffer;
+export declare function dataURLToBuffer(dataURL: string): ArrayBufferLike;
 /**
  * @en Convert data-URL string to `Uint8Array`.
  * @ja data-URL 文字列から `Uint8Array` に変換
