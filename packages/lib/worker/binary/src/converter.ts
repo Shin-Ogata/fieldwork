@@ -275,7 +275,7 @@ export function binaryToBlob(binary: Uint8Array, mimeType: string = MimeType.BIN
  *  - `en` `Uint8Array` instance
  *  - `ja` `Uint8Array` インスタンスを指定
  */
-export function binaryToBuffer(binary: Uint8Array): ArrayBuffer {
+export function binaryToBuffer(binary: Uint8Array): ArrayBufferLike {
     return binary.buffer;
 }
 
@@ -343,7 +343,7 @@ export function base64ToBlob(base64: string, mimeType: string = MimeType.BINARY)
  *  - `en` Base64 string data
  *  - `ja` Base64 文字列
  */
-export function base64ToBuffer(base64: string): ArrayBuffer {
+export function base64ToBuffer(base64: string): ArrayBufferLike {
     return base64ToBinary(base64).buffer;
 }
 
@@ -411,7 +411,7 @@ export function textToBlob(text: string, mimeType: string = MimeType.TEXT): Blob
  *  - `en` text string data
  *  - `ja` テキスト文字列
  */
-export function textToBuffer(text: string): ArrayBuffer {
+export function textToBuffer(text: string): ArrayBufferLike {
     return textToBinary(text).buffer;
 }
 
@@ -482,7 +482,7 @@ export function dataURLToBlob(dataURL: string): Blob {
  *  - `en` data-URL string data
  *  - `ja` data-URL 文字列
  */
-export function dataURLToBuffer(dataURL: string): ArrayBuffer {
+export function dataURLToBuffer(dataURL: string): ArrayBufferLike {
     return dataURLToBinary(dataURL).buffer;
 }
 

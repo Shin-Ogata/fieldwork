@@ -1,6 +1,6 @@
 {
   "extends": "./base",
   "compilerOptions": {
-    "lib": ["es2023", "dom", "dom.iterable"]
+    "lib": ["es2024", "dom", "dom.iterable"]
   }
 }
