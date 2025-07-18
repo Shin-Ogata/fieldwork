@@ -139,7 +139,6 @@ export default [
             '@stylistic/comma-spacing': 'error',
             '@stylistic/computed-property-spacing': 'error',
             '@stylistic/eol-last': 'warn',
-            '@stylistic/func-call-spacing': 'error',
             '@stylistic/keyword-spacing': 'error',
             '@stylistic/max-len': [
                 'error',
@@ -170,7 +169,7 @@ export default [
                 'single',
                 {
                     avoidEscape: true,
-                    allowTemplateLiterals: true,
+                    allowTemplateLiterals: 'always',
                 },
             ],
             '@stylistic/semi': [
@@ -185,7 +184,7 @@ export default [
                     ignoreComments: true,
                 },
             ],
-            '@stylistic/func-call-spacing': 'error',
+            '@stylistic/function-call-spacing': 'error',
             '@stylistic/semi-spacing': 'error',
             '@stylistic/space-in-parens': 'error',
             '@stylistic/space-infix-ops': 'error',

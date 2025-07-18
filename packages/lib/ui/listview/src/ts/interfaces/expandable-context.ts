@@ -16,4 +16,4 @@ export type IExpandableListContext
     & IListBackupRestore
     & IListStatusManager
     & IListOperation
-;
+; // eslint-disable-line @stylistic/indent
