@@ -264,7 +264,7 @@ export function bufferToText(buffer: ArrayBuffer): string {
  *  - `ja` mime-type 文字列
  */
 export function binaryToBlob(binary: Uint8Array, mimeType: string = MimeType.BINARY): Blob {
-    return new Blob([binary], { type: mimeType });
+    return new Blob([binary as Uint8Array<ArrayBuffer>], { type: mimeType });
 }
 
 /**
