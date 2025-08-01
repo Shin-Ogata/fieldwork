@@ -25,7 +25,7 @@ export class TestListCustomElement extends HTMLElement {
     get listItems(): string[] {
         const result: string[] = [];
         for (const e of dom(this._root).find('.shadow-list').children()) {
-            result.push(e.textContent!);
+            result.push(e.textContent);
         }
         return result;
     }
