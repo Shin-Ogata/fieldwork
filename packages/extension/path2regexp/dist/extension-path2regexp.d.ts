@@ -97,9 +97,13 @@ export type Keys = Array<Key>;
 export type Token = Text | Parameter | Wildcard | Group;
 export interface TokenData {
     readonly tokens: Token[];
+    readonly originalPath?: string | undefined;
+}
+export interface PathError extends TypeError {
+    readonly originalPath: string | undefined;
 }
 export function parse(str: string, options?: ParseOptions): TokenData;
-export function compile<P extends ParamData = ParamData>(path: Path, options?: CompileOptions & ParseOptions): (data?: P) => string;
+export function compile<P extends ParamData = ParamData>(path: Path, options?: CompileOptions & ParseOptions): (params?: P) => string;
 export type ParamData = Partial<Record<string, string | string[]>>;
 export type PathFunction<P extends ParamData> = (data?: P) => string;
 /**

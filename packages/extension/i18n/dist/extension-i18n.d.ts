@@ -14,6 +14,17 @@ declare namespace i18n {
     };
     export type $SpecialObject = object | Array<string | object>;
     // Types Operators
+    export type $Prune<T> = never | {
+        [K in keyof T as [
+            keyof T[K]
+        ] extends [
+            never
+        ] ? never : K]: T[K];
+    };
+    /** All the way down. */
+    export interface $Turtles {
+        [x: string]: $Turtles;
+    }
     export type $MergeBy<T, K> = Omit<T, keyof K> & K;
     export type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof any[]> : Arr;
     export type $PreservedValue<Value, Fallback> = [
@@ -145,6 +156,23 @@ declare namespace i18n {
         unescapePrefix: '-';
         /** @see {InterpolationOptions.unescapeSuffix} */
         unescapeSuffix: '';
+        /**
+         * Use a proxy-based selector to select a translation.
+         *
+         * Enables features like go-to definition, and better DX/faster autocompletion
+         * for TypeScript developers.
+         *
+         * If you're working with an especially large set of translations and aren't
+         * using context, you set `enableSelector` to `'optimize'` and i18next won't do
+         * any type-level processing of your translations at all.
+         *
+         * With `enableSelector` set to `'optimize'`, i18next is capable of supporting
+         * arbitrarily large/deep translation sets without causing any IDE slowdown
+         * whatsoever.
+         *
+         * @default false
+         */
+        enableSelector: false;
     }, CustomTypeOptions>;
     export type PluginOptions<T> = $MergeBy<{
         /**
@@ -733,6 +761,7 @@ declare namespace i18n {
     export type _UnescapePrefix = TypeOptions['unescapePrefix'];
     export type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
     export type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
+    export type _EnableSelector = TypeOptions['enableSelector'];
     export type $IsResourcesDefined = [
         keyof _Resources
     ] extends [
@@ -746,6 +775,9 @@ declare namespace i18n {
     export type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
     export type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
     export type TrimSpaces<T extends string, Acc extends string = ''> = T extends `${infer Char}${infer Rest}` ? Char extends ' ' ? TrimSpaces<Rest, Acc> : TrimSpaces<Rest, `${Acc}${Char}`> : T extends '' ? Acc : never;
+    export interface Branded<Ns extends Namespace> {
+        $TFunctionBrand: $IsResourcesDefined extends true ? `${Ns extends readonly any[] ? Ns[0] : Ns}` : never;
+    }
     /** ****************************************************
      * Build all keys and key prefixes based on Resources *
      ***************************************************** */
@@ -780,8 +812,12 @@ declare namespace i18n {
     export type ParseTReturnWithFallback<Key, Val> = Val extends '' ? _ReturnEmptyString extends true ? '' : Key : Val extends null ? _ReturnNull extends true ? null : Key : Val;
     export type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallback<Key, Key extends `${infer K1}${_KeySeparator}${infer RestKey}` ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt> : TOpt['count'] extends number ? TOpt['ordinal'] extends boolean ? ParseTReturnPluralOrdinal<Res, Key> : ParseTReturnPlural<Res, Key> : Res extends readonly unknown[] ? Key extends `${infer NKey extends number}` ? Res[NKey] : never : Res[Key & keyof Res]>;
     export type TReturnOptionalNull = _ReturnNull extends true ? null : never;
-    export type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true ? $SpecialObject | string : TOpt['returnObjects'] extends true ? $SpecialObject : string;
-    export type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
+    export type TReturnOptionalObjects<TOpt extends {
+        returnObjects?: unknown;
+    }> = _ReturnObjects extends true ? $SpecialObject | string : TOpt['returnObjects'] extends true ? $SpecialObject : string;
+    export type DefaultTReturn<TOpt extends {
+        returnObjects?: unknown;
+    }> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
     export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
     export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt> : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt> : DefaultTReturn<TOpt>;
     export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
@@ -822,13 +858,11 @@ declare namespace i18n {
     /** ************************
      * T function declaration *
      ************************* */
-    export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
-        $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+    export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
         <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
         <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
     }
-    export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
-        $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+    export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
         <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>, DefaultValue extends string = never>(...args: [
             key: Key | Key[],
             options?: ActualOptions
@@ -843,10 +877,67 @@ declare namespace i18n {
             options?: TOpt & $Dictionary
         ]): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
     }
-    export type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+    export type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _EnableSelector extends true | 'optimize' ? TFunctionSelector<Ns, KPrefix, GetSource<Ns, KPrefix>> : _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends TFunctionSignature<Ns, KPrefix> {
     }
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+    /// ////////////// ///
+    ///  ↆ selector ↆ  ///
+    /// ////////////// ///
+    export interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
+        <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions<NewNs>, NewNs extends Namespace, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>, options: Opts & InterpolationMap<Target> & {
+            ns: NewNs;
+        }): SelectorReturn<Target, Opts>;
+        <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions<Ns>>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>, options?: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
+    }
+    export interface SelectorOptions<Ns = Namespace> extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>, $Dictionary {
+        ns?: Ns;
+    }
+    export type SelectorReturn<Target, Opts extends {
+        defaultValue?: unknown;
+        returnObjects?: boolean;
+    }> = $IsResourcesDefined extends true ? TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts> : DefaultTReturn<Opts>;
+    export interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
+        (translations: Select<Source, Opts['context']>): Target;
+    }
+    export type ApplyKeyPrefix<T extends [
+        any
+    ], KPrefix> = KPrefix extends `${infer Head}${_KeySeparator}${infer Tail}` ? ApplyKeyPrefix<[
+        T[0][Head]
+    ], Tail> : T[0][KPrefix & string];
+    export type ApplyTarget<Target, Opts extends {
+        returnObjects?: unknown;
+    }> = Opts['returnObjects'] extends true ? unknown : Target;
+    export type ConstrainTarget<Opts extends SelectorOptions<any>> = _ReturnObjects extends true ? unknown : Opts['returnObjects'] extends true ? unknown : $IsResourcesDefined extends false ? unknown : string;
+    export type ProcessReturnValue<Target, DefaultValue> = $Turtles extends Target ? string : [
+        DefaultValue
+    ] extends [
+        never
+    ] ? Target : unknown extends DefaultValue ? Target : Target | DefaultValue;
+    export type PickNamespaces<T, K extends keyof any> = {
+        [P in K as P extends keyof T ? P : never]: T[P & keyof T];
+    };
+    export type GetSource<Ns extends Namespace, KPrefix, Res = Ns extends readonly [
+        keyof Resources,
+        any,
+        ...any
+    ] ? Resources[Ns[0]] & PickNamespaces<Resources, Ns[number]> : Resources[$FirstNamespace<Ns>]> = KPrefix extends keyof Res ? Res[KPrefix] : undefined extends KPrefix ? Res : ApplyKeyPrefix<[
+        Res
+    ], KPrefix>;
+    export type Select<T, Context> = $IsResourcesDefined extends false ? $Turtles : [
+        _EnableSelector
+    ] extends [
+        'optimize'
+    ] ? T : FilterKeys<T, Context>;
+    export type FilterKeys<T, Context> = never | T extends readonly any[] ? {
+        [I in keyof T]: FilterKeys<T[I], Context>;
+    } : $Prune<{
+        [K in keyof T as T[K] extends object ? K : Context extends string ? never : K extends `${string}${_PluralSeparator}${PluralSuffix}` ? never : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+    } & {
+        [K in keyof T as T[K] extends object ? never : Context extends string ? never : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+    } & {
+        [K in keyof T as T[K] extends object ? never : Context extends string ? K extends `${infer Prefix}${_ContextSeparator}${Context}` | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? Prefix : never : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+    }>;
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<Ns>;

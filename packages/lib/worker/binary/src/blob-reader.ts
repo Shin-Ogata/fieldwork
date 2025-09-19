@@ -55,7 +55,7 @@ function exec<T extends keyof FileReaderResultMap>(
             resolve(reader.result as TResult);
         };
         reader.onloadend = () => {
-            subscription && subscription.unsubscribe();
+            subscription?.unsubscribe();
         };
         (reader[methodName] as UnknownFunction)(...args);
     }, token);

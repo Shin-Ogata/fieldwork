@@ -33,7 +33,7 @@ function ensureChainCaseProperies(props: PlainObject<string | number | boolean |
 
 /** @internal helper for `css()` get props */
 function getDefaultView(el: Element): Window {
-    return (el.ownerDocument && el.ownerDocument.defaultView) ?? window;
+    return el.ownerDocument?.defaultView ?? window;
 }
 
 /** @internal helper for `css()` get props */

@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/await-thenable,
+ */
+
 import type { CancelToken } from './cancel-token';
 
 /**

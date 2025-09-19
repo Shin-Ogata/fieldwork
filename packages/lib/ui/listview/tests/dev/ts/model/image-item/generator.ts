@@ -1,5 +1,6 @@
 /* eslint-disable
     camelcase,
+    @stylistic/indent,
  */
 
 import {
