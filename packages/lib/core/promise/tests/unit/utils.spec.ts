@@ -1,3 +1,7 @@
+/* eslint-disable
+    @typescript-eslint/await-thenable,
+ */
+
 import { noop } from '@cdp/core-utils';
 import {
     wait,

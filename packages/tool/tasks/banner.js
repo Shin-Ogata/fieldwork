@@ -1,3 +1,6 @@
+/* eslint-disable
+    @stylistic/indent,
+ */
 'use strict';
 
 const { existsSync, readFileSync } = require('node:fs');

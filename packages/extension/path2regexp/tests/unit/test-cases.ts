@@ -11,6 +11,7 @@ type ParseOptions = path2regexp.ParseOptions;
 type TokenData = path2regexp.TokenData;
 type CompileOptions = path2regexp.CompileOptions;
 type ParamData = path2regexp.ParamData;
+type Path = path2regexp.Path;
 const TokenData = path2regexp.TokenData;
 
 export interface ParserTestSet {
@@ -26,7 +27,7 @@ export interface StringifyTestSet {
 }
 
 export interface CompileTestSet {
-    path: string;
+    path: Path;
     options?: CompileOptions & ParseOptions;
     tests: Array<{
         input: ParamData | undefined;
@@ -35,7 +36,7 @@ export interface CompileTestSet {
 }
 
 export interface MatchTestSet {
-    path: string;
+    path: Path | Path[];
     options?: MatchOptions & ParseOptions;
     tests: Array<{
         input: string;
@@ -46,64 +47,109 @@ export interface MatchTestSet {
 export const PARSER_TESTS: ParserTestSet[] = [
     {
         path: '/',
-        expected: new TokenData([{ type: 'text', value: '/' }]),
+        expected: new TokenData([{ type: 'text', value: '/' }], '/'),
     },
     {
         path: '/:test',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: 'test' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'test' },
+            ],
+            '/:test',
+        ),
+    },
+    {
+        path: '/:a:b',
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'a' },
+                { type: 'param', name: 'b' },
+            ],
+            '/:a:b',
+        ),
     },
     {
         path: '/:"0"',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: '0' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: '0' },
+            ],
+            '/:"0"',
+        ),
     },
     {
         path: '/:_',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: '_' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: '_' },
+            ],
+            '/:_',
+        ),
     },
     {
         path: '/:café',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: 'café' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'café' },
+            ],
+            '/:café',
+        ),
     },
     {
         path: '/:"123"',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: '123' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: '123' },
+            ],
+            '/:"123"',
+        ),
     },
     {
         path: '/:"1\\"\\2\\"3"',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: '1"2"3' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: '1"2"3' },
+            ],
+            '/:"1\\"\\2\\"3"',
+        ),
     },
     {
         path: '/*path',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'wildcard', name: 'path' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'wildcard', name: 'path' },
+            ],
+            '/*path',
+        ),
     },
     {
         path: '/:"test"stuff',
-        expected: new TokenData([
-            { type: 'text', value: '/' },
-            { type: 'param', name: 'test' },
-            { type: 'text', value: 'stuff' },
-        ]),
+        expected: new TokenData(
+            [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'test' },
+                { type: 'text', value: 'stuff' },
+            ],
+            '/:"test"stuff',
+        ),
+    },
+    {
+        path: '\\\\:test',
+        expected: new TokenData(
+            [
+                { type: 'text', value: '\\' },
+                { type: 'param', name: 'test' },
+            ],
+            '\\\\:test',
+        ),
     },
 ];
 
@@ -172,6 +218,23 @@ export const STRINGIFY_TESTS: StringifyTestSet[] = [
             { type: 'text', value: 'stuff' },
         ]),
         expected: '/:"test"stuff',
+    },
+    {
+        data: new TokenData([
+            { type: 'text', value: '\\' },
+            { type: 'param', name: 'test' },
+        ]),
+        expected: '\\\\:test',
+    },
+    {
+        data: {
+            tokens: [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'test' },
+            ],
+            originalPath: '/:test',
+        },
+        expected: '/:test',
     },
 ];
 
@@ -274,6 +337,15 @@ export const COMPILE_TESTS: CompileTestSet[] = [
             { input: { test: '123' }, expected: '/123' },
             { input: { test: '123/xyz' }, expected: '/123/xyz' },
         ],
+    },
+    {
+        path: {
+            tokens: [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'test' },
+            ],
+        },
+        tests: [{ input: { test: '123' }, expected: '/123' }],
     },
 ];
 
@@ -1612,6 +1684,66 @@ export const MATCH_TESTS: MatchTestSet[] = [
                     params: { foo: '555', bar: '222' },
                 },
             },
+        ],
+    },
+    {
+        path: '%25:foo..:bar',
+        options: {
+            delimiter: '%25',
+        },
+        tests: [
+            {
+                input: '%25hello..world',
+                expected: {
+                    path: '%25hello..world',
+                    params: { foo: 'hello', bar: 'world' },
+                },
+            },
+            {
+                input: '%25555..222',
+                expected: {
+                    path: '%25555..222',
+                    params: { foo: '555', bar: '222' },
+                },
+            },
+            {
+                input: '%25555....222%25',
+                expected: {
+                    path: '%25555....222%25',
+                    params: { foo: '555..', bar: '222' },
+                },
+            },
+        ],
+    },
+
+    /**
+     * Array input is normalized.
+     */
+    {
+        path: ['/:foo/:bar', '/:foo/:baz'],
+        tests: [
+            {
+                input: '/hello/world',
+                expected: {
+                    path: '/hello/world',
+                    params: { foo: 'hello', bar: 'world' },
+                },
+            },
+        ],
+    },
+
+    /**
+     * Token data.
+     */
+    {
+        path: {
+            tokens: [
+                { type: 'text', value: '/' },
+                { type: 'param', name: 'test' },
+            ],
+        },
+        tests: [
+            { input: '/123', expected: { path: '/123', params: { test: '123' } } },
         ],
     },
 ];

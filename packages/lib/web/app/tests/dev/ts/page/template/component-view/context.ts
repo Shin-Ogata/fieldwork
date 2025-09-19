@@ -69,7 +69,7 @@ class ComponentViewPage extends PageView {
             $section.append(div);
             promises.push(view.componentInit(div, this._props));
         });
-        await Promise.all(promises);
+        await Promise.all(promises);    // eslint-disable-line @typescript-eslint/await-thenable
 
         this.render();
     }
