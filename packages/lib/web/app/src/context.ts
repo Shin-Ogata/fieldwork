@@ -319,7 +319,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
         await waitDomContentLoaded(_window.document);
         await Promise.all([
             initializeI18N(i18n),
-            isFunction(waitForReady) ? waitForReady(this) : waitForReady,   // eslint-disable-line @typescript-eslint/await-thenable
+            isFunction(waitForReady) ? waitForReady(this) : waitForReady,
             waitDocumentEventReady(_window.document, documentEventReady),
         ]);
 
