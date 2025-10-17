@@ -48,7 +48,7 @@ export class Scanner implements TemplateScanner {
     scan(regexp: RegExp): string {
         const match = regexp.exec(this._tail);
 
-        if (!match || 0 !== match.index) {
+        if (!match || 0 !== match.index) { // eslint-disable-line @typescript-eslint/prefer-optional-chain
             return '';
         }
 

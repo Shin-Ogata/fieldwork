@@ -31,7 +31,7 @@ function squashTokens(tokens: Token[]): Token[] {
     let lastToken!: Token;
     for (const token of tokens) {
         if (token) {
-            if ('text' === token[$.TYPE] && lastToken && 'text' === lastToken[$.TYPE]) {
+            if ('text' === token[$.TYPE] && 'text' === lastToken?.[$.TYPE]) {
                 lastToken[$.VALUE] += token[$.VALUE];
                 lastToken[$.END] = token[$.END];
             } else {
