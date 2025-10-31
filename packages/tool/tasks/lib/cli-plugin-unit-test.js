@@ -140,12 +140,12 @@ async function exec(options) {
     options = options || defaultOptions();
     switch (options.mode) {
         case '':    // default
-            setup(options);
+            await setup(options);
             await testem(false);
             break;
         case 'ci':
             cleanCoverageDirectory(true, options);
-            setup(options);
+            await setup(options);
             await instrument();
             await testem(true);
             await remap(options);

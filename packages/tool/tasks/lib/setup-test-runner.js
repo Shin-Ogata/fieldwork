@@ -7,7 +7,7 @@ const {
     dirname,
     sep,
 } = require('node:path');
-const { cpSync, writeFileSync } = require('node:fs');
+const { cp, writeFile } = require('node:fs/promises');
 const config = require('../config');
 
 const DIR_TESTEM     = 'testem';
@@ -24,47 +24,48 @@ function queryFrameWorkDir(name) {
     return join(...dirs);
 }
 
-function setup(options) {
+async function setup(options) {
     const { cwd, mode, runner, res } = options;
     const dstRoot = resolve(cwd, config.dir.temp, DIR_TESTEM);
     const srcFrameworkRoot = resolve(queryFrameWorkDir('jasmine-core'), 'lib/jasmine-core');
 
     { // jasmine-core
-        cpSync(resolve(srcFrameworkRoot, 'jasmine.css'), resolve(dstRoot, 'framework/jasmine.css'), { force: true, recursive: true });
-        cpSync(resolve(srcFrameworkRoot, 'jasmine.js'), resolve(dstRoot, 'framework/jasmine.js'), { force: true, recursive: true });
-        cpSync(resolve(srcFrameworkRoot, 'jasmine-html.js'), resolve(dstRoot, 'framework/jasmine-html.js'), { force: true, recursive: true });
-        cpSync(resolve(srcFrameworkRoot, 'boot0.js'), resolve(dstRoot, 'framework/boot0.js'), { force: true, recursive: true });
-        cpSync(resolve(srcFrameworkRoot, 'boot1.js'), resolve(dstRoot, 'framework/boot1.js'), { force: true, recursive: true });
+        await cp(resolve(srcFrameworkRoot, 'jasmine.css'), resolve(dstRoot, 'framework/jasmine.css'), { force: true, recursive: true });
+        await cp(resolve(srcFrameworkRoot, 'jasmine.js'), resolve(dstRoot, 'framework/jasmine.js'), { force: true, recursive: true });
+        await cp(resolve(srcFrameworkRoot, 'jasmine-html.js'), resolve(dstRoot, 'framework/jasmine-html.js'), { force: true, recursive: true });
+        await cp(resolve(srcFrameworkRoot, 'boot0.js'), resolve(dstRoot, 'framework/boot0.js'), { force: true, recursive: true });
+        await cp(resolve(srcFrameworkRoot, 'boot1.js'), resolve(dstRoot, 'framework/boot1.js'), { force: true, recursive: true });
     }
 
     // requirejs
-    cpSync(resolve(queryFrameWorkDir('requirejs'), 'require.js'), resolve(dstRoot, 'framework/require.js'), { force: true, recursive: true });
+    await cp(resolve(queryFrameWorkDir('requirejs'), 'require.js'), resolve(dstRoot, 'framework/require.js'), { force: true, recursive: true });
 
     { // testem runner settings
-        cpSync(resolve(__dirname, '..', DIR_RUNNER, 'testem.index.mustache'), resolve(dstRoot, 'testem.index.mustache'), { force: true, recursive: true });
+        await cp(resolve(__dirname, '..', DIR_RUNNER, 'testem.index.mustache'), resolve(dstRoot, 'testem.index.mustache'), { force: true, recursive: true });
 
         const testConfig = (() => {
+            // TODO: rolllup esm build 対応
             const tc = require(resolve(cwd, options.config));
             return tc.testem || tc;
         })();
-        writeFileSync(resolve(dstRoot, 'testem.json'), JSON.stringify(testConfig, null, 2));
+        await writeFile(resolve(dstRoot, 'testem.json'), JSON.stringify(testConfig, null, 2));
 
-        cpSync(resolve(__dirname, '..', DIR_RUNNER, 'testem-amd.js'), resolve(dstRoot, 'testem-amd.js'), { force: true, recursive: true });
+        await cp(resolve(__dirname, '..', DIR_RUNNER, 'testem-amd.js'), resolve(dstRoot, 'testem-amd.js'), { force: true, recursive: true });
         if ('ci' === mode) {
-            cpSync(resolve(__dirname, '..', DIR_RUNNER, 'testem-ci.js'), resolve(dstRoot, 'testem-ci.js'), { force: true, recursive: true });
+            await cp(resolve(__dirname, '..', DIR_RUNNER, 'testem-ci.js'), resolve(dstRoot, 'testem-ci.js'), { force: true, recursive: true });
         }
 
-        cpSync(resolve(__dirname, '..', DIR_RUNNER, 'testem-main.js'), resolve(dstRoot, 'testem-main.js'), { force: true, recursive: true });
+        await cp(resolve(__dirname, '..', DIR_RUNNER, 'testem-main.js'), resolve(dstRoot, 'testem-main.js'), { force: true, recursive: true });
 
         // override
         if (runner) {
-            cpSync(resolve(cwd, runner), resolve(dstRoot, DIR_PLUGINS), { force: true, recursive: true });
+            await cp(resolve(cwd, runner), resolve(dstRoot, DIR_PLUGINS), { force: true, recursive: true });
         }
     }
 
     // resource
     if (res) {
-        cpSync(resolve(cwd, res), resolve(cwd, config.dir.temp, basename(res)), { force: true, recursive: true });
+        await cp(resolve(cwd, res), resolve(cwd, config.dir.temp, basename(res)), { force: true, recursive: true });
     }
 
     // depends
@@ -74,10 +75,10 @@ function setup(options) {
             const { module, resource, server } = depend;
             const moduleTestRoot = resolve(cwd, 'node_modules', module, config.dir.test);
             if (resource) {
-                cpSync(resolve(moduleTestRoot, resource), resolve(cwd, config.dir.temp, resource), { force: true, recursive: true });
+                await cp(resolve(moduleTestRoot, resource), resolve(cwd, config.dir.temp, resource), { force: true, recursive: true });
             }
             if (server) {
-                cpSync(resolve(moduleTestRoot, server), resolve(dstRoot, DIR_PLUGINS), { force: true, recursive: true });
+                await cp(resolve(moduleTestRoot, server), resolve(dstRoot, DIR_PLUGINS), { force: true, recursive: true });
             }
         }
     }

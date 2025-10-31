@@ -172,25 +172,19 @@ function normalizeText(text, options) {
 
     text = text
         .trim()
-        .replace(/^\ufeff/gm, '')   // remove bom
-        .replace(/\r\n/gm, '\n')    // once '\n'
+        .replace(/^\ufeff/gm, '')   // remove BOM
+        .replace(/\r\n/gm, '\n')    // normalize EOL
         .replace(/\r/gm, '\n')
     ;
 
     if (bom) {
         text = `\ufeff${text}`;
     }
-    if ('\n' !== eol) {
+    if (eol !== '\n') {
         text = text.replace(/\n/gm, eol);
     }
     if (tab) {
-        const spaces = (() => {
-            let s = '';
-            for (let i = 0; i < tab; i++) {
-                s += ' ';
-            }
-            return s;
-        })();
+        const spaces = ' '.repeat(tab);
         text = text.replace(/\t/gm, spaces);
     }
 
@@ -198,51 +192,44 @@ function normalizeText(text, options) {
 }
 
 function formatXML(src, options) {
-    const opts = merge({
+    const opts = Object.assign({
         eol: '\n',
         bom: true,
         step: 2,
     }, options);
+
     let xml = '';
     let pad = 0;
-    let indent;
-    let node;
 
     const lines = normalizeText(src, { eol: '\n' })
-        .replace(/(>)(<(?!\/))(\/*)/g, '$1\n$2$3') // insert LF to each node once.
-        .split('\n')
-    ;
+        .replace(/(>)(<(?!!\/))/g, '$1\n$2') // insert LF between adjacent tags
+        .split('\n');
 
-    const spaces = (len) => {
-        let s = '';
-        const _indent = len * opts.step;
-        for (let i = 0; i < _indent; i++) {
-            s += ' ';
-        }
-        return s;
-    };
+    const spaces = (len) => ' '.repeat(len * opts.step);
 
     for (const line of lines) {
-        indent = 0;
-        node = line.trim();
-        if (node.match(/.+<\/\w[^>]*>$/)) {
-            indent = 0;
-        } else if (node.match(/^<\/\w/)) {
-            if (pad > 0) {
-                pad -= 1;
-            }
-        } else if (node.match(/^<\w[^>]*[^/]>.*$/)) {
-            indent = 1;
-        } else {
-            indent = 0;
+        const node = line.trim();
+
+        const isSelfClosing = /^<[^>]+\/>$/.test(node);
+        const isCompleteTag = /^<[^>]+>.*<\/[^>]+>$/.test(node);
+        const isClosingTag = /^<\/[^>]+>$/.test(node);
+        const isOpeningTag = /^<[^/!][^>]*>$/.test(node);
+
+        if (isClosingTag) {
+            pad = Math.max(pad - 1, 0);
         }
+
         xml += `${spaces(pad)}${node}\n`;
-        pad += indent;
+
+        if (isOpeningTag && !isSelfClosing && !isCompleteTag) {
+            pad += 1;
+        }
     }
 
     xml = xml
         .replace(/\n\n/gm, '\n')
         .replace(/^ +\n/gm, '')
+        .trim()
     ;
 
     return normalizeText(xml, opts);
