@@ -3,7 +3,7 @@
 const multiEntry        = require('@rollup/plugin-multi-entry');
 const { nodeResolve }   = require('@rollup/plugin-node-resolve');
 const commonjs          = require('@rollup/plugin-commonjs');
-const alias             = require('@rollup/plugin-alias');
+const { alias }         = require('./rollup-plugin-bridge.mjs');
 const replacer          = require('@rollup/plugin-replace');
 const sourcemapDetect   = require('@cdp/tasks/rollup-plugin/source-map-detect');
 const sourcemapRoot     = require('@cdp/tasks/rollup-plugin/source-map-root');
