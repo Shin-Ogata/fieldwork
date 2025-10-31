@@ -3,7 +3,7 @@
 const { builtinModules } = require('node:module');
 const { nodeResolve }    = require('@rollup/plugin-node-resolve');
 const commonjs           = require('@rollup/plugin-commonjs');
-const alias              = require('@rollup/plugin-alias');
+const { alias }          = require('./rollup-plugin-bridge.mjs');
 const replacer           = require('@rollup/plugin-replace');
 const css                = require('rollup-plugin-import-css');
 const sourcemapDetect    = require('@cdp/tasks/rollup-plugin/source-map-detect');

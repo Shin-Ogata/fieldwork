@@ -9,7 +9,7 @@
   "devDependencies": {
     "@cdp/tasks": "file:packages/tool/tasks",
     "@eslint/js": "9.38.0",
-    "@rollup/plugin-alias": "5.1.1",
+    "@rollup/plugin-alias": "6.0.0",
     "@rollup/plugin-commonjs": "29.0.0",
     "@rollup/plugin-multi-entry": "7.1.0",
     "@rollup/plugin-node-resolve": "16.0.3",
