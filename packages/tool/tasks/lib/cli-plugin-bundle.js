@@ -272,6 +272,7 @@ async function bundleHTML(cwd, silent, input, output, config) {
     if (('string' === typeof input) && ('string' === typeof output)) {
         targets.push({ input, output });
     } else {
+        // TODO: rolllup esm build 対応
         let settings = require(resolve(cwd, config));
         if (settings.html) {
             settings = settings.html;
@@ -292,7 +293,7 @@ async function bundleHTML(cwd, silent, input, output, config) {
         promises.push(importHTML(path).then(onImportedHTML.bind(null, cwd, silent, options)));
     }
 
-    return promises;
+    return Promise.all(promises);
 }
 
 //__________________________________________________________________________________________________//
