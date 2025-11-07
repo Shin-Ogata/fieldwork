@@ -5,19 +5,17 @@ const { spawn } = require('node:child_process');
 
 // https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
 function exec(command, args, options) {
-    if (!(Array.isArray(args))) {
-        if (args) {
-            args = args.trim().split(' ');
-        } else {
-            args = [];
-        }
+    if (!Array.isArray(args)) {
+        args = args ? args.trim().split(' ') : [];
     }
 
-    const exe = path.extname(command) || options?.exe;
+    const isWin = 'win32' === process.platform;
+    const hasExt = !!path.extname(command);
+    const exe = hasExt ? command : options?.exe;
 
     // default call as "shell" (for 2024 security release)
     // https://nodejs.org/en/blog/vulnerability/april-2024-security-releases-2
-    const { trimArgs, shell } = Object.assign({ trimArgs: true, shell: !exe }, options);
+    const { trimArgs = true, shell = !exe } = options || {};
 
     // trim quotation
     // https://stackoverflow.com/questions/48014957/quotes-in-node-js-spawn-arguments
@@ -29,23 +27,43 @@ function exec(command, args, options) {
         });
     }
 
+    // Windows で拡張子がない場合は .cmd を補完
+    const resolveCmd = (exe || !isWin) ? command : `${command}.cmd`;
+
+    // shell モードの場合はコマンドと引数を連結
+    const { actualCmd, actualArgs } = (() => {
+        if (shell) {
+            const escapeArg = (arg) => {
+                if (isWin) {
+                    return `"${arg.replace(/"/g, '""')}"`;
+                } else {
+                    return `'${arg.replace(/'/g, `'\\''`)}'`;
+                }
+            };
+
+            const safeArgs = args.map(escapeArg).join(' ');
+            const fullCommand = `${resolveCmd} ${safeArgs}`;
+            return { actualCmd: fullCommand, actualArgs: [] };
+        } else {
+            return { actualCmd: resolveCmd, actualArgs: args };
+        }
+    })();
+
     return new Promise((resolve, reject) => {
         const opt = Object.assign({}, {
             shell,
             stdio: 'inherit',
-            stdout: (data) => { /* noop */ },
-            stderr: (data) => { /* noop */ },
+            stdout: () => {},
+            stderr: () => {},
         }, options);
 
-        const resolveCmd = (exe || process.platform !== 'win32') ? command : `${command}.cmd`;
-
-        const child = spawn(resolveCmd, args, opt)
-            .on('error', (msg) => {
-                reject(msg);
+        const child = spawn(actualCmd, actualArgs, opt)
+            .on('error', (err) => {
+                reject(err);
             })
             .on('close', (code) => {
                 if (0 !== code) {
-                    reject(`error occered. code: ${code}`);
+                    reject(new Error(`error occered. code: ${code}`));
                 } else {
                     resolve(code);
                 }
@@ -53,10 +71,10 @@ function exec(command, args, options) {
 
         if ('pipe' === opt.stdio) {
             child.stdout.on('data', (data) => {
-                opt.stdout(data.toString());
+                opt.stdout?.(data.toString());
             });
             child.stderr.on('data', (data) => {
-                opt.stderr(data.toString());
+                opt.stderr?.(data.toString());
             });
         }
     });
