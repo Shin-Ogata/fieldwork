@@ -42,7 +42,7 @@ function exec(command, args, options) {
             };
 
             const safeArgs = args.map(escapeArg).join(' ');
-            const fullCommand = `${resolveCmd} ${safeArgs}`;
+            const fullCommand = args.length > 0 ? `${resolveCmd} ${safeArgs}` : resolveCmd;
             return { actualCmd: fullCommand, actualArgs: [] };
         } else {
             return { actualCmd: resolveCmd, actualArgs: args };
