@@ -3,6 +3,38 @@
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 
+function shellQuote(arg) {
+    if ('win32' === process.platform) {
+        if (!arg) {
+            return '""';
+        }
+        // エスケープ対象の特殊文字
+        const metaChars = /(["^&|<>()!])/g;
+        const escaped = arg
+            .replace(/"/g, '""')        // ダブルクォート内の " をエスケープ
+            .replace(metaChars, '^$1')  // 特殊文字を ^ でエスケープ
+            .replace(/%/g, '%%');       // 環境変数展開を防ぐために % を二重にする
+        ;
+        return `"${escaped}"`;
+    } else {
+        // Unix 系
+        // https://github.com/ljharb/shell-quote/blob/main/quote.js
+        if ('' === arg) {
+            return '\'\'';
+        }
+        if (arg && 'object' === typeof arg) {
+            return arg.op.replace(/(.)/g, '\\$1');
+        }
+        if ((/["\s\\]/).test(arg) && !(/'/).test(arg)) {
+            return `'${arg.replace(/(['])/g, '\\$1')}'`;
+        }
+        if ((/["'\s]/).test(arg)) {
+            return `"${arg.replace(/(["\\$`!])/g, '\\$1')}"`;
+        }
+        return String(arg).replace(/([A-Za-z]:)?([#!"$&'()*,:;<=>?@[\\\]^`{|}])/g, '$1\\$2');
+    }
+}
+
 // https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
 function exec(command, args, options) {
     if (!Array.isArray(args)) {
@@ -33,15 +65,7 @@ function exec(command, args, options) {
     // shell モードの場合はコマンドと引数を連結
     const { actualCmd, actualArgs } = (() => {
         if (shell) {
-            const escapeArg = (arg) => {
-                if (isWin) {
-                    return `"${arg.replace(/"/g, '""')}"`;
-                } else {
-                    return `'${arg.replace(/'/g, `'\\''`)}'`;
-                }
-            };
-
-            const safeArgs = args.map(escapeArg).join(' ');
+            const safeArgs = args.map(shellQuote).join(' ');
             const fullCommand = args.length > 0 ? `${resolveCmd} ${safeArgs}` : resolveCmd;
             return { actualCmd: fullCommand, actualArgs: [] };
         } else {
@@ -53,8 +77,8 @@ function exec(command, args, options) {
         const opt = Object.assign({}, {
             shell,
             stdio: 'inherit',
-            stdout: () => {},
-            stderr: () => {},
+            stdout: () => { },
+            stderr: () => { },
         }, options);
 
         const child = spawn(actualCmd, actualArgs, opt)
