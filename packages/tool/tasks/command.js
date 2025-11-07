@@ -3,21 +3,51 @@
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 
+function shellQuote(arg) {
+    if ('win32' === process.platform) {
+        if (!arg) {
+            return '""';
+        }
+        // エスケープ対象の特殊文字
+        const metaChars = /(["^&|<>()!])/g;
+        const escaped = arg
+            .replace(/"/g, '""')        // ダブルクォート内の " をエスケープ
+            .replace(metaChars, '^$1')  // 特殊文字を ^ でエスケープ
+            .replace(/%/g, '%%')        // 環境変数展開を防ぐために % を二重にする
+        ;
+        return `"${escaped}"`;
+    } else {
+        // Unix 系
+        // https://github.com/ljharb/shell-quote/blob/main/quote.js
+        if ('' === arg) {
+            return '\'\'';
+        }
+        if (arg && 'object' === typeof arg) {
+            return 'string' === typeof arg.op ? arg.op.replace(/(.)/g, '\\$1') : '';
+        }
+        if (/["\s\\]/.test(arg) && !/'/.test(arg)) {
+            return `'${arg.replace(/(['])/g, '\\$1')}'`;
+        }
+        if ((/["'\s]/).test(arg)) {
+            return `"${arg.replace(/(["\\$`!])/g, '\\$1')}"`;
+        }
+        return String(arg).replace(/([A-Za-z]:)?([#!"$&'()*,:;<=>?@[\\\]^`{|}])/g, '$1\\$2');
+    }
+}
+
 // https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
 function exec(command, args, options) {
-    if (!(Array.isArray(args))) {
-        if (args) {
-            args = args.trim().split(' ');
-        } else {
-            args = [];
-        }
+    if (!Array.isArray(args)) {
+        args = args ? args.trim().split(' ') : [];
     }
 
-    const exe = path.extname(command) || options?.exe;
+    const isWin = 'win32' === process.platform;
+    const hasExt = !!path.extname(command);
+    const exe = hasExt ? command : options?.exe;
 
     // default call as "shell" (for 2024 security release)
     // https://nodejs.org/en/blog/vulnerability/april-2024-security-releases-2
-    const { trimArgs, shell } = Object.assign({ trimArgs: true, shell: !exe }, options);
+    const { trimArgs = true, shell = !exe } = options || {};
 
     // trim quotation
     // https://stackoverflow.com/questions/48014957/quotes-in-node-js-spawn-arguments
@@ -29,23 +59,35 @@ function exec(command, args, options) {
         });
     }
 
+    // Windows で拡張子がない場合は .cmd を補完
+    const resolveCmd = (exe || !isWin) ? command : `${command}.cmd`;
+
+    // shell モードの場合はコマンドと引数を連結
+    let actualCmd, actualArgs;
+    if (shell) {
+        const safeArgs = args.map(shellQuote).join(' ');
+        actualCmd = args.length > 0 ? `${resolveCmd} ${safeArgs}` : resolveCmd;
+        actualArgs = [];
+    } else {
+        actualCmd = resolveCmd;
+        actualArgs = args;
+    }
+
     return new Promise((resolve, reject) => {
         const opt = Object.assign({}, {
             shell,
             stdio: 'inherit',
-            stdout: (data) => { /* noop */ },
-            stderr: (data) => { /* noop */ },
+            stdout: () => { },
+            stderr: () => { },
         }, options);
 
-        const resolveCmd = (exe || process.platform !== 'win32') ? command : `${command}.cmd`;
-
-        const child = spawn(resolveCmd, args, opt)
-            .on('error', (msg) => {
-                reject(msg);
+        const child = spawn(actualCmd, actualArgs, opt)
+            .on('error', (err) => {
+                reject(err);
             })
             .on('close', (code) => {
                 if (0 !== code) {
-                    reject(`error occered. code: ${code}`);
+                    reject(new Error(`error occurred. code: ${code}`));
                 } else {
                     resolve(code);
                 }
@@ -53,10 +95,10 @@ function exec(command, args, options) {
 
         if ('pipe' === opt.stdio) {
             child.stdout.on('data', (data) => {
-                opt.stdout(data.toString());
+                opt.stdout?.(data.toString());
             });
             child.stderr.on('data', (data) => {
-                opt.stderr(data.toString());
+                opt.stderr?.(data.toString());
             });
         }
     });
