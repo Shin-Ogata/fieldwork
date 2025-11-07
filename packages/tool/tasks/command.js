@@ -63,7 +63,7 @@ function exec(command, args, options) {
             })
             .on('close', (code) => {
                 if (0 !== code) {
-                    reject(new Error(`error occered. code: ${code}`));
+                    reject(new Error(`error occurred. code: ${code}`));
                 } else {
                     resolve(code);
                 }
