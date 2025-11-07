@@ -27,7 +27,7 @@ function shellQuote(arg) {
                 ? arg.op.replace(/(.)/g, '\\$1')
                 : '';
         }
-        if ((/["\s\\]/).test(arg) && !(/'/).test(arg)) {
+        if (/["\s\\]/.test(arg) && !/'/.test(arg)) {
             return `'${arg.replace(/(['])/g, '\\$1')}'`;
         }
         if ((/["'\s]/).test(arg)) {
