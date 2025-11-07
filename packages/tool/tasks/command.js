@@ -65,15 +65,15 @@ function exec(command, args, options) {
     const resolveCmd = (exe || !isWin) ? command : `${command}.cmd`;
 
     // shell モードの場合はコマンドと引数を連結
-    const { actualCmd, actualArgs } = (() => {
-        if (shell) {
-            const safeArgs = args.map(shellQuote).join(' ');
-            const fullCommand = args.length > 0 ? `${resolveCmd} ${safeArgs}` : resolveCmd;
-            return { actualCmd: fullCommand, actualArgs: [] };
-        } else {
-            return { actualCmd: resolveCmd, actualArgs: args };
-        }
-    })();
+    let actualCmd, actualArgs;
+    if (shell) {
+        const safeArgs = args.map(shellQuote).join(' ');
+        actualCmd = args.length > 0 ? `${resolveCmd} ${safeArgs}` : resolveCmd;
+        actualArgs = [];
+    } else {
+        actualCmd = resolveCmd;
+        actualArgs = args;
+    }
 
     return new Promise((resolve, reject) => {
         const opt = Object.assign({}, {
