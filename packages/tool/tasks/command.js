@@ -13,7 +13,7 @@ function shellQuote(arg) {
         const escaped = arg
             .replace(/"/g, '""')        // ダブルクォート内の " をエスケープ
             .replace(metaChars, '^$1')  // 特殊文字を ^ でエスケープ
-            .replace(/%/g, '%%');       // 環境変数展開を防ぐために % を二重にする
+            .replace(/%/g, '%%')        // 環境変数展開を防ぐために % を二重にする
         ;
         return `"${escaped}"`;
     } else {
@@ -23,9 +23,7 @@ function shellQuote(arg) {
             return '\'\'';
         }
         if (arg && 'object' === typeof arg) {
-            return typeof arg.op === 'string'
-                ? arg.op.replace(/(.)/g, '\\$1')
-                : '';
+            return 'string' === typeof arg.op ? arg.op.replace(/(.)/g, '\\$1') : '';
         }
         if (/["\s\\]/.test(arg) && !/'/.test(arg)) {
             return `'${arg.replace(/(['])/g, '\\$1')}'`;
