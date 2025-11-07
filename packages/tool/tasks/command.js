@@ -23,7 +23,9 @@ function shellQuote(arg) {
             return '\'\'';
         }
         if (arg && 'object' === typeof arg) {
-            return arg.op.replace(/(.)/g, '\\$1');
+            return typeof arg.op === 'string'
+                ? arg.op.replace(/(.)/g, '\\$1')
+                : '';
         }
         if ((/["\s\\]/).test(arg) && !(/'/).test(arg)) {
             return `'${arg.replace(/(['])/g, '\\$1')}'`;
