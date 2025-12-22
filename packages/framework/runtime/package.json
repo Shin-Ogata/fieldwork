@@ -41,7 +41,6 @@
     "compile": "run-s compile:*",
     "compile:src": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
-    "install": "npm run setup",
     "lint": "eslint src -c ../../../config/lint/tslint.mjs",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file",

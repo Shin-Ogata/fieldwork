@@ -49,7 +49,6 @@
     "compile:src:scss:prefix": "postcss .temp/src/scss/**/*.css --use autoprefixer -d dist",
     "compile:src:ts": "tsc -p ./tsconfig.json",
     "compile:test": "tsc -p ./tests/tsconfig.json",
-    "install": "npm run setup",
     "lint": "eslint src -c ../../../config/lint/tslint.mjs",
     "metrics": "run-s -l metrics:*",
     "metrics:file": "cdp-task metrics -r file",
