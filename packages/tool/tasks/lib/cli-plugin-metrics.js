@@ -24,11 +24,12 @@ function defineCommands(commander, cmd, isDefault) {
         .option('-r, --resolution [mode]',  `set 'file' or 'module' default: file`, /^(file|module)$/i)
         .option('-l, --lint <path>',        'specified linter config file path (default: none)')
         .option('-e, --engine',             'specified analyzer engine (default: plato)')
+        .option('-f, --force',              'force run metrics analyzer (default: false)')
         .option('-p, --packages <layer>',   'specified <mono-repo-root>/<packages>/<layer>, root only available')
         .action((options) => {
             cmd.action = COMMAND;
             const { cwd, silent, target } = commander.opts();
-            const { resolution, lint, engine, packages } = options;
+            const { resolution, lint, engine, force, packages } = options;
             cmd[COMMAND] = isDefault ? defaultOptions() : {
                 cwd: cwd || process.cwd(),
                 silent,
@@ -36,6 +37,7 @@ function defineCommands(commander, cmd, isDefault) {
                 resolution: resolution || 'file',
                 lint,
                 engine: engine || 'plato',
+                force,
                 layer: packages && packages.split(','),
             };
         })
@@ -60,6 +62,7 @@ function defaultOptions() {
         lint: null,
         layer: null,
         engine: 'plato',
+        force: false,
     };
 }
 
@@ -122,7 +125,15 @@ function patch(src) {
 }
 
 async function runPlato(options) {
-    const plato = require('es6-plato');
+    let plato = null;
+
+    try {
+        plato = require('es6-plato');
+    } catch {
+        console.log(colors.yellow(`engine ${options.engine} is now obsolete.`));
+        return;
+    }
+
     const targets = await queryTargets(options);
 
     const backup = targets.map((tgt) => {

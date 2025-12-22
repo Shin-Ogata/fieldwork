@@ -21,7 +21,7 @@
   "main": "dist/extension-i18n",
   "module": "dist/extension-i18n.mjs",
   "peerDependencies": {
-    "i18next": "25.6.1"
+    "i18next": "25.7.3"
   },
   "private": true,
   "repository": {
@@ -58,8 +58,8 @@
     "metrics:module": "cdp-task metrics -r module",
     "minify": "run-p minify:*",
     "minify:src": "cdp-task minify js --config ./build.config.js",
-    "preinstall": "run-s i18next:prepare i18next:install",
     "set-version": "cdp-task set-version",
+    "setup": "run-s i18next:prepare i18next:install",
     "start": "npm run debug",
     "test": "run-s -l lint unit-test:ci",
     "typedoc": "npm run clean:doc:a && typedoc dist/extension-i18n.d.ts --options ../../../config/doc/typedoc-bundle.js",
