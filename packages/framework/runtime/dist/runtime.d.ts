@@ -4868,6 +4868,18 @@ export declare namespace i18n {
          */
         transWrapTextNodes?: string;
         /**
+         * Default props to apply to all Trans components.
+         * Component-level props will override these defaults.
+         */
+        transDefaultProps?: {
+            tOptions?: TOptions;
+            values?: object;
+            shouldUnescape?: boolean;
+            components?: readonly unknown[] | {
+                readonly [tagName: string]: unknown;
+            }; // Use `unknown` (or `any`) to be permissive without importing React.
+        };
+        /**
          * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
          * @default undefined
          */
@@ -4924,8 +4936,8 @@ export declare namespace i18n {
          */
         nonExplicitSupportedLngs?: boolean;
         /**
-         * Language codes to lookup, given set language is
-         * 'en-US': 'all' --> ['en-US', 'en', 'dev'],
+         * Language codes to lookup, given set language is 'en-US':
+         * 'all' --> ['en-US', 'en', 'dev'],
          * 'currentOnly' --> 'en-US',
          * 'languageOnly' --> 'en'
          * @default 'all'
@@ -5758,10 +5770,6 @@ export declare namespace i18n {
          * Gets fired on accessing a key not existing.
          */
         on(event: 'missingKey', callback: (lngs: readonly string[], namespace: string, key: string, res: string) => void): void;
-        /**
-         * Gets fired when resources got added or removed.
-         */
-        on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
         /**
          * Gets fired when changeLanguage got called.
          */
