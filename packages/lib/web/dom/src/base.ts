@@ -381,7 +381,7 @@ export function isDOMSelector<T extends SelectorBase>(selector: DOMSelector<T>):
  * @ja Node 名が引数で与えた名前と一致するか判定
  */
 export function nodeName(elem: Node | null, name: string): boolean {
-    return !!(elem && elem.nodeName.toLowerCase() === name.toLowerCase());
+    return !!(elem?.nodeName.toLowerCase() === name.toLowerCase());
 }
 
 /**

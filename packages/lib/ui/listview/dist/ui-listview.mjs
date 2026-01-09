@@ -1,5 +1,5 @@
 /*!
- * @cdp/ui-listview 0.9.20
+ * @cdp/ui-listview 0.9.21
  *   web domain utilities
  */
 

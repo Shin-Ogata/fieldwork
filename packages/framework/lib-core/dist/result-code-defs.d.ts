@@ -1,5 +1,5 @@
 /*!
- * @cdp/lib-core/result-code-defs 0.9.20
+ * @cdp/lib-core/result-code-defs 0.9.21
  *   Common result code definitions.
  *   - includes:
  *     - @cdp/result/result-code-defs
