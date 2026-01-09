@@ -1,7 +1,7 @@
 {
   "name": "@cdp/ui-forms",
   "description": "UI form components",
-  "version": "0.9.20",
+  "version": "0.9.21",
   "author": "Shin Ogata",
   "dependencies": {
     "@cdp/runtime": "file:../../../framework/runtime",

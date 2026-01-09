@@ -1,5 +1,5 @@
 /*!
- * @cdp/inline-worker 0.9.20
+ * @cdp/inline-worker 0.9.21
  *   inline web worker utility module
  */
 

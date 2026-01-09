@@ -1,10 +1,10 @@
 /*!
- * @cdp/lib-core 0.9.20
+ * @cdp/lib-core 0.9.21
  *   core library collection
  */
 
 /*!
- * @cdp/core-utils 0.9.20
+ * @cdp/core-utils 0.9.21
  *   core domain utilities
  */
 
@@ -2372,7 +2372,7 @@ function isStatusIn(status) {
 }
 
 /*!
- * @cdp/events 0.9.20
+ * @cdp/events 0.9.21
  *   pub/sub framework
  */
 
@@ -2861,7 +2861,7 @@ class EventSource extends mixins(EventBroker, EventReceiver) {
 const _EventSource = EventSource;
 
 /*!
- * @cdp/promise 0.9.20
+ * @cdp/promise 0.9.21
  *   promise utility module
  */
 
@@ -3490,7 +3490,7 @@ class PromiseManager {
 }
 
 /*!
- * @cdp/observable 0.9.20
+ * @cdp/observable 0.9.21
  *   observable utility module
  */
 
@@ -4127,7 +4127,7 @@ class ObservableArray extends Array {
 }
 
 /*!
- * @cdp/result 0.9.20
+ * @cdp/result 0.9.21
  *   result utility module
  */
 
@@ -4461,7 +4461,7 @@ function makeCanceledResult(message, cause) {
 }
 
 /*!
- * @cdp/core-storage 0.9.20
+ * @cdp/core-storage 0.9.21
  *   core storage utility module
  */
 
@@ -4829,7 +4829,7 @@ class Registry extends EventPublisher {
 }
 
 /*!
- * @cdp/core-template 0.9.20
+ * @cdp/core-template 0.9.21
  *   template engine
  */
 

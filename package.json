@@ -1,7 +1,7 @@
 {
   "name": "fieldwork",
   "description": "feasibility study",
-  "version": "0.9.20",
+  "version": "0.9.21",
   "author": "Shin Ogata",
   "bugs": {
     "url": "https://github.com/Shin-Ogata/fieldwork/issues"
@@ -34,16 +34,16 @@
     "postcss": "8.5.6",
     "postcss-cli": "11.0.1",
     "requirejs": "2.3.8",
-    "rollup": "4.54.0",
+    "rollup": "4.55.1",
     "rollup-plugin-import-css": "4.1.2",
-    "sass": "1.97.1",
+    "sass": "1.97.2",
     "semver": "7.7.3",
     "tar": "7.5.2",
     "terser": "5.44.1",
     "testem": "3.17.0",
     "typedoc": "0.28.15",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.50.0"
+    "typescript-eslint": "8.52.0"
   },
   "homepage": "https://github.com/Shin-Ogata/fieldwork#readme",
   "keywords": [
