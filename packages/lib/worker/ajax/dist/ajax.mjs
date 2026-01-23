@@ -6,7 +6,7 @@
 import { CancelToken } from '@cdp/promise';
 import { makeResult, RESULT_CODE } from '@cdp/result';
 import { Base64 } from '@cdp/binary';
-import { safe, assignValue, isNumeric, isFunction, isNumber } from '@cdp/core-utils';
+import { safe, isNumeric, assignValue, isFunction, isNumber } from '@cdp/core-utils';
 import { EventSource } from '@cdp/events';
 
 /* eslint-disable

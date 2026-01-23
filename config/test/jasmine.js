@@ -20,4 +20,7 @@ module.exports = {
 
     // Run specs in semi-random order
     random: false,
+
+    // allow duplicate names in suites (v6.0.0+)
+    forbidDuplicateNames: false,
 };

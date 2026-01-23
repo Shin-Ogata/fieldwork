@@ -3,7 +3,7 @@
  *   binary utility module
  */
 
-import { safe, verify, fromTypedData, restoreNullish, toTypedData } from '@cdp/core-utils';
+import { safe, verify, restoreNullish, toTypedData, fromTypedData } from '@cdp/core-utils';
 import { CancelToken, checkCanceled } from '@cdp/promise';
 
 /** @internal */ const btoa = safe(globalThis.btoa);
