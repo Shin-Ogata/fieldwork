@@ -28,6 +28,9 @@
 
     function setupJasmine(callback) {
         require(['boot1'], () => {
+            jasmine.getEnv().configure({
+                forbidDuplicateNames: false, // allow duplicate names in suites (v6.0.0+)
+            });
             require(['testem'], () => {
                 setupTestem();
                 callback(onload);
