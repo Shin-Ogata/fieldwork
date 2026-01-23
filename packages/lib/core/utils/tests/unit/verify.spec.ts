@@ -1,6 +1,6 @@
 import { verify } from '@cdp/core-utils';
 
-describe('utils/types spec', () => {
+describe('utils/verify spec', () => {
     beforeEach(() => {
         // noop.
     });

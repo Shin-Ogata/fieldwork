@@ -16,6 +16,7 @@ module.exports = {
         },
     }),
     testem: config.testem({
+        forbidDuplicateNames: false,
         external: {
         },
     }),
