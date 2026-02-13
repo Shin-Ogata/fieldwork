@@ -399,6 +399,11 @@ declare namespace i18n {
          */
         debug?: boolean;
         /**
+         * Show support notice in console during initialization.
+         * @default true
+         */
+        showSupportNotice?: boolean;
+        /**
          * Resources to initialize with (if not using loading or not appending using addResourceBundle)
          * @default undefined
          */
@@ -750,6 +755,11 @@ declare namespace i18n {
          * Override interpolation options
          */
         interpolation?: InterpolationOptions;
+        /**
+         * Optional keyPrefix that will be applied to the key before resolving.
+         * Only supported on the TFunction returned by getFixedT().
+         */
+        keyPrefix?: string;
     }
     export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase & TInterpolationMap;
     export type FlatNamespace = $PreservedValue<keyof TypeOptions['resources'], string>;
@@ -892,15 +902,22 @@ declare namespace i18n {
     ] ? Ret : DefaultValue;
     export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret, TOpt> : Ret;
     export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
+    /**
+     * Resolves the effective key prefix by preferring a per-call `keyPrefix` from
+     * options over the interface-level `KPrefix` (set via getFixedT's 3rd argument).
+     */
+    export type EffectiveKPrefix<KPrefix, TOpt> = TOpt extends {
+        keyPrefix: infer OptKP extends string;
+    } ? OptKP : KPrefix;
     /** ************************
      * T function declaration *
      ************************* */
     export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
-        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
-        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
     }
     export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
-        <const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>, DefaultValue extends string = never>(...args: [
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>, DefaultValue extends string = never>(...args: [
             key: Key | Key[],
             options?: ActualOptions
         ] | [
@@ -921,11 +938,12 @@ declare namespace i18n {
     /// ////////////// ///
     ///  ↆ selector ↆ  ///
     /// ////////////// ///
+    export type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
     export interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
-        <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions<NewNs>, NewNs extends Namespace, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>, options: Opts & InterpolationMap<Target> & {
+        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>, options: Opts & InterpolationMap<Target> & {
             ns: NewNs;
         }): SelectorReturn<Target, Opts>;
-        <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions<Ns>>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>, options?: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
+        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> = Ns[number], const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>, options?: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
     }
     export interface SelectorOptions<Ns = Namespace> extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>, $Dictionary {
         ns?: Ns;

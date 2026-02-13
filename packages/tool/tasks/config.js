@@ -84,14 +84,17 @@ function query(cwd = process.cwd()) {
     // override properties
     function override(dst, src, ...props) {
         let dstProp = dst, srcProp = src;
-        for (const p of props) {
-            dstProp = dstProp[p];
-            srcProp = srcProp[p];
+        for (let i = 0; i < props.length - 1; i++) {
+            dstProp = dstProp[props[i]];
+            srcProp = srcProp[props[i]];
             if (null == srcProp) {
                 return;
             }
         }
-        dstProp = srcProp;
+        const lastProp = props[props.length - 1];
+        if (null != srcProp && lastProp in srcProp) {
+            dstProp[lastProp] = srcProp[lastProp];
+        }
     }
 
     // custom
