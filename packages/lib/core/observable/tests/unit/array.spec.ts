@@ -327,9 +327,7 @@ describe('observable/array spec', () => {
 
             // slice
             console.time('Array.slice');
-            b0 = performance.now();
             array.slice(50000, 50000);
-            base = performance.now() - b0;
             console.timeEnd('Array.slice');
 
             console.time('ObservableArray.slice');

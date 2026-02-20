@@ -1287,6 +1287,16 @@ declare namespace i18n {
          */
         cloneInstance(options?: CloneOptions, callback?: Callback): i18n;
         /**
+         * Returns a JSON representation of the i18next instance for serialization.
+         */
+        toJSON(): {
+            options: InitOptions;
+            store: ResourceStore;
+            language: string;
+            languages: readonly string[];
+            resolvedLanguage?: string;
+        };
+        /**
          * Gets fired after initialization.
          */
         on(event: 'initialized', callback: (options: InitOptions) => void): void;

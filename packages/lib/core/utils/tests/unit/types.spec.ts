@@ -1,4 +1,5 @@
 /* eslint-disable
+    no-useless-assignment,
     @stylistic/indent,
     @typescript-eslint/restrict-template-expressions,
     @typescript-eslint/no-empty-function,
