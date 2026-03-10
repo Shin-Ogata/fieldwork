@@ -5273,7 +5273,6 @@ export declare namespace i18n {
     export type Namespace<T = FlatNamespace> = T | readonly T[];
     export type DefaultNamespace = TypeOptions['defaultNS'];
     /** @todo consider to replace {} with Record<string, never> */
-    /* eslint @typescript-eslint/ban-types: ['error', { types: { '{}': false } }] */
     // Type Options
     export type _ReturnObjects = TypeOptions['returnObjects'];
     export type _ReturnEmptyString = TypeOptions['returnEmptyString'];
@@ -5806,7 +5805,7 @@ export declare namespace i18n {
         /**
          * Gets fired after initialization.
          */
-        on(event: 'initialized', callback: (options: InitOptions) => void): void;
+        on(event: 'initialized', callback: (options: InitOptions) => void): this;
         /**
          * Gets fired on loaded resources.
          */
@@ -5814,23 +5813,23 @@ export declare namespace i18n {
             [language: string]: {
                 [namespace: string]: boolean;
             };
-        }) => void): void;
+        }) => void): this;
         /**
          * Gets fired if loading resources failed.
          */
-        on(event: 'failedLoading', callback: (lng: string, ns: string, msg: string) => void): void;
+        on(event: 'failedLoading', callback: (lng: string, ns: string, msg: string) => void): this;
         /**
          * Gets fired on accessing a key not existing.
          */
-        on(event: 'missingKey', callback: (lngs: readonly string[], namespace: string, key: string, res: string) => void): void;
+        on(event: 'missingKey', callback: (lngs: readonly string[], namespace: string, key: string, res: string) => void): this;
         /**
          * Gets fired when changeLanguage got called.
          */
-        on(event: 'languageChanged', callback: (lng: string) => void): void;
+        on(event: 'languageChanged', callback: (lng: string) => void): this;
         /**
          * Event listener
          */
-        on(event: string, listener: (...args: any[]) => void): void;
+        on(event: string, listener: (...args: any[]) => void): this;
         /**
          * Remove event listener
          * removes all callback when callback not specified
