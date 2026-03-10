@@ -109,9 +109,7 @@ npm run install:all
 
 ## License
 
-Copyright 2021, 2022, 2023, 2024, 2025, 2026 Sony Group Corporation  
-Copyright 2016, 2019, 2020 Sony Corporation  
-Copyright 2017, 2018 Sony Network Communications Inc.  
+©2016-2026 Sony Group Corporation  
 
 Licensed under the Apache License, Version 2.0 (the "License");  
 you may not use this file except in compliance with the License.  
