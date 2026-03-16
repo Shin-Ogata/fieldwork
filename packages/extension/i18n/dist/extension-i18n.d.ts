@@ -939,10 +939,10 @@ declare namespace i18n {
     /// ////////////// ///
     export type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
     export interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
-        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>, options: Opts & InterpolationMap<Target> & {
+        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts> | readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[], options: Opts & InterpolationMap<Target> & {
             ns: NewNs;
         }): SelectorReturn<Target, Opts>;
-        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> = Ns[number], const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>, options?: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
+        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> = Ns[number], const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts> | readonly SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>[], options?: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
     }
     export interface SelectorOptions<Ns = Namespace> extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>, $Dictionary {
         ns?: Ns;
