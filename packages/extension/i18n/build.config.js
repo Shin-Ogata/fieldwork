@@ -13,6 +13,8 @@ function patch(index, code) {
     code = code
         // index.ts definition
         .replace(/export declare const i18n([\s\S]+)}\n/g, '')
+        // drop `declare const $PluralBrand & $SelectorKeyBrand`
+        .replace(/^declare const \$(?:PluralBrand|SelectorKeyBrand): unique symbol;\n?/gm, '')
         // i18next `declare class ResourceStore` → `export interface ResourceStore`
         .replace(/declare/gm, 'export')
         .replace(/class/gm, 'interface')
@@ -36,6 +38,9 @@ function patch(index, code) {
 
     const PREFIX =`
 declare const i18n: i18n.i18n;
+
+declare const $PluralBrand: unique symbol;
+declare const $SelectorKeyBrand: unique symbol;
 
 declare namespace i18n {
 `;
