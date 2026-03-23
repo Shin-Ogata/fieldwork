@@ -22,6 +22,8 @@
  */
 
 declare const i18n: i18n.i18n;
+declare const $PluralBrand: unique symbol;
+declare const $SelectorKeyBrand: unique symbol;
 declare namespace i18n {
     // Types
     export type $Dictionary<T = unknown> = {
@@ -188,6 +190,34 @@ declare namespace i18n {
          * @default false
          */
         enableSelector: false;
+        /**
+         * Maps interpolation format specifiers to their expected value types.
+         *
+         * By default, i18next infers types from built-in formatter names:
+         * - `number`, `currency` → `number`
+         * - `datetime` → `Date`
+         * - `relativetime` → `number`
+         * - `list` → `readonly string[]`
+         * - No format specifier → `string`
+         *
+         * Use this option to add mappings for custom formatters or to override
+         * the built-in defaults.
+         *
+         * @default {} (empty — built-in defaults apply)
+         *
+         * @example
+         * ```ts
+         * interface CustomTypeOptions {
+         *   interpolationFormatTypeMap: {
+         *     // custom formatter
+         *     uppercase: string;
+         *     // override built-in
+         *     currency: string;
+         *   };
+         * }
+         * ```
+         */
+        interpolationFormatTypeMap: {};
     }, CustomTypeOptions>;
     export type PluginOptions<T> = $MergeBy<{
         /**
@@ -389,9 +419,10 @@ declare namespace i18n {
         };
         /**
          * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
+         * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
          * @default undefined
          */
-        keyPrefix?: string;
+        keyPrefix?: string | (($: any) => any);
         /**
          * Unescape function
          * by default it unescapes some basic html entities
@@ -772,9 +803,10 @@ declare namespace i18n {
         interpolation?: InterpolationOptions;
         /**
          * Optional keyPrefix that will be applied to the key before resolving.
+         * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
          * Only supported on the TFunction returned by getFixedT().
          */
-        keyPrefix?: string;
+        keyPrefix?: string | (($: any) => any);
     }
     export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase & TInterpolationMap;
     export type FlatNamespace = $PreservedValue<keyof TypeOptions['resources'], string>;
@@ -798,6 +830,7 @@ declare namespace i18n {
     export type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
     export type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
     export type _EnableSelector = TypeOptions['enableSelector'];
+    export type _InterpolationFormatTypeMap = TypeOptions['interpolationFormatTypeMap'];
     export type $IsResourcesDefined = [
         keyof _Resources
     ] extends [
@@ -841,8 +874,36 @@ declare namespace i18n {
      * Parse t function return type and interpolation values *
      ******************************************************** */
     export type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}${_UnescapeSuffix}` ? TrimSpaces<ActualValue> : Ret;
-    export type ParseInterpolationValues<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${string}` ? ParseActualValue<ActualValue> : ParseActualValue<Value>) | ParseInterpolationValues<Rest> : never;
-    export type InterpolationMap<Ret> = $PreservedValue<$StringKeyPathToRecord<ParseInterpolationValues<Ret>, unknown>, Record<string, unknown>>;
+    /** Parses interpolation entries as `[variableName, formatSpecifier | never]` tuples. */
+    export type ParseInterpolationEntries<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${infer Format}` ? [
+        ParseActualValue<ActualValue>,
+        TrimSpaces<Format>
+    ] : [
+        ParseActualValue<Value>,
+        never
+    ]) | ParseInterpolationEntries<Rest> : never;
+    /** Built-in i18next formatter name → value type mapping. */
+    export type _BuiltInFormatTypeMap = {
+        number: number;
+        currency: number;
+        datetime: Date;
+        relativetime: number;
+        list: readonly string[];
+    };
+    /** Resolves the type for a single interpolation entry based on name and format. */
+    export type _ResolveEntryType<Name extends string, Format> = [
+        Format
+    ] extends [
+        never
+    ] ? Name extends 'count' ? number : string : Format extends keyof _InterpolationFormatTypeMap ? _InterpolationFormatTypeMap[Format] : Format extends keyof _BuiltInFormatTypeMap ? _BuiltInFormatTypeMap[Format] : string;
+    /** Local union-to-intersection (not exported from helpers). */
+    export type _UnionToIntersection<T> = (T extends unknown ? (k: T) => void : never) extends (k: infer I) => void ? I : never;
+    /** Builds a per-entry typed record from parsed interpolation entries and intersects them. */
+    export type _InterpolationMapFromEntries<E> = _UnionToIntersection<E extends [
+        infer Name extends string,
+        infer Format
+    ] ? $StringKeyPathToRecord<Name, _ResolveEntryType<Name, Format>> : never>;
+    export type InterpolationMap<Ret> = $PreservedValue<_InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>, Record<string, unknown>>;
     export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithPlural | Key) & keyof Res];
     export type ParseTReturnPluralOrdinal<Res, Key, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
     export type ParseTReturnWithFallback<Key, Val> = Val extends '' ? _ReturnEmptyString extends true ? '' : Key : Val extends null ? _ReturnNull extends true ? null : Key : Val;
@@ -855,6 +916,7 @@ declare namespace i18n {
         returnObjects?: unknown;
     }> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
     export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
+    export type ContextOfKey<Key extends string, Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKeys = ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>> = $IsResourcesDefined extends true ? Key extends ActualKeys ? string : ActualKeys extends `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}` | `${Key}${_ContextSeparator}${infer Context}` ? Context : never : string;
     // helper that maps the configured fallbackNS value to the matching resources slice
     export type FallbackResourcesOf<FallbackNS, R> = FallbackNS extends readonly (infer FN)[] ? R[FN & keyof R] : [
         FallbackNS
@@ -927,11 +989,19 @@ declare namespace i18n {
      * T function declaration *
      ************************* */
     export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret> & {
+            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+        }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret> & {
+            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+        }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
     }
     export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>, DefaultValue extends string = never>(...args: [
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends Omit<TOpt, 'context'> & InterpolationMap<Ret> & {
+            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+        } = TOpt & InterpolationMap<Ret> & {
+            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+        }, DefaultValue extends string = never>(...args: [
             key: Key | Key[],
             options?: ActualOptions
         ] | [
@@ -949,15 +1019,76 @@ declare namespace i18n {
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends TFunctionSignature<Ns, KPrefix> {
     }
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
-    /// ////////////// ///
-    ///  ↆ selector ↆ  ///
-    /// ////////////// ///
+    /** Marks a value as coming from a plural-form key, requiring `count` in the selector options. */
+    export type PluralValue<T extends string> = T & {
+        readonly [$PluralBrand]: typeof $PluralBrand;
+    };
+    /**
+     * A branded string produced by {@link keyFromSelector}.
+     * Can be passed directly to `t()` when the selector API is enabled.
+     */
+    export type SelectorKey = string & {
+        readonly [$SelectorKeyBrand]: typeof $SelectorKeyBrand;
+    };
+    /** Recursively strips the {@link PluralValue} brand from a type (handles nested objects for `returnObjects`). */
+    export type DeepUnwrapPlural<T> = T extends PluralValue<infer U> ? U : T extends readonly any[] ? {
+        [I in keyof T]: DeepUnwrapPlural<T[I]>;
+    } : T extends object ? {
+        [K in keyof T]: DeepUnwrapPlural<T[K]>;
+    } : T;
     export type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
     export interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
+        // ── Selector(s) with explicit `ns` ───────────────────────────────────────────
         <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts> | readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[], options: Opts & InterpolationMap<Target> & {
             ns: NewNs;
         }): SelectorReturn<Target, Opts>;
-        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> = Ns[number], const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts> | readonly SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>[], options?: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
+        // ── Array of selectors with default `ns` ─────────────────────────────────────
+        // Captures the selector tuple as `const Fns` so TypeScript preserves each
+        // element's exact return type.  The union of return types is then extracted
+        // via a distributive `infer`, which correctly handles mixed PluralValue<T> and
+        // plain-string callbacks that would otherwise cause TypeScript to 'lock in' the
+        // type from the first element.
+        <const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[], const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selectors: Fns, options?: Opts & InterpolationMap<DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>>): SelectorReturn<Fns[number] extends (...args: any[]) => infer R ? R : never, Opts>;
+        // ── Single selector with context — bypasses count enforcement ────────────────
+        // When `context` is present in options, `Target` is derived from the
+        // context-filtered source (third mapped type of FilterKeys), which does NOT
+        // apply the PluralValue brand.  A separate overload avoids the circular
+        // inference that would otherwise occur when `Opts['context']` sits inside the
+        // conditional rest tuple of the overload below.
+        <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> = Ns[number], const Opts extends SelectorOptions<NewNs> & {
+            context: string;
+        } = SelectorOptions<NewNs> & {
+            context: string;
+        }>(selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>, options: Opts & InterpolationMap<Target>): SelectorReturn<Target, Opts>;
+        // ── Single selector with defaultValue — preserves literal type of DV ────────
+        // `const Opts` loses literal precision for `defaultValue` when inferred
+        // through a conditional rest tuple (TypeScript limitation).  This dedicated
+        // overload captures `DV` from a regular (non-conditional) parameter position,
+        // preserving its literal type.  Count enforcement for plural keys is achieved
+        // via a conditional intersection on the options parameter.
+        <const Fn extends (src: Select<Source, undefined>) => ConstrainTarget<Opts>, const DV extends string, const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selector: Fn, options: Opts & {
+            defaultValue: DV;
+        } & (ReturnType<Fn> extends PluralValue<string> ? {
+            count: number;
+        } : {}) & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>): SelectorReturn<ReturnType<Fn>, Opts, DV>;
+        // ── Single selector without context — enforces count for plural keys ──────────
+        // Uses `const Fn` to capture the selector's exact return type independently of
+        // `Opts`, breaking the circular dependency between `Target` inference and the
+        // conditional rest tuple.  `ReturnType<Fn>` drives both the plural check and
+        // the return type; `Opts` is inferred later from the resolved rest args.
+        <const Fn extends (src: Select<Source, undefined>) => ConstrainTarget<Opts>, const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selector: Fn, ...args: ReturnType<Fn> extends PluralValue<string> ? [
+            options: Opts & {
+                count: number;
+            } & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>
+        ] : [
+            options?: Opts & InterpolationMap<ReturnType<Fn>>
+        ]): SelectorReturn<ReturnType<Fn>, Opts>;
+        // ── Pre-computed key(s) from keyFromSelector ────────────────────────────────
+        // Accepts a branded `SelectorKey` (or array of them) produced by `keyFromSelector`.
+        // Return-type precision is traded for the flexibility of decoupled key creation.
+        <const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(key: SelectorKey | SelectorKey[], ...args: [
+            options?: Opts & $Dictionary
+        ]): DefaultTReturn<Opts>;
     }
     export interface SelectorOptions<Ns = Namespace> extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>, $Dictionary {
         ns?: Ns;
@@ -965,7 +1096,7 @@ declare namespace i18n {
     export type SelectorReturn<Target, Opts extends {
         defaultValue?: unknown;
         returnObjects?: boolean;
-    }> = $IsResourcesDefined extends true ? TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts> : DefaultTReturn<Opts>;
+    }, DV = Opts['defaultValue']> = $IsResourcesDefined extends true ? TFunctionReturnOptionalDetails<ProcessReturnValue<DeepUnwrapPlural<Target>, DV>, Opts> : DefaultTReturn<Opts>;
     export interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
         (translations: Select<Source, Opts['context']>): Target;
     }
@@ -998,14 +1129,43 @@ declare namespace i18n {
     ] extends [
         'optimize'
     ] ? T : FilterKeys<T, Context>;
+    export type _HasContextVariant<T, K extends string, Context> = [
+        keyof T & (`${K}${_ContextSeparator}${Context & string}` | `${K}${_ContextSeparator}${Context & string}${_PluralSeparator}${PluralSuffix}`)
+    ] extends [
+        never
+    ] ? false : true;
+    /** Checks whether key K has **any** context variant in T (excluding pure plural suffixes). */
+    export type _IsContextualKey<T, K extends string> = [
+        Exclude<keyof T & `${K}${_ContextSeparator}${string}`, `${K}${_PluralSeparator}${PluralSuffix}` | `${K}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`>
+    ] extends [
+        never
+    ] ? false : true;
     export type FilterKeys<T, Context> = never | T extends readonly any[] ? {
         [I in keyof T]: FilterKeys<T[I], Context>;
     } : $Prune<{
-        [K in keyof T as T[K] extends object ? K : Context extends string ? never : K extends `${string}${_PluralSeparator}${PluralSuffix}` ? never : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+        [K in keyof T as T[K] extends object ? K : [
+            Context
+        ] extends [
+            string
+        ] ? K extends `${string}${_ContextSeparator}${Context}` | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? never // context keys handled by mapped type 3
+         : K extends `${string}${_PluralSeparator}${PluralSuffix}` ? never // plural keys handled by mapped type 2
+         : K extends string ? _HasContextVariant<T, K, Context> extends true ? never // context variant exists, drop base key (type 3 handles it)
+         : _IsContextualKey<T, K> extends true ? never // key has context variants but not for this context
+         : K // no context variants at all, keep base key
+         : K : K extends `${string}${_PluralSeparator}${PluralSuffix}` ? never : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
     } & {
-        [K in keyof T as T[K] extends object ? never : Context extends string ? never : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+        [K in keyof T as T[K] extends object ? never : [
+            Context
+        ] extends [
+            string
+        ] ? K extends `${string}${_ContextSeparator}${Context}` | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? never // context keys handled by mapped type 3
+         : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
     } & {
-        [K in keyof T as T[K] extends object ? never : Context extends string ? K extends `${infer Prefix}${_ContextSeparator}${Context}` | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? Prefix : never : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+        [K in keyof T as T[K] extends object ? never : [
+            Context
+        ] extends [
+            string
+        ] ? K extends `${infer Prefix}${_ContextSeparator}${Context}` | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? Prefix : never : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
     }>;
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
@@ -1145,8 +1305,10 @@ declare namespace i18n {
     export type Callback = (error: any, t: TFunction) => void;
     /**
      * Uses similar args as the t function and returns true if a key exists.
+     * Acts as a type guard, narrowing the key to {@link SelectorKey} so it can be passed to `t()`.
      */
     export interface ExistsFunction<TKeys extends string = string, TInterpolationMap extends object = $Dictionary> {
+        (key: TKeys, options?: TOptions<TInterpolationMap>): key is TKeys & SelectorKey;
         (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
     }
     export interface CloneOptions extends InitOptions {
@@ -1221,11 +1383,11 @@ declare namespace i18n {
         getFixedT<Ns extends Namespace | null = DefaultNamespace, TKPrefix extends KeyPrefix<ActualNs> = undefined, ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(...args: [
             lng: string | readonly string[],
             ns?: Ns,
-            keyPrefix?: TKPrefix
+            keyPrefix?: TKPrefix | (($: any) => any)
         ] | [
             lng: null,
             ns: Ns,
-            keyPrefix?: TKPrefix
+            keyPrefix?: TKPrefix | (($: any) => any)
         ]): TFunction<ActualNs, TKPrefix>;
         /**
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
