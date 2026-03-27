@@ -1019,6 +1019,14 @@ declare namespace i18n {
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends TFunctionSignature<Ns, KPrefix> {
     }
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+    /** The raw (unfiltered) resource object for a given namespace. */
+    export type NsResource<Ns extends Namespace> = Ns extends readonly [
+        keyof Resources,
+        any,
+        ...any
+    ] ? Resources[Ns[0]] & PickNamespaces<Resources, Ns[number]> : Resources[$FirstNamespace<Ns>];
+    /** A selector function that can be used as `keyPrefix` to scope `t()` to a sub-tree of the resource. */
+    export type KeyPrefixSelector<Ns extends Namespace> = (src: NsResource<Ns>) => object;
     /** Marks a value as coming from a plural-form key, requiring `count` in the selector options. */
     export type PluralValue<T extends string> = T & {
         readonly [$PluralBrand]: typeof $PluralBrand;
@@ -1038,6 +1046,14 @@ declare namespace i18n {
     } : T;
     export type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
     export interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
+        // ── Pre-computed key(s) from keyFromSelector ────────────────────────────────
+        // Accepts a branded `SelectorKey` (or array of them) produced by `keyFromSelector`.
+        // Return-type precision is traded for the flexibility of decoupled key creation.
+        // Placed first so that the more general selector overloads (below) are last —
+        // TypeScript's `Parameters<>` utility resolves against the last call signature.
+        <const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(key: SelectorKey | SelectorKey[], ...args: [
+            options?: Opts & $Dictionary
+        ]): DefaultTReturn<Opts>;
         // ── Selector(s) with explicit `ns` ───────────────────────────────────────────
         <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts> | readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[], options: Opts & InterpolationMap<Target> & {
             ns: NewNs;
@@ -1083,12 +1099,6 @@ declare namespace i18n {
         ] : [
             options?: Opts & InterpolationMap<ReturnType<Fn>>
         ]): SelectorReturn<ReturnType<Fn>, Opts>;
-        // ── Pre-computed key(s) from keyFromSelector ────────────────────────────────
-        // Accepts a branded `SelectorKey` (or array of them) produced by `keyFromSelector`.
-        // Return-type precision is traded for the flexibility of decoupled key creation.
-        <const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(key: SelectorKey | SelectorKey[], ...args: [
-            options?: Opts & $Dictionary
-        ]): DefaultTReturn<Opts>;
     }
     export interface SelectorOptions<Ns = Namespace> extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>, $Dictionary {
         ns?: Ns;
@@ -1117,11 +1127,9 @@ declare namespace i18n {
     export type PickNamespaces<T, K extends keyof any> = {
         [P in K as P extends keyof T ? P : never]: T[P & keyof T];
     };
-    export type GetSource<Ns extends Namespace, KPrefix, Res = Ns extends readonly [
-        keyof Resources,
-        any,
-        ...any
-    ] ? Resources[Ns[0]] & PickNamespaces<Resources, Ns[number]> : Resources[$FirstNamespace<Ns>]> = KPrefix extends keyof Res ? Res[KPrefix] : undefined extends KPrefix ? Res : ApplyKeyPrefix<[
+    /** Extracts the sub-tree returned by a selector function used as keyPrefix. */
+    export type SelectorReturnSource<KPrefix, Fallback> = KPrefix extends (...args: any[]) => infer R ? R extends object ? R : Fallback : Fallback;
+    export type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (...args: any[]) => any ? SelectorReturnSource<KPrefix, Res> : KPrefix extends keyof Res ? Res[KPrefix] : undefined extends KPrefix ? Res : ApplyKeyPrefix<[
         Res
     ], KPrefix>;
     export type Select<T, Context> = $IsResourcesDefined extends false ? $Turtles : [
@@ -1380,6 +1388,7 @@ declare namespace i18n {
          *
          * Accepts optional keyPrefix that will be automatically applied to returned t function.
          */
+        getFixedT<Ns extends Namespace | null, const TKPrefixFn extends TypeOptions['enableSelector'] extends true | 'optimize' ? KeyPrefixSelector<ActualNs> : never, ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(lng: string | readonly string[] | null, ns: Ns, keyPrefix: TKPrefixFn): TFunction<ActualNs, TKPrefixFn>;
         getFixedT<Ns extends Namespace | null = DefaultNamespace, TKPrefix extends KeyPrefix<ActualNs> = undefined, ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(...args: [
             lng: string | readonly string[],
             ns?: Ns,
