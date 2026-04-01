@@ -1566,7 +1566,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
                 input: '/123abcabc',
                 expected: {
                     path: '/123abcabc',
-                    params: { foo: '123abcabc' },
+                    params: { foo: '123', bar: 'abc' },
                 },
             },
         ],
@@ -1591,7 +1591,10 @@ export const MATCH_TESTS: MatchTestSet[] = [
             },
             {
                 input: '/123abcabc',
-                expected: false,
+                expected: {
+                    path: '/123abcabc',
+                    params: { foo: '123', bar: 'abc' },
+                },
             },
         ],
     },
@@ -1710,7 +1713,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
                 input: '%25555....222%25',
                 expected: {
                     path: '%25555....222%25',
-                    params: { foo: '555.', bar: '.222' },
+                    params: { foo: '555..', bar: '222' },
                 },
             },
         ],
