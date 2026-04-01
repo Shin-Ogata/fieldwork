@@ -294,7 +294,7 @@ describe('extention-i18n spec', () => {
                 void post(() => {
                     void i18next.init({
                         lng: 'ja-JP',
-                        initImmediate: false,
+                        initAsync: true,
                         resources: {
                             ja: {
                                 translation: {
@@ -397,17 +397,9 @@ describe('extention-i18n spec', () => {
 
     describe('Formatting', () => {
         it('check formatting', async () => {
-            const t = await i18next.init({
-                lng: 'ja-JP',
-                resources: {
-                    ja: {
-                        translation: {
-                            key: 'The current date is {{date, YYYY/MM/DD}}',
-                            key2: '{{text, uppercase}} just uppercased',
-                        },
-                    },
-                },
-                interpolation: {
+            const t = await i18next
+                .use({
+                    type: 'formatter',
                     format: (value: any, format?: string, lng?: string): string => {
                         if ('uppercase' === format) {
                             return value.toUpperCase();
@@ -422,26 +414,30 @@ describe('extention-i18n spec', () => {
                             return value;
                         }
                     },
-                    escapeValue: false,
-                },
-            });
+                })
+                .init({
+                    lng: 'ja-JP',
+                    resources: {
+                        ja: {
+                            translation: {
+                                key: 'The current date is {{date, YYYY/MM/DD}}',
+                                key2: '{{text, uppercase}} just uppercased',
+                            },
+                        },
+                    },
+                    interpolation: {
+                        escapeValue: false,
+                    },
+                });
 
             expect(t('key', { date: new Date(1579754211640) })).toBe('The current date is 2020/01/23');
             expect(t('key2', { text: 'can you hear me' })).toBe('CAN YOU HEAR ME just uppercased');
         });
 
         it('check formatting late calling', async () => {
-            const t = await i18next.init({
-                lng: 'ja-JP',
-                resources: {
-                    ja: {
-                        translation: {
-                            key: 'The current date is {{date}}',
-                            key2: '{{text}} just uppercased',
-                        },
-                    },
-                },
-                interpolation: {
+            const t = await i18next
+                .use({
+                    type: 'formatter',
                     format: (value: any, format?: string, lng?: string): string => {
                         if ('uppercase' === format) {
                             return value.toUpperCase();
@@ -454,10 +450,22 @@ describe('extention-i18n spec', () => {
                         } else {
                             return value;
                         }
+                    }
+                })
+                .init({
+                    lng: 'ja-JP',
+                    resources: {
+                        ja: {
+                            translation: {
+                                key: 'The current date is {{date}}',
+                                key2: '{{text}} just uppercased',
+                            },
+                        },
                     },
-                    escapeValue: false,
-                },
-            });
+                    interpolation: {
+                        escapeValue: false,
+                    },
+                });
 
             expect(t('key', { date: i18next.format(new Date(1579754211640), undefined, i18next.language) })).toBe('The current date is 2020/01/23');
             expect(t('key2', { text: i18next.format('can you hear me', 'uppercase') })).toBe('CAN YOU HEAR ME just uppercased');
