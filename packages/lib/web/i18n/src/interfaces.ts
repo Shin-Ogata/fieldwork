@@ -1,5 +1,5 @@
 import type { i18n } from '@cdp/extension-i18n';
-import type { PlainObject } from '@cdp/core-utils';
+import type { PlainObject, AnyObject } from '@cdp/core-utils';
 import type { Cancelable } from '@cdp/promise';
 import './plugin/module-extends';
 
@@ -11,6 +11,12 @@ export interface I18NDetectErrorBehaviour extends Cancelable {
     /** default: true */
     noThrow?: boolean;
 }
+
+/**
+ * @en The general interface for `i18next` plugin.
+ * @ja `i18next` プラグインの汎用インターフェイス
+ */
+export type I18NPlugin = i18n.Module & AnyObject;
 
 /**
  * @en Option interface for {@link initializeI18N}().
@@ -27,4 +33,6 @@ export interface I18NOptions extends i18n.InitOptions, I18NDetectErrorBehaviour 
     fallbackResources?: Record<string, string>;
     /** dom-localizer options */
     dom?: i18n.DomLocalizerOptions;
+    /** other plugins */
+    plugins?: I18NPlugin | I18NPlugin[];
 }
