@@ -4736,11 +4736,6 @@ export declare namespace i18n {
     export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & $Dictionary<any>) => string;
     export interface InterpolationOptions {
         /**
-         * Format function see formatting for details
-         * @default noop
-         */
-        format?: FormatFunction;
-        /**
          * Used to separate format from interpolation value
          * @default ','
          */
@@ -4937,11 +4932,6 @@ export declare namespace i18n {
          */
         debug?: boolean;
         /**
-         * Show support notice in console during initialization.
-         * @default true
-         */
-        showSupportNotice?: boolean;
-        /**
          * Resources to initialize with (if not using loading or not appending using addResourceBundle)
          * @default undefined
          */
@@ -5058,11 +5048,6 @@ export declare namespace i18n {
          */
         missingInterpolationHandler?: (text: string, value: any, options: InitOptions) => any;
         /**
-         * Will use 'plural' as suffix for languages only having 1 plural form, setting it to false will suffix all with numbers
-         * @default true
-         */
-        simplifyPluralSuffix?: boolean;
-        /**
          * String or array of postProcessors to apply per default
          * @default false
          */
@@ -5123,10 +5108,6 @@ export declare namespace i18n {
          * @default true
          */
         initAsync?: boolean;
-        /**
-         * @deprecated Use initAsync instead.
-         */
-        initImmediate?: boolean;
         /**
          * Char to separate keys
          * @default '.'
@@ -5482,17 +5463,17 @@ export declare namespace i18n {
      ************************* */
     export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options?: TOpt & InterpolationMap<Ret> & {
-            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret> & {
-            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
     }
     export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends Omit<TOpt, 'context'> & InterpolationMap<Ret> & {
-            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         } = TOpt & InterpolationMap<Ret> & {
-            context?: Key extends string ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }, DefaultValue extends string = never>(...args: [
             key: Key | Key[],
             options?: ActualOptions
@@ -5690,6 +5671,10 @@ export declare namespace i18n {
          * removes all callback when callback not specified
          */
         off(event: 'added' | 'removed', callback?: (lng: string, ns: string) => void): void;
+        /**
+         * Subscribe to an event, but only once. The listener is removed after the first call.
+         */
+        once(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): this;
     }
     export interface Formatter {
         init(services: Services, i18nextOptions: InitOptions): void;
@@ -5825,7 +5810,6 @@ export declare namespace i18n {
     // in TFunction declaration below.
     // Due to this only very special usage I'm not moving this inside helpers.
     export type InferArrayValuesElseReturnType<T> = T extends (infer A)[] ? A : T;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     export interface i18n extends CustomInstanceExtensions {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<[
@@ -6007,6 +5991,10 @@ export declare namespace i18n {
          */
         off(event: string, listener?: (...args: any[]) => void): void;
         /**
+         * Subscribe to an event, but only once. The listener is removed after the first call.
+         */
+        once(event: string, listener: (...args: any[]) => void): this;
+        /**
          * Gets one value by given key.
          */
         getResource(lng: string, ns: string, key: string, options?: Pick<InitOptions, 'keySeparator' | 'ignoreJSONStructure'>): any;
@@ -6026,7 +6014,10 @@ export declare namespace i18n {
          * Setting deep param to true will extend existing translations in that file.
          * Setting overwrite to true it will overwrite existing translations in that file.
          */
-        addResourceBundle(lng: string, ns: string, resources: any, deep?: boolean, overwrite?: boolean): i18n;
+        addResourceBundle(lng: string, ns: string, resources: any, deep?: boolean, overwrite?: boolean, options?: {
+            silent?: boolean;
+            skipCopy?: boolean;
+        }): i18n;
         /**
          * Checks if a resource bundle exists.
          */
@@ -9306,6 +9297,11 @@ export interface I18NDetectErrorBehaviour extends Cancelable {
     noThrow?: boolean;
 }
 /**
+ * @en The general interface for `i18next` plugin.
+ * @ja `i18next` プラグインの汎用インターフェイス
+ */
+export type I18NPlugin = i18n.Module & AnyObject;
+/**
  * @en Option interface for {@link initializeI18N}().
  * @ja {@link initializeI18N}() に指定するオプションインターフェイス
  */
@@ -9320,6 +9316,8 @@ export interface I18NOptions extends i18n.InitOptions, I18NDetectErrorBehaviour 
     fallbackResources?: Record<string, string>;
     /** dom-localizer options */
     dom?: i18n.DomLocalizerOptions;
+    /** other plugins */
+    plugins?: I18NPlugin | I18NPlugin[];
 }
 /**
  * @en Translate funcion.
