@@ -9,6 +9,7 @@ export function ensureCleanI18N(): void {
     delete context.language;
     delete context.languages;
     delete context.isInitialized;
+    delete context.modules?.formatter;
 }
 
 export function createTestElementsFromTemplate(): HTMLElement[] {

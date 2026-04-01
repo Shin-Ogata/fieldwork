@@ -117,4 +117,62 @@ describe('i18n spec', () => {
             expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }
     });
+
+    it('check other plugins', async () => {
+        await initializeI18N({
+            lng: 'ja-JP',
+            resources: {
+                ja: {
+                    translation: {
+                        key: 'The current date is {{date, YYYY/MM/DD}}',
+                        key2: '{{text, uppercase}} just uppercased',
+                    },
+                },
+            },
+            interpolation: {
+                escapeValue: false,
+            },
+            plugins: {
+                type: 'formatter',
+                format: (value: any, format?: string, lng?: string): string => { // eslint-disable-line @typescript-eslint/no-explicit-any
+                    if ('uppercase' === format) {
+                        return `${value.toUpperCase()} !!`;
+                    } else if (value instanceof Date) {
+                        expect(format).toBe('YYYY/MM/DD');
+                        return new Intl.DateTimeFormat(lng, {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            timeZone: 'UTC',
+                        }).format(value);
+                    } else {
+                        return value;
+                    }
+                },
+            },
+        });
+
+        expect(t('key', { date: new Date(1579754211640) })).toBe('The current date is 2020/01/23');
+        expect(t('key2', { text: 'can you hear me' })).toBe('CAN YOU HEAR ME !! just uppercased');
+    });
+
+    it('check undefined plugins', async () => {
+        await initializeI18N({
+            lng: 'ja-JP',
+            resources: {
+                ja: {
+                    translation: {
+                        key: 'The current date is {{date, YYYY/MM/DD}}',
+                        key2: '{{text, uppercase}} just uppercased',
+                    },
+                },
+            },
+            interpolation: {
+                escapeValue: false,
+            },
+            plugins: undefined,
+        });
+
+        expect(t('key2', { text: 'can you hear me' })).toBe('can you hear me just uppercased');
+    });
 });
