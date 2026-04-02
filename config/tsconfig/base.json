@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "target": "es2024",
-    "allowSyntheticDefaultImports": true,
-    "alwaysStrict": false,
+    "target": "es2025",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "moduleResolution": "node",
     "newLine": "LF",
     "noEmitHelpers": true,
     "noEmitOnError": true,
@@ -17,10 +15,14 @@
     "noImplicitReturns": true,
     "pretty": true,
     "resolveJsonModule": true,
+    "strictBindCallApply": false,
+    "strictBuiltinIteratorReturn": true,
+    "strictFunctionTypes": false,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
     "useDefineForClassFields": true,
+    "useUnknownInCatchVariables": false,
     "types": []
   }
 }

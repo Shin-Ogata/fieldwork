@@ -1,5 +1,5 @@
-import type { TemplateTransformer } from '@bridge/interfaces';
-import type { TemplateTag, TransformDirective, TransformTester, TransformExecutor, TransformeContext, TransformConfig } from 'lit-transformer/src/interfaces';
+import type { TemplateTransformer } from '#bridge/interfaces';
+import type { TemplateTag, TransformDirective, TransformTester, TransformExecutor, TransformeContext, TransformConfig } from '#lit-transformer/src/interfaces';
 declare function createMustacheTransformer(html: TemplateTag, unsafeHTML: TransformDirective): TemplateTransformer;
 declare function createMustacheTransformer(config: TransformConfig): TemplateTransformer;
 declare const transformer: {

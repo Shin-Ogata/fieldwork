@@ -1,5 +1,5 @@
 /*!
- * @cdp/model 0.9.21
+ * @cdp/model 0.9.22
  *   generic model scheme
  */
 

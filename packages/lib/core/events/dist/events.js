@@ -1,5 +1,5 @@
 /*!
- * @cdp/events 0.9.21
+ * @cdp/events 0.9.22
  *   pub/sub framework
  */
 

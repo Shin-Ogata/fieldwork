@@ -71,13 +71,20 @@ function resolveEntries(list) {
             find: module,
             replacement,
         },{
+            // moduleResolution: bundler では .js 拡張子付きで import されるため
+            find: `${module}.js`,
+            replacement,
+        },{
+            // 同じサブディレクトリから相対 import されるケース
             find: `./${fileName}`,
             replacement,
         },{
+            // 一階層上のサブディレクトリから相対 import されるケース
             find: `../${fileName}`,
             replacement,
         });
     }
+
     return entries;
 }
 

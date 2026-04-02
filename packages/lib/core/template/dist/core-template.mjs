@@ -1,5 +1,5 @@
 /*!
- * @cdp/core-template 0.9.21
+ * @cdp/core-template 0.9.22
  *   template engine
  */
 

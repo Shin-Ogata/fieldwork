@@ -1,5 +1,5 @@
 /*!
- * @cdp/ui-utils 0.9.21
+ * @cdp/ui-utils 0.9.22
  *   UI components common utilities
  */
 

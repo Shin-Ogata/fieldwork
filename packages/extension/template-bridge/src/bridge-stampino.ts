@@ -1,7 +1,7 @@
 import type {
     TemplateBridgeArg,
     TemplateTransformer,
-} from '@bridge/interfaces';
+} from '#bridge/interfaces';
 import {
     TemplateHandler,
     TemplateHandlers,
@@ -9,7 +9,7 @@ import {
     EvaluateTemplateResult,
     prepareTemplate,
     evaluateTemplate,
-} from 'stampino';
+} from '#stampino';
 
 export interface CreateStampinoTemplateOptions {
     handlers?: TemplateHandlers;

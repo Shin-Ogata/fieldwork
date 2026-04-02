@@ -77,6 +77,11 @@ module.exports = {
         inlinedLibraries: ['i18next'],
         excludeLibraries: [/^@cdp/],
         postProcess: patch,
+        bundle: {
+            compilationOptions: {
+                preferredConfigPath: resolve('tsconfig.dts.json'),
+           },
+        },
     }),
     minify: {
         js: minify_js(),

@@ -46,7 +46,7 @@ const _defaultOpts: Required<ListContextOptions> = {
 };
 
 /** invalid instance */
-const _$invalid = $() as DOM;
+const _$invalid = $() as DOM; // eslint-disable-line
 
 /** 初期化済みか検証 */
 function verify<T>(x: T | undefined): asserts x is T {
