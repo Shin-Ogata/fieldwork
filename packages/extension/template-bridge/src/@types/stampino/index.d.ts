@@ -1,4 +1,4 @@
-import type { TemplateBridgeArg, TemplateBridgeEndine } from '@bridge/interfaces';
+import type { TemplateBridgeArg, TemplateBridgeEndine } from '#bridge/interfaces';
 
 /**
  * A TemplateRenderer is responsible for rendering a block call, like

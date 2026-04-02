@@ -1,6 +1,6 @@
 {
   "extends": "./base",
   "compilerOptions": {
-    "lib": ["es2024"]
+    "lib": ["es2025"]
   }
 }

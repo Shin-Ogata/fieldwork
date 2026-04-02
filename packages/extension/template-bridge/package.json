@@ -1,11 +1,25 @@
 {
   "name": "@cdp/extension-template-bridge",
   "description": "extension for HTML templates bridge.",
-  "version": "0.9.21",
+  "version": "0.9.22",
   "author": "Shin Ogata",
   "cdp-config": {
     "build": {
       "global": "CDP.Exension"
+    }
+  },
+  "imports": {
+    "#bridge/*": {
+      "types": "./src/@types/@bridge/*.d.ts"
+    },
+    "#lit-transformer": {
+      "types": "./src/@types/lit-transformer/index.d.ts"
+    },
+    "#lit-transformer/src/*": {
+      "types": "./src/@types/lit-transformer/src/*.d.ts"
+    },
+    "#stampino": {
+      "types": "./src/@types/stampino/index.d.ts"
     }
   },
   "dependencies": {

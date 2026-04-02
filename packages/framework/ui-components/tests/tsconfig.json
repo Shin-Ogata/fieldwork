@@ -5,7 +5,6 @@
     "declarationDir": null,
     "outDir": "../built/tests/unit",
     "rootDir": "unit",
-    "baseUrl": ".",
     "paths": {
       "@cdp/core-utils": [ "../../../lib/core/utils" ],
       "@cdp/promise": [ "../../../lib/core/promise" ],

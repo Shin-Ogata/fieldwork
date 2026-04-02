@@ -6,13 +6,7 @@
     "inlineSources": true,
     "inlineSourceMap": true,
     "outDir": "built",
-    "rootDir": "src",
-    "baseUrl": "./src/@types",
-    "paths": {
-      "common-interface": [ "@bridge" ],
-      "lit-transformer": [ "lit-transformer" ],
-      "stampino": [ "stampino" ]
-    }
+    "rootDir": "src"
   },
   "include": [
     "src/**/*"

@@ -1,5 +1,5 @@
-import type { TemplateBridgeArg, TemplateTransformer } from '@bridge/interfaces';
-import { TemplateHandler, TemplateHandlers, TemplateRenderers, EvaluateTemplateResult, prepareTemplate, evaluateTemplate } from 'stampino';
+import type { TemplateBridgeArg, TemplateTransformer } from '#bridge/interfaces';
+import { TemplateHandler, TemplateHandlers, TemplateRenderers, EvaluateTemplateResult, prepareTemplate, evaluateTemplate } from '#stampino';
 export interface CreateStampinoTemplateOptions {
     handlers?: TemplateHandlers;
     renderers?: TemplateRenderers;

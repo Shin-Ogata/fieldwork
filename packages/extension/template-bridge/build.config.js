@@ -36,6 +36,14 @@ module.exports = {
                     find: 'lit-html',
                     replacement : '@cdp/extension-template',
                 },
+                {
+                    find: '#lit-transformer',
+                    replacement : 'lit-transformer',
+                },
+                {
+                    find: '#stampino',
+                    replacement : 'stampino',
+                },
             ],
         },
         postproc: {

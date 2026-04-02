@@ -10,7 +10,7 @@ export {
     nothing,
 } from 'lit-html';
 
-export { _$LH } from 'lit-html/private-ssr-support';
+export { _$LH } from 'lit-html/private-ssr-support.js';
 
 export {
     Directive,
@@ -19,31 +19,31 @@ export {
     PartInfo,
     PartType,
     directive,
-} from 'lit-html/directive';
+} from 'lit-html/directive.js';
 
-export { AsyncDirective } from 'lit-html/async-directive';
-export { Ref, createRef } from 'lit-html/directives/ref';
+export { AsyncDirective } from 'lit-html/async-directive.js';
+export { Ref, createRef } from 'lit-html/directives/ref.js';
 
-import { asyncAppend } from 'lit-html/directives/async-append';
-import { asyncReplace } from 'lit-html/directives/async-replace';
-import { cache } from 'lit-html/directives/cache';
-import { choose } from 'lit-html/directives/choose';
-import { classMap } from 'lit-html/directives/class-map';
-import { guard } from 'lit-html/directives/guard';
-import { ifDefined } from 'lit-html/directives/if-defined';
-import { join } from 'lit-html/directives/join';
-import { keyed } from 'lit-html/directives/keyed';
-import { live } from 'lit-html/directives/live';
-import { map } from 'lit-html/directives/map';
-import { range } from 'lit-html/directives/range';
-import { ref } from 'lit-html/directives/ref';
-import { repeat } from 'lit-html/directives/repeat';
-import { styleMap } from 'lit-html/directives/style-map';
-import { templateContent } from 'lit-html/directives/template-content';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { until } from 'lit-html/directives/until';
-import { when } from 'lit-html/directives/when';
+import { asyncAppend } from 'lit-html/directives/async-append.js';
+import { asyncReplace } from 'lit-html/directives/async-replace.js';
+import { cache } from 'lit-html/directives/cache.js';
+import { choose } from 'lit-html/directives/choose.js';
+import { classMap } from 'lit-html/directives/class-map.js';
+import { guard } from 'lit-html/directives/guard.js';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { join } from 'lit-html/directives/join.js';
+import { keyed } from 'lit-html/directives/keyed.js';
+import { live } from 'lit-html/directives/live.js';
+import { map } from 'lit-html/directives/map.js';
+import { range } from 'lit-html/directives/range.js';
+import { ref } from 'lit-html/directives/ref.js';
+import { repeat } from 'lit-html/directives/repeat.js';
+import { styleMap } from 'lit-html/directives/style-map.js';
+import { templateContent } from 'lit-html/directives/template-content.js';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg.js';
+import { until } from 'lit-html/directives/until.js';
+import { when } from 'lit-html/directives/when.js';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace directives {

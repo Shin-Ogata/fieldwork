@@ -1,5 +1,5 @@
 /*!
- * @cdp/ui-components/result-code-defs 0.9.21
+ * @cdp/ui-components/result-code-defs 0.9.22
  *   Common result code definitions.
  *   - includes:
  *     - @cdp/ui-utils/result-code-defs

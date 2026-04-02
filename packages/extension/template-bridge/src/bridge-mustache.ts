@@ -1,5 +1,5 @@
 import { toTemplateStringsArray } from '@cdp/extension-template';
-import type { TemplateBridgeEndine, TemplateTransformer } from '@bridge/interfaces';
+import type { TemplateBridgeEndine, TemplateTransformer } from '#bridge/interfaces';
 import type {
     MustacheTransformer,
     TemplateTag,
@@ -8,17 +8,17 @@ import type {
     TransformExecutor,
     TransformeContext,
     TransformConfig,
-} from 'lit-transformer/src/interfaces';
+} from '#lit-transformer/src/interfaces';
 
-import createDefault from 'lit-transformer';
-import createCustom from 'lit-transformer/src/lit-transformer';
+import createDefault from '#lit-transformer';
+import createCustom from '#lit-transformer/src/lit-transformer';
 
-import variable from 'lit-transformer/src/transformers/variableTransformer';
-import unsafeVariable from 'lit-transformer/src/transformers/unsafeVariable';
-import section from 'lit-transformer/src/transformers/section';
-import invertedSection from 'lit-transformer/src/transformers/invertedSection';
-import comment from 'lit-transformer/src/transformers/comment';
-import customDelimiter from 'lit-transformer/src/transformers/customDelimiter';
+import variable from '#lit-transformer/src/transformers/variableTransformer';
+import unsafeVariable from '#lit-transformer/src/transformers/unsafeVariable';
+import section from '#lit-transformer/src/transformers/section';
+import invertedSection from '#lit-transformer/src/transformers/invertedSection';
+import comment from '#lit-transformer/src/transformers/comment';
+import customDelimiter from '#lit-transformer/src/transformers/customDelimiter';
 
 /** @internal */
 type MustacheTransformerContext = MustacheTransformer & { delimiter: { start: string; end: string; }; };
