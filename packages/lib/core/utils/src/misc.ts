@@ -35,7 +35,7 @@ export function post<T>(executor: () => T): Promise<T> {
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export function noop(...args: unknown[]): any { // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+export function noop(...args: any[]): any { // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     // noop
 }
 
