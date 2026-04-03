@@ -1,5 +1,5 @@
 import {
-    type UnknownFunction,
+    type AnyFunction,
     type Primitive,
     type TypedData,
     isString,
@@ -73,7 +73,7 @@ export interface DebounceOptions {
     trailing?: boolean;
 }
 
-export type DebouncedFunction<T extends UnknownFunction> = T & { cancel(): void; flush(): ReturnType<T>; pending(): boolean; };
+export type DebouncedFunction<T extends AnyFunction> = T & { cancel(): void; flush(): ReturnType<T>; pending(): boolean; };
 
 /**
  * @en Returns a function, that, as long as it continues to be invoked, will not be triggered.
@@ -89,7 +89,7 @@ export type DebouncedFunction<T extends UnknownFunction> = T & { cancel(): void;
  *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
  *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
  */
-export function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T> {
+export function debounce<T extends AnyFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T> {
     type Result = ReturnType<T> | undefined;
 
     let lastArgs: unknown;
@@ -234,7 +234,7 @@ export interface ThrottleOptions {
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T> {
+export function throttle<T extends AnyFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T> {
     const { leading, trailing } = Object.assign({ leading: true, trailing: true }, options);
     return debounce(executor, elapse, {
         leading,
@@ -251,7 +251,7 @@ export function throttle<T extends UnknownFunction>(executor: T, elapse: number,
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export function once<T extends UnknownFunction>(executor: T): T {
+export function once<T extends AnyFunction>(executor: T): T {
 
     let memo: unknown;
     return function (this: unknown, ...args: unknown[]): unknown {

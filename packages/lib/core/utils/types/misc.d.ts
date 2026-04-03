@@ -1,4 +1,4 @@
-import { type UnknownFunction, type Primitive, type TypedData } from './types';
+import { type AnyFunction, type Primitive, type TypedData } from './types';
 /**
  * @en Ensure asynchronous execution.
  * @ja 非同期実行を保証
@@ -49,7 +49,7 @@ export interface DebounceOptions {
      */
     trailing?: boolean;
 }
-export type DebouncedFunction<T extends UnknownFunction> = T & {
+export type DebouncedFunction<T extends AnyFunction> = T & {
     cancel(): void;
     flush(): ReturnType<T>;
     pending(): boolean;
@@ -68,7 +68,7 @@ export type DebouncedFunction<T extends UnknownFunction> = T & {
  *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
  *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
  */
-export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
+export declare function debounce<T extends AnyFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
 /**
  * @en Option interface for {@link throttle}().
  * @ja {@link throttle}() に指定するオプションインターフェイス
@@ -104,7 +104,7 @@ export interface ThrottleOptions {
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
+export declare function throttle<T extends AnyFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
 /**
  * @en Returns a function that will be executed at most one time, no matter how often you call it.
  * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
@@ -113,7 +113,7 @@ export declare function throttle<T extends UnknownFunction>(executor: T, elapse:
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export declare function once<T extends UnknownFunction>(executor: T): T;
+export declare function once<T extends AnyFunction>(executor: T): T;
 /**
  * @en Return a deferred executable function object.
  * @ja 遅延実行可能な関数オブジェクトを返却

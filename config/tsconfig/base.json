@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "strictBindCallApply": true,
     "strictBuiltinIteratorReturn": true,
-    "strictFunctionTypes": false,
+    "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,

@@ -335,7 +335,7 @@ export function mixins<
         }
 
         public static [Symbol.hasInstance](instance: unknown): boolean {
-            return Object.prototype.isPrototypeOf.call(_MixinBase.prototype, instance);
+            return Object.prototype.isPrototypeOf.call(_MixinBase.prototype, instance as object);
         }
 
         public [_isInherited]<T extends object>(srcClass: Constructor<T>): boolean {
@@ -361,9 +361,10 @@ export function mixins<
         const desc = Object.getOwnPropertyDescriptor(srcClass, Symbol.hasInstance);
         if (!desc || desc.writable) {
             const orgInstanceOf = desc ? srcClass[Symbol.hasInstance] : _instanceOf;
-            setInstanceOf(srcClass, (inst: UnknownObject) => {
+            setInstanceOf(srcClass, (inst: object) => {
+                const obj = inst as Accessible<object>;
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                return orgInstanceOf.call(srcClass, inst) || ((inst?.[_isInherited]) ? (inst[_isInherited] as UnknownFunction)(srcClass) : false);
+                return orgInstanceOf.call(srcClass, inst) || ((obj?.[_isInherited]) ? (obj[_isInherited] as UnknownFunction)(srcClass) : false);
             });
         }
         // provide prototype
