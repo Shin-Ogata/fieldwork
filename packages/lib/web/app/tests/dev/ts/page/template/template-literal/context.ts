@@ -1,4 +1,4 @@
-import type { UnknownFunction, PlainObject } from '@cdp/core-utils';
+import type { AnyFunction, PlainObject } from '@cdp/core-utils';
 import {
     type TemplateResult,
     render,
@@ -20,7 +20,7 @@ const { repeat } = directives;
  * クラス内に Template Literal を配置した例
  */
 class TemplateLiteralView extends PageView {
-    private _handler!: PlainObject<UnknownFunction>;
+    private _handler!: PlainObject<AnyFunction>;
     private _state = { count: 0, clicked: 0 };
     private _props!: Props;
 
