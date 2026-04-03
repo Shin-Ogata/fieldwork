@@ -1,5 +1,5 @@
 import {
-    type UnknownFunction,
+    type AnyFunction,
     isFunction,
     noop,
 } from '@cdp/core-utils';
@@ -21,11 +21,11 @@ import { checkStatus } from './utils';
  *
  * @see https://stackoverflow.com/questions/48158730/extend-javascript-promise-and-resolve-or-reject-it-inside-constructor
  */
-const resolveArgs = (arg1?: UnknownFunction | CancelToken | null, arg2?: CancelToken | null): [UnknownFunction, CancelToken | null | undefined] => {
+const resolveArgs = (arg1?: AnyFunction | CancelToken | null, arg2?: CancelToken | null): [AnyFunction, CancelToken | null | undefined] => {
     if (isFunction(arg1)) {
         return [arg1, arg2];
     } else {
-        return [noop, arg1];
+        return [noop, arg1 as CancelToken];
     }
 };
 
@@ -71,7 +71,7 @@ export class Deferred<T = void> extends CancelablePromise<T> {
         cancelToken?: CancelToken | null
     );
 
-    constructor(arg1?: UnknownFunction | CancelToken | null, arg2?: CancelToken | null) {
+    constructor(arg1?: AnyFunction | CancelToken | null, arg2?: CancelToken | null) {
         const [executor, cancelToken] = resolveArgs(arg1, arg2);
         const publications = {};
         super((resolve, reject) => {

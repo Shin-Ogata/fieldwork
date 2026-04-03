@@ -162,7 +162,7 @@ export class CancelToken<T = unknown> {
         const close = this[_close];
         if (status === CancelTokenState.OPEN) {
             for (const t of linkedTokenSet) {
-                context.subscriptions.add(t.register(cancel.bind(this)));
+                context.subscriptions.add(t.register(reason => cancel.call(this, reason as T)));
                 this.register(cancel.bind(t));
             }
         }
