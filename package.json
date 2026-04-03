@@ -37,7 +37,7 @@
     "requirejs": "2.3.8",
     "rollup": "4.60.1",
     "rollup-plugin-import-css": "4.2.0",
-    "sass": "1.98.0",
+    "sass": "1.99.0",
     "semver": "7.7.4",
     "tar": "7.5.13",
     "terser": "5.46.1",
