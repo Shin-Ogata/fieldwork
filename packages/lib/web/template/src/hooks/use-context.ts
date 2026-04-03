@@ -1,4 +1,4 @@
-import type { IHookContext } from './interfaces';
+import type { IHookState, IHookContext } from './interfaces';
 import { Hook, makeHook } from './hook';
 import type { State } from './state';
 import { setEffects } from './use-effect';
@@ -7,10 +7,10 @@ import { setEffects } from './use-effect';
 export const useContext = makeHook(class <T> extends Hook<[IHookContext<T>], T, unknown> {
     private _ranEffect: boolean;
 
-    constructor(id: number, state: State, _: IHookContext<T>) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    constructor(id: number, state: IHookState, _: IHookContext<T>) { // eslint-disable-line @typescript-eslint/no-unused-vars
         super(id, state);
         this._ranEffect = false;
-        setEffects(state, this);
+        setEffects(state as State, this);
     }
 
     update(context: IHookContext<T>): T {

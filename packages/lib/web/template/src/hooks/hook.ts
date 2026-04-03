@@ -72,5 +72,5 @@ const use = <P extends unknown[], R, H = unknown>(Hook: CustomHook<P, R, H>, ...
  * ```
  */
 export const makeHook = <P extends unknown[], R, H = unknown>(Hook: CustomHook<P, R, H>): (...args: P) => R => {
-    return use.bind(null, Hook) as (...args: P) => R;
+    return (...args: P): R => use(Hook, ...args);
 };

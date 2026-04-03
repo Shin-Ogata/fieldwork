@@ -6,7 +6,7 @@ import {
     hooks,
     noChange,
 } from '@cdp/template';
-import { type UnknownFunction, noop } from '@cdp/core-utils';
+import { type AnyFunction, noop } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
@@ -29,7 +29,7 @@ describe('hooks/use-context spec', () => {
     });
 
     it('check createContext', () => {
-        const context = createContext();
+        const context = createContext<number>();
         const { defaultValue, provide, consume } = context;
         expect(defaultValue).toBeUndefined();
         expect(typeof provide).toBe('function');
@@ -37,7 +37,7 @@ describe('hooks/use-context spec', () => {
 
         let value!: number;
         provide(10);
-        consume((val: number) => { value = val; });
+        consume((val) => { value = val; });
         expect(value).toBe(10);
 
         const retval = provide(10);
@@ -58,7 +58,7 @@ describe('hooks/use-context spec', () => {
     });
 
     it('check provider update', async () => {
-        let setter!: UnknownFunction;
+        let setter!: AnyFunction;
 
         const ThemeContext = createContext<{ theme: 'dark' | 'light'; setTheme: (theme: 'dark' | 'light') => void; }>({ theme: 'dark', setTheme: noop });
 
@@ -94,7 +94,7 @@ describe('hooks/use-context spec', () => {
     });
 
     it('check concept use case', async () => {
-        let setter!: UnknownFunction;
+        let setter!: AnyFunction;
 
         const ThemeContext = createContext('dark');
 

@@ -1,13 +1,12 @@
 import { deepEqual } from '@cdp/core-utils';
-import type { NewHookState, HookStateUpdater } from './interfaces';
+import type { IHookState, NewHookState, HookStateUpdater } from './interfaces';
 import { Hook, makeHook } from './hook';
-import type { State } from './state';
 
 /** @internal */
 export const useState = makeHook(class <T> extends Hook {
     args!: readonly [T, HookStateUpdater<T>];
 
-    constructor(id: number, state: State, initialValue: T) {
+    constructor(id: number, state: IHookState, initialValue: T) {
         super(id, state);
         this.updater = this.updater.bind(this);
 
