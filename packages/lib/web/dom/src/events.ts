@@ -288,7 +288,7 @@ function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
 function eventShortcut<T extends ElementBase>(
     this: DOMEvents<T>,
     name: string,
-    handler?: EventListener,
+    handler?: DOMEventListener,
     options?: boolean | AddEventListenerOptions
 ): DOMEvents<T> {
     if (null == handler) {
@@ -368,7 +368,7 @@ export type DOMEventMap<T>
     : GlobalEventHandlersEventMap;
 /* eslint-enable @stylistic/indent */
 
-export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
+export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = { [K in keyof M]: (event: M[K], ...args: any[]) => any }[keyof M];
 
 export type EventWithNamespace<T extends DOMEventMap<any>> = keyof T | `${string & keyof T}.${string}`;
 export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
