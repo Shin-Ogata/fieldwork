@@ -3,6 +3,7 @@
  */
 
 import {
+    type AnyFunction,
     type Accessible,
     isFunction,
     isString,
@@ -335,9 +336,9 @@ function cloneElement(elem: Element, withEvents: boolean, deep: boolean): Elemen
 }
 
 /** @internal helper for self event manage */
-function handleSelfEvent<TElement extends ElementBase>(
+function handleSelfEvent<TElement extends ElementBase, TEvent extends Event>(
     self: DOMEvents<TElement>,
-    callback: (event: Event, ...args: unknown[]) => void,
+    callback: (event: TEvent, ...args: unknown[]) => void,
     eventName: EventTypeOrNamespace<DOMEventMap<HTMLElement | Window>>,
     permanent: boolean,
 ): DOMEvents<TElement> {
@@ -345,7 +346,7 @@ function handleSelfEvent<TElement extends ElementBase>(
         if (e.target !== this) {
             return;
         }
-        callback.call(this, e);
+        callback.call(this, e as TEvent);
         if (!permanent) {
             (self as DOMEvents<Node>).off(eventName, fireCallBack);
         }
@@ -447,18 +448,18 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
             const eventData = queryEventData(e);
             const $target = $(e.target as Element | null) as DOM<Element>;
             if ($target.is(selector)) {
-                listener.apply($target[0], eventData);
+                (listener as AnyFunction).apply($target[0], eventData);
             } else {
                 for (const parent of $target.parents()) {
                     if ($(parent).is(selector)) {
-                        listener.apply(parent, eventData);
+                        (listener as AnyFunction).apply(parent, eventData);
                     }
                 }
             }
         }
 
         function handleEvent(this: DOMEvents<TElement>, e: Event): void {
-            listener.apply(this, queryEventData(e));
+            (listener as AnyFunction).apply(this, queryEventData(e));
         }
 
         const proxy = selector ? handleLiveEvent : handleEvent;
@@ -634,7 +635,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
 
         const self = this;
         function onceHandler(this: DOMEvents<TElement>, ...eventArgs: unknown[]): void {
-            listener.apply(this, eventArgs);
+            (listener as AnyFunction).apply(this, eventArgs);
             self.off(type as any, selector, onceHandler, opts);
             delete onceHandler.origin;
         }
