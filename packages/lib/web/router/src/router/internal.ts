@@ -223,7 +223,7 @@ export const buildNavigateUrl = (path: string, options: RouteNavigationOptions):
     } catch (error) {
         throw makeResult(
             RESULT_CODE.ERROR_MVC_ROUTER_NAVIGATE_FAILED,
-            `Construct route destination failed. [path: ${path}, detail: ${(error as Error).toString()}]`,
+            `Construct route destination failed. [path: ${path}, detail: ${String(error)}]`,
             error,
         );
     }
