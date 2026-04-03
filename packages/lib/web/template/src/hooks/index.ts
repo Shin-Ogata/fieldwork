@@ -1,4 +1,4 @@
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction, UnknownFunction } from '@cdp/core-utils';
 import type {
     HookStateUpdater,
     HookReducer,
@@ -73,7 +73,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    (renderer: UnknownFunction, ...args: unknown[]): unknown;
+    (renderer: AnyFunction, ...args: unknown[]): unknown;
 
     /**
      * @en Add Hooks feature to template literal syntax. (specify a DOM disconnect detection element)
@@ -97,7 +97,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    with: (elRoot: Node | null, renderer: UnknownFunction, ...args: unknown[]) => unknown;
+    with: (elRoot: Node | null, renderer: AnyFunction, ...args: unknown[]) => unknown;
 
     /**
      * @en Return a stateful value and a function to update it.
