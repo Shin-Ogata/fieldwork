@@ -1,5 +1,5 @@
 import {
-    type UnknownFunction,
+    type AnyFunction,
     type Arguments,
     isArray,
 } from '@cdp/core-utils';
@@ -10,7 +10,7 @@ import type {
 } from './interfaces';
 
 /** @internal */ const _context = Symbol('context');
-/** @internal */ type SubscriptionMap = Map<UnknownFunction, Subscription>;
+/** @internal */ type SubscriptionMap = Map<AnyFunction, Subscription>;
 /** @internal */ type ListerMap       = Map<string, SubscriptionMap>;
 /** @internal */ type SubscriptionSet = Set<Subscription>;
 /** @internal */ type SubscribableMap = WeakMap<Subscribable, ListerMap>;
@@ -22,7 +22,7 @@ interface Context {
 }
 
 /** @internal register listener context */
-function register(context: Context, target: Subscribable, channel: string | string[], listener: UnknownFunction): Subscription {
+function register(context: Context, target: Subscribable, channel: string | string[], listener: AnyFunction): Subscription {
     const subscriptions: Subscription[] = [];
 
     const channels = isArray(channel) ? channel : [channel];
@@ -31,8 +31,8 @@ function register(context: Context, target: Subscribable, channel: string | stri
         context.set.add(s);
         subscriptions.push(s);
 
-        const listenerMap = context.map.get(target) ?? new Map<string, Map<UnknownFunction, Subscription>>();
-        const map = listenerMap.get(ch) ?? new Map<UnknownFunction, Subscription>();
+        const listenerMap = context.map.get(target) ?? new Map<string, Map<AnyFunction, Subscription>>();
+        const map = listenerMap.get(ch) ?? new Map<AnyFunction, Subscription>();
         map.set(listener, s);
 
         if (!listenerMap.has(ch)) {
@@ -61,7 +61,7 @@ function register(context: Context, target: Subscribable, channel: string | stri
 }
 
 /** @internal unregister listener context */
-function unregister(context: Context, target?: Subscribable, channel?: string | string[], listener?: UnknownFunction): void {
+function unregister(context: Context, target?: Subscribable, channel?: string | string[], listener?: AnyFunction): void {
     if (null != target) {
         target.off(channel, listener);
 
