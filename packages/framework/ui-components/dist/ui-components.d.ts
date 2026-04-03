@@ -7,7 +7,7 @@
  *     - @cdp/ui-listview
  *     - @cdp/ui-forms
  */
-import { AnyObject, DOM, DOMEventListener, DOMSelector, UnknownObject, View, ViewConstructionOptions } from '@cdp/runtime';
+import { DOM, DOMEventListener, DOMSelector, UnknownObject, View, ViewConstructionOptions } from '@cdp/runtime';
 /**
  * @en CSS vendor prefix string definition.
  * @ja CSS ベンダープリフィックス文字列定義
@@ -548,7 +548,7 @@ export interface IListItemView {
 /**
  * {@link IListItemView} constructor alias.
  */
-export type IListItemViewConstructor = new (options?: AnyObject) => IListItemView;
+export type IListItemViewConstructor = new (options?: any) => IListItemView;
 /**
  * @en List operation interface.
  * @ja リスト操作のインターフェイス
