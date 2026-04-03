@@ -1,5 +1,3 @@
-import type { AnyObject } from '@cdp/runtime';
-
 /**
  * @en Options to pass to {@link IListItemView}`.updateHeight()`.
  * @ja {@link IListItemView}`.updateHeight()` に渡すオプション
@@ -67,4 +65,4 @@ export interface IListItemView {
 /**
  * {@link IListItemView} constructor alias.
  */
-export type IListItemViewConstructor = new (options?: AnyObject) => IListItemView;
+export type IListItemViewConstructor = new (options?: any) => IListItemView; // eslint-disable-line @typescript-eslint/no-explicit-any
