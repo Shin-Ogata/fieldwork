@@ -464,8 +464,8 @@ export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & C
 export type CollectionDataSyncOptions = RestDataSyncOptions;
 
 /**
- * @en {@link Collection.fetch | Collection.fetch}() options.
- * @ja {@link Collection.fetch | Collection.fetch}() のオプション
+ * @en {@link Collection['fetch'] | Collection.fetch}() options.
+ * @ja {@link Collection['fetch'] | Collection.fetch}() のオプション
  */
 export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>>
     extends CollectionItemQueryOptions<TItem, TKey>, CollectionSetOptions {
