@@ -522,7 +522,7 @@ export function className(x: any): string {
             }
         }
     }
-    return (Object.prototype.toString.call(x) as string).slice(8, -1);
+    return (Object.prototype.toString.call(x)).slice(8, -1);
 }
 
 /**
