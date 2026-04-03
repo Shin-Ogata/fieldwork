@@ -285,7 +285,7 @@ function parseEventArgs(...args: unknown[]): ParseEventArgsResult {
 
 /** @internal event-shortcut impl */
 function eventShortcut<T extends ElementBase>(
-    this: DOMEvents<Accessible<T, () => void>>,
+    this: DOMEvents<T>,
     name: string,
     handler?: EventListener,
     options?: boolean | AddEventListenerOptions
@@ -293,8 +293,9 @@ function eventShortcut<T extends ElementBase>(
     if (null == handler) {
         for (const el of this) {
             if (!_noTrigger.includes(name)) {
-                if (isFunction(el[name])) {
-                    el[name]();
+                const accessible = el as Accessible<T, () => void>;
+                if (isFunction(accessible[name])) {
+                    accessible[name]();
                 } else {
                     $(el as any).trigger(name as any);
                 }
@@ -788,7 +789,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public click(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('click', handler, options);
+        return eventShortcut.call(this, 'click', handler, options) as this;
     }
 
     /**
@@ -803,7 +804,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public dblclick(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('dblclick', handler, options);
+        return eventShortcut.call(this, 'dblclick', handler, options) as this;
     }
 
     /**
@@ -818,7 +819,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public blur(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('blur', handler, options);
+        return eventShortcut.call(this, 'blur', handler, options) as this;
     }
 
     /**
@@ -833,7 +834,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public focus(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('focus', handler, options);
+        return eventShortcut.call(this, 'focus', handler, options) as this;
     }
 
     /**
@@ -848,7 +849,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public focusin(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('focusin', handler, options);
+        return eventShortcut.call(this, 'focusin', handler, options) as this;
     }
 
     /**
@@ -863,7 +864,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public focusout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('focusout', handler, options);
+        return eventShortcut.call(this, 'focusout', handler, options) as this;
     }
 
     /**
@@ -878,7 +879,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public keyup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('keyup', handler, options);
+        return eventShortcut.call(this, 'keyup', handler, options) as this;
     }
 
     /**
@@ -893,7 +894,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public keydown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('keydown', handler, options);
+        return eventShortcut.call(this, 'keydown', handler, options) as this;
     }
 
     /**
@@ -908,7 +909,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public keypress(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('keypress', handler, options);
+        return eventShortcut.call(this, 'keypress', handler, options) as this;
     }
 
     /**
@@ -923,7 +924,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public submit(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('submit', handler, options);
+        return eventShortcut.call(this, 'submit', handler, options) as this;
     }
 
     /**
@@ -938,7 +939,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public contextmenu(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('contextmenu', handler, options);
+        return eventShortcut.call(this, 'contextmenu', handler, options) as this;
     }
 
     /**
@@ -953,7 +954,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public change(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('change', handler, options);
+        return eventShortcut.call(this, 'change', handler, options) as this;
     }
 
     /**
@@ -968,7 +969,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mousedown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mousedown', handler, options);
+        return eventShortcut.call(this, 'mousedown', handler, options) as this;
     }
 
     /**
@@ -983,7 +984,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mousemove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mousemove', handler, options);
+        return eventShortcut.call(this, 'mousemove', handler, options) as this;
     }
 
     /**
@@ -998,7 +999,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mouseup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mouseup', handler, options);
+        return eventShortcut.call(this, 'mouseup', handler, options) as this;
     }
 
     /**
@@ -1013,7 +1014,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mouseenter(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mouseenter', handler, options);
+        return eventShortcut.call(this, 'mouseenter', handler, options) as this;
     }
 
     /**
@@ -1028,7 +1029,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mouseleave(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mouseleave', handler, options);
+        return eventShortcut.call(this, 'mouseleave', handler, options) as this;
     }
 
     /**
@@ -1043,7 +1044,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mouseout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mouseout', handler, options);
+        return eventShortcut.call(this, 'mouseout', handler, options) as this;
     }
 
     /**
@@ -1058,7 +1059,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public mouseover(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('mouseover', handler, options);
+        return eventShortcut.call(this, 'mouseover', handler, options) as this;
     }
 
     /**
@@ -1073,7 +1074,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public touchstart(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('touchstart', handler, options);
+        return eventShortcut.call(this, 'touchstart', handler, options) as this;
     }
 
     /**
@@ -1088,7 +1089,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public touchend(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('touchend', handler, options);
+        return eventShortcut.call(this, 'touchend', handler, options) as this;
     }
 
     /**
@@ -1103,7 +1104,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public touchmove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('touchmove', handler, options);
+        return eventShortcut.call(this, 'touchmove', handler, options) as this;
     }
 
     /**
@@ -1118,7 +1119,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public touchcancel(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('touchcancel', handler, options);
+        return eventShortcut.call(this, 'touchcancel', handler, options) as this;
     }
 
     /**
@@ -1133,7 +1134,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public resize(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('resize', handler, options);
+        return eventShortcut.call(this, 'resize', handler, options) as this;
     }
 
     /**
@@ -1148,7 +1149,7 @@ export class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEle
      *  - `ja` `addEventLisntener` に指定するオプション
      */
     public scroll(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this {
-        return eventShortcut.bind(this)('scroll', handler, options);
+        return eventShortcut.call(this, 'scroll', handler, options) as this;
     }
 
 ///////////////////////////////////////////////////////////////////////

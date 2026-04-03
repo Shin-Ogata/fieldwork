@@ -15,7 +15,7 @@
     "noImplicitReturns": true,
     "pretty": true,
     "resolveJsonModule": true,
-    "strictBindCallApply": false,
+    "strictBindCallApply": true,
     "strictBuiltinIteratorReturn": true,
     "strictFunctionTypes": false,
     "strictNullChecks": true,

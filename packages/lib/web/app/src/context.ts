@@ -324,7 +324,7 @@ class Application extends EventPublisher<AppContextEvent> implements AppContext 
         ]);
 
         _window.document.addEventListener(documentEventBackButton!, this.onHandleBackKey.bind(this));
-        _window.addEventListener('orientationchange', this.onHandleOrientationChanged.bind(this));
+        _window.addEventListener('orientationchange', () => { void this.onHandleOrientationChanged(); });
 
         this._router.on('loaded', this.onPageLoaded.bind(this));
         start && await this._router.refresh();

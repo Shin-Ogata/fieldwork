@@ -222,7 +222,7 @@ export interface Hooks {
     useContext: <T>(context: IHookContext<T>) => T;
 }
 
-const hooks: Hooks = hooksWith.bind(null, null);
+const hooks = hooksWith.bind(null, null) as Hooks;
 hooks.with            = hooksWith;
 hooks.useState        = useState;
 hooks.useEffect       = useEffect;

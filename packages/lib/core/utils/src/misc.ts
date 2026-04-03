@@ -111,7 +111,7 @@ export function debounce<T extends UnknownFunction>(executor: T, wait: number, o
 
         lastArgs = lastThis = undefined;
         lastInvokeTime = time;
-        result = executor.apply(thisArg, args);
+        result = executor.apply(thisArg, args as Parameters<T>) as Result;
         return result;
     };
 

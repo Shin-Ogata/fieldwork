@@ -313,7 +313,7 @@ export abstract class Collection<
                     }
                 }
                 // delegate event
-                this.trigger.call(this, event, model, collection, options); // eslint-disable-line no-useless-call
+                (this as any).trigger(event, model, collection, options);
             }
         };
 

@@ -85,7 +85,7 @@ class CancelablePromise<T> extends Promise<T> {
             let s: Subscription;
             p = new NativePromise((resolve, reject) => {
                 s = token.register(reject);
-                nativeThen.call(src, resolve, reject);
+                void nativeThen.call(src, resolve, reject);
             });
             const dispose = (): void => {
                 s.unsubscribe();
@@ -101,7 +101,7 @@ class CancelablePromise<T> extends Promise<T> {
         }
 
         if (thenArgs) {
-            p = nativeThen.apply(p, thenArgs);
+            p = nativeThen.apply(p, thenArgs) as Promise<T | TResult1 | TResult2>;
         }
         if (token?.cancelable) {
             _tokens.set(p, token);

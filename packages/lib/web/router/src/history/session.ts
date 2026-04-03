@@ -87,7 +87,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         this._window = windowContxt;
         this._mode = mode;
 
-        this._popStateHandler = this.onPopState.bind(this);
+        this._popStateHandler = (ev: PopStateEvent): void => { void this.onPopState(ev); };
         this._window.addEventListener('popstate', this._popStateHandler);
 
         // initialize
