@@ -1,5 +1,5 @@
 import {
-    type UnknownFunction,
+    type AnyFunction,
     type Accessible,
     isArray,
     isFunction,
@@ -70,7 +70,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     private readonly _routes: Record<string, RouteContextParameters> = {};
     private readonly _history: IHistory<RouteContext>;
     private readonly _$el: DOM;
-    private readonly _raf: UnknownFunction;
+    private readonly _raf: AnyFunction;
     private readonly _historyChangingHandler: typeof RouterContext.prototype.onHistoryChanging;
     private readonly _historyRefreshHandler: typeof RouterContext.prototype.onHistoryRefresh;
     private readonly _errorHandler: typeof RouterContext.prototype.onHandleError;
@@ -449,8 +449,8 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
     /** @internal trigger page event */
     private triggerPageCallback(event: PageEvent, target: Page | undefined, arg: Route | RouteChangeInfoContext): void {
         const method = camelize(`page-${event}`);
-        if (isFunction((target as Accessible<Page, UnknownFunction> | undefined)?.[method])) {
-            const retval = (target as Accessible<Page, UnknownFunction>)[method](arg);
+        if (isFunction((target as Accessible<Page, AnyFunction> | undefined)?.[method])) {
+            const retval = (target as Accessible<Page, AnyFunction>)[method](arg);
             if (retval instanceof NativePromise && (arg as Accessible<Route>)['asyncProcess']) {
                 (arg as RouteChangeInfoContext).asyncProcess.register(retval);
             }
