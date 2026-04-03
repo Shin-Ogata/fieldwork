@@ -61,7 +61,7 @@ export function elementify<T extends SelectorBase>(seed?: ElementifySeed<T>, con
             elements.push(...(seed as Node[] as Element[]));
         }
     } catch (e) {
-        console.warn(`elementify(${className(seed)}, ${className(context)}), failed. [error:${e}]`);
+        console.warn(`elementify(${className(seed)}, ${className(context)}), failed. [error:${String(e)}]`);
     }
 
     return elements as ElementResult<T>[];

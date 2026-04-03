@@ -146,14 +146,14 @@ describe('ui-listview/profile spec', () => {
                 newGp.register(0);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe(`listview given a invalid param. 'GroupProfile#register' method is acceptable only 1st layer group.`);
+                expect((e as Error).message).toBe(`listview given a invalid param. 'GroupProfile#register' method is acceptable only 1st layer group.`);
             }
 
             try {
                 newGp.restore();
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe(`listview given a invalid param. 'GroupProfile#restore' method is acceptable only 1st layer group.`);
+                expect((e as Error).message).toBe(`listview given a invalid param. 'GroupProfile#restore' method is acceptable only 1st layer group.`);
             }
 
             // invalid internal operation

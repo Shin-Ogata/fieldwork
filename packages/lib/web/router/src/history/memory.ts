@@ -277,7 +277,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
 
             df.resolve();
         } catch (e) {
-            this.publish('error', e);
+            this.publish('error', e as Error);
             df.reject(e);
         }
     }

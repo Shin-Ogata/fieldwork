@@ -6,7 +6,7 @@ import {
     getLanguageList,
     changeLanguage,
 } from '@cdp/i18n';
-import { RESULT_CODE } from '@cdp/result';
+import { type Result, RESULT_CODE } from '@cdp/result';
 import { ensureCleanI18N } from './tools';
 
 describe('i18n spec', () => {
@@ -36,7 +36,7 @@ describe('i18n spec', () => {
             });
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
+            expect((e as Result).code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }
     });
 
@@ -114,7 +114,7 @@ describe('i18n spec', () => {
             await changeLanguage('fr', { noThrow: false });
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
+            expect((e as Result).code).toBe(RESULT_CODE.ERROR_I18N_CORE_LAYER);
         }
     });
 

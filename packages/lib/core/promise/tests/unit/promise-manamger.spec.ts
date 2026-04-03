@@ -188,7 +188,7 @@ describe('promise/promise-manager spec', () => {
             await manager.any();
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.name).toBe('AggregateError');
+            expect((e as Error).name).toBe('AggregateError');
         }
     });
 
@@ -217,14 +217,14 @@ describe('promise/promise-manager spec', () => {
                 await promise1;
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('abort');
+                expect((e as Error).message).toBe('abort');
             }
 
             try {
                 await promise2;
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('abort');
+                expect((e as Error).message).toBe('abort');
             }
         } catch (e) {
             fail(e);

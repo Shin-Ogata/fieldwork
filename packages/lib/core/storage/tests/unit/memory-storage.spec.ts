@@ -49,7 +49,7 @@ describe('storage/memory-storage spec', () => {
         try {
             await _storage.keys({ cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
     });
 
@@ -114,7 +114,7 @@ describe('storage/memory-storage spec', () => {
         try {
             await _storage.getItem('num', { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
     });
 
@@ -158,7 +158,7 @@ describe('storage/memory-storage spec', () => {
         try {
             await _storage.setItem('bool', true, { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
         expect(await _storage.getItem<boolean>('bool')).toBe(false);
     });
@@ -192,7 +192,7 @@ describe('storage/memory-storage spec', () => {
         try {
             await _storage.removeItem('obj', { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
         expect(await _storage.getItem('obj')).toBeDefined();
     });
@@ -220,7 +220,7 @@ describe('storage/memory-storage spec', () => {
         try {
             await _storage.clear({ cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
 
         expect((await _storage.keys()).length).toBe(5);

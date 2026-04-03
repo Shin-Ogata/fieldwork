@@ -692,7 +692,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
             (this as Model).trigger('@sync', this as Model, resp as ModelSeed, opts);
             return resp;
         } catch (e) {
-            (this as Model).trigger('@error', this as Model, e, opts);
+            (this as Model).trigger('@error', this as Model, e as Error, opts);
             throw e;
         }
     }
@@ -767,7 +767,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
             (this as Model).trigger('@sync', this as Model, resp, opts);
             return resp as T;
         } catch (e) {
-            (this as Model).trigger('@error', this as Model, e, opts);
+            (this as Model).trigger('@error', this as Model, e as Error, opts);
             throw e;
         }
     }
@@ -805,7 +805,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
 
             return resp;
         } catch (e) {
-            (this as Model).trigger('@error', this as Model, e, opts);
+            (this as Model).trigger('@error', this as Model, e as Error, opts);
             throw e;
         }
     }

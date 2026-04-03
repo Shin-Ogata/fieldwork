@@ -57,7 +57,7 @@ describe('ui-listview/list-view spec', () => {
                 listview = new TestListView({ el: $el0, itemNum: 2 });
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview given a invalid param. [base hight: 0]');
+                expect((e as Error).message).toBe('listview given a invalid param. [base hight: 0]');
             }
 
             listview = new TestListView({ el: $el0, itemNum: 2, initialHeight: 300 });
@@ -146,7 +146,7 @@ describe('ui-listview/list-view spec', () => {
                 listview.removeItem(50);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview given a invalid param. [removeItem(), invalid index: 50]');
+                expect((e as Error).message).toBe('listview given a invalid param. [removeItem(), invalid index: 50]');
             }
 
             expect(items.length).toBe(5);
@@ -155,7 +155,7 @@ describe('ui-listview/list-view spec', () => {
                 listview.removeItem([50]);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview given a invalid param. [removeItem(), invalid index: 50]');
+                expect((e as Error).message).toBe('listview given a invalid param. [removeItem(), invalid index: 50]');
             }
 
             expect(items.length).toBe(5);
@@ -356,7 +356,7 @@ describe('ui-listview/list-view spec', () => {
                 await listview.ensureVisible(100);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview given a invalid param. ensureVisible() [invalid index: 100]');
+                expect((e as Error).message).toBe('listview given a invalid param. ensureVisible() [invalid index: 100]');
             }
         });
 

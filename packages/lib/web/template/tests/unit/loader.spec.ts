@@ -313,7 +313,7 @@ describe('loader spec', () => {
                 fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e instanceof URIError).toBe(true);
-                expect(e.message).toBe('cannot specified template resource. { selector: #test-typo,  url: ../../.temp/res/template/test.tpl }');
+                expect((e as URIError).message).toBe('cannot specified template resource. { selector: #test-typo,  url: ../../.temp/res/template/test.tpl }');
             }
         });
 
@@ -326,7 +326,7 @@ describe('loader spec', () => {
                 fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e instanceof TypeError).toBe(true);
-                expect(e.message).toBe('[type: typo] is unknown.');
+                expect((e as TypeError).message).toBe('[type: typo] is unknown.');
             }
         });
     });
