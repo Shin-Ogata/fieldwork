@@ -2530,7 +2530,7 @@ export function pathToRegexp(path: Path | Path[], options?: PathToRegexpOptions 
 export function stringify(data: TokenData): string;
 }
 export { path2regexp };
-import { $cdp, Accessible, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateCompileOptions, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
+import { $cdp, Accessible, AnyFunction, AnyObject, Arguments, ArrayChangeRecord, CancelToken, Cancelable, Class, Constructor, EventAll, EventBroker, EventReceiver, EventSource, IStorage, IStorageDataOptions, IStorageDataReturnType, IStorageEventCallback, IStorageOptions, JST, KeyToType, Keys, NonFunctionPropertyNames, Nullish, ObservableArray, ObservableObject, PlainObject, Result, Silenceable, StorageDataTypeList, StorageInputDataTypeList, Subscribable, Subscription, TemplateCompileOptions, TypedData, Types, UnknownFunction, UnknownObject } from '@cdp/lib-core';
 import { AjaxGetRequestShortcutOptions, AjaxOptions, AjaxRequestOptions, Serializable } from '@cdp/lib-worker';
 export type ElementBase = Node | Window;
 export type ElementResult<T> = T extends ElementBase ? T : HTMLElement;
@@ -3451,7 +3451,9 @@ export interface ConnectEventMap {
     'disconnected': Event;
 }
 export type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap & ConnectEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap & ConnectEventMap : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap : T extends Element ? ElementEventMap & ConnectEventMap : GlobalEventHandlersEventMap;
-export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
+export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = {
+    [K in keyof M]: (event: M[K], ...args: any[]) => any;
+}[keyof M];
 export type EventWithNamespace<T extends DOMEventMap<any>> = keyof T | `${string & keyof T}.${string}`;
 export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
 export type EventType<T extends DOMEventMap<any>> = MakeEventType<EventWithNamespace<T>, T>;
@@ -4650,7 +4652,7 @@ export declare const toUrl: (seed: string) => string;
  *  - `en` wait frame executor.
  *  - `ja` 処理待ちを行う実行関数
  */
-export declare function waitFrame(frameCount?: number, executor?: UnknownFunction): Promise<void>;
+export declare function waitFrame(frameCount?: number, executor?: AnyFunction): Promise<void>;
 /**
  * @en Wait until the current thread is idle.
  * @ja 現在のスレッドがアイドル状態になるまで待機
@@ -6633,8 +6635,8 @@ export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & C
 /** re-exports */
 export type CollectionDataSyncOptions = RestDataSyncOptions;
 /**
- * @en {@link Collection.fetch | Collection.fetch}() options.
- * @ja {@link Collection.fetch | Collection.fetch}() のオプション
+ * @en {@link Collection['fetch'] | Collection.fetch}() options.
+ * @ja {@link Collection['fetch'] | Collection.fetch}() のオプション
  */
 export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> extends CollectionItemQueryOptions<TItem, TKey>, CollectionSetOptions {
     /**
@@ -7508,7 +7510,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    (renderer: UnknownFunction, ...args: unknown[]): unknown;
+    (renderer: AnyFunction, ...args: unknown[]): unknown;
     /**
      * @en Add Hooks feature to template literal syntax. (specify a DOM disconnect detection element)
      * @ja テンプレートリテラル構文に Hooks 機能を付加 (DOM 切断検知要素を指定)
@@ -7531,7 +7533,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    with: (elRoot: Node | null, renderer: UnknownFunction, ...args: unknown[]) => unknown;
+    with: (elRoot: Node | null, renderer: AnyFunction, ...args: unknown[]) => unknown;
     /**
      * @en Return a stateful value and a function to update it.
      * @ja ステートフルな値と、それを更新するための関数を返却
