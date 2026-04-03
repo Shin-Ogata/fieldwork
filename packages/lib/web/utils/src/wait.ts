@@ -1,4 +1,4 @@
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { requestAnimationFrame, requestIdleCallback } from './ssr';
 
 /**
@@ -18,7 +18,7 @@ import { requestAnimationFrame, requestIdleCallback } from './ssr';
  *  - `en` wait frame executor.
  *  - `ja` 処理待ちを行う実行関数
  */
-export async function waitFrame(frameCount = 1, executor: UnknownFunction = requestAnimationFrame): Promise<void> {
+export async function waitFrame(frameCount = 1, executor: AnyFunction = requestAnimationFrame): Promise<void> {
     while (frameCount-- > 0) {
         await new Promise<void>(executor);
     }

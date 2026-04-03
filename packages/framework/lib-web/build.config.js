@@ -62,6 +62,7 @@ async function patch(index, code, includes) {
             Nullish,
             UnknownObject,
             UnknownFunction,
+            AnyFunction,
             Accessible,
             PlainObject,
             AnyObject,

@@ -4,7 +4,7 @@ import {
     render,
     hooks,
 } from '@cdp/template';
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import {
     type DOM,
@@ -30,7 +30,7 @@ describe('hooks/use-effect spec', () => {
 
     it('memoizes values', async () => {
         let effects = 0;
-        let set!: UnknownFunction;
+        let set!: AnyFunction;
 
         function App(): TemplateResult {
             const [, setVal] = useState(0);
@@ -53,7 +53,7 @@ describe('hooks/use-effect spec', () => {
 
     it('can teardown subscriptions', async () => {
         const subs: number[] = [];
-        let set!: UnknownFunction;
+        let set!: AnyFunction;
 
         function App(): TemplateResult {
             const [val, setVal] = useState(0);
@@ -111,7 +111,7 @@ describe('hooks/use-effect spec', () => {
 
     it('useEffect(fn, []) runs the effect only once', async () => {
         let calls = 0;
-        let setter!: UnknownFunction;
+        let setter!: AnyFunction;
 
         function App(): TemplateResult {
             const [age, setAge] = useState(() => 8);
@@ -155,8 +155,8 @@ describe('hooks/use-effect spec', () => {
     it('does not skip effects when another update is queued during commit phase', async () => {
         let parentEffects = 0;
         let childEffects = 0;
-        let parentSet!: UnknownFunction;
-        let childSet!: UnknownFunction;
+        let parentSet!: AnyFunction;
+        let childSet!: AnyFunction;
 
         function Child({ prop }: { prop: unknown; }): TemplateResult {
             const [state, setState] = useState();

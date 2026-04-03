@@ -1,12 +1,12 @@
+import type { IHookState } from './interfaces';
 import { Hook, makeHook } from './hook';
-import type { State } from './state';
 
 /** @internal */
 export const useMemo = makeHook(class <T> extends Hook {
     value: T;
     values: unknown[];
 
-    constructor(id: number, state: State, fn: () => T, values: unknown[]) {
+    constructor(id: number, state: IHookState, fn: () => T, values: unknown[]) {
         super(id, state);
         this.value = fn();
         this.values = values;

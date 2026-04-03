@@ -12,8 +12,8 @@ void (async () => {
         $app: DOM;
     }
 
-    const customInit = (context: AppContextEx): Promise<void> => {
-        context.$app   = $('#app');
+    const customInit = (context: AppContext): Promise<void> => {
+        (context as AppContextEx).$app = $('#app');
         context.extension = getConfig();
         return sleep(1000);
     };

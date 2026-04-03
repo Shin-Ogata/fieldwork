@@ -4,7 +4,7 @@ import {
     render,
     hooks,
 } from '@cdp/template';
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
@@ -26,7 +26,7 @@ describe('hooks/use-state spec', () => {
     });
 
     it('lazy callback', async () => {
-        let setter!: UnknownFunction;
+        let setter!: AnyFunction;
 
         function App(): TemplateResult {
             const [age, setAge] = useState(() => 8);
@@ -43,7 +43,7 @@ describe('hooks/use-state spec', () => {
     });
 
     it('updater function should only trigger rerender if state has changed', async () => {
-        let setter!: UnknownFunction, runs = 0;
+        let setter!: AnyFunction, runs = 0;
 
         function App(): TemplateResult {
             runs++;

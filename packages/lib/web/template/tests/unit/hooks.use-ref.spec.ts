@@ -4,7 +4,7 @@ import {
     render,
     hooks,
 } from '@cdp/template';
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
@@ -27,7 +27,7 @@ describe('hooks/use-ref spec', () => {
 
     it('always returns the same object', async () => {
         let countRef!: { current: number; };
-        let requestRender!: UnknownFunction;
+        let requestRender!: AnyFunction;
         let timesRendered = 0;
 
         function App(): TemplateResult {

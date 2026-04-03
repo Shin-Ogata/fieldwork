@@ -27,10 +27,15 @@ export type Nullish = void | null | undefined;
  */
 export type Nullable<T extends object> = T | Nullish;
 /**
- * @en Avoid the `Function`types.
- * @ja 汎用関数型
+ * @en General function type for direct invocation and type assertions.
+ * @ja 直接呼び出し・型アサーション用の汎用関数型
  */
 export type UnknownFunction = (...args: unknown[]) => unknown;
+/**
+ * @en General function type for generic constraints. Type inference is preserved through the type variable `T`.
+ * @ja ジェネリック制約用の汎用関数型. 型変数 `T` を通じて型推論を維持する
+ */
+export type AnyFunction = (...args: any[]) => any;
 /**
  * @en Avoid the `Object` and `{}` types, as they mean 'any non-nullish value'.
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
@@ -1332,7 +1337,7 @@ export interface TimerHandle {
  * @en Type of timer start functions.
  * @ja タイマー開始関数の型
  */
-export type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
+export type TimerStartFunction = (handler: AnyFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
 /**
  * @en Type of timer stop functions.
  * @ja タイマー停止関数の型
@@ -1413,7 +1418,7 @@ export declare function post<T>(executor: () => T): Promise<T>;
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export declare function noop(...args: unknown[]): any;
+export declare function noop(...args: any[]): any;
 /**
  * @en Wait for the designation elapse.
  * @ja 指定時間処理を待機
@@ -1444,7 +1449,7 @@ export interface DebounceOptions {
      */
     trailing?: boolean;
 }
-export type DebouncedFunction<T extends UnknownFunction> = T & {
+export type DebouncedFunction<T extends AnyFunction> = T & {
     cancel(): void;
     flush(): ReturnType<T>;
     pending(): boolean;
@@ -1463,7 +1468,7 @@ export type DebouncedFunction<T extends UnknownFunction> = T & {
  *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
  *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
  */
-export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
+export declare function debounce<T extends AnyFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
 /**
  * @en Option interface for {@link throttle}().
  * @ja {@link throttle}() に指定するオプションインターフェイス
@@ -1499,7 +1504,7 @@ export interface ThrottleOptions {
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
+export declare function throttle<T extends AnyFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
 /**
  * @en Returns a function that will be executed at most one time, no matter how often you call it.
  * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
@@ -1508,7 +1513,7 @@ export declare function throttle<T extends UnknownFunction>(executor: T, elapse:
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export declare function once<T extends UnknownFunction>(executor: T): T;
+export declare function once<T extends AnyFunction>(executor: T): T;
 /**
  * @en Return a deferred executable function object.
  * @ja 遅延実行可能な関数オブジェクトを返却

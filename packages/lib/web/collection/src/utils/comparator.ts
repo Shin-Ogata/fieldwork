@@ -49,12 +49,12 @@ export function defaultCollatorProvider(newProvider?: CollatorProvider): Collato
  *  - `ja` ソート順を指定
  */
 export function getStringComparator<T, K extends string = string>(prop: K, order: SortOrder): SortCallback<T> {
-    return (lhs: Accessible<T>, rhs: Accessible<T>): number => {
+    return ((lhs: Accessible<T>, rhs: Accessible<T>): number => {
         // undefined は '' と同等に扱う
         const lhsProp = (null != lhs[prop]) ? lhs[prop] as string : '';
         const rhsProp = (null != rhs[prop]) ? rhs[prop] as string : '';
         return order * _collator().compare(lhsProp, rhsProp);
-    };
+    }) as SortCallback<T>;
 }
 
 /**
@@ -69,7 +69,7 @@ export function getStringComparator<T, K extends string = string>(prop: K, order
  *  - `ja` ソート順を指定
  */
 export function getDateComparator<T, K extends string = string>(prop: K, order: SortOrder): SortCallback<T> {
-    return (lhs: Accessible<T>, rhs: Accessible<T>): number => {
+    return ((lhs: Accessible<T>, rhs: Accessible<T>): number => {
         const lhsDate = lhs[prop];
         const rhsDate = rhs[prop];
         if (lhsDate === rhsDate) {
@@ -90,7 +90,7 @@ export function getDateComparator<T, K extends string = string>(prop: K, order: 
                 return (lhsValue < rhsValue ? -1 * order : 1 * order);
             }
         }
-    };
+    }) as SortCallback<T>;
 }
 
 /**
@@ -105,7 +105,7 @@ export function getDateComparator<T, K extends string = string>(prop: K, order: 
  *  - `ja` ソート順を指定
  */
 export function getGenericComparator<T, K extends string = string>(prop: K, order: SortOrder): SortCallback<T> {
-    return (lhs: Accessible<T>, rhs: Accessible<T>): number => {
+    return ((lhs: Accessible<T>, rhs: Accessible<T>): number => {
         if (lhs[prop] === rhs[prop]) {
             return 0;
         } else if (null == lhs[prop]) {
@@ -117,7 +117,7 @@ export function getGenericComparator<T, K extends string = string>(prop: K, orde
         } else {
             return (lhs[prop] < rhs[prop] ? -1 * order : 1 * order);
         }
-    };
+    }) as SortCallback<T>;
 }
 
 /**

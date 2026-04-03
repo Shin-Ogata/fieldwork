@@ -4,7 +4,7 @@ import {
     render,
     hooks,
 } from '@cdp/template';
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import {
     type DOM,
@@ -72,7 +72,7 @@ describe('hooks/use-layout-effect spec', () => {
 
     it('memoizes values', async () => {
         let effects = 0;
-        let set!: UnknownFunction;
+        let set!: AnyFunction;
 
         function App(): TemplateResult {
             const [, setVal] = useState(0);
@@ -96,7 +96,7 @@ describe('hooks/use-layout-effect spec', () => {
 
     it('can teardown subscriptions', async () => {
         const subs: number[] = [];
-        let set!: UnknownFunction;
+        let set!: AnyFunction;
 
         function App(): TemplateResult {
             const [val, setVal] = useState(0);
@@ -154,7 +154,7 @@ describe('hooks/use-layout-effect spec', () => {
 
     it('useLayoutEffect(fn) runs the effect after each render', async () => {
         let calls = 0;
-        let setter!: UnknownFunction;
+        let setter!: AnyFunction;
 
         function App(): TemplateResult {
             const [age, setAge] = useState(() => 8);
@@ -181,7 +181,7 @@ describe('hooks/use-layout-effect spec', () => {
 
     it('useLayoutEffect(fn, []) runs the effect only once', async () => {
         let calls = 0;
-        let setter!: UnknownFunction;
+        let setter!: AnyFunction;
 
         function App(): TemplateResult {
             const [age, setAge] = useState(() => 8);

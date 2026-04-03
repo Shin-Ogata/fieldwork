@@ -4,7 +4,7 @@ import {
     render,
     hooks,
 } from '@cdp/template';
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
@@ -27,7 +27,7 @@ describe('hooks/use-memo spec', () => {
 
     it('should return the same value when the inputs are the same', async () => {
         let memoizedValue!: number;
-        let requestRender!: UnknownFunction;
+        let requestRender!: AnyFunction;
         let timesRendered = 0;
         const value = 2;
 
@@ -52,7 +52,7 @@ describe('hooks/use-memo spec', () => {
 
     it('should return a new value when the inputs are different', async () => {
         let memoizedValue!: number;
-        let set!: UnknownFunction;
+        let set!: AnyFunction;
         let timesRendered = 0;
 
         function App(): TemplateResult {
@@ -76,7 +76,7 @@ describe('hooks/use-memo spec', () => {
 
     it('for coverage: fail-safe array', async () => {
         let memoizedValue!: number;
-        let requestRender!: UnknownFunction;
+        let requestRender!: AnyFunction;
         const value = 2;
 
         function App(): TemplateResult {

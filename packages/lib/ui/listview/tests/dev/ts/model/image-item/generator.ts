@@ -97,7 +97,7 @@ export interface GenerateImageItemsOptions extends Cancelable {
     /** 進捗単位 */
     unit?: number;
     /** プロパティコールバック */
-    callback?: (item: ImageItemInfo | ImageItemInfo[], index: number) => void | Promise<void>;
+    callback?: ((item: ImageItemInfo, index: number) => void | Promise<void>) | ((items: ImageItemInfo[], unitIndex: number) => void | Promise<void>);
     /** プロパティコールバックの発火条件 [default: both] */
     callbackType?: 'item' | 'unit' | 'both';
 }

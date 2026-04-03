@@ -14,10 +14,15 @@ export type Nullish = void | null | undefined;
  */
 export type Nullable<T extends object> = T | Nullish;
 /**
- * @en Avoid the `Function`types.
- * @ja 汎用関数型
+ * @en General function type for direct invocation and type assertions.
+ * @ja 直接呼び出し・型アサーション用の汎用関数型
  */
 export type UnknownFunction = (...args: unknown[]) => unknown;
+/**
+ * @en General function type for generic constraints. Type inference is preserved through the type variable `T`.
+ * @ja ジェネリック制約用の汎用関数型. 型変数 `T` を通じて型推論を維持する
+ */
+export type AnyFunction = (...args: any[]) => any;
 /**
  * @en Avoid the `Object` and `{}` types, as they mean "any non-nullish value".
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用

@@ -1,4 +1,4 @@
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction, UnknownFunction } from '@cdp/core-utils';
 import type { HookStateUpdater, HookReducer, IHookContext } from './interfaces';
 export * from './interfaces';
 export { Hook, makeHook } from './hook';
@@ -58,7 +58,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    (renderer: UnknownFunction, ...args: unknown[]): unknown;
+    (renderer: AnyFunction, ...args: unknown[]): unknown;
     /**
      * @en Add Hooks feature to template literal syntax. (specify a DOM disconnect detection element)
      * @ja テンプレートリテラル構文に Hooks 機能を付加 (DOM 切断検知要素を指定)
@@ -81,7 +81,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    with: (elRoot: Node | null, renderer: UnknownFunction, ...args: unknown[]) => unknown;
+    with: (elRoot: Node | null, renderer: AnyFunction, ...args: unknown[]) => unknown;
     /**
      * @en Return a stateful value and a function to update it.
      * @ja ステートフルな値と、それを更新するための関数を返却

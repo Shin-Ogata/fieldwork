@@ -5,6 +5,7 @@
 
 import { deepEqual } from '@cdp/core-utils';
 import { Hook, makeHook } from './hook';
+import type { IHookState } from './interfaces';
 import type { State, Callable } from './state';
 
 type Effect = (this: State) => void | VoidFunction | Promise<void>;
@@ -17,9 +18,9 @@ export const createEffect = (setEffects: (state: State, cb: Callable) => void) =
         values?: unknown[];
         _teardown!: Promise<void> | VoidFunction | void;
 
-        constructor(id: number, state: State, ignored1: Effect, ignored2?: unknown[]) {
+        constructor(id: number, state: IHookState, ignored1: Effect, ignored2?: unknown[]) {
             super(id, state);
-            setEffects(state, this);
+            setEffects(state as State, this);
         }
 
         update(callback: Effect, values?: unknown[]): void {
@@ -36,7 +37,7 @@ export const createEffect = (setEffects: (state: State, cb: Callable) => void) =
 
         run(): void {
             this.teardown();
-            this._teardown = this.callback.call(this.state);
+            this._teardown = this.callback.call(this.state as State);
         }
 
         teardown(): void {

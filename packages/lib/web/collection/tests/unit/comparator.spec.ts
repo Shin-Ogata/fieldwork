@@ -45,7 +45,7 @@ describe('utils/comparator spec', () => {
             { id: '07', prop: '40.txt' },
         ];
 
-        let comparator = getStringComparator<{ id: string; prop: string; }>('prop', SortOrder.ASC);
+        let comparator = getStringComparator<{ id: string; prop: string | undefined; }>('prop', SortOrder.ASC);
         let results = items.slice().sort(comparator);
 
         expect(results[0].prop).toBeUndefined();
@@ -57,7 +57,7 @@ describe('utils/comparator spec', () => {
         expect(results[6].prop).toBe('40.txt');
         expect(results[7].prop).toBe('80.txt');
 
-        comparator = getStringComparator<{ id: string; prop: string; }>('prop', SortOrder.DESC);
+        comparator = getStringComparator<{ id: string; prop: string | undefined; }>('prop', SortOrder.DESC);
         results = items.slice().sort(comparator);
 
         expect(results[0].prop).toBe('80.txt');
@@ -69,7 +69,7 @@ describe('utils/comparator spec', () => {
         expect(results[6].prop).toBe('1.txt');
         expect(results[7].prop).toBeUndefined();
 
-        comparator = getStringComparator<{ id: string; prop: string; }>('prop', SortOrder.NO);
+        comparator = getStringComparator<{ id: string; prop: string | undefined; }>('prop', SortOrder.NO);
         results = items.slice().sort(comparator);
 
         expect(results[0].prop).toBe('1.txt');
@@ -93,7 +93,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: new Date('2002-04-01') },
         ];
 
-        let comparator = getDateComparator<{ id: string; prop: Date; }>('prop', SortOrder.ASC);
+        let comparator = getDateComparator<{ id: string; prop: Date | undefined; }>('prop', SortOrder.ASC);
         let results = sort(items, comparator);
 
         expect(results[0].id).toBe('03');
@@ -103,7 +103,7 @@ describe('utils/comparator spec', () => {
         expect(results[4].id).toBe('05');
         expect(results[5].id).toBe('02');
 
-        comparator = getDateComparator<{ id: string; prop: Date; }>('prop', SortOrder.DESC);
+        comparator = getDateComparator<{ id: string; prop: Date | undefined; }>('prop', SortOrder.DESC);
         results = sort(items, comparator);
 
         expect(results[0].id).toBe('02');
@@ -113,7 +113,7 @@ describe('utils/comparator spec', () => {
         expect(results[4].id).toBe('04');
         expect(results[5].id).toBe('03');
 
-        comparator = getDateComparator<{ id: string; prop: Date; }>('prop', SortOrder.NO);
+        comparator = getDateComparator<{ id: string; prop: Date | undefined; }>('prop', SortOrder.NO);
         results = sort(items, comparator);
 
         expect(results[0].id).toBe('00');
@@ -134,7 +134,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: undefined },
         ];
 
-        let comparator = getBooleanComparator<{ id: string; prop: boolean; }>('prop', SortOrder.ASC);
+        let comparator = getBooleanComparator<{ id: string; prop: boolean | undefined; }>('prop', SortOrder.ASC);
         let results = sort(items, comparator);
 
         expect(results[0].id).toBe('02');
@@ -144,7 +144,7 @@ describe('utils/comparator spec', () => {
         expect(results[4].id).toBe('01');
         expect(results[5].id).toBe('03');
 
-        comparator = getBooleanComparator<{ id: string; prop: boolean; }>('prop', SortOrder.DESC);
+        comparator = getBooleanComparator<{ id: string; prop: boolean | undefined; }>('prop', SortOrder.DESC);
         results = sort(items, comparator);
 
         expect(results[0].id).toBe('01');
@@ -154,7 +154,7 @@ describe('utils/comparator spec', () => {
         expect(results[4].id).toBe('02');
         expect(results[5].id).toBe('05');
 
-        comparator = getBooleanComparator<{ id: string; prop: boolean; }>('prop', SortOrder.NO);
+        comparator = getBooleanComparator<{ id: string; prop: boolean | undefined; }>('prop', SortOrder.NO);
         results = sort(items, comparator);
 
         expect(results[0].id).toBe('00');
@@ -175,7 +175,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: Infinity },
         ];
 
-        let comparator = getNumberComparator<{ id: string; prop: number; }>('prop', SortOrder.ASC);
+        let comparator = getNumberComparator<{ id: string; prop: number | undefined; }>('prop', SortOrder.ASC);
         let results = sort(items, comparator);
 
         expect(results[0].id).toBe('02');
@@ -185,7 +185,7 @@ describe('utils/comparator spec', () => {
         expect(results[4].id).toBe('03');
         expect(results[5].id).toBe('05');
 
-        comparator = getNumberComparator<{ id: string; prop: number; }>('prop', SortOrder.DESC);
+        comparator = getNumberComparator<{ id: string; prop: number | undefined; }>('prop', SortOrder.DESC);
         results = sort(items, comparator);
 
         expect(results[0].id).toBe('05');
@@ -195,7 +195,7 @@ describe('utils/comparator spec', () => {
         expect(results[4].id).toBe('04');
         expect(results[5].id).toBe('02');
 
-        comparator = getNumberComparator<{ id: string; prop: number; }>('prop', SortOrder.NO);
+        comparator = getNumberComparator<{ id: string; prop: number | undefined; }>('prop', SortOrder.NO);
         results = sort(items, comparator);
 
         expect(results[0].id).toBe('00');
@@ -226,7 +226,7 @@ describe('utils/comparator spec', () => {
             { id: '07', prop: '40.txt' },
         ];
 
-        const comparator = toComparator<{ id: string; prop: string; }>(sortKey);
+        const comparator = toComparator<{ id: string; prop: string | undefined; }>(sortKey);
         const results = items.slice().sort(comparator);
 
         expect(results[0].prop).toBeUndefined();
@@ -255,7 +255,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: undefined },
         ];
 
-        const comparator = toComparator<{ id: string; prop: boolean; }>(sortKey);
+        const comparator = toComparator<{ id: string; prop: boolean | undefined; }>(sortKey);
         const results = sort(items, comparator);
 
         expect(results[0].id).toBe('02');
@@ -282,7 +282,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: Infinity },
         ];
 
-        const comparator = toComparator<{ id: string; prop: number; }>(sortKey);
+        const comparator = toComparator<{ id: string; prop: number | undefined; }>(sortKey);
         const results = sort(items, comparator);
 
         expect(results[0].id).toBe('02');
@@ -310,7 +310,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: new Date('2002-04-01') },
         ];
 
-        const comparator = toComparator<{ id: string; prop: Date; }>(sortKey);
+        const comparator = toComparator<{ id: string; prop: Date | undefined; }>(sortKey);
         const results = sort(items, comparator);
 
         expect(results[0].id).toBe('03');
@@ -336,7 +336,7 @@ describe('utils/comparator spec', () => {
             { id: '05', prop: Infinity },
         ];
 
-        const comparator = toComparator<{ id: string; prop: number; }>(sortKey);
+        const comparator = toComparator<{ id: string; prop: number | undefined; }>(sortKey);
         const results = sort(items, comparator);
 
         expect(results[0].id).toBe('02');

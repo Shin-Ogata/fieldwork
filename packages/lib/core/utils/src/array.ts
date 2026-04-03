@@ -193,14 +193,16 @@ export function groupBy<
     const _sumKeys: string[] = sumKeys ?? [];
     _sumKeys.push(_groupKey);
 
-    const hash = array.reduce((res: Accessible<T>, data: Accessible<T>) => {
+    const hash = array.reduce((res: Accessible<T>, data) => {
+        const _data = data as Accessible<T>;
+
         // create groupBy internal key
-        const _key = keys.reduce((s, k) => s + String(data[k]), '');
+        const _key = keys.reduce((s, k) => s + String(_data[k]), '');
 
         // init keys
         if (!(_key in res)) {
             const keyList = keys.reduce((h: UnknownObject, k: string) => {
-                assignValue(h, k, data[k]);
+                assignValue(h, k, _data[k]);
                 return h;
             }, {});
 
@@ -218,14 +220,14 @@ export function groupBy<
                 resKey[k] = resKey[k] || []; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
                 resKey[k].push(data);
             } else {
-                resKey[k] += data[k] as number;
+                resKey[k] += _data[k] as number;
             }
         }
 
         return res;
-    }, {});
+    }, {} as Accessible<T>);
 
-    return Object.values(hash);
+    return Object.values(hash) as GroupByReturnValue<T, TKEYS, TSUMKEYS, TGROUPKEY>[];
 }
 
 //__________________________________________________________________________________________________//

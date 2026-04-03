@@ -7,7 +7,7 @@
  *     - @cdp/binary
  *     - @cdp/ajax
  */
-import { Keys, PlainObject, TypeToKey, Types, UnknownFunction } from '@cdp/lib-core';
+import { AnyFunction, Keys, PlainObject, TypeToKey, Types } from '@cdp/lib-core';
 import { Subscribable } from '@cdp/lib-core';
 import { Cancelable } from '@cdp/lib-core';
 /**
@@ -701,7 +701,7 @@ export declare class InlineWorker extends Worker {
  * @en Thread options
  * @en スレッドオプション
  */
-export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, WorkerOptions {
+export interface ThreadOptions<T extends AnyFunction> extends Cancelable, WorkerOptions {
     args?: Parameters<T>;
 }
 /**
@@ -734,5 +734,5 @@ export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, Wo
  *  - `en` thread options
  *  - `ja` スレッドオプション
  */
-export declare function thread<T, U>(executor: (...args: U[]) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T>;
+export declare function thread<T, A extends unknown[]>(executor: (...args: A) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T>;
 import './result-code-defs';

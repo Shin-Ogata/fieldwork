@@ -374,7 +374,7 @@ describe('loader spec', () => {
                 url: '../../.temp/res/template/test.tpl',
                 type: 'bridge',
                 transformer: TemplateBridge.getBuitinTransformer('stampino'),
-                callback: (src: HTMLTemplateElement) => {
+                callback: (src) => {
                     $(src).localize();
                     return src;
                 },
@@ -400,7 +400,7 @@ describe('loader spec', () => {
                 url: '../../.temp/res/template/test.tpl',
                 type: 'bridge',
                 transformer: TemplateBridge.getBuitinTransformer('stampino'),
-                callback: (src: HTMLTemplateElement) => {
+                callback: (src) => {
                     $(src).localize();
                     return src;
                 },

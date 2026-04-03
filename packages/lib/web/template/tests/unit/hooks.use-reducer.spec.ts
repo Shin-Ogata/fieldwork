@@ -4,7 +4,7 @@ import {
     render,
     hooks,
 } from '@cdp/template';
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { waitFrame } from '@cdp/web-utils';
 import type { DOM } from '@cdp/dom';
 import { prepare, cleanup } from './tools';
@@ -31,7 +31,7 @@ describe('hooks/use-reducer spec', () => {
 
         const initialState = { count: 3 };
 
-        let dispatch!: UnknownFunction;
+        let dispatch!: AnyFunction;
         let state!: State;
 
         const reducer = (state: State, action: Action): State => {
@@ -90,7 +90,7 @@ describe('hooks/use-reducer spec', () => {
                 otherProp: 0,
             } as State;
         };
-        let dispatch!: UnknownFunction;
+        let dispatch!: AnyFunction;
         let state!: State;
 
         const reducer = (state: State, action: Action): State => {

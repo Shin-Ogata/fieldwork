@@ -566,7 +566,7 @@ export abstract class Collection<
         }
 
         if (!silent) {
-            (this as Collection).trigger('@sort', this as Collection, opts);
+            (this as unknown as Collection).trigger('@sort', this as unknown as Collection, opts);
         }
 
         return this;
@@ -601,7 +601,7 @@ export abstract class Collection<
         if (filter !== this[_properties].afterFilter) {
             this[_properties].afterFilter = filter;
             if (!silent) {
-                (this as Collection).trigger('@filter', this as Collection, opts);
+                (this as unknown as Collection).trigger('@filter', this as unknown as Collection, opts);
             }
         }
         return this;
@@ -711,10 +711,10 @@ export abstract class Collection<
             const { _queryInfo, _provider } = this;
             const finalize = (null == limit);
 
-            opts.progress = (info: CollectionItemQueryResult<TModel>) => {
+            opts.progress = ((info: CollectionItemQueryResult<TModel>) => {
                 original(info);
                 !finalize && this.add(info.items, opts);
-            };
+            });
 
             if (noCache) {
                 this.clearCache();
@@ -730,10 +730,10 @@ export abstract class Collection<
                 reset ? this.reset(resp, opts) : this.add(resp, opts);
             }
 
-            (this as Collection).trigger('@sync', this as Collection, resp, opts);
+            (this as unknown as Collection).trigger('@sync', this as unknown as Collection, resp, opts);
             return resp;
         } catch (e) {
-            (this as Collection).trigger('@error', undefined, this as Collection, e as Error, opts);
+            (this as unknown as Collection).trigger('@error', undefined, this as unknown as Collection, e as Error, opts);
             throw e;
         }
     }
@@ -937,11 +937,11 @@ export abstract class Collection<
                 if (isModel(model) || (model instanceof EventBroker)) {
                     (model as Model).trigger('@add', model as Model, this, opts);
                 } else {
-                    (this as Collection).trigger('@add', model, this as Collection, opts);
+                    (this as unknown as Collection).trigger('@add', model, this as unknown as Collection, opts);
                 }
             }
             if (sort || orderChanged) {
-                (this as Collection).trigger('@sort', this as Collection, opts);
+                (this as unknown as Collection).trigger('@sort', this as unknown as Collection, opts);
             }
             if (toAdd.length || toRemove.length || toMerge.length) {
                 opts.changes = {
@@ -949,7 +949,7 @@ export abstract class Collection<
                     removed: toRemove,
                     merged: toMerge
                 };
-                (this as Collection).trigger('@update', this as Collection, opts);
+                (this as unknown as Collection).trigger('@update', this as unknown as Collection, opts);
             }
         }
 
@@ -984,7 +984,7 @@ export abstract class Collection<
         const models = seeds ? this.add(seeds, Object.assign({ silent: true }, opts)) : [];
 
         if (!opts.silent) {
-            (this as Collection).trigger('@reset', this as Collection, opts);
+            (this as unknown as Collection).trigger('@reset', this as unknown as Collection, opts);
         }
 
         return models;
@@ -1053,7 +1053,7 @@ export abstract class Collection<
         const removed = this[_removeModels](items, opts);
         if (!opts.silent && removed.length) {
             opts.changes = { added: [], merged: [], removed };
-            (this as Collection).trigger('@update', this as Collection, opts);
+            (this as unknown as Collection).trigger('@update', this as unknown as Collection, opts);
         }
         return singular ? removed[0] : removed;
     }
@@ -1146,7 +1146,7 @@ export abstract class Collection<
                         this.add(seed, options);
                     }
                 } catch (e) {
-                    (this as Collection).trigger('@error', model, this as Collection, e as Error, options);
+                    (this as unknown as Collection).trigger('@error', model, this as unknown as Collection, e as Error, options);
                 }
             })();
         }
@@ -1168,7 +1168,7 @@ export abstract class Collection<
             if (isFunction(model.validate)) {
                 const result = model.validate();
                 if (FAILED(result.code)) {
-                    (this as Collection).trigger('@invalid', attrs as Model, this as Collection, result, opts);
+                    (this as unknown as Collection).trigger('@invalid', attrs as Model, this as unknown as Collection, result, opts);
                     return undefined;
                 }
             }
@@ -1201,7 +1201,7 @@ export abstract class Collection<
                 if (isModel(model) || (model instanceof EventBroker)) {
                     (model as Model).trigger('@remove', model as Model, this, opts);
                 } else {
-                    (this as Collection).trigger('@remove', model, this as Collection, opts);
+                    (this as unknown as Collection).trigger('@remove', model, this as unknown as Collection, opts);
                 }
             }
 

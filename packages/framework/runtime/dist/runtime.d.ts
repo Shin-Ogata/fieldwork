@@ -46,10 +46,15 @@ export type Nullish = void | null | undefined;
  */
 export type Nullable<T extends object> = T | Nullish;
 /**
- * @en Avoid the `Function`types.
- * @ja 汎用関数型
+ * @en General function type for direct invocation and type assertions.
+ * @ja 直接呼び出し・型アサーション用の汎用関数型
  */
 export type UnknownFunction = (...args: unknown[]) => unknown;
+/**
+ * @en General function type for generic constraints. Type inference is preserved through the type variable `T`.
+ * @ja ジェネリック制約用の汎用関数型. 型変数 `T` を通じて型推論を維持する
+ */
+export type AnyFunction = (...args: any[]) => any;
 /**
  * @en Avoid the `Object` and `{}` types, as they mean 'any non-nullish value'.
  * @ja 汎用オブジェクト型. `Object` および `{}` タイプは「nullでない値」を意味するため代価として使用
@@ -1351,7 +1356,7 @@ export interface TimerHandle {
  * @en Type of timer start functions.
  * @ja タイマー開始関数の型
  */
-export type TimerStartFunction = (handler: UnknownFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
+export type TimerStartFunction = (handler: AnyFunction, timeout?: number, ...args: unknown[]) => TimerHandle;
 /**
  * @en Type of timer stop functions.
  * @ja タイマー停止関数の型
@@ -1432,7 +1437,7 @@ export declare function post<T>(executor: () => T): Promise<T>;
  * @en Generic No-Operation.
  * @ja 汎用 No-Operation
  */
-export declare function noop(...args: unknown[]): any;
+export declare function noop(...args: any[]): any;
 /**
  * @en Wait for the designation elapse.
  * @ja 指定時間処理を待機
@@ -1463,7 +1468,7 @@ export interface DebounceOptions {
      */
     trailing?: boolean;
 }
-export type DebouncedFunction<T extends UnknownFunction> = T & {
+export type DebouncedFunction<T extends AnyFunction> = T & {
     cancel(): void;
     flush(): ReturnType<T>;
     pending(): boolean;
@@ -1482,7 +1487,7 @@ export type DebouncedFunction<T extends UnknownFunction> = T & {
  *  - `en` specify {@link DebounceOptions} object or `true` to fire the callback immediately.
  *  - `ja` {@link DebounceOptions} object もしくは即時にコールバックを発火するときは `true` を指定.
  */
-export declare function debounce<T extends UnknownFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
+export declare function debounce<T extends AnyFunction>(executor: T, wait: number, options?: DebounceOptions | boolean): DebouncedFunction<T>;
 /**
  * @en Option interface for {@link throttle}().
  * @ja {@link throttle}() に指定するオプションインターフェイス
@@ -1518,7 +1523,7 @@ export interface ThrottleOptions {
  *  - `ja` 待機時間 [msec]
  * @param options
  */
-export declare function throttle<T extends UnknownFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
+export declare function throttle<T extends AnyFunction>(executor: T, elapse: number, options?: ThrottleOptions): DebouncedFunction<T>;
 /**
  * @en Returns a function that will be executed at most one time, no matter how often you call it.
  * @ja 1度しか実行されない関数を返却. 2回目以降は最初のコールのキャッシュを返却
@@ -1527,7 +1532,7 @@ export declare function throttle<T extends UnknownFunction>(executor: T, elapse:
  *  - `en` seed function.
  *  - `ja` 対象の関数
  */
-export declare function once<T extends UnknownFunction>(executor: T): T;
+export declare function once<T extends AnyFunction>(executor: T): T;
 /**
  * @en Return a deferred executable function object.
  * @ja 遅延実行可能な関数オブジェクトを返却
@@ -4479,7 +4484,7 @@ export declare class InlineWorker extends Worker {
  * @en Thread options
  * @en スレッドオプション
  */
-export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, WorkerOptions {
+export interface ThreadOptions<T extends AnyFunction> extends Cancelable, WorkerOptions {
     args?: Parameters<T>;
 }
 /**
@@ -4512,7 +4517,7 @@ export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, Wo
  *  - `en` thread options
  *  - `ja` スレッドオプション
  */
-export declare function thread<T, U>(executor: (...args: U[]) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T>;
+export declare function thread<T, A extends unknown[]>(executor: (...args: A) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T>;
 export declare const i18n: i18n.i18n;
 declare const $PluralBrand: unique symbol;
 declare const $SelectorKeyBrand: unique symbol;
@@ -7939,7 +7944,9 @@ export interface ConnectEventMap {
     'disconnected': Event;
 }
 export type DOMEventMap<T> = T extends Window ? WindowEventMap : T extends Document ? DocumentEventMap : T extends HTMLBodyElement ? HTMLBodyElementEventMap & ConnectEventMap : T extends HTMLMediaElement ? HTMLMediaElementEventMap & ConnectEventMap : T extends HTMLElement ? HTMLElementEventMap & ConnectEventMap : T extends Element ? ElementEventMap & ConnectEventMap : GlobalEventHandlersEventMap;
-export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = (event: M[keyof M], ...args: unknown[]) => unknown;
+export type DOMEventListener<T = HTMLElement, M extends DOMEventMap<T> = DOMEventMap<T>> = {
+    [K in keyof M]: (event: M[K], ...args: any[]) => any;
+}[keyof M];
 export type EventWithNamespace<T extends DOMEventMap<any>> = keyof T | `${string & keyof T}.${string}`;
 export type MakeEventType<T, M> = T extends keyof M ? keyof M : (T extends `${string & keyof M}.${infer C}` ? `${string & keyof M}.${C}` : never);
 export type EventType<T extends DOMEventMap<any>> = MakeEventType<EventWithNamespace<T>, T>;
@@ -8144,7 +8151,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` A function to execute when the `mouseleave` the element.
      *  - `ja` `mouseleave` ハンドラを指定
      */
-    hover(handlerIn: DOMEventListener, handlerOut?: DOMEventListener): this;
+    hover(handlerIn: DOMEventListener<TElement, DOMEventMap<TElement>>, handlerOut?: DOMEventListener<TElement, DOMEventMap<TElement>>): this;
     /**
      * @en Trigger or handle `click` event.
      * @ja `click` イベントの発行または捕捉
@@ -8156,7 +8163,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    click(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    click(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `dblclick` event.
      * @ja `dblclick` イベントの発行または捕捉
@@ -8168,7 +8175,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    dblclick(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    dblclick(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `blur` event.
      * @ja `blur` イベントの発行または捕捉
@@ -8180,7 +8187,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    blur(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    blur(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `focus` event.
      * @ja `focus` イベントの発行または捕捉
@@ -8192,7 +8199,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    focus(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    focus(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `focusin` event.
      * @ja `focusin` イベントの発行または捕捉
@@ -8204,7 +8211,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    focusin(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    focusin(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `focusout` event.
      * @ja `focusout` イベントの発行または捕捉
@@ -8216,7 +8223,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    focusout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    focusout(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `keyup` event.
      * @ja `keyup` イベントの発行または捕捉
@@ -8228,7 +8235,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    keyup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    keyup(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `keydown` event.
      * @ja `keydown` イベントの発行または捕捉
@@ -8240,7 +8247,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    keydown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    keydown(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `keypress` event.
      * @ja `keypress` イベントの発行または捕捉
@@ -8252,7 +8259,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    keypress(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    keypress(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `submit` event.
      * @ja `submit` イベントの発行または捕捉
@@ -8264,7 +8271,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    submit(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    submit(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `contextmenu` event.
      * @ja `contextmenu` イベントの発行または捕捉
@@ -8276,7 +8283,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    contextmenu(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    contextmenu(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `change` event.
      * @ja `change` イベントの発行または捕捉
@@ -8288,7 +8295,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    change(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    change(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mousedown` event.
      * @ja `mousedown` イベントの発行または捕捉
@@ -8300,7 +8307,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mousedown(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mousedown(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mousemove` event.
      * @ja `mousemove` イベントの発行または捕捉
@@ -8312,7 +8319,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mousemove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mousemove(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseup` event.
      * @ja `mouseup` イベントの発行または捕捉
@@ -8324,7 +8331,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseup(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mouseup(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseenter` event.
      * @ja `mouseenter` イベントの発行または捕捉
@@ -8336,7 +8343,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseenter(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mouseenter(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseleave` event.
      * @ja `mouseleave` イベントの発行または捕捉
@@ -8348,7 +8355,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseleave(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mouseleave(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseout` event.
      * @ja `mouseout` イベントの発行または捕捉
@@ -8360,7 +8367,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseout(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mouseout(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `mouseover` event.
      * @ja `mouseover` イベントの発行または捕捉
@@ -8372,7 +8379,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    mouseover(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    mouseover(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchstart` event.
      * @ja `touchstart` イベントの発行または捕捉
@@ -8384,7 +8391,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchstart(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    touchstart(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchend` event.
      * @ja `touchend` イベントの発行または捕捉
@@ -8396,7 +8403,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchend(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    touchend(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchmove` event.
      * @ja `touchmove` イベントの発行または捕捉
@@ -8408,7 +8415,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchmove(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    touchmove(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `touchcancel` event.
      * @ja `touchcancel` イベントの発行または捕捉
@@ -8420,7 +8427,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    touchcancel(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    touchcancel(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `resize` event.
      * @ja `resize` イベントの発行または捕捉
@@ -8432,7 +8439,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    resize(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    resize(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Trigger or handle `scroll` event.
      * @ja `scroll` イベントの発行または捕捉
@@ -8444,7 +8451,7 @@ declare class DOMEvents<TElement extends ElementBase> implements DOMIterable<TEl
      *  - `en` options for `addEventLisntener`
      *  - `ja` `addEventLisntener` に指定するオプション
      */
-    scroll(handler?: DOMEventListener, options?: boolean | AddEventListenerOptions): this;
+    scroll(handler?: DOMEventListener<TElement, DOMEventMap<TElement>>, options?: boolean | AddEventListenerOptions): this;
     /**
      * @en Create a deep copy of the set of matched elements.
      * @ja 配下の要素のディープコピーを作成
@@ -9138,7 +9145,7 @@ export declare const toUrl: (seed: string) => string;
  *  - `en` wait frame executor.
  *  - `ja` 処理待ちを行う実行関数
  */
-export declare function waitFrame(frameCount?: number, executor?: UnknownFunction): Promise<void>;
+export declare function waitFrame(frameCount?: number, executor?: AnyFunction): Promise<void>;
 /**
  * @en Wait until the current thread is idle.
  * @ja 現在のスレッドがアイドル状態になるまで待機
@@ -11121,8 +11128,8 @@ export type CollectionUpdateOptions<TItem extends object> = ModelSaveOptions & C
 /** re-exports */
 export type CollectionDataSyncOptions = RestDataSyncOptions;
 /**
- * @en {@link Collection.fetch | Collection.fetch}() options.
- * @ja {@link Collection.fetch | Collection.fetch}() のオプション
+ * @en {@link Collection['fetch'] | Collection.fetch}() options.
+ * @ja {@link Collection['fetch'] | Collection.fetch}() のオプション
  */
 export interface CollectionQueryOptions<TItem extends object, TKey extends Keys<TItem> = Keys<TItem>> extends CollectionItemQueryOptions<TItem, TKey>, CollectionSetOptions {
     /**
@@ -11996,7 +12003,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    (renderer: UnknownFunction, ...args: unknown[]): unknown;
+    (renderer: AnyFunction, ...args: unknown[]): unknown;
     /**
      * @en Add Hooks feature to template literal syntax. (specify a DOM disconnect detection element)
      * @ja テンプレートリテラル構文に Hooks 機能を付加 (DOM 切断検知要素を指定)
@@ -12019,7 +12026,7 @@ export interface Hooks {
      *  - `en` Arguments passed template literal syntax
      *  - `ja` テンプレートリテラル構文にわたる引数
      */
-    with: (elRoot: Node | null, renderer: UnknownFunction, ...args: unknown[]) => unknown;
+    with: (elRoot: Node | null, renderer: AnyFunction, ...args: unknown[]) => unknown;
     /**
      * @en Return a stateful value and a function to update it.
      * @ja ステートフルな値と、それを更新するための関数を返却

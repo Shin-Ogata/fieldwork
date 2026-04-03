@@ -1,4 +1,4 @@
-import type { UnknownFunction, PlainObject } from '@cdp/core-utils';
+import type { AnyFunction, PlainObject } from '@cdp/core-utils';
 import {
     toUrl,
     loadTemplateSource,
@@ -33,7 +33,7 @@ const prepareTemplate = async (): Promise<CompiledTemplate> => {
  */
 class StampinoBridgeView extends PageView {
     private _template!: CompiledTemplate;
-    private _handler!: PlainObject<UnknownFunction>;
+    private _handler!: PlainObject<AnyFunction>;
     private _state = { count: 0, clicked: 0 };
     private _props!: Props;
 

@@ -1,4 +1,4 @@
-import type { UnknownFunction } from '@cdp/core-utils';
+import type { AnyFunction } from '@cdp/core-utils';
 import { type Cancelable, CancelToken } from '@cdp/promise';
 import { InlineWorker } from './inine-worker';
 
@@ -6,7 +6,7 @@ import { InlineWorker } from './inine-worker';
  * @en Thread options
  * @en スレッドオプション
  */
-export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, WorkerOptions {
+export interface ThreadOptions<T extends AnyFunction> extends Cancelable, WorkerOptions {
     args?: Parameters<T>;
 }
 
@@ -40,7 +40,7 @@ export interface ThreadOptions<T extends UnknownFunction> extends Cancelable, Wo
  *  - `en` thread options
  *  - `ja` スレッドオプション
  */
-export function thread<T, U>(executor: (...args: U[]) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T> {
+export function thread<T, A extends unknown[]>(executor: (...args: A) => T | Promise<T>, options?: ThreadOptions<typeof executor>): Promise<T> {
     const { cancel: originalToken, args } = Object.assign({ args: [] }, options);
 
     // already cancel

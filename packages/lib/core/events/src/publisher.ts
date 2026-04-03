@@ -3,6 +3,7 @@
  */
 
 import {
+    type AnyFunction,
     type Arguments,
     isString,
     isArray,
@@ -17,7 +18,7 @@ import type {
 } from './interfaces';
 
 /** @internal Lisner 格納形式 */
-type ListenersMap<T> = Map<keyof T, Set<(...args: T[keyof T][]) => unknown>>;
+type ListenersMap<T> = Map<keyof T, Set<AnyFunction>>;
 
 /** @internal Lisner の弱参照 */
 const _mapListeners = new WeakMap<EventPublisher<any>, ListenersMap<any>>();
@@ -39,7 +40,7 @@ function validChannel(channel: unknown): void | never {
 }
 
 /** @internal Listener の型検証 */
-function validListener(listener?: (...args: unknown[]) => unknown): any {
+function validListener(listener?: AnyFunction): any {
     if (null != listener) {
         verify('typeOf', 'function', listener);
     }

@@ -83,7 +83,7 @@ class ExpandListPageView extends PageView {
         void (async () => {
             if (!_collection) {
                 _collection = new ImageCollection();
-                _collection.on('@update', (context: ImageCollection, received: CollectionUpdateOptions<ImageModel>) => {
+                _collection.on('@update', (_context, received: CollectionUpdateOptions<ImageModel>) => {
                     console.log(received.changes.added.length);
                 });
             }

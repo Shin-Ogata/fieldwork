@@ -226,7 +226,7 @@ describe('ui-listview/core spec', () => {
 
             const makeEvent = ($target: DOM): Promise<UIEvent> => {
                 return new Promise<UIEvent>(resovle => {
-                    $target.once('click', ev => resovle(ev as UIEvent));
+                    $target.once('click', (ev: UIEvent) => resovle(ev));
                     $target.trigger(new CustomEvent('click', { bubbles: true, cancelable: true }));
                 });
             };
