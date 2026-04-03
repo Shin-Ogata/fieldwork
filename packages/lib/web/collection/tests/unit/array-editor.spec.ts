@@ -1,5 +1,5 @@
 import { ObservableArray } from '@cdp/observable';
-import { RESULT_CODE } from '@cdp/result';
+import { type Result, RESULT_CODE } from '@cdp/result';
 import {
     clearArray,
     appendArray,
@@ -94,8 +94,8 @@ describe('utils/array-editor spec', () => {
             await insertArray(array, 2.5, []);
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
-            expect(e.message).toBe('insertArray(), index is invalid. index: 2.5');
+            expect((e as Result).code).toBe(RESULT_CODE.NOT_SUPPORTED);
+            expect((e as Result).message).toBe('insertArray(), index is invalid. index: 2.5');
         }
     });
 
@@ -120,8 +120,8 @@ describe('utils/array-editor spec', () => {
             await reorderArray(array, 2.5, []);
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
-            expect(e.message).toBe('reorderArray(), index is invalid. index: 2.5');
+            expect((e as Result).code).toBe(RESULT_CODE.NOT_SUPPORTED);
+            expect((e as Result).message).toBe('reorderArray(), index is invalid. index: 2.5');
         }
     });
 
@@ -152,24 +152,24 @@ describe('utils/array-editor spec', () => {
             await clearArray({} as any); // eslint-disable-line
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
-            expect(e.message).toBe('target is not Array or ObservableArray.');
+            expect((e as Result).code).toBe(RESULT_CODE.NOT_SUPPORTED);
+            expect((e as Result).message).toBe('target is not Array or ObservableArray.');
         }
 
         try {
             await reorderArray(array, 2, [3, 1, 5]);
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
-            expect(e.message).toBe('orders[] index is invalid. index: 5');
+            expect((e as Result).code).toBe(RESULT_CODE.NOT_SUPPORTED);
+            expect((e as Result).message).toBe('orders[] index is invalid. index: 5');
         }
 
         try {
             await removeArray(array, [3, 1, -2]);
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.code).toBe(RESULT_CODE.NOT_SUPPORTED);
-            expect(e.message).toBe('orders[] index is invalid. index: -2');
+            expect((e as Result).code).toBe(RESULT_CODE.NOT_SUPPORTED);
+            expect((e as Result).message).toBe('orders[] index is invalid. index: -2');
         }
     });
 });

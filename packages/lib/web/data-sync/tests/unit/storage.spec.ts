@@ -579,7 +579,7 @@ describe('data-sync/storage spec', () => {
             }));
             await dataSyncSTORAGE.sync('read', context, { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
 
         localStorage.clear();
@@ -591,7 +591,7 @@ describe('data-sync/storage spec', () => {
             localStorage.setItem('aaa', JSON.stringify([{ id: '000A' }]));
             await dataSyncSTORAGE.sync('read', context, { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
 
         localStorage.clear();
@@ -602,7 +602,7 @@ describe('data-sync/storage spec', () => {
         try {
             await dataSyncSTORAGE.sync('read', context);
         } catch (e) {
-            expect(e.message).toBe('A "url" property or function must be specified.');
+            expect((e as Error).message).toBe('A "url" property or function must be specified.');
         }
     });
 
@@ -611,7 +611,7 @@ describe('data-sync/storage spec', () => {
         try {
             await dataSyncSTORAGE.sync('invalid' as any, context);
         } catch (e) {
-            expect(e.message).toBe('unknown method: invalid');
+            expect((e as Error).message).toBe('unknown method: invalid');
         }
     });
 });

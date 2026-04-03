@@ -49,7 +49,7 @@ describe('inline-worker spec', () => {
                 new InlineWorker(100 as any); // eslint-disable-line
             } catch (e) {
                 expect(e instanceof TypeError).toBe(true);
-                expect(e.message).toBe('Number is not a function or string.');
+                expect((e as Error).message).toBe('Number is not a function or string.');
             }
             done();
         });
@@ -92,7 +92,7 @@ describe('inline-worker spec', () => {
                 void await thread(execAsync, { cancel: canceled });
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('aborted');
+                expect((e as Error).message).toBe('aborted');
             }
         });
 
@@ -113,7 +113,7 @@ describe('inline-worker spec', () => {
                 void await promise;
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('cancel');
+                expect((e as Error).message).toBe('cancel');
             }
         });
 
@@ -126,8 +126,8 @@ describe('inline-worker spec', () => {
                 fail('UNEXPECTED FLOW');
             } catch (e) {
                 expect(e instanceof ErrorEvent).toBe(true);
-                expect(e.message.startsWith('Uncaught ReferenceError:')).toBe(true);
-                expect(e.message.includes('is not defined')).toBe(true);
+                expect((e as ErrorEvent).message.startsWith('Uncaught ReferenceError:')).toBe(true);
+                expect((e as ErrorEvent).message.includes('is not defined')).toBe(true);
             }
         });
     });

@@ -95,7 +95,7 @@ describe('data-sync/null spec', () => {
         try {
             await dataSyncNULL.sync('read', _context, { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
     });
 });

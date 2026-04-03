@@ -39,7 +39,7 @@ describe('promise/deferred spec', () => {
             await df;
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.message).toBe('cancel');
+            expect((e as Error).message).toBe('cancel');
         }
     });
 

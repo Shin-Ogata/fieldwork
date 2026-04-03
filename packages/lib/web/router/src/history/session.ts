@@ -459,7 +459,7 @@ class SessionHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> im
         } catch (e) {
             // history を元に戻す
             await this.rollbackHistory(method, newId);
-            this.publish('error', e);
+            this.publish('error', e as Error);
             df.reject(e);
         }
     }

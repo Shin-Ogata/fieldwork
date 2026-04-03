@@ -3,7 +3,7 @@
     @typescript-eslint/await-thenable,
  */
 
-import { RESULT_CODE } from '@cdp/result';
+import { type Result, RESULT_CODE } from '@cdp/result';
 import { webRoot, clearTemplateCache } from '@cdp/web-utils';
 import type { Route, Router } from '@cdp/router';
 import {
@@ -51,8 +51,8 @@ describe('page-view spec', () => {
             await AppContext();
 //          fail();
         } catch (e) {
-            expect(e.message).toBe('AppContext should be initialized with options at least once.');
-            expect(e.code).toBe(RESULT_CODE.ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED);
+            expect((e as Result).message).toBe('AppContext should be initialized with options at least once.');
+            expect((e as Result).code).toBe(RESULT_CODE.ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED);
         }
         expect(AppContext).toBeDefined();
     });

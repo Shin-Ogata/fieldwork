@@ -204,7 +204,7 @@ describe('ui-listview/core spec', () => {
                 context.getItemInfo(1);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview given a invalid param. getItemInfo() [invalid index: 1]');
+                expect((e as Error).message).toBe('listview given a invalid param. getItemInfo() [invalid index: 1]');
             }
         });
 
@@ -254,7 +254,7 @@ describe('ui-listview/core spec', () => {
                 context.getItemInfo(ev2);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview given a invalid param. [unsupported type: object]');
+                expect((e as Error).message).toBe('listview given a invalid param. [unsupported type: object]');
             }
         });
     });
@@ -283,7 +283,7 @@ describe('ui-listview/core spec', () => {
                 await context.scrollTo(20);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.message).toBe('listview has invalid initialization.');
+                expect((e as Error).message).toBe('listview has invalid initialization.');
             }
 
             $el.height(100);

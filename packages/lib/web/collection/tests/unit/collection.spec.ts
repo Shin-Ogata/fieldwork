@@ -717,7 +717,7 @@ describe('collection/base spec', () => {
             try {
                 await playlist.fetch({ cancel: token });
             } catch (e) {
-                expect(e.message).toBe('aborted');
+                expect((e as Error).message).toBe('aborted');
             }
 
             expect(stub.onCallback).toHaveBeenCalledWith(undefined, playlist, jasmine.any(Error), jasmine.anything()); // @error

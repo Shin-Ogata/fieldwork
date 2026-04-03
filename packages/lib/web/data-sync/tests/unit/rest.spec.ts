@@ -191,7 +191,7 @@ describe('data-sync/rest spec', () => {
         try {
             await dataSyncREST.sync('read', context, { cancel: token });
         } catch (e) {
-            expect(e.message).toBe('aborted');
+            expect((e as Error).message).toBe('aborted');
         }
     });
 
@@ -200,7 +200,7 @@ describe('data-sync/rest spec', () => {
         try {
             await dataSyncREST.sync('read', context);
         } catch (e) {
-            expect(e.message).toBe('A "url" property or function must be specified.');
+            expect((e as Error).message).toBe('A "url" property or function must be specified.');
         }
     });
 });

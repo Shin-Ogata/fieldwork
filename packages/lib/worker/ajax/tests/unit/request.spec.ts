@@ -69,7 +69,7 @@ describe('ajax/reauest spec', () => {
         try {
             request.resource('../../.temp/res/ajax/invalid.res', 'text');
         } catch (e) {
-            reason = e;
+            reason = e as Result;
         }
 
         expect(reason.code).toBe(RESULT_CODE.ERROR_AJAX_RESPONSE);

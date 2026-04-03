@@ -733,7 +733,7 @@ export abstract class Collection<
             (this as Collection).trigger('@sync', this as Collection, resp, opts);
             return resp;
         } catch (e) {
-            (this as Collection).trigger('@error', undefined, this as Collection, e, opts);
+            (this as Collection).trigger('@error', undefined, this as Collection, e as Error, opts);
             throw e;
         }
     }
@@ -1146,7 +1146,7 @@ export abstract class Collection<
                         this.add(seed, options);
                     }
                 } catch (e) {
-                    (this as Collection).trigger('@error', model, this as Collection, e, options);
+                    (this as Collection).trigger('@error', model, this as Collection, e as Error, options);
                 }
             })();
         }

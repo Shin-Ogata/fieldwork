@@ -8,7 +8,7 @@ import {
     computeDate,
 } from '@cdp/core-utils';
 import { checkCanceled as cc } from '@cdp/promise';
-import { RESULT_CODE } from '@cdp/result';
+import { type Result, RESULT_CODE } from '@cdp/result';
 import {
     SortOrder,
     type FilterCallback,
@@ -362,8 +362,8 @@ describe('query/query spec', () => {
                 await queryItems(info, provider, options);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
-                expect(e.message).toBe('invalid index: 3.1');
+                expect((e as Result).code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
+                expect((e as Result).message).toBe('invalid index: 3.1');
             }
 
             try {
@@ -373,8 +373,8 @@ describe('query/query spec', () => {
                 await queryItems(info, provider, options);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
-                expect(e.message).toBe('invalid limit: 3.1');
+                expect((e as Result).code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
+                expect((e as Result).message).toBe('invalid limit: 3.1');
             }
         });
     });
@@ -597,8 +597,8 @@ describe('query/query spec', () => {
                 await queryItems(info, provider, options);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
-                expect(e.message).toBe('invalid index: 3.1');
+                expect((e as Result).code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
+                expect((e as Result).message).toBe('invalid index: 3.1');
             }
 
             try {
@@ -608,8 +608,8 @@ describe('query/query spec', () => {
                 await queryItems(info, provider, options);
                 fail('UNEXPECTED FLOW');
             } catch (e) {
-                expect(e.code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
-                expect(e.message).toBe('invalid limit: 3.1');
+                expect((e as Result).code).toBe(RESULT_CODE.ERROR_MVC_INVALID_ACCESS);
+                expect((e as Result).message).toBe('invalid limit: 3.1');
             }
         });
     });

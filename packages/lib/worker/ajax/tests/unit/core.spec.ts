@@ -161,7 +161,7 @@ describe('ajax/core spec', () => {
                 headers: { Accept: 'application/json' },
             });
         } catch (e) {
-            reason = e;
+            reason = e as Result;
         }
 
         expect(reason).toBeDefined();
@@ -252,7 +252,7 @@ describe('ajax/core spec', () => {
                 timeout: 50,
             });
         } catch (e) {
-            reason = e;
+            reason = e as Result;
         }
 
         expect(reason).toBeDefined();
@@ -272,7 +272,7 @@ describe('ajax/core spec', () => {
                 cancel: source.token,
             });
         } catch (e) {
-            reason = e;
+            reason = e as Result;
         }
 
         expect(reason).toBeDefined();
@@ -286,7 +286,7 @@ describe('ajax/core spec', () => {
                 cancel: source.token,   // already requested
             });
         } catch (e) {
-            reason = e;
+            reason = e as Result;
         }
 
         expect(reason).toBeDefined();

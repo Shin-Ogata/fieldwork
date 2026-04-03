@@ -4,7 +4,7 @@
  */
 
 import { safe, sleep } from '@cdp/core-utils';
-import { RESULT_CODE } from '@cdp/result';
+import { type Result, RESULT_CODE } from '@cdp/result';
 import {
     webRoot,
     clearTemplateCache,
@@ -64,8 +64,8 @@ describe('context spec', () => {
             await AppContext();
 //          fail();
         } catch (e) {
-            expect(e.message).toBe('AppContext should be initialized with options at least once.');
-            expect(e.code).toBe(RESULT_CODE.ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED);
+            expect((e as Result).message).toBe('AppContext should be initialized with options at least once.');
+            expect((e as Result).code).toBe(RESULT_CODE.ERROR_APP_CONTEXT_NEED_TO_BE_INITIALIZED);
         }
 
         const stub = { onCallback };
@@ -226,8 +226,8 @@ describe('context spec', () => {
             await AppContext({ reset: true } as AppContextOptions);
             fail('UNEXPECTED FLOW');
         } catch (e) {
-            expect(e.message).toBe('Router element not found. [selector: #app]');
-            expect(e.code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND);
+            expect((e as Result).message).toBe('Router element not found. [selector: #app]');
+            expect((e as Result).code).toBe(RESULT_CODE.ERROR_MVC_ROUTER_ELEMENT_NOT_FOUND);
         }
 
         // window.onerror, onunhandledrejection は jasmine が先に拾うため, 確認の詳細は tests/dev で実施
