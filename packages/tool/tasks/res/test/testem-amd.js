@@ -92,6 +92,8 @@ const testem = {
             };
 
             const safeServerStatic = (req, res, next) => {
+                const HTML_REPLY_DELAY_MS = 20;
+
                 // テンプレート系は Testem 本体に委譲する
                 if (/\.mustache(?:$|\?)/.test(req.path)) {
                     next();
@@ -103,7 +105,7 @@ const testem = {
                     res.setHeader('Cache-Control', 'no-store');
                     setTimeout(() => {
                         replyAsStatic(req, res, next);
-                    }, 20);
+                    }, HTML_REPLY_DELAY_MS);
                     return;
                 }
 
