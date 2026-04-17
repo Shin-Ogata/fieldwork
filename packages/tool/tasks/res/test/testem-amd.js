@@ -3,6 +3,7 @@
 const path       = require('node:path');
 const fs         = require('node:fs');
 const http       = require('node:http');
+const express    = require('express');
 const { config } = require('@cdp/tasks');
 const settings   = require('./testem.json');
 
@@ -37,7 +38,6 @@ const testem = {
                  * https://developer.chrome.com/docs/chromium/headless?hl=ja
                  */
                 '--headless',
-                '--remote-debugging-port=9222',
                 '--disable-gpu'
             ],
         },
@@ -75,6 +75,48 @@ const testem = {
     register_server(port, request) {
         testem.contexts.push({ port, request });
     },
+
+    middleware: [
+        (app) => {
+            const serverRoot = path.resolve(process.cwd(), config.dir.temp);
+            const serverStatic = express.static(serverRoot, { dotfiles: 'allow', fallthrough: false });
+            const replyAsStatic = (req, res, next) => {
+                serverStatic(req, res, (err) => {
+                    // .temp 配下の未存在ファイルは Testem 本体へ委譲せず 404 を返す
+                    if (err && (404 === err.status || 'ENOENT' === err.code)) {
+                        res.status(404).send('Not Found');
+                        return;
+                    }
+                    next(err);
+                });
+            };
+
+            const safeServerStatic = (req, res, next) => {
+                const HTML_REPLY_DELAY_MS = 20;
+
+                // テンプレート系は Testem 本体に委譲する
+                if (/\.mustache(?:$|\?)/.test(req.path)) {
+                    next();
+                    return;
+                }
+
+                // iframe の DOMContentLoaded 監視登録競合を避けるため HTML 返却を少し遅延
+                if (/\.html(?:$|\?)/.test(req.path)) {
+                    res.setHeader('Cache-Control', 'no-store');
+                    setTimeout(() => {
+                        replyAsStatic(req, res, next);
+                    }, HTML_REPLY_DELAY_MS);
+                    return;
+                }
+
+                replyAsStatic(req, res, next);
+            };
+
+            // .mustache は Testem 側で render させる
+            app.use(`/:id/${config.dir.temp}`, safeServerStatic);
+            app.use(`/${config.dir.temp}`, safeServerStatic);
+        },
+    ],
 };
 
 const loadPlugins = () => {

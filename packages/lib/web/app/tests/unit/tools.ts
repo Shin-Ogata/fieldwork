@@ -37,10 +37,22 @@ export function prepareIFrameElements(additionalStyle?: string): Promise<HTMLIFr
     return new Promise((resolve) => {
         const divs = prepareTestElements(undefined, additionalStyle);
         const iframe = divs[0].querySelector('#test-frame') as HTMLIFrameElement; // eslint-disable-line @typescript-eslint/non-nullable-type-assertion-style
-        const onFrameDOMContentLoaded = (): void => {
+        const onFrameReady = (): void => {
+            iframe.removeEventListener('load', onFrameReady);
+            iframe.contentWindow?.removeEventListener('DOMContentLoaded', onFrameReady, true);
             resolve(iframe);
         };
-        iframe.contentWindow?.addEventListener('DOMContentLoaded', onFrameDOMContentLoaded, true);
+
+        // すでに目的ページが読み込み済みの場合のみ即時解決する
+        const href = iframe.contentWindow?.location?.href;
+        const state = iframe.contentDocument?.readyState;
+        if (href?.includes('/res/app/index.html') && ('interactive' === state || 'complete' === state)) {
+            onFrameReady();
+            return;
+        }
+
+        iframe.addEventListener('load', onFrameReady);
+        iframe.contentWindow?.addEventListener('DOMContentLoaded', onFrameReady, true);
     });
 }
 
