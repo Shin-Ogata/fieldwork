@@ -24,6 +24,7 @@
     "csso": "5.0.5",
     "dts-bundle-generator": "9.5.1",
     "eslint": "10.2.0",
+    "express": "5.2.1",
     "glob": "13.0.6",
     "globals": "17.5.0",
     "html-minifier-terser": "7.2.0",
