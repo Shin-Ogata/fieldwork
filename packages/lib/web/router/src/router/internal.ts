@@ -264,9 +264,9 @@ export const ensureRouterPageInstance = async (route: RouteContext): Promise<boo
             params.page = await component(route, componentOptions);
         }
     } else if (isObject(component)) {
-        params.page = Object.assign({ '@route': route, '@options': componentOptions }, component) as Page;
+        params.page = Object.assign({ '@route': route, '@options': componentOptions }, component);
     } else {
-        params.page = { '@route': route, '@options': componentOptions } as Page;
+        params.page = { '@route': route, '@options': componentOptions };
     }
 
     return true; // newly created

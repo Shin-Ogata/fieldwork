@@ -37,7 +37,7 @@ export abstract class ExpandableListItemView<TElement extends Node = HTMLElement
     constructor(options: ExpandableListItemViewConstructionOptions<TElement>) {
         super(options);
         const { group } = options;
-        (this[_properties] as Writable<Property>) = { group } as Property;
+        (this[_properties] as Writable<Property>) = { group };
     }
 
 ///////////////////////////////////////////////////////////////////////

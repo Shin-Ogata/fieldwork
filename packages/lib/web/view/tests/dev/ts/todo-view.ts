@@ -12,8 +12,10 @@ export class ToDoView extends View {
     constructor(todo: ToDo) {
         super({ tagName: 'li' });
         this._model = todo;
+        /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
         this.listenTo(this._model as ToDoEventSource, '@change', this.render.bind(this));
         this.listenTo(this._model as ToDoEventSource, '@destroy', this.remove.bind(this));
+        /* eslint-enable @typescript-eslint/no-unnecessary-type-assertion */
     }
 
     protected events(): ViewEventsHash<HTMLElement> {

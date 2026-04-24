@@ -320,7 +320,7 @@ export class DOMStyles<TElement extends ElementBase> implements DOMIterable<TEle
             if (isString(name)) {
                 return null == value ? '' : this;
             } else if (isArray(name)) {
-                return {} as PlainObject<string>;
+                return {};
             } else {
                 return this;
             }

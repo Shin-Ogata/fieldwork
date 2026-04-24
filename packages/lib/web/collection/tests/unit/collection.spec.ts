@@ -20,7 +20,6 @@ import {
 import { CancelToken } from '@cdp/promise';
 import {
     type SyncContext,
-    type IDataSyncOptions,
     defaultSync,
     dataSyncSTORAGE,
     dataSyncNULL,
@@ -505,7 +504,7 @@ describe('collection/base spec', () => {
             const { index, limit, filter, sortKeys: keys, comparators: comps } = opts;
             const comparators = comps ?? convertSortKeys(keys ?? []);
 
-            const items = await dataSyncSTORAGE.sync('read', _dummyContext as SyncContext, options as IDataSyncOptions) as Track[];
+            const items = await dataSyncSTORAGE.sync('read', _dummyContext as SyncContext, options) as Track[];
             const targets = searchItems(items, filter, ...comparators);
             const results = targets.slice(index, limit && (index! + limit!)); // eslint-disable-line
 

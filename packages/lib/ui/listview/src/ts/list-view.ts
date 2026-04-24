@@ -52,7 +52,7 @@ export abstract class ListView<TElement extends Node = HTMLElement, TEvent exten
 
         (this[_properties] as Writable<Property>) = {
             context: new ListCore(options),
-        } as Property;
+        };
 
         this.setElement(this.$el as DOMSelector<TElement>);
     }

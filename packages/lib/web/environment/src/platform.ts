@@ -129,7 +129,7 @@ export const queryPlatform = (
         electron: false,
     } as unknown as Writable<Platform>;
 
-    const { userAgent: ua, platform: os, standalone } = context.navigator ?? navigator as { userAgent: string; platform: string; standalone?: boolean; };
+    const { userAgent: ua, platform: os, standalone } = context.navigator ?? navigator as { userAgent: string; platform: string; standalone?: boolean; }; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
     const { width: screenWidth, height: screenHeight } = context.screen ?? screen;
     const pixelRatio = context.devicePixelRatio;
 

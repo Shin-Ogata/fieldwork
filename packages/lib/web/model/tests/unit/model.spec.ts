@@ -5,6 +5,7 @@
     @typescript-eslint/require-await,
     @typescript-eslint/await-thenable,
     @typescript-eslint/no-empty-function,
+    @typescript-eslint/no-unnecessary-type-assertion,
  */
 
 import {

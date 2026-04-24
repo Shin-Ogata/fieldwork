@@ -1,6 +1,7 @@
 /* eslint-disable
     @stylistic/block-spacing,
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-unnecessary-type-assertion,
  */
 
 import { dom as $ } from '@cdp/dom';
@@ -120,7 +121,7 @@ describe('dom/traversing spec', () => {
         const divs = prepareTestElements();
 
         {// no entry
-            const $dom = $() as DOM<HTMLElement>;
+            const $dom = $();
             expect($dom.is('.test-dom')).toBe(false);
         }
 

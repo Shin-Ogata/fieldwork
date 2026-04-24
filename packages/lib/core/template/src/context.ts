@@ -1,6 +1,5 @@
 import type { TemplateContext } from './interfaces';
 import {
-    type UnknownFunction,
     type UnknownObject,
     type PlainObject,
     isFunction,
@@ -124,11 +123,11 @@ export class Context implements TemplateContext {
                 context = context._parent;
             }
 
-            cache[name] = value as object;
+            cache[name] = value;
         }
 
         if (isFunction(value)) {
-            value = (value as UnknownFunction).call(this._view);
+            value = value.call(this._view);
         }
 
         return value;

@@ -62,7 +62,7 @@ class ComponentViewPage extends PageView {
         contexts.forEach((ctx, index) => {
             let view = this._views[index];
             if (!view) {
-                view = new ctx.ctor(ctx.args as any);   // eslint-disable-line @typescript-eslint/no-explicit-any
+                view = new ctx.ctor(ctx.args);
                 this._views[index] = view;
             }
             const div = document.createElement('div');

@@ -81,4 +81,4 @@ class RestDataSync<T extends object = SyncObject> implements IDataSync<T> {
     }
 }
 
-export const dataSyncREST = new RestDataSync() as IDataSync;
+export const dataSyncREST = new RestDataSync() as IDataSync; // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion

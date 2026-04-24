@@ -106,12 +106,12 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
     public cancel(): this {
         if (isTypeElement(this)) {
             for (const el of this) {
-                const context = _animContextMap.get(el as Element);
+                const context = _animContextMap.get(el);
                 if (context) {
                     for (const animation of context) {
                         animation.cancel();
                     }
-                    _animContextMap.delete(el as Element);
+                    _animContextMap.delete(el);
                 }
             }
         }
@@ -125,7 +125,7 @@ export class DOMEffects<TElement extends ElementBase> implements DOMIterable<TEl
     public finish(): this {
         if (isTypeElement(this)) {
             for (const el of this) {
-                const context = _animContextMap.get(el as Element);
+                const context = _animContextMap.get(el);
                 if (context) {
                     for (const animation of context) {
                         animation.finish();

@@ -40,7 +40,7 @@ class SettingsPageView extends PageView {
 
         // 読み込み確認
         this._$el.find('input[name="page-settings-refresh-lv"]').on('change', () => {
-            this._refreshLv = Number(this._$el.find('input[name="page-settings-refresh-lv"]:checked').val()) as RouterRefreshLevel;
+            this._refreshLv = Number(this._$el.find('input[name="page-settings-refresh-lv"]:checked').val());
         });
 
         this._$el.find('#page-settings-refresh').on('click', () => {

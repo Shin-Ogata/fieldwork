@@ -144,7 +144,7 @@ function parseFilterArgs<T extends object>(...args: unknown[]): CollectionAfterF
     if (null == filter) {
         return {};
     } else if (!isFunction(filter)) {
-        return filter as CollectionAfterFilterOptions<T>;
+        return filter;
     } else {
         return Object.assign({}, options, { filter }) as CollectionAfterFilterOptions<T>;
     }

@@ -54,7 +54,7 @@ class RouterPage implements Page {
 
         // 読み込み確認
         this._$el.find('input[name="page-class-refresh-lv"]').on('change', () => {
-            this._refreshLv = Number(this._$el.find('input[name="page-class-refresh-lv"]:checked').val()) as RouterRefreshLevel;
+            this._refreshLv = Number(this._$el.find('input[name="page-class-refresh-lv"]:checked').val());
         });
 
         this._$el.find('#page-class-refresh').on('click', () => {

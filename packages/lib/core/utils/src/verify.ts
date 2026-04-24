@@ -218,7 +218,7 @@ const _verifier: Verifier = {
     },
 
     hasProperty: (x: unknown, prop: PropertyKey, message?: string | null): void | never => {
-        if (null == x || !(prop in (x as object))) {
+        if (null == x || !(prop in (x as object))) { // eslint-disable-line  @typescript-eslint/no-unnecessary-type-assertion
             exists(message) || (message = `The object does not have property ${String(prop)}.`);
             throw new TypeError(message);
         }

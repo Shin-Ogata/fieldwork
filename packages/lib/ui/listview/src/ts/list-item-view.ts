@@ -48,7 +48,7 @@ export abstract class ListItemView<TElement extends Node = HTMLElement, TEvent e
         (this[_properties] as Writable<Property>) = {
             owner,
             item,
-        } as Property;
+        };
     }
 
 ///////////////////////////////////////////////////////////////////////

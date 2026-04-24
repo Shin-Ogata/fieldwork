@@ -28,7 +28,7 @@ export abstract class ExpandableListView<TElement extends Node = HTMLElement, TE
         super(options);
         (this[_properties] as Writable<Property>) = {
             context: new ExpandCore(this),
-        } as Property;
+        };
     }
 
     /** context accessor */
