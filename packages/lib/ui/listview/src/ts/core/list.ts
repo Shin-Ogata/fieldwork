@@ -661,7 +661,7 @@ export class ListCore implements IListContext, IListOperation, IListScrollable, 
             animate: _settings.enableAnimation,
             time: _settings.animationDuration,
             callback: noop,
-        }, options) as Required<ListEnsureVisibleOptions>;
+        }, options);
 
         const currentScope = {
             from: _scroller.pos,

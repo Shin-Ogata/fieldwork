@@ -202,7 +202,7 @@ namespace CDP_DECLARE {
             throw new RangeError(`declareResultCode(), invalid local-code range. [code: ${code}]`);
         }
         const signed = succeeded ? 1 : -1;
-        const resultCode = signed * (base as number + code);
+        const resultCode = signed * (base + code);
         _code2message[resultCode] = message ?? (`[CODE: ${resultCode}]`);
         return resultCode;
     }

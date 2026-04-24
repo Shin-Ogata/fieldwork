@@ -420,7 +420,7 @@ class RouterContext extends EventPublisher<RouterEvent> implements Router {
         const { transition, reverse }
             = this._subflowTransitionParams ?? (reload
                 ? { transition: this._transitionSettings.reload, reverse: false }
-                : ('back' !== direction ? newState : from as RouteContext));
+                : ('back' !== direction ? newState : from as RouteContext)); // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
 
         return {
             router: this,

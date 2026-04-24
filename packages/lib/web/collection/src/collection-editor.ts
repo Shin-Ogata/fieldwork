@@ -56,7 +56,7 @@ function makeListChanged<T>(
         list: changes,
         range: changed ? { from: rangeFrom, to: rangeTo } : undefined,
         insertedTo: changed ? at : undefined,
-    } as ListChanged<T>;
+    };
 }
 
 /**

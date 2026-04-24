@@ -766,7 +766,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                 const parentNode = el.parentNode;
                 if (validParentNode(parentNode)) {
                     for (const sibling of $(parentNode).children(selector)) {
-                        if (sibling !== el as Element) {
+                        if (sibling !== el as Element) { // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
                             siblings.add(sibling);
                         }
                     }
@@ -815,7 +815,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
         } else {
             const offsets = new Set<Node>();
             for (const el of this) {
-                const offset = getOffsetParent(el as Node) ?? rootElement;
+                const offset = getOffsetParent(el) ?? rootElement;
                 offsets.add(offset);
             }
             return $([...offsets]) as DOM<T>;

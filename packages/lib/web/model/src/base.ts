@@ -676,7 +676,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
      *  - `ja` オプション
      */
     protected sync(method: ModelSyncMethods, context: Model<T>, options?: ModelDataSyncOptions): Promise<ModelSyncResult<T>> {
-        return defaultSync().sync(method, context as SyncContext<T>, options) as Promise<ModelSyncResult<T>>;
+        return defaultSync().sync(method, context as SyncContext<T>, options);
     }
 
     /**
@@ -760,7 +760,7 @@ export abstract class Model<T extends object = any, TEvent extends ModelEvent<T>
                 serverAttrs = Object.assign({}, attrs, serverAttrs);
             }
             if (isObject(serverAttrs) && !isEmptyObject(serverAttrs)) {
-                this.setAttributes(serverAttrs as T, opts);
+                this.setAttributes(serverAttrs, opts);
                 this[_properties].baseAttrs = { ...this._attrs } as T;
             }
 

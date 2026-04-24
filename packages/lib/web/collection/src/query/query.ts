@@ -154,7 +154,7 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
             total: 0,
             items: [],
             options,
-        } as CollectionItemQueryResult<TItem>;
+        };
     }
 
     // キャッシュに対してフィルタリング, ソートを実行
@@ -179,7 +179,7 @@ async function queryFromCache<TItem extends object, TKey extends Keys<TItem>>(
         const retval = {
             total: targets.length,
             items,
-            options: { ...opts } as CollectionItemQueryOptions<TItem>,
+            options: { ...opts },
         } as CollectionItemQueryResult<TItem>;
 
         // 進捗通知

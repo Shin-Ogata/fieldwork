@@ -1,5 +1,6 @@
 /* eslint-disable
     @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-unnecessary-type-assertion,
  */
 
 import { dom as $ } from '@cdp/dom';

@@ -5,6 +5,7 @@
     @typescript-eslint/no-empty-function,
     @typescript-eslint/no-wrapper-object-types,
     @typescript-eslint/no-empty-object-type,
+    @typescript-eslint/no-unnecessary-type-assertion,
  */
 
 import {

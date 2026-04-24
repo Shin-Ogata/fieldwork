@@ -8,7 +8,6 @@ import {
     ListItemView,
 } from '@cdp/ui-listview';
 import {
-    type UnknownObject,
     sleep,
     luid,
     dom as $,
@@ -445,7 +444,7 @@ describe('ui-listview/list-view spec', () => {
             backupData = listview.getBackupData('landscape');
             expect(backupData).not.toBeDefined();
 
-            ret = listview.setBackupData('set', setup as UnknownObject);
+            ret = listview.setBackupData('set', setup);
             expect(ret).toBe(true);
 
             const setData = listview.getBackupData('set') as BackupDataSchema;

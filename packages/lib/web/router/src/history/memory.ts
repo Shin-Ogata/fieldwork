@@ -233,7 +233,7 @@ class MemoryHistory<T = PlainObject> extends EventPublisher<HistoryEvent<T>> imp
         arg2: HistoryState<T> | undefined | ((reason?: unknown) => void),
     ): Promise<void> {
         const promises: Promise<unknown>[] = [];
-        this.publish(event, arg1, arg2 as any, promises);
+        this.publish(event, arg1, arg2 as any, promises); // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
         await Promise.all(promises);
     }
 
