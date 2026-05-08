@@ -766,7 +766,7 @@ export class DOMTraversing<TElement extends ElementBase> implements DOMIterable<
                 const parentNode = el.parentNode;
                 if (validParentNode(parentNode)) {
                     for (const sibling of $(parentNode).children(selector)) {
-                        if (sibling !== el as Element) { // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+                        if (sibling !== el as Element) {
                             siblings.add(sibling);
                         }
                     }

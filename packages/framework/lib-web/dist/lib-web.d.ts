@@ -198,7 +198,7 @@ declare namespace i18n {
          * - `datetime` → `Date`
          * - `relativetime` → `number`
          * - `list` → `readonly string[]`
-         * - No format specifier → `string`
+         * - No format specifier → `string | number` (since i18next stringifies values at runtime)
          *
          * Use this option to add mappings for custom formatters or to override
          * the built-in defaults.
@@ -878,7 +878,7 @@ declare namespace i18n {
         Format
     ] extends [
         never
-    ] ? Name extends 'count' ? number : string : Format extends keyof _InterpolationFormatTypeMap ? _InterpolationFormatTypeMap[Format] : _StripFormatOptions<Format> extends keyof _InterpolationFormatTypeMap ? _InterpolationFormatTypeMap[_StripFormatOptions<Format> & keyof _InterpolationFormatTypeMap] : Format extends keyof _BuiltInFormatTypeMap ? _BuiltInFormatTypeMap[Format] : _StripFormatOptions<Format> extends keyof _BuiltInFormatTypeMap ? _BuiltInFormatTypeMap[_StripFormatOptions<Format> & keyof _BuiltInFormatTypeMap] : string;
+    ] ? Name extends 'count' ? number : string | number : Format extends keyof _InterpolationFormatTypeMap ? _InterpolationFormatTypeMap[Format] : _StripFormatOptions<Format> extends keyof _InterpolationFormatTypeMap ? _InterpolationFormatTypeMap[_StripFormatOptions<Format> & keyof _InterpolationFormatTypeMap] : Format extends keyof _BuiltInFormatTypeMap ? _BuiltInFormatTypeMap[Format] : _StripFormatOptions<Format> extends keyof _BuiltInFormatTypeMap ? _BuiltInFormatTypeMap[_StripFormatOptions<Format> & keyof _BuiltInFormatTypeMap] : string;
     /** Local union-to-intersection (not exported from helpers). */
     export type _UnionToIntersection<T> = (T extends unknown ? (k: T) => void : never) extends (k: infer I) => void ? I : never;
     /** Builds a per-entry typed record from parsed interpolation entries and intersects them. */
@@ -1300,10 +1300,14 @@ declare namespace i18n {
     export type Callback = (error: any, t: TFunction) => void;
     /**
      * Uses similar args as the t function and returns true if a key exists.
-     * Acts as a type guard, narrowing the key to {@link SelectorKey} so it can be passed to `t()`.
+     *
+     * Note: this shape intentionally does not include a type-guard overload so it
+     * remains easy to assign arrow functions to. The type guard narrowing to
+     * {@link SelectorKey} is exportd directly on `i18n.exists` instead.
+     * Users who want narrowing on a custom wrapper can type it as
+     * `typeof i18next.exists`.
      */
     export interface ExistsFunction<TKeys extends string = string, TInterpolationMap extends object = $Dictionary> {
-        (key: TKeys, options?: TOptions<TInterpolationMap>): key is TKeys & SelectorKey;
         (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
     }
     export interface CloneOptions extends InitOptions {
@@ -1357,8 +1361,13 @@ declare namespace i18n {
         store: ResourceStore;
         /**
          * Uses similar args as the t function and returns true if a key exists.
+         * Acts as a type guard on single-key calls, narrowing the key to
+         * {@link SelectorKey} so it can be passed to `t()`.
          */
-        exists: ExistsFunction;
+        exists: {
+            <K extends string>(key: K, options?: TOptions): key is K & SelectorKey;
+            (key: string | string[], options?: TOptions): boolean;
+        };
         /**
          * Returns a resource data by language.
          */
