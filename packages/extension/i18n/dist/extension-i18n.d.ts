@@ -159,6 +159,26 @@ declare namespace i18n {
         /** @see {InterpolationOptions.unescapeSuffix} */
         unescapeSuffix: '';
         /**
+         * Whether to extract interpolation variables from translation strings at
+         * the type level. When `true` (default), the type system parses each
+         * resource value for `{{variable}}` patterns and types the `t()` options
+         * accordingly.
+         *
+         * Set to `false` when your translation strings use a different
+         * interpolation syntax that the i18next type extractor cannot understand
+         * — e.g. ICU MessageFormat plurals like `{count, plural, one {{count} row}
+         * other {{count} rows}}` would otherwise produce phantom variable names
+         * because the default extractor naively matches the outermost `{{` …
+         * `}}`. This flag is type-only; runtime interpolation is governed by
+         * `InterpolationOptions` and is unaffected.
+         *
+         * Required by `i18next-icu` users — see that package's docs for the
+         * recommended `CustomTypeOptions` augmentation.
+         *
+         * @default true
+         */
+        parseInterpolation: true;
+        /**
          * Use a proxy-based selector to select a translation.
          *
          * Enables features like go-to definition, and better DX/faster autocompletion
@@ -171,6 +191,23 @@ declare namespace i18n {
          * With `enableSelector` set to `'optimize'`, i18next is capable of supporting
          * arbitrarily large/deep translation sets without causing any IDE slowdown
          * whatsoever.
+         *
+         * Set `enableSelector` to `'strict'` to require an explicit namespace as the
+         * first selector path segment in every call. The selector proxy stops
+         * exposing the primary namespace's keys flat on `$` — even
+         * `useTranslation('only')` must use `$.only.foo`, never `$.foo`. At runtime,
+         * a leading segment matching the scope's namespace list (primary included)
+         * is always rewritten as a namespace prefix, fully decoupling selector
+         * shape from resolution scope. Use this when you want a single mental model
+         * for selector paths regardless of how many namespaces a hook was created
+         * with, and to remove the silent miss that flat-primary paths can otherwise
+         * cause in multi-ns hooks (see [#2429](https://github.com/i18next/i18next/issues/2429)).
+         *
+         * `'strict'` mode is incompatible with the `'optimize'` shortcut. If you
+         * have keys whose names match sibling namespaces (the
+         * [#2405](https://github.com/i18next/i18next/issues/2405) pattern), do not
+         * enable strict mode — the leading-segment rewrite would route those keys
+         * into the wrong namespace.
          *
          * @default false
          */
@@ -612,6 +649,18 @@ declare namespace i18n {
          */
         nsSeparator?: false | string;
         /**
+         * Selector-API mode. Mirrors `CustomTypeOptions['enableSelector']`.
+         *
+         * - `false` (default): selector API disabled.
+         * - `true` / `'optimize'`: selector resolution enabled.
+         * - `'strict'`: require an explicit namespace as the first selector
+         *   path segment in every call. The resolver always rewrites a leading
+         *   namespace-matching segment as a namespace prefix.
+         *
+         * @default false
+         */
+        enableSelector?: false | true | 'optimize' | 'strict';
+        /**
          * Char to split plural from key
          * @default '_'
          */
@@ -796,6 +845,7 @@ declare namespace i18n {
     export type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
     export type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
     export type _EnableSelector = TypeOptions['enableSelector'];
+    export type _ParseInterpolation = TypeOptions['parseInterpolation'];
     export type _InterpolationFormatTypeMap = TypeOptions['interpolationFormatTypeMap'];
     export type $IsResourcesDefined = [
         keyof _Resources
@@ -841,7 +891,11 @@ declare namespace i18n {
      ******************************************************** */
     export type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}${_UnescapeSuffix}` ? TrimSpaces<ActualValue> : Ret;
     /** Parses interpolation entries as `[variableName, formatSpecifier | never]` tuples. */
-    export type ParseInterpolationEntries<Ret> = Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${infer Format}` ? [
+    export type ParseInterpolationEntries<Ret> = [
+        _ParseInterpolation
+    ] extends [
+        false
+    ] ? never : Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${infer Format}` ? [
         ParseActualValue<ActualValue>,
         TrimSpaces<Format>
     ] : [
@@ -983,12 +1037,24 @@ declare namespace i18n {
             options?: TOpt & $Dictionary
         ]): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
     }
-    export type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _EnableSelector extends true | 'optimize' ? TFunctionSelector<Ns, KPrefix, GetSource<Ns, KPrefix>> : _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+    export type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _EnableSelector extends true | 'optimize' | 'strict' ? TFunctionSelector<Ns, KPrefix, GetSource<Ns, KPrefix>> : _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends TFunctionSignature<Ns, KPrefix> {
     }
     export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+    /**
+     * Strict variant: every namespace (primary included) is exposed under its own
+     * key on `$`. The flattened-primary form (`Resources[Ns[0]] &`) is dropped, so
+     * `$.foo` no longer typechecks when `foo` is a key in the primary namespace —
+     * callers must write `$.primary.foo`. Applied uniformly to single- and
+     * multi-ns hooks under `enableSelector: 'strict'`.
+     */
+    export type _NsResourceStrict<Ns extends Namespace> = Ns extends readonly any[] ? PickNamespaces<Resources, Ns[number]> : PickNamespaces<Resources, Ns & keyof Resources>;
     /** The raw (unfiltered) resource object for a given namespace. */
-    export type NsResource<Ns extends Namespace> = Ns extends readonly [
+    export type NsResource<Ns extends Namespace> = [
+        _EnableSelector
+    ] extends [
+        'strict'
+    ] ? _NsResourceStrict<Ns> : Ns extends readonly [
         keyof Resources,
         any,
         ...any
@@ -1288,9 +1354,13 @@ declare namespace i18n {
      *
      * Note: this shape intentionally does not include a type-guard overload so it
      * remains easy to assign arrow functions to. The type guard narrowing to
-     * {@link SelectorKey} is exportd directly on `i18n.exists` instead.
-     * Users who want narrowing on a custom wrapper can type it as
-     * `typeof i18next.exists`.
+     * {@link SelectorKey} is exportd directly on `i18n.exists` instead. If you
+     * need narrowing in your own code, call `i18next.exists` directly or forward
+     * the function by reference (e.g. `const exists: typeof i18next.exists =
+     * i18next.exists`). Wrapping it in an arrow function will lose the narrowing —
+     * there is currently no way to keep type-guard narrowing through an
+     * arrow-function wrapper, which is why `ExistsFunction` deliberately omits the
+     * predicate overload.
      */
     export interface ExistsFunction<TKeys extends string = string, TInterpolationMap extends object = $Dictionary> {
         (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
