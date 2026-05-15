@@ -23,9 +23,39 @@ describe('dom/events spec', () => {
     })();
 
     const createEvent = (name: string, objectName = 'Event'): Event => {
-        const e = document.createEvent(objectName);
-        e.initEvent(name, true, true);
-        return e;
+        // コンストラクタ経由のイベント生成を優先する
+        // （例: AnimationEvent などの旧 createEvent 型は新しい Chrome で受け付けられない）
+        const EventClass = (window as any)[objectName] as
+            | (new(type: string, eventInitDict?: EventInit) => Event)
+            | undefined;
+
+        if ('function' === typeof EventClass) {
+            try {
+                return new EventClass(name, {
+                    bubbles: true,
+                    cancelable: true,
+                });
+            } catch {
+                // 生成に失敗した場合は汎用 Event にフォールバック
+            }
+        }
+
+        if ('function' === typeof Event) {
+            return new Event(name, {
+                bubbles: true,
+                cancelable: true,
+            });
+        }
+
+        try {
+            const e = document.createEvent(objectName);
+            e.initEvent(name, true, true);
+            return e;
+        } catch {
+            const e = document.createEvent('Event');
+            e.initEvent(name, true, true);
+            return e;
+        }
     };
 
     let count: number;
