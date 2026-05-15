@@ -47,9 +47,15 @@ describe('dom/events spec', () => {
             });
         }
 
-        const e = document.createEvent('Event');
-        e.initEvent(name, true, true);
-        return e;
+        try {
+            const e = document.createEvent(objectName);
+            e.initEvent(name, true, true);
+            return e;
+        } catch {
+            const e = document.createEvent('Event');
+            e.initEvent(name, true, true);
+            return e;
+        }
     };
 
     let count: number;
