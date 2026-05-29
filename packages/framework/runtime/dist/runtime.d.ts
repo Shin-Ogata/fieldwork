@@ -4620,11 +4620,84 @@ export declare namespace i18n {
     export interface CustomTypeOptions {
     }
     /**
+     * Per-package namespace types for monorepos. Augment this in each package's
+     * `i18next.d.ts` instead of `CustomTypeOptions.resources` when several packages
+     * need their own namespaces — otherwise TypeScript reports TS2717 on merge.
+     *
+     * Works alongside the legacy `CustomTypeOptions.resources` field; both end up
+     * in `TypeOptions['resources']`.
+     *
+     * Scalar type options like `defaultNS`, `returnNull`, `enableSelector`, etc.,
+     * still belong on `CustomTypeOptions` — this interface is for namespace
+     * resource types only.
+     *
+     * @see https://github.com/i18next/i18next/issues/2409
+     *
+     * @example
+     * ```ts
+     * // packages/ui/i18next.d.ts
+     * export module 'i18next' {
+     *   interface ResourceNamespaceMap {
+     *     '@repo/ui': typeof uiTranslations;
+     *   }
+     * }
+     * ```
+     */
+    export interface ResourceNamespaceMap {
+    }
+    /**
      * This interface can be augmented by users to add types to `i18next` default PluginOptions.
      */
     export interface CustomPluginOptions {
     }
-    export type TypeOptions = $MergeBy<{
+    export type _LegacyResources = CustomTypeOptions extends {
+        resources: infer R;
+    } ? R : object;
+    // Per-property merge of two object types. Unlike `L & R`, which TypeScript
+    // collapses to `never` whenever ANY property has incompatible literals (so a
+    // single same-key/different-literal conflict wipes out the whole namespace),
+    // this iterates keys and intersects them individually — the conflicting key
+    // becomes `never`, the rest survive.
+    export type _PerPropMerge<L, R> = {
+        [K in keyof L | keyof R]: K extends keyof L ? K extends keyof R ? L[K] & R[K] : L[K] : K extends keyof R ? R[K] : never;
+    };
+    // Drop properties whose value resolved to `never`. Without this, the
+    // conflict key would leak into `keyof Resources[ns]`, then poison
+    // `KeysBuilder` recursion (it tries to walk a `never` value) and break
+    // `t()` overload resolution for the entire namespace.
+    // NOTE: must use the `Pick<T, NonNeverKeys>` form. A `[K in keyof T as ...]`
+    // remap does NOT eagerly evaluate `T[K]` for intersection types, so conflict
+    // keys would survive the filter.
+    export type _NonNeverKeys<T> = {
+        [K in keyof T]: [
+            T[K]
+        ] extends [
+            never
+        ] ? never : K;
+    }[keyof T];
+    export type _DropConflictKeys<T> = Pick<T, _NonNeverKeys<T>>;
+    // When the same namespace exists on both sides, deep-merge per property and
+    // strip same-key/different-literal conflicts. Otherwise pick from whichever
+    // side has it.
+    export type _MergeNamespaces<L, R> = {
+        [K in keyof L | keyof R]: K extends keyof L ? K extends keyof R ? _DropConflictKeys<_PerPropMerge<L[K], R[K]>> : L[K] : K extends keyof R ? R[K] : never;
+    };
+    // NOTE: empty legacy + empty registry must stay `object` so unconfigured projects
+    // still get `$IsResourcesDefined === false`.
+    export type _MergedResources = [
+        keyof _LegacyResources
+    ] extends [
+        never
+    ] ? [
+        keyof ResourceNamespaceMap
+    ] extends [
+        never
+    ] ? object : ResourceNamespaceMap : [
+        keyof ResourceNamespaceMap
+    ] extends [
+        never
+    ] ? _LegacyResources : _MergeNamespaces<_LegacyResources, ResourceNamespaceMap>;
+    export type TypeOptions = $MergeBy<$MergeBy<{
         /** @see {InitOptions.returnNull} */
         returnNull: false;
         /** @see {InitOptions.returnEmptyString} */
@@ -4752,7 +4825,14 @@ export declare namespace i18n {
          * ```
          */
         interpolationFormatTypeMap: {};
-    }, CustomTypeOptions>;
+    }, CustomTypeOptions>, 
+    // HACK: apply merged resources *after* CustomTypeOptions so registry contributions
+    // survive when CustomTypeOptions.resources is also defined. Without this
+    // second step, the inner $MergeBy would replace the default `resources: object`
+    // with CustomTypeOptions['resources'] alone, dropping the registry namespaces.
+    {
+        resources: _MergedResources;
+    }>;
     export type PluginOptions<T> = $MergeBy<{
         /**
          * Options for language detection - check documentation of plugin
@@ -5378,8 +5458,16 @@ export declare namespace i18n {
     /** ****************************************************
      * Build all keys and key prefixes based on Resources *
      ***************************************************** */
-    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
-    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
+    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = [
+        Res
+    ] extends [
+        never
+    ] ? never : Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
+    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = [
+        Res
+    ] extends [
+        never
+    ] ? never : Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
     export type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true ? WithReturnObjects extends true ? keyof Res | KeysBuilderWithReturnObjects<Res> : KeysBuilderWithoutReturnObjects<Res> : string;
     export type KeysWithReturnObjects = {
         [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], true>>;
