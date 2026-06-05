@@ -946,16 +946,12 @@ declare namespace i18n {
     /** ****************************************************
      * Build all keys and key prefixes based on Resources *
      ***************************************************** */
-    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = [
-        Res
-    ] extends [
-        never
-    ] ? never : Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
-    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = [
-        Res
-    ] extends [
-        never
-    ] ? never : Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
+    // Do NOT add a `[Res] extends [never]` guard here: it defers these into
+    // conditional types, so `KeyPrefix<Ns>` no longer resolves to a literal union
+    // and `keyPrefix` inference widens to the whole namespace, polluting `t()`
+    // return types with sibling keys (#2434 regression). Guard `never` in the merge.
+    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
+    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
     export type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true ? WithReturnObjects extends true ? keyof Res | KeysBuilderWithReturnObjects<Res> : KeysBuilderWithoutReturnObjects<Res> : string;
     export type KeysWithReturnObjects = {
         [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], true>>;
