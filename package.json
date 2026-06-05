@@ -42,10 +42,10 @@
     "semver": "7.8.1",
     "tar": "7.5.15",
     "terser": "5.48.0",
-    "testem": "3.20.0",
+    "testem": "3.20.1",
     "typedoc": "0.28.19",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.59.4"
+    "typescript-eslint": "8.60.0"
   },
   "homepage": "https://github.com/Shin-Ogata/fieldwork#readme",
   "keywords": [
