@@ -1183,6 +1183,19 @@ declare namespace i18n {
         // plain-string callbacks that would otherwise cause TypeScript to 'lock in' the
         // type from the first element.
         <const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[], const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selectors: Fns, options?: Opts & InterpolationMap<DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>>): SelectorReturn<Fns[number] extends (...args: any[]) => infer R ? R : never, Opts>;
+        // ── Single selector with context + returnObjects ────────────────────────────
+        // More specific than the general context overload below. Captures `Context` as
+        // a const generic and uses `const Fn` + `ReturnType<Fn>` so FilterKeys sees the
+        // concrete context and the callback's object/array shape is preserved (#2398).
+        // Without this, `ConstrainTarget` / `ApplyTarget` collapse to `unknown` when
+        // `returnObjects: true`.
+        <const Context extends string, const Fn extends (src: Select<Source, Context>) => any, const Opts extends SelectorOptions<Ns[number]> & {
+            context: Context;
+            returnObjects: true;
+        } = SelectorOptions<Ns[number]> & {
+            context: Context;
+            returnObjects: true;
+        }>(selector: Fn, options: Opts & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>): SelectorReturn<ReturnType<Fn>, Opts>;
         // ── Single selector with context — bypasses count enforcement ────────────────
         // When `context` is present in options, `Target` is derived from the
         // context-filtered source (third mapped type of FilterKeys), which does NOT
@@ -1255,20 +1268,43 @@ declare namespace i18n {
     ] extends [
         'optimize'
     ] ? T : FilterKeys<T, Context>;
+    /**
+     * Context-variant keys that are actually present (not JSON-union phantoms typed
+     * as optional `undefined`, e.g. `transKey1_withContext?: undefined`).
+     */
+    export type _DefinedContextKeys<T, Pattern extends string> = {
+        [P in keyof T as P extends Pattern ? ([
+            T[P]
+        ] extends [
+            undefined
+        ] ? never : P) : never]: true;
+    };
     export type _HasContextVariant<T, K extends string, Context> = [
-        keyof T & (`${K}${_ContextSeparator}${Context & string}` | `${K}${_ContextSeparator}${Context & string}${_PluralSeparator}${PluralSuffix}`)
+        keyof _DefinedContextKeys<T, `${K}${_ContextSeparator}${Context & string}` | `${K}${_ContextSeparator}${Context & string}${_PluralSeparator}${PluralSuffix}`>
     ] extends [
         never
     ] ? false : true;
     /** Checks whether key K has **any** context variant in T (excluding pure plural suffixes). */
     export type _IsContextualKey<T, K extends string> = [
-        Exclude<keyof T & `${K}${_ContextSeparator}${string}`, `${K}${_PluralSeparator}${PluralSuffix}` | `${K}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`>
+        Exclude<keyof _DefinedContextKeys<T, `${K}${_ContextSeparator}${string}`>, `${K}${_PluralSeparator}${PluralSuffix}` | `${K}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`>
     ] extends [
         never
     ] ? false : true;
-    export type FilterKeys<T, Context> = never | T extends readonly any[] ? {
+    /**
+     * Distributes {@link FilterKeysObject} over unions so heterogeneous JSON array
+     * element types (each object literal in the array) are filtered independently,
+     * then re-unified. Without distribution, `keyof (A | B)` is only the common keys
+     * and context variants that exist on a single element are invisible, which
+     * produced partial element unions for `returnObjects` + `context` (#2398).
+     */
+    export type FilterKeys<T, Context> = [
+        T
+    ] extends [
+        readonly any[]
+    ] ? {
         [I in keyof T]: FilterKeys<T[I], Context>;
-    } : $Prune<{
+    } : T extends any ? FilterKeysObject<T, Context> : never;
+    export type FilterKeysObject<T, Context> = $Prune<{
         [K in keyof T as T[K] extends object ? K : [
             Context
         ] extends [
@@ -1288,6 +1324,10 @@ declare namespace i18n {
          : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
     } & {
         [K in keyof T as T[K] extends object ? never : [
+            T[K]
+        ] extends [
+            undefined
+        ] ? never : [
             Context
         ] extends [
             string

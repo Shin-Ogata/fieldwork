@@ -16,7 +16,7 @@ async function main() {
 
         console.log(colors.cyan('preparing i18next tarball...'));
         mkdirSync(directory, { recursive: true });
-        const url = `https://github.com/i18next/i18next/archive/v${libVersion}.tar.gz`;
+        const url = `https://github.com/i18next/i18next/archive/refs/tags/v${libVersion}.tar.gz`;
         await download(url, tarball);
         console.log(colors.green('done.'));
     } catch (e) {

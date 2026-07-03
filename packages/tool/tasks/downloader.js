@@ -1,7 +1,7 @@
 'use strict';
 
 const { createWriteStream, unlinkSync } = require('node:fs');
-const { parse: parseURL } = require('node:url');
+const { URL, urlToHttpOptions } = require('node:url');
 const http   = require('node:http');
 const https  = require('node:https');
 const colors = require('./colors');
@@ -99,10 +99,15 @@ async function download(url, dst, protocol, proxy) {
     });
 
     try {
+        let source = url;
         do {
-            // parseURL: https://qiita.com/sen-higa/items/43d4af5daadf438921a2
-            url = await request(stream, connection, { ...parseURL(url), ...proxy });
-        } while (url);
+            const parsed = new URL(source);
+            const next = await request(stream, connection, {
+                ...urlToHttpOptions(parsed),
+                ...proxy,
+            });
+            source = next ? new URL(next, parsed).toString() : '';
+        } while (source);
         stream.end();
         await finished;
     } catch (e) {
