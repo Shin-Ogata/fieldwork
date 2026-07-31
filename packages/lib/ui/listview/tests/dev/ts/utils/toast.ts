@@ -112,7 +112,7 @@ class DefaultStyleBuilder implements ToastStyleBuilder {
     }
 
     /** 終了処理 */
-    out(el: HTMLElement, duration?: number): Promise<void> {
+    out(this: void, el: HTMLElement, duration?: number): Promise<void> {
         duration = duration ?? ToastDuration.BRIEF;
         // fadeout element
         return new Promise(resolve => {
@@ -232,7 +232,7 @@ export class Toast {
         $box.css({ 'top': `${posY}px`, 'left': `${posX}px`, 'visibility': 'visible' });
         await sleep(duration);
 
-        const outFunc = out ?? builder.out;
+        const outFunc = out ?? builder.out; // eslint-disable-line @typescript-eslint/unbound-method
         await outFunc($box[0], outDuration);
     }
 }
