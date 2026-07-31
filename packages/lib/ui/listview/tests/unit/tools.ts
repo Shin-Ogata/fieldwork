@@ -40,7 +40,7 @@ export function cleanupTestElements(): void {
 }
 
 export function waitFrame(): Promise<void> {
-    return wf(1, window.requestAnimationFrame);
+    return wf(1, window.requestAnimationFrame.bind(window));
 }
 
 export function queryListViewItems(listview: IListView): ItemProfile[] {
