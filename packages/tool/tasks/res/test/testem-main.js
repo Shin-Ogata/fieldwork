@@ -27,10 +27,12 @@
     }
 
     function setupJasmine(callback) {
-        require(['boot1'], () => {
+        require(['boot'], () => {
             jasmine.getEnv().configure({
                 forbidDuplicateNames: false, // allow duplicate names in suites (v6.0.0+)
             });
+            // jasmine-core v7 で `getJasmineRequireObj` が非公開になり、testem の jasmine2 自動判定が効かなくなるための救済
+            window.getJasmineRequireObj = window.getJasmineRequireObj || function() { /* noop */ };
             require(['testem'], () => {
                 setupTestem();
                 callback(onload);
