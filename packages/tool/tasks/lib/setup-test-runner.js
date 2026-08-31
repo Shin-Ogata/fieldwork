@@ -33,8 +33,8 @@ async function setup(options) {
         await cp(resolve(srcFrameworkRoot, 'jasmine.css'), resolve(dstRoot, 'framework/jasmine.css'), { force: true, recursive: true });
         await cp(resolve(srcFrameworkRoot, 'jasmine.js'), resolve(dstRoot, 'framework/jasmine.js'), { force: true, recursive: true });
         await cp(resolve(srcFrameworkRoot, 'jasmine-html.js'), resolve(dstRoot, 'framework/jasmine-html.js'), { force: true, recursive: true });
-        await cp(resolve(srcFrameworkRoot, 'boot0.js'), resolve(dstRoot, 'framework/boot0.js'), { force: true, recursive: true });
-        await cp(resolve(srcFrameworkRoot, 'boot1.js'), resolve(dstRoot, 'framework/boot1.js'), { force: true, recursive: true });
+        // boot0.js/boot1.js は jasmine-core v7 で boot.js に統合された
+        await cp(resolve(srcFrameworkRoot, 'boot.js'), resolve(dstRoot, 'framework/boot.js'), { force: true, recursive: true });
     }
 
     // requirejs

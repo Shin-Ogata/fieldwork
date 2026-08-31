@@ -109,18 +109,12 @@ function getTestem(options) {
     const requirejs_config = Object.assign({}, requirejs, {
         baseUrl: '../../',
         paths: Object.assign({
-            'boot0': `${TEMP}/testem/framework/boot0`,
-            'boot1': `${TEMP}/testem/framework/boot1`,
+            // jasmine-core v7 より boot0/boot1 は単一の boot.js に統合された
+            'boot': `${TEMP}/testem/framework/boot`,
             'testem': '../../../testem',
             [PACKAGE]: `${TEMP}/${OUTNAME}`,
             'specs': `${TEMP}/${OUTNAME}-spec`,
         }, external),
-        shim: {
-            'boot1': {
-                // if configures the Jasmine env, insert a config script between `boot0` and `boot1`.
-                deps: ['boot0'],
-            },
-        },
     });
     return {
         external,
