@@ -6074,7 +6074,7 @@ export declare namespace i18n {
          *
          * Accepts optional keyPrefix that will be automatically applied to returned t function.
          */
-        getFixedT<Ns extends Namespace | null, const TKPrefixFn extends (TypeOptions['enableSelector'] extends true | 'optimize' ? KeyPrefixSelector<ActualNs> : never), ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(lng: string | readonly string[] | null, ns: Ns, keyPrefix: TKPrefixFn): TFunction<ActualNs, TKPrefixFn>;
+        getFixedT<Ns extends Namespace | null, const TKPrefixFn extends (TypeOptions['enableSelector'] extends true | 'optimize' | 'strict' ? KeyPrefixSelector<ActualNs> : never), ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(lng: string | readonly string[] | null, ns: Ns, keyPrefix: TKPrefixFn): TFunction<ActualNs, TKPrefixFn>;
         getFixedT<Ns extends Namespace | null = DefaultNamespace, TKPrefix extends KeyPrefix<ActualNs> = undefined, ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(...args: [
             lng: string | readonly string[],
             ns?: Ns,
