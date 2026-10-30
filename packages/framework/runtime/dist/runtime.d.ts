@@ -7458,23 +7458,22 @@ export declare namespace path2regexp {
      */
     export interface Group {
         type: 'group';
-        tokens: Token[];
+        tokens: readonly Token[];
     }
     /**
-     * A token that corresponds with a regexp capture.
+     * Tokens that corresponds with a regexp capture.
      */
     export type Key = Parameter | Wildcard;
-    /**
-     * A sequence of `path-to-regexp` keys that match capturing groups.
-     */
-    export type Keys = Array<Key>;
     /**
      * A sequence of path match characters.
      */
     export type Token = Text | Parameter | Wildcard | Group;
+    /**
+     * Tokenized path instance.
+     */
     export interface TokenData {
-        readonly tokens: Token[];
-        readonly originalPath?: string | undefined;
+        tokens: readonly Token[];
+        originalPath?: string;
     }
     export interface PathError extends TypeError {
         readonly originalPath: string | undefined;
@@ -7499,13 +7498,13 @@ export declare namespace path2regexp {
      */
     export type MatchFunction<P extends ParamData> = (path: string) => Match<P>;
     /**
-     * Supported path types.
+     * Supported path inputs.
      */
     export type Path = string | TokenData;
     export function match<P extends ParamData>(path: Path | Path[], options?: MatchOptions & ParseOptions): MatchFunction<P>;
     export function pathToRegexp(path: Path | Path[], options?: PathToRegexpOptions & ParseOptions): {
         regexp: RegExp;
-        keys: Keys;
+        keys: Key[];
     };
     export function stringify(data: TokenData): string;
 }
