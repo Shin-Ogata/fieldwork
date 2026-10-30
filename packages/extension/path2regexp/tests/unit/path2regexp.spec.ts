@@ -6,7 +6,7 @@
 import { path2regexp } from '@cdp/extension-path2regexp';
 import { PARSER_TESTS, STRINGIFY_TESTS, COMPILE_TESTS, MATCH_TESTS } from './test-cases';
 
-const { parse, compile, match, stringify, pathToRegexp, TokenData, PathError } = path2regexp;
+const { parse, compile, match, stringify, pathToRegexp, PathError } = path2regexp;
 
 /**
  * Dynamically generate the entire test suite.
@@ -46,6 +46,11 @@ describe('path-to-regexp', () => {
                 new PathError('Unexpected end at index 7, expected }', '/{:foo,'),
             );
         });
+        it('should throw on an empty unbalanced group', () => {
+            expect(() => parse('/{')).toThrow(
+                new PathError('Unexpected end at index 2, expected }', '/{'),
+            );
+        });
         it('should throw on nested unbalanced group', () => {
             expect(() => parse('/{:foo/{x,y}')).toThrow(
                 new PathError('Unexpected end at index 12, expected }', '/{:foo/{x,y}'),
@@ -69,6 +74,38 @@ describe('path-to-regexp', () => {
                 new PathError('Unterminated quote at index 2', '/:"foo'),
             );
         });
+        it('should throw on a trailing backslash', () => {
+            expect(() => parse('/foo\\')).toThrow(
+                new PathError('Unexpected end after \\ at index 5', '/foo\\'),
+            );
+        });
+        it('should throw on a trailing backslash in a group', () => {
+            expect(() => parse('/foo/{bar\\')).toThrow(
+                new PathError('Unexpected end after \\ at index 10', '/foo/{bar\\'),
+            );
+        });
+        it('should throw on a trailing backslash after a param', () => {
+            expect(() => parse('/foo/:bar\\')).toThrow(
+                new PathError('Unexpected end after \\ at index 10', '/foo/:bar\\'),
+            );
+        });
+        it('should throw on a trailing backslash after a wildcard', () => {
+            expect(() => parse('/foo/*bar\\')).toThrow(
+                new PathError('Unexpected end after \\ at index 10', '/foo/*bar\\'),
+            );
+        });
+        it('should throw on a trailing backslash in a quoted param', () => {
+            expect(() => parse('/foo/:"bar\\')).toThrow(
+                new PathError('Unterminated quote at index 6', '/foo/:"bar\\'),
+            );
+        });
+        for (const char of ['}', '(', ')', '[', ']', '+', '?', '!']) {
+            it(`should throw on unexpected character ${char}`, () => {
+                expect(() => parse(`/foo/${char}`)).toThrow(
+                    new PathError(`Unexpected ${char} at index 5`, `/foo/${char}`),
+                );
+            });
+        }
     });
 
     describe('compile errors', () => {
@@ -93,7 +130,7 @@ describe('path-to-regexp', () => {
 
             expect(() => {
                 toPath({ foo: [] });
-            }).toThrow(new TypeError('Expected "foo" to be a string'));
+            }).toThrow(new TypeError('Expected "foo" to be a non-empty string'));
         });
 
         it('should throw when a wildcard is not an array', () => {
@@ -111,6 +148,13 @@ describe('path-to-regexp', () => {
                 toPath({ foo: [1, 'a'] as any });
             }).toThrow(new TypeError('Expected "foo/0" to be a string'));
         });
+        it('should throw when a wildcard array yields an empty path', () => {
+            const toPath = compile('/*foo');
+
+            expect(() => {
+                toPath({ foo: [''] });
+            }).toThrow(new TypeError('Expected "foo" to be a non-empty array'));
+        });
     });
 
     describe('pathToRegexp errors', () => {
@@ -122,27 +166,33 @@ describe('path-to-regexp', () => {
 
         it('should throw when missing text between params using TokenData', () => {
             expect(() =>
-                pathToRegexp(
-                    new TokenData([
+                pathToRegexp({
+                    tokens: [
                         { type: 'param', name: 'a' },
                         { type: 'param', name: 'b' },
-                    ]),
-                ),
+                    ],
+                }),
             ).toThrow(new PathError('Missing text before "b" param', undefined));
         });
 
         it('should throw with `originalPath` when missing text between params using TokenData', () => {
             expect(() =>
-                pathToRegexp(
-                    new TokenData(
-                        [
-                            { type: 'param', name: 'a' },
-                            { type: 'param', name: 'b' },
-                        ],
-                        '/[a][b]',
-                    ),
-                ),
+                pathToRegexp({
+                    tokens: [
+                        { type: 'param', name: 'a' },
+                        { type: 'param', name: 'b' },
+                    ],
+                    originalPath: '/[a][b]',
+                }),
             ).toThrow(new PathError('Missing text before "b" param', '/[a][b]'));
+        });
+
+        it('should throw when too many alternative routes are generated', () => {
+            const segments = new Array(10).fill('{/x}').join('');
+
+            expect(() => pathToRegexp(segments)).toThrow(
+                new PathError('Too many path combinations', segments),
+            );
         });
 
         xit('should contain the error line', () => {
@@ -181,6 +231,34 @@ describe('path-to-regexp', () => {
                 const path = stringify(data);
                 expect(path).toEqual(expected);
             });
+        }
+    });
+
+    describe('stringify params followed by text', () => {
+        for (const type of ['param', 'wildcard'] as const) {
+            for (const [suffix, expected] of [
+                ['bar', '"foo"bar'],
+                ['\u{1D6FC}', '"foo"\u{1D6FC}'],
+                ['/bar', 'foo/bar'],
+                ['', 'foo'],
+            ]) {
+                it(`should preserve ${type} names before ${JSON.stringify(suffix)}`, () => {
+                    const data = {
+                        tokens: [
+                            { type: 'text' as const, value: '/' },
+                            { type, name: 'foo' },
+                            { type: 'text' as const, value: '' },
+                            { type: 'text' as const, value: '' },
+                            { type: 'text' as const, value: suffix },
+                        ],
+                    };
+                    const path = stringify(data);
+                    const params = { foo: 'param' === type ? 'value' : ['value', 'more'] };
+
+                    expect(path).toBe(`/${'param' === type ? ':' : '*'}${expected}`);
+                    expect(compile(path)(params)).toBe(compile(data)(params));
+                });
+            }
         }
     });
 

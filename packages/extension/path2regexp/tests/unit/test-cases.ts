@@ -3,7 +3,7 @@
     @typescript-eslint/array-type,
  */
 
-import { path2regexp } from '@cdp/extension-path2regexp';
+import type { path2regexp } from '@cdp/extension-path2regexp';
 
 type MatchOptions = path2regexp.MatchOptions;
 type Match<P extends ParamData> = path2regexp.Match<P>;
@@ -12,7 +12,13 @@ type TokenData = path2regexp.TokenData;
 type CompileOptions = path2regexp.CompileOptions;
 type ParamData = path2regexp.ParamData;
 type Path = path2regexp.Path;
-const TokenData = path2regexp.TokenData;
+
+function createTokenData(
+    tokens: path2regexp.Token[],
+    originalPath?: string,
+): TokenData {
+    return undefined === originalPath ? { tokens } : { tokens, originalPath };
+}
 
 export interface ParserTestSet {
     path: string;
@@ -47,11 +53,11 @@ export interface MatchTestSet {
 export const PARSER_TESTS: ParserTestSet[] = [
     {
         path: '/',
-        expected: new TokenData([{ type: 'text', value: '/' }], '/'),
+        expected: createTokenData([{ type: 'text', value: '/' }], '/'),
     },
     {
         path: '/:test',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: 'test' },
@@ -61,7 +67,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:a:b',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: 'a' },
@@ -72,7 +78,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:"0"',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: '0' },
@@ -82,7 +88,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:_',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: '_' },
@@ -92,7 +98,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:café',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: 'café' },
@@ -102,7 +108,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:"123"',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: '123' },
@@ -112,7 +118,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:"1\\"\\2\\"3"',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: '1"2"3' },
@@ -122,7 +128,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/*path',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'wildcard', name: 'path' },
@@ -132,7 +138,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '/:"test"stuff',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '/' },
                 { type: 'param', name: 'test' },
@@ -143,7 +149,7 @@ export const PARSER_TESTS: ParserTestSet[] = [
     },
     {
         path: '\\\\:test',
-        expected: new TokenData(
+        expected: createTokenData(
             [
                 { type: 'text', value: '\\' },
                 { type: 'param', name: 'test' },
@@ -155,46 +161,46 @@ export const PARSER_TESTS: ParserTestSet[] = [
 
 export const STRINGIFY_TESTS: StringifyTestSet[] = [
     {
-        data: new TokenData([{ type: 'text', value: '/' }]),
+        data: createTokenData([{ type: 'text', value: '/' }]),
         expected: '/',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/' },
             { type: 'param', name: 'test' },
         ]),
         expected: '/:test',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/' },
             { type: 'param', name: 'café' },
         ]),
         expected: '/:café',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/' },
             { type: 'param', name: '0' },
         ]),
         expected: '/:"0"',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/' },
             { type: 'wildcard', name: 'test' },
         ]),
         expected: '/*test',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/' },
             { type: 'wildcard', name: '0' },
         ]),
         expected: '/*"0"',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/users' },
             {
                 type: 'group',
@@ -208,11 +214,11 @@ export const STRINGIFY_TESTS: StringifyTestSet[] = [
         expected: '/users{/:id}/delete',
     },
     {
-        data: new TokenData([{ type: 'text', value: '/:+?*' }]),
+        data: createTokenData([{ type: 'text', value: '/:+?*' }]),
         expected: '/\\:\\+\\?\\*',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '/' },
             { type: 'param', name: 'test' },
             { type: 'text', value: 'stuff' },
@@ -220,7 +226,7 @@ export const STRINGIFY_TESTS: StringifyTestSet[] = [
         expected: '/:"test"stuff',
     },
     {
-        data: new TokenData([
+        data: createTokenData([
             { type: 'text', value: '\\' },
             { type: 'param', name: 'test' },
         ]),
@@ -276,6 +282,7 @@ export const COMPILE_TESTS: CompileTestSet[] = [
         tests: [
             { input: undefined, expected: null },
             { input: {}, expected: null },
+            { input: { test: '' }, expected: null },
             { input: { test: '123' }, expected: '/123' },
             { input: { test: '123/xyz' }, expected: '/123%2Fxyz' },
         ],
@@ -326,6 +333,7 @@ export const COMPILE_TESTS: CompileTestSet[] = [
             { input: undefined, expected: null },
             { input: {}, expected: null },
             { input: { test: [] }, expected: null },
+            { input: { test: [''] }, expected: null },
             { input: { test: ['123'] }, expected: '/123' },
             { input: { test: ['123', 'xyz'] }, expected: '/123/xyz' },
         ],
@@ -394,10 +402,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
             },
             { input: '/route', expected: false },
             { input: '/test', expected: false },
-            {
-                input: '/test//',
-                expected: { path: '/test//', params: {} },
-            },
+            { input: '/test//', expected: false },
         ],
     },
     {
@@ -484,6 +489,66 @@ export const MATCH_TESTS: MatchTestSet[] = [
     },
 
     /**
+     * Strict trailing delimiter.
+     */
+    {
+        path: '/test',
+        options: { trailing: false },
+        tests: [
+            { input: '/test', expected: { path: '/test', params: {} } },
+            { input: '/test/', expected: false },
+        ],
+    },
+    {
+        path: '/test/',
+        options: { trailing: false },
+        tests: [
+            { input: '/test/', expected: { path: '/test/', params: {} } },
+            { input: '/test', expected: false },
+        ],
+    },
+    {
+        path: '/:test',
+        options: { trailing: false },
+        tests: [
+            { input: '/route', expected: { path: '/route', params: { test: 'route' } } },
+            { input: '/route/', expected: false },
+        ],
+    },
+    {
+        path: '/*path',
+        options: { trailing: false },
+        tests: [
+            { input: '/route', expected: { path: '/route', params: { path: ['route'] } } },
+            {
+                input: '/route/nested',
+                expected: { path: '/route/nested', params: { path: ['route', 'nested'] } },
+            },
+            {
+                input: '/route/nested/',
+                expected: { path: '/route/nested/', params: { path: ['route', 'nested', ''] } },
+            },
+        ],
+    },
+    {
+        path: '/test',
+        options: { trailing: false, end: false },
+        tests: [
+            { input: '/test', expected: { path: '/test', params: {} } },
+            { input: '/test/route', expected: { path: '/test', params: {} } },
+        ],
+    },
+    {
+        path: '{/:test}/bar',
+        options: { trailing: false },
+        tests: [
+            { input: '/bar', expected: { path: '/bar', params: {} } },
+            { input: '/foo/bar', expected: { path: '/foo/bar', params: { test: 'foo' } } },
+            { input: '/foo/bar/', expected: false },
+        ],
+    },
+
+    /**
      * Non-ending mode.
      */
     {
@@ -534,7 +599,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
             },
             {
                 input: '/test//',
-                expected: { path: '/test//', params: {} },
+                expected: { path: '/test/', params: {} },
             },
             {
                 input: '/test/route',
@@ -850,7 +915,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
                 input: '/route.html.json',
                 expected: {
                     path: '/route.html.json',
-                    params: { test: 'route.html', format: 'json' },
+                    params: { test: 'route', format: 'html.json' },
                 },
             },
         ],
@@ -873,7 +938,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
                 input: '/route.json.html',
                 expected: {
                     path: '/route.json.html',
-                    params: { test: 'route.json', format: 'html' },
+                    params: { test: 'route', format: 'json.html' },
                 },
             },
         ],
@@ -1447,7 +1512,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
                 input: '/1/2/3/4/5',
                 expected: {
                     path: '/1/2/3/4/5',
-                    params: { foo: ['1', '2', '3'], bar: '4', baz: ['5'] },
+                    params: { foo: ['1'], bar: '2', baz: ['3', '4', '5'] },
                 },
             },
         ],
@@ -1713,7 +1778,7 @@ export const MATCH_TESTS: MatchTestSet[] = [
                 input: '%25555....222%25',
                 expected: {
                     path: '%25555....222%25',
-                    params: { foo: '555..', bar: '222' },
+                    params: { foo: '555', bar: '..222' },
                 },
             },
         ],
