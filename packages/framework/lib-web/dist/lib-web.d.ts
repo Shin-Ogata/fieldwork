@@ -31,13 +31,6 @@ declare namespace i18n {
     };
     export type $SpecialObject = object | Array<string | object>;
     // Types Operators
-    export type $Prune<T> = never | {
-        [K in keyof T as [
-            keyof T[K]
-        ] extends [
-            never
-        ] ? never : K]: T[K];
-    };
     /** All the way down. */
     export interface $Turtles {
         [x: string]: $Turtles;
@@ -1598,8 +1591,13 @@ declare namespace i18n {
     ] ? {
         [I in keyof T]: FilterKeys<T[I], Context>;
     } : T extends any ? FilterKeysObject<T, Context> : never;
-    export type FilterKeysObject<T, Context> = $Prune<{
-        [K in keyof T as T[K] extends object ? K : [
+    export type FilterKeysObject<T, Context> = {
+        [K in keyof T as [
+            keyof T[K]
+        ] extends [
+            never
+        ] ? never // nothing to select (empty object, null, undefined, optional or unknown)
+         : T[K] extends object ? K : [
             Context
         ] extends [
             string
@@ -1618,15 +1616,15 @@ declare namespace i18n {
          : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
     } & {
         [K in keyof T as T[K] extends object ? never : [
-            T[K]
+            keyof T[K]
         ] extends [
-            undefined
+            never
         ] ? never : [
             Context
         ] extends [
             string
         ] ? K extends `${infer Prefix}${_ContextSeparator}${Context}` | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? Prefix : never : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
-    }>;
+    };
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<Ns>;

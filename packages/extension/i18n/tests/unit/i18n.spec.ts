@@ -310,7 +310,7 @@ describe('extention-i18n spec', () => {
                 });
             });
 
-            expect(t('key')).toBe('');
+            expect(t('key')).toBeUndefined();
             expect(i18next.isInitialized).toBeFalsy();
             await promise;
             expect(t('key')).toBe('こんにちは、世界');
