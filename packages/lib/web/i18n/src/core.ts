@@ -25,7 +25,17 @@ export const t: i18n.TFunction = i18n.t.bind(i18n);
  *  - `ja` 初期化オプションを指定
  */
 export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> => {
-    const opts = Object.assign({ plugins: [], noThrow: true }, options);
+    const opts = Object.assign(
+        {
+            fallbackLng: 'en',
+            returnEmptyString: true,
+        },
+        {
+            plugins: [],
+            noThrow: true,
+        },
+        options,
+    );
     opts.plugins = Array.isArray(opts.plugins) ? opts.plugins.filter(Boolean) : (null == opts.plugins ? [] : [opts.plugins]);
 
     const { namespace, resourcePath: loadPath, dom, plugins, noThrow } = opts;
