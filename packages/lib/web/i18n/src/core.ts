@@ -28,6 +28,7 @@ export const initializeI18N = (options?: I18NOptions): Promise<i18n.TFunction> =
     const opts = Object.assign(
         {
             fallbackLng: 'en',
+            // v27+ backeward compatibility
             returnEmptyString: true,
         },
         {
