@@ -58,7 +58,7 @@ describe('i18n spec', () => {
         const setupLanguage = getLanguage();
         const setupLngList = getLanguageList();
         expect(setupLanguage).toBe('ja-JP');
-        expect(setupLngList).toEqual(['ja-JP', 'ja', 'dev']);
+        expect(setupLngList).toEqual(['ja-JP', 'ja', 'en']);
         expect(setupLanguage).not.toBe(initialLanguage);
         expect(setupLngList).not.toEqual(initialLngList);
     });
@@ -79,7 +79,7 @@ describe('i18n spec', () => {
         await changeLanguage('en');
 
         expect(getLanguage()).toBe('en');
-        expect(getLanguageList()).toEqual(['en', 'dev']);
+        expect(getLanguageList()).toEqual(['en']);
         expect(t('app.common.transfer')).toBe('Send');
     });
 

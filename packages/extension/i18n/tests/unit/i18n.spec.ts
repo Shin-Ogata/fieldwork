@@ -310,7 +310,9 @@ describe('extention-i18n spec', () => {
                 });
             });
 
-            expect(t('key')).toBeUndefined();
+            // v26.7+
+            // expect(t('key')).toBeUndefined();
+            expect(t('key')).toBe('');
             expect(i18next.isInitialized).toBeFalsy();
             await promise;
             expect(t('key')).toBe('こんにちは、世界');
@@ -367,7 +369,9 @@ describe('extention-i18n spec', () => {
                 },
             });
 
-            expect(t('keyEscaped', { myVar: '<img />' })).toBe('no danger &lt;img &#x2F;&gt;');
+            // v27+
+            // expect(t('keyEscaped', { myVar: '<img />' })).toBe('no danger &lt;img &#x2F;&gt;');
+            expect(t('keyEscaped', { myVar: '<img />' })).toBe('no danger &lt;img /&gt;');
             expect(t('keyUnescaped', { myVar: '<img />' })).toBe('dangerous <img />');
             expect(t('keyEscaped', { myVar: '<img />', interpolation: { escapeValue: false } })).toBe('no danger <img />');
         });

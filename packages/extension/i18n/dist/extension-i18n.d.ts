@@ -16,13 +16,6 @@ declare namespace i18n {
     };
     export type $SpecialObject = object | Array<string | object>;
     // Types Operators
-    export type $Prune<T> = never | {
-        [K in keyof T as [
-            keyof T[K]
-        ] extends [
-            never
-        ] ? never : K]: T[K];
-    };
     /** All the way down. */
     export interface $Turtles {
         [x: string]: $Turtles;
@@ -94,7 +87,6 @@ declare namespace i18n {
      *     returnObjects: false;
      *     nsSeparator: ':';
      *     keySeparator: '.';
-     *     compatibilityJSON: 'v4';
      *     allowObjectInHTMLChildren: false;
      *     resources: {
      *       custom: {
@@ -189,7 +181,7 @@ declare namespace i18n {
         /** @see {InitOptions.returnNull} */
         returnNull: false;
         /** @see {InitOptions.returnEmptyString} */
-        returnEmptyString: true;
+        returnEmptyString: false;
         /** @see {InitOptions.returnObjects} */
         returnObjects: false;
         /** @see {InitOptions.keySeparator} */
@@ -204,8 +196,6 @@ declare namespace i18n {
         defaultNS: 'translation';
         /** @see {InitOptions.fallbackNS} */
         fallbackNS: false;
-        /** @see {InitOptions.compatibilityJSON} */
-        compatibilityJSON: 'v4';
         /** @see {InitOptions.resources} */
         resources: object;
         /**
@@ -220,6 +210,17 @@ declare namespace i18n {
          */
         strictKeyChecks: false;
         /**
+         * Flag that makes the `t()` options required for a string with interpolation
+         * variables, so that `{{name}}` cannot be left out of a call. Applies to the
+         * string-key API (with `strictKeyChecks`, also to `t(key, defaultValue)`) and
+         * to the selector API. Messages under `parseInterpolation: 'icu'` or `'mf2'`
+         * require their arguments regardless of this flag.
+         *
+         * On by default since v27; set it to `false` to keep the v26 types.
+         * @default true
+         */
+        strictInterpolationChecks: true;
+        /**
          * Prefix for interpolation
          */
         interpolationPrefix: '{{';
@@ -227,6 +228,11 @@ declare namespace i18n {
          * Suffix for interpolation
          */
         interpolationSuffix: '}}';
+        /**
+         * Separates the variable from its format, as in `{{price, currency}}` (since v26.7.0)
+         * @see {InterpolationOptions.formatSeparator}
+         */
+        interpolationFormatSeparator: ',';
         /** @see {InterpolationOptions.unescapePrefix} */
         unescapePrefix: '-';
         /** @see {InterpolationOptions.unescapeSuffix} */
@@ -329,6 +335,20 @@ declare namespace i18n {
          * ```
          */
         interpolationFormatTypeMap: {};
+        /**
+         * The variables `interpolation.defaultVariables` fills in at runtime (since v26.7.0). They
+         * become optional in the `t()` options, also with `strictInterpolationChecks`.
+         *
+         * @default {}
+         *
+         * @example
+         * ```ts
+         * interface CustomTypeOptions {
+         *   defaultVariables: { appName: string };
+         * }
+         * ```
+         */
+        defaultVariables: {};
     }, CustomTypeOptions>, 
     // HACK: apply merged resources *after* CustomTypeOptions so registry contributions
     // survive when CustomTypeOptions.resources is also defined. Without this
@@ -397,16 +417,6 @@ declare namespace i18n {
          */
         suffix?: string;
         /**
-         * Escaped prefix for interpolation (regexSafe)
-         * @default undefined
-         */
-        prefixEscaped?: string;
-        /**
-         * Escaped suffix for interpolation (regexSafe)
-         * @default undefined
-         */
-        suffixEscaped?: string;
-        /**
          * Suffix to unescaped mode
          * @default undefined
          */
@@ -426,16 +436,6 @@ declare namespace i18n {
          * @default ')'
          */
         nestingSuffix?: string;
-        /**
-         * Escaped prefix for nesting (regexSafe)
-         * @default undefined
-         */
-        nestingPrefixEscaped?: string;
-        /**
-         * Escaped suffix for nesting (regexSafe)
-         * @default undefined
-         */
-        nestingSuffixEscaped?: string;
         /**
          * Separates options from key
          * @default ','
@@ -463,84 +463,11 @@ declare namespace i18n {
         [language: string]: readonly string[];
     }
     export type FallbackLng = string | readonly string[] | FallbackLngObjList | ((code: string) => string | readonly string[] | FallbackLngObjList);
+    /**
+     * The `react` options of react-i18next, which fills in this interface (since v27; before, i18next
+     * exportd them). Without react-i18next in the program, `react` takes any object.
+     */
     export interface ReactOptions {
-        /**
-         * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
-         * @default 'default'
-         */
-        nsMode?: 'default' | 'fallback';
-        /**
-         * Set it to the default parent element created by the Trans component.
-         * @default 'div'
-         */
-        defaultTransParent?: string;
-        /**
-         * Set which events trigger a re-render, can be set to false or string of events
-         * @default 'languageChanged'
-         */
-        bindI18n?: string | false;
-        /**
-         * Set which events on store trigger a re-render, can be set to false or string of events
-         * @default ''
-         */
-        bindI18nStore?: string | false;
-        /**
-         * Set fallback value for Trans components without children
-         * @default undefined
-         */
-        transEmptyNodeValue?: string;
-        /**
-         * Set it to false if you do not want to use Suspense
-         * @default true
-         */
-        useSuspense?: boolean;
-        /**
-         * Function to generate an i18nKey from the defaultValue (or Trans children)
-         * when no key is provided.
-         * By default, the defaultValue (Trans text) itself is used as the key.
-         * If you want to require keys for all translations, supply a function
-         * that always throws an error.
-         * @default undefined
-         */
-        hashTransKey?(defaultValue: TOptionsBase['defaultValue']): TOptionsBase['defaultValue'];
-        /**
-         * Convert eg. <br/> found in translations to a react component of type br
-         * @default true
-         */
-        transSupportBasicHtmlNodes?: boolean;
-        /**
-         * Which nodes not to convert in defaultValue generation in the Trans component.
-         * @default ['br', 'strong', 'i', 'p']
-         */
-        transKeepBasicHtmlNodesFor?: readonly string[];
-        /**
-         * Wrap text nodes in a user-specified element.
-         * @default ''
-         */
-        transWrapTextNodes?: string;
-        /**
-         * Default props to apply to all Trans components.
-         * Component-level props will override these defaults.
-         */
-        transDefaultProps?: {
-            tOptions?: TOptions;
-            values?: object;
-            shouldUnescape?: boolean;
-            components?: readonly unknown[] | {
-                readonly [tagName: string]: unknown;
-            }; // Use `unknown` (or `any`) to be permissive without importing React.
-        };
-        /**
-         * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
-         * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
-         * @default undefined
-         */
-        keyPrefix?: string | (($: any) => any);
-        /**
-         * Unescape function
-         * by default it unescapes some basic html entities
-         */
-        unescape?(str: string): string;
     }
     export type ResourceKey = string | {
         [key: string]: any;
@@ -574,7 +501,8 @@ declare namespace i18n {
         lng?: string;
         /**
          * Language to use if translations in user language are not available.
-         * @default 'dev'
+         * Since v27 there is none by default; `'dev'` was the default before.
+         * @default false
          */
         fallbackLng?: false | FallbackLng;
         /**
@@ -588,7 +516,7 @@ declare namespace i18n {
          */
         nonExplicitSupportedLngs?: boolean;
         /**
-         * Language codes to lookup, given set language is 'en-US':
+         * Language codes to lookup, given set language is 'en-US' and fallbackLng 'dev':
          * 'all' --> ['en-US', 'en', 'dev'],
          * 'currentOnly' --> 'en-US',
          * 'languageOnly' --> 'en'
@@ -606,8 +534,11 @@ declare namespace i18n {
          */
         lowerCaseLng?: boolean;
         /**
-         * Language will be lowercased EN --> en while leaving full locales like en-US
-         * @default false
+         * Since v27, codes without a region get their canonical casing (`'EN'` → `'en'`); aliases like
+         * `'tl'` or `'iw'` stay. `false` keeps them as they are, as before v27. `true` also lower-cases a
+         * code that is not BCP 47.
+         * @deprecated canonical codes are the default since v27
+         * @default undefined
          */
         cleanCode?: boolean;
         /**
@@ -694,8 +625,9 @@ declare namespace i18n {
          */
         returnNull?: boolean;
         /**
-         * Allows empty string as valid translation
-         * @default true
+         * Allows empty string as valid translation. Since v27 an empty string falls back like a missing value
+         * by default.
+         * @default false
          */
         returnEmptyString?: boolean;
         /**
@@ -709,10 +641,11 @@ declare namespace i18n {
          */
         returnDetails?: boolean;
         /**
-         * Gets called if object was passed in as key but returnObjects was set to false
+         * Gets called if object was passed in as key but returnObjects was set to false.
+         * What it returns is what `t()` returns; without it, `t()` returns the key (since v27).
          * @default noop
          */
-        returnedObjectHandler?(key: string, value: string, options: any): void;
+        returnedObjectHandler?(key: string, value: string, options: any): unknown;
         /**
          * Char, eg. '\n' that arrays will be joined by
          * @default false
@@ -776,47 +709,6 @@ declare namespace i18n {
          * @default false
          */
         appendNamespaceToCIMode?: boolean;
-        /**
-         * Compatibility JSON version
-         * @warning only `v4` is available and supported by typescript
-         * @default 'v4'
-         */
-        compatibilityJSON?: 'v4';
-        /**
-         * Options for https://github.com/locize/locize-lastused
-         * @default undefined
-         */
-        locizeLastUsed?: {
-            /**
-             * The id of your locize project
-             */
-            projectId: string;
-            /**
-             * An api key if you want to send missing keys
-             */
-            apiKey?: string;
-            /**
-             * The reference language of your project
-             * @default 'en'
-             */
-            referenceLng?: string;
-            /**
-             * Version
-             * @default 'latest'
-             */
-            version?: string;
-            /**
-             * Debounce interval to send data in milliseconds
-             * @default 90000
-             */
-            debounceSubmit?: number;
-            /**
-             * Hostnames that are allowed to send last used data.
-             * Please keep those to your local system, staging, test servers (not production)
-             * @default ['localhost']
-             */
-            allowedHosts?: readonly string[];
-        };
         /**
          * Automatically lookup for a flat key if a nested key is not found an vice-versa
          * @default true
@@ -918,6 +810,10 @@ declare namespace i18n {
          */
         interpolation?: InterpolationOptions;
         /**
+         * Skip interpolation and nesting for this call (since v26.7.0 in the types)
+         */
+        skipInterpolation?: boolean;
+        /**
          * Optional keyPrefix that will be applied to the key before resolving.
          * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
          * Only supported on the TFunction returned by getFixedT().
@@ -933,18 +829,25 @@ declare namespace i18n {
     export type _ReturnObjects = TypeOptions['returnObjects'];
     export type _ReturnEmptyString = TypeOptions['returnEmptyString'];
     export type _ReturnNull = TypeOptions['returnNull'];
-    export type _KeySeparator = TypeOptions['keySeparator'];
-    export type _NsSeparator = TypeOptions['nsSeparator'];
+    // `keySeparator: false`: flat keys only (a `false` here made `nestedfalsec` keys and split keys at the
+    // text 'false')
+    export type _KeySeparator = Exclude<TypeOptions['keySeparator'], false>;
+    // what getFixedT() joins a key prefix and a key with: '.' when keySeparator is false
+    export type _KeyPrefixSeparator = TypeOptions['keySeparator'] extends false ? '.' : TypeOptions['keySeparator'];
+    // `nsSeparator: false`: no `ns:key` keys (a `false` here made `nsfalsekey` keys and split keys containing 'false')
+    export type _NsSeparator = Exclude<TypeOptions['nsSeparator'], false>;
     export type _PluralSeparator = TypeOptions['pluralSeparator'];
     export type _ContextSeparator = TypeOptions['contextSeparator'];
     export type _FallbackNamespace = TypeOptions['fallbackNS'];
     export type _Resources = TypeOptions['resources'];
-    export type _CompatibilityJSON = TypeOptions['compatibilityJSON'];
     export type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
     export type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
+    export type _InterpolationFormatSeparator = TypeOptions['interpolationFormatSeparator'];
+    export type _DefaultVariables = TypeOptions['defaultVariables'];
     export type _UnescapePrefix = TypeOptions['unescapePrefix'];
     export type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
     export type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
+    export type _StrictInterpolationChecks = TypeOptions['strictInterpolationChecks'];
     export type _EnableSelector = TypeOptions['enableSelector'];
     export type _ParseInterpolation = TypeOptions['parseInterpolation'];
     export type _InterpolationFormatTypeMap = TypeOptions['interpolationFormatTypeMap'];
@@ -957,7 +860,7 @@ declare namespace i18n {
     export type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
     export type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
     export type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
-    export type WithOrWithoutPlural<Key> = _CompatibilityJSON extends 'v4' ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? KeyWithoutOrdinalPlural | Key : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}` ? KeyWithoutPlural | Key : Key : Key;
+    export type WithOrWithoutPlural<Key> = Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? KeyWithoutOrdinalPlural | Key : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}` ? KeyWithoutPlural | Key : Key;
     export type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
     export type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
     export type TrimSpaces<T extends string, Acc extends string = ''> = T extends `${infer Char}${infer Rest}` ? Char extends ' ' ? TrimSpaces<Rest, Acc> : TrimSpaces<Rest, `${Acc}${Char}`> : T extends '' ? Acc : never;
@@ -1003,7 +906,7 @@ declare namespace i18n {
      *********************************************************************** */
     export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true ? ResourceKeys<true> : ResourceKeys;
     export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace ? TOpt['ns'] : Ns;
-    export type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeySeparator}${infer Key}` ? Key : never : Keys;
+    export type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeyPrefixSeparator}${infer Key}` ? Key : never : Keys;
     export type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (infer UnionNsps)[] ? UnionNsps extends keyof Keys ? AppendNamespace<UnionNsps, Keys[UnionNsps]> : never : never;
     export type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false ? never : _FallbackNamespace extends (infer UnionFallbackNs extends string)[] ? Keys[UnionFallbackNs] : Keys[_FallbackNamespace & string];
     export type FilterKeysByContext<Keys, Context> = Context extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_ContextSeparator}${Context}` ? Prefix : never : Keys;
@@ -1017,7 +920,7 @@ declare namespace i18n {
         _ParseInterpolation
     ] extends [
         false | 'icu' | 'mf2'
-    ] ? never : Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue},${infer Format}` ? [
+    ] ? never : Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}` ? (Value extends `${infer ActualValue}${_InterpolationFormatSeparator}${infer Format}` ? [
         ParseActualValue<ActualValue>,
         TrimSpaces<Format>
     ] : [
@@ -1176,7 +1079,13 @@ declare namespace i18n {
         _IcuTrim<S> extends `.${string}` ? _Mf2Locals<S> : never,
         unknown
     ]>> : never : never;
-    export type InterpolationMap<Ret> = [
+    /** The variables exportd in `defaultVariables` are optional: they are filled in at runtime. */
+    export type _WithDefaultVariables<Map> = [
+        keyof _DefaultVariables
+    ] extends [
+        never
+    ] ? Map : Omit<Map, keyof _DefaultVariables> & Partial<Pick<Map, keyof _DefaultVariables & keyof Map>>;
+    export type InterpolationMap<Ret> = _WithDefaultVariables<[
         _ParseInterpolation
     ] extends [
         'icu'
@@ -1184,7 +1093,7 @@ declare namespace i18n {
         _ParseInterpolation
     ] extends [
         'mf2'
-    ] ? $PreservedValue<_Mf2ArgsMap<Ret>, Record<string, unknown>> : $PreservedValue<_InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>, Record<string, unknown>>;
+    ] ? $PreservedValue<_Mf2ArgsMap<Ret>, Record<string, unknown>> : $PreservedValue<_InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>, Record<string, unknown>>>;
     export type ParseTReturnPlural<Res, Key, KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`> = _ValueOf<Res, KeyWithPlural | Key>;
     export type ParseTReturnPluralOrdinal<Res, Key, KeyWithOrdinalPlural = `${Key & string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> = _ValueOf<Res, KeyWithOrdinalPlural | Key>;
     export type ParseTReturnWithFallback<Key, Val> = Val extends '' ? _ReturnEmptyString extends true ? '' : Key : Val extends null ? _ReturnNull extends true ? null : Key : Val;
@@ -1211,7 +1120,13 @@ declare namespace i18n {
     ] extends [
         never
     ] ? never : ParseTReturn<ActualKey, FallbackResourcesOf<FallbackNS, Resources>, TOpt>;
-    export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt> : $FirstNamespace<ActualNS> extends infer PrimaryNS ? [
+    export type TFunctionReturn<Ns extends Namespace, Key, TOpt extends TOptions, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKey = KeyWithContext<Key, TOpt>, 
+    // a key without a value, e.g. a plural key without `count`
+    NotFound = DefaultTReturn<TOpt>> = $IsResourcesDefined extends true ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}` ? [
+        ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt>
+    ] extends [
+        never
+    ] ? NotFound : ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt> : $FirstNamespace<ActualNS> extends infer PrimaryNS ? [
         PrimaryNS
     ] extends [
         keyof Resources
@@ -1223,7 +1138,7 @@ declare namespace i18n {
         _FallbackParse<ActualKey, _FallbackNamespace, TOpt>
     ] extends [
         never
-    ] ? DefaultTReturn<TOpt> : _FallbackParse<ActualKey, _FallbackNamespace, TOpt> : _PrimaryParse<ActualKey, PrimaryNS & keyof Resources, TOpt> : never : never : DefaultTReturn<TOpt>;
+    ] ? NotFound : _FallbackParse<ActualKey, _FallbackNamespace, TOpt> : _PrimaryParse<ActualKey, PrimaryNS & keyof Resources, TOpt> : never : never : DefaultTReturn<TOpt>;
     export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
         /**
          * The plain used key
@@ -1258,7 +1173,7 @@ declare namespace i18n {
         never
     ] ? Ret : DefaultValue;
     export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret, TOpt> : Ret;
-    export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeySeparator}${Key & string}` : Key;
+    export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeyPrefixSeparator}${Key & string}` : Key;
     /**
      * Resolves the effective key prefix by preferring a per-call `keyPrefix` from
      * options over the interface-level `KPrefix` (set via getFixedT's 3rd argument).
@@ -1275,12 +1190,22 @@ declare namespace i18n {
         'mf2'
     ] ? true : false;
     /**
-     * `t()` options are optional, except for a message with arguments under
-     * `parseInterpolation: 'icu'` or `'mf2'` (on a missing one, i18next-icu renders
-     * the raw message and i18next-mf2 a `{$name}` fallback). The conditional
-     * resolves eagerly; a generic one here would break inference.
+     * Whether `t()` options are required for a message with variables: always under
+     * ICU / MF2 (on a missing one, i18next-icu renders the raw message and
+     * i18next-mf2 a `{$name}` fallback), and with `strictInterpolationChecks: true`
+     * for `{{variables}}` (i18next renders the raw placeholder).
      */
-    export type _KeyAndOptions<Key, Ret, Opts> = _ParsesMessageFormat extends true ? [
+    export type _RequiresMessageOptions = _ParsesMessageFormat extends true ? true : [
+        _ParseInterpolation
+    ] extends [
+        true
+    ] ? _StrictInterpolationChecks extends true ? true : false : false;
+    /**
+     * `t()` options are optional, except for a message with variables when
+     * `_RequiresMessageOptions` is true. The conditional resolves eagerly; a generic
+     * one here would break inference.
+     */
+    export type _KeyAndOptions<Key, Ret, Opts> = _RequiresMessageOptions extends true ? [
         key: Key | Key[],
         options: Opts
     ] | [
@@ -1289,32 +1214,84 @@ declare namespace i18n {
         key: Key | Key[],
         options?: Opts
     ];
+    /**
+     * `t(key, defaultValue)` under `strictKeyChecks`: the variables are required only
+     * with `strictInterpolationChecks`, else `unknown` (the call stays as before).
+     */
+    export type _IfOptionalDefaultOptions<Ret> = _StrictInterpolationChecks extends true ? _IfOptionalOptions<Ret> : unknown;
     /** `unknown` when options may be left out, else a type naming the missing arguments. */
-    export type _IfOptionalOptions<Ret> = _ParsesMessageFormat extends true ? {} extends InterpolationMap<Ret> ? unknown : {
+    export type _IfOptionalOptions<Ret> = _RequiresMessageOptions extends true ? {} extends InterpolationMap<Ret> ? unknown : {
         'pass these arguments as t() options': InterpolationMap<Ret>;
     } : unknown;
+    /**
+     * What a call without options is checked against: `Ret`, unless a key without a
+     * value of its own (a plural key without `count`) widened it to `string`, which
+     * hid the variables of every other key in a union. Only with
+     * `strictInterpolationChecks`: without it (ICU and MF2 check their arguments
+     * regardless of the flag) the types are the v26 ones.
+     */
+    export type _CheckedReturn<Ret, Ns extends Namespace, Key, TOpt extends TOptions> = _StrictInterpolationChecks extends true ? string extends Ret ? _CheckedValue<Ns, Key, TOpt> : Ret : Ret;
+    /**
+     * Per key: its value, or the plural forms of a key without one; `never` (not
+     * `string`) for a key without either. The first lookup is the one `Ret` made
+     * (cached), so only a key without a value is looked up again.
+     */
+    export type _CheckedValue<Ns extends Namespace, Key, TOpt extends TOptions> = Key extends unknown ? TFunctionReturn<Ns, Key, TOpt, NsByTOptions<Ns, TOpt>, KeyWithContext<Key, TOpt>, never> extends infer V ? [
+        V
+    ] extends [
+        never
+    ] ? _ValueWithCount<NsByTOptions<Ns, TOpt>, KeyWithContext<Key, TOpt>> : V : never : never;
+    /** The plural forms of a key, ordinal ones too, `never` for a key without them. */
+    export type _ValueWithCount<Ns extends Namespace, Key, K = Key | `${Key & string}${_PluralSeparator}ordinal`> = TFunctionReturn<Ns, K, {
+        count: number;
+    }, Ns, K, never>;
+    /**
+     * The variables a call with options must pass. With `strictInterpolationChecks`
+     * those of `_CheckedReturn`, so a plural key without `count` needs the variables
+     * of its forms, `count` included; without the flag those of `Ret`, as in v26.
+     */
+    export type _OptionsMap<Ret, Ns extends Namespace, Key, TOpt extends TOptions> = _StrictInterpolationChecks extends true ? InterpolationMap<$NoInfer<_CheckedReturn<Ret, Ns, Key, TOpt>>> : InterpolationMap<Ret>;
     /** Options parameter of a selector overload: required for a message with arguments. */
     export type _SelectorOptionsArg<Ret, Opts> = unknown extends _IfOptionalOptions<Ret> ? [
         options?: Opts
     ] : [
         options: Opts
     ];
+    /** Union of the values an array of selectors resolves to (plural brands kept). */
+    export type _SelectorsReturn<Fns extends readonly unknown[]> = Fns[number] extends (...args: any[]) => infer R ? R : never;
+    /** Whether any member of the union is a plural group (`false` for `any`). */
+    export type _HasPlural<R> = 0 extends 1 & R ? false : [
+        Extract<R, PluralValue<string>>
+    ] extends [
+        never
+    ] ? false : true;
+    /** `{ count: number }` when any member of the union is a plural group. */
+    export type _CountIfPlural<R> = _HasPlural<R> extends true ? {
+        count: number;
+    } : {};
+    /** Options of a selector-array overload: required for variables or a plural member. */
+    export type _SelectorArrayOptionsArg<R, Opts> = _HasPlural<R> extends true ? [
+        options: Opts & {
+            count: number;
+        } & InterpolationMap<DeepUnwrapPlural<R>>
+    ] : _SelectorOptionsArg<DeepUnwrapPlural<R>, Opts & InterpolationMap<DeepUnwrapPlural<R>>>;
     /** ************************
      * T function declaration *
      ************************* */
     export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options: TOpt & InterpolationMap<Ret> & {
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options: TOpt & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
             context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: (Key | Key[]) & _IfOptionalOptions<$NoInfer<Ret>>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret> & {
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: (Key | Key[]) & _IfOptionalOptions<$NoInfer<_CheckedReturn<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options: TOpt & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
             context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: (Key | Key[]) & _IfOptionalDefaultOptions<$NoInfer<_CheckedReturn<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>>, defaultValue: string): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
     }
     export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
-        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends Omit<TOpt, 'context'> & InterpolationMap<Ret> & {
+        <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends Omit<TOpt, 'context'> & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
             context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
-        } = TOpt & InterpolationMap<Ret> & {
+        } = TOpt & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
             context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }, DefaultValue extends string = never>(
         // `[key, defaultValue, options?]` is written as two tuples: on a failed call,
@@ -1334,12 +1311,18 @@ declare namespace i18n {
             key: string | string[],
             defaultValue: DefaultValue,
             options: TOpt & $Dictionary
-        ] | _KeyAndOptions<Key, $NoInfer<Ret>, ActualOptions>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
+        ] | _KeyAndOptions<Key, $NoInfer<_CheckedReturn<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>, ActualOptions>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
     }
     export type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = _EnableSelector extends true | 'optimize' | 'strict' ? TFunctionSelector<Ns, KPrefix, GetSource<Ns, KPrefix>> : _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
     export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends TFunctionSignature<Ns, KPrefix> {
     }
-    export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+    export type KeyPrefix<Ns extends Namespace> = (TypeOptions['keySeparator'] extends false ? _DotPrefixes<ResourceKeys<true>[$FirstNamespace<Ns>]> : ResourceKeys<true>[$FirstNamespace<Ns>]) | undefined;
+    /**
+     * With `keySeparator: false` a key prefix is joined with `.` and the result is looked up as a flat
+     * key, so the prefixes are the parts of the flat keys before a `.`: `'a'` and `'a.b'` for `'a.b.c'`.
+     */
+    export type _DotPrefixes<Keys> = string extends Keys ? string : _DotPrefixesOf<Keys>;
+    export type _DotPrefixesOf<Key> = Key extends `${infer Head}.${infer Tail}` ? Head | `${Head}.${_DotPrefixesOf<Tail>}` : never;
     /**
      * Strict variant: every namespace (primary included) is exposed under its own
      * key on `$`. The flattened-primary form (`Resources[Ns[0]] &`) is dropped, so
@@ -1390,20 +1373,28 @@ declare namespace i18n {
         // ── Array of selectors with explicit `ns` ───────────────────────────────────
         <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selectors: readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[], options: Opts & InterpolationMap<Target> & {
             ns: NewNs;
-        }): SelectorReturn<Target, Opts>;
+        } & _CountIfPlural<Target>): SelectorReturn<Target, Opts>;
         // ── Single selector with explicit `ns` ──────────────────────────────────────
         <Target extends ConstrainTarget<Opts>, const NewNs extends NsArg<Ns> & Namespace, const Opts extends SelectorOptions<NewNs>, NewSrc extends GetSource<NewNs, KPrefix>>(selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>, options: Opts & InterpolationMap<DeepUnwrapPlural<Target>> & {
             ns: NewNs;
         } & (Target extends PluralValue<string> ? {
             count: number;
         } : {})): SelectorReturn<Target, Opts>;
+        // ── Array of selectors with defaultValue — preserves literal type of DV ─────
+        // Same TypeScript limitation as the single-selector defaultValue overload below:
+        // `const Opts` loses the `defaultValue` literal when inferred through the
+        // conditional rest tuple of the general array overload. A plural member
+        // requires `count`, as in the single-selector overload.
+        <const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[], const DV extends string, const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selectors: Fns, options: Opts & {
+            defaultValue: DV;
+        } & _CountIfPlural<_SelectorsReturn<Fns>> & InterpolationMap<DeepUnwrapPlural<_SelectorsReturn<Fns>>>): SelectorReturn<_SelectorsReturn<Fns>, Opts, DV>;
         // ── Array of selectors with default `ns` ─────────────────────────────────────
         // Captures the selector tuple as `const Fns` so TypeScript preserves each
         // element's exact return type.  The union of return types is then extracted
         // via a distributive `infer`, which correctly handles mixed PluralValue<T> and
         // plain-string callbacks that would otherwise cause TypeScript to 'lock in' the
         // type from the first element.
-        <const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[], const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selectors: Fns, ...args: _SelectorOptionsArg<DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>, Opts & InterpolationMap<DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>>>): SelectorReturn<Fns[number] extends (...args: any[]) => infer R ? R : never, Opts>;
+        <const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[], const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(selectors: Fns, ...args: _SelectorArrayOptionsArg<_SelectorsReturn<Fns>, Opts>): SelectorReturn<_SelectorsReturn<Fns>, Opts>;
         // ── Single selector with context + returnObjects ────────────────────────────
         // More specific than the general context overload below. Captures `Context` as
         // a const generic and uses `const Fn` + `ReturnType<Fn>` so FilterKeys sees the
@@ -1457,17 +1448,20 @@ declare namespace i18n {
         defaultValue?: unknown;
         returnObjects?: boolean;
     }, DV = Opts['defaultValue']> = $IsResourcesDefined extends true ? TFunctionReturnOptionalDetails<ProcessReturnValue<DeepUnwrapPlural<Target>, DV>, Opts> : DefaultTReturn<Opts>;
+    /** Public for react-i18next's `Trans` types (since v26.7.0). */
     export interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
         (translations: Select<Source, Opts['context']>): Target;
     }
     export type ApplyKeyPrefix<T extends [
         any
-    ], KPrefix> = KPrefix extends `${infer Head}${_KeySeparator}${infer Tail}` ? ApplyKeyPrefix<[
+    ], KPrefix> = KPrefix extends `${infer Head}${_KeyPrefixSeparator}${infer Tail}` ? ApplyKeyPrefix<[
         T[0][Head]
     ], Tail> : T[0][KPrefix & string];
+    /** Public for react-i18next's `Trans` types (since v26.7.0). */
     export type ApplyTarget<Target, Opts extends {
         returnObjects?: unknown;
     }> = Opts['returnObjects'] extends true ? unknown : Target;
+    /** Public for react-i18next's `Trans` types (since v26.7.0). */
     export type ConstrainTarget<Opts extends SelectorOptions<any>> = _ReturnObjects extends true ? unknown : Opts['returnObjects'] extends true ? unknown : $IsResourcesDefined extends false ? unknown : string;
     export type ProcessReturnValue<Target, DefaultValue> = $Turtles extends Target ? string : [
         DefaultValue
@@ -1479,6 +1473,7 @@ declare namespace i18n {
     };
     /** Extracts the sub-tree returned by a selector function used as keyPrefix. */
     export type SelectorReturnSource<KPrefix, Fallback> = KPrefix extends (...args: any[]) => infer R ? R extends object ? R : Fallback : Fallback;
+    /** Public for react-i18next's `Trans` types (since v26.7.0). */
     export type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (...args: any[]) => any ? SelectorReturnSource<KPrefix, Res> : KPrefix extends keyof Res ? Res[KPrefix] : undefined extends KPrefix ? Res : ApplyKeyPrefix<[
         Res
     ], KPrefix>;
@@ -1583,8 +1578,13 @@ declare namespace i18n {
     ] ? {
         [I in keyof T]: FilterKeys<T[I], Context>;
     } : T extends any ? FilterKeysObject<T, Context> : never;
-    export type FilterKeysObject<T, Context> = $Prune<{
-        [K in keyof T as T[K] extends object ? K : [
+    export type FilterKeysObject<T, Context> = {
+        [K in keyof T as [
+            keyof T[K]
+        ] extends [
+            never
+        ] ? never // nothing to select (empty object, null, undefined, optional or unknown)
+         : T[K] extends object ? K : [
             Context
         ] extends [
             string
@@ -1603,15 +1603,15 @@ declare namespace i18n {
          : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}` ? Prefix : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
     } & {
         [K in keyof T as T[K] extends object ? never : [
-            T[K]
+            keyof T[K]
         ] extends [
-            undefined
+            never
         ] ? never : [
             Context
         ] extends [
             string
         ] ? K extends `${infer Prefix}${_ContextSeparator}${Context}` | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` ? Prefix : never : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
-    }>;
+    };
     export interface WithT<Ns extends Namespace = DefaultNamespace> {
         // Expose parameterized t in the i18next interface hierarchy
         t: TFunction<Ns>;
@@ -1656,6 +1656,12 @@ declare namespace i18n {
         pluralResolver: any;
         resourceStore: ResourceStore;
         formatter?: Formatter;
+        /** Calls bound to the i18next instance, for plugins */
+        utils?: {
+            hasLoadedNamespace: i18n['hasLoadedNamespace'];
+            /** Reloads resources through the backend, as `i18next.reloadResources()` (since v26.7.0) */
+            reloadResources: i18n['reloadResources'];
+        };
     }
     export type ModuleType = 'backend' | 'logger' | 'languageDetector' | 'postProcessor' | 'i18nFormat' | 'formatter' | '3rdParty';
     export interface Module {
@@ -1671,6 +1677,16 @@ declare namespace i18n {
      */
     export interface BackendModule<Options = object> extends Module {
         type: 'backend';
+        /**
+         * Declares how i18next calls `read` and `create` (since v26.7.0; as an instance or static property):
+         * - `true`: `read(language, namespace, callback)` and
+         *   `create(languages, namespace, key, fallbackValue, callback, options)`
+         * - `false`: `read(language, namespace)` and `create(languages, namespace, key, fallbackValue, options)`
+         *   return a promise or a value
+         *
+         * Left out, i18next guesses it from the number of parameters, which is deprecated.
+         */
+        callbackApi?: boolean;
         init(services: Services, backendOptions: Options, i18nextOptions: InitOptions): void;
         read(language: string, namespace: string, callback: ReadCallback): void;
         /** Save the missing translation */
@@ -1701,6 +1717,12 @@ declare namespace i18n {
         type: 'languageDetector';
         /** Set to true to enable async detection */
         async: true;
+        /**
+         * Declares how the async `detect` answers (since v26.7.0; as an instance or static property):
+         * `true` for `detect(callback)`, `false` for `detect()` returning a promise.
+         * Left out, i18next guesses it from the number of parameters, which is deprecated.
+         */
+        callbackApi?: boolean;
         init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
         /** Must call callback passing detected language or return a Promise */
         detect(callback: (lng: string | readonly string[] | undefined) => void | undefined): void | Promise<string | readonly string[] | undefined>;
@@ -1897,6 +1919,8 @@ declare namespace i18n {
         loadLanguages(lngs: string | readonly string[], callback?: Callback): Promise<void>;
         /**
          * Reloads resources on given state. Optionally you can pass an array of languages and namespaces as params if you don't want to reload all.
+         * Without languages it reloads the current languages and every language the backend loaded or tried to load, for this
+         * instance and its clones (since v26.7.1), and it retries the bundles that failed.
          */
         reloadResources(lngs?: string | readonly string[], ns?: string | readonly string[], callback?: () => void): Promise<void>;
         reloadResources(lngs: null, ns: string | readonly string[], callback?: () => void): Promise<void>;
@@ -1908,6 +1932,12 @@ declare namespace i18n {
          * Returns rtl or ltr depending on languages read direction.
          */
         dir(lng?: string): 'ltr' | 'rtl';
+        /**
+         * Puts resources rendered on the server into the store and changes to the server's language, each
+         * only the first time (sets `initializedStoreOnce` and `initializedLanguageOnce`). For SSR
+         * integrations like react-i18next's `useSSR`. Call it after `init()`. Since v26.7.0.
+         */
+        hydrate(resources?: Resource, lng?: string): i18n;
         /**
          * Exposes interpolation.format function added on init.
          */
@@ -2012,7 +2042,8 @@ declare namespace i18n {
          */
         options: InitOptions;
         /**
-         * Is initialized
+         * Is initialized. Set by `init()` and `hydrate()`; writing it from outside is deprecated (still
+         * possible in v27), SSR integrations should call `hydrate()` instead.
          */
         isInitialized: boolean;
         /**
@@ -2020,11 +2051,13 @@ declare namespace i18n {
          */
         isInitializing: boolean;
         /**
-         * Store was initialized
+         * Store was initialized. Set by `hydrate()`; writing it from outside is deprecated (still possible in
+         * v27), SSR integrations should call `hydrate()` instead.
          */
         initializedStoreOnce: boolean;
         /**
-         * Language was initialized
+         * Language was initialized. Set by `hydrate()`; writing it from outside is deprecated (still possible
+         * in v27), SSR integrations should call `hydrate()` instead.
          */
         initializedLanguageOnce: boolean;
         /**
