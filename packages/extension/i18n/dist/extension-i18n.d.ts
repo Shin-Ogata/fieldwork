@@ -884,6 +884,25 @@ declare namespace i18n {
      * string context) still matches all keys it covers.
      */
     export type _ValueOf<Res, Key> = Key extends _KeysOf<Res> ? Res[Key] : _IsLiteral<Key & PropertyKey> extends true ? never : Res[Key & _KeysOf<Res>];
+    /**
+     * A resource value to walk into: an object with an index signature or an array (as before), or
+     * else a named interface, which has no index signature. Functions, `Date` and `object` stay leaves.
+     */
+    export type _IsBranch<Value> = [
+        Value
+    ] extends [
+        $Dictionary | readonly unknown[]
+    ] ? true : [
+        Value
+    ] extends [
+        string | ((...args: any[]) => any) | Date
+    ] ? false : [
+        Value
+    ] extends [
+        object
+    ] ? object extends Value ? false : true : false;
+    /** `true` without strictNullChecks, where `undefined` passes `extends string`. */
+    export type _NoStrictNullChecks = undefined extends string ? true : false;
     /** ****************************************************
      * Build all keys and key prefixes based on Resources *
      ***************************************************** */
@@ -891,8 +910,8 @@ declare namespace i18n {
     // conditional types, so `KeyPrefix<Ns>` no longer resolves to a literal union
     // and `keyPrefix` inference widens to the whole namespace, polluting `t()`
     // return types with sibling keys (#2434 regression). Guard `never` in the merge.
-    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends _KeysOf<Res> ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
-    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends _KeysOf<Res> ? Res[Key] extends $Dictionary | readonly unknown[] ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
+    export type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends _KeysOf<Res> ? _IsBranch<Res[Key]> extends true ? JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>> | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>> : never : never;
+    export type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends _KeysOf<Res> ? _IsBranch<Res[Key]> extends true ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>> : Key : never;
     export type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true ? WithReturnObjects extends true ? keyof Res | KeysBuilderWithReturnObjects<Res> : KeysBuilderWithoutReturnObjects<Res> : string;
     export type KeysWithReturnObjects = {
         [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], true>>;
@@ -905,11 +924,24 @@ declare namespace i18n {
      * Parse t function keys based on the namespace, options and key prefix *
      *********************************************************************** */
     export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true ? ResourceKeys<true> : ResourceKeys;
-    export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace ? TOpt['ns'] : Ns;
-    export type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeyPrefixSeparator}${infer Key}` ? Key : never : Keys;
+    export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace ? _NoStrictNullChecks extends true ? Namespace extends TOpt['ns'] ? Ns : TOpt['ns'] : TOpt['ns'] : Ns;
+    export type _ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string ? Keys extends `${KPrefix}${_KeyPrefixSeparator}${infer Key}` ? Key : never : Keys;
+    // Without strictNullChecks `undefined extends string` is true, and every key would need an
+    // `undefined.` prefix, so a missing prefix is checked first there; strict mode is unchanged.
+    export type ParseKeysByKeyPrefix<Keys, KPrefix> = _NoStrictNullChecks extends true ? [
+        KPrefix
+    ] extends [
+        undefined
+    ] ? Keys : _ParseKeysByKeyPrefix<Keys, KPrefix> : _ParseKeysByKeyPrefix<Keys, KPrefix>;
     export type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (infer UnionNsps)[] ? UnionNsps extends keyof Keys ? AppendNamespace<UnionNsps, Keys[UnionNsps]> : never : never;
     export type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false ? never : _FallbackNamespace extends (infer UnionFallbackNs extends string)[] ? Keys[UnionFallbackNs] : Keys[_FallbackNamespace & string];
-    export type FilterKeysByContext<Keys, Context> = Context extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_ContextSeparator}${Context}` ? Prefix : never : Keys;
+    export type _FilterKeysByContext<Keys, Context> = Context extends string ? Keys extends `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}` | `${infer Prefix}${_ContextSeparator}${Context}` ? Prefix : never : Keys;
+    export type FilterKeysByContext<Keys, Context> = _NoStrictNullChecks extends true // see ParseKeysByKeyPrefix
+     ? [
+        Context
+    ] extends [
+        undefined
+    ] ? Keys : _FilterKeysByContext<Keys, Context> : _FilterKeysByContext<Keys, Context>;
     export type ParseKeys<Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, Context extends TOpt['context'] = TOpt['context']> = $IsResourcesDefined extends true ? FilterKeysByContext<ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>, Context> : string;
     /** *******************************************************
      * Parse t function return type and interpolation values *
@@ -1105,7 +1137,13 @@ declare namespace i18n {
     export type DefaultTReturn<TOpt extends {
         returnObjects?: unknown;
     }> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
-    export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
+    export type _KeyWithContext<Key, Context> = Context extends string ? `${Key & string}${_ContextSeparator}${Context}` : Key;
+    export type KeyWithContext<Key, TOpt extends TOptions> = _NoStrictNullChecks extends true // see ParseKeysByKeyPrefix
+     ? [
+        TOpt['context']
+    ] extends [
+        undefined
+    ] ? Key : _KeyWithContext<Key, TOpt['context']> : TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
     export type ContextOfKey<Key extends string, Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKeys = ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>> = $IsResourcesDefined extends true ? Key extends ActualKeys ? string : ActualKeys extends `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}` | `${Key}${_ContextSeparator}${infer Context}` ? Context : never : string;
     // helper that maps the configured fallbackNS value to the matching resources slice
     export type FallbackResourcesOf<FallbackNS, R> = FallbackNS extends readonly (infer FN)[] ? R[FN & keyof R] : [
@@ -1173,7 +1211,13 @@ declare namespace i18n {
         never
     ] ? Ret : DefaultValue;
     export type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true ? TFunctionDetailedResult<Ret, TOpt> : Ret;
-    export type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeyPrefixSeparator}${Key & string}` : Key;
+    export type _AppendKeyPrefix<Key, KPrefix> = KPrefix extends string ? `${KPrefix}${_KeyPrefixSeparator}${Key & string}` : Key;
+    export type AppendKeyPrefix<Key, KPrefix> = _NoStrictNullChecks extends true // see ParseKeysByKeyPrefix
+     ? [
+        KPrefix
+    ] extends [
+        undefined
+    ] ? Key : _AppendKeyPrefix<Key, KPrefix> : _AppendKeyPrefix<Key, KPrefix>;
     /**
      * Resolves the effective key prefix by preferring a per-call `keyPrefix` from
      * options over the interface-level `KPrefix` (set via getFixedT's 3rd argument).
@@ -1473,8 +1517,17 @@ declare namespace i18n {
     };
     /** Extracts the sub-tree returned by a selector function used as keyPrefix. */
     export type SelectorReturnSource<KPrefix, Fallback> = KPrefix extends (...args: any[]) => infer R ? R extends object ? R : Fallback : Fallback;
+    /**
+     * No key prefix: `undefined`, or a union with `undefined`. Without strictNullChecks
+     * `undefined extends 'a'` is true, so there only `undefined` itself counts.
+     */
+    export type _NoKeyPrefix<KPrefix> = _NoStrictNullChecks extends true ? [
+        KPrefix
+    ] extends [
+        undefined
+    ] ? true : false : undefined extends KPrefix ? true : false;
     /** Public for react-i18next's `Trans` types (since v26.7.0). */
-    export type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (...args: any[]) => any ? SelectorReturnSource<KPrefix, Res> : KPrefix extends keyof Res ? Res[KPrefix] : undefined extends KPrefix ? Res : ApplyKeyPrefix<[
+    export type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (...args: any[]) => any ? SelectorReturnSource<KPrefix, Res> : KPrefix extends keyof Res ? Res[KPrefix] : _NoKeyPrefix<KPrefix> extends true ? Res : ApplyKeyPrefix<[
         Res
     ], KPrefix>;
     export type Select<T, Context> = $IsResourcesDefined extends false ? $Turtles : [
@@ -1570,14 +1623,17 @@ declare namespace i18n {
      * then re-unified. Without distribution, `keyof (A | B)` is only the common keys
      * and context variants that exist on a single element are invisible, which
      * produced partial element unions for `returnObjects` + `context` (#2398).
+     *
+     * The array check itself must distribute too (`T extends`, not `[T] extends`):
+     * comparing two `TFunction`s over a generic namespace otherwise relates the
+     * array branch through `keyof (readonly any[] & Source)`, whose constraint is
+     * the intersection of every namespace's keys, a cross product that fails with
+     * TS2590 once there are many wide namespaces.
      */
-    export type FilterKeys<T, Context> = [
-        T
-    ] extends [
-        readonly any[]
-    ] ? {
+    export type FilterKeys<T, Context> = T extends readonly any[] ? 0 extends 1 & T ? FilterKeysObject<T, Context> // `any` reaches both branches; keep one result
+     : {
         [I in keyof T]: FilterKeys<T[I], Context>;
-    } : T extends any ? FilterKeysObject<T, Context> : never;
+    } : FilterKeysObject<T, Context>;
     export type FilterKeysObject<T, Context> = {
         [K in keyof T as [
             keyof T[K]
