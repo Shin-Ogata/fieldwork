@@ -583,7 +583,7 @@ declare namespace i18n {
         saveMissing?: boolean;
         /**
          * Calls save missing key function on backend if key not found also for plural forms.
-         * @default false
+         * @default true
          */
         saveMissingPlurals?: boolean;
         /**
@@ -1159,7 +1159,30 @@ declare namespace i18n {
     ] extends [
         undefined
     ] ? Key : _KeyWithContext<Key, TOpt['context']> : TOpt['context'] extends string ? `${Key & string}${_ContextSeparator}${TOpt['context']}` : Key;
-    export type ContextOfKey<Key extends string, Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKeys = ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>> = $IsResourcesDefined extends true ? Key extends ActualKeys ? string : ActualKeys extends `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}` | `${Key}${_ContextSeparator}${infer Context}` ? Context : never : string;
+    /**
+     * The type of `context` for a key: `string` when the key also exists without a
+     * context, else the passed context values that have a key of their own
+     * (`${key}${_ContextSeparator}${context}`, plural forms included). The key is
+     * looked up along its path in the namespace it names (`ns:`, else the first
+     * namespace with the key prefix, and the fallback namespace): matched against
+     * the keys of all namespaces, every key cost the size of all resources.
+     */
+    export type ContextOfKey<Key extends string, Ns extends Namespace = DefaultNamespace, TOpt extends TOptions = {}, KPrefix = undefined, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, Objects = TOpt['returnObjects'] extends true ? true : _ReturnObjects> = $IsResourcesDefined extends true ? _OrScan<_ContextIn<Resources[$FirstNamespace<ActualNS> & keyof Resources], AppendKeyPrefix<Key, KPrefix> & string, TOpt['context'], Objects> | (ActualNS extends readonly (infer NsList)[] ? Key extends `${infer N extends NsList & keyof Resources & string}${_NsSeparator}${infer Rest}` ? _ContextIn<Resources[N], Rest, TOpt['context'], Objects> : never : never) | _ContextIn<FallbackResourcesOf<_FallbackNamespace, Resources>, Key, TOpt['context'], Objects>, Key, Ns, TOpt, KPrefix> : string;
+    /** A key the walk does not find (a key segment with a `.` in it): all keys are matched. */
+    export type _OrScan<R, Key extends string, Ns extends Namespace, TOpt extends TOptions, KPrefix> = [
+        R
+    ] extends [
+        never
+    ] ? _ContextOfKeyScan<Key, Ns, TOpt, KPrefix> : R;
+    export type _ContextOfKeyScan<Key extends string, Ns extends Namespace, TOpt extends TOptions, KPrefix, Keys extends $Dictionary = KeysByTOptions<TOpt>, ActualNS extends Namespace = NsByTOptions<Ns, TOpt>, ActualKeys = ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix> | ParseKeysByNamespaces<ActualNS, Keys> | ParseKeysByFallbackNs<Keys>> = Key extends ActualKeys ? string : ActualKeys extends `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}` | `${Key}${_ContextSeparator}${infer Context}` ? Context : never;
+    /** Walks `Key` down `Res`, then checks its last segment and its context keys there. */
+    export type _ContextIn<Res, Key extends string, Context, Objects> = Key extends `${infer K1}${_KeySeparator}${infer Rest}` ? _ContextIn<Res extends readonly unknown[] ? K1 extends `${infer I extends number}` ? Res[I] : never : _ValueOf<Res, K1>, Rest, Context, Objects> : _HasKey<Res, Key, Objects> extends true ? string : Context extends string ? _IsLiteral<Context> extends true ? _HasKey<Res, `${Key}${_ContextSeparator}${Context}`, Objects> extends true ? Context : never : never : never;
+    /** Whether `Res` has `Key` or a plural form of it (an object only with `returnObjects`). */
+    export type _HasKey<Res, Key extends string, Objects> = _ValueOf<Res, Key | `${Key}${_PluralSeparator}${PluralSuffix}` | `${Key}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`> extends infer V ? [
+        V
+    ] extends [
+        never
+    ] ? false : Objects extends true ? true : _IsBranch<V> extends true ? false : true : never;
     // helper that maps the configured fallbackNS value to the matching resources slice
     export type FallbackResourcesOf<FallbackNS, R> = FallbackNS extends readonly (infer FN)[] ? R[FN & keyof R] : [
         FallbackNS
@@ -1339,19 +1362,35 @@ declare namespace i18n {
      ************************* */
     export interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], options: TOpt & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: [
+                Key
+            ] extends [
+                string
+            ] ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: (Key | Key[]) & _IfOptionalOptions<$NoInfer<_CheckedReturn<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>>): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: Key | Key[], defaultValue: string, options: TOpt & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: [
+                Key
+            ] extends [
+                string
+            ] ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>(key: (Key | Key[]) & _IfOptionalDefaultOptions<$NoInfer<_CheckedReturn<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>>>, defaultValue: string): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
     }
     export interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> extends Branded<Ns> {
         <const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray, const TOpt extends TOptions, Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>, const ActualOptions extends Omit<TOpt, 'context'> & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: [
+                Key
+            ] extends [
+                string
+            ] ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         } = TOpt & _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-            context?: Key extends string ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
+            context?: [
+                Key
+            ] extends [
+                string
+            ] ? unknown extends TOpt['context'] ? TOpt['context'] : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> : never;
         }, DefaultValue extends string = never>(
         // `[key, defaultValue, options?]` is written as two tuples: on a failed call,
         // TypeScript elaborates the error against the last of the equally matching
@@ -1759,10 +1798,23 @@ declare namespace i18n {
          */
         callbackApi?: boolean;
         init(services: Services, backendOptions: Options, i18nextOptions: InitOptions): void;
+        /**
+         * Load a namespace. With `callbackApi: false`, implement it as `read(language, namespace)`
+         * returning the data or a promise of it (the `void` return type accepts both forms).
+         */
         read(language: string, namespace: string, callback: ReadCallback): void;
-        /** Save the missing translation */
-        create?(languages: readonly string[], namespace: string, key: string, fallbackValue: string): void;
-        /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
+        /**
+         * Save the missing translation. Called as `create(languages, namespace, key, fallbackValue, callback, options)`
+         * with `callbackApi: true`, as `create(languages, namespace, key, fallbackValue, options)` returning a promise
+         * or a value with `callbackApi: false`. `options` are the options of the `t` call plus `isUpdate`.
+         */
+        create?(languages: readonly string[], namespace: string, key: string, fallbackValue: string, 
+        // `any`, not a union of both shapes, so implementations typed either way keep compiling
+        callbackOrOptions?: any, options?: any): void;
+        /**
+         * Load multiple languages and namespaces. For backends supporting multiple resources loading.
+         * With `callbackApi: false`, implement it as `readMulti(languages, namespaces)` returning the data or a promise of it.
+         */
         readMulti?(languages: readonly string[], namespaces: readonly string[], callback: MultiReadCallback): void;
         /** Store the translation. For backends acting as cache layer */
         save?(language: string, namespace: string, data: ResourceLanguage): void;
@@ -1815,12 +1867,35 @@ declare namespace i18n {
      */
     export interface LoggerModule extends Module {
         type: 'logger';
-        log(...args: any[]): void;
-        warn(...args: any[]): void;
-        error(...args: any[]): void;
+        /** i18next passes the arguments of each log call as one array */
+        log(args: any[]): void;
+        warn(args: any[]): void;
+        error(args: any[]): void;
     }
+    /**
+     * Replaces the i18next message format with another syntax (like i18next-icu or i18next-mf2).
+     * Only one per i18next instance.
+     */
     export interface I18nFormatModule extends Module {
         type: 'i18nFormat';
+        /** Called on `i18next.init` with the instance; by convention the options are in `i18next.options.i18nFormat` */
+        init?(i18next: i18n): void;
+        /**
+         * Called instead of interpolation and nesting; the return value goes through post processing and is
+         * returned by `t`. `res` is the found value, or the default value or key if nothing was found.
+         */
+        parse?(res: any, options: any, lng: string | undefined, ns: string | undefined, key: string | undefined, info: {
+            resolved: any;
+        }): any;
+        /**
+         * Called instead of the plural and context suffix lookup, for each language code and namespace;
+         * push more keys to `finalKeys` (the last one is looked up first).
+         */
+        addLookupKeys?(finalKeys: string[], key: string, code: string, ns: string, options: any): void;
+        /** If true, i18next handles objects and arrays as usual (`returnObjects`, `joinArrays`); else they go to `parse` */
+        handleAsObject?: boolean;
+        /** Replaces the lookup in the resource store */
+        getResource?(code: string, ns: string, key: string, options: any): any;
     }
     export interface FormatterModule extends Module, Formatter {
         type: 'formatter';
@@ -1933,16 +2008,28 @@ declare namespace i18n {
          * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
          *
          * Accepts optional keyPrefix that will be automatically applied to returned t function.
+         *
+         * Accepts optional fixedOpts: `scopeNs` is the full namespace list the t function is bound to
+         * (react-i18next passes the namespaces of `useTranslation`); selector keys use it to find a namespace prefix,
+         * lookups still use `ns`.
          */
-        getFixedT<Ns extends Namespace | null, const TKPrefixFn extends (TypeOptions['enableSelector'] extends true | 'optimize' | 'strict' ? KeyPrefixSelector<ActualNs> : never), ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(lng: string | readonly string[] | null, ns: Ns, keyPrefix: TKPrefixFn): TFunction<ActualNs, TKPrefixFn>;
+        getFixedT<Ns extends Namespace | null, const TKPrefixFn extends (TypeOptions['enableSelector'] extends true | 'optimize' | 'strict' ? KeyPrefixSelector<ActualNs> : never), ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(lng: string | readonly string[] | null, ns: Ns, keyPrefix: TKPrefixFn, fixedOpts?: {
+            scopeNs?: readonly string[];
+        }): TFunction<ActualNs, TKPrefixFn>;
         getFixedT<Ns extends Namespace | null = DefaultNamespace, TKPrefix extends KeyPrefix<ActualNs> = undefined, ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns>(...args: [
             lng: string | readonly string[],
             ns?: Ns,
-            keyPrefix?: TKPrefix | (($: any) => any)
+            keyPrefix?: TKPrefix | (($: any) => any),
+            fixedOpts?: {
+                scopeNs?: readonly string[];
+            }
         ] | [
             lng: null,
             ns: Ns,
-            keyPrefix?: TKPrefix | (($: any) => any)
+            keyPrefix?: TKPrefix | (($: any) => any),
+            fixedOpts?: {
+                scopeNs?: readonly string[];
+            }
         ]): TFunction<ActualNs, TKPrefix>;
         /**
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
