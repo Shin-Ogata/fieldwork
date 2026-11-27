@@ -123,9 +123,29 @@ export default [
             'no-bitwise': 'off',
             'no-console': 'off',
             // @stylistic
-            '@stylistic/array-bracket-spacing': [
+            '@stylistic/list-style': [
                 'error',
-                'never',
+                {
+                    singleLine: {
+                        spacing: 'never',
+                    },
+                    overrides: {
+                        '{}': {
+                            singleLine: {
+                                spacing: 'always',
+                            },
+                        },
+                        '()': 'off',
+                        '<>': 'off',
+                        'ArrayExpression': 'off',
+                        'ArrayPattern': 'off',
+                        'ObjectExpression': 'off',
+                        'ObjectPattern': 'off',
+                        'ExportNamedDeclaration': 'off',
+                        'ImportDeclaration': 'off',
+                        'ImportAttributes': 'off',
+                    },
+                },
             ],
             '@stylistic/arrow-spacing': 'error',
             '@stylistic/block-spacing': 'error',
@@ -159,10 +179,6 @@ export default [
                 {
                     ignoreComments: true,
                 },
-            ],
-            '@stylistic/object-curly-spacing': [
-                'error',
-                'always',
             ],
             '@stylistic/quotes': [
                 'error',
